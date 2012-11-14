@@ -1,0 +1,4 @@
+build/*
+release/*
+release/modules*
+nbproject/private*

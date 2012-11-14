@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.clueminer.math
+OpenIDE-Module-Localizing-Bundle: org/clueminer/math/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

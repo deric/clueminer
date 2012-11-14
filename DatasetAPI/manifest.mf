@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.clueminer.dataset
+OpenIDE-Module-Localizing-Bundle: org/clueminer/dataset/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

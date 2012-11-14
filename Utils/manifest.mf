@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.clueminer.utils
+OpenIDE-Module-Localizing-Bundle: org/clueminer/utils/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

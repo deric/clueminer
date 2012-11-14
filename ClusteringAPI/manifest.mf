@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.clueminer.clustering.api
+OpenIDE-Module-Localizing-Bundle: org/clueminer/clustering/api/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
