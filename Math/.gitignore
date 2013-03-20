@@ -1,5 +1,0 @@
-build/*
-release/*
-release/modules/*
-release/modules/ext*
-nbproject/private*
