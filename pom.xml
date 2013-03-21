@@ -60,6 +60,11 @@
         <module>dataset-api</module>
         <module>math-api</module>
     <module>utils</module>
+    <module>dataset-impl</module>
+    <module>math-impl</module>
+    <module>gui-utils</module>
+    <module>plot</module>
+    <module>io</module>
   </modules>
 
     <properties>
