@@ -15,6 +15,6 @@ public class XCalibourFixture extends AbstractFixture {
 
     public File testData() throws IOException {
         String config = "T0014BW.cdf";
-        return new File(localPath + "/xcalibour/" + config);
+        return resource("xcalibour/" + config);
     }
 }
