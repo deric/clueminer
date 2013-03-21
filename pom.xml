@@ -65,6 +65,7 @@
     <module>gui-utils</module>
     <module>plot</module>
     <module>io</module>
+    <module>clustering-api</module>
   </modules>
 
     <properties>
