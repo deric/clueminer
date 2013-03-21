@@ -66,6 +66,8 @@
     <module>plot</module>
     <module>io</module>
     <module>clustering-api</module>
+    <module>xcalibour</module>
+    <module>fixtures</module>
   </modules>
 
     <properties>
