@@ -31,6 +31,16 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE73</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -39,6 +49,16 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.clueminer.dataset.api</publicPackage>
+                        <publicPackage>org.clueminer.distance.api</publicPackage>
+                        <publicPackage>org.clueminer.events</publicPackage>
+                        <publicPackage>org.clueminer.exception</publicPackage>
+                        <publicPackage>org.clueminer.types</publicPackage>
+                        <publicPackage>org.clueminer.utils</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
 
             <plugin>

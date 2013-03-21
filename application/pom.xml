@@ -49,7 +49,7 @@
         -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>clueminer-dataset-api</artifactId>
+            <artifactId>dataset-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

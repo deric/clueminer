@@ -57,8 +57,9 @@
     <modules>
         <module>branding</module>
         <module>application</module>
-    <module>clueminer-dataset-api</module>
-    <module>math</module>
+        <module>dataset-api</module>
+        <module>math-api</module>
+    <module>utils</module>
   </modules>
 
     <properties>
