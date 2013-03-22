@@ -3,6 +3,12 @@ package org.clueminer.xcalibour.files;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
@@ -60,15 +66,72 @@ public class XCalibourImporter implements LongTask, Runnable {
             System.out.println("ncfile: " + ncfile);
             System.out.println("title: " + ncfile.getTitle());
 
-
-
-
             List<Variable> variables = ncfile.getVariables();
 
+            Variable v = ncfile.findVariable("scan_index");
+            System.out.println("n of scans: "+v);
+            if(v != null){
+                System.out.println("scan_index: "+ v.read().toString());
+            }
+            Attribute attr = ncfile.findGlobalAttribute("number_of_scans");
+            System.out.println("attr = "+attr.getNumericValue());
+            
+            /**
+             * index tells us where is the start of next measurement
+             */
+            int[] scan_indexes = null;
+            Variable scan_var = ncfile.findVariable("scan_index");
+            if(scan_var != null){
+                Array val = scan_var.read();                
+                scan_indexes = val.getShape();
+            }
+            
+            Array mass = null, intensity = null, total_intensity;
+            try {
+                 String var = "mass_values";
+                 System.out.println("variable: "+var);
+                 mass = ncfile.readSection(var);                 
+                 //System.out.println(mass.toString());
 
+                 var = "intensity_values";
+                 System.out.println("variable: "+var);
+                 intensity = ncfile.readSection(var);
+                 //System.out.println(intensity.toString());
+
+                 var = "total_intensity";
+                 System.out.println("variable: "+var);
+                 total_intensity = ncfile.readSection(var);
+                 //System.out.println(total_intensity.toString());
+
+             } catch (InvalidRangeException ex) {
+                 Exceptions.printStackTrace(ex);
+             }
+
+            int curr = 0;
+            int next, size;
+            TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(scan_indexes.length);
+            for (int i = 0; i < scan_indexes.length; i++) {
+                next = scan_indexes[i];
+                size = next - curr;
+                MassSpectrum<MassItem> inst = new MassSpectrum<MassItem>(size);
+                
+                for (int j = curr; j < size; j++) {
+                    MassItem value = new MassItem(intensity.getLong(j), mass.getDouble(j));
+                    inst.put(value);
+                    
+                }
+                
+                
+                curr = next;
+                
+            }
+            
+            
+            
+            
             // List<Array> arry = ncfile.readArrays(variables);
 
-
+/*
             for (Variable v : variables) {
                 System.out.println("variable: " + v.getName());
                 System.out.println(v.toString());
@@ -106,7 +169,7 @@ public class XCalibourImporter implements LongTask, Runnable {
                     }
 
                 }
-                System.out.println("section");
+                System.out.println("variable: "+v.getName());
                 try {
                     Array ary = ncfile.readSection(v.getName());
                     System.out.println(ary.toString());
@@ -115,7 +178,11 @@ public class XCalibourImporter implements LongTask, Runnable {
                 }
 
                 System.out.println("variable size: " + v.getSize());
-            }
+            }*/
+                
+                
+
+            
 
             System.out.println("scan_index");
             //process(ncfile);

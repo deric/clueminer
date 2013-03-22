@@ -77,6 +77,11 @@
             <artifactId>org-openide-util</artifactId>
             <version>RELEASE73</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
