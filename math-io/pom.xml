@@ -8,11 +8,11 @@
   </parent>
 
     <groupId>org.math</groupId>
-    <artifactId>io</artifactId>
+    <artifactId>org.math.io</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>io</name>
+    <name>math-io</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
