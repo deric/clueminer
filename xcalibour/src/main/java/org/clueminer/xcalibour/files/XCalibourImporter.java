@@ -31,6 +31,7 @@ public class XCalibourImporter implements LongTask, Runnable {
 
     private ProgressHandle ph;
     private File file;
+    private SpectrumDataset<MassSpectrum> dataset;
 
     public XCalibourImporter(File file) {
         if (!file.exists()) {
@@ -122,7 +123,7 @@ public class XCalibourImporter implements LongTask, Runnable {
             int curr = 0;
             int next, size;
             int end;            
-            SpectrumDataset<MassSpectrum> dataset = new SpectrumDataset<MassSpectrum>(num_measurements);
+            dataset = new SpectrumDataset<MassSpectrum>(num_measurements);
             for (int i = 0; i < num_measurements; i++) {
                 if((i+1) == num_measurements){
                     // size of last segment is unknown, we read till end of array
@@ -210,4 +211,9 @@ public class XCalibourImporter implements LongTask, Runnable {
         }
 
     }
+
+    public SpectrumDataset<MassSpectrum> getDataset() {
+        return dataset;
+    }
+        
 }
