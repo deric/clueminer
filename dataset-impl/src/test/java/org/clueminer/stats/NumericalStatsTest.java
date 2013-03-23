@@ -5,7 +5,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
-//import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.ARFFHandler;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -26,9 +26,9 @@ public class NumericalStatsTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        //ARFFHandler arff = new ARFFHandler();
+        ARFFHandler arff = new ARFFHandler();
         dataset = new SampleDataset();
-        //arff.load(tf.irisArff(), dataset, 4);
+        arff.load(tf.irisArff(), dataset, 4);
 
     }
 

@@ -71,7 +71,8 @@
         <module>dataset-visualization</module>
         <module>jzy3d-api</module>
         <module>jzy3d-convexhull</module>
-    </modules>
+    <module>dataset-io</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
