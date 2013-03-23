@@ -66,67 +66,83 @@ public class XCalibourImporter implements LongTask, Runnable {
             System.out.println("ncfile: " + ncfile);
             System.out.println("title: " + ncfile.getTitle());
 
-            List<Variable> variables = ncfile.getVariables();
+            //List<Variable> variables = ncfile.getVariables();
 
-            Variable v = ncfile.findVariable("scan_index");
-            System.out.println("n of scans: "+v);
-            if(v != null){
-                System.out.println("scan_index: "+ v.read().toString());
-            }
             Attribute attr = ncfile.findGlobalAttribute("number_of_scans");
-            System.out.println("attr = "+attr.getNumericValue());
-            
+            int num_measurements = attr.getNumericValue().intValue();
             /**
-             * index tells us where is the start of next measurement
+             * index tells us where is the start of next measurement segment
              */
-            int[] scan_indexes = null;
+           // int[] scan_indexes = null;
             Variable scan_var = ncfile.findVariable("scan_index");
-            if(scan_var != null){
-                Array val = scan_var.read();                
-                scan_indexes = val.getShape();
+            if(scan_var == null){
+                throw new RuntimeException("scan var is null!");
             }
             
-            Array mass = null, intensity = null, total_intensity;
+            Array scan_indexes = scan_var.read();                
+            System.out.println("scan indexes: "+scan_indexes.getShape());
+            
+            
+            Array mass = null, intensity = null, total_intensity = null;
             try {
                  String var = "mass_values";
                  System.out.println("variable: "+var);
-                 mass = ncfile.readSection(var);                 
+                 mass = ncfile.readSection(var);
+
                  //System.out.println(mass.toString());
 
                  var = "intensity_values";
                  System.out.println("variable: "+var);
                  intensity = ncfile.readSection(var);
+
                  //System.out.println(intensity.toString());
 
                  var = "total_intensity";
                  System.out.println("variable: "+var);
                  total_intensity = ncfile.readSection(var);
+
                  //System.out.println(total_intensity.toString());
 
              } catch (InvalidRangeException ex) {
                  Exceptions.printStackTrace(ex);
              }
+            
+            if(mass == null){
+                    throw new RuntimeException("mass var is null!");
+            }
+            
+            if(intensity == null){
+                    throw new RuntimeException("intensity var is null!");
+            }
+            
+            if(total_intensity == null){
+                    throw new RuntimeException("total_intensity var is null!");
+            }
 
             int curr = 0;
             int next, size;
-            TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(scan_indexes.length);
-            for (int i = 0; i < scan_indexes.length; i++) {
-                next = scan_indexes[i];
+            int end;            
+            SpectrumDataset<MassSpectrum> dataset = new SpectrumDataset<MassSpectrum>(num_measurements);
+            for (int i = 0; i < num_measurements; i++) {
+                if((i+1) == num_measurements){
+                    // size of last segment is unknown, we read till end of array
+                    next = (int )intensity.getSize();                    
+                }else{
+                    next = scan_indexes.getInt(i+1);                                                        
+                }
                 size = next - curr;
                 MassSpectrum<MassItem> inst = new MassSpectrum<MassItem>(size);
-                
-                for (int j = curr; j < size; j++) {
+                end = curr + size;
+                for (int j = curr; j < end; j++) {
                     MassItem value = new MassItem(intensity.getLong(j), mass.getDouble(j));
                     inst.put(value);
-                    
                 }
-                
-                
-                curr = next;
-                
+                dataset.add(inst);                
+                curr = next;                
             }
             
-            
+            System.out.println("dataset size = "+dataset.size());
+            System.out.println("dataset max attr = "+dataset.attributeCount());
             
             
             // List<Array> arry = ncfile.readArrays(variables);
@@ -180,11 +196,6 @@ public class XCalibourImporter implements LongTask, Runnable {
                 System.out.println("variable size: " + v.getSize());
             }*/
                 
-                
-
-            
-
-            System.out.println("scan_index");
             //process(ncfile);
         } catch (IOException ioe) {
             // log("trying to open " + filename, ioe);
