@@ -67,6 +67,13 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.1.1</version>
+            <type>zip</type>
+            <classifier>src</classifier>
+        </dependency>
     </dependencies>
 
     <build>
