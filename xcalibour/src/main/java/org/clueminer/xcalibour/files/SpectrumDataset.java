@@ -4,10 +4,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.SortedSet;
 import javax.swing.JComponent;
+import org.clueminer.algorithm.BinarySearch;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AbstractDataset;
@@ -24,6 +27,8 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
     private int max_attributes = 0;
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
+    private TimePointAttribute[] timePoints;
+    private double[] timepointPosition;
 
     public SpectrumDataset(int capacity) {
         super(capacity);
@@ -58,7 +63,7 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
      * @param instance Instance
      */
     protected void check(E instance) {
-        if (instance.size() > this.attributeCount()) {
+        if (instance.size() > this.yAttrCount()) {
             max_attributes = instance.size();
         }
     }
@@ -68,12 +73,29 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public int attributeCount() {
+        return xAttrCount();
+
+    }
+
     /**
+     *
+     * @return number of timepoints
+     */
+    public int xAttrCount() {
+        if(timePoints == null){
+            return 0;
+        }
+        return timePoints.length;
+    }
+
+    /**
+     * Mass spectrum measurements
      *
      * @return max number of measurements in all dataset
      */
-    @Override
-    public int attributeCount() {
+    public int yAttrCount() {
         return max_attributes;
     }
 
@@ -159,22 +181,48 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
 
     @Override
     public double interpolate(int index, double x, Interpolator interpolator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int idx = BinarySearch.search(timePoints, x);
+        int low = 0, up = 0;
+        Instance curr = get(index);
+        if (curr == null) {
+            throw new RuntimeException("instance " + index + " not found");
+        }
+        if (timePoints[idx].getValue() > x) {
+            up = idx;
+            low = idx - 1;
+        } else if (timePoints[idx].getValue() < x) {
+            low = idx;
+            up = idx + 1;
+        }
+
+        return interpolator.getValue(getTimePointsArray(), curr.arrayCopy(), x, low, up);
     }
 
     @Override
     public TimePoint[] getTimePoints() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return timePoints;
     }
 
     @Override
     public double[] getTimePointsArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        /**
+         * @TODO @FIXME this is ugly however could be quite fast. if there would
+         * be some way how to solve Numeric[] to double[] conversion...
+         * java.lang.Number is AbstractClass not an interface we can't inherite
+         * TimePoint from that one :(
+         */
+        if (timepointPosition == null) {
+            timepointPosition = new double[timePoints.length];
+            for (int i = 0; i < timePoints.length; i++) {
+                timepointPosition[i] = timePoints[i].getPosition();
+            }
+        }
+        return timepointPosition;
     }
 
     @Override
     public void setTimePoints(TimePoint[] tp) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        timePoints = (TimePointAttribute[]) tp;
     }
 
     @Override
