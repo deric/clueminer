@@ -15,8 +15,18 @@ public class BinarySearch {
     public static int search(Numeric[] sortedArray, double x) {
         return search(sortedArray, 0, sortedArray.length - 1, x);
     }
-
-    public static int search(Numeric[] a, int low, int high, double x) {
+    
+    /**
+     * 
+     * @param a an array to search in
+     * @param l low index in the "a" array
+     * @param h upper search bound (high) index in "a" array
+     * @param x value we are looking for (closes match to this value)
+     * @return 
+     */
+    public static int search(Numeric[] a, int l, int h, double x) {
+        int low = l;
+        int high = h;
         // x < a[low] - trivial case searched value is out of array's lower bound
         if (a[low].compareTo(x) > 0) {
             return low;
