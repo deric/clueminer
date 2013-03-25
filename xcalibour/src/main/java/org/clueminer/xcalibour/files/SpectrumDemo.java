@@ -56,10 +56,10 @@ public class SpectrumDemo {
         int ysteps = 200;
 
 // Create a surface drawing that function
-        OrthonormalGrid grid = new OrthonormalGrid(xrange, xsteps, yrange, ysteps);
+        MyOrthoGrid grid = new MyOrthoGrid(xrange, xsteps, yrange, ysteps);
         Shape surface = Builder.buildOrthonormal(grid, mapper);
         surface.setColorMapper(new ColorMapper(new ColorMapRainbow(), surface.getBounds().getZmin(), surface.getBounds().getZmax(), new Color(1, 1, 1, .5f)));
-        surface.setFaceDisplayed(true);
+        surface.setFaceDisplayed(false);
         surface.setWireframeDisplayed(false);       
         surface.setWireframeColor(Color.BLACK); // set polygon border in black
         //surface.setFace(new ColorbarFace(surface)); // attach a 2d panel
@@ -69,7 +69,7 @@ public class SpectrumDemo {
         Chart chart = new Chart(Quality.Advanced);
         chart.getScene().getGraph().add(surface);
         //chart.setViewPoint( Coord3d.ORIGIN);
-        chart.setViewPoint( new Coord3d(0.5f, 0.5f, 0.5f));
+       // chart.setViewPoint( new Coord3d(0.5f, 0.5f, 0.5f));
         ChartLauncher.openChart(chart);
     }
 }

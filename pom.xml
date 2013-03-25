@@ -69,10 +69,10 @@
         <module>xcalibour</module>
         <module>fixtures</module>
         <module>dataset-visualization</module>
-        <module>jzy3d-api</module>
         <module>jzy3d-convexhull</module>
-    <module>dataset-io</module>
-  </modules>
+        <module>dataset-io</module>
+        <module>jzy3d-api</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
