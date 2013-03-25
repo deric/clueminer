@@ -76,9 +76,8 @@ public class XCalibourImporter implements LongTask, Runnable {
 
         try {
             ncfile = NetcdfDataset.openFile(filename, null);
-            System.out.println("ncfile: " + ncfile);
-            System.out.println("title: " + ncfile.getTitle());
-
+            //System.out.println("ncfile: " + ncfile);
+            
             //List<Variable> variables = ncfile.getVariables();
 
             Attribute attr = ncfile.findGlobalAttribute("number_of_scans");
@@ -119,18 +118,7 @@ public class XCalibourImporter implements LongTask, Runnable {
                 var = "scan_acquisition_time";
                 System.out.println("variable: " + var);
                 scan_time = ncfile.readSection(var);
-
-                System.out.println(scan_time.toString());
-
-
-                var = "point_count";
-                System.out.println("variable: " + var);
-                Array scan_duration = ncfile.readSection(var);
-
-                System.out.println(scan_duration.toString());
-
-
-
+                
             } catch (InvalidRangeException ex) {
                 Exceptions.printStackTrace(ex);
             }
