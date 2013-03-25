@@ -25,13 +25,13 @@ public class MyOrthoGrid extends OrthonormalGrid {
 
         List<Coord3d> output = new ArrayList<Coord3d>(xsteps * ysteps);
 
-        double max = 1e5;
+        double filter = 1e4;
         for (int xi = 0; xi < xsteps; xi++) {
             for (int yi = 0; yi < ysteps; yi++) {
                 double x = xrange.getMin() + xi * xstep;
                 double y = yrange.getMin() + yi * ystep;
                 double z = mapper.f(x, y);
-                if (z > max) {
+                if (z > filter) {
                     output.add(new Coord3d(x, y, z));
                 }
             }

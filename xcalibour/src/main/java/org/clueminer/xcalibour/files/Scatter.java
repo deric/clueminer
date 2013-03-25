@@ -7,6 +7,7 @@ import org.jzy3d.colors.ColorMapper;
 import org.jzy3d.colors.colormaps.ColorMapRainbow;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.ScatterMultiColor;
+import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 /**
  *
@@ -36,7 +37,7 @@ public class Scatter {
         ScatterMultiColor scatter = new ScatterMultiColor(points, new ColorMapper(new ColorMapRainbow(), -0.5f, 0.5f));
 
 // Create a chart and add scatter
-        Chart chart = new Chart();
+        Chart chart = new Chart(Quality.Advanced, "newt");
         chart.getAxeLayout().setMainColor(Color.WHITE);
         chart.getView().setBackgroundColor(Color.BLACK);
         chart.getScene().add(scatter);

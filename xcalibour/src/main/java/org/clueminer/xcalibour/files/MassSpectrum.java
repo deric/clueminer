@@ -81,19 +81,19 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
 
     public double zValueAt(double y, Numeric[] axisX, Interpolator interpolator) {
         int idx = InterpolationSearch.search(data, y);
-        //System.out.println("getting y ="+y+ " idx = "+idx);
-       /* int low, up;
-        if (data[idx].getValue() > y) {
-            up = idx;
-            low = idx - 1;
-        } else if (data[idx].getValue() < y) {
-            low = idx;
-            up = idx + 1;
-        } else {
-            //exact match
-            return data[idx].getIntensity();
-        }
-        return interpolator.getValue(axisX, data, y, low, up);*/
+        //System.out.println("getting y =" + y + " idx = " + idx + " found " + data[idx].getMass());
+        /* int low, up;
+         if (data[idx].getValue() > y) {
+         up = idx;
+         low = idx - 1;
+         } else if (data[idx].getValue() < y) {
+         low = idx;
+         up = idx + 1;
+         } else {
+         //exact match
+         return data[idx].getIntensity();
+         }
+         return interpolator.getValue(axisX, data, y, low, up);*/
         return data[idx].getIntensity();
     }
 

@@ -24,6 +24,7 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDataset<E> implements Timeseries<E>, Dataset<E> {
 
+    private static final long serialVersionUID = -5124177426971291877L;
     private int max_attributes = 0;
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
@@ -84,7 +85,7 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
      * @return number of timepoints
      */
     public int xAttrCount() {
-        if(timePoints == null){
+        if (timePoints == null) {
             return 0;
         }
         return timePoints.length;
