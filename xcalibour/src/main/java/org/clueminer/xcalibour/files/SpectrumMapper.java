@@ -29,6 +29,6 @@ public class SpectrumMapper extends Mapper {
         int xidx = (int) x;
         
         MassSpectrum inst = dataset.get(xidx);
-        return inst.zValueAt(y, dataset.getTimePoints(), interpolator);                       
+        return inst.zValueAt(y, dataset.getTimePoints());                       
     }
 }

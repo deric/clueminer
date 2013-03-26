@@ -79,7 +79,7 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public double zValueAt(double y, Numeric[] axisX, Interpolator interpolator) {
+    public double zValueAt(double y, Numeric[] axisX) {
         int idx = InterpolationSearch.search(data, y);
         //System.out.println("getting y =" + y + " idx = " + idx + " found " + data[idx].getMass());
         /* int low, up;

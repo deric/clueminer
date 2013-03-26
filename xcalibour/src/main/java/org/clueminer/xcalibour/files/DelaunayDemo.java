@@ -1,6 +1,5 @@
 package org.clueminer.xcalibour.files;
 
-import java.io.File;
 import java.io.IOException;
 import org.clueminer.fixtures.XCalibourFixture;
 import org.jzy3d.chart.Chart;
@@ -11,8 +10,6 @@ import org.jzy3d.colors.colormaps.ColorMapRainbow;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Range;
 import org.jzy3d.plot3d.builder.Builder;
-import org.jzy3d.plot3d.builder.Mapper;
-import org.jzy3d.plot3d.builder.concrete.OrthonormalGrid;
 import org.jzy3d.plot3d.primitives.CompileableComposite;
 import org.jzy3d.plot3d.primitives.Shape;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
@@ -24,14 +21,13 @@ import org.openide.util.Exceptions;
  *
  * @author deric
  */
-public class SpectrumDemo {
+public class DelaunayDemo {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
-        XCalibourFixture tf = new XCalibourFixture();
+               XCalibourFixture tf = new XCalibourFixture();
         ProgressHandle ph = ProgressHandleFactory.createHandle("Importing dataset");
         XCalibourImporter importer = null;
         try {
@@ -50,16 +46,15 @@ public class SpectrumDemo {
 
 
 // Define range and precision for the function to plot
-        Range xrange = new Range(0, dataset.attributeCount()-1);
-        int xsteps = 2500;
+        Range xrange = new Range(0, 4000);
+        int xsteps = 1500;
 
         Range yrange = new Range(30, 200);
         int ysteps = 170;
 
 // Create a surface drawing that function
-        MyOrthoGrid grid = new MyOrthoGrid(xrange, xsteps, yrange, ysteps);
-        //OrthonormalGrid grid = new OrthonormalGrid(xrange, xsteps, yrange, ysteps);
-        CompileableComposite surface = Builder.buildOrthonormalBig(grid, mapper);
+        MyOrthoGrid grid = new MyOrthoGrid(xrange, xsteps, yrange, ysteps);        
+        final Shape surface = Builder.buildDelaunay(grid.apply(mapper));
         surface.setColorMapper(new ColorMapper(new ColorMapRainbow(), surface.getBounds().getZmin(), surface.getBounds().getZmax(), new Color(1, 1, 1, .5f)));
         surface.setFaceDisplayed(true);
         surface.setWireframeDisplayed(false);       
