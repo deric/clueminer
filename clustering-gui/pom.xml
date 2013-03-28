@@ -4,15 +4,15 @@
     <parent>
     <artifactId>clueminer-parent</artifactId>
     <groupId>org.clueminer</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
   </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>clustering-impl</artifactId>
+    <artifactId>clustering-gui</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>clustering-impl</name>
+    <name>clustering-gui</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,31 +43,26 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>math-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>math-impl</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-print</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-explorer</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-settings</artifactId>
+            <version>RELEASE73</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-impl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>clustering-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -79,20 +74,6 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <version>3.8</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <publicPackages>
-                        <publicPackage>org.clueminer.cluster</publicPackage>
-                        <publicPackage>org.clueminer.clustering</publicPackage>
-                        <publicPackage>org.clueminer.clustering.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.distance</publicPackage>
-                        <publicPackage>org.clueminer.evaluation</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.hclust</publicPackage>
-                        <publicPackage>org.clueminer.exec</publicPackage>
-                        <publicPackage>org.clueminer.hclust</publicPackage>
-                        <publicPackage>org.clueminer.hclust.linkage</publicPackage>
-                        <publicPackage>org.clueminer.utils</publicPackage>
-                    </publicPackages>
-                </configuration>
             </plugin>
 
             <plugin>

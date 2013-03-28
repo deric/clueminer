@@ -73,6 +73,7 @@
         <module>dataset-io</module>
         <module>jzy3d-api</module>
     <module>clustering-impl</module>
+    <module>clustering-gui</module>
   </modules>
 
     <properties>
