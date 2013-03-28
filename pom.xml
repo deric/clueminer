@@ -81,6 +81,7 @@
     <module>dendrogram</module>
     <module>perspective-api</module>
     <module>perspective-impl</module>
+    <module>clustering-preview</module>
   </modules>
 
     <properties>
