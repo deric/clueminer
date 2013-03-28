@@ -23,6 +23,66 @@
       <artifactId>org-netbeans-api-annotations-common</artifactId>
       <version>${netbeans.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-util</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-windows</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>project-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-loaders</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>importer-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-util-lookup</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-awt</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-nodes</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-filesystems</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-actions</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-dialogs</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
+    <dependency>
+      <groupId>org.netbeans.api</groupId>
+      <artifactId>org-openide-modules</artifactId>
+      <version>RELEASE73</version>
+    </dependency>
   </dependencies>
 
   <build>
