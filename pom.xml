@@ -75,6 +75,7 @@
     <module>clustering-impl</module>
     <module>clustering-gui</module>
     <module>export-impl</module>
+    <module>project-api</module>
   </modules>
 
     <properties>
