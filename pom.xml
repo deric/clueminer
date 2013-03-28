@@ -78,6 +78,7 @@
     <module>project-api</module>
     <module>project-impl</module>
     <module>importer-api</module>
+    <module>dendrogram</module>
   </modules>
 
     <properties>
