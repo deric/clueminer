@@ -74,6 +74,7 @@
         <module>jzy3d-api</module>
     <module>clustering-impl</module>
     <module>clustering-gui</module>
+    <module>export-impl</module>
   </modules>
 
     <properties>
