@@ -4,7 +4,7 @@
 
     <groupId>org.clueminer</groupId>
     <artifactId>clueminer-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>clueminer-parent</name>
@@ -72,7 +72,8 @@
         <module>jzy3d-convexhull</module>
         <module>dataset-io</module>
         <module>jzy3d-api</module>
-    </modules>
+    <module>clustering-impl</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>

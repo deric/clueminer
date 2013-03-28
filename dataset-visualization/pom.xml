@@ -45,11 +45,6 @@
             <artifactId>dataset-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jzy3d</groupId>
-            <artifactId>api</artifactId>
-            <version>0.9-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>
