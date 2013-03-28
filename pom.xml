@@ -80,6 +80,7 @@
     <module>importer-api</module>
     <module>dendrogram</module>
     <module>perspective-api</module>
+    <module>perspective-impl</module>
   </modules>
 
     <properties>
