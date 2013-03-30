@@ -65,6 +65,16 @@
             <artifactId>dataset-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -74,6 +84,21 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <version>3.8</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>edu.hawaii.jmotif.datatype</publicPackage>
+                        <publicPackage>edu.hawaii.jmotif.logic.apriori</publicPackage>
+                        <publicPackage>edu.hawaii.jmotif.logic.distance</publicPackage>
+                        <publicPackage>edu.hawaii.jmotif.logic.math</publicPackage>
+                        <publicPackage>edu.hawaii.jmotif.logic.sax.*</publicPackage>
+                        <publicPackage>edu.hawaii.jmotif.util</publicPackage>
+                        <publicPackage>jaolho.data.lma</publicPackage>
+                        <publicPackage>jaolho.data.lma.implementations</publicPackage>
+                        <publicPackage>org.clueminer.approximation</publicPackage>
+                        <publicPackage>org.clueminer.exception</publicPackage>
+                        <publicPackage>org.clueminer.sax</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
 
             <plugin>
