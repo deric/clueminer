@@ -66,4 +66,10 @@ public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implem
             throw new RuntimeException("attribute " + attributeName + " not found");
         }   
     }
+
+    @Override
+    public Attribute getAttribute(String attributeName) {
+        int idx = attrNames.get(attributeName);
+        return attributes.get(idx);
+    }
 }

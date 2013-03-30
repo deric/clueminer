@@ -407,4 +407,21 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     public JComponent getPlotter() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /**
+     * Highly ineffective, complexity O(n), it is expected to use access to time
+     * points by index
+     *
+     * @param attributeName
+     * @return attribute with given name
+     */
+    @Override
+    public Attribute getAttribute(String attributeName) {
+        for (TimePointAttribute tp : timePoints) {
+            if (tp.getName().equals(attributeName)) {
+                return (Attribute) tp;
+            }
+        }
+        throw new RuntimeException("attribute " + attributeName + " was not found");
+    }
 }

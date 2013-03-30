@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.Random;
 import org.clueminer.attributes.AttributeType;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.UnsupportedAttributeType;
@@ -77,7 +78,7 @@ public class SampleDatasetTest {
     /**
      * Test of add method, of class SampleDataset.
      */
-    @Test(expected=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testAdd_Instance() {
         Instance inst3 = dataset.builder().create(new double[]{1, 5, 5, 10});
         //we can't more attributes than are defined in dataset (3)
@@ -95,7 +96,7 @@ public class SampleDatasetTest {
         //inserting instance at the same position should cause shifting
         Instance inst2 = dataset.builder().create(new double[]{1, 5});
         dataset.add(0, inst2);
-        
+
         //so second is first
         assertEquals(inst2, dataset.get(0));
         //and first after the second :)
@@ -131,9 +132,9 @@ public class SampleDatasetTest {
     public void testClear() {
         Random rand = new Random();
         int max = 10;
-        for(int i=0; i< max; i++){
+        for (int i = 0; i < max; i++) {
             Instance inst = dataset.builder().create(dataset.attributeCount());
-            for(int j=0; j< dataset.attributeCount(); j++){
+            for (int j = 0; j < dataset.attributeCount(); j++) {
                 inst.put(j, rand.nextDouble());
                 System.out.println(inst);
             }
@@ -170,7 +171,20 @@ public class SampleDatasetTest {
      * Test of getAttribute method, of class SampleDataset.
      */
     @Test
-    public void testGetAttribute() {
+    public void testGetAttributeInt() {
+        Attribute a = dataset.getAttribute(0);
+        assertEquals("first", a.getName());
+    }
+
+    @Test
+    public void testGetAttributeString() {
+        Attribute a = dataset.getAttribute("third");
+        assertEquals("third", a.getName());        
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAttributeNotFound() {
+        dataset.getAttribute("foo");
     }
 
     /**

@@ -134,7 +134,7 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
     }
 
     /**
-     * Get name of i-th attribute
+     * Get i-th attribute instance
      *
      * @param i
      * @return
@@ -142,6 +142,21 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
     @Override
     public Attribute getAttribute(int i) {
         return attributes[i];
+    }
+    
+    /**
+     * Get i-th attribute by its name
+     * @param attributeName
+     * @return 
+     */
+    @Override
+    public Attribute getAttribute(String attributeName) {
+        for (int i = 0; i < attributes.length; i++) {
+            if(attributes[i].getName().equals(attributeName)){
+                return attributes[i];
+            }            
+        }
+        throw new RuntimeException("Attribute with name "+attributeName+" was not found");
     }
 
     /**

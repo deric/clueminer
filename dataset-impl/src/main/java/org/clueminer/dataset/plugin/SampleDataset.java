@@ -347,4 +347,14 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         plot.addScatterPlot(getName(), x, y);
         return plot;
     }
+
+    @Override
+    public Attribute getAttribute(String attributeName) {
+        for (Attribute a : attributes.values()) {
+            if (a.getName().equals(attributeName)) {
+                return a;
+            }
+        }
+        throw new RuntimeException("attribute " + attributeName + " was not found");
+    }
 }
