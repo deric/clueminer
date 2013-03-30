@@ -42,7 +42,7 @@ import org.openide.windows.WindowManager;
 @ActionID(
     category = "File",
 id = "org.clueminer.branding.actions.OpenFileAction")
-@ActionRegistration(iconBase = "org/clueminer/branding/actions/resources/open-folder16.png",
+@ActionRegistration(iconBase = "org/clueminer/branding/actions/open-folder16.png",
 displayName = "#CTL_OpenFile")
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1150, separatorBefore = 1100),
