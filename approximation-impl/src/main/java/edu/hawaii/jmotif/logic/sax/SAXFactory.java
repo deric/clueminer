@@ -12,6 +12,10 @@ import java.util.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.exception.UnsupportedAttributeType;
 import org.openide.util.Exceptions;
 
 /**
@@ -389,14 +393,19 @@ public final class SAXFactory {
      * @throws TrieException if error occurs.
      * @throws TSException if error occurs.
      */
-    public static DiscordRecords instances2Discords(Instances tsData, String dataAttributeName,
+    public static DiscordRecords instances2Discords(Dataset<Instance> tsData, String dataAttributeName,
             int windowSize, int alphabetSize) throws TrieException, TSException {
 
         boolean debug = true;
 
         // get the timestamps and data attributes
         //
-        Attribute dataAttribute = tsData.attribute(dataAttributeName);
+        Attribute dataAttribute = null;
+        try {
+            dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
+        } catch (UnsupportedAttributeType ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         // now init the SAX structures
         //
@@ -404,17 +413,17 @@ public final class SAXFactory {
         /**
          * @TODO maybe replace numInstances by numAttributes
          */
-        SAXTrie data = new SAXTrie(tsData.numInstances() - windowSize, alphabetSize);
+        SAXTrie data = new SAXTrie(tsData.size() - windowSize, alphabetSize);
         if (debug) {
-            System.out.println("Data size: " + tsData.numInstances() + ", window size: " + windowSize
-                    + ", SAX Trie size: " + (tsData.numInstances() - windowSize));
+            System.out.println("Data size: " + tsData.size() + ", window size: " + windowSize
+                    + ", SAX Trie size: " + (tsData.size()- windowSize));
         }
         Alphabet normalA = new NormalAlphabet();
 
         // [1.0] PREPROCESSING: in the sliding window loop build SAX string entries
         //
         int currPosition = 0;
-        while ((currPosition + windowSize) < tsData.numInstances()) {
+        while ((currPosition + windowSize) < tsData.size()) {
             // get the window SAX representation
             double[] series = getSubSeries(tsData, dataAttribute, currPosition, currPosition + windowSize);
             char[] saxVals = getSaxVals(series, windowSize, normalA.getCuts(alphabetSize));
@@ -458,11 +467,11 @@ public final class SAXFactory {
             // get the list of the same SAX occurrences & create the visited locations register
             //
             List<Integer> occurrences = data.getOccurences(e.getStr());
-            VisitRegistry registry = new VisitRegistry(tsData.numAttributes() - windowSize);
+            VisitRegistry registry = new VisitRegistry(tsData.attributeCount()- windowSize);
             int visitingCount = 0;
             // mark all trivial matches as visited
             for (int i = currPosition - windowSize; i < currPosition + windowSize; i++) {
-                if (i > 0 && i < (tsData.numAttributes() - windowSize)) {
+                if (i > 0 && i < (tsData.attributeCount()- windowSize)) {
                     registry.markVisited(i);
                 }
             }
@@ -994,14 +1003,14 @@ public final class SAXFactory {
      * @param end The end timestamp
      * @return sub-series from start to end.
      */
-    private static double[] getSubSeries(Instances data, Attribute attribute, int start, int end) {
+    private static double[] getSubSeries(Dataset<Instance> data, Attribute attribute, int start, int end) {
         List<Instance> tmpList = new ArrayList<Instance>(); //data.subList(start, end);
         for (int i = start; i <= end; i++) {
             tmpList.add(data.instance(i));
         }
         double[] vals = new double[end - start];
         for (int i = 0; i < end - start; i++) {
-            vals[i] = tmpList.get(i).value(attribute.index());
+            vals[i] = tmpList.get(i).value(attribute.getIndex());
         }
         return vals;
     }
@@ -1031,11 +1040,16 @@ public final class SAXFactory {
      * @param window Window size.
      * @throws TSException if error occurs.
      */
-    public static void maxDistances(Instances tsData, String dataAttributeName, int[] controls,
+    public static void maxDistances(Dataset<Instance> tsData, String dataAttributeName, int[] controls,
             int window) throws TSException {
         // get the timestamps and data attributes
         //
-        Attribute dataAttribute = tsData.attribute(dataAttributeName);
+        Attribute dataAttribute = null;
+        try {
+            dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
+        } catch (UnsupportedAttributeType ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
         double[] distances = new double[controls.length];
         int[] maxPos = new int[controls.length];
@@ -1048,7 +1062,7 @@ public final class SAXFactory {
         // [1.0] PREPROCESSING: in the sliding window loop build SAX string entries
         //
         int currPosition = 0;
-        while ((currPosition + window) < tsData.numAttributes()) {
+        while ((currPosition + window) < tsData.attributeCount()) {
 
             double[] vals = getSubSeries(tsData, dataAttribute, currPosition, currPosition + window);
 
@@ -1095,7 +1109,7 @@ public final class SAXFactory {
      * @return top discords for the time-series given
      * @throws TSException if error occurs.
      */
-    public static DiscordRecords getBruteForceDiscords(Instances tsData, int windowLength,
+    public static DiscordRecords getBruteForceDiscords(Dataset<Instance> tsData, int windowLength,
             int paaSize, int alphabetSize, String timeAttributeName, String dataAttributeName)
             throws TSException {
 
@@ -1103,8 +1117,8 @@ public final class SAXFactory {
 
         // get the timestamps and data attributes
         //
-        Attribute dataAttribute = tsData.attribute(dataAttributeName);
-        double[] theRawData = TSUtils.normalize(tsData.attributeToDoubleArray(dataAttribute.index()));
+        Attribute dataAttribute = tsData.getAttribute(dataAttributeName);
+        double[] theRawData = TSUtils.normalize(tsData.instance(dataAttribute.getIndex()).arrayCopy());
 
         // Init variables
         //
@@ -1115,7 +1129,7 @@ public final class SAXFactory {
 
         // run the search loop
         //
-        for (int i = 0; i < tsData.numAttributes() - windowLength; i++) {
+        for (int i = 0; i < tsData.attributeCount()- windowLength; i++) {
 
             if (i % 100 == 0) {
                 XMLGregorianCalendar nTstamp = makeTimestamp(System.currentTimeMillis());
@@ -1137,7 +1151,7 @@ public final class SAXFactory {
 
             // the inner loop
             //
-            for (int j = 0; j < tsData.numAttributes() - windowLength; j++) {
+            for (int j = 0; j < tsData.attributeCount()- windowLength; j++) {
 
                 // check for the trivial match
                 //
