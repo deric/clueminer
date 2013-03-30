@@ -78,9 +78,7 @@ public final class MatrixFactory {
     public static double[][] clone(double[][] a) {
         double[][] res = new double[a.length][a[0].length];
         for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[0].length; j++) {
-                res[i][j] = a[i][j];
-            }
+            System.arraycopy(a[i], 0, res[i], 0, a[0].length);
         }
         return res;
     }

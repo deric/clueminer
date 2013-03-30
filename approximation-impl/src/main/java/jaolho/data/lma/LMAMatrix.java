@@ -1,8 +1,7 @@
 package jaolho.data.lma;
 
 /**
- * The matrix to be used in LMA.
- * Implement this to make LMA operational if you
+ * The matrix to be used in LMA. Implement this to make LMA operational if you
  * don't or can't use jama or flanagan math libraries.
  */
 public interface LMAMatrix {
@@ -15,8 +14,7 @@ public interface LMAMatrix {
     }
 
     /**
-     * Inverts the matrix for solving linear equations for
-     * parameter increments.
+     * Inverts the matrix for solving linear equations for parameter increments.
      */
     public void invert() throws InvertException;
 
@@ -31,8 +29,9 @@ public interface LMAMatrix {
     public double getElement(int row, int col);
 
     /**
-     * Multiplies this matrix with an array (result = this * vector).
-     * The lengths of the arrays must be equal to the number of rows in the matrix.
+     * Multiplies this matrix with an array (result = this * vector). The
+     * lengths of the arrays must be equal to the number of rows in the matrix.
+     *
      * @param vector The array to be multiplied with the matrix.
      * @param result The result of the multiplication will be put here.
      */
