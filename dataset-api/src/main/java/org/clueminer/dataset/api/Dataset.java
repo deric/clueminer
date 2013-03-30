@@ -151,6 +151,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public Attribute getAttribute(int index);
+    
+    
+    /**
+     * Return attribute at position specified by attribute's name
+     *
+     * @param index
+     * @return
+     */
+    public Attribute getAttribute(String attributeName);
 
     /**
      * Method for direct access to instance values directly by attribute name
