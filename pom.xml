@@ -20,6 +20,16 @@
             <name>NetBeans</name>
             <url>http://bits.netbeans.org/maven2/</url>
         </repository>
+        <repository>
+            <id>sonatypenexus</id>
+            <name>CDK</name>
+            <url>https://maven.ch.cam.ac.uk/content/groups/ucc/</url>
+        </repository>                
+        <repository>
+            <id>plovdiv</id>
+            <name>CDK</name>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/groups/public/</url>
+        </repository>            
     </repositories>
 
     <build>
@@ -72,17 +82,21 @@
         <module>jzy3d-convexhull</module>
         <module>dataset-io</module>
         <module>jzy3d-api</module>
-    <module>clustering-impl</module>
-    <module>clustering-gui</module>
-    <module>export-impl</module>
-    <module>project-api</module>
-    <module>project-impl</module>
-    <module>importer-api</module>
-    <module>dendrogram</module>
-    <module>perspective-api</module>
-    <module>perspective-impl</module>
-    <module>clustering-preview</module>
-  </modules>
+        <module>clustering-impl</module>
+        <module>clustering-gui</module>
+        <module>export-impl</module>
+        <module>project-api</module>
+        <module>project-impl</module>
+        <module>importer-api</module>
+        <module>dendrogram</module>
+        <module>perspective-api</module>
+        <module>perspective-impl</module>
+        <module>clustering-preview</module>
+        <module>rtca</module>
+        <module>approximation-api</module>
+        <module>approximation-impl</module>
+        <module>molecule</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
