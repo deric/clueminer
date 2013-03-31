@@ -84,18 +84,17 @@ public final class ClusterActions {
         private static final long serialVersionUID = 1L;
 
         public MainAction(String name, boolean flag) {
-            putValue(NAME,
-                    NbBundle.getMessage(ClusterActions.class, "ACT_" + name));
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_" + name));
             putValue(SHORT_DESCRIPTION,
                     NbBundle.getMessage(ClusterActions.class, "TOOL_" + name));
-            System.out.println("org/clueminer/clustering/resources/" + name.toLowerCase() + "16.png");
+            System.out.println("org/clueminer/clustering/gui/" + name.toLowerCase() + "16.png");
             if (flag) {
-                
+
                 putValue(SMALL_ICON,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", false));
+                        ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/" + name + "16.png", false));
                 putValue(LONG_DESCRIPTION, name);
                 putValue(LARGE_ICON_KEY,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "24.png", false));
+                        ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/" + name + "24.png", false));
             }
         }
     }
@@ -340,7 +339,7 @@ public final class ClusterActions {
         JMenuItem menuItem;
 
         JMenu menu = new JMenu(NbBundle.getMessage(ClusterActions.class, "ACT_Charts"));
-        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/chart16.png", false));
+        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/chart16.png", false));
 
         String current = clusteringFrame.getAlgorithm().getName();
 
@@ -415,9 +414,9 @@ public final class ClusterActions {
             InputLine descriptor = new DialogDescriptor.InputLine(
                     "Template Name:", "Save to Template");
             descriptor.setOptions(new Object[]{
-                        DialogDescriptor.OK_OPTION,
-                        DialogDescriptor.CANCEL_OPTION
-                    });
+                DialogDescriptor.OK_OPTION,
+                DialogDescriptor.CANCEL_OPTION
+            });
             Object ret = DialogDisplayer.getDefault().notify(descriptor);
             if (ret.equals(DialogDescriptor.OK_OPTION)) {
                 String name = descriptor.getInputText();
