@@ -62,14 +62,22 @@ public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implem
         int index = attrNames.get(attributeName).intValue();
         if (index > -1) {
             instance(instanceIdx).put(index, value);
-        }else{
+        } else {
             throw new RuntimeException("attribute " + attributeName + " not found");
-        }   
+        }
     }
 
     @Override
     public Attribute getAttribute(String attributeName) {
         int idx = attrNames.get(attributeName);
         return attributes.get(idx);
+    }
+
+    @Override
+    public Dataset<E> duplicate() {
+        AttrHashDataset<E> copy = new AttrHashDataset<E>(this.size());
+        copy.attrNames = this.attrNames;
+        copy.setAttributes(attributes);
+        return copy;
     }
 }

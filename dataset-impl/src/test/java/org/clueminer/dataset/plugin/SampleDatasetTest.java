@@ -4,6 +4,7 @@ import java.util.Random;
 import org.clueminer.attributes.AttributeType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.AfterClass;
@@ -26,6 +27,15 @@ public class SampleDatasetTest {
         dataset.setAttribute(1, builder.create("second", AttributeType.NUMERICAL));
         dataset.setAttribute(2, builder.create("third", AttributeType.NUMERICAL));
         //dataset.attributeBuilder().create("class", DataTypes.CLASS_VALUE);
+
+        Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});
+        dataset.add(inst);
+        inst = dataset.builder().create(new double[]{0.5, 3.0, 8});
+        dataset.add(inst);
+        inst = dataset.builder().create(new double[]{0.3, 3.2, 8});
+        dataset.add(inst);
+        inst = dataset.builder().create(new double[]{0.1, 4.0, 15});
+        dataset.add(inst);
 
         dataset.setName("test dataset");
     }
@@ -90,6 +100,7 @@ public class SampleDatasetTest {
      */
     @Test
     public void testAdd_int_Instance() {
+        int datasetSizeBefore = dataset.size();
         //we add instance at first position
         Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});
         dataset.add(0, inst);
@@ -101,7 +112,7 @@ public class SampleDatasetTest {
         assertEquals(inst2, dataset.get(0));
         //and first after the second :)
         assertEquals(inst, dataset.get(1));
-        assertEquals(2, dataset.size());
+        assertEquals(2 + datasetSizeBefore, dataset.size());
     }
 
     /**
@@ -131,16 +142,17 @@ public class SampleDatasetTest {
     @Test
     public void testClear() {
         Random rand = new Random();
+        int sizeBefore = dataset.size();
         int max = 10;
         for (int i = 0; i < max; i++) {
             Instance inst = dataset.builder().create(dataset.attributeCount());
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 inst.put(j, rand.nextDouble());
-                System.out.println(inst);
+                //System.out.println(inst);
             }
             dataset.add(inst);
         }
-        assertEquals(max, dataset.size());
+        assertEquals(max + sizeBefore, dataset.size());
         dataset.clear();
         assertEquals(0, dataset.size());
     }
@@ -179,7 +191,7 @@ public class SampleDatasetTest {
     @Test
     public void testGetAttributeString() {
         Attribute a = dataset.getAttribute("third");
-        assertEquals("third", a.getName());        
+        assertEquals("third", a.getName());
     }
 
     @Test(expected = RuntimeException.class)
@@ -234,6 +246,26 @@ public class SampleDatasetTest {
      */
     @Test
     public void testCopy() {
+        Dataset<Instance> copy = dataset.copy();
+        assertEquals(dataset.size(), copy.size());
+        assertEquals(dataset.attributeCount(), copy.attributeCount());
+        Instance inst = copy.builder().create(new double[]{0.1, 0.5, 3});
+        copy.add(inst);
+        assertEquals(dataset.size() + 1, copy.size());
+    }
+
+    /**
+     * Test of duplicate method, of class SampleDataset.
+     */
+    @Test
+    public void testDuplicate() {
+        Dataset<Instance> dupl = dataset.duplicate();
+        //should copy only structure of dataset but not data itself
+        assertEquals(0, dupl.size());
+        assertEquals(dataset.attributeCount(), dupl.attributeCount());
+        Instance inst = dupl.builder().create(new double[]{0.1, 0.5, 3});
+        dupl.add(inst);
+        assertEquals(1, dupl.size());
     }
 
     /**

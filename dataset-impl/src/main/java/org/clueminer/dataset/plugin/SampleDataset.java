@@ -264,6 +264,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     @Override
     public Dataset<E> copy() {
         SampleDataset out = new SampleDataset();
+        out.attributes = this.attributes;
         for (Instance i : this) {
             out.add(i.copy());
         }
@@ -356,5 +357,12 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
             }
         }
         throw new RuntimeException("attribute " + attributeName + " was not found");
+    }
+
+    @Override
+    public Dataset<E> duplicate() {
+        SampleDataset<E> copy = new SampleDataset<E>(this.size());
+        copy.setAttributes(attributes);
+        return copy;
     }
 }

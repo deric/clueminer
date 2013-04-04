@@ -359,6 +359,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public Dataset<E> copy() {
         TimeseriesDataset<ContinuousInstance> out = new TimeseriesDataset<ContinuousInstance>(this.size());
+        out.setTimePoints(timePoints);
         for (ContinuousInstance i : this) {
             out.add(i.copy());
         }
@@ -423,5 +424,12 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             }
         }
         throw new RuntimeException("attribute " + attributeName + " was not found");
+    }
+
+    @Override
+    public Dataset<E> duplicate() {
+        TimeseriesDataset<E> copy = new TimeseriesDataset<E>(this.size());
+        copy.timePoints = this.timePoints;
+        return copy;
     }
 }

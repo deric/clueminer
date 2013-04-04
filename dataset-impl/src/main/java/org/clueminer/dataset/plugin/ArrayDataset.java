@@ -276,6 +276,13 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
         return plot;
     }
 
+    @Override
+    public Dataset<E> duplicate() {
+        ArrayDataset<E> copy = new ArrayDataset<E>(this.size(), this.attributeCount());
+        copy.attributes = this.attributes;
+        return copy;
+    }
+
     class ArrayDatasetIterator implements Iterator<Instance> {
 
         private int index = 0;

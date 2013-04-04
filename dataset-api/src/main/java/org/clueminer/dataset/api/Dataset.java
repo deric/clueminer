@@ -151,8 +151,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public Attribute getAttribute(int index);
-    
-    
+
     /**
      * Return attribute at position specified by attribute's name
      *
@@ -213,6 +212,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return deep copy of this data set.
      */
     public Dataset<E> copy();
+
+    /**
+     * Copies common structure common to all instances but not instances itself
+     *
+     * @return Skeleton of dataset
+     */
+    public Dataset<E> duplicate();
 
     /**
      * Return copy of data as an array of double
