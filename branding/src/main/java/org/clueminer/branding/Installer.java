@@ -26,6 +26,12 @@ public class Installer extends ModuleInstall {
                 DragNDropFrameAdapter.register();
             }
         });
+
+        //Memory Starvation Manager
+        if (System.getProperty("org.clueminer.MemoryStarvationManager.enabled", "true").equals("true")) {
+            MemoryStarvationManager memoryStarvationManager = new MemoryStarvationManager();
+            memoryStarvationManager.startup();
+        }
     }
 
     @Override
