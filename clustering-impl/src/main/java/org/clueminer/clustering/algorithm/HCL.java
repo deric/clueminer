@@ -15,7 +15,6 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
-import org.clueminer.utils.MemoryCheck;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = ClusteringAlgorithm.class)
@@ -133,18 +132,6 @@ public class HCL implements ClusteringAlgorithm {
         for (int i = 0; i < n; ++i) {
             NodeOrder[i] = -1;
             NumberOfChildren[i] = 1;
-        }
-        //======== Init =========
-        int memoryAssess = MemoryCheck.javaMemoryAssess(n, optimizeOrdering);
-        if (memoryAssess == 0) {
-            stop = false;
-        }
-        if (memoryAssess == 1) {
-            stop = true;
-        }
-        if (memoryAssess == 2) {
-            stop = true;
-            throw new RuntimeException("Java Out of Memory Error");
         }
         double[][] SimilarityMatrix = new double[n][n];
         //if (optimizeOrdering && !stop) {
