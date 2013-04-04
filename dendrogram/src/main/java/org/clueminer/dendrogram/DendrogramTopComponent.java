@@ -42,18 +42,18 @@ import org.openide.windows.WindowManager;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-    dtd = "-//org.clueminer.dendrogram.gui//Dendrogram//EN",
-autostore = false)
+        dtd = "-//org.clueminer.dendrogram.gui//Dendrogram//EN",
+        autostore = false)
 @TopComponent.Description(
-    preferredID = "DendrogramTopComponent",
-iconBase = "org/clueminer/dendrogram/gui/clustering16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        preferredID = "DendrogramTopComponent",
+        iconBase = "org/clueminer/dendrogram/gui/clustering16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.dendrogram.gui.DendrogramTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-    displayName = "#CTL_DendrogramAction",
-preferredID = "DendrogramTopComponent")
+        displayName = "#CTL_DendrogramAction",
+        preferredID = "DendrogramTopComponent")
 @Messages({
     "CTL_DendrogramAction=Dendrogram",
     "CTL_DendrogramTopComponent=Dendrogram Window",
@@ -248,15 +248,19 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         //Lookup.Result<Dataset> result = project.getSelection().getLookup().lookupAll(Dataset.class);
 
         if (cluster.firstElem > -1) {
-            Dataset<Instance> selected = new SampleDataset(cluster.size);
-            Dataset<? extends Instance> original = data.getInstances();
-            //copy attributes from source dataset
-            selected.setAttributes(original.getAttributes());
-            for (int i = cluster.firstElem; i <= cluster.lastElem; i++) {
-                Instance inst = original.instance(data.getRowIndex(i));
-                selected.add(inst);
+            Dataset<Instance> selected;
+            selected = (Dataset<Instance>) data.getInstances().duplicate();
+
+            if (selected != null) {
+                Dataset<? extends Instance> original = data.getInstances();
+                //copy attributes from source dataset
+                selected.setAttributes(original.getAttributes());
+                for (int i = cluster.firstElem; i <= cluster.lastElem; i++) {
+                    Instance inst = original.instance(data.getRowIndex(i));
+                    selected.add(inst);
+                }
+                content.set(Collections.singleton(selected), null);
             }
-            content.set(Collections.singleton(selected), null);
         }
     }
 
