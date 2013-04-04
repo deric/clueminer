@@ -3,7 +3,6 @@ package org.clueminer.clustering.explorer;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import org.clueminer.clustering.api.Clustering;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
@@ -12,32 +11,23 @@ import org.openide.explorer.view.BeanTreeView;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
-import org.openide.util.lookup.Lookups;
 
 /**
  * Top component which displays something.
  */
-@ConvertAsProperties(
-    dtd = "-//org.clueminer.clustering.explorer//ClusterExplorer//EN",
-autostore = false)
 @TopComponent.Description(
-    preferredID = "ClusterExplorerTopComponent",
-iconBase = "org/clueminer/clustering/explorer/clustering16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        preferredID = "ClusterExplorerTopComponent",
+        iconBase = "org/clueminer/clustering/explorer/clustering16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "explorer", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.clustering.explorer.ClusterExplorerTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-    displayName = "#CTL_ClusterExplorerAction",
-preferredID = "ClusterExplorerTopComponent")
-@Messages({
-    "CTL_ClusterExplorerAction=ClusterExplorer",
-    "CTL_ClusterExplorerTopComponent=ClusterExplorer Window",
-    "HINT_ClusterExplorerTopComponent=This is a ClusterExplorer window"
-})
+        displayName = "#CTL_ClusterExplorerAction",
+        preferredID = "ClusterExplorerTopComponent")
 public final class ClusterExplorerTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
 
     private static final long serialVersionUID = -1398240134373744788L;
@@ -48,8 +38,8 @@ public final class ClusterExplorerTopComponent extends TopComponent implements E
 
     public ClusterExplorerTopComponent() {
         initComponents();
-        setName(Bundle.CTL_ClusterExplorerTopComponent());
-        setToolTipText(Bundle.HINT_ClusterExplorerTopComponent());
+        setName(NbBundle.getMessage(ClusterExplorerTopComponent.class, "CTL_ClusterExplorerTopComponent"));
+        setToolTipText(NbBundle.getMessage(ClusterExplorerTopComponent.class, "HINT_ClusterExplorerTopComponent"));
 
         associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
 

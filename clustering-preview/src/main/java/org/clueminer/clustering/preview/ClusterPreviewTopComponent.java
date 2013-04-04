@@ -16,6 +16,7 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -57,7 +58,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
         initComponents();
         //Add the dynamic object to the TopComponent Lookup:
         associateLookup(new AbstractLookup(content));
-        setName(Bundle.CTL_ClusterPreviewTopComponent());
+        setName(NbBundle.getMessage(ClusterPreviewTopComponent.class, "CTL_ClusterPreviewAction"));
         setToolTipText(Bundle.HINT_ClusterPreviewTopComponent());
         putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         frame = new ClusterPreviewFrame();
