@@ -9,10 +9,10 @@
 
     <groupId>org.math</groupId>
     <artifactId>plot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>plot</name>
+    <name>math-plot</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>io</artifactId>
+            <artifactId>org.math.io</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
