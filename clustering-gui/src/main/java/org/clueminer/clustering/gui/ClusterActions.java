@@ -3,6 +3,11 @@ package org.clueminer.clustering.gui;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import static javax.swing.Action.LARGE_ICON_KEY;
+import static javax.swing.Action.LONG_DESCRIPTION;
+import static javax.swing.Action.NAME;
+import static javax.swing.Action.SHORT_DESCRIPTION;
+import static javax.swing.Action.SMALL_ICON;
 import org.clueminer.export.impl.ImageExporter;
 import org.netbeans.api.print.PrintManager;
 import org.openide.DialogDescriptor;
@@ -87,14 +92,15 @@ public final class ClusterActions {
             putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_" + name));
             putValue(SHORT_DESCRIPTION,
                     NbBundle.getMessage(ClusterActions.class, "TOOL_" + name));
-            System.out.println("org/clueminer/clustering/gui/" + name.toLowerCase() + "16.png");
+            System.out.println("org/clueminer/clustering/resources/" + name.toLowerCase() + "16.png");
             if (flag) {
-
+                Icon ico = ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", true);
+                System.out.println("ico: " + name + " = " + ico);
                 putValue(SMALL_ICON,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/" + name + "16.png", false));
+                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", true));
                 putValue(LONG_DESCRIPTION, name);
                 putValue(LARGE_ICON_KEY,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/" + name + "24.png", false));
+                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "24.png", true));
             }
         }
     }
@@ -160,7 +166,7 @@ public final class ClusterActions {
         }
     }
 
-    private static class ClusterPopup extends MainAction {
+    private static class ClusterPopup extends AbstractAction {
 
         private static final long serialVersionUID = 1633826646185767281L;
         private ClusterAnalysis clusteringFrame;
@@ -170,7 +176,11 @@ public final class ClusterActions {
         }
 
         private ClusterPopup(ClusterAnalysis clusteringFrame) {
-            super("Clustering", true);
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_Clustering"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(ClusterActions.class, "TOOL_Clustering"));
+            putValue(SMALL_ICON, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/clustering16.png", true));
+            putValue(LONG_DESCRIPTION, "clustering");
+            putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/clustering24.png", true));
             this.clusteringFrame = clusteringFrame;
         }
 
@@ -219,7 +229,7 @@ public final class ClusterActions {
         }
     }
 
-    private static class ExportImage extends MainAction {
+    private static class ExportImage extends AbstractAction {
 
         private static final long serialVersionUID = -661781520577850266L;
         private ClusterAnalysis clusteringFrame;
@@ -229,8 +239,12 @@ public final class ClusterActions {
         }
 
         private ExportImage(ClusterAnalysis clusteringFrame) {
-            super("ExportImage", true);
             this.clusteringFrame = clusteringFrame;
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_ExportImage"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(ClusterActions.class, "TOOL_ExportImage"));
+            putValue(SMALL_ICON, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/exportimage16.png", true));
+            putValue(LONG_DESCRIPTION, "Export Image");
+            putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/exportimage24.png", true));
         }
 
         @Override
@@ -239,7 +253,7 @@ public final class ClusterActions {
         }
     }
 
-    private static class PrintChart extends MainAction {
+    private static class PrintChart extends AbstractAction {
 
         private static final long serialVersionUID = -8912120693706179845L;
         private ClusterAnalysis clusteringFrame;
@@ -249,7 +263,11 @@ public final class ClusterActions {
         }
 
         private PrintChart(ClusterAnalysis clusteringFrame) {
-            super("Print", true);
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_Print"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(ClusterActions.class, "TOOL_Print"));
+            putValue(SMALL_ICON, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/print16.png", true));
+            putValue(LONG_DESCRIPTION, "Print");
+            putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/print24.png", true));
             this.clusteringFrame = clusteringFrame;
         }
 
@@ -259,9 +277,9 @@ public final class ClusterActions {
         }
     }
 
-    private static class ChartProps extends MainAction {
+    private static class ChartProps extends AbstractAction {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -2363806065135286271L;
         private ClusterAnalysis clusteringFrame;
 
         public static Action getAction(ClusterAnalysis clusteringFrame) {
@@ -269,7 +287,11 @@ public final class ClusterActions {
         }
 
         private ChartProps(ClusterAnalysis clusteringFrame) {
-            super("ClusteringProperties", true);
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_ClusteringProperties"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(ClusterActions.class, "TOOL_ClusteringProperties"));
+            putValue(SMALL_ICON, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/clusteringproperties16.png", true));
+            putValue(LONG_DESCRIPTION, "Clustering Properties");
+            putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/clusteringproperties24.png", true));
             this.clusteringFrame = clusteringFrame;
         }
 
@@ -339,7 +361,7 @@ public final class ClusterActions {
         JMenuItem menuItem;
 
         JMenu menu = new JMenu(NbBundle.getMessage(ClusterActions.class, "ACT_Charts"));
-        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/clustering/gui/chart16.png", false));
+        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/chart16.png", false));
 
         String current = clusteringFrame.getAlgorithm().getName();
 
