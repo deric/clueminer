@@ -249,12 +249,11 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
 
         if (cluster.firstElem > -1) {
             Dataset<Instance> selected;
+            //duplicate method should copy all attributes from original dataset
             selected = (Dataset<Instance>) data.getInstances().duplicate();
 
             if (selected != null) {
                 Dataset<? extends Instance> original = data.getInstances();
-                //copy attributes from source dataset
-                selected.setAttributes(original.getAttributes());
                 for (int i = cluster.firstElem; i <= cluster.lastElem; i++) {
                     Instance inst = original.instance(data.getRowIndex(i));
                     selected.add(inst);
