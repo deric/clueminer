@@ -47,7 +47,7 @@ public class SelectedWells extends JPanel {
             @Override
             public void mouseClicked(MouseEvent me) {
                 int id = grid.translatePosition(me.getX(), me.getY());
-                if (selected != null) {
+                if (selected != null && id >= 0) {
                     if (selected[id] == 1) {
                         selected[id] = 0;
                     } else {
