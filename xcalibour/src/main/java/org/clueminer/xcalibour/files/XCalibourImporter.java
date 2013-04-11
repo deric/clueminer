@@ -66,6 +66,10 @@ public class XCalibourImporter implements LongTask, Runnable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public File getFile() {
+        return file;
+    }
+
     @Override
     public void run() {
         System.out.println("importing data");
@@ -77,7 +81,7 @@ public class XCalibourImporter implements LongTask, Runnable {
         try {
             ncfile = NetcdfDataset.openFile(filename, null);
             //System.out.println("ncfile: " + ncfile);
-            
+
             //List<Variable> variables = ncfile.getVariables();
 
             Attribute attr = ncfile.findGlobalAttribute("number_of_scans");
@@ -118,7 +122,7 @@ public class XCalibourImporter implements LongTask, Runnable {
                 var = "scan_acquisition_time";
                 System.out.println("variable: " + var);
                 scan_time = ncfile.readSection(var);
-                
+
             } catch (InvalidRangeException ex) {
                 Exceptions.printStackTrace(ex);
             }
