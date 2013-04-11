@@ -15,9 +15,8 @@ public class RtcaFixture  extends AbstractFixture {
      * @return
      * @throws IOException
      */
-    public File rtcaTest() throws IOException {
-        String config = "scan_plate_data.plt";
-        return new File(localPath + "/RTCA/" + config);
+    public File rtcaTest() throws IOException {        
+        return resource("RTCA/scan_plate_data.plt");
     }
 
     /**
@@ -27,17 +26,14 @@ public class RtcaFixture  extends AbstractFixture {
      * @throws IOException
      */
     public File rtcaData() throws IOException {
-        String config = "shHT29_H+T.plt";
-        return new File(localPath + "/RTCA/" + config);
+        return resource("RTCA/shHT29_H+T.plt");
     }
 
     public File rtcaTextFile() throws IOException {
-        String config = "0424061749P1.rtca";
-        return new File(localPath + "/RTCA/" + config);
+        return resource("RTCA/0424061749P1.rtca");
     }
 
     public File sdfTest() throws IOException {
-        String config = "plate.sdf";
-        return new File(localPath + "/RTCA/" + config);
+        return resource("RTCA/plate.sdf");
     }
 }
