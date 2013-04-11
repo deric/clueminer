@@ -42,6 +42,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     public TimeseriesDataset(int capacity, TimePointAttribute[] tp) {
         super(capacity);
+        colorGenerator = new PaletteGenerator();
         setTimePoints(tp);
     }
 
