@@ -198,7 +198,12 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
      */
     @Override
     public double[] arrayCopy() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        double[] copy = new double[this.size()];
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] = data[i];
+            
+        }
+        return copy;
     }
 
     public int[] arrayCopyInt() {
