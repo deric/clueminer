@@ -26,9 +26,9 @@ public class IntegerDataRowTest {
     public static void setUpClass() {
         d1 = new int[]{424, 2155, 3014, 2982, 3502, 2891, 3948, 3778, 4091, 4068, 3736, 3915, 4125, 4090, 4087};
         d2 = new int[]{527, 2308, 2871, 3384, 3505, 2802, 4020, 4344, 4016, 4540, 4736, 4171, 4759, 4562, 4922};
-       
-        
-        t1 = new IntegerDataRow(15);        
+
+
+        t1 = new IntegerDataRow(15);
         t2 = new IntegerDataRow(d2);
     }
 
@@ -53,7 +53,7 @@ public class IntegerDataRowTest {
     public void testSet_intArr() {
         t1 = new IntegerDataRow(15);
         t1.set(d1);
-        
+
         t2 = new IntegerDataRow(d2);
     }
 
@@ -70,7 +70,7 @@ public class IntegerDataRowTest {
     @Test
     public void testPut_int() {
         t1.put(42);
-        assertEquals(42, t1.get(t1.size()-1), delta);
+        assertEquals(42, t1.get(t1.size() - 1), delta);
     }
 
     /**
@@ -151,7 +151,6 @@ public class IntegerDataRowTest {
     public void testIsEmpty() {
         assertFalse(t1.isEmpty());
     }
-    
 
     /**
      * Test of setCapacity method, of class IntegerDataRow.
@@ -200,6 +199,10 @@ public class IntegerDataRowTest {
      */
     @Test
     public void testArrayCopy() {
+        double[] arry = t1.arrayCopy();
+        for (int i = 0; i < arry.length; i++) {
+            assertEquals(d1[i], arry[i], delta);
+        }
     }
 
     /**
@@ -207,6 +210,10 @@ public class IntegerDataRowTest {
      */
     @Test
     public void testArrayCopyInt() {
+        int[] arry = t1.arrayCopyInt();
+        for (int i = 0; i < arry.length; i++) {
+            assertEquals(d1[i], arry[i]);
+        }
     }
 
     /**
