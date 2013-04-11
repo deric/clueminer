@@ -94,7 +94,9 @@
         <module>approximation-api</module>
         <module>approximation-impl</module>
         <module>molecule</module>
-    </modules>
+    <module>wellmap</module>
+    <module>hts-api</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>

@@ -122,6 +122,16 @@
             <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>hts-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>wellmap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
