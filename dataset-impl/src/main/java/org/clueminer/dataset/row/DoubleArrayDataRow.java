@@ -83,7 +83,7 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
     }
 
     public double get(int index) {
-        return get(index);
+        return data[index];
     }
 
     @Override
@@ -119,7 +119,7 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
         if (data == null) {
             return 0;
         }
-        return data.length;
+        return last;
     }
 
     @Override
