@@ -18,27 +18,31 @@ import org.openide.util.Exceptions;
  * @author Tomas Barton
  */
 public class FluorescenceImporter implements LongTask, Runnable {
-    
+
     private File file;
     private int timesCount = 0;
     private int workUnits = 0;
     private ProgressHandle ph;
     private FluorescenceDataset plate;
-    
+
     public FluorescenceImporter(File file) {
         this.file = file;
     }
-    
+
     @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    public void setProgressHandle(ProgressHandle ph) {
+        this.ph = ph;
+    }
+
     @Override
     public void run() {
         BufferedReader br = null;
@@ -46,10 +50,10 @@ public class FluorescenceImporter implements LongTask, Runnable {
             br = new BufferedReader(new FileReader(file));
             try {
                 StringBuilder sb = new StringBuilder();
-                
+
                 parseVersion(br);
                 parseData(br);
-                
+
                 String everything = sb.toString();
                 System.out.println(everything);
             } catch (IOException ex) {
@@ -64,15 +68,15 @@ public class FluorescenceImporter implements LongTask, Runnable {
             Exceptions.printStackTrace(ex);
         }
     }
-    
+
     public File getFile() {
         return file;
     }
-    
+
     public void setFile(File file) {
         this.file = file;
     }
-    
+
     private void parseVersion(BufferedReader br) throws IOException {
         String current = br.readLine();
         if (!current.equals("# Fluorescence version 1.0")) {
@@ -93,27 +97,25 @@ public class FluorescenceImporter implements LongTask, Runnable {
             throw new RuntimeException("Unexpected line: '" + current + "'");
         }
     }
-    
+
     private void parseData(BufferedReader br) throws IOException {
         String current = br.readLine();
         if (!current.equals("@data")) {
             throw new RuntimeException("Unexpected line: " + current);
         }
-        
-        current = br.readLine();
-        
-        FluorescenceInstance inst;        
+
+        current = br.readLine();        
+        FluorescenceInstance inst;
         String[] measurements;        
         while (!current.isEmpty()) {
             inst = new FluorescenceInstance(plate, timesCount);
             measurements = current.split(",");
-            
-            for (int i = 0; i < plate.getColumnsCount(); i++) {
-                inst.put(Integer.valueOf(measurements[i]));                
+            for (int i = 0; i < timesCount; i++) {
+                inst.put(Integer.valueOf(measurements[i]));
             }
             //last one is name
             inst.setName(measurements[measurements.length - 1]);
-            
+
             plate.add(inst);
             //update progress bar
             ph.progress(workUnits++);
