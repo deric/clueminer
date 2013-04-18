@@ -1,5 +1,40 @@
-# Fluorescence version 1.0
-# plate 1536 = 32x48 (15 times)
+% Fluorescence version 1.0
+% plate 1536 = 32x48 (15 times)
+% @meta
+% Plate=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+% Repeat=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+% Barcode=AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01,AP-01
+% Measured height=10.05,10.19,10.11,10.11,10.16,10.13,10.13,10.16,10.11,10.16,10.16,10.19,10.13,10.13,10.16
+% Chamber temperature at start=26.49,26.29,26.39,26.29,26.39,26.39,25.97,25.5,25.09,25.58,26.46,26.46,26.26,26.09,26.07
+% Chamber temperature at end=26.12,26.29,26.51,26.39,26.42,26.09,26.02,25.21,25.31,25.41,26.29,26.39,26.29,26,26
+% Humidity at start=28.6,27.2,27.2,27,27,23.7,24.5,26.9,26.7,26.2,25.8,26.4,27.5,27.4,27.2
+% Humidity at end=28.6,27.8,27.7,27.5,27.7,24,25,27.5,27.4,26.7,26.4,27,28.1,28,27.8
+% Ambient temperature at start=26.69,26.69,26.79,26.69,26.79,26.59,26.46,25.61,25.58,25.78,26.66,26.76,26.66,26.49,26.37
+% Ambient temperature at end=26.81,26.59,26.62,26.59,26.71,26.49,26.22,25.61,25.51,26,26.59,26.59,26.49,26.39,26.2
+% Group=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+% Label=FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1),FAM(1)
+% ScanX=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+% ScanY=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+% Measinfo=De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A
+% Kinetics=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+% Measurement date=11/20/2012 2:12:58 AM,11/20/2012 3:17:04 AM,11/20/2012 4:21:15 AM,11/20/2012 5:25:27 AM,11/20/2012 6:29:44 AM,11/20/2012 8:53:17 AM,11/20/2012 10:59:44 AM,11/20/2012 1:03:59 PM,11/20/2012 3:08:16 PM,11/20/2012 5:12:32 PM,11/20/2012 7:16:45 PM,11/20/2012 9:20:59 PM,11/20/2012 11:25:13 PM,11/21/2012 1:29:27 AM,11/21/2012 3:33:41 AM
+@relation AP-01_2012112.arff
+@attribute 0 integer % 2012-11-20T02:10:18+00:00
+@attribute 3846 integer % 2012-11-20T03:14:24+00:00
+@attribute 7697 integer % 2012-11-20T04:18:35+00:00
+@attribute 11549 integer % 2012-11-20T05:22:47+00:00
+@attribute 15407 integer % 2012-11-20T06:27:05+00:00
+@attribute 24019 integer % 2012-11-20T08:50:37+00:00
+@attribute 31606 integer % 2012-11-20T10:57:04+00:00
+@attribute 39061 integer % 2012-11-20T13:01:19+00:00
+@attribute 46518 integer % 2012-11-20T15:05:36+00:00
+@attribute 53974 integer % 2012-11-20T17:09:52+00:00
+@attribute 61427 integer % 2012-11-20T19:14:05+00:00
+@attribute 68881 integer % 2012-11-20T21:18:19+00:00
+@attribute 76335 integer % 2012-11-20T23:22:33+00:00
+@attribute 83789 integer % 2012-11-21T01:26:47+00:00
+@attribute 91243 integer % 2012-11-21T03:31:01+00:00
+@attribute name string
 @data
 424,2155,3014,2982,3502,2891,3948,3778,4091,4068,3736,3915,4125,4090,4087,A1
 527,2308,2871,3384,3505,2802,4020,4344,4016,4540,4736,4171,4759,4562,4922,A2
@@ -1537,3 +1572,4 @@
 555,1491,2773,3475,3550,4639,5451,5313,5970,5717,6656,6390,6538,6121,6337,AF46
 120,13,263,0,138,103,203,105,129,289,250,271,458,281,436,AF47
 151,158,333,161,0,74,169,147,188,363,361,267,458,392,322,AF48
+

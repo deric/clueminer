@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
@@ -52,6 +53,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
                 StringBuilder sb = new StringBuilder();
 
                 parseVersion(br);
+                parseAttributes(br);
                 parseData(br);
 
                 String everything = sb.toString();
@@ -79,11 +81,11 @@ public class FluorescenceImporter implements LongTask, Runnable {
 
     private void parseVersion(BufferedReader br) throws IOException {
         String current = br.readLine();
-        if (!current.equals("# Fluorescence version 1.0")) {
+        if (!current.equals("% Fluorescence version 1.0")) {
             throw new RuntimeException("Version '" + current + "' is not supported");
         }
         current = br.readLine();
-        Pattern p = Pattern.compile("# plate (\\d+) = (\\d+)x(\\d+) \\((\\d+) times\\)");
+        Pattern p = Pattern.compile("% plate (\\d+) = (\\d+)x(\\d+) \\((\\d+) times\\)");
         Matcher m = p.matcher(current);
         if (m.matches()) {
             //int plateSize = Integer.valueOf(m.group(1));
@@ -104,9 +106,9 @@ public class FluorescenceImporter implements LongTask, Runnable {
             throw new RuntimeException("Unexpected line: " + current);
         }
 
-        current = br.readLine();        
+        current = br.readLine();
         FluorescenceInstance inst;
-        String[] measurements;        
+        String[] measurements;
         while (!current.isEmpty()) {
             inst = new FluorescenceInstance(plate, timesCount);
             measurements = current.split(",");
@@ -121,5 +123,35 @@ public class FluorescenceImporter implements LongTask, Runnable {
             ph.progress(workUnits++);
             current = br.readLine();
         }
+    }
+
+    private void parseAttributes(BufferedReader br) throws IOException {
+        String current = br.readLine();
+        Pattern p = Pattern.compile("@relation (.*)");
+        Matcher m;
+        m = p.matcher(current);
+        while (!m.matches()) {
+            current = br.readLine();
+            m = p.matcher(current);
+        }
+        Pattern attr = Pattern.compile("@attribute (\\d+) (\\w+)(.*)");
+        current = br.readLine();
+        m = attr.matcher(current);
+        
+        TimePointAttribute[] timePoints = new TimePointAttribute[timesCount];
+        int i = 0;
+        long time;
+        while (m.matches()) {
+            current = br.readLine();                        
+            time = Integer.valueOf(m.group(1));
+            timePoints[i] = new TimePointAttribute(i++, time);
+            m = attr.matcher(current);
+        }
+        plate.setTimePoints(timePoints);
+
+    }
+    
+    public FluorescenceDataset getDataset(){
+        return plate;
     }
 }
