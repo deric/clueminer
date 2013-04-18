@@ -132,6 +132,11 @@
             <artifactId>wellmap</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>hts-fluorescence</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

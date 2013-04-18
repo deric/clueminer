@@ -316,7 +316,7 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
     @Override
     public String toString(String separator) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < size(); i++) {
             result.append(i == 0 ? "" : ",").append(data[i]);
         }
         return result.toString();
