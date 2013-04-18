@@ -14,9 +14,9 @@ import org.clueminer.math.Vector;
 public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector<Integer>, Instance {
 
     private static final long serialVersionUID = -635455125197219190L;
-    private int[] data;
-    private int last = 0;
-    private Iterator<Integer> it;
+    protected int[] data;
+    protected int last = 0;
+    protected Iterator<Integer> it;
 
     /**
      * @TODO: Array is passed as a reference, when working with data reference it
