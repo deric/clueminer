@@ -79,6 +79,9 @@ public class FluorescenceImporterTest {
         assertEquals("A1", inst.getName());
         assertEquals(424, inst.value(0), delta);
         assertEquals(4087, inst.value(dataset.attributeCount() - 1), delta);
+        assertEquals(15, inst.size());
+        System.out.println("size: "+inst.size());
+        System.out.println("a1: "+inst.toString());
 
     }
 

@@ -33,7 +33,7 @@ import org.clueminer.openfile.OpenFileImpl;
  *
  * @author Jaroslav Tulach, Jesse Glick, Marian Petras, David Konecny
  */
-@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 100)
+@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 9999)
 public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
     private final Logger log = Logger.getLogger(getClass().getName());
