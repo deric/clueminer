@@ -1,5 +1,6 @@
 package org.clueminer.hts.fluorescence;
 
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
@@ -17,6 +18,8 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
     private int row;
     private int col;
     private Timeseries<? extends ContinuousInstance> parent;
+    private int min = Integer.MAX_VALUE;
+    private int max = Integer.MIN_VALUE;
 
     public FluorescenceInstance(int size) {
         super(size);
@@ -39,12 +42,51 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
 
     @Override
     public double getMin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return min;
     }
 
     @Override
     public double getMax() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return max;
+    }
+
+    @Override
+    public void set(int index, Number value) {
+        checkMinMax(value.intValue());
+        super.set(index, value);
+    }
+
+    @Override
+    public void put(int index, double value) {
+        checkMinMax((int) value);
+        super.put(index, value);
+    }
+
+    private void checkMinMax(int value) {
+        if (value < min) {
+            min = value;
+        }
+        if (value > max) {
+            max = value;
+        }
+    }
+
+    @Override
+    public int put(int value) {
+        checkMinMax(value);
+        return super.put(value);
+    }
+
+    @Override
+    protected void setValue(int index, double value, double defaultValue) {
+        checkMinMax((int) value);
+        super.setValue(index, value, defaultValue);
+    }
+
+    @Override
+    public int put(double value) {
+        checkMinMax((int) value);
+        return super.put(value);
     }
 
     @Override
@@ -59,7 +101,10 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
 
     @Override
     public long getStartTime() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(parent.attributeCount() == 0){
+            throw new RuntimeException("no attributes in dataset!");
+        }
+        return ((TimePointAttribute) parent.getAttribute(0)).getTimestamp();
     }
 
     @Override
@@ -69,12 +114,12 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
 
     @Override
     public void setParent(Timeseries<? extends ContinuousInstance> parent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.parent = parent;
     }
 
     @Override
     public Timeseries<? extends ContinuousInstance> getParent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return parent;
     }
 
     @Override
