@@ -2,38 +2,56 @@ package org.clueminer.infopanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import org.clueminer.events.ProjectEvent;
-import org.clueminer.events.ProjectListener;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
+import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.clueminer.infopanel//InfoPanel//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "InfoPanelTopComponent",
-iconBase = "org/clueminer/infopanel/info16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/clueminer/infopanel/info16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.infopanel.InfoPanelTopComponent")
 @ActionReference(path = "Menu/Window" /*
- * , position = 333
- */)
+         * , position = 333
+         */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_InfoPanelAction",
-preferredID = "InfoPanelTopComponent")
+        preferredID = "InfoPanelTopComponent")
 @Messages({
     "CTL_InfoPanelAction=InfoPanel",
     "CTL_InfoPanelTopComponent=InfoPanel Window",
     "HINT_InfoPanelTopComponent=This is a InfoPanel window"
 })
-public final class InfoPanelTopComponent extends TopComponent {
+public final class InfoPanelTopComponent extends TopComponent implements LookupListener {
 
     private static final long serialVersionUID = 2614692318647805746L;
     private InfoTable table;
+    private Lookup.Result<Dataset> result = null;
+    private Lookup.Result<HtsPlate> htsResult = null;
+    protected static Project project;
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public InfoPanelTopComponent() {
         initComponents();
@@ -58,12 +76,72 @@ public final class InfoPanelTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+            @Override
+            public void initialize(Workspace workspace) {
+                logger.log(Level.INFO, "wellmap listener initialized");
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+                System.out.println("workspace: " + workspace.toString());
+                logger.log(Level.INFO, "wellmap selected");
+                System.out.println("workspace selected: got result (plate)");
+                htsResult = workspace.getLookup().lookupResult(HtsPlate.class);
+                System.out.println("lookup res= " + htsResult.toString());
+
+                HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
+                System.out.println("got plate, size: " + plt);
+                //  result.addLookupListener(parent);
+
+
+                Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
+                if (dataset != null) {
+                    System.out.println("well map");
+                    System.out.println("dataset size = " + dataset.size());
+                    for (Instance inst : dataset) {
+                        System.out.println("inst: " + inst.toString());
+                    }
+                }
+
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+                if (result != null) {
+                    //   result.removeLookupListener(parent);
+                }
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+            }
+
+            @Override
+            public void disable() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void projectActivated(Project proj) {
+                project = proj;
+                projectChanged();
+            }
+        });
+
+
+
+
+        result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
+        result.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        result.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -78,4 +156,57 @@ public final class InfoPanelTopComponent extends TopComponent {
         // TODO read your settings according to their version
     }
 
+    private void updateDataset(Dataset<Instance> d) {
+        int attrCnt = 2;
+        String[][] data = new String[d.size()][attrCnt];
+        int i = 0;
+        for (Instance inst : d) {
+            data[i++] = new String[]{inst.getName(), inst.getId()};
+        }
+        table.clear();
+        table.setData(data);
+    }
+
+    private void updatePlate(HtsPlate<HtsInstance> d) {
+        int attrCnt = 3;
+        String[][] data = new String[d.size()][attrCnt];
+        int i = 0;
+        for (HtsInstance inst : d) {
+            data[i++] = new String[]{inst.getName(), String.valueOf(inst.getRow()), String.valueOf(inst.getColumn())};
+        }
+        table.clear();
+        table.setData(data);
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+
+        if (result != null) {
+            Collection<? extends Dataset> allDatasets = result.allInstances();
+            for (Dataset<Instance> d : allDatasets) {
+                updateDataset(d);
+            }
+        }
+
+        if (htsResult != null) {
+            System.out.println("got HTS Plate");
+            Collection<? extends HtsPlate> allPlates = htsResult.allInstances();
+            for (HtsPlate<HtsInstance> d : allPlates) {
+                updatePlate(d);
+            }
+        }
+
+    }
+
+    protected void projectChanged() {
+        final HtsPlate plt = project.getLookup().lookup(HtsPlate.class);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                updateDataset(plt);
+            }
+        });
+
+    }
 }
