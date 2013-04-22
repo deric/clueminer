@@ -71,7 +71,7 @@
         <module>dataset-impl</module>
         <module>math-impl</module>
         <module>gui-utils</module>
-        <module>plot</module>
+        <module>math-plot</module>
         <module>math-io</module>
         <module>clustering-api</module>
         <module>xcalibour</module>
@@ -94,11 +94,12 @@
         <module>approximation-api</module>
         <module>approximation-impl</module>
         <module>molecule</module>
-    <module>wellmap</module>
-    <module>hts-api</module>
-    <module>hts-fluorescence</module>
-    <module>explorer</module>
-  </modules>
+        <module>wellmap</module>
+        <module>hts-api</module>
+        <module>hts-fluorescence</module>
+        <module>explorer</module>
+        <module>infopanel</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
