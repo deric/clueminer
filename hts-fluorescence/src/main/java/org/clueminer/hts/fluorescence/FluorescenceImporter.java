@@ -109,6 +109,8 @@ public class FluorescenceImporter implements LongTask, Runnable {
         current = br.readLine();
         FluorescenceInstance inst;
         String[] measurements;
+        int j = 0;
+        int row, col;
         while (!current.isEmpty()) {
             inst = new FluorescenceInstance(plate, timesCount);
             measurements = current.split(",");
@@ -117,12 +119,23 @@ public class FluorescenceImporter implements LongTask, Runnable {
             }
             //last one is name
             inst.setName(measurements[measurements.length - 1]);
-
+            inst.setId(String.valueOf(j));            
+            //id of row
+            row = j / plate.getColumnsCount();
+            inst.setRow(row);
+            col = j - (row * plate.getColumnsCount());
+            inst.setColumn(col);
             plate.add(inst);
             //update progress bar
             ph.progress(workUnits++);
             current = br.readLine();
+            j++;
         }
+    }
+
+    public int translatePosition(int ord, int col, int colCnt) throws IOException {
+        int res = ord * colCnt + col - 1;
+        return res;
     }
 
     private void parseAttributes(BufferedReader br) throws IOException {

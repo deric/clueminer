@@ -17,8 +17,6 @@ package au.com.bytecode.opencsv;
  */
 
 import java.io.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import org.clueminer.utils.DatasetWriter;
 
@@ -74,7 +72,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      */
     public static final String DEFAULT_LINE_END = "\n";
 
-    private ResultSetHelper resultService = new ResultSetHelperService();
+    //private ResultSetHelper resultService = new ResultSetHelperService();
 
     /**
      * Constructs CSVWriter using a comma for the separator.
@@ -180,11 +178,11 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
         }
     }
 
-    protected void writeColumnNames(ResultSet rs)
+  /*  protected void writeColumnNames(ResultSet rs)
             throws SQLException {
 
         writeNext(resultService.getColumnNames(rs));
-    }
+    }*/
 
     /**
      * Writes the entire ResultSet to a CSV file.
@@ -196,9 +194,9 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * @throws java.io.IOException   thrown by getColumnValue
      * @throws java.sql.SQLException thrown by getColumnValue
      */
-    public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames) throws SQLException, IOException {
+ /*   public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames) throws SQLException, IOException {
         writeAll(rs, includeColumnNames, false);
-    }
+    }*/
 
     /**
      * Writes the entire ResultSet to a CSV file.
@@ -208,7 +206,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * @throws java.io.IOException   thrown by getColumnValue
      * @throws java.sql.SQLException thrown by getColumnValue
      */
-    public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames, boolean trim) throws SQLException, IOException {
+ /*   public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames, boolean trim) throws SQLException, IOException {
 
 
         if (includeColumnNames) {
@@ -218,7 +216,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
         while (rs.next()) {
             writeNext(resultService.getColumnValues(rs, trim));
         }
-    }
+    }*/
 
     /**
      * Writes the next line to the file.
@@ -325,9 +323,9 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
         return pw.checkError();
     }
 
-    public void setResultService(ResultSetHelper resultService) {
+  /*  public void setResultService(ResultSetHelper resultService) {
         this.resultService = resultService;
-    }
+    }*/
 
     public void flushQuietly() {
         try {

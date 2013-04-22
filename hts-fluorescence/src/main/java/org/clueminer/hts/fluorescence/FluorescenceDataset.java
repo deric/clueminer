@@ -1,9 +1,11 @@
 package org.clueminer.hts.fluorescence;
 
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.hts.api.HtsPlate;
+import org.clueminer.utils.DatasetWriter;
 
 /**
  *
@@ -34,5 +36,27 @@ public class FluorescenceDataset extends TimeseriesDataset<FluorescenceInstance>
     @Override
     public int getColumnsCount() {
         return cols;
+    }
+
+    @Override
+    public FluorescenceDataset duplicate() {
+        FluorescenceDataset copy = new FluorescenceDataset(this.size());
+        copy.timePoints = this.timePoints;
+        return copy;
+    }
+
+    public void toCsv(DatasetWriter writer) {
+        String[] header = new String[attributeCount() + 2];
+        header[0] = "Name";
+        header[1] = "ID";
+        int i = 2;
+        for (TimePointAttribute ta : getTimePoints()) {
+            header[i++] = String.valueOf(ta.getTimestamp());
+        }
+        writer.writeNext(header);
+
+        for (FluorescenceInstance inst : this) {
+            writer.writeNext(inst.toArray());
+        }
     }
 }
