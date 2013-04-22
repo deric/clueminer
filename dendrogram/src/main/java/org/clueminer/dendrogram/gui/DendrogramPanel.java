@@ -142,7 +142,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 0.0;
         c.weighty = 0.0;
-        c.insets = new java.awt.Insets(0, 200, 0, 0);
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
         add(heatmap, c);
