@@ -2,14 +2,11 @@ package org.clueminer.infopanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.io.IOException;
 import org.clueminer.events.ProjectEvent;
 import org.clueminer.events.ProjectListener;
-import org.clueminer.rtca.Plate;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -33,7 +30,7 @@ preferredID = "InfoPanelTopComponent")
     "CTL_InfoPanelTopComponent=InfoPanel Window",
     "HINT_InfoPanelTopComponent=This is a InfoPanel window"
 })
-public final class InfoPanelTopComponent extends TopComponent implements ProjectListener {
+public final class InfoPanelTopComponent extends TopComponent {
 
     private static final long serialVersionUID = 2614692318647805746L;
     private InfoTable table;
@@ -81,21 +78,4 @@ public final class InfoPanelTopComponent extends TopComponent implements Project
         // TODO read your settings according to their version
     }
 
-    @Override
-    public void projectClosed() {
-        System.out.println("info panel: project closed");
-        table.clear();
-    }
-    
-    
-    @Override
-    public void projectOpened(ProjectEvent evt) {
-      /*  IChartData cd = ((IProjectFrame) evt.getSource()).getChartData();
-        Plate plate = (Plate) cd.getVisible();
-        try {
-            table.setData(plate.getProperties());
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }*/
-    }
 }
