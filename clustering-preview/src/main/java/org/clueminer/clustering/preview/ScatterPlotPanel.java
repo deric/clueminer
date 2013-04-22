@@ -1,4 +1,4 @@
-package org.clueminer.clusterpreview;
+package org.clueminer.clustering.preview;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;

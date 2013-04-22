@@ -1,4 +1,4 @@
-package org.clueminer.evaluators;
+package org.clueminer.clustering.evaluators;
 
 import java.awt.BorderLayout;
 import java.util.Iterator;

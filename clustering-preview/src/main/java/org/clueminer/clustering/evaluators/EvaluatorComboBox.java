@@ -1,4 +1,4 @@
-package org.clueminer.evaluators;
+package org.clueminer.clustering.evaluators;
 
 import java.util.List;
 import javax.swing.AbstractListModel;
