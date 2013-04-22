@@ -102,7 +102,7 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
 
     @Override
     public long getStartTime() {
-        if(parent.attributeCount() == 0){
+        if (parent.attributeCount() == 0) {
             throw new RuntimeException("no attributes in dataset!");
         }
         return ((TimePointAttribute) parent.getAttribute(0)).getTimestamp();
@@ -133,16 +133,35 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
         return col;
     }
 
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public void setColumn(int col) {
+        this.col = col;
+    }
+
     @Override
     public int compareTo(Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
-    public Plotter getPlotter(){
+    public Plotter getPlotter() {
         FluorescencePlot plot = new FluorescencePlot();
         // add a line plot to the PlotPanel
         plot.addLinePlot(getName(), parent.getTimePointsArray(), this.arrayCopy());
         return plot;
+    }
+
+    public String[] toArray() {
+        String[] res = new String[size() + 2];
+        res[0] = getName();
+        res[1] = getId();
+        for (int i = 0; i < res.length; i++) {
+            res[i + 2] = String.valueOf(intValue(i));
+
+        }
+        return res;
     }
 }
