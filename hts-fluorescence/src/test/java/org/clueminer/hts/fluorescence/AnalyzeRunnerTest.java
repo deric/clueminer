@@ -67,8 +67,8 @@ public class AnalyzeRunnerTest {
         Dataset<Instance> output = new SampleDataset<Instance>();
         output.setParent((Dataset<Instance>) plate);
         ProgressHandle ph = ProgressHandleFactory.createHandle("Analyzing dataset");
-        AnalyzeRunner instance = new AnalyzeRunner((Timeseries<ContinuousInstance>) plate, output, ph);
-        instance.run();
+     //   AnalyzeRunner instance = new AnalyzeRunner((Timeseries<ContinuousInstance>) plate, output, ph);
+     //   instance.run();
 
     }
 

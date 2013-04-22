@@ -129,8 +129,8 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                     System.out.println("workspace is null!!!!");
                 }
 
-                DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
-                preprocess.start();
+           //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
+           //     preprocess.start();
             }
         });
     }
