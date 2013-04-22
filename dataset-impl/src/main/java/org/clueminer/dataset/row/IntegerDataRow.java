@@ -19,10 +19,10 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
     protected Iterator<Integer> it;
 
     /**
-     * @TODO: Array is passed as a reference, when working with data reference it
-     * might cause unexpected results
-     * 
-     * @param data 
+     * @TODO: Array is passed as a reference, when working with data reference
+     * it might cause unexpected results
+     *
+     * @param data
      */
     public IntegerDataRow(int[] data) {
         super(null);
@@ -92,6 +92,9 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
     @Override
     public void put(int index, double value) {
         data[index] = (int) value;
+        if (index >= last) {
+            last = index + 1;
+        }
     }
 
     @Override
@@ -201,7 +204,7 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
         double[] copy = new double[this.size()];
         for (int i = 0; i < copy.length; i++) {
             copy[i] = data[i];
-            
+
         }
         return copy;
     }
