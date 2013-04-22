@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import org.math.plot.*;
 import org.math.plot.canvas.*;
+import org.openide.util.ImageUtilities;
 
 /**
  * BSD License
@@ -56,11 +57,12 @@ public class PlotToolBar extends JToolBar {
 
         buttonGroup = new ButtonGroup();
 
-        buttonCenter = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/center.png")));
+        
+        buttonCenter = new JToggleButton(ImageUtilities.loadImageIcon("org/math/plot/icons/center.png", false));
         buttonCenter.setToolTipText("Center axes");
         buttonCenter.setSelected(plotCanvas.ActionMode == PlotCanvas.TRANSLATION);
 
-        buttonZoom = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/zoom.png")));
+        buttonZoom = new JToggleButton(ImageUtilities.loadImageIcon("org/math/plot/icons/zoom.png", false));
         buttonZoom.setToolTipText("Zoom");
         buttonZoom.setSelected(plotCanvas.ActionMode == PlotCanvas.ZOOM);
 
@@ -70,16 +72,16 @@ public class PlotToolBar extends JToolBar {
         //buttonViewCoords = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/position.png")));
         //buttonViewCoords.setToolTipText("Highlight coordinates / Highlight plot");
 
-        buttonSetScales = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/scale.png")));
+        buttonSetScales = new JButton(ImageUtilities.loadImageIcon("org/math/plot/icons/scale.png", false));
         buttonSetScales.setToolTipText("Set scales");
 
-        buttonDatas = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/data.png")));
+        buttonDatas = new JButton(ImageUtilities.loadImageIcon("org/math/plot/icons/data.png", false));
         buttonDatas.setToolTipText("Get datas");
 
-        buttonSavePNGFile = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/topngfile.png")));
+        buttonSavePNGFile = new JButton(ImageUtilities.loadImageIcon("org/math/plot/icons/topngfile.png", false));
         buttonSavePNGFile.setToolTipText("Save graphics in a .PNG File");
 
-        buttonReset = new JButton(new ImageIcon(PlotPanel.class.getResource("icons/back.png")));
+        buttonReset = new JButton(ImageUtilities.loadImageIcon("org/math/plot/icons/back.png", false));
         buttonReset.setToolTipText("Reset zoom & axes");
 
         /*buttonEdit.addActionListener(new ActionListener() {
@@ -161,7 +163,7 @@ public class PlotToolBar extends JToolBar {
         // allow mixed (2D/3D) plots managed by one toolbar
         if (plotCanvas instanceof Plot3DCanvas) {
             if (buttonRotate == null) {
-                buttonRotate = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/rotation.png")));
+                buttonRotate = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("org/math/plot/icons/rotation.png")));
                 buttonRotate.setToolTipText("Rotate axes");
 
                 buttonRotate.addActionListener(new ActionListener() {
