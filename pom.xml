@@ -97,6 +97,7 @@
     <module>wellmap</module>
     <module>hts-api</module>
     <module>hts-fluorescence</module>
+    <module>explorer</module>
   </modules>
 
     <properties>
