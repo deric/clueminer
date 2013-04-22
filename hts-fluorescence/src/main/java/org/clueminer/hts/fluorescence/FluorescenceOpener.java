@@ -196,8 +196,8 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         Instance control1, control2;
         FluorescenceDataset normalize = (FluorescenceDataset) plate.duplicate();
         // time point for positive control
-        int positiveTimepoint = 10;
-        for (int i = 0; i < plate.getRowsCount(); i += 4) {
+        int positiveTimepoint = 9;
+        for (int i = 0; i < plate.getRowsCount() - 4; i += 4) {
             try {
 
                 int pos;
@@ -208,7 +208,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 posCtrl = 0.0;
                 for (int j = 0; j < 4; j++) {
                     pos = i + j;
-                    control2 = plate.instance(translatePosition(pos, 46, colCnt));
+                    control2 = plate.instance(translatePosition(pos, 45, colCnt));
                     posCtrl += control2.value(positiveTimepoint);
 
                 }
@@ -218,7 +218,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                     sum = 0.0;
                     for (int j = 0; j < 4; j++) {
                         pos = i + j;
-                        control1 = plate.instance(translatePosition(pos, 45, colCnt));
+                        control1 = plate.instance(translatePosition(pos, 44, colCnt));
                         //  System.out.println("control: " + control1.getFullName() + " - " + control1.toString());
                         sum += control1.value(k);
 
