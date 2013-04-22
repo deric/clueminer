@@ -74,7 +74,7 @@ public class XCalibourImporterTest {
         ProgressHandle ph = ProgressHandleFactory.createHandle("Importing dataset");
         XCalibourImporter importer = null;
         try {
-            importer = new XCalibourImporter(tf.testData2());
+            importer = new XCalibourImporter(tf.testData());
             importer.setProgressHandle(ph);
             importer.run();
 
