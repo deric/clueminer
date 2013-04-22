@@ -3,6 +3,7 @@ package org.clueminer.hts.fluorescence;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.hts.api.HtsInstance;
@@ -135,5 +136,13 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
     @Override
     public int compareTo(Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Plotter getPlotter(){
+        FluorescencePlot plot = new FluorescencePlot();
+        // add a line plot to the PlotPanel
+        plot.addLinePlot(getName(), parent.getTimePointsArray(), this.arrayCopy());
+        return plot;
     }
 }

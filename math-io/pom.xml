@@ -7,8 +7,8 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-    <groupId>org.math</groupId>
-    <artifactId>org.math.io</artifactId>
+    <groupId>org.clueminer</groupId>
+    <artifactId>math-io</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 

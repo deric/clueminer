@@ -152,6 +152,11 @@
             <artifactId>org-openide-windows</artifactId>
             <version>RELEASE73</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>math-plot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

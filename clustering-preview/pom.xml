@@ -69,18 +69,7 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>RELEASE73</version>
-        </dependency>
-        <dependency>
-            <groupId>org.math</groupId>
-            <artifactId>plot</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>io</artifactId>
-                    <groupId>org.math</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        </dependency>      
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
@@ -89,6 +78,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>math-plot</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
