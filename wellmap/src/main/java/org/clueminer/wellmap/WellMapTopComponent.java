@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 //import org.clueminer.clustering.api.Clustering;
 //import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
@@ -33,17 +34,17 @@ import org.openide.windows.WindowManager;
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.clueminer.wellmap//WellMap//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "WellMapTopComponent",
-iconBase = "org/clueminer/wellmap/well16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/clueminer/wellmap/well16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.wellmap.WellMapTopComponent")
 @ActionReference(path = "Menu/Window" /*
- * , position = 333
- */)
+         * , position = 333
+         */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_WellMapAction",
-preferredID = "WellMapTopComponent")
+        preferredID = "WellMapTopComponent")
 @Messages({
     "CTL_WellMapAction=WellMap",
     "CTL_WellMapTopComponent=Well Map",
@@ -106,6 +107,17 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
                 HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
                 System.out.println("got plate, size: " + plt);
                 //  result.addLookupListener(parent);
+
+
+                Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
+                if (dataset != null) {
+                    System.out.println("well map");
+                    System.out.println("dataset size = " + dataset.size());
+                    for(Instance inst: dataset){
+                        System.out.println("inst: "+inst.toString());
+                    }
+                }
+
             }
 
             @Override
@@ -132,10 +144,10 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         });
 
 
-       /* selection = Utilities.actionsGlobalContext().lookupResult(SampleDataset.class);
+        /* selection = Utilities.actionsGlobalContext().lookupResult(SampleDataset.class);
 
-        selection.addLookupListener(this);
-        resultChanged(new LookupEvent(selection));*/
+         selection.addLookupListener(this);
+         resultChanged(new LookupEvent(selection));*/
     }
 
     @Override
@@ -181,9 +193,9 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
             }
         }
 
-      /*  if (selection != null) {
-            System.out.println("selection " + selection.toString());
-        }*/
+        /*  if (selection != null) {
+         System.out.println("selection " + selection.toString());
+         }*/
     }
 
     protected void projectChanged() {
