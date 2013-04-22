@@ -12,9 +12,9 @@ Prerequisites:
    * java (6 or newer)
    * maven
 
-   
-      git clone git://github.com/deric/clueminer.git
-      cd clueminer
-      git submodule init
-      git submodule update
-      mvn install
+
+            git clone git://github.com/deric/clueminer.git
+            cd clueminer
+            git submodule init
+            git submodule update
+            mvn install
