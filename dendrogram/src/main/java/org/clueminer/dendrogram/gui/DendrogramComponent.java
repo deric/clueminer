@@ -220,7 +220,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         scores.append(linkage).append("\t");
 
         evaluators.append("Number of clusters").append("\t");
-        scores.append(rowsResult.getNumberOfClusters()).append("\t");
+        scores.append(rowsResult.getNumClusters()).append("\t");
 
         evaluators.append("Cutoff").append("\t");
         scores.append(cutoffAlg).append("\t");

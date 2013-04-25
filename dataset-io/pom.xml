@@ -56,6 +56,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>au.com.bytecode.opencsv</publicPackage>
+                        <publicPackage>au.com.bytecode.opencsv.bean</publicPackage>
+                        <publicPackage>be.abeel.io</publicPackage>
+                        <publicPackage>be.abeel.net</publicPackage>
                         <publicPackage>org.clueminer.api</publicPackage>
                         <publicPackage>org.clueminer.io</publicPackage>
                         <publicPackage>org.clueminer.io.database.drivers</publicPackage>

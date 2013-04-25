@@ -26,6 +26,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private CutoffStrategy cutoff = new NaiveCutoff();
     private int[] itemsMapping;
+    private Matrix inputData;
     /**
      * original dataset
      */
@@ -74,7 +75,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     }
 
     @Override
-    public int getNumberOfClusters() {
+    public int getNumClusters() {
         return treeData.getNumberOfClusters();
     }
 
@@ -241,5 +242,30 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     @Override
     public void setMappedIndex(int pos, int idx) {
         itemsMapping[pos] = idx;
+    }
+
+    @Override
+    public int[] getIntAssignments() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setIntAssignments(int[] assignments) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setNumClusters(int num) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Matrix getInputData() {
+        return inputData;
+    }
+
+    @Override
+    public void setInputData(Matrix inputData) {
+        this.inputData = inputData;
     }
 }

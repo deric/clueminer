@@ -68,10 +68,6 @@ public class HCL implements ClusteringAlgorithm {
         return hierarchy(input, dataset, map);
     }
 
-    @Override
-    public Assignments cluster(Matrix matrix, Preferences props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters map) {
@@ -878,5 +874,10 @@ public class HCL implements ClusteringAlgorithm {
                 }
             }
         }
+    }
+
+    @Override
+    public HierarchicalResult cluster(Matrix matrix, Preferences props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
