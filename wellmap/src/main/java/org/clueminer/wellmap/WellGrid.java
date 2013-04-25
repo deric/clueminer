@@ -30,6 +30,7 @@ public class WellGrid extends JPanel {
     private static int charA = 65;
     private boolean fitToArea = true;
     private int maxId;
+    private static int alphCnt = 26;
     /**
      * diameter of circle
      */
@@ -177,7 +178,7 @@ public class WellGrid extends JPanel {
         //draw captions
         String caption;
         Font font = g.getFont();
-        int fontSize = (int) (r * 0.45);
+        int fontSize = (int) (r * 0.52);
         g.setFont(new Font(font.getName(), font.getStyle(), fontSize));
         FontMetrics hfm = g.getFontMetrics();
 
@@ -193,11 +194,9 @@ public class WellGrid extends JPanel {
             x += r + vgap;
         }
 
-        char sym;
         y = legendHspace;
         for (int i = 0; i < rows; i++) {
-            sym = (char) (charA + i);
-            caption = String.valueOf(sym);
+            caption = numberToRowLabel(i);
             textWidth = hfm.stringWidth(caption);
 
             g.drawString(caption, (legendVspace - textWidth) / 2, y + rHalf + (fontSize / 3)); //no idea why to divide by 3, but it's better than 2 :)
@@ -205,5 +204,28 @@ public class WellGrid extends JPanel {
 
         }
         g.dispose();
+    }
+
+    /**
+     * Converts integer to alphabetic letters (0 => A, 1 => B, ... , 26 => AA, ...)
+     * @param row
+     * @return 
+     */
+    public String numberToRowLabel(int row) {
+        char sym;
+        // number of symbols in alphabet 
+
+        if (row < alphCnt) {
+            sym = (char) (charA + row);
+            return String.valueOf(sym);
+        }
+        int first = row / alphCnt;
+        int rest = row - (first * alphCnt);
+        sym = (char) (charA + first - 1);
+        StringBuilder res = new StringBuilder();
+        res.append(sym);
+        sym = (char) (charA + rest);
+        res.append(sym);
+        return res.toString();
     }
 }
