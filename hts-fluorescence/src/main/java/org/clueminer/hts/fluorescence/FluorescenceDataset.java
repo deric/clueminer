@@ -41,6 +41,7 @@ public class FluorescenceDataset extends TimeseriesDataset<FluorescenceInstance>
     @Override
     public FluorescenceDataset duplicate() {
         FluorescenceDataset copy = new FluorescenceDataset(this.size());
+        copy.setName(this.getName());
         copy.timePoints = this.timePoints;
         return copy;
     }

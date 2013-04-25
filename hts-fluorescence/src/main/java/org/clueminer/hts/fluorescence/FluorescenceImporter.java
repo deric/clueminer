@@ -30,6 +30,11 @@ public class FluorescenceImporter implements LongTask, Runnable {
         this.file = file;
     }
 
+    public FluorescenceImporter(File file, ProgressHandle ph) {
+        this.file = file;
+        this.ph = ph;
+    }
+
     @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
