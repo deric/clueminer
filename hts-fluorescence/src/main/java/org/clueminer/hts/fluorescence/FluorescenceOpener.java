@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -43,6 +45,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private static Project project;
     private FluorescenceImporter importer;
+    private static final Logger logger = Logger.getLogger(FluorescenceOpener.class.getName());
 
     public FluorescenceOpener() {
         //MIME type detection
@@ -147,7 +150,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
     public void saveDataset(FluorescenceDataset plate, String ident) {
         String filename = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()
-                 */ + "/" + "david-" + ident + String.valueOf(Math.random() + ".csv");
+                 */ + "/" + "david-" + plate.getName() + "-" + ident +  ".csv";
 
 
         String separator = ",";
@@ -226,8 +229,9 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                     avg = sum / 4.0;
                     negativeControl.put(k, avg);
                 }
-                System.out.println(i + " negative ctrl: " + negativeControl.toString());
-                System.out.println("positive= "+posCtrl);
+                               
+                logger.log(Level.INFO, "negative= {0}", negativeControl.toString());
+                logger.log(Level.INFO, "positive= {0}", posCtrl);
                 //normalize quadruplicate
                 double value, divisor;
 
@@ -239,21 +243,27 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                         FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalize, plate.attributeCount());
                         for (int k = 0; k < plate.attributeCount(); k++) {
                             //substract background
-                            divisor = posCtrl - inst.value(k);
+                            divisor = posCtrl - negativeControl.value(k);
 
                             if (divisor == 0.0) {
                                 value = 0.0;
                             } else {
-                                value = (inst.value(k) - negativeControl.value(k)) / divisor * 100;
+                                value = ((inst.value(k) - negativeControl.value(k)) / divisor) * 100;
                             }
+                           /*  if (pos == 59) {
+                                 System.out.println("val= "+inst.value(k)+", neg = "+negativeControl.value(k)+", divisor = "+divisor+", posCtrl = "+posCtrl+", res = "+value);
+                             }*/
 
                             out.put(k, value);
                             out.setName(inst.getName());
 
                             //System.out.println(pos+": "+value);
                         }
-                     /*   if (out.size() == plate.attributeCount()) {
-                            System.out.println("error: " +out.size()+", "+ out.toString());
+                        /*   if (out.size() == plate.attributeCount()) {
+                         System.out.println("error: " +out.size()+", "+ out.toString());
+                         }*/
+                       /* if (pos == 59) {
+                            System.out.println("normalizing #" + pos + " - " + inst.getRow() + ", " + inst.getColumn() + " # " + out.toString());
                         }*/
 
                         normalize.add(out);
