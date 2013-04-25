@@ -261,8 +261,9 @@ public class KMeans implements ClusteringAlgorithm {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
     @Override
-    public Assignments cluster(Matrix matrix, Preferences props) {
+    public HierarchicalResult cluster(Matrix matrix, Preferences props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

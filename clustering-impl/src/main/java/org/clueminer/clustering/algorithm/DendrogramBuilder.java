@@ -23,11 +23,11 @@ import org.clueminer.math.matrix.OnDiskMatrix;
  * @author Tomas Barton
  */
 public class DendrogramBuilder {
-    
+
     private final WorkQueue workQueue;
-    
     private static final Logger LOGGER = Logger.getLogger(DendrogramBuilder.class.getName());
-  /**
+
+    /**
      * Builds a dendrogram of the rows of similarity matrix by iteratelyve
      * linking each row according to the linkage policy in a bottom up manner.
      * The dendrogram is represented as a series of merge steps for the rows of
@@ -65,11 +65,10 @@ public class DendrogramBuilder {
      * where each row is initially assigned to its own cluster whose id is the
      * same as its row's index
      */
-    
-    public DendrogramBuilder(){
+    public DendrogramBuilder() {
         this.workQueue = WorkQueue.getWorkQueue();
     }
-    
+
     public List<Merge> buildDendogram(Matrix m, ClusterLinkage linkage, DistanceMeasure similarityFunction) {
 
         int rows = m.rowsCount();
@@ -98,7 +97,7 @@ public class DendrogramBuilder {
     public List<Merge> buildDendrogram(Matrix similarityMatrix, ClusterLinkage linkage) {
 
         if (similarityMatrix.rowsCount() != similarityMatrix.columnsCount()) {
-            throw new IllegalArgumentException("Similarity matrix must be square");
+            throw new IllegalArgumentException("Similarity matrix must be square, rows = " + similarityMatrix.rowsCount() + ", cols = " + similarityMatrix.columnsCount());
         }
 
         if (!(similarityMatrix instanceof OnDiskMatrix)) {
@@ -222,7 +221,7 @@ public class DendrogramBuilder {
             }
 
             // Update the new most similar to the newly-merged cluster
-            clusterSimilarities.put(cluster1index, new Pairing(mostSimilarToMerged,mostSimilarToMergedId));
+            clusterSimilarities.put(cluster1index, new Pairing(mostSimilarToMerged, mostSimilarToMergedId));
         }
 
         return merges;
@@ -234,10 +233,10 @@ public class DendrogramBuilder {
 
         int rows = similarityMatrix.rowsCount();
 
-        /** Create the initial set of clusters where each row is originally in
+        /**
+         * Create the initial set of clusters where each row is originally in
          * its own cluster
          */
-         
         final Map<Integer, Set<Integer>> clusterAssignment = HierarchicalAgglomerativeClustering.generateInitialAssignment(rows);
 
         LOGGER.log(Level.FINER, "Calculating initial inter-cluster similarity using {0}", linkage);
@@ -313,7 +312,7 @@ public class DendrogramBuilder {
             LOGGER.log(Level.FINER,
                     "Merged cluster {0} with {1}, similarity {2}",
                     new Object[]{cluster1index, cluster2index,
-                        highestSimilarity});
+                highestSimilarity});
 
             // Update the cluster assignments, adding in elements from the
             // second cluster and remove all references to the second merged-in

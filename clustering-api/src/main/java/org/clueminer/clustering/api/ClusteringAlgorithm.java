@@ -29,7 +29,7 @@ public interface ClusteringAlgorithm {
      * @return an array of {@link Assignment} instances that indicate zero or
      *         more clusters to which each row belongs.
      */
-    public Assignments cluster(Matrix matrix, Preferences props);
+    public HierarchicalResult cluster(Matrix matrix, Preferences props);
     
 
     /**

@@ -76,9 +76,17 @@ public interface HierarchicalResult extends Serializable {
     /**
      *
      * @return return current number of clusters (computed accoring to current
-     *         cutoff)
+     * cutoff)
      */
-    public int getNumberOfClusters();
+    public int getNumClusters();
+
+    /**
+     * Forces number of clusters, if -1 then is leaved undecided
+     *
+     * @param num
+     * @return
+     */
+    public void setNumClusters(int num);
 
     /**
      * Scoring functions are used for evaluation of optimal number of clusters
@@ -89,7 +97,7 @@ public interface HierarchicalResult extends Serializable {
      * @return Map<number of clusters, cutoff>
      */
     public Map<Integer, Double> getScores(String evaluator);
-    
+
     public double getScore(String evaluator, int clustNum);
 
     /**
@@ -100,7 +108,7 @@ public interface HierarchicalResult extends Serializable {
      * @param sc
      */
     public void setScores(String evaluator, int clustNum, double sc);
-    
+
     public boolean isScoreCached(String evaluator, int clustNum);
 
     /**
@@ -135,15 +143,25 @@ public interface HierarchicalResult extends Serializable {
      * Translate position of row/column which has been moved during clustering
      * process
      *
-     * @return row/column index in original dataset that maps from passed row/column index.
+     * @return row/column index in original dataset that maps from passed
+     * row/column index.
      */
     public int getMappedIndex(int idx);
-    
+
     public void setMappedIndex(int pos, int idx);
-    
+
     /**
-     * 
+     *
      * @return indexes of items
      */
     public int[] getMapping();
+
+    public int[] getIntAssignments();
+
+    public void setIntAssignments(int[] assignments);
+    
+    
+    public void setInputData(Matrix inputData);
+    
+    public Matrix getInputData();
 }
