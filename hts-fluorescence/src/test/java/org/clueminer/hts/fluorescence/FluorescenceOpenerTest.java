@@ -107,7 +107,7 @@ public class FluorescenceOpenerTest {
 
             Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
             
-            System.out.println(normalized);
+           // System.out.println(normalized);
             //    assertEquals(expResult, result);
             //    fail("The test case is a prototype.");
             //    fail("The test case is a prototype.");
