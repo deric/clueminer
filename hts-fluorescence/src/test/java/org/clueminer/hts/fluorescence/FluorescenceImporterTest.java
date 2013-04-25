@@ -72,6 +72,8 @@ public class FluorescenceImporterTest {
 
         importer.run();
         FluorescenceDataset dataset = importer.getDataset();
+        //should work, but we use tmp files extracted from jar, which have different name
+        //assertEquals("AP-01_2012112", dataset.getName());
         assertEquals(15, dataset.attributeCount());
         assertEquals(1536, dataset.size());
 

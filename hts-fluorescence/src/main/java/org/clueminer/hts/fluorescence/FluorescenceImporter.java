@@ -93,11 +93,27 @@ public class FluorescenceImporter implements LongTask, Runnable {
             int columnCount = Integer.valueOf(m.group(3));
             timesCount = Integer.valueOf(m.group(4));
             plate = new FluorescenceDataset(rowCount, columnCount);
+            plate.setName(parseName(file));
             //set work units to do
             ph.start(rowCount * columnCount);
         } else {
             throw new RuntimeException("Unexpected line: '" + current + "'");
         }
+    }
+
+    private String parseName(File f) {
+        String name = f.getName();
+        //remove extension
+        int pos = name.indexOf('.');
+        if (pos != -1) {
+            name = name.substring(0, pos - 1);
+        }
+        //remove folders names, if any before filename
+        pos = name.lastIndexOf("/");
+        if (pos != -1) {
+            name = name.substring(pos, name.length());
+        }
+        return name;
     }
 
     private void parseData(BufferedReader br) throws IOException {
@@ -119,7 +135,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
             }
             //last one is name
             inst.setName(measurements[measurements.length - 1]);
-            inst.setId(String.valueOf(j));            
+            inst.setId(String.valueOf(j));
             //id of row
             row = j / plate.getColumnsCount();
             inst.setRow(row);
