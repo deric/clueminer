@@ -150,7 +150,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
     public void saveDataset(FluorescenceDataset plate, String ident) {
         String filename = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()
-                 */ + "/" + "david-" + plate.getName() + "-" + ident +  ".csv";
+                 */ + "/" + "david-" + plate.getName() + "-" + ident + ".csv";
 
 
         String separator = ",";
@@ -169,6 +169,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
             //content
             Instance current;
             String sampleName;
+            logger.log(Level.INFO, "export size {0}", plate.size());
             for (int i = 0; i < plate.size(); i++) {
                 current = plate.instance(i);
                 sampleName = current.getName();
@@ -190,6 +191,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
 
     public Dataset<FluorescenceInstance> normalize(FluorescenceDataset plate) {
         //Dataset normalized = plate.duplicate();
+        //columns are numbered from 0
         int colCnt = plate.getColumnsCount();
         System.out.println("normalizing dataset....");
         System.out.println("col cnt: " + colCnt);
@@ -200,18 +202,19 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         FluorescenceDataset normalize = (FluorescenceDataset) plate.duplicate();
         // time point for positive control
         int positiveTimepoint = 9;
-        for (int i = 0; i < plate.getRowsCount() - 4; i += 4) {
+        for (int i = 0; i < plate.getRowsCount() - 3; i += 4) {
             try {
 
                 int pos;
                 Instance negativeControl = new FluorescenceInstance(plate, plate.attributeCount());
                 // Instance negativeControl = new FluorescenceInstance(plate, colCnt);
-                System.out.println("row: " + i);
+                //System.out.println("row: " + i);
                 //compute average instance
                 posCtrl = 0.0;
                 for (int j = 0; j < 4; j++) {
                     pos = i + j;
-                    control2 = plate.instance(translatePosition(pos, 45, colCnt));
+
+                    control2 = plate.instance(translatePosition(pos, 46, colCnt));
                     posCtrl += control2.value(positiveTimepoint);
 
                 }
@@ -219,27 +222,29 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
 
                 for (int k = 0; k < plate.attributeCount(); k++) {
                     sum = 0.0;
+
                     for (int j = 0; j < 4; j++) {
                         pos = i + j;
-                        control1 = plate.instance(translatePosition(pos, 44, colCnt));
+                        control1 = plate.instance(translatePosition(pos, 45, colCnt));
                         //  System.out.println("control: " + control1.getFullName() + " - " + control1.toString());
                         sum += control1.value(k);
-
+                        System.out.println("well " + control1.getName() + " = " + control1.value(k));
                     }
                     avg = sum / 4.0;
                     negativeControl.put(k, avg);
                 }
-                               
+
                 logger.log(Level.INFO, "negative= {0}", negativeControl.toString());
                 logger.log(Level.INFO, "positive= {0}", posCtrl);
                 //normalize quadruplicate
                 double value, divisor;
 
                 for (int j = 0; j < 4; j++) {
-                    for (int m = 0; m < plate.getColumnsCount() - 4; m++) {
+                    for (int m = 0; m < plate.getColumnsCount(); m++) {
                         pos = (i + j) * colCnt + m;
 
                         FluorescenceInstance inst = plate.instance(pos);
+                        //  System.out.println("well = "+inst.getName());
                         FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalize, plate.attributeCount());
                         for (int k = 0; k < plate.attributeCount(); k++) {
                             //substract background
@@ -250,24 +255,11 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                             } else {
                                 value = ((inst.value(k) - negativeControl.value(k)) / divisor) * 100;
                             }
-                           /*  if (pos == 59) {
-                                 System.out.println("val= "+inst.value(k)+", neg = "+negativeControl.value(k)+", divisor = "+divisor+", posCtrl = "+posCtrl+", res = "+value);
-                             }*/
 
                             out.put(k, value);
                             out.setName(inst.getName());
-
-                            //System.out.println(pos+": "+value);
                         }
-                        /*   if (out.size() == plate.attributeCount()) {
-                         System.out.println("error: " +out.size()+", "+ out.toString());
-                         }*/
-                       /* if (pos == 59) {
-                            System.out.println("normalizing #" + pos + " - " + inst.getRow() + ", " + inst.getColumn() + " # " + out.toString());
-                        }*/
-
                         normalize.add(out);
-                        // System.out.println("normalizing #" + pos + " - " + inst.getRow() + ", " + inst.getColumn() + ", i= " + i);
                     }
                 }
 
@@ -279,6 +271,14 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         return normalize;
     }
 
+    /**
+     *
+     * @param ord
+     * @param col starts from 1, not zero!
+     * @param colCnt
+     * @return
+     * @throws IOException
+     */
     public int translatePosition(int ord, int col, int colCnt) throws IOException {
         int res = ord * colCnt + col - 1;
         return res;

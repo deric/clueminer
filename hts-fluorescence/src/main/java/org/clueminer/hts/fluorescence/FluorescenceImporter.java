@@ -111,7 +111,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         //remove extension
         int pos = name.indexOf('.');
         if (pos != -1) {
-            name = name.substring(0, pos - 1);
+            name = name.substring(0, pos);
         }
         //remove folders names, if any before filename
         pos = name.lastIndexOf("/");

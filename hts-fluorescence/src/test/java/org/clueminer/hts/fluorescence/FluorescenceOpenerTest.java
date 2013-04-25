@@ -97,7 +97,6 @@ public class FluorescenceOpenerTest {
     public void testOpenFile() {
         try {
             System.out.println("openFile");
-            File f = null;
             FluorescenceOpener opener = new FluorescenceOpener();
             FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
             ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
@@ -106,8 +105,8 @@ public class FluorescenceOpenerTest {
             FluorescenceDataset plate = importer.getDataset();
 
             Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
-            
-           // System.out.println(normalized);
+
+            // System.out.println(normalized);
             //    assertEquals(expResult, result);
             //    fail("The test case is a prototype.");
             //    fail("The test case is a prototype.");
@@ -144,5 +143,21 @@ public class FluorescenceOpenerTest {
         //   assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         //   fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of saveDataset method, of class FluorescenceOpener.
+     */
+    @Test
+    public void testSaveDataset() throws IOException {
+        FluorescenceOpener opener = new FluorescenceOpener();
+        FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
+        ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+        importer.setProgressHandle(ph);
+        importer.run();
+        FluorescenceDataset plate = importer.getDataset();
+        opener.saveDataset(plate, "test");
+        Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
+        opener.saveDataset((FluorescenceDataset) normalized, "test-norm");
     }
 }
