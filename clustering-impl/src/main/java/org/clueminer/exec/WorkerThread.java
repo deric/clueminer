@@ -73,7 +73,7 @@ public class WorkerThread extends Thread {
      */
     @Override
     public void run() {
-        Runnable r = null;
+        Runnable r;
         while (true) {
             // Try to drain the maximum capacity of thread-local items, checking
             // whether any were available

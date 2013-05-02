@@ -1,8 +1,10 @@
 package org.clueminer.clustering.algorithm;
 
+import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
+import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
@@ -23,8 +25,13 @@ public class HClustResult implements HierarchicalResult {
     private Matrix similarity;
     private Matrix inputData;
     private int[] assign;
+    private int[] mapping;
     private Assignments assignments;
     private int numClusters = -1;
+    /**
+     * list of dendrogram levels - each Merge represents one dendrogram level
+     */
+    List<Merge> merges;
 
     @Override
     public Matrix getInputData() {
@@ -35,7 +42,6 @@ public class HClustResult implements HierarchicalResult {
     public void setInputData(Matrix inputData) {
         this.inputData = inputData;
     }
-        
 
     @Override
     public Matrix getProximityMatrix() {
@@ -66,10 +72,9 @@ public class HClustResult implements HierarchicalResult {
     public void setIntAssignments(int[] assignments) {
         this.assign = assignments;
     }
-    
-    
-    public Assignments getAssignments(){
-        if(assignments == null){
+
+    public Assignments getAssignments() {
+        if (assignments == null) {
             assignments = toAssignments(getIntAssignments(), getInputData(), getNumClusters());
         }
         return assignments;
@@ -102,8 +107,6 @@ public class HClustResult implements HierarchicalResult {
     public void setNumClusters(int numClusters) {
         this.numClusters = numClusters;
     }
-    
-    
 
     @Override
     public Clustering getClustering() {
@@ -202,6 +205,27 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int[] getMapping() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (mapping == null) {
+           if(merges == null){
+               throw new RuntimeException("expecting precomputed dendrogram merges");
+           }
+           mapping = new int[merges.size()];
+           for(Merge m :merges){
+               //m.
+           }
+        }
+        return mapping;
     }
+
+    @Override
+    public List<Merge> getMerges() {
+        return merges;
+    }
+
+    @Override
+    public void setMerges(List<Merge> merges) {
+        this.merges = merges;
+    }
+    
+    
 }

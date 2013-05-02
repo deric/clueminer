@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -159,9 +160,21 @@ public interface HierarchicalResult extends Serializable {
     public int[] getIntAssignments();
 
     public void setIntAssignments(int[] assignments);
-    
-    
+
     public void setInputData(Matrix inputData);
-    
+
     public Matrix getInputData();
+
+    /**
+     *
+     * @return list of level where clustered instances are merged
+     */
+    public List<Merge> getMerges();
+
+    /**
+     * Use e.g. DendrogramBuilder to generate merge list
+     *
+     * @param merges
+     */
+    public void setMerges(List<Merge> merges);
 }

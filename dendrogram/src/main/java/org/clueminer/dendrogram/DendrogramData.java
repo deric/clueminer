@@ -19,8 +19,8 @@ public class DendrogramData implements DendrogramMapping {
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private double mid = 0;
-    private HierachicalClusteringResult rowsResult;
-    private HierachicalClusteringResult colsResult;
+    private HierarchicalResult rowsResult;
+    private HierarchicalResult colsResult;
 
     public DendrogramData(Dataset<? extends Instance> dataset) {
         this.instances = dataset;
@@ -30,8 +30,8 @@ public class DendrogramData implements DendrogramMapping {
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
         this.instances = dataset;
         this.setMatrix(matrix);
-        this.rowsResult = (HierachicalClusteringResult) rowResult;
-        this.colsResult = (HierachicalClusteringResult) columnResult;
+        this.rowsResult = rowResult;
+        this.colsResult = columnResult;
     }
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
