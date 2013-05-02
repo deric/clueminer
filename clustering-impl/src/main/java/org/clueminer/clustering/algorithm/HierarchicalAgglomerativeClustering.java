@@ -139,7 +139,7 @@ import org.clueminer.utils.Dump;
  * @author Tomas Barton
  */
 public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
-
+    
     private static String name = "Hierarchical Clustering";
     /**
      * A prefix for specifying properties.
@@ -183,48 +183,48 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      */
     private final WorkQueue workQueue;
     private ClusterLinkage linkage;
-
+    
     @Override
     public String getName() {
         return name;
     }
-
+    
     @Override
     public Clustering<Cluster> partition(Dataset<? extends Instance> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     public HierarchicalAgglomerativeClustering() {
         this.workQueue = WorkQueue.getWorkQueue();
     }
-
+    
     public ClusterLinkage getLinkage() {
         return linkage;
     }
-
+    
     public void setLinkage(ClusterLinkage linkage) {
         this.linkage = linkage;
     }
-
+    
     private void parseLinkage(Preferences props) {
         String simFuncProp = props.get(DISTANCE_FUNCTION, DEFAULT_DISTANCE_FUNCTION);
         setDistanceFunction(DistanceFactory.getDefault().getProvider(simFuncProp));
-
+        
         String linkageProp = props.get(CLUSTER_LINKAGE, DEFAULT_CLUSTER_LINKAGE);
         setLinkage(LinkageFactory.getDefault().getProvider(linkageProp));
         getLinkage().setDistanceMeasure(distanceMeasure);
@@ -236,10 +236,10 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     @Override
     public HierarchicalResult cluster(Matrix matrix, Preferences props) {
         parseLinkage(props);
-
+        
         double minSimProp = props.getDouble(MIN_CLUSTER_SIMILARITY, DEFAULT_MIN_CLUSTER_SIMILARITY);
         String numClustProp = props.get(NUM_CLUSTERS, null);
-
+        
         if (minSimProp == Double.NaN && numClustProp == null) {
             throw new IllegalArgumentException(
                     "This class requires either a specified number of clusters or "
@@ -267,10 +267,10 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         if (linkage == null || distanceMeasure == null) {
             parseLinkage(props);
         }
-
+        
         double clustSimThreshold = props.getDouble(MIN_CLUSTER_SIMILARITY, DEFAULT_MIN_CLUSTER_SIMILARITY);
-
-        HierarchicalResult res =  cluster(data, clustSimThreshold, linkage, distanceMeasure, numClusters);
+        
+        HierarchicalResult res = cluster(data, clustSimThreshold, linkage, distanceMeasure, numClusters);
         res.setInputData(data);
         res.setNumClusters(-1);
         return res;
@@ -340,12 +340,18 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * the cluster number to which that row was assigned. Cluster numbers will
      * start at 0 and increase.
      */
-    private static HierarchicalResult cluster(Matrix m, double clusterSimilarityThreshold,
-            ClusterLinkage linkage, DistanceMeasure similarityFunction, int maxNumberOfClusters) {
-        int rows = m.rowsCount();
-        LOGGER.log(Level.INFO, "Generating similarity matrix for {0} data points", rows);
+    public static HierarchicalResult cluster(Matrix m, double clusterSimilarityThreshold,
+            ClusterLinkage linkage, DistanceMeasure similarityFunction, int maxNumberOfClusters) {        
+        LOGGER.log(Level.INFO, "Generating similarity matrix for {0} data points",  m.rowsCount());
         Matrix similarityMatrix = computeRowSimilarityMatrix(m, similarityFunction);
         similarityMatrix.print(5, 2);
+        return clusterSimilarityMatrix(similarityMatrix, clusterSimilarityThreshold, linkage, maxNumberOfClusters);
+    }
+    
+    public static HierarchicalResult clusterSimilarityMatrix(Matrix similarityMatrix,
+            double clusterSimilarityThreshold, ClusterLinkage linkage, int maxNumberOfClusters) {
+        
+        int rows = similarityMatrix.rowsCount();
         HierarchicalResult result = new HClustResult();
         result.setSimilarityMatrix(similarityMatrix);
         //Dump.matrix(similarityMatrix.getArray(), "similarity", 2);
@@ -362,7 +368,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         for (Integer clusterId : assignments.keySet()) {
             clusterSimilarities.put(clusterId, findMostSimilar(assignments, clusterId, linkage, similarityMatrix));
         }
-
+        
         LOGGER.info("Assigning clusters");
 
         // Keep track of which ID is available for the new, merged cluster
@@ -383,7 +389,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
             // Find the row with the highest similarity to another            
             for (Map.Entry<Integer, Pairing> e : clusterSimilarities.entrySet()) {
-
+                
                 Pairing p = e.getValue();
                 Integer i = e.getKey();
                 Integer j = p.pairedIndex;
@@ -408,7 +414,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             //System.out.println("new cluster id: "+newClusterId);
             Set<Integer> cluster1 = assignments.get(cluster1index);
             Set<Integer> cluster2 = assignments.get(cluster2index);
-
+            
             LOGGER.log(Level.FINE, "Merged cluster {0} with {1}",
                     new Object[]{cluster1, cluster2});
 
@@ -436,7 +442,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             // them before the merge).  At the same time, calculate the
             // most-similar to the newly merged cluster
             for (Map.Entry<Integer, Pairing> e : clusterSimilarities.entrySet()) {
-
+                
                 Integer clusterId = e.getKey();
 
                 // First, calculate the similarity between this cluster and the
@@ -461,9 +467,9 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
                     new Pairing(mostSimilarToMerged,
                     mostSimilarToMergedId));
         }
-
+        
         result.setIntAssignments(toAssignArray(assignments, rows));
-
+        
         return result;
     }
 
@@ -587,6 +593,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         for (Map.Entry<Integer, Set<Integer>> other : assign.entrySet()) {
             otherId = other.getKey();
             if (!otherId.equals(curCluster)) {
+                //System.out.println("linkage: " + linkage);
                 similarity = linkage.similarity(similarityMatrix, assign.get(curCluster), other.getValue());
                 // System.out.println("similarity: (" + curCluster + " vs " + otherId + ")" + similarity);
                 if (similarity > mostSimilar) {
@@ -595,7 +602,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
                 }
             }
         }
-        System.out.println("most similar: [" + mostSimilar + ", " + paired + "]");
+        //System.out.println("most similar: [" + mostSimilar + ", " + paired + "]");
         return new Pairing(mostSimilar, paired);
     }
 
@@ -610,8 +617,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      *
      * @return the cluster assignment
      */
-    private static int[] toAssignArray(Map<Integer, Set<Integer>> assignment,
-            int numDataPoints) {
+    private static int[] toAssignArray(Map<Integer, Set<Integer>> assignment, int numDataPoints) {
         int[] clusters = new int[numDataPoints];
         for (int i = 0; i < numDataPoints; ++i) {
             clusters[i] = -1;
@@ -657,7 +663,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      */
     public static Matrix computeRowSimilarityMatrix(Matrix m, DistanceMeasure dm) {
         Matrix similarityMatrix;
-
+        
         if (dm.isSymmetric()) {
             similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
             for (int i = 0; i < m.rowsCount(); ++i) {
@@ -693,7 +699,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      */
     public static Matrix computeColumnsSimilarityMatrix(Matrix m, DistanceMeasure dm) {
         Matrix similarityMatrix;
-
+        
         if (dm.isSymmetric()) {
             similarityMatrix = new SymmetricMatrix(m.columnsCount(), m.columnsCount());
             for (int i = 0; i < m.columnsCount(); ++i) {
@@ -717,7 +723,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             }
         }
         return similarityMatrix;
-
-
+        
+        
     }
 }

@@ -1,11 +1,13 @@
 package org.clueminer.cluster;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.Merge;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -267,5 +269,15 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     @Override
     public void setInputData(Matrix inputData) {
         this.inputData = inputData;
+    }
+
+    @Override
+    public List<Merge> getMerges() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setMerges(List<Merge> merges) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

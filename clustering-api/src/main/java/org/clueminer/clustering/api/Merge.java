@@ -1,18 +1,17 @@
-package org.clueminer.clustering;
+package org.clueminer.clustering.api;
 
 /**
  * A status object that represents the result of agglomeratively merging two
- * clusters.  This class provides the information on which clusters were merged,
+ * clusters. This class provides the information on which clusters were merged,
  * what the id of the remaining cluster is, and the similarity of the two
  * clusters at the point at which they were merged.
  *
  */
 public class Merge implements java.io.Serializable {
-    
+
     private static final long serialVersionUID = 7366397676154738636L;
     private final int remainingCluster;
     private final int mergedCluster;
-    
     private final double similarity;
 
     public Merge(int remainingCluster, int mergedCluster, double similarity) {
@@ -24,10 +23,10 @@ public class Merge implements java.io.Serializable {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Merge) {
-            Merge m = (Merge)o;
+            Merge m = (Merge) o;
             return m.remainingCluster == remainingCluster
-                && m.mergedCluster == mergedCluster
-                && m.similarity == similarity;
+                    && m.mergedCluster == mergedCluster
+                    && m.similarity == similarity;
         }
         return false;
     }
@@ -38,7 +37,7 @@ public class Merge implements java.io.Serializable {
     }
 
     /**
-     * Returns the ID of the cluster that was merged into another cluster.  
+     * Returns the ID of the cluster that was merged into another cluster.
      */
     public int mergedCluster() {
         return mergedCluster;
@@ -61,7 +60,9 @@ public class Merge implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "(" + mergedCluster + " -> " + remainingCluster + ": "
-            + similarity + ")";
+        StringBuilder res = new StringBuilder();
+        res.append("(").append(mergedCluster).append(" -> ")
+           .append(remainingCluster).append(": ").append(similarity).append(")");
+        return res.toString();
     }
 }

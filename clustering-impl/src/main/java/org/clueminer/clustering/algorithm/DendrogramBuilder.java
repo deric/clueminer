@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.Merge;
+import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.Pairing;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -97,12 +97,11 @@ public class DendrogramBuilder {
     public List<Merge> buildDendrogram(Matrix similarityMatrix, ClusterLinkage linkage) {
 
         if (similarityMatrix.rowsCount() != similarityMatrix.columnsCount()) {
-            throw new IllegalArgumentException("Similarity matrix must be square, rows = " + similarityMatrix.rowsCount() + ", cols = " + similarityMatrix.columnsCount());
+            throw new IllegalArgumentException("Similarity matrix must be square, got rows = " + similarityMatrix.rowsCount() + ", cols = " + similarityMatrix.columnsCount());
         }
 
         if (!(similarityMatrix instanceof OnDiskMatrix)) {
-            LOGGER.fine("Similarity matrix supports fast multi-threaded "
-                    + "access; switching to multi-threaded clustering");
+            LOGGER.fine("Similarity matrix supports fast multi-threaded access; switching to multi-threaded clustering");
             return buildDendogramMultithreaded(similarityMatrix, linkage);
         }
 
@@ -112,7 +111,7 @@ public class DendrogramBuilder {
         // its own cluster
         final Map<Integer, Set<Integer>> clusterAssignment = HierarchicalAgglomerativeClustering.generateInitialAssignment(rows);
 
-        LOGGER.log(Level.FINER, "Calculating initial inter-cluster similarity using {0}", linkage);
+        LOGGER.log(Level.INFO, "Calculating initial inter-cluster similarity using {0}", linkage);
         // Generate the initial set of cluster pairings based on the highest
         // similarity.  This mapping will be update as the number of clusters
         // are reduced, where merging a cluster will causes all the pairings
@@ -228,8 +227,7 @@ public class DendrogramBuilder {
 
     }
 
-    private List<Merge> buildDendogramMultithreaded(
-            final Matrix similarityMatrix, final ClusterLinkage linkage) {
+    private List<Merge> buildDendogramMultithreaded(final Matrix similarityMatrix, final ClusterLinkage linkage) {
 
         int rows = similarityMatrix.rowsCount();
 
@@ -250,11 +248,11 @@ public class DendrogramBuilder {
         // For each cluster, find the most similar cluster.  Use the current
         // thread as the task key so any other thread executing this method
         // won't conflict.
-        Object taskKey =
-                workQueue.registerTaskGroup(clusterAssignment.size());
+        Object taskKey = workQueue.registerTaskGroup(clusterAssignment.size());
         for (Integer clusterId : clusterAssignment.keySet()) {
             final Integer clustId = clusterId;
             workQueue.add(taskKey, new Runnable() {
+                @Override
                 public void run() {
                     clusterSimilarities.put(clustId,
                             HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment, clustId,
@@ -336,8 +334,7 @@ public class DendrogramBuilder {
             final ConcurrentNavigableMap<Double, Integer> mostSimilarMap = new ConcurrentSkipListMap<Double, Integer>();
             // Use size()-1 as the number of tasks because we skip adding a task
             // for computing the new cluster's similarity to itself
-            taskKey =
-                    workQueue.registerTaskGroup(clusterSimilarities.size() - 1);
+            taskKey = workQueue.registerTaskGroup(clusterSimilarities.size() - 1);
 
             for (Map.Entry<Integer, Pairing> entry : clusterSimilarities.entrySet()) {
 
