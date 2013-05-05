@@ -99,7 +99,8 @@
         <module>hts-fluorescence</module>
         <module>explorer</module>
         <module>infopanel</module>
-    </modules>
+    <module>gnuplot</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>

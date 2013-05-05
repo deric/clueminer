@@ -1,0 +1,14 @@
+0.4.0
+Basic support of Graph3d (splot). Implementation of user-defined
+terminals.
+
+0.3.0
+Support of various data formats, i.e. date formats.
+Better plot layout support
+
+0.2.0
+Support of multiplots
+
+
+0.1.0
+Initial release
