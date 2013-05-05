@@ -43,4 +43,11 @@ public interface DatasetWriter {
      * @param line line to append at the end of file
      */
     public void writeLine(String line);
+
+    /**
+     * Should be slightly more effective
+     *
+     * @param sb new line as StringBuilder
+     */
+    public void writeLine(StringBuilder sb);
 }

@@ -1,24 +1,11 @@
 package org.clueminer.evaluation;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.panayotis.gnuplot.JavaPlot;
-import com.panayotis.gnuplot.dataset.ArrayDataSet;
-import com.panayotis.gnuplot.plot.AbstractPlot;
-import com.panayotis.gnuplot.plot.ExternalDataSetPlot;
-import com.panayotis.gnuplot.plot.Graph;
 import com.panayotis.gnuplot.style.ColorPalette;
-import com.panayotis.gnuplot.style.PlotStyle;
-import com.panayotis.gnuplot.style.Style;
-import com.panayotis.gnuplot.terminal.ImageTerminal;
-import com.panayotis.iodebug.Debug;
-import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-import javax.imageio.ImageIO;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -33,6 +20,7 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.io.FileHandler;
+import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
 import org.clueminer.utils.FileUtils;
 import org.junit.AfterClass;
@@ -106,16 +94,78 @@ public class BenchmarkTest2 {
         writer.writeNext(header);
         for (Cluster<Instance> clust : clusters) {
             for (Instance inst : clust) {
-                StringBuilder sb = new StringBuilder(inst.toString(","));
-                sb.append(",").append(clust.getName());
-                writer.writeLine(sb.toString());
+                writer.writeLine(appendClass(inst, clust.getName()));
             }
         }
+    }
 
+    private StringBuilder appendClass(Instance inst, String klass) {
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < inst.size(); i++) {
+            if (i > 0) {
+                res.append(',');
+            }
+            res.append(inst.value(i));
+        }
+        return res.append(',').append(klass);
+    }
+
+    private String plotTemplate(int k, int x, int y, Clustering<Cluster> clustering, String dataFile) {
+        Cluster<Instance> first = clustering.get(0);
+        int attrCnt = first.attributeCount();
+        int labelPos = attrCnt + 1;
+        //attributes are numbered from zero, gnuplot columns from 1
+        double max = first.getAttribute(x - 1).statistics(AttrNumStats.MAX);
+        double min = first.getAttribute(x - 1).statistics(AttrNumStats.MIN);
+        String xrange = "[" + min + ":" + max + "]";
+        max = first.getAttribute(y - 1).statistics(AttrNumStats.MAX);
+        min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
+        String yrange = "[" + min + ":" + max + "]";
+
+        String res = "set terminal pdf font  \"Times-New-Roman,8\" \n"
+                + "set datafile separator \",\"\n"
+                + "set key outside bottom horizontal box\n"
+                + "set title \"k = " + k + "\"\n"
+                + "set xlabel \"X\" font \"Times,7\"\n"
+                + "set ylabel \"Y\" font \"Times,7\"\n"
+                + "set xtics 0,0.5 nomirror\n"
+                + "set ytics 0,0.5 nomirror\n"
+                + "set mytics 2\n"
+                + "set mx2tics 2\n"
+                + "set xrange " + xrange + "\n"
+                + "set yrange " + yrange + "\n"
+                + "set grid\n"
+                + "set pointsize 0.3\n";
+        int i = 0;
+        int last = clustering.size() - 1;
+        for (Cluster clust : clustering) {
+            if (i == 0) {
+                res += "plot ";
+            }
+            res += "\"< awk -F\\\",\\\" '{if($" + labelPos + " == \\\"" + clust.getName() + "\\\") print}' " + dataFile + "\" u " + x + ":" + y + " t \"" + clust.getName() + "\" w p";
+            if (i != last) {
+                res += ", \\\n";
+            } else {
+                res += "\n";
+            }
+
+            i++;
+        }
+        return res;
+    }
+
+    private String bashTemplate() {
+        String res = "#!/bin/bash\n"
+                + "cd data\n";        
+        return res;
     }
 
     private double[][] kMeans(Dataset data, int kmin, int kmax, String dir) throws IOException, Exception {
         double[][] results = new double[evaluators.size()][kmax - kmin];
+        String[] files = new String[kmax - kmin];
+        int i = 0;
+        int x = 1;
+        int y = 2;
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
             ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
@@ -127,11 +177,17 @@ public class BenchmarkTest2 {
 
             String dataDir = dir + "data" + File.separatorChar;
             (new File(dataDir)).mkdir();
-
-            PrintWriter writer = new PrintWriter(dataDir + "/" + n + "data.csv", "UTF-8");
-            CSVWriter csv = new CSVWriter(writer);
+            String dataFile = n + "-data.csv";
+            String scriptFile = "plot-" + n + ".gnu";
+            files[i] = scriptFile + " > ../"+data.getName()+"-" + n + ".pdf";
+            PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
+            CSVWriter csv = new CSVWriter(writer, ',');
             toCsv(csv, clusters, data);
+            writer.close();
 
+            PrintWriter template = new PrintWriter(dataDir + scriptFile, "UTF-8");
+            template.write(plotTemplate(n, x, y, clusters, dataFile));
+            template.close();
 
             double score;
             int j = 0;
@@ -140,7 +196,18 @@ public class BenchmarkTest2 {
                 results[j++][n - kmin] = score;
             }
             System.out.println("===========");
+            i++;
         }
+
+        //bash script to generate results
+        PrintWriter template = new PrintWriter(dir + File.separatorChar + "plot-all", "UTF-8");
+        template.write(bashTemplate());
+        for (int j = 0; j < files.length; j++) {
+            template.write("gnuplot " + files[j] + "\n");
+        }
+        template.close();
+
+
         return results;
     }
 

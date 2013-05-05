@@ -80,7 +80,7 @@ public class SilhouetteTest {
     /**
      * Test of score method, of class Silhouette.
      */
-    @Test
+    //@Test
     public void testScore_Clustering() {
         double score;
         long start = System.currentTimeMillis();
