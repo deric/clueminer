@@ -304,7 +304,7 @@ public class BenchmarkTest {
         runExperiment(datasetName, data, kmin, kmax, kreal);
     }
 
-    //@Test
+    @Test
     public void testWellSeparated() throws IOException, Exception {
         String datasetName = "well-separated";
         Dataset data = new SampleDataset();

@@ -104,22 +104,22 @@ public class KMeans implements ClusteringAlgorithm {
         this.dm = dm;
         rg = new Random(System.currentTimeMillis());
     }
-
+    
     @Override
     public String getName() {
         return "k-means (MacQueen)";
     }
-
+    
     @Override
     public DistanceMeasure getDistanceFunction() {
         return dm;
     }
-
+    
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
         this.dm = dm;
     }
-
+    
     @Override
     public Clustering partition(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         //@TODO parse algorithm parameters
@@ -159,7 +159,7 @@ public class KMeans implements ClusteringAlgorithm {
             double[] randomInstance = DatasetTools.getRandomInstance(data, rg);
             this.centroids[j] = new DoubleArrayDataRow(randomInstance);
         }
-
+        
         int iterationCount = 0;
         boolean centroidsChanged = true;
         boolean randomCentroids = true;
@@ -178,7 +178,7 @@ public class KMeans implements ClusteringAlgorithm {
                     }
                 }
                 assignment[i] = tmpCluster;
-
+                
             }
             // When all objects have been assigned, recalculate the positions of
             // the K centroids and start over.
@@ -189,9 +189,9 @@ public class KMeans implements ClusteringAlgorithm {
             for (int i = 0; i < data.size(); i++) {
                 Instance in = data.instance(i);
                 for (int j = 0; j < instanceLength; j++) {
-
+                    
                     sumPosition[assignment[i]][j] += in.value(j);
-
+                    
                 }
                 countPosition[assignment[i]]++;
             }
@@ -213,19 +213,20 @@ public class KMeans implements ClusteringAlgorithm {
                     for (int j = 0; j < instanceLength; j++) {
                         double dist = Math.abs(max.value(j) - min.value(j));
                         randomInstance[j] = (float) (min.value(j) + rg.nextDouble() * dist);
-
+                        
                     }
                     randomCentroids = true;
                     this.centroids[i] = new DoubleArrayDataRow(randomInstance);
                 }
-
+                
             }
-
+            
         }
         Clustering output = new ClusterList(centroids.length);
         BaseCluster cluster;
         for (int i = 0; i < centroids.length; i++) {
             cluster = new BaseCluster(data.size());
+            cluster.setName("cluster " + (i + 1));
             //we have to copy attributes settings
             cluster.setAttributes(data.getAttributes());
             output.put(cluster);
@@ -241,27 +242,28 @@ public class KMeans implements ClusteringAlgorithm {
                 }
             }
             output.get(tmpCluster).add(data.instance(i));
-
+            
         }
         return output;
     }
+
     /**
      * Repeated run of k-means with incrementing k will produce a hierarchy
+     *
      * @param dataset
      * @param params
-     * @return 
+     * @return
      */
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     @Override
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
+    
     @Override
     public HierarchicalResult cluster(Matrix matrix, Preferences props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
