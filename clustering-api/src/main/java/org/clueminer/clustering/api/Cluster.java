@@ -42,7 +42,7 @@ public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Seri
     /**
      * Centroids contains average value of all attributes in cluster
      *
-     * @return usually non-existing element which is in the midlle of the
+     * @return usually non-existing element which is in the middle of the
      * cluster
      */
     public E getCentroid();

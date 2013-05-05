@@ -12,8 +12,10 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
+import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -38,7 +40,16 @@ public class CopheneticCorrelationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        test = new CopheneticCorrelation();
+      
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() throws Exception {
+          test = new CopheneticCorrelation();
 
         int instanceCnt = 10;
         dataset = new SampleDataset<Instance>(instanceCnt);
@@ -75,8 +86,8 @@ public class CopheneticCorrelationTest {
         input = new JMatrix(dataset.arrayCopy());
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     }
 
     private static AlgorithmParameters getParams() {
@@ -132,7 +143,7 @@ public class CopheneticCorrelationTest {
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
         System.out.println("cophenetic= " + cpcc);
-        assertEquals(0.864, cpcc, 0.001);
+        assertEquals(0.861, cpcc, 0.001);
     }
     
      /**
@@ -198,5 +209,12 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testCopheneticCoefficient() {
+    }
+
+    /**
+     * Test of score method, of class CopheneticCorrelation.
+     */
+    @Test
+    public void testScore() {
     }
 }

@@ -14,6 +14,7 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
     private static final long serialVersionUID = -6931127664256794410L;
     private int clusterId;
     private Color color;
+    private E centroid;
 
     public BaseCluster(int capacity) {
         super(capacity);
@@ -41,6 +42,11 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
 
     @Override
     public E getCentroid() {
+        /**
+         * @TODO add hook for notification when dataset changes, to update
+         * centroids
+         */
+        //  if (centroid == null) {
         int attrCount = this.attributeCount();
         if (attrCount == 0) {
             throw new RuntimeException("number of attributes should not be 0");
@@ -55,7 +61,10 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
 
         }
         Instance avg = this.builder().create(tmpOut);
-        return (E) avg;
+        centroid = (E) avg;
+        //   }
+
+        return centroid;
     }
 
     @Override
