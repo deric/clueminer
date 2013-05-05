@@ -2,7 +2,9 @@ package org.clueminer.evaluation;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -22,6 +24,7 @@ import org.clueminer.io.CsvLoader;
 import org.clueminer.io.FileHandler;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
+import org.clueminer.utils.Dump;
 import org.clueminer.utils.FileUtils;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +38,7 @@ import org.openide.util.NbBundle;
  *
  * @author Tomas Barton
  */
-public class BenchmarkTest2 {
+public class KmeansBenchmark {
 
     private static Collection<? extends ClusterEvaluator> evaluators;
     private static String benchmarkFolder;
@@ -126,8 +129,8 @@ public class BenchmarkTest2 {
                 + "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
                 + "set title \"k = " + k + "\"\n"
-                + "set xlabel \"X\" font \"Times,7\"\n"
-                + "set ylabel \"Y\" font \"Times,7\"\n"
+                + "set xlabel \"" + first.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
+                + "set ylabel \"" + first.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
                 + "set xtics 0,0.5 nomirror\n"
                 + "set ytics 0,0.5 nomirror\n"
                 + "set mytics 2\n"
@@ -135,7 +138,7 @@ public class BenchmarkTest2 {
                 + "set xrange " + xrange + "\n"
                 + "set yrange " + yrange + "\n"
                 + "set grid\n"
-                + "set pointsize 0.3\n";
+                + "set pointsize 0.5\n";
         int i = 0;
         int last = clustering.size() - 1;
         for (Cluster clust : clustering) {
@@ -156,16 +159,18 @@ public class BenchmarkTest2 {
 
     private String bashTemplate() {
         String res = "#!/bin/bash\n"
-                + "cd data\n";        
+                + "cd data\n";
         return res;
     }
 
-    private double[][] kMeans(Dataset data, int kmin, int kmax, String dir) throws IOException, Exception {
+    private String getDataDir(String dir) {
+        return dir + "data" + File.separatorChar;
+    }
+
+    private double[][] kMeans(Dataset data, int kmin, int kmax, String dir, int x, int y) throws IOException, Exception {
         double[][] results = new double[evaluators.size()][kmax - kmin];
         String[] files = new String[kmax - kmin];
         int i = 0;
-        int x = 1;
-        int y = 2;
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
             ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
@@ -175,11 +180,11 @@ public class BenchmarkTest2 {
             System.out.println("k = " + n);
 
 
-            String dataDir = dir + "data" + File.separatorChar;
+            String dataDir = getDataDir(dir);
             (new File(dataDir)).mkdir();
-            String dataFile = n + "-data.csv";
-            String scriptFile = "plot-" + n + ".gnu";
-            files[i] = scriptFile + " > ../"+data.getName()+"-" + n + ".pdf";
+            String dataFile = "data-" + n + ".csv";
+            String scriptFile = "plot-" + n + ".gpt";
+            files[i] = scriptFile + " > ../" + data.getName() + "-" + n + ".pdf";
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
             toCsv(csv, clusters, data);
@@ -206,18 +211,74 @@ public class BenchmarkTest2 {
             template.write("gnuplot " + files[j] + "\n");
         }
         template.close();
-
-
         return results;
     }
 
-    private void runExperiment(Dataset data, int kmin, int kmax, int kreal) throws IOException, Exception {
+    private String[] plotResults(String datasetName, int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
+        String dataDir = getDataDir(dir);
+        String[] plots = new String[evaluators.size()];
+        int i = 0;
+        for (ClusterEvaluator c : evaluators) {
+            System.out.println("evaluator " + c.getName());
+            //reformat data for plotting
+            double[][] d = new double[kmax - kmin][2];
+            for (int n = kmin; n < kmax; n++) {
+                d[n - kmin][0] = n;
+                d[n - kmin][1] = results[i][n - kmin];
+            }
+            //Dump.matrix(d, c.getName(), 3);
+            String name = c.getName();
+            name = name.toLowerCase().replace(" ", "_") + ".gpt";
+            PrintWriter template = new PrintWriter(dataDir + name, "UTF-8");
+            template.write(plotEvaluation(c.getName(), kreal, d));
+            template.close();
+            plots[i] = name;
+            i++;
+        }
+        return plots;
+    }
+
+    private String plotEvaluation(String evaluator, int k, double[][] score) {
+
+        String res = "set term pdf font 'Times-New-Roman,8'\n"
+                + "set title '" + evaluator + "'\n"
+                + "set xtics add ('k=" + k + "' " + k + ")\n"
+                + "set arrow from " + k + ", graph 0 to " + k + ", graph 1 nohead ls 4 lw 2\n"
+                + "set key off\n"
+                + "set grid \n"
+                + "set size 1.0, 1.0\n"
+                + "set ylabel 'score'\n"
+                + "set xlabel 'number of clusters'\n"
+                + "plot '-' title 'Datafile' with linespoints linewidth 2 pointtype 7 pointsize 0.3 ;\n";
+        for (int i = 0; i < score.length; i++) {
+            res += String.valueOf(score[i][0]) + " " + String.valueOf(score[i][1]) + " \n";
+
+        }
+        res += "e\n";
+        return res;
+    }
+
+    private void runExperiment(Dataset data, int kmin, int kmax, int kreal, int x, int y) throws IOException, Exception {
         String dir = createFolder(data.getName());
         long start = System.currentTimeMillis();
-        double[][] results = kMeans(data, kmin, kmax, dir);
+        double[][] results = kMeans(data, kmin, kmax, dir, x, y);
         long end = System.currentTimeMillis();
         System.out.println("measuring " + data.getName() + " took " + (end - start) + " ms");
-        //  plotResults(datasetName, kmin, kmax, results, kreal, dir);
+        String[] plots = plotResults(data.getName(), kmin, kmax, results, kreal, dir);
+
+
+        //add file to bash script
+        try {
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(dir + File.separatorChar + "plot-all", true)));
+            int i = 0;
+            for (String line : plots) {
+                out.write("gnuplot " + line + " > ../eval-" + i + ".pdf\n");
+                i++;
+            }
+            out.close();
+        } catch (IOException e) {
+            //oh noes!
+        }
     }
 
     //@Test
@@ -232,10 +293,10 @@ public class BenchmarkTest2 {
         int kmin = 2;
         //max k we test
         int kmax = 10;
-        double[][] results = kMeans(data, kmin, kmax, dir);
+        double[][] results = kMeans(data, kmin, kmax, dir, 1, 2);
     }
 
-    //@Test
+    @Test
     public void testIris() throws IOException, Exception {
         String datasetName = "iris";
         Dataset data = new SampleDataset();
@@ -247,7 +308,7 @@ public class BenchmarkTest2 {
         //max k we test
         int kmax = 15;
         int kreal = 3;
-        runExperiment(data, kmin, kmax, kreal);
+        runExperiment(data, kmin, kmax, kreal, 3, 4);
     }
 
     @Test
@@ -260,13 +321,13 @@ public class BenchmarkTest2 {
         assertTrue(1777 == data.size());
         int kmin = 2;
         //max k we test
-        int kmax = 6;
+        int kmax = 9;
         int kreal = 5;
         System.out.println("starting experiment");
-        runExperiment(data, kmin, kmax, kreal);
+        runExperiment(data, kmin, kmax, kreal, 1, 2);
     }
-
-    //  @Test
+/*
+    @Test
     public void testWine() throws IOException, Exception {
         String datasetName = "wine";
         // 1st attribute is class identifier (1-3)
@@ -280,7 +341,7 @@ public class BenchmarkTest2 {
         runExperiment(data, kmin, kmax, kreal);
     }
 
-    //  @Test
+    @Test
     public void testYeast() throws IOException, Exception {
         String datasetName = "yeast";
         // 10th attribute is class identifier
@@ -296,5 +357,5 @@ public class BenchmarkTest2 {
         int kmax = 15;
         int kreal = 10;
         runExperiment(data, kmin, kmax, kreal);
-    }
+    }*/
 }
