@@ -35,4 +35,12 @@ public interface DatasetWriter {
      * separate entry.
      */
     public void writeNext(String[] nextLine);
+
+    /**
+     * Writes new line and appends new line ending. Make sure data you are
+     * passing are escaped.
+     *
+     * @param line line to append at the end of file
+     */
+    public void writeLine(String line);
 }

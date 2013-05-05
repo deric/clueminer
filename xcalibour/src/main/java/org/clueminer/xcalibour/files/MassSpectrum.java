@@ -129,6 +129,22 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
 
     @Override
     public String toString(String separator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < last; i++) {
+            if (i > 0) {
+                sb.append(separator);
+            }
+            sb.append(data[i].toString());
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String[] toStringArray() {
+        String[] result = new String[size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = String.valueOf(data[i].getValue());
+        }
+        return result;
     }
 }

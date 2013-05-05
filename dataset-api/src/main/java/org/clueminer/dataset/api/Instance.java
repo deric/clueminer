@@ -136,6 +136,13 @@ public interface Instance extends Cloneable, Serializable {
      * @return serialized values
      */
     public String toString(String separator);
+    
+    /**
+     * Used for exporting dataset
+     * 
+     * @return array of Strings
+     */
+    public String[] toStringArray();
 
     /**
      * When preprocessing data sometimes we need to display reference to
