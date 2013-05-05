@@ -334,4 +334,24 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
             // catch exception and ignore.
         }
     }
+
+    public char getSeparator() {
+        return separator;
+    }
+
+    public char getQuotechar() {
+        return quotechar;
+    }
+
+    public String getLineEnd() {
+        return lineEnd;
+    }
+
+    @Override
+    public void writeLine(String line) {
+        StringBuilder sb = new StringBuilder(line);
+        sb.append(lineEnd);
+        pw.write(sb.toString());
+    }
+        
 }

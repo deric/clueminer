@@ -78,4 +78,13 @@ public abstract class DataRow extends AbstractInstance implements Instance {
     public void setAncestor(Instance instance){
         this.ancestor = instance;
     }
+    
+    @Override
+    public String[] toStringArray(){
+        String[] res = new String[size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = String.valueOf(getValue(i, Double.NaN));            
+        }
+        return res;
+    }
 }

@@ -20,7 +20,6 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     private static final long serialVersionUID = -1881645784146059894L;
     protected DataItem[] data;
-    
     /**
      * Specific coefficients that should be descriptive for dataset as whole (in
      * dataset could be thousands of values, we would like to simplify the huge
@@ -232,5 +231,14 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
             interpolator = new LinearInterpolator();
         }
         return valueAt(x, interpolator);
+    }
+
+    @Override
+    public String[] toStringArray() {
+        String[] res = new String[size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = String.valueOf(value(i));
+        }
+        return res;
     }
 }
