@@ -14,8 +14,8 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
     private static final long serialVersionUID = -6931127664256794410L;
     private int clusterId;
     private Color color;
-    
-    public BaseCluster(int capacity){
+
+    public BaseCluster(int capacity) {
         super(capacity);
     }
 
@@ -41,12 +41,25 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
 
     @Override
     public E getCentroid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int attrCount = this.attributeCount();
+        if (attrCount == 0) {
+            throw new RuntimeException("number of attributes should not be 0");
+        }
+        double[] tmpOut = new double[attrCount];
+        for (int i = 0; i < attrCount; i++) {
+            double sum = 0;
+            for (int j = 0; j < this.size(); j++) {
+                sum += get(j).value(i);
+            }
+            tmpOut[i] = sum / (double) this.size();
+
+        }
+        Instance avg = this.builder().create(tmpOut);
+        return (E) avg;
     }
 
     @Override
     public int countMutualElements(Cluster c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

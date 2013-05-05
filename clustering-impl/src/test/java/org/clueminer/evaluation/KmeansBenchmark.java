@@ -21,10 +21,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
-import org.clueminer.io.FileHandler;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
-import org.clueminer.utils.Dump;
 import org.clueminer.utils.FileUtils;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +43,7 @@ public class KmeansBenchmark {
     private static CommonFixture tf;
     private Map<String, String> classColors = new HashMap<String, String>();
     private int colorNum = 0;
+    private static String gnuplotExtension = ".gpt";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -184,7 +183,7 @@ public class KmeansBenchmark {
             String dataDir = getDataDir(dir);
             (new File(dataDir)).mkdir();
             String dataFile = "data-" + n + ".csv";
-            String scriptFile = "plot-" + n + ".gpt";
+            String scriptFile = "plot-" + n + gnuplotExtension;
             files[i] = scriptFile + " > ../" + data.getName() + "-" + n + ".pdf";
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
@@ -229,8 +228,8 @@ public class KmeansBenchmark {
             }
             //Dump.matrix(d, c.getName(), 3);
             String name = c.getName();
-            name = name.toLowerCase().replace(" ", "_") + ".gpt";
-            PrintWriter template = new PrintWriter(dataDir + name, "UTF-8");
+            name = name.toLowerCase().replace(" ", "_");
+            PrintWriter template = new PrintWriter(dataDir + name + gnuplotExtension, "UTF-8");
             template.write(plotEvaluation(c.getName(), kreal, d));
             template.close();
             plots[i] = name;
@@ -271,10 +270,8 @@ public class KmeansBenchmark {
         //add file to bash script
         try {
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(dir + File.separatorChar + "plot-all", true)));
-            int i = 0;
             for (String line : plots) {
-                out.write("gnuplot " + line + " > ../eval-" + i + ".pdf\n");
-                i++;
+                out.write("gnuplot " + line + gnuplotExtension + " > ../eval-" + line + ".pdf\n");
             }
             out.close();
         } catch (IOException e) {
