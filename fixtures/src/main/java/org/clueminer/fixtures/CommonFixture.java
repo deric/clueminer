@@ -26,7 +26,7 @@ public class CommonFixture extends AbstractFixture {
     }
 
     public File simpleCluster() throws IOException {
-        return resource("/simple/cluster.arff");
+        return resource("simple/cluster.arff");
     }
 
     public File yeastData() throws IOException {
@@ -39,6 +39,6 @@ public class CommonFixture extends AbstractFixture {
     }
 
     public File miguel() throws IOException {
-        return resource("/miguel/miguel.csv");
+        return resource("miguel/miguel.csv");
     }
 }
