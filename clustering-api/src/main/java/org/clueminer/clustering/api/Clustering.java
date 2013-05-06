@@ -71,4 +71,11 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return total number of elements (in all clusters)
      */
     public int instancesCount();
+
+    /**
+     * Computes centroid for the whole dataset (clustering)
+     *
+     * @return centroid for all clusters
+     */
+    public Instance getCentroid();
 }

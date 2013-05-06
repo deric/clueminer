@@ -100,4 +100,13 @@ public class ClusterListTest {
     public void testInstancesCount() {
         assertEquals(data.size(), clusters.instancesCount());
     }
+
+    /**
+     * Test of getCentroid method, of class ClusterList.
+     */
+    @Test
+    public void testGetCentroid() {
+        Instance centroid = clusters.getCentroid();
+        System.out.println("centroid: " + centroid);
+    }
 }
