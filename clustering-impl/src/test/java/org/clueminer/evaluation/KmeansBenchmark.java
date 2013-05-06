@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import org.clueminer.attributes.AttributeType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -21,6 +22,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
+import org.clueminer.io.FileHandler;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
 import org.clueminer.utils.FileUtils;
@@ -324,36 +326,38 @@ public class KmeansBenchmark {
         System.out.println("starting experiment");
         runExperiment(data, kmin, kmax, kreal, 1, 2);
     }
-    /*
-     @Test
-     public void testWine() throws IOException, Exception {
-     String datasetName = "wine";
-     // 1st attribute is class identifier (1-3)
-     Dataset data = new SampleDataset();
-     data.setName(datasetName);
-     FileHandler.loadDataset(tf.irisData(), data, 1, ",");
-     int kmin = 2;
-     //max k we test
-     int kmax = 15;
-     int kreal = 3;
-     runExperiment(data, kmin, kmax, kreal);
-     }
 
-     @Test
-     public void testYeast() throws IOException, Exception {
-     String datasetName = "yeast";
-     // 10th attribute is class identifier
-     ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
-     skippedIndexes.add(0); //we skip instance name
-     File file = tf.yeastData();
-     Dataset data = new SampleDataset();
-     data.setName(datasetName);
-     ARFFHandler arff = new ARFFHandler();
-     arff.load(file, data, 9, "\\s+", skippedIndexes);
-     int kmin = 2;
-     //max k we test
-     int kmax = 15;
-     int kreal = 10;
-     runExperiment(data, kmin, kmax, kreal);
-     }*/
+    @Test
+    public void testWine() throws IOException, Exception {
+        String datasetName = "wine";
+        // 1st attribute is class identifier (1-3)
+        Dataset data = new SampleDataset();
+        data.setName(datasetName);
+        File file = tf.wineArff();
+        ARFFHandler arff = new ARFFHandler();
+        arff.load(file, data, 0);        
+        int kmin = 2;
+        //max k we test
+        int kmax = 15;
+        int kreal = 3;
+        runExperiment(data, kmin, kmax, kreal, 1, 2);
+    }
+
+  //  @Test
+    public void testYeast() throws IOException, Exception {
+        String datasetName = "yeast";
+        // 10th attribute is class identifier
+        ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
+        skippedIndexes.add(0); //we skip instance name
+        File file = tf.yeastData();
+        Dataset data = new SampleDataset();
+        data.setName(datasetName);
+        ARFFHandler arff = new ARFFHandler();
+        arff.load(file, data, 9, "\\s+", skippedIndexes);
+        int kmin = 2;
+        //max k we test
+        int kmax = 15;
+        int kreal = 10;
+        runExperiment(data, kmin, kmax, kreal, 1, 2);
+    }
 }

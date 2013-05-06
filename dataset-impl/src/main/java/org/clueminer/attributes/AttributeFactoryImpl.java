@@ -23,7 +23,7 @@ public class AttributeFactoryImpl implements AttributeBuilder {
                 case REAL: //right now it's handled the very same way
                     return new NumericalAttribute(name);
                 default:
-                    throw new RuntimeException("attribute type "+type+"is not supported");
+                    throw new RuntimeException("attribute type "+type+" is not supported");
             }
     }
 
