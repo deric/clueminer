@@ -44,4 +44,17 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
     public void merge(Cluster... datasets) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    /**
+     * 
+     * @return total number of instances
+     */
+    @Override
+    public int instancesCount() {
+        int cnt = 0;
+        for(Cluster c : this){
+            cnt += c.size();
+        }
+        return cnt;
+    }
 }
