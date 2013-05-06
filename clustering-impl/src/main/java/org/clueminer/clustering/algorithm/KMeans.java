@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.BaseCluster;
 import org.clueminer.cluster.ClusterList;
-import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
