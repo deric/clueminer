@@ -20,6 +20,10 @@ public class CommonFixture extends AbstractFixture {
     public File wineData() throws IOException {
         return resource("wine/wine.data");
     }
+    
+    public File wineArff() throws IOException {
+        return resource("wine/wine.arff");
+    }
 
     public File umgArff() throws IOException {
         return resource("umg/data_umg2.arff");
@@ -31,7 +35,7 @@ public class CommonFixture extends AbstractFixture {
 
     public File yeastData() throws IOException {
         String datasetName = "yeast";
-        return resource(File.separatorChar + datasetName + File.separatorChar + datasetName + ".arff");
+        return resource(datasetName + File.separatorChar + datasetName + ".arff");
     }
 
     public File wellSeparatedCsv() throws IOException {
