@@ -43,7 +43,7 @@ public class CalinskiHarabasz extends ClusterEvaluator {
         if (clusters.size() > 1) {
             double w = 0.0, b = 0.0, ch;
             //centroid of all data
-            Instance centroid = datasetCentroid(dataset);
+            Instance centroid = clusters.getCentroid();
             for (int i = 0; i < clusters.size(); i++) {
                 Cluster<Instance> x = clusters.get(i);
 
@@ -70,22 +70,6 @@ public class CalinskiHarabasz extends ClusterEvaluator {
         }
 
         return squaredErrorSum;
-    }
-
-    public Instance datasetCentroid(Dataset<Instance> dataset) {
-        Instance centroid = dataset.builder().create(dataset.attributeCount());
-        for (Instance inst : dataset) {
-            //sum all features
-            for (int i = 0; i < inst.size(); i++) {
-                centroid.put(i, inst.value(i) + centroid.value(i));                 
-            }
-        }
-        
-        //average of features
-        for (int i = 0; i < dataset.attributeCount(); i++) {
-            centroid.put(i, centroid.value(i) / dataset.size());  
-        }
-        return centroid;
     }
 
     @Override
