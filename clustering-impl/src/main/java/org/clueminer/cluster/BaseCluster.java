@@ -53,11 +53,11 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
         }
         double[] tmpOut = new double[attrCount];
         for (int i = 0; i < attrCount; i++) {
-            double sum = 0;
+            double sum = 0.0;
             for (int j = 0; j < this.size(); j++) {
                 sum += get(j).value(i);
             }
-            tmpOut[i] = sum / (double) this.size();
+            tmpOut[i] = sum / this.size();
 
         }
         Instance avg = this.builder().create(tmpOut);
