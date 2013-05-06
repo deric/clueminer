@@ -1,6 +1,5 @@
 package org.clueminer.io;
 
-import java.io.File;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
