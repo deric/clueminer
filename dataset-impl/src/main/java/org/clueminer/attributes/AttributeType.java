@@ -14,6 +14,7 @@ public enum AttributeType implements IAttributeType {
     STRING,
     DATE,
     TIME,
-    DATE_TIME;
+    DATE_TIME,
+    INTEGER;
     
 }

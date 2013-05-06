@@ -19,6 +19,7 @@ public class AttributeFactoryImpl implements AttributeBuilder {
             switch((AttributeType)type){
                 case NUMERICAL:
                 case NUMERIC:
+                case INTEGER:
                 case REAL: //right now it's handled the very same way
                     return new NumericalAttribute(name);
                 default:

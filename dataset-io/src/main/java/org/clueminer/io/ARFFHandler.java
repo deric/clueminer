@@ -20,16 +20,20 @@ import org.clueminer.utils.DatasetLoader;
  * @author Tomas Barton
  *
  */
-public class ARFFHandler implements DatasetLoader  {
+public class ARFFHandler implements DatasetLoader {
 
     /**
-     * matches eg. "@RELATION iris"
+     * matches eg. "
+     *
+     * @RELATION iris"
      */
     private static Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
     /**
-     * matches eg. "@ATTRIBUTE sepallength	REAL"
+     * matches eg. "
+     *
+     * @ATTRIBUTE sepallength	REAL"
      */
-    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?(\\w*)['\"]?\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w\\\\/]*)['\"]?\\s+([\\w]*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -68,7 +72,8 @@ public class ARFFHandler implements DatasetLoader  {
      * @param skippedIndexes - indexes of columns that won't be imported
      * @return
      * @throws FileNotFoundException
-     * @throws IllegalArgumentException when type is not convertible to Enum IAttributeType
+     * @throws IllegalArgumentException when type is not convertible to Enum
+     * IAttributeType
      */
     public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws FileNotFoundException, UnsupportedAttributeType {
         LineIterator it = new LineIterator(file);
@@ -125,7 +130,7 @@ public class ARFFHandler implements DatasetLoader  {
                 } else if ((amatch = attribute.matcher(line)).matches()) {
                     //tries to convert string to enum, at top level we should catch the
                     //exception
-                    out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1),amatch.group(2).toUpperCase()));
+                    out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), amatch.group(2).toUpperCase()));                    
                     attrNum++;
                 } else if (line.equalsIgnoreCase("@data")) {
                     dataMode = true;
@@ -134,5 +139,4 @@ public class ARFFHandler implements DatasetLoader  {
         }
         return true;
     }
-
 }
