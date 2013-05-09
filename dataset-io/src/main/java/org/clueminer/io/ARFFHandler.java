@@ -86,6 +86,7 @@ public class ARFFHandler implements DatasetLoader {
 
         //number of attributes
         int attrNum = 0;
+        int headerLine = 0;
         /*
          * Indicates whether we are reading data
          */
@@ -128,10 +129,14 @@ public class ARFFHandler implements DatasetLoader {
                 if ((rmatch = relation.matcher(line)).matches()) {
                     out.setName(rmatch.group(1));
                 } else if ((amatch = attribute.matcher(line)).matches()) {
-                    //tries to convert string to enum, at top level we should catch the
-                    //exception
-                    out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), amatch.group(2).toUpperCase()));                    
-                    attrNum++;
+                    if (!skippedIndexes.contains(headerLine)) {
+                        //tries to convert string to enum, at top level we should catch the
+                        //exception
+                        out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), amatch.group(2).toUpperCase()));
+                        attrNum++;
+                    }
+                    headerLine++;
+
                 } else if (line.equalsIgnoreCase("@data")) {
                     dataMode = true;
                 }

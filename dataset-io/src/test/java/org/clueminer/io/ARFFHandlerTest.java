@@ -1,5 +1,6 @@
 package org.clueminer.io;
 
+import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
@@ -58,10 +59,12 @@ public class ARFFHandlerTest {
         assertEquals(150, data.size());
 
         //load yeast
-     /*   data = new SampleDataset();
-        arff.load(tf.yeastData(), data, 9);
-        assertEquals(4, data.attributeCount());
-        assertEquals(150, data.size());*/
+        data = new SampleDataset();
+        ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
+        skippedIndexes.add(0); //we skip instance name
+        arff.load(tf.yeastData(), data, 9, "\\s+", skippedIndexes);
+        assertEquals(8, data.attributeCount());
+        assertEquals(1484, data.size());
     }
 
     /**
