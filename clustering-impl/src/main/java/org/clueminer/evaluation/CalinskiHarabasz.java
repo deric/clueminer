@@ -7,6 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
@@ -24,6 +25,7 @@ import org.clueminer.math.Matrix;
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ClusterEvaluator.class)
 public class CalinskiHarabasz extends ClusterEvaluator {
 
     private static final long serialVersionUID = -2699019526373205522L;

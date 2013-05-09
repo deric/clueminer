@@ -207,12 +207,14 @@ public class KmeansBenchmark {
         }
 
         //bash script to generate results
-        PrintWriter template = new PrintWriter(dir + File.separatorChar + "plot-all", "UTF-8");
+        String shFile = dir + File.separatorChar + "plot-all";
+        PrintWriter template = new PrintWriter(shFile, "UTF-8");
         template.write(bashTemplate());
         for (int j = 0; j < files.length; j++) {
             template.write("gnuplot " + files[j] + "\n");
         }
         template.close();
+        Runtime.getRuntime().exec("chmod u+x " + shFile);
         return results;
     }
 
@@ -249,6 +251,7 @@ public class KmeansBenchmark {
                 + "set key off\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
+                + "set datafile missing \"NaN\"\n"
                 + "set ylabel 'score'\n"
                 + "set xlabel 'number of clusters'\n"
                 + "plot '-' title 'Datafile' with linespoints linewidth 2 pointtype 7 pointsize 0.3 ;\n";
@@ -335,7 +338,7 @@ public class KmeansBenchmark {
         data.setName(datasetName);
         File file = tf.wineArff();
         ARFFHandler arff = new ARFFHandler();
-        arff.load(file, data, 0);        
+        arff.load(file, data, 0);
         int kmin = 2;
         //max k we test
         int kmax = 15;
@@ -343,7 +346,7 @@ public class KmeansBenchmark {
         runExperiment(data, kmin, kmax, kreal, 1, 2);
     }
 
-  //  @Test
+    @Test
     public void testYeast() throws IOException, Exception {
         String datasetName = "yeast";
         // 10th attribute is class identifier
