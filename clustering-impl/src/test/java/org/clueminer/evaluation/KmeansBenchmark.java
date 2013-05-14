@@ -262,7 +262,18 @@ public class KmeansBenchmark {
         res += "e\n";
         return res;
     }
-
+    
+    /**
+     * 
+     * @param data  the dataset
+     * @param kmin
+     * @param kmax
+     * @param kreal - known k for dataset
+     * @param x - attribute on axis x
+     * @param y - attribute on axis y
+     * @throws IOException
+     * @throws Exception 
+     */
     private void runExperiment(Dataset data, int kmin, int kmax, int kreal, int x, int y) throws IOException, Exception {
         String dir = createFolder(data.getName());
         long start = System.currentTimeMillis();
@@ -361,6 +372,22 @@ public class KmeansBenchmark {
         //max k we test
         int kmax = 15;
         int kreal = 10;
+        runExperiment(data, kmin, kmax, kreal, 1, 2);
+    }
+
+    @Test
+    public void testBanana() throws IOException, Exception {
+        String datasetName = "banana";
+        // 1st attribute is class identifier (1-3)
+        Dataset data = new SampleDataset();
+        data.setName(datasetName);
+        File file = tf.bananaArff();
+        ARFFHandler arff = new ARFFHandler();
+        arff.load(file, data, 2);
+        int kmin = 2;
+        //max k we test
+        int kmax = 6;
+        int kreal = 2;
         runExperiment(data, kmin, kmax, kreal, 1, 2);
     }
 }
