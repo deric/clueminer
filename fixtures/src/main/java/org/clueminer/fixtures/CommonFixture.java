@@ -20,7 +20,7 @@ public class CommonFixture extends AbstractFixture {
     public File wineData() throws IOException {
         return resource("wine/wine.data");
     }
-    
+
     public File wineArff() throws IOException {
         return resource("wine/wine.arff");
     }
@@ -44,5 +44,9 @@ public class CommonFixture extends AbstractFixture {
 
     public File miguel() throws IOException {
         return resource("miguel/miguel.csv");
+    }
+
+    public File bananaArff() throws IOException {
+        return resource("bananas/banana.arff");
     }
 }
