@@ -1,6 +1,7 @@
 package org.clueminer.cluster;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -77,5 +78,48 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
             centroid.put(i, centroid.value(i) / instancesCount());
         }
         return (E) centroid;
+    }
+
+    @Override
+    public Iterator<Instance> instancesIterator() {
+        return new InstancesIterator();
+    }
+
+    /**
+     * Should iterate over all instances in all clusters
+     */
+    private class InstancesIterator implements Iterator<Instance> {
+
+        private int i = 0;
+        private int j = 0;
+        private int k = 0;
+        private Cluster current;
+
+        InstancesIterator() {
+            current = get(k++);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return i < instancesCount();
+        }
+
+        @Override
+        public Instance next() {
+            if (j < current.size()) {
+                i++;
+                return current.instance(j++);
+            } else {
+                i++;
+                j = 0;
+                current = get(k++);
+                return current.instance(j++);
+            }
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }
