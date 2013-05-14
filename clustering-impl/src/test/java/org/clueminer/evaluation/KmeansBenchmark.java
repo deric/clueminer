@@ -2,13 +2,12 @@ package org.clueminer.evaluation;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
-import org.clueminer.attributes.AttributeType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -22,7 +21,6 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
-import org.clueminer.io.FileHandler;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
 import org.clueminer.utils.FileUtils;
@@ -126,8 +124,7 @@ public class KmeansBenchmark {
         min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
-        String res = "set terminal pdf font  \"Times-New-Roman,8\" \n"
-                + "set datafile separator \",\"\n"
+        String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
                 + "set title \"k = " + k + "\"\n"
                 + "set xlabel \"" + first.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
@@ -169,7 +166,7 @@ public class KmeansBenchmark {
         return dir + "data" + File.separatorChar;
     }
 
-    private double[][] kMeans(Dataset data, int kmin, int kmax, String dir, int x, int y) throws IOException, Exception {
+    private double[][] kMeans(Dataset data, int kmin, int kmax, int kreal, String dir, int x, int y) throws IOException, Exception {
         double[][] results = new double[evaluators.size()][kmax - kmin];
         String[] files = new String[kmax - kmin];
         int i = 0;
@@ -184,9 +181,10 @@ public class KmeansBenchmark {
 
             String dataDir = getDataDir(dir);
             (new File(dataDir)).mkdir();
-            String dataFile = "data-" + n + ".csv";
-            String scriptFile = "plot-" + n + gnuplotExtension;
-            files[i] = scriptFile + " > ../" + data.getName() + "-" + n + ".pdf";
+            String strn = String.format("%02d", n);
+            String dataFile = "data-" + strn + ".csv";
+            String scriptFile = "plot-" + strn + gnuplotExtension;
+            files[i] = scriptFile + " > ../" + data.getName() + "-" + strn;
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
             toCsv(csv, clusters, data);
@@ -206,16 +204,29 @@ public class KmeansBenchmark {
             i++;
         }
 
+        String[] plots = plotResults(data.getName(), kmin, kmax, results, kreal, dir);
+
+        bashPlotScript(files, plots, dir, "set term pdf font 'Times-New-Roman,8'", "pdf");
+        bashPlotScript(files, plots, dir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+
+        return results;
+    }
+
+    private void bashPlotScript(String[] files, String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         //bash script to generate results
-        String shFile = dir + File.separatorChar + "plot-all";
+        String shFile = dir + File.separatorChar + "plot-" + ext;
         PrintWriter template = new PrintWriter(shFile, "UTF-8");
         template.write(bashTemplate());
+        template.write("TERM=\"" + term + "\"\n");
         for (int j = 0; j < files.length; j++) {
-            template.write("gnuplot " + files[j] + "\n");
+            template.write("gnuplot -e \"${TERM}\" " + files[j] + "." + ext + "\n");
         }
+        for (int j = 0; j < plots.length; j++) {
+            template.write("gnuplot -e \"${TERM}\" " + plots[j] + gnuplotExtension + " > ../eval-" + plots[j] + "." + ext + "\n");
+        }
+
         template.close();
         Runtime.getRuntime().exec("chmod u+x " + shFile);
-        return results;
     }
 
     private String[] plotResults(String datasetName, int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
@@ -244,8 +255,7 @@ public class KmeansBenchmark {
 
     private String plotEvaluation(String evaluator, int k, double[][] score) {
 
-        String res = "set term pdf font 'Times-New-Roman,8'\n"
-                + "set title '" + evaluator + "'\n"
+        String res = "set title '" + evaluator + "'\n"
                 + "set xtics add ('k=" + k + "' " + k + ")\n"
                 + "set arrow from " + k + ", graph 0 to " + k + ", graph 1 nohead ls 4 lw 2\n"
                 + "set key off\n"
@@ -257,57 +267,29 @@ public class KmeansBenchmark {
                 + "plot '-' title 'Datafile' with linespoints linewidth 2 pointtype 7 pointsize 0.3 ;\n";
         for (int i = 0; i < score.length; i++) {
             res += String.valueOf(score[i][0]) + " " + String.valueOf(score[i][1]) + " \n";
-
         }
         res += "e\n";
         return res;
     }
-    
+
     /**
-     * 
-     * @param data  the dataset
+     *
+     * @param data the dataset
      * @param kmin
      * @param kmax
      * @param kreal - known k for dataset
-     * @param x - attribute on axis x
-     * @param y - attribute on axis y
+     * @param x - attribute on axis x (start from 1)
+     * @param y - attribute on axis y (start from 1)
      * @throws IOException
-     * @throws Exception 
+     * @throws Exception
      */
     private void runExperiment(Dataset data, int kmin, int kmax, int kreal, int x, int y) throws IOException, Exception {
         String dir = createFolder(data.getName());
         long start = System.currentTimeMillis();
-        double[][] results = kMeans(data, kmin, kmax, dir, x, y);
+        kMeans(data, kmin, kmax, kreal, dir, x, y);
         long end = System.currentTimeMillis();
         System.out.println("measuring " + data.getName() + " took " + (end - start) + " ms");
-        String[] plots = plotResults(data.getName(), kmin, kmax, results, kreal, dir);
 
-
-        //add file to bash script
-        try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(dir + File.separatorChar + "plot-all", true)));
-            for (String line : plots) {
-                out.write("gnuplot " + line + gnuplotExtension + " > ../eval-" + line + ".pdf\n");
-            }
-            out.close();
-        } catch (IOException e) {
-            //oh noes!
-        }
-    }
-
-    //@Test
-    public void testPlotting() throws IOException, Exception {
-        String datasetName = "iris";
-        String dir = createFolder(datasetName);
-        ARFFHandler arff = new ARFFHandler();
-        Dataset data = new SampleDataset();
-        data.setName(datasetName);
-        arff.load(tf.irisArff(), data, 4);
-        data.setName(datasetName);
-        int kmin = 2;
-        //max k we test
-        int kmax = 10;
-        double[][] results = kMeans(data, kmin, kmax, dir, 1, 2);
     }
 
     @Test
@@ -372,7 +354,7 @@ public class KmeansBenchmark {
         //max k we test
         int kmax = 15;
         int kreal = 10;
-        runExperiment(data, kmin, kmax, kreal, 1, 2);
+        runExperiment(data, kmin, kmax, kreal, 1, 2);   
     }
 
     @Test
