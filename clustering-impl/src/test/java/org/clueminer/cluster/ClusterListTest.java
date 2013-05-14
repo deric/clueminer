@@ -2,6 +2,7 @@ package org.clueminer.cluster;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -109,4 +110,21 @@ public class ClusterListTest {
         Instance centroid = clusters.getCentroid();
         System.out.println("centroid: " + centroid);
     }
+
+    /**
+     * Test of instancesIterator method, of class ClusterList.
+     */
+    @Test
+    public void testInstancesIterator() {
+        Iterator<Instance> iter = clusters.instancesIterator();
+        Instance elem;
+        int i = 0;
+        while(iter.hasNext()){
+            elem = iter.next();
+            assertNotNull(elem);
+            i++;
+        }
+        assertEquals(clusters.instancesCount(), i);
+    }
+    
 }

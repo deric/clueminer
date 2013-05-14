@@ -2,6 +2,7 @@ package org.clueminer.clustering.api;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Iterator;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -71,6 +72,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return total number of elements (in all clusters)
      */
     public int instancesCount();
+
+    /**
+     * Iterator over all instances in clustering regardless assignment to a
+     * cluster
+     *
+     * @return instances iterator 
+     */
+    public Iterator<Instance> instancesIterator();
 
     /**
      * Computes centroid for the whole dataset (clustering)
