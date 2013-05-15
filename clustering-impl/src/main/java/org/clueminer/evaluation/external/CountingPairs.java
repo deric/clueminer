@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -75,7 +76,7 @@ public class CountingPairs {
                 cnt++;
                 table.put(label, cluster, cnt);
             }
-        }        
+        }
         return table;
     }
 
@@ -90,8 +91,7 @@ public class CountingPairs {
      * @return
      */
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = HashBiMap.create(table.size()); //new HashBiMap<String, String>(table.size());
-        matching.clear();
+        BiMap<String, String> matching = HashBiMap.create(table.size());
         //for each real class we have to find best match
         for (String r : table.rowKeySet()) {
             Map<String, Integer> assign = table.row(r);
@@ -101,16 +101,20 @@ public class CountingPairs {
                 value = assign.get(key);
                 //if one class would have same number of assignments to two 
                 //clusters, it's hard to decide which is which
-                if (value > max && !matching.containsKey(key)) {
+                if (value >= max && !matching.containsKey(key)) {
                     max = value;
                     maxKey = key;
                 }
             }
-            matching.put(r, maxKey);
+            if (!matching.containsKey(maxKey)) {
+                 matching.put(r, maxKey);
+            }else{
+                throw new RuntimeException("duplicate max key "+maxKey);
+            }
         }
         return matching;
     }
-    
+
     /**
      *  - TP (true positive) - as the number of points that are present in the same cluster in both C1 and C2.
      *  - FP (false positive) - as the number of points that are present in the same cluster in C1 but not in C2.
@@ -119,7 +123,8 @@ public class CountingPairs {
      * @param table
      * @param matching
      * @param clusterName
-     * @return table containing positive/negative assignments (usually used in supervised learning) 
+     * @return table containing positive/negative assignments (usually used in
+     * supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, BiMap<String, String> matching, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
@@ -132,7 +137,7 @@ public class CountingPairs {
         //interate over clusters
         for (String clust : table.columnKeySet()) {
             Map<String, Integer> column = table.column(clust);
-            
+
             if (clust.equals(clusterName)) {
                 for (String klass : column.keySet()) {
                     if (!klass.equals(realClass)) {
@@ -144,10 +149,10 @@ public class CountingPairs {
                 for (String klass : column.keySet()) {
                     value = column.get(klass);
                     if (klass.equals(realClass) || clust.equals(clusterName)) {
-                        fp += value;                                            
+                        fp += value;
                     } else {
                         tn += value;
-                    }                    
+                    }
                 }
             }
         }
