@@ -29,8 +29,7 @@ import static org.junit.Assert.*;
  */
 public class CountingPairsTest {
 
-    private static Clustering clusters;
-    private static CountingPairs test;
+    private static Clustering clusters;    
     private static CommonFixture tf = new CommonFixture();
     private static Clustering iris;
 
@@ -39,8 +38,7 @@ public class CountingPairsTest {
 
     @BeforeClass
     public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
-        clusters = FakeClustering.iris();
-        test = new CountingPairs();
+        clusters = FakeClustering.iris();        
 
         //now try some real clustering
         ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
@@ -68,7 +66,7 @@ public class CountingPairsTest {
     @Test
     public void testCountPairs() {
         //this clustering has all assignments correct
-        Table<String, String, Integer> table = test.countPairs(clusters);
+        Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
         for (String row : table.rowKeySet()) {
             Map<String, Integer> map = table.row(row);
             for (String klass : map.keySet()) {
@@ -85,8 +83,8 @@ public class CountingPairsTest {
      */
     @Test
     public void testFindMatching() {
-        Table<String, String, Integer> table = test.countPairs(iris);
-        BiMap<String, String> matching = test.findMatching(table);
+        Table<String, String, Integer> table = CountingPairs.countPairs(iris);
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
         //we have 3 different classes
         assertEquals(3, matching.size());
     }
@@ -96,14 +94,14 @@ public class CountingPairsTest {
      */
     @Test
     public void testCountAssignments() {
-        Table<String, String, Integer> table = test.countPairs(iris);
-        BiMap<String, String> matching = test.findMatching(table);
+        Table<String, String, Integer> table = CountingPairs.countPairs(iris);
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
         
         int tp, fp, fn, tn, sum;
         for (String cluster : matching.values()) {
             System.out.println(cluster + " corresponds to "+matching.inverse().get(cluster));
-            res = test.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching, cluster);
             assertEquals(4, res.size());
             tp = res.get("tp");
             fp = res.get("fp");
