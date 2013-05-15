@@ -110,7 +110,17 @@ public class CountingPairs {
         }
         return matching;
     }
-
+    
+    /**
+     *  - TP (true positive) - as the number of points that are present in the same cluster in both C1 and C2.
+     *  - FP (false positive) - as the number of points that are present in the same cluster in C1 but not in C2.
+     *  - FN (false negative) - as the number of points that are present in the same cluster in C2 but not in C1.
+     *  - TN (true negative) - as the number of points that are in different clusters in both C1 and C2.
+     * @param table
+     * @param matching
+     * @param clusterName
+     * @return table containing positive/negative assignments (usually used in supervised learning) 
+     */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, BiMap<String, String> matching, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
         int value;
