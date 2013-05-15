@@ -3,11 +3,10 @@ package org.clueminer.evaluation.external;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -156,12 +155,14 @@ public class CountingPairs {
                 }
             }
         }
-
-        Map<String, Integer> res = new HashMap<String, Integer>(4);
-        res.put("tp", tp);
-        res.put("fp", fp);
-        res.put("fn", fn);
-        res.put("tn", tn);
+        
+        //an immutable version of map
+        ImmutableMap<String,Integer> res = ImmutableMap.<String, Integer>builder()
+        .put("tp", tp)
+        .put("fp", fp)
+        .put("fn", fn)
+        .put("tn", tn)
+        .build();
 
         return res;
     }
