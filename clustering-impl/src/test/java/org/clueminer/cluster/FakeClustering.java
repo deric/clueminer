@@ -30,10 +30,13 @@ public class FakeClustering {
              */
             irisClusters = new ClusterList(3);
             Cluster a = new BaseCluster(50);
+            a.setName("cluster 1");
             a.setAttributes(irisData.getAttributes());
             Cluster b = new BaseCluster(50);
+            b.setName("cluster 2");
             b.setAttributes(irisData.getAttributes());
             Cluster c = new BaseCluster(50);
+            c.setName("cluster 3");
             c.setAttributes(irisData.getAttributes());
             for (int i = 0; i < 50; i++) {
                 a.add(irisData.instance(i));
