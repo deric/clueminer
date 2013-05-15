@@ -45,7 +45,7 @@ public class CountingPairs {
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public Table<String, String, Integer> countPairs(Clustering<Cluster> clustering) {
+    public static Table<String, String, Integer> countPairs(Clustering<Cluster> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = Tables.newCustomTable(
                 Maps.<String, Map<String, Integer>>newHashMap(),
@@ -89,9 +89,9 @@ public class CountingPairs {
      * @param table
      * @return
      */
-    public BiMap<String, String> findMatching(Table<String, String, Integer> table) {
+    public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
         BiMap<String, String> matching = HashBiMap.create(table.size()); //new HashBiMap<String, String>(table.size());
-
+        matching.clear();
         //for each real class we have to find best match
         for (String r : table.rowKeySet()) {
             Map<String, Integer> assign = table.row(r);
@@ -111,7 +111,7 @@ public class CountingPairs {
         return matching;
     }
 
-    public Map<String, Integer> countAssignments(Table<String, String, Integer> table, BiMap<String, String> matching, String clusterName) {
+    public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, BiMap<String, String> matching, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
         int value;
         //inverse map allows searching by value
