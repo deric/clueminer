@@ -33,7 +33,7 @@ public class FowlkesMallowsTest {
     private static double delta = 1e-9;
 
     public FowlkesMallowsTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
-        
+
         clusters = FakeClustering.iris();
 
         //now try some real clustering
@@ -76,12 +76,15 @@ public class FowlkesMallowsTest {
         double score = test.score(clusters, null);
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(2500.0, score, delta);
-        System.out.println("fm index = "+score);
-        
+        System.out.println("fm index = " + score);
+
         //delta here depends on random initialization of k-means
+        long start = System.currentTimeMillis();
         score = test.score(iris, null);
+        long end = System.currentTimeMillis();
         assertEquals(2228.45, score, 25.0);
-        System.out.println("fm index = "+score);
+        System.out.println("fm index = " + score);
+        System.out.println("measuring Fowlkes-Mallows took " + (end - start) + " ms");
     }
 
     /**
@@ -89,7 +92,6 @@ public class FowlkesMallowsTest {
      */
     @Test
     public void testScore_3args() {
-        
     }
 
     /**

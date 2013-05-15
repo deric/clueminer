@@ -8,7 +8,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
 
 /**
- *
+ * @see http://en.wikipedia.org/wiki/Fowlkes%E2%80%93Mallows_index
  * @author Tomas Barton
  */
 public class FowlkesMallows extends ExternalEvaluator {
@@ -46,13 +46,15 @@ public class FowlkesMallows extends ExternalEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
+
     /**
      * Should be maximized
+     *
      * @param score1
      * @param score2
-     * @return 
+     * @return
      */
     @Override
     public boolean compareScore(double score1, double score2) {
