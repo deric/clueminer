@@ -90,7 +90,7 @@ public class CountingPairs {
      * @return
      */
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = HashBiMap.create(table.size());
+        BiMap<String, String> matching = HashBiMap.create(table.size());        
         //for each real class we have to find best match
         for (String r : table.rowKeySet()) {
             Map<String, Integer> assign = table.row(r);
@@ -100,12 +100,12 @@ public class CountingPairs {
                 value = assign.get(key);
                 //if one class would have same number of assignments to two 
                 //clusters, it's hard to decide which is which
-                if (value >= max && !matching.containsKey(key)) {
+                if (value >= max && !matching.containsValue(key)) {
                     max = value;
                     maxKey = key;
                 }
             }
-            if (!matching.containsKey(maxKey)) {
+            if (!matching.containsValue(maxKey)) {
                  matching.put(r, maxKey);
             }else{
                 throw new RuntimeException("duplicate max key "+maxKey);
