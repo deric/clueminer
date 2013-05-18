@@ -1,8 +1,9 @@
-package org.clueminer.evaluation;
+package org.clueminer.utils;
 
 import java.util.Iterator;
 
 /**
+ * Used for plotting gnuplot charts
  *
  * @author Tomas Barton
  */

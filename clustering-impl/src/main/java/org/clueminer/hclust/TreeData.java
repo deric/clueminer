@@ -3,6 +3,7 @@ package org.clueminer.hclust;
 import java.io.Serializable;
 import java.util.Arrays;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.utils.Dump;
 
 /**
  * 
