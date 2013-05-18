@@ -5,9 +5,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import java.util.Map;
+import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -17,24 +19,6 @@ import org.clueminer.dataset.api.Instance;
  * @author Tomas Barton
  */
 public class CountingPairs {
-
-    /**
-     * number of pairs of points with the same label in C and assigned to the
-     * same cluster in K
-     */
-    protected int a = 0;
-    /**
-     * the number of pairs with the same label, but in different clusters
-     */
-    protected int b = 0;
-    /**
-     * number of pairs in the same cluster, but with different class labels
-     */
-    protected int c = 0;
-    /**
-     * number of pairs with different label and different cluster
-     */
-    protected int d = 0;
 
     /**
      * Should count number of item with same assignment to <Cluster A, Class X>
@@ -66,14 +50,14 @@ public class CountingPairs {
                 cluster = current.getName();
                 label = inst.classValue().toString();
 
-                if (table.contains(label, cluster)) {
-                    cnt = table.get(label, cluster);
+                if (table.contains(cluster, label)) {
+                    cnt = table.get(cluster, label);
                 } else {
                     cnt = 0;
                 }
 
                 cnt++;
-                table.put(label, cluster, cnt);
+                table.put(cluster, label, cnt);
             }
         }
         return table;
@@ -90,27 +74,35 @@ public class CountingPairs {
      * @return
      */
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = HashBiMap.create(table.size());        
+        BiMap<String, String> matching = HashBiMap.create(table.size());
+        
+        //sort clusters by number of diverse classes inside, clusters containing 
+        //only one class will have priority
+        TreeMap<String, Integer> sortedClusters = new ValueComparableMap<String, Integer>(Ordering.natural());
+
+        for (String rowKey : table.rowKeySet()) {
+            sortedClusters.put(rowKey, table.row(rowKey).size());
+        }
         //for each real class we have to find best match
-        for (String r : table.rowKeySet()) {
-            Map<String, Integer> assign = table.row(r);
+        for (String cluster : sortedClusters.keySet()) {
+            Map<String, Integer> assign = table.row(cluster);
             int max = 0, value;
             String maxKey = null;
             for (String key : assign.keySet()) {
                 value = assign.get(key);
                 //if one class would have same number of assignments to two 
-                //clusters, it's hard to decide which is which
-                if (value >= max && !matching.containsValue(key)) {
+                //clusters, it's hard to decide which is which                
+                if (value >= max && !matching.containsKey(key)) {
                     max = value;
                     maxKey = key;
                 }
             }
-            if (!matching.containsValue(maxKey)) {
-                 matching.put(r, maxKey);
-            }else{
-                throw new RuntimeException("duplicate max key "+maxKey);
+            if (!matching.containsKey(maxKey)) {
+                matching.put(maxKey, cluster);
+            } else {
+                throw new RuntimeException("duplicate max key " + maxKey);
             }
-        }
+        }        
         return matching;
     }
 
@@ -131,22 +123,22 @@ public class CountingPairs {
         //inverse map allows searching by value
         String realClass = matching.inverse().get(clusterName);
         //true positive
-        tp = table.get(realClass, clusterName);
+        tp = table.get(clusterName, realClass);
 
         //interate over clusters
-        for (String clust : table.columnKeySet()) {
-            Map<String, Integer> column = table.column(clust);
+        for (String clust : table.rowKeySet()) {
+            Map<String, Integer> row = table.row(clust);
 
             if (clust.equals(clusterName)) {
-                for (String klass : column.keySet()) {
+                for (String klass : row.keySet()) {
                     if (!klass.equals(realClass)) {
-                        fn += table.get(klass, clusterName);
+                        fn += table.get(clusterName, klass);
                     }
                     //else true positive (already counted)
                 }
             } else {
-                for (String klass : column.keySet()) {
-                    value = column.get(klass);
+                for (String klass : row.keySet()) {
+                    value = row.get(klass);
                     if (klass.equals(realClass) || clust.equals(clusterName)) {
                         fp += value;
                     } else {
@@ -155,47 +147,15 @@ public class CountingPairs {
                 }
             }
         }
-        
+
         //an immutable version of map
-        ImmutableMap<String,Integer> res = ImmutableMap.<String, Integer>builder()
-        .put("tp", tp)
-        .put("fp", fp)
-        .put("fn", fn)
-        .put("tn", tn)
-        .build();
+        ImmutableMap<String, Integer> res = ImmutableMap.<String, Integer>builder()
+                .put("tp", tp)
+                .put("fp", fp)
+                .put("fn", fn)
+                .put("tn", tn)
+                .build();
 
         return res;
-    }
-
-    protected void countPairs2(Clustering<Cluster> clustering) {
-        /*     int datasetSize = clustering.instancesCount();
-         Instance point1;
-         Instance point2;
-         for (int i = 0; i < datasetSize - 1; i++) {
-         for (int j = i + 1; j < datasetSize; j++) {
-         point1 = clustering.get(i);
-         point2 = clustering.get(j);
-
-         if (point1.getLabel() == point2.getLabel()) {
-         //points have same label 
-         if (point1.getCalculatedClusternumber() == point2.getCalculatedClusternumber()) {
-         //points assigned to same cluster
-         a++;
-         } else {
-         b++;
-         }
-         } else {
-         //different label
-         if (point1.getCalculatedClusternumber() == point2.getCalculatedClusternumber()) {
-         //same calculated cluster
-         c++;
-         } else {
-         d++; //not really used to calculate index. just a control variable
-
-         }
-         }
-         }
-         }
-         assert ((a + b + c + d) == datasetSize);*/
     }
 }
