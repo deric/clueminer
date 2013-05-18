@@ -16,12 +16,12 @@ import org.clueminer.evaluation.external.JaccardIndex;
  * @author Tomas Barton
  */
 public class Evolution implements Runnable {
-    
+
     private int populationSize = 100;
     private int generations;
     private Dataset<Instance> dataset;
     private boolean isFinished = true;
-    private Random rand = new Random();    
+    private Random rand = new Random();
     /**
      * Probability of mutation
      */
@@ -43,9 +43,9 @@ public class Evolution implements Runnable {
      */
     private Pair<Long, Long> time;
     protected ClusterEvaluation evaluator;
-    protected ClusteringAlgorithm algorithm;    
+    protected ClusteringAlgorithm algorithm;
     protected ClusterEvaluation jaccard = new JaccardIndex();
-    
+
     public Evolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
         isFinished = false;
@@ -54,27 +54,26 @@ public class Evolution implements Runnable {
         bestFitness = new Pair<Double, Double>();
         time = new Pair<Long, Long>();
     }
-    
+
     protected int attributesCount() {
         return dataset.attributeCount();
     }
-    
+
     protected Dataset<Instance> getDataset() {
         return dataset;
     }
-    
+
     @Override
     public void run() {
-        long start = System.currentTimeMillis();
-        long end;
+        time.a = System.currentTimeMillis();
         ArrayList<Individual> newInds = new ArrayList<Individual>();
         Population pop = new Population(this, populationSize);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
-        
+
         System.out.println(pop);
-        
+
         for (int g = 0; g < generations && !isFinished; g++) {
 
             // clear collection for new individuals
@@ -123,17 +122,28 @@ public class Evolution implements Runnable {
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
-            fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());                       
-        }               
-        end = System.currentTimeMillis();
-       // System.out.println("evolution took " + (end - start) + " ms");
-        fireFinalResult(best, (end - start));
+            fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());
+        }
+
+        time.b = System.currentTimeMillis();
+        pop.sortByFitness();
+        avgFitness.b = pop.getAvgFitness();
+        best = pop.getBestIndividual();
+        bestFitness.b = best.getFitness();
+
+        long evoTime =  (long) ((time.b - time.a) / 1000.0);
+        System.out.println("Evolution has finished after " +evoTime + " s...");
+        System.out.println("avgFit(G:0)= " + avgFitness.a + " avgFit(G:" + (generations - 1) + ")= " + avgFitness.b + " -> " + ((avgFitness.b / avgFitness.a) * 100) + " %");
+        System.out.println("bstFit(G:0)= " + bestFitness.a + " bstFit(G:" + (generations - 1) + ")= " + bestFitness.b + " -> " + ((bestFitness.b / bestFitness.a) * 100) + " %");
+        System.out.println("bestIndividual= " + pop.getBestIndividual());
+        // System.out.println("evolution took " + (end - start) + " ms");
+        fireFinalResult(best, evoTime);
     }
     private transient EventListenerList evoListeners = new EventListenerList();
-    
+
     private void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
         EvolutionListener[] listeners;
-        
+
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
@@ -141,14 +151,14 @@ public class Evolution implements Runnable {
             }
         }
     }
-    
+
     public void addEvolutionListener(EvolutionListener listener) {
         evoListeners.add(EvolutionListener.class, listener);
     }
-    
+
     private void fireFinalResult(Individual best, long evolutionTime) {
         EvolutionListener[] listeners;
-        
+
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
@@ -156,36 +166,36 @@ public class Evolution implements Runnable {
             }
         }
     }
-        
+
     public double getMutationProbability() {
         return mutationProbability;
     }
-    
+
     public void setMutationProbability(double mutationProbability) {
         this.mutationProbability = mutationProbability;
     }
-    
+
     public double getCrossoverProbability() {
         return crossoverProbability;
     }
-    
+
     public void setCrossoverProbability(double crossoverProbability) {
         this.crossoverProbability = crossoverProbability;
     }
-    
+
     public ClusteringAlgorithm getAlgorithm() {
         return algorithm;
     }
-    
+
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
     }
-    
+
     public ClusterEvaluation getEvaluator() {
         return evaluator;
     }
-    
+
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
-    }   
+    }
 }
