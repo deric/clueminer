@@ -1,7 +1,9 @@
 package org.clueminer.evaluation.external;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Collection;
+import java.util.Set;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
@@ -22,7 +24,7 @@ public class NMI extends ExternalEvaluator {
     }
 
 
-   /* public void calculate(Clustering clusters, Dataset dataset) {
+  /*  public void calculate(Clustering clusters, Dataset dataset) {
         if (clusters.size() == 0) {
             return;
         }
