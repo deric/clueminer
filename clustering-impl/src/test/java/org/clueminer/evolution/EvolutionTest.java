@@ -74,6 +74,8 @@ public class EvolutionTest {
         test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(new BICScore());
+        //collect data from evolution
+        test.addEvolutionListener(new GnuplotWriter(test, new JaccardIndex(), "iris-evolution"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
         
