@@ -31,7 +31,7 @@ import org.openide.util.NbBundle;
 public class Evolution implements Runnable {
 
     private int populationSize = 100;
-    private int generations = 50;
+    private int generations;
     private Dataset<Instance> dataset;
     private boolean isFinished = true;
     private Random rand = new Random();
@@ -61,9 +61,10 @@ public class Evolution implements Runnable {
     private String benchmarkFolder;
     protected ClusterEvaluation jaccard = new JaccardIndex();
 
-    public Evolution(Dataset<Instance> dataset) {
+    public Evolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
         isFinished = false;
+        this.generations = generations;
         avgFitness = new Pair<Double, Double>();
         bestFitness = new Pair<Double, Double>();
         time = new Pair<Long, Long>();
@@ -109,11 +110,11 @@ public class Evolution implements Runnable {
                     // take copy of current individual
                     Individual thisOne = pop.getIndividual(i);
                     // take another individual
-                    List<Individual> second = pop.selectIndividuals(1);
+                    List<? extends Individual> second = pop.selectIndividuals(1);
                     // do crossover
                     List<Individual> ancestors = thisOne.cross(second.get(0));
                     // put childrens to the list of new individuals
-                    newInds.addAll(ancestors);
+                    newInds.addAll(ancestors);                    
                 }
             }
 
@@ -165,10 +166,6 @@ public class Evolution implements Runnable {
         String strn = String.format("%02d", n);
         String dataFile = "data-" + strn + ".csv";
         String scriptFile = "plot-" + strn + ".gpt";
-
-
-
-
 
         try {
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
