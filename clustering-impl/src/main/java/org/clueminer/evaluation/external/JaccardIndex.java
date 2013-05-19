@@ -37,14 +37,18 @@ public class JaccardIndex extends ExternalEvaluator {
         int tp, fp, fn;
         double index = 0.0;
         double jaccard;
+        System.out.println("table: " + table);
+        System.out.println("matching: " + matching);
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching, cluster);
+            System.out.println(cluster + " = " + res);
             tp = res.get("tp");
             fp = res.get("fp");
             fn = res.get("fn");
             jaccard = tp / (double) (tp + fp + fn);
             index += jaccard;
+            System.out.println("jc = " + jaccard);
         }
 
         //average value
