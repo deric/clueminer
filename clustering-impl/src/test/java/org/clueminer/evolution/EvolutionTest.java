@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -71,7 +73,7 @@ public class EvolutionTest {
     /**
      * Test of run method, of class Evolution.
      */
-    @Test
+    //  @Test
     public void testRun() {
         test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
@@ -86,16 +88,41 @@ public class EvolutionTest {
         test.run();
     }
 
-    //@Test
+    // @Test
     public void testInformed() {
         //test run with informed metric
         test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
-        test.setEvaluator(new JaccardIndex());
+        ExternalEvaluator ext = new JaccardIndex();
+        test.setEvaluator(ext);
         //collect data from evolution
-        test.addEvolutionListener(new GnuplotWriter(test, new Precision(), "iris-evolution-informed"));
+        test.addEvolutionListener(new ConsoleDump(ext));
+        test.addEvolutionListener(new GnuplotWriter(test, ext, "iris-evolution-informed"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
+    }
+
+    @Test
+    public void testVariousMeasures() {
+        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
+        ExternalEvaluator ext = new JaccardIndex();
+        for (ClusterEvaluator eval : factory.getAll()) {
+            System.out.println("evaluator: " + eval.getName());
+            test = new Evolution(irisDataset, 50);
+            test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+            test.setEvaluator(eval);
+            GnuplotWriter gw = new GnuplotWriter(test, ext, "iris-"+safeName(eval.getName()));
+            gw.setPlotDumpMod(50);
+            //collect data from evolution
+            //test.addEvolutionListener(new ConsoleDump(ext));
+            test.addEvolutionListener(gw);
+            //test.setEvaluator(new JaccardIndex());
+            test.run();
+        }
+    }
+
+    private String safeName(String name) {
+        return name.toLowerCase().replace(" ", "_");
     }
 
     /**
