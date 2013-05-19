@@ -92,35 +92,8 @@ public class CountingPairsTest {
         assertEquals(3, matching.size());
 
         //let's test stupid clustering
-        Dataset<Instance> irisData = FakeClustering.irisDataset();
-        Clustering<Cluster> irisClusters = new ClusterList(3);
-        Cluster a = new BaseCluster(50);
-        a.setName("cluster 1");
-        a.setAttributes(irisData.getAttributes());
-        //add few instances to first cluster
-        a.add(irisData.instance(0));
-        a.add(irisData.instance(1));
-        a.add(irisData.instance(2));
-        a.add(irisData.instance(149));
-
-        Cluster b = new BaseCluster(50);
-        b.setName("cluster 2");
-        b.setAttributes(irisData.getAttributes());
-        b.add(irisData.instance(3));
-        b.add(irisData.instance(4));
-        b.add(irisData.instance(5));
-        b.add(irisData.instance(6));
-        Cluster c = new BaseCluster(50);
-        c.setName("cluster 3");
-        c.setAttributes(irisData.getAttributes());
-        //rest goes to the last cluster
-        for (int i = 7; i < 149; i++) {
-            c.add(irisData.instance(i));
-        }
-
-        irisClusters.add(a);
-        irisClusters.add(b);
-        irisClusters.add(c);
+        // Dataset<Instance> irisData = FakeClustering.irisDataset();
+        Clustering<Cluster> irisClusters = FakeClustering.irisWrong();
 
         table = CountingPairs.countPairs(irisClusters);
         matching = CountingPairs.findMatching(table);
@@ -132,6 +105,32 @@ public class CountingPairsTest {
         //cluster 3 should be mapped to Iris-versicolor
         System.out.println("versicolor: " + matching.get("Iris-versicolor"));
         assertNotNull(matching.get("Iris-versicolor"));
+    }
+
+    @Test
+    public void testEmptyClass() {
+        System.out.println("===test empty class");
+        Clustering<Cluster> irisClusters = FakeClustering.irisWrong2();
+
+        Table<String, String, Integer> table = CountingPairs.countPairs(irisClusters);
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
+
+        System.out.println("table: " + table);
+        System.out.println("matching: " + matching);
+        //only 2 classes could be paired
+        assertEquals(2, matching.size());
+        //Iris-setosa will be in all 3 clusters
+        //cluster 3 should be mapped to Iris-versicolor
+        System.out.println("versicolor: " + matching.get("Iris-versicolor"));
+
+        Map<String, Integer> res;
+
+        for (String cluster : matching.values()) {
+            res = CountingPairs.countAssignments(table, matching, cluster);
+            System.out.println("wrong table: "+res);
+        }
+
+        //assertNotNull(matching.get("Iris-versicolor"));
     }
 
     /**
