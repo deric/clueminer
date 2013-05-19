@@ -35,9 +35,9 @@ public class GnuplotWriter implements EvolutionListener {
     private LinkedList<String> results = new LinkedList<String>();
     private static String gnuplotExtension = ".gpt";
     //each 10 generations plot data
-    private int plotMod = 10;
+    private int plotDumpMod = 10;
     private ArrayList<String> plots = new ArrayList<String>(10);
-    private String separator = ",";
+    private char separator = ',';
 
     public GnuplotWriter(Evolution evolution, ClusterEvaluation external, String outputDir) {
         this.evolution = evolution;
@@ -69,14 +69,15 @@ public class GnuplotWriter implements EvolutionListener {
         sb.append(extern);
         results.add(sb.toString());
 
-        if (generationNum % plotMod == 0) {
-            String script = plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
-            plots.add(script);
+        if (generationNum % plotDumpMod == 0) {
+            String dataFile = writeData(generationNum, getDataDir(outputDir), best.getClustering());
+            plots.add(plotIndividual(generationNum, 1, 2, getDataDir(outputDir), dataFile, best.getClustering()));
+            plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best.getClustering()));
         }
     }
 
     @Override
-    public void finalResult(Individual best, long evolutionTime) {
+    public void finalResult(int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
 
         try {
@@ -92,19 +93,34 @@ public class GnuplotWriter implements EvolutionListener {
         }
     }
 
-    private String plotIndividual(int n, int x, int y, String dataDir, Clustering<Cluster> clusters) {
-        PrintWriter template = null;
+    private String writeData(int n, String dataDir, Clustering<Cluster> clusters) {
+        PrintWriter writer = null;
         String strn = String.format("%02d", n);
         String dataFile = "data-" + strn + ".csv";
-        //filename without extension
-        String scriptFile = "plot-" + strn;
-
         try {
-            PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
+
+            writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
             toCsv(csv, clusters, dataset);
             writer.close();
 
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            writer.close();
+        }
+        return dataFile;
+    }
+
+    private String plotIndividual(int n, int x, int y, String dataDir, String dataFile, Clustering<Cluster> clusters) {
+        PrintWriter template = null;
+        String strn = String.format("%02d", n);
+        //filename without extension
+        String scriptFile = "plot-" + strn + String.format("-x%02d", x) + String.format("-y%02d", y);
+
+        try {
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
@@ -140,7 +156,7 @@ public class GnuplotWriter implements EvolutionListener {
             writer.close();
 
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
-            template.write(gnuplotFitness(dataFile, validator));
+            template.write(gnuplotFitness(dataFile, validator, externalValidation));
             plots.add(scriptFile);
 
             template2 = new PrintWriter(dataDir + scriptExtern + gnuplotExtension, "UTF-8");
@@ -166,9 +182,8 @@ public class GnuplotWriter implements EvolutionListener {
         return name.toLowerCase().replace(" ", "_");
     }
 
-    private String gnuplotFitness(String dataFile, ClusterEvaluation validator) {
-        String res = "set title '" + validator.getName() + "'\n"
-                + "set key off\n"
+    private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
+        String res = "set title 'Fitness = " + validator.getName() + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -176,14 +191,17 @@ public class GnuplotWriter implements EvolutionListener {
                 + "set datafile missing \"NaN\"\n"
                 + "set ylabel '" + validator.getName() + "'\n"
                 + "set xlabel 'generation'\n"
+                + "set y2label \"" + external.getName() + "\"\n"
+                + "set y2tics\n"
+                + "set y2range [0:1]\n" //@TODO this might differ for other external measures
                 + "plot '" + dataFile + "' u 1:2 title 'best' with linespoints linewidth 2 pointtype 7 pointsize 0.3,\\\n"
-                + " '' u 1:3 title 'avg' with linespoints linewidth 2 pointtype 9 pointsize 0.3";
+                + "'' u 1:3 title 'avg' with linespoints linewidth 2 pointtype 9 pointsize 0.3,\\\n"
+                + "'' u 1:4 title 'external (" + external.getName() + ")' axes x1y2 with linespoints lt 1 lw 3 pt 3 pointsize 0.3 linecolor rgbcolor \"blue\"";
         return res;
     }
 
     private String gnuplotExternal(String dataFile, ClusterEvaluation validator) {
         String res = "set title '" + validator.getName() + "'\n"
-                + "set key off\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -209,7 +227,10 @@ public class GnuplotWriter implements EvolutionListener {
         min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
+        System.out.println("============== " + k);
+
         double jacc = externalValidation.score(clustering, dataset);
+        System.out.println("jaccard = " + jacc);
 
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
@@ -257,8 +278,9 @@ public class GnuplotWriter implements EvolutionListener {
     }
 
     public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<Instance> dataset) {
-        String[] header = new String[dataset.attributeCount() + 1];
+        String[] header = new String[dataset.attributeCount() + 2];
         header[dataset.attributeCount()] = "label";
+        header[dataset.attributeCount() + 1] = "class";
         int i = 0;
         for (Attribute ta : dataset.getAttributes().values()) {
             header[i++] = String.valueOf(ta.getName());
@@ -275,11 +297,11 @@ public class GnuplotWriter implements EvolutionListener {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < inst.size(); i++) {
             if (i > 0) {
-                res.append(',');
+                res.append(separator);
             }
             res.append(inst.value(i));
         }
-        return res.append(',').append(klass);
+        return res.append(separator).append(klass).append(separator).append(inst.classValue());
     }
 
     private void bashPlotScript(String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
@@ -295,5 +317,18 @@ public class GnuplotWriter implements EvolutionListener {
 
         template.close();
         Runtime.getRuntime().exec("chmod u+x " + shFile);
+    }
+
+    public int getPlotDumpMod() {
+        return plotDumpMod;
+    }
+
+    /**
+     * Sets modulo for generation number to dump best individual to chart
+     *
+     * @param plotDumpMod
+     */
+    public void setPlotDumpMod(int plotDumpMod) {
+        this.plotDumpMod = plotDumpMod;
     }
 }

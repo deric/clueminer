@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.BICScore;
+import org.clueminer.evaluation.external.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
 import org.clueminer.evaluation.external.Precision;
 import org.clueminer.exception.UnsupportedAttributeType;
@@ -72,15 +73,21 @@ public class EvolutionTest {
      */
     @Test
     public void testRun() {
-    /*    test = new Evolution(irisDataset, 50);
+        test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(new BICScore());
+        ExternalEvaluator ext = new JaccardIndex();
         //collect data from evolution
-        test.addEvolutionListener(new GnuplotWriter(test, new JaccardIndex(), "iris-evolution"));
+        GnuplotWriter gw = new GnuplotWriter(test, ext, "iris-evolution");
+        gw.setPlotDumpMod(1);
+        test.addEvolutionListener(gw);
+        //test.addEvolutionListener(new ConsoleDump(ext));
         //test.setEvaluator(new JaccardIndex());
-        test.run();*/
-        
-        
+        test.run();
+    }
+
+    //@Test
+    public void testInformed() {
         //test run with informed metric
         test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
@@ -89,7 +96,6 @@ public class EvolutionTest {
         test.addEvolutionListener(new GnuplotWriter(test, new Precision(), "iris-evolution-informed"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
-
     }
 
     /**

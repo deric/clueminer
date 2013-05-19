@@ -130,14 +130,9 @@ public class Evolution implements Runnable {
         avgFitness.b = pop.getAvgFitness();
         best = pop.getBestIndividual();
         bestFitness.b = best.getFitness();
-
-        long evoTime =  (long) ((time.b - time.a) / 1000.0);
-        System.out.println("Evolution has finished after " +evoTime + " s...");
-        System.out.println("avgFit(G:0)= " + avgFitness.a + " avgFit(G:" + (generations - 1) + ")= " + avgFitness.b + " -> " + ((avgFitness.b / avgFitness.a) * 100) + " %");
-        System.out.println("bstFit(G:0)= " + bestFitness.a + " bstFit(G:" + (generations - 1) + ")= " + bestFitness.b + " -> " + ((bestFitness.b / bestFitness.a) * 100) + " %");
-        System.out.println("bestIndividual= " + pop.getBestIndividual());
+        
         // System.out.println("evolution took " + (end - start) + " ms");
-        fireFinalResult(best, evoTime);
+        fireFinalResult(generations, best, time, bestFitness, avgFitness);
     }
     private transient EventListenerList evoListeners = new EventListenerList();
 
@@ -156,13 +151,13 @@ public class Evolution implements Runnable {
         evoListeners.add(EvolutionListener.class, listener);
     }
 
-    private void fireFinalResult(Individual best, long evolutionTime) {
+    private void fireFinalResult(int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         EvolutionListener[] listeners;
 
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
-                listeners[i].finalResult(best, evolutionTime);
+                listeners[i].finalResult(g, best, time, bestFitness, avgFitness);
             }
         }
     }
