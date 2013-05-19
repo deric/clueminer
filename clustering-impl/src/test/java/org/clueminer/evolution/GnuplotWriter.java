@@ -227,10 +227,8 @@ public class GnuplotWriter implements EvolutionListener {
         min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
-        System.out.println("============== " + k);
-
-        double jacc = externalValidation.score(clustering, dataset);
-        System.out.println("jaccard = " + jacc);
+       
+        double jacc = externalValidation.score(clustering, dataset);        
 
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
