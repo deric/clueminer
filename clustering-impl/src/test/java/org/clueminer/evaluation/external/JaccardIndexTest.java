@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
@@ -86,6 +87,12 @@ public class JaccardIndexTest {
         assertEquals(0.8141, score, 0.1);
         System.out.println("jaccard index = " + score);
         System.out.println("measuring Jaccard took " + (end - start) + " ms");
+        
+        Clustering<Cluster> irisWrong2 = FakeClustering.irisWrong2();
+        score = test.score(irisWrong2, null);
+         assertEquals(0.3666666666666667, score, delta);
+        System.out.println("jaccard index (wrong clust2) = " + score);
+        
     }
 
     /**

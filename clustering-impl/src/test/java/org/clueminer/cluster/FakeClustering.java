@@ -20,6 +20,7 @@ public class FakeClustering {
 
     private static Clustering<Cluster> irisClusters;
     private static Clustering<Cluster> irisWrong;
+    private static Clustering<Cluster> irisWrong2;
     private static Dataset<Instance> irisData;
 
     public static Clustering iris() {
@@ -102,5 +103,41 @@ public class FakeClustering {
             irisWrong.add(c);
         }
         return irisWrong;
+    }
+
+    /**
+     * Pretty bad clustering result, one class contained in two clusters
+     *
+     * @return
+     */
+    public static Clustering irisWrong2() {
+        if (irisWrong2 == null) {
+            irisWrong2 = new ClusterList(3);
+            Cluster a = new BaseCluster(50);
+            a.setName("cluster 1");
+            a.setAttributes(irisData.getAttributes());
+            for (int i = 0; i < 30; i++) {
+                a.add(irisData.instance(i));
+            }
+
+            Cluster b = new BaseCluster(50);
+            b.setName("cluster 2");
+            b.setAttributes(irisData.getAttributes());
+            for (int i = 30; i < 50; i++) {
+                b.add(irisData.instance(i));
+            }
+            Cluster c = new BaseCluster(50);
+            c.setName("cluster 3");
+            c.setAttributes(irisData.getAttributes());
+            //rest goes to the last cluster
+            for (int i = 50; i < 150; i++) {
+                c.add(irisData.instance(i));
+            }
+
+            irisWrong2.add(a);
+            irisWrong2.add(b);
+            irisWrong2.add(c);
+        }
+        return irisWrong2;
     }
 }

@@ -75,7 +75,7 @@ public class CountingPairs {
      */
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
         BiMap<String, String> matching = HashBiMap.create(table.size());
-        
+
         //sort clusters by number of diverse classes inside, clusters containing 
         //only one class will have priority
         TreeMap<String, Integer> sortedClusters = new ValueComparableMap<String, Integer>(Ordering.natural());
@@ -97,12 +97,12 @@ public class CountingPairs {
                     maxKey = key;
                 }
             }
-            if (!matching.containsKey(maxKey)) {
+            //one class could be assigned just to one cluster - hard membership
+            //it's not guaranteed that we'll find matching class for each cluster
+            if (maxKey != null && !matching.containsKey(maxKey)) {
                 matching.put(maxKey, cluster);
-            } else {
-                throw new RuntimeException("duplicate max key " + maxKey);
             }
-        }        
+        }
         return matching;
     }
 
