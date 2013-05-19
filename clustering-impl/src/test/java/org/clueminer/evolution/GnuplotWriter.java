@@ -64,7 +64,9 @@ public class GnuplotWriter implements EvolutionListener {
         StringBuilder sb = new StringBuilder();
         sb.append(String.valueOf(generationNum)).append(separator);
         sb.append(String.valueOf(best.getFitness())).append(separator);
-        sb.append(avgFitness);
+        sb.append(avgFitness).append(separator);
+        double extern = externalValidation.score(best.getClustering(), dataset);
+        sb.append(extern);
         results.add(sb.toString());
 
         if (generationNum % plotMod == 0) {
@@ -75,8 +77,8 @@ public class GnuplotWriter implements EvolutionListener {
 
     @Override
     public void finalResult(Individual best, long evolutionTime) {
-        String script = plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
-        plots.add(script);
+        plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
+
         try {
             bashPlotScript(plots.toArray(new String[plots.size()]), createFolder(outputDir), "set term pdf font 'Times-New-Roman,8'", "pdf");
             bashPlotScript(plots.toArray(new String[plots.size()]), createFolder(outputDir), "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
@@ -114,19 +116,22 @@ public class GnuplotWriter implements EvolutionListener {
         return scriptFile;
     }
 
-    private String plotFitness(String dataDir, LinkedList<String> table, ClusterEvaluation validator) {
+    private void plotFitness(String dataDir, LinkedList<String> table, ClusterEvaluation validator) {
         PrintWriter template = null;
+        PrintWriter template2 = null;
 
         String dataFile = "data-fitness.csv";
         String scriptFile = "fitness-" + safeName(validator.getName());
+        String scriptExtern = "external-" + safeName(externalValidation.getName());
 
         try {
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
-            String[] header = new String[3];
+            String[] header = new String[4];
             header[0] = "generation";
             header[1] = "best";
             header[2] = "avg";
+            header[3] = "external";
             csv.writeNext(header);
             for (String row : table) {
                 csv.writeLine(row);
@@ -136,6 +141,12 @@ public class GnuplotWriter implements EvolutionListener {
 
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
             template.write(gnuplotFitness(dataFile, validator));
+            plots.add(scriptFile);
+
+            template2 = new PrintWriter(dataDir + scriptExtern + gnuplotExtension, "UTF-8");
+            template2.write(gnuplotExternal(dataFile, externalValidation));
+            plots.add(scriptExtern);
+
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (UnsupportedEncodingException ex) {
@@ -144,9 +155,11 @@ public class GnuplotWriter implements EvolutionListener {
             if (template != null) {
                 template.close();
             }
+            if (template2 != null) {
+                template2.close();
+            }
         }
 
-        return scriptFile;
     }
 
     private String safeName(String name) {
@@ -165,7 +178,20 @@ public class GnuplotWriter implements EvolutionListener {
                 + "set xlabel 'generation'\n"
                 + "plot '" + dataFile + "' u 1:2 title 'best' with linespoints linewidth 2 pointtype 7 pointsize 0.3,\\\n"
                 + " '' u 1:3 title 'avg' with linespoints linewidth 2 pointtype 9 pointsize 0.3";
+        return res;
+    }
 
+    private String gnuplotExternal(String dataFile, ClusterEvaluation validator) {
+        String res = "set title '" + validator.getName() + "'\n"
+                + "set key off\n"
+                + "set grid \n"
+                + "set size 1.0, 1.0\n"
+                + "set key outside bottom horizontal box\n"
+                + "set datafile separator \",\"\n"
+                + "set datafile missing \"NaN\"\n"
+                + "set ylabel '" + validator.getName() + "'\n"
+                + "set xlabel 'generation'\n"
+                + "plot '" + dataFile + "' u 1:4 title 'external' with linespoints linewidth 2 pointtype 7 pointsize 0.3";
 
         return res;
     }
