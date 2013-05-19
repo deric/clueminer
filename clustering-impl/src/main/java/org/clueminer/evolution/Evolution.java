@@ -66,7 +66,7 @@ public class Evolution implements Runnable {
     @Override
     public void run() {
         time.a = System.currentTimeMillis();
-        ArrayList<Individual> newInds = new ArrayList<Individual>();
+        ArrayList<Individual> children = new ArrayList<Individual>();
         Population pop = new Population(this, populationSize);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
@@ -77,7 +77,7 @@ public class Evolution implements Runnable {
         for (int g = 0; g < generations && !isFinished; g++) {
 
             // clear collection for new individuals
-            newInds.clear();
+            children.clear();
 
             // apply crossover operator
             for (int i = 0; i < pop.getIndividuals().length; i++) {
@@ -89,7 +89,7 @@ public class Evolution implements Runnable {
                     // do crossover
                     List<Individual> ancestors = thisOne.cross(second.get(0));
                     // put childrens to the list of new individuals
-                    newInds.addAll(ancestors);
+                    children.addAll(ancestors);
                 }
             }
 
@@ -98,23 +98,23 @@ public class Evolution implements Runnable {
                 Individual thisOne = pop.getIndividual(i).deepCopy();
                 thisOne.mutate();
                 // put mutated individual to the list of new individuals
-                newInds.add(thisOne);
+                children.add(thisOne);
             }
 
             // count fitness of all changed individuals
-            for (int i = 0; i < newInds.size(); i++) {
-                newInds.get(i).countFitness();
+            for (int i = 0; i < children.size(); i++) {
+                children.get(i).countFitness();
             }
 
             // merge new and old individuals
-            for (int i = newInds.size(); i < pop.individualsLength(); i++) {
+            for (int i = children.size(); i < pop.individualsLength(); i++) {
                 Individual tmpi = pop.getIndividual(i).deepCopy();
                 tmpi.countFitness();
-                newInds.add(tmpi);
+                children.add(tmpi);
             }
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
-            Individual[] newIndsArr = newInds.toArray(new Individual[0]);
+            Individual[] newIndsArr = children.toArray(new Individual[0]);
             Arrays.sort(newIndsArr);
 
             // and take the better "half" (populationSize)

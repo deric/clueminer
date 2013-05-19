@@ -19,7 +19,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private static Random rand = new Random();
     private double[] weights;
     private AlgorithmParameters params;
-    private boolean debug = true;
+    private Clustering<Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
         this.evolution = evolution;
@@ -50,6 +50,23 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
 
     @Override
     public Clustering<Cluster> getClustering() {
+        return clustering;
+    }
+
+    @Override
+    public void countFitness() {
+        clustering = updateCustering();
+        fitness = evolution.evaluator.score(clustering, evolution.getDataset());
+    }
+
+    /**
+     * Some algorithms (like k-means) have random initialization, so we can't
+     * reproduce the same results, therefore we have to keep the resulting
+     * clustering
+     *
+     * @return clustering according to current parameters
+     */
+    private Clustering<Cluster> updateCustering() {
         Dataset<Instance> data = evolution.getDataset().duplicate();
         double[] values;
         Instance copy;
@@ -64,12 +81,6 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
             data.add(copy);
         }
         return algorithm.partition(data);
-    }
-
-    @Override
-    public void countFitness() {
-        Clustering<Cluster> clusters = getClustering();
-        fitness = evolution.evaluator.score(clusters, evolution.getDataset());     
     }
 
     @Override
@@ -104,7 +115,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
 
     @Override
     public WeightsIndividual deepCopy() {
-        WeightsIndividual newOne = new WeightsIndividual(this);        
+        WeightsIndividual newOne = new WeightsIndividual(this);
         return newOne;
     }
 
