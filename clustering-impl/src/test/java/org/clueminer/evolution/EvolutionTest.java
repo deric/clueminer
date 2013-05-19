@@ -10,6 +10,7 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.BICScore;
 import org.clueminer.evaluation.external.JaccardIndex;
+import org.clueminer.evaluation.external.Precision;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
@@ -37,7 +38,7 @@ public class EvolutionTest {
     public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
         ARFFHandler arff = new ARFFHandler();
         irisDataset = new SampleDataset();
-        arff.load(tf.irisArff(), irisDataset, 4);        
+        arff.load(tf.irisArff(), irisDataset, 4);
     }
 
     @AfterClass
@@ -78,7 +79,7 @@ public class EvolutionTest {
         test.addEvolutionListener(new GnuplotWriter(test, new JaccardIndex(), "iris-evolution"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
-        
+
     }
 
     /**
