@@ -48,7 +48,7 @@ public class ConsoleDump implements EvolutionListener {
     }
     
     @Override
-    public void finalResult(int generations, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+    public void finalResult(Evolution evol, int generations, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         long evoTime = (long) ((time.b - time.a) / 1000.0);
         System.out.println("Evolution has finished after " + evoTime + " s...");
         System.out.println("avgFit(G:0)= " + avgFitness.a + " avgFit(G:" + (generations - 1) + ")= " + avgFitness.b + " -> " + ((avgFitness.b / avgFitness.a) * 100) + " %");

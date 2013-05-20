@@ -115,6 +115,8 @@ public class Evolution implements Runnable {
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
             Individual[] newIndsArr = children.toArray(new Individual[0]);
+            System.out.println("children " + g + ": " + newIndsArr.length);
+
             Arrays.sort(newIndsArr);
 
             // and take the better "half" (populationSize)
@@ -130,7 +132,7 @@ public class Evolution implements Runnable {
         avgFitness.b = pop.getAvgFitness();
         best = pop.getBestIndividual();
         bestFitness.b = best.getFitness();
-        
+
         // System.out.println("evolution took " + (end - start) + " ms");
         fireFinalResult(generations, best, time, bestFitness, avgFitness);
     }
@@ -157,7 +159,7 @@ public class Evolution implements Runnable {
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
-                listeners[i].finalResult(g, best, time, bestFitness, avgFitness);
+                listeners[i].finalResult(this, g, best, time, bestFitness, avgFitness);
             }
         }
     }

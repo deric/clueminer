@@ -1,7 +1,13 @@
 package org.clueminer.evolution;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -11,18 +17,21 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.BICScore;
+import org.clueminer.evaluation.Silhouette;
 import org.clueminer.evaluation.external.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
 import org.clueminer.evaluation.external.Precision;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.utils.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -33,8 +42,28 @@ public class EvolutionTest {
     private static CommonFixture tf = new CommonFixture();
     private static Dataset<Instance> irisDataset;
     private Evolution test;
+    //table for keeping results from experiments
+    private Table<String, String, Double> table;
+    private ResultsCollector rc;
+    private String benchmarkFolder;
 
     public EvolutionTest() {
+        table = Tables.newCustomTable(
+                Maps.<String, Map<String, Double>>newHashMap(),
+                new Supplier<Map<String, Double>>() {
+            @Override
+            public Map<String, Double> get() {
+                return Maps.newHashMap();
+            }
+        });
+
+        String home = System.getProperty("user.home") + File.separatorChar
+                + NbBundle.getMessage(
+                FileUtils.class,
+                "FOLDER_Home");
+
+        benchmarkFolder = home + File.separatorChar + "benchmark";
+        rc = new ResultsCollector(table);
     }
 
     @BeforeClass
@@ -42,6 +71,8 @@ public class EvolutionTest {
         ARFFHandler arff = new ARFFHandler();
         irisDataset = new SampleDataset();
         arff.load(tf.irisArff(), irisDataset, 4);
+
+
     }
 
     @AfterClass
@@ -80,7 +111,7 @@ public class EvolutionTest {
         test.setEvaluator(new BICScore());
         ExternalEvaluator ext = new JaccardIndex();
         //collect data from evolution
-        GnuplotWriter gw = new GnuplotWriter(test, ext, "iris-evolution");
+        GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris-evolution");
         gw.setPlotDumpMod(1);
         test.addEvolutionListener(gw);
         //test.addEvolutionListener(new ConsoleDump(ext));
@@ -97,7 +128,7 @@ public class EvolutionTest {
         test.setEvaluator(ext);
         //collect data from evolution
         test.addEvolutionListener(new ConsoleDump(ext));
-        test.addEvolutionListener(new GnuplotWriter(test, ext, "iris-evolution-informed"));
+        test.addEvolutionListener(new GnuplotWriter(test, ext, benchmarkFolder, "iris-evolution-informed"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
@@ -106,19 +137,41 @@ public class EvolutionTest {
     public void testVariousMeasures() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
+
         for (ClusterEvaluator eval : factory.getAll()) {
             System.out.println("evaluator: " + eval.getName());
-            test = new Evolution(irisDataset, 50);
-            test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+            test = new Evolution(irisDataset, 20);
+            test.setAlgorithm(new KMeans(3, 50, new EuclideanDistance()));
             test.setEvaluator(eval);
-            GnuplotWriter gw = new GnuplotWriter(test, ext, "iris-"+safeName(eval.getName()));
+            GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
             gw.setPlotDumpMod(50);
             //collect data from evolution
             //test.addEvolutionListener(new ConsoleDump(ext));
             test.addEvolutionListener(gw);
-            //test.setEvaluator(new JaccardIndex());
+            test.addEvolutionListener(rc);
             test.run();
         }
+
+        String csvOutput = benchmarkFolder + File.separatorChar + "iris"
+                + File.separatorChar + "results.csv";
+        rc.writeToCsv(csvOutput);
+    }
+
+  //  @Test
+    public void testSilhouette() {
+        ExternalEvaluator ext = new JaccardIndex();
+        ClusterEvaluator eval = new Silhouette();
+        System.out.println("evaluator: " + eval.getName());
+        test = new Evolution(irisDataset, 50);
+        test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+        test.setEvaluator(eval);
+        GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
+        gw.setPlotDumpMod(50);
+        //collect data from evolution
+        //test.addEvolutionListener(new ConsoleDump(ext));
+        test.addEvolutionListener(gw);
+        //test.setEvaluator(new JaccardIndex());
+        test.run();
     }
 
     private String safeName(String name) {
