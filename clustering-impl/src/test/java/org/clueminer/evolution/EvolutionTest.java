@@ -143,7 +143,10 @@ public class EvolutionTest {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
         List<Dataset<Instance>> datasets = new LinkedList();
-        datasets.add(irisDataset);
+      //  datasets.add(irisDataset);
+        //datasets.add(DatasetFixture.wine());
+        datasets.add(DatasetFixture.yeast());
+       // datasets.add(DatasetFixture.yeast());
         
         String name;
         for (Dataset<Instance> dataset : datasets) {
@@ -162,11 +165,12 @@ public class EvolutionTest {
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
                 test.run();
+                rc.writeToCsv(csvOutput);
             }
         }
     }
 
-    //  @Test
+ //   @Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();

@@ -1,4 +1,4 @@
-package org.clueminer.cluster;
+package org.clueminer.clustering.benchmark;
 
 import java.io.File;
 import java.io.IOException;
