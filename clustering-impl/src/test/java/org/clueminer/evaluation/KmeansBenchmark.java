@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import org.clueminer.cluster.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -326,36 +327,20 @@ public class KmeansBenchmark {
 
     @Test
     public void testWine() throws IOException, Exception {
-        String datasetName = "wine";
-        // 1st attribute is class identifier (1-3)
-        Dataset data = new SampleDataset();
-        data.setName(datasetName);
-        File file = tf.wineArff();
-        ARFFHandler arff = new ARFFHandler();
-        arff.load(file, data, 0);
         int kmin = 2;
         //max k we test
         int kmax = 15;
         int kreal = 3;
-        runExperiment(data, kmin, kmax, kreal, 1, 2);
+        runExperiment(DatasetFixture.wine(), kmin, kmax, kreal, 1, 2);
     }
 
     @Test
-    public void testYeast() throws IOException, Exception {
-        String datasetName = "yeast";
-        // 10th attribute is class identifier
-        ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
-        skippedIndexes.add(0); //we skip instance name
-        File file = tf.yeastData();
-        Dataset data = new SampleDataset();
-        data.setName(datasetName);
-        ARFFHandler arff = new ARFFHandler();
-        arff.load(file, data, 9, "\\s+", skippedIndexes);
+    public void testYeast() throws IOException, Exception {        
         int kmin = 2;
         //max k we test
         int kmax = 15;
         int kreal = 10;
-        runExperiment(data, kmin, kmax, kreal, 1, 2);   
+        runExperiment(DatasetFixture.yeast(), kmin, kmax, kreal, 1, 2);   
     }
 
     @Test
