@@ -45,7 +45,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
         for (int i = 0; i < weights.length; i++) {
             weights[i] = rand.nextDouble();
         }
-
+        countFitness();
     }
 
     @Override
@@ -86,6 +86,15 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     @Override
     public double getFitness() {
         return fitness;
+    }
+
+    /**
+     * For tests only
+     *
+     * @param fitness
+     */
+    protected void setFitness(double fitness) {
+        this.fitness = fitness;
     }
 
     @Override

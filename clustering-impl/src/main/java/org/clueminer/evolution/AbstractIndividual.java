@@ -24,11 +24,13 @@ public abstract class AbstractIndividual<T extends Individual> implements Indivi
 
     @Override
     public int compareTo(Individual another) {
-        if (this.getFitness() > another.getFitness()) {
-            return -1;
-        }
-        if (this.getFitness() < another.getFitness()) {
+        double otherFitness = another.getFitness();
+        double thisFitness = this.getFitness();
+
+        if (thisFitness > otherFitness) {
             return 1;
+        } else if (thisFitness < otherFitness) {
+            return -1;
         }
         return 0;
     }
