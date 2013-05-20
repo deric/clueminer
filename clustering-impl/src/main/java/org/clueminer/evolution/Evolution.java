@@ -2,6 +2,7 @@ package org.clueminer.evolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import javax.swing.event.EventListenerList;
@@ -117,7 +118,7 @@ public class Evolution implements Runnable {
             Individual[] newIndsArr = children.toArray(new Individual[0]);
             System.out.println("children " + g + ": " + newIndsArr.length);
 
-            Arrays.sort(newIndsArr);
+            Arrays.sort(newIndsArr, Collections.reverseOrder());
 
             // and take the better "half" (populationSize)
             System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, pop.getIndividuals().length);
