@@ -21,13 +21,14 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness) {
+    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         //we care only about final results
     }
 
     @Override
-    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
-        table.put(evolution.getEvaluator().getName(), evolution.getDataset().getName(), best.getFitness());
+    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, 
+            Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
+        table.put(evolution.getEvaluator().getName(), evolution.getDataset().getName(), external);
     }
 
     public void writeToCsv(String filename) {

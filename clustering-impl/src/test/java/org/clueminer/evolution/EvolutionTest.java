@@ -44,8 +44,9 @@ public class EvolutionTest {
     private Evolution test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
-    private ResultsCollector rc;
-    private String benchmarkFolder;
+    private static ResultsCollector rc;
+    private static String benchmarkFolder;
+    private static String csvOutput;
 
     public EvolutionTest() {
         table = Tables.newCustomTable(
@@ -64,6 +65,7 @@ public class EvolutionTest {
 
         benchmarkFolder = home + File.separatorChar + "benchmark";
         rc = new ResultsCollector(table);
+        csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
     }
 
     @BeforeClass
@@ -71,12 +73,12 @@ public class EvolutionTest {
         ARFFHandler arff = new ARFFHandler();
         irisDataset = new SampleDataset();
         arff.load(tf.irisArff(), irisDataset, 4);
-
-
     }
 
     @AfterClass
     public static void tearDownClass() {
+
+        rc.writeToCsv(csvOutput);
     }
 
     @Before
@@ -110,8 +112,9 @@ public class EvolutionTest {
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(new BICScore());
         ExternalEvaluator ext = new JaccardIndex();
+        test.setExternal(ext);
         //collect data from evolution
-        GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris-evolution");
+        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris-evolution");
         gw.setPlotDumpMod(1);
         test.addEvolutionListener(gw);
         //test.addEvolutionListener(new ConsoleDump(ext));
@@ -126,15 +129,16 @@ public class EvolutionTest {
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         ExternalEvaluator ext = new JaccardIndex();
         test.setEvaluator(ext);
+        test.setExternal(ext);
         //collect data from evolution
-        test.addEvolutionListener(new ConsoleDump(ext));
-        test.addEvolutionListener(new GnuplotWriter(test, ext, benchmarkFolder, "iris-evolution-informed"));
+        test.addEvolutionListener(new ConsoleDump());
+        test.addEvolutionListener(new GnuplotWriter(test, benchmarkFolder, "iris-evolution-informed"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
 
     @Test
-    public void testVariousMeasures() {
+    public void testIrisVariousMeasures() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
 
@@ -143,7 +147,8 @@ public class EvolutionTest {
             test = new Evolution(irisDataset, 20);
             test.setAlgorithm(new KMeans(3, 50, new EuclideanDistance()));
             test.setEvaluator(eval);
-            GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
+            test.setExternal(ext);
+            GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
             gw.setPlotDumpMod(50);
             //collect data from evolution
             //test.addEvolutionListener(new ConsoleDump(ext));
@@ -151,13 +156,9 @@ public class EvolutionTest {
             test.addEvolutionListener(rc);
             test.run();
         }
-
-        String csvOutput = benchmarkFolder + File.separatorChar + "iris"
-                + File.separatorChar + "results.csv";
-        rc.writeToCsv(csvOutput);
     }
 
-  //  @Test
+    //  @Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();
@@ -165,7 +166,8 @@ public class EvolutionTest {
         test = new Evolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(eval);
-        GnuplotWriter gw = new GnuplotWriter(test, ext, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
+        test.setExternal(ext);
+        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
         gw.setPlotDumpMod(50);
         //collect data from evolution
         //test.addEvolutionListener(new ConsoleDump(ext));

@@ -30,7 +30,6 @@ public class GnuplotWriter implements EvolutionListener {
     private Evolution evolution;
     private Dataset<Instance> dataset;
     private String benchmarkFolder;
-    private ClusterEvaluation externalValidation;
     private String outputDir;
     private LinkedList<String> results = new LinkedList<String>();
     private static String gnuplotExtension = ".gpt";
@@ -39,10 +38,9 @@ public class GnuplotWriter implements EvolutionListener {
     private ArrayList<String> plots = new ArrayList<String>(10);
     private char separator = ',';
 
-    public GnuplotWriter(Evolution evolution, ClusterEvaluation external, String benchmarkDir, String subDirectory) {
+    public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
-        this.externalValidation = external;
         this.outputDir = subDirectory;
         benchmarkFolder = benchmarkDir;
 
@@ -51,25 +49,25 @@ public class GnuplotWriter implements EvolutionListener {
     }
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness) {
+    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         //plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
         StringBuilder sb = new StringBuilder();
         sb.append(String.valueOf(generationNum)).append(separator);
         sb.append(String.valueOf(best.getFitness())).append(separator);
         sb.append(avgFitness).append(separator);
-        double extern = externalValidation.score(best.getClustering(), dataset);
-        sb.append(extern);
+        sb.append(external);
         results.add(sb.toString());
 
         if (generationNum % plotDumpMod == 0) {
             String dataFile = writeData(generationNum, getDataDir(outputDir), best.getClustering());
-            plots.add(plotIndividual(generationNum, 1, 2, getDataDir(outputDir), dataFile, best.getClustering()));
-            plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best.getClustering()));
+            plots.add(plotIndividual(generationNum, 1, 2, getDataDir(outputDir), dataFile, best, external));
+            plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
         }
     }
 
     @Override
-    public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+    public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
+            Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
 
         try {
@@ -106,7 +104,7 @@ public class GnuplotWriter implements EvolutionListener {
         return dataFile;
     }
 
-    private String plotIndividual(int n, int x, int y, String dataDir, String dataFile, Clustering<Cluster> clusters) {
+    private String plotIndividual(int n, int x, int y, String dataDir, String dataFile, Individual best, double external) {
         PrintWriter template = null;
         String strn = String.format("%02d", n);
         //filename without extension
@@ -119,7 +117,7 @@ public class GnuplotWriter implements EvolutionListener {
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
-        template.write(plotTemplate(n, x, y, clusters, dataFile));
+        template.write(plotTemplate(n, x, y, best, dataFile, external));
         template.close();
         return scriptFile;
     }
@@ -130,7 +128,7 @@ public class GnuplotWriter implements EvolutionListener {
 
         String dataFile = "data-fitness.csv";
         String scriptFile = "fitness-" + safeName(validator.getName());
-        String scriptExtern = "external-" + safeName(externalValidation.getName());
+        String scriptExtern = "external-" + safeName(evolution.getExternal().getName());
 
         try {
             PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
@@ -148,11 +146,11 @@ public class GnuplotWriter implements EvolutionListener {
             writer.close();
 
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
-            template.write(gnuplotFitness(dataFile, validator, externalValidation));
+            template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
             plots.add(scriptFile);
 
             template2 = new PrintWriter(dataDir + scriptExtern + gnuplotExtension, "UTF-8");
-            template2.write(gnuplotExternal(dataFile, externalValidation));
+            template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
             plots.add(scriptExtern);
 
         } catch (FileNotFoundException ex) {
@@ -206,9 +204,10 @@ public class GnuplotWriter implements EvolutionListener {
         return res;
     }
 
-    private String plotTemplate(int k, int x, int y, Clustering<Cluster> clustering, String dataFile) {
+    private String plotTemplate(int k, int x, int y, Individual best, String dataFile, double external) {
+        Clustering<Cluster> clustering = best.getClustering();
         Cluster<Instance> first = clustering.get(0);
-        double fitness = evolution.getEvaluator().score(clustering, dataset);
+        double fitness = best.getFitness();
         int attrCnt = first.attributeCount();
         int labelPos = attrCnt + 1;
         //attributes are numbered from zero, gnuplot columns from 1
@@ -219,12 +218,9 @@ public class GnuplotWriter implements EvolutionListener {
         min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
-
-        double jacc = externalValidation.score(clustering, dataset);
-
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
-                + "set title \"generation = " + k + ", fitness = " + fitness + ", jacc = " + jacc + "\"\n"
+                + "set title \"generation = " + k + ", fitness = " + fitness + ", jacc = " + external + "\"\n"
                 + "set xlabel \"" + first.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
                 + "set ylabel \"" + first.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
                 //   + "set xtics 0,0.5 nomirror\n"
