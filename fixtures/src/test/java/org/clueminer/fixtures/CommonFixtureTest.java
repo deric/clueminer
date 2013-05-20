@@ -98,4 +98,24 @@ public class CommonFixtureTest {
     public void testGlassArff() throws Exception {
         assertTrue(instance.glassArff().exists());
     }
+
+    @Test
+    public void testIonosphereArff() throws Exception {
+        assertTrue(instance.ionosphereArff().exists());
+    }
+
+    @Test
+    public void testVehicleArff() throws Exception {
+        assertTrue(instance.vehicleArff().exists());
+    }
+
+    @Test
+    public void testInsectArff() throws Exception {
+        assertTrue(instance.insectArff().exists());
+    }
+
+    @Test
+    public void testSonarArff() throws Exception {
+        assertTrue(instance.sonarArff().exists());
+    }
 }

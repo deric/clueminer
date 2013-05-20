@@ -72,7 +72,7 @@ public class Evolution implements Runnable {
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
 
-        System.out.println(pop);
+        //System.out.println(pop);
 
         for (int g = 0; g < generations && !isFinished; g++) {
 
@@ -107,16 +107,23 @@ public class Evolution implements Runnable {
             }
 
             // merge new and old individuals
+            double fitness;
             for (int i = children.size(); i < pop.individualsLength(); i++) {
                 Individual tmpi = pop.getIndividual(i).deepCopy();
                 tmpi.countFitness();
-                children.add(tmpi);
+                fitness = tmpi.getFitness();
+                if(!Double.isNaN(fitness)){
+                    children.add(tmpi);
+                }                
             }
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
             Individual[] newIndsArr = children.toArray(new Individual[0]);
-            System.out.println("children " + g + ": " + newIndsArr.length);
-
+            //    System.out.println("children " + g + ": " + newIndsArr.length);
+           // System.out.println("=== childern");
+            for (int i = 0; i < newIndsArr.length; i++) {
+                System.out.println(i + ": " + newIndsArr[i].getFitness());
+            }
             Arrays.sort(newIndsArr, Collections.reverseOrder());
 
             // and take the better "half" (populationSize)
@@ -143,7 +150,6 @@ public class Evolution implements Runnable {
         }
         return Double.NaN;
     }
-    
     private transient EventListenerList evoListeners = new EventListenerList();
 
     private void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
@@ -218,4 +224,12 @@ public class Evolution implements Runnable {
     public void setExternal(ClusterEvaluation external) {
         this.external = external;
     }
+
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    public void setPopulationSize(int populationSize) {
+        this.populationSize = populationSize;
+    }        
 }
