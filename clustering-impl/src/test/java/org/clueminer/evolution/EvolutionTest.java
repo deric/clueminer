@@ -7,7 +7,10 @@ import com.google.common.collect.Tables;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import org.clueminer.cluster.DatasetFixture;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -70,9 +73,7 @@ public class EvolutionTest {
 
     @BeforeClass
     public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
-        ARFFHandler arff = new ARFFHandler();
-        irisDataset = new SampleDataset();
-        arff.load(tf.irisArff(), irisDataset, 4);
+        irisDataset = DatasetFixture.iris();
     }
 
     @AfterClass
@@ -136,25 +137,32 @@ public class EvolutionTest {
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
-
+    
     @Test
-    public void testIrisVariousMeasures() {
+    public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
-
-        for (ClusterEvaluator eval : factory.getAll()) {
-            System.out.println("evaluator: " + eval.getName());
-            test = new Evolution(irisDataset, 20);
-            test.setAlgorithm(new KMeans(3, 50, new EuclideanDistance()));
-            test.setEvaluator(eval);
-            test.setExternal(ext);
-            GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
-            gw.setPlotDumpMod(50);
-            //collect data from evolution
-            //test.addEvolutionListener(new ConsoleDump(ext));
-            test.addEvolutionListener(gw);
-            test.addEvolutionListener(rc);
-            test.run();
+        List<Dataset<Instance>> datasets = new LinkedList();
+        datasets.add(irisDataset);
+        
+        String name;
+        for (Dataset<Instance> dataset : datasets) {
+            name = dataset.getName();
+            System.out.println("=== dataset " + name);
+            for (ClusterEvaluator eval : factory.getAll()) {
+                System.out.println("evaluator: " + eval.getName());
+                test = new Evolution(dataset, 20);
+                test.setAlgorithm(new KMeans(3, 50, new EuclideanDistance()));
+                test.setEvaluator(eval);
+                test.setExternal(ext);
+                GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
+                gw.setPlotDumpMod(50);
+                //collect data from evolution
+                //test.addEvolutionListener(new ConsoleDump(ext));
+                test.addEvolutionListener(gw);
+                test.addEvolutionListener(rc);
+                test.run();
+            }
         }
     }
 

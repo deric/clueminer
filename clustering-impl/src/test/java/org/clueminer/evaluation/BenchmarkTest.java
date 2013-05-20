@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import javax.imageio.ImageIO;
+import org.clueminer.cluster.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
@@ -146,7 +147,7 @@ public class BenchmarkTest {
         double[][] results = new double[evaluators.size()][kmax - kmin];
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
-            ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());          
+            ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
             Clustering<Cluster> clusters = km.partition(data);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
@@ -278,16 +279,11 @@ public class BenchmarkTest {
 
     //@Test
     public void testPlotting() throws IOException, Exception {
-        String datasetName = "iris";
-        String dir = createFolder(datasetName);
-        ARFFHandler arff = new ARFFHandler();
-        Dataset data = new SampleDataset();
-        arff.load(tf.irisArff(), data, 4);
-        data.setName(datasetName);
+        String dir = createFolder("iris");
         int kmin = 2;
         //max k we test
         int kmax = 10;
-        double[][] results = kMeans(data, kmin, kmax, dir);
+        double[][] results = kMeans(DatasetFixture.iris(), kmin, kmax, dir);
     }
 
     //@Test
@@ -335,17 +331,10 @@ public class BenchmarkTest {
     //  @Test
     public void testYeast() throws IOException, Exception {
         String datasetName = "yeast";
-        // 10th attribute is class identifier
-        ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
-        skippedIndexes.add(0); //we skip instance name
-        File file = tf.yeastData();
-        Dataset data = new SampleDataset();
-        ARFFHandler arff = new ARFFHandler();
-        arff.load(file, data, 9, "\\s+", skippedIndexes);
         int kmin = 2;
         //max k we test
         int kmax = 15;
         int kreal = 10;
-        runExperiment(datasetName, data, kmin, kmax, kreal);
+        runExperiment(datasetName, DatasetFixture.yeast(), kmin, kmax, kreal);
     }
 }
