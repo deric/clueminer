@@ -10,7 +10,6 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evaluation.external.JaccardIndex;
 
 /**
  *
@@ -44,8 +43,8 @@ public class Evolution implements Runnable {
      */
     private Pair<Long, Long> time;
     protected ClusterEvaluation evaluator;
+    protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
-    protected ClusterEvaluation jaccard = new JaccardIndex();
 
     public Evolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
@@ -124,7 +123,7 @@ public class Evolution implements Runnable {
             System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, pop.getIndividuals().length);
 
             // print statistic
-            // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
+            // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());            
             fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());
         }
 
@@ -137,6 +136,14 @@ public class Evolution implements Runnable {
         // System.out.println("evolution took " + (end - start) + " ms");
         fireFinalResult(generations, best, time, bestFitness, avgFitness);
     }
+
+    private double externalValidation(Individual best) {
+        if (external != null) {
+            return external.score(best.getClustering(), dataset);
+        }
+        return Double.NaN;
+    }
+    
     private transient EventListenerList evoListeners = new EventListenerList();
 
     private void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
@@ -145,7 +152,7 @@ public class Evolution implements Runnable {
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
-                listeners[i].bestInGeneration(generationNum, best, avgFitness);
+                listeners[i].bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
             }
         }
     }
@@ -154,13 +161,14 @@ public class Evolution implements Runnable {
         evoListeners.add(EvolutionListener.class, listener);
     }
 
-    private void fireFinalResult(int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+    private void fireFinalResult(int g, Individual best, Pair<Long, Long> time,
+            Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         EvolutionListener[] listeners;
 
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
             for (int i = 0; i < listeners.length; i++) {
-                listeners[i].finalResult(this, g, best, time, bestFitness, avgFitness);
+                listeners[i].finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
             }
         }
     }
@@ -195,5 +203,19 @@ public class Evolution implements Runnable {
 
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
+    }
+
+    /**
+     * External validation criterion, is used only for reporting, not during
+     * evolution
+     *
+     * @return
+     */
+    public ClusterEvaluation getExternal() {
+        return external;
+    }
+
+    public void setExternal(ClusterEvaluation external) {
+        this.external = external;
     }
 }

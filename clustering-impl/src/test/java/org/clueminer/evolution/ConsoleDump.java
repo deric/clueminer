@@ -6,7 +6,6 @@ import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evaluation.external.CountingPairs;
-import org.clueminer.evaluation.external.ExternalEvaluator;
 
 /**
  *
@@ -14,14 +13,9 @@ import org.clueminer.evaluation.external.ExternalEvaluator;
  */
 public class ConsoleDump implements EvolutionListener {
     
-    private ExternalEvaluator external;
-    
-    public ConsoleDump(ExternalEvaluator external) {
-        this.external = external;
-    }
     
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness) {
+    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         Clustering<Cluster> clusters = best.getClustering();
         Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
@@ -43,16 +37,18 @@ public class ConsoleDump implements EvolutionListener {
             index += jaccard;
         }
         System.out.println("jaccard = " + (index / clusters.size()));
-        System.out.println("external = " + external.score(clusters, null));
+        System.out.println("external = " + external);
         
     }
     
     @Override
-    public void finalResult(Evolution evol, int generations, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+    public void finalResult(Evolution evol, int generations, Individual best, 
+    Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         long evoTime = (long) ((time.b - time.a) / 1000.0);
         System.out.println("Evolution has finished after " + evoTime + " s...");
         System.out.println("avgFit(G:0)= " + avgFitness.a + " avgFit(G:" + (generations - 1) + ")= " + avgFitness.b + " -> " + ((avgFitness.b / avgFitness.a) * 100) + " %");
         System.out.println("bstFit(G:0)= " + bestFitness.a + " bstFit(G:" + (generations - 1) + ")= " + bestFitness.b + " -> " + ((bestFitness.b / bestFitness.a) * 100) + " %");
         System.out.println("bestIndividual= " + best);
+        System.out.println("external criterion = " + external);
     }
 }
