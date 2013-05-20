@@ -88,9 +88,14 @@ public class CommonFixtureTest {
     public void testWellSeparatedCsv() throws Exception {
         assertTrue(instance.wellSeparatedCsv().exists());
     }
-    
+
     @Test
     public void testBananaArff() throws Exception {
         assertTrue(instance.bananaArff().exists());
+    }
+
+    @Test
+    public void testGlassArff() throws Exception {
+        assertTrue(instance.glassArff().exists());
     }
 }
