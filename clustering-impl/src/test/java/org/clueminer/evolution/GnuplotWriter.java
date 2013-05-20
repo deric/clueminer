@@ -39,23 +39,15 @@ public class GnuplotWriter implements EvolutionListener {
     private ArrayList<String> plots = new ArrayList<String>(10);
     private char separator = ',';
 
-    public GnuplotWriter(Evolution evolution, ClusterEvaluation external, String outputDir) {
+    public GnuplotWriter(Evolution evolution, ClusterEvaluation external, String benchmarkDir, String subDirectory) {
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
         this.externalValidation = external;
-        this.outputDir = outputDir;
+        this.outputDir = subDirectory;
+        benchmarkFolder = benchmarkDir;
 
-
-        String home = System.getProperty("user.home") + File.separatorChar
-                + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
-        benchmarkFolder = home + File.separatorChar + "benchmark";
-
-
-        String dataDir = getDataDir(outputDir);
+        String dataDir = getDataDir(subDirectory);
         (new File(dataDir)).mkdir();
-
     }
 
     @Override
@@ -77,7 +69,7 @@ public class GnuplotWriter implements EvolutionListener {
     }
 
     @Override
-    public void finalResult(int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+    public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
 
         try {
@@ -227,8 +219,8 @@ public class GnuplotWriter implements EvolutionListener {
         min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
-       
-        double jacc = externalValidation.score(clustering, dataset);        
+
+        double jacc = externalValidation.score(clustering, dataset);
 
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
