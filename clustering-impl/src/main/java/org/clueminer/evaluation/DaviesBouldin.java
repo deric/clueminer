@@ -11,10 +11,8 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Davies-Bouldin index
- *
- * the value of the DB index between [0, infinity) zero being a sign for a good
- * cluster
+ * Davies-Bouldin index the value of the DB index between [0, infinity) zero
+ * being a sign for a good cluster
  *
  * @cite Davies, David L., and Donald W. Bouldin. "A cluster separation
  * measure." Pattern Analysis and Machine Intelligence, IEEE Transactions on 2
@@ -98,6 +96,6 @@ public class DaviesBouldin extends ClusterEvaluator {
 
     @Override
     public boolean compareScore(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 < score2;
     }
 }
