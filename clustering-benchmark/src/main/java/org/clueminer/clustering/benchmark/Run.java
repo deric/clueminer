@@ -155,6 +155,7 @@ public class Run {
         for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
             Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
+            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";            
             System.out.println("=== dataset " + name);
             System.out.println("size: " + dataset.size());
             System.out.println(dataset.toString());
@@ -173,9 +174,8 @@ public class Run {
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
                 test.run();
-            }
-            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
-            rc.writeToCsv(csvRes);
+                rc.writeToCsv(csvRes);
+            }                       
         }
     }
 
