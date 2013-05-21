@@ -33,7 +33,7 @@ public class Run {
     private Evolution test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
-    private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets;
+    private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets = new HashMap<String, Map.Entry<Dataset<Instance>, Integer>>();
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
@@ -151,7 +151,7 @@ public class Run {
         ExternalEvaluator ext = new JaccardIndex();
 
         String name;
-
+        System.out.println("working folder: " + benchmarkFolder);
         for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
             Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
@@ -176,7 +176,6 @@ public class Run {
             }
             String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
             rc.writeToCsv(csvRes);
-
         }
     }
 
