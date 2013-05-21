@@ -141,7 +141,11 @@ public class Run {
             Map.Entry<Dataset<Instance>, Integer> entry = availableDatasets.get(datasetName);
             datasets.put(entry.getKey(), entry.getValue());
         } else {
-            System.out.println("dataset "+datasetName+" not found");            
+            System.out.println("dataset " + datasetName + " not found");
+            System.out.println("known datasets: ");
+            for (Dataset<Instance> d : datasets.keySet()) {
+                System.out.print(d.getName() + " ");
+            }
         }
         // DatasetFixture.allDatasets();
 
@@ -153,7 +157,7 @@ public class Run {
         for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
             Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
-            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";            
+            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
             System.out.println("=== dataset " + name);
             System.out.println("size: " + dataset.size());
             System.out.println(dataset.toString());
@@ -173,7 +177,7 @@ public class Run {
                 test.addEvolutionListener(rc);
                 test.run();
                 rc.writeToCsv(csvRes);
-            }                       
+            }
         }
     }
 
