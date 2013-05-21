@@ -146,7 +146,7 @@ public class AttrEvolutionTest {
         test.run();
     }
 
-    // @Test
+    @Test
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
@@ -184,7 +184,7 @@ public class AttrEvolutionTest {
         }
     }
     
-    @Test
+    //@Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();
