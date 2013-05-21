@@ -32,6 +32,7 @@ public class GnuplotWriter implements EvolutionListener {
     private Dataset<Instance> dataset;
     private String benchmarkFolder;
     private String outputDir;
+    private String dataDir;
     private LinkedList<String> results = new LinkedList<String>();
     private static String gnuplotExtension = ".gpt";
     //each 10 generations plot data
@@ -44,9 +45,17 @@ public class GnuplotWriter implements EvolutionListener {
         this.dataset = evolution.getDataset();
         this.outputDir = subDirectory;
         benchmarkFolder = benchmarkDir;
+        dataDir = getDataDir(subDirectory);
+        mkdir(dataDir);
+    }
 
-        String dataDir = getDataDir(subDirectory);
-        (new File(dataDir)).mkdir();
+    private void mkdir(String folder) {
+        File file = new File(folder);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                throw new RuntimeException("Failed to create " + folder + " !");
+            }
+        }
     }
 
     @Override
@@ -60,8 +69,8 @@ public class GnuplotWriter implements EvolutionListener {
         results.add(sb.toString());
 
         if (generationNum % plotDumpMod == 0) {
-            String dataFile = writeData(generationNum, getDataDir(outputDir), best.getClustering());
-            plots.add(plotIndividual(generationNum, 1, 2, getDataDir(outputDir), dataFile, best, external));
+            String dataFile = writeData(generationNum, dataDir, best.getClustering());
+            plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, best, external));
             //plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
         }
     }
@@ -72,8 +81,8 @@ public class GnuplotWriter implements EvolutionListener {
         plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
 
         try {
-            bashPlotScript(plots.toArray(new String[plots.size()]), createFolder(outputDir), "set term pdf font 'Times-New-Roman,8'", "pdf");
-            bashPlotScript(plots.toArray(new String[plots.size()]), createFolder(outputDir), "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
@@ -257,7 +266,7 @@ public class GnuplotWriter implements EvolutionListener {
 
     private String createFolder(String name) {
         String dir = benchmarkFolder + File.separatorChar + name + File.separatorChar;
-        boolean success = (new File(dir)).mkdir();
+        boolean success = (new File(dir)).mkdirs();
         if (success) {
             System.out.println("Directory: " + dir + " created");
         }

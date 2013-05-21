@@ -37,7 +37,7 @@ import org.openide.util.NbBundle;
  *
  * @author tombart
  */
-public class EvolutionTest {
+public class AttrEvolutionTest {
     
     private static Dataset<Instance> irisDataset;
     private AttrEvolution test;
@@ -46,8 +46,8 @@ public class EvolutionTest {
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
-
-    public EvolutionTest() {
+    
+    public AttrEvolutionTest() {
         table = Tables.newCustomTable(
                 Maps.<String, Map<String, Double>>newHashMap(),
                 new Supplier<Map<String, Double>>() {
@@ -56,7 +56,7 @@ public class EvolutionTest {
                 return Maps.newHashMap();
             }
         });
-
+        
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
                 FileUtils.class,
@@ -67,7 +67,7 @@ public class EvolutionTest {
         rc = new ResultsCollector(table);
         csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
     }
-
+    
     private void createFolder(String folder) {
         File file = new File(folder);
         if (!file.exists()) {
@@ -78,22 +78,22 @@ public class EvolutionTest {
             }
         }
     }
-
+    
     @BeforeClass
     public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
         irisDataset = DatasetFixture.iris();
     }
-
+    
     @AfterClass
     public static void tearDownClass() {
         System.out.println("writing results to file: " + csvOutput);
         rc.writeToCsv(csvOutput);
     }
-
+    
     @Before
     public void setUp() {
     }
-
+    
     @After
     public void tearDown() {
     }
@@ -146,16 +146,16 @@ public class EvolutionTest {
         test.run();
     }
 
-    @Test
+    // @Test
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
-         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();         
-         //just to make the test fast
-         datasets.put(DatasetFixture.insect(), 3);
+        Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        //just to make the test fast
+        datasets.put(DatasetFixture.insect(), 3);
         
         String name;
-
+        
         for (Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
             Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
@@ -180,22 +180,22 @@ public class EvolutionTest {
             }
             String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
             rc.writeToCsv(csvRes);
-
+            
         }
     }
-
-    //@Test
+    
+    @Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();
-        Dataset<Instance> dataset = DatasetFixture.yeast();
+        Dataset<Instance> dataset = DatasetFixture.glass();
         String name = dataset.getName();
         System.out.println("evaluator: " + eval.getName());
-        test = new AttrEvolution(dataset, 50);
-        test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+        test = new AttrEvolution(dataset, 20);
+        test.setAlgorithm(new KMeans(7, 100, new EuclideanDistance()));
         test.setEvaluator(eval);
         test.setExternal(ext);
-        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
+        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));       
         gw.setPlotDumpMod(50);
         //collect data from evolution
         //test.addEvolutionListener(new ConsoleDump(ext));
@@ -203,7 +203,7 @@ public class EvolutionTest {
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
-
+    
     private String safeName(String name) {
         return name.toLowerCase().replace(" ", "_");
     }
