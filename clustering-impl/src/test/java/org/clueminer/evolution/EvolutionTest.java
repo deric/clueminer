@@ -67,10 +67,22 @@ public class EvolutionTest {
                 + NbBundle.getMessage(
                 FileUtils.class,
                 "FOLDER_Home");
-
+        createFolder(home);
         benchmarkFolder = home + File.separatorChar + "benchmark";
+        createFolder(benchmarkFolder);
         rc = new ResultsCollector(table);
         csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
+    }
+
+    private void createFolder(String folder) {
+        File file = new File(folder);
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directory " + folder + " created!");
+            } else {
+                System.out.println("Failed to create " + folder + "directory!");
+            }
+        }
     }
 
     @BeforeClass
@@ -144,13 +156,13 @@ public class EvolutionTest {
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
-      /*  Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
-        //  datasets.add(irisDataset);
-        //datasets.add(DatasetFixture.wine());
-        datasets.put(DatasetFixture.vehicle(), 4);
-        datasets.put(DatasetFixture.yeast(), 10);
-        //datasets.put(DatasetFixture.iris(), 3);
-        //datasets.put(DatasetFixture.insect(), 3);*/
+        /*  Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+         //  datasets.add(irisDataset);
+         //datasets.add(DatasetFixture.wine());
+         datasets.put(DatasetFixture.vehicle(), 4);
+         datasets.put(DatasetFixture.yeast(), 10);
+         //datasets.put(DatasetFixture.iris(), 3);
+         //datasets.put(DatasetFixture.insect(), 3);*/
         Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
         String name;
 
