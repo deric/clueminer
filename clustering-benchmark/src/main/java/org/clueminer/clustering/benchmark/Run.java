@@ -146,6 +146,7 @@ public class Run {
             for (String d : availableDatasets.keySet()) {
                 System.out.print(d + " ");
             }
+            System.out.println("---");
         }
         // DatasetFixture.allDatasets();
 
