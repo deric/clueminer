@@ -144,13 +144,28 @@ public class DatasetFixture {
         }
         return data;
     }
-    
+
     public static Dataset<Instance> sonar() {
         Dataset<Instance> data = new SampleDataset();
         try {
             String datasetName = "sonar";
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.sonarArff(), data, 60);
+            data.setName(datasetName);
+        } catch (UnsupportedAttributeType ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
+
+    public static Dataset<Instance> dermatology() {
+        Dataset<Instance> data = new SampleDataset();
+        try {
+            String datasetName = "dermatology";
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.dermatologyArff(), data, 34);
             data.setName(datasetName);
         } catch (UnsupportedAttributeType ex) {
             Exceptions.printStackTrace(ex);

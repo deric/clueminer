@@ -22,18 +22,20 @@ import org.clueminer.utils.DatasetLoader;
  */
 public class ARFFHandler implements DatasetLoader {
 
+    private Matcher match;
     /**
      * matches eg. "
      *
      * @RELATION iris"
      */
     private static Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
     /**
      * matches eg. "
      *
      * @ATTRIBUTE sepallength	REAL"
      */
-    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w .\\\\/]*)['\"]?\\s+([\\w]*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -129,10 +131,12 @@ public class ARFFHandler implements DatasetLoader {
                 if ((rmatch = relation.matcher(line)).matches()) {
                     out.setName(rmatch.group(1));
                 } else if ((amatch = attribute.matcher(line)).matches()) {
-                    if (!skippedIndexes.contains(headerLine)) {
+                    //System.out.println(line);
+                    if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
-                        out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), amatch.group(2).toUpperCase()));
+                        //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
+                        out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase())));
                         attrNum++;
                     }
                     headerLine++;
@@ -144,10 +148,17 @@ public class ARFFHandler implements DatasetLoader {
         }
         return true;
     }
-    
-    protected boolean isValidAttributeDefinition(String line){
+
+    protected String convertType(String type) {
+        if ((match = attrTypes.matcher(type)).matches()) {
+            return "REAL";
+        }
+        return type;
+    }
+
+    protected boolean isValidAttributeDefinition(String line) {
         Matcher amatch;
-        if ((amatch = attribute.matcher(line)).matches()){
+        if ((amatch = attribute.matcher(line)).matches()) {
             return true;
         }
         return false;

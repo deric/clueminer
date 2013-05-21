@@ -89,4 +89,11 @@ public class DatasetFixtureTest {
         assertEquals(13, dataset.attributeCount());
         assertEquals(178, dataset.size());
     }
+
+    @Test
+    public void testDermatology() {
+        Dataset<Instance> dataset = DatasetFixture.dermatology();
+        assertEquals(34, dataset.attributeCount());
+        assertEquals(366, dataset.size());
+    }
 }
