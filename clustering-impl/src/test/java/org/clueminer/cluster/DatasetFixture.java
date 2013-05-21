@@ -135,7 +135,7 @@ public class DatasetFixture {
         try {
             String datasetName = "glass";
             ARFFHandler arff = new ARFFHandler();
-            arff.load(tf.ionosphereArff(), data, 9);
+            arff.load(tf.glassArff(), data, 9);
             data.setName(datasetName);
         } catch (UnsupportedAttributeType ex) {
             Exceptions.printStackTrace(ex);
