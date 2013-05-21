@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.clustering.api.evolution;
 
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;

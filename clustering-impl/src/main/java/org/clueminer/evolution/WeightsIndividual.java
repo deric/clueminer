@@ -1,5 +1,6 @@
 package org.clueminer.evolution;
 
+import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -21,7 +22,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private AlgorithmParameters params;
     private Clustering<Cluster> clustering;
 
-    public WeightsIndividual(Evolution evolution) {
+    public WeightsIndividual(AttrEvolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         init();

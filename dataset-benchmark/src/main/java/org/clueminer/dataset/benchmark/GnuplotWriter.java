@@ -11,16 +11,15 @@ import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evolution.Evolution;
-import org.clueminer.evolution.EvolutionListener;
-import org.clueminer.evolution.Individual;
-import org.clueminer.evolution.Pair;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
-import org.clueminer.utils.PointTypeIterator;
 import org.openide.util.Exceptions;
 
 /**

@@ -1,5 +1,8 @@
 package org.clueminer.evolution;
 
+import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +11,7 @@ import java.util.Random;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -15,7 +19,7 @@ import org.clueminer.dataset.api.Instance;
  *
  * @author Tomas Barton
  */
-public class Evolution implements Runnable {
+public class AttrEvolution implements Runnable, Evolution {
 
     private int populationSize = 100;
     private int generations;
@@ -46,7 +50,7 @@ public class Evolution implements Runnable {
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
 
-    public Evolution(Dataset<Instance> dataset, int generations) {
+    public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
         isFinished = false;
         this.generations = generations;

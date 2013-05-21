@@ -1,5 +1,6 @@
 package org.clueminer.evolution;
 
+import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,7 +33,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     private AlgorithmParameters params;
     private boolean debug = true;
 
-    public HclIndividual(Evolution evolution) {
+    public HclIndividual(AttrEvolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         init();

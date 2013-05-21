@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
 public class EvolutionTest {
     
     private static Dataset<Instance> irisDataset;
-    private Evolution test;
+    private AttrEvolution test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
     private static ResultsCollector rc;
@@ -99,25 +99,25 @@ public class EvolutionTest {
     }
 
     /**
-     * Test of attributesCount method, of class Evolution.
+     * Test of attributesCount method, of class AttrEvolution.
      */
     @Test
     public void testAttributesCount() {
     }
 
     /**
-     * Test of getDataset method, of class Evolution.
+     * Test of getDataset method, of class AttrEvolution.
      */
     @Test
     public void testGetDataset() {
     }
 
     /**
-     * Test of run method, of class Evolution.
+     * Test of run method, of class AttrEvolution.
      */
     //  @Test
     public void testRun() {
-        test = new Evolution(irisDataset, 50);
+        test = new AttrEvolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(new BICScore());
         ExternalEvaluator ext = new JaccardIndex();
@@ -134,7 +134,7 @@ public class EvolutionTest {
     // @Test
     public void testInformed() {
         //test run with informed metric
-        test = new Evolution(irisDataset, 50);
+        test = new AttrEvolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         ExternalEvaluator ext = new JaccardIndex();
         test.setEvaluator(ext);
@@ -166,7 +166,7 @@ public class EvolutionTest {
             (new File(dataDir)).mkdir();
             for (ClusterEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
-                test = new Evolution(dataset, 20);
+                test = new AttrEvolution(dataset, 20);
                 test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));
                 test.setEvaluator(eval);
                 test.setExternal(ext);
@@ -191,7 +191,7 @@ public class EvolutionTest {
         Dataset<Instance> dataset = DatasetFixture.yeast();
         String name = dataset.getName();
         System.out.println("evaluator: " + eval.getName());
-        test = new Evolution(dataset, 50);
+        test = new AttrEvolution(dataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(eval);
         test.setExternal(ext);
@@ -209,42 +209,42 @@ public class EvolutionTest {
     }
 
     /**
-     * Test of getMutationProbability method, of class Evolution.
+     * Test of getMutationProbability method, of class AttrEvolution.
      */
     @Test
     public void testGetMutationProbability() {
     }
 
     /**
-     * Test of setMutationProbability method, of class Evolution.
+     * Test of setMutationProbability method, of class AttrEvolution.
      */
     @Test
     public void testSetMutationProbability() {
     }
 
     /**
-     * Test of getCrossoverProbability method, of class Evolution.
+     * Test of getCrossoverProbability method, of class AttrEvolution.
      */
     @Test
     public void testGetCrossoverProbability() {
     }
 
     /**
-     * Test of setCrossoverProbability method, of class Evolution.
+     * Test of setCrossoverProbability method, of class AttrEvolution.
      */
     @Test
     public void testSetCrossoverProbability() {
     }
 
     /**
-     * Test of getAlgorithm method, of class Evolution.
+     * Test of getAlgorithm method, of class AttrEvolution.
      */
     @Test
     public void testGetAlgorithm() {
     }
 
     /**
-     * Test of setAlgorithm method, of class Evolution.
+     * Test of setAlgorithm method, of class AttrEvolution.
      */
     @Test
     public void testSetAlgorithm() {

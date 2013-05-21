@@ -1,4 +1,4 @@
-package org.clueminer.utils;
+package org.clueminer.dataset.benchmark;
 
 import java.util.Iterator;
 

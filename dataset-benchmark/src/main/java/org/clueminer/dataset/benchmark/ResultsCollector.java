@@ -6,10 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import org.clueminer.evolution.Evolution;
-import org.clueminer.evolution.EvolutionListener;
-import org.clueminer.evolution.Individual;
-import org.clueminer.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.openide.util.Exceptions;
 
 /**
