@@ -59,7 +59,7 @@ public class Evolution implements Runnable {
         return dataset.attributeCount();
     }
 
-    protected Dataset<Instance> getDataset() {
+    public Dataset<Instance> getDataset() {
         return dataset;
     }
 

@@ -17,7 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import javax.imageio.ImageIO;
-import org.clueminer.cluster.DatasetFixture;
+import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;

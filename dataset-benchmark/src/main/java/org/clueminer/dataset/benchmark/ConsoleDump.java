@@ -1,10 +1,14 @@
-package org.clueminer.evolution;
+package org.clueminer.dataset.benchmark;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evaluation.external.CountingPairs;
+import org.clueminer.evolution.Evolution;
+import org.clueminer.evolution.EvolutionListener;
+import org.clueminer.evolution.Individual;
+import org.clueminer.evolution.Pair;
 
 /**
  *

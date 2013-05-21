@@ -1,5 +1,8 @@
 package org.clueminer.evolution;
 
+import org.clueminer.dataset.benchmark.ConsoleDump;
+import org.clueminer.dataset.benchmark.ResultsCollector;
+import org.clueminer.dataset.benchmark.GnuplotWriter;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
@@ -8,34 +11,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.clueminer.cluster.DatasetFixture;
-import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.BICScore;
 import org.clueminer.evaluation.Silhouette;
 import org.clueminer.evaluation.external.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
-import org.clueminer.evaluation.external.Precision;
 import org.clueminer.exception.UnsupportedAttributeType;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.openide.util.NbBundle;
 
 /**
@@ -43,8 +38,7 @@ import org.openide.util.NbBundle;
  * @author tombart
  */
 public class EvolutionTest {
-
-    private static CommonFixture tf = new CommonFixture();
+    
     private static Dataset<Instance> irisDataset;
     private Evolution test;
     //table for keeping results from experiments
@@ -156,14 +150,10 @@ public class EvolutionTest {
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
-        /*  Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
-         //  datasets.add(irisDataset);
-         //datasets.add(DatasetFixture.wine());
-         datasets.put(DatasetFixture.vehicle(), 4);
-         datasets.put(DatasetFixture.yeast(), 10);
-         //datasets.put(DatasetFixture.iris(), 3);
-         //datasets.put(DatasetFixture.insect(), 3);*/
-        Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
+         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();         
+         //just to make the test fast
+         datasets.put(DatasetFixture.insect(), 3);
+        
         String name;
 
         for (Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
@@ -183,7 +173,7 @@ public class EvolutionTest {
                 GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
                 gw.setPlotDumpMod(50);
                 //collect data from evolution
-                test.addEvolutionListener(new ConsoleDump());
+                //test.addEvolutionListener(new ConsoleDump());
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
                 test.run();
