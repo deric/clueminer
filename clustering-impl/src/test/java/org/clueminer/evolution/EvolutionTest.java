@@ -138,7 +138,7 @@ public class EvolutionTest {
         test.run();
     }
     
-    @Test
+   // @Test
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
@@ -164,22 +164,25 @@ public class EvolutionTest {
                 //test.addEvolutionListener(new ConsoleDump(ext));
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
-                test.run();
+                test.run(); 
                 rc.writeToCsv(csvOutput);
             }
+
         }
     }
 
- //   @Test
+    @Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();
+        Dataset<Instance> dataset = DatasetFixture.yeast();
+        String name = dataset.getName();
         System.out.println("evaluator: " + eval.getName());
-        test = new Evolution(irisDataset, 50);
+        test = new Evolution(dataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         test.setEvaluator(eval);
         test.setExternal(ext);
-        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris/iris-" + safeName(eval.getName()));
+        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
         gw.setPlotDumpMod(50);
         //collect data from evolution
         //test.addEvolutionListener(new ConsoleDump(ext));

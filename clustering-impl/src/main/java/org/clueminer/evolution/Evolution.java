@@ -100,14 +100,18 @@ public class Evolution implements Runnable {
                 // put mutated individual to the list of new individuals
                 children.add(thisOne);
             }
-
+            double fitness;
             // count fitness of all changed individuals
             for (int i = 0; i < children.size(); i++) {
                 children.get(i).countFitness();
+                fitness = children.get(i).getFitness();
+                if(Double.isNaN(fitness)){
+                    children.remove(i);
+                }
             }
 
             // merge new and old individuals
-            double fitness;
+            
             for (int i = children.size(); i < pop.individualsLength(); i++) {
                 Individual tmpi = pop.getIndividual(i).deepCopy();
                 tmpi.countFitness();
