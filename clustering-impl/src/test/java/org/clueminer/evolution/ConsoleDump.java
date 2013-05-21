@@ -2,7 +2,6 @@ package org.clueminer.evolution;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
-import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evaluation.external.CountingPairs;
@@ -19,24 +18,9 @@ public class ConsoleDump implements EvolutionListener {
         Clustering<Cluster> clusters = best.getClustering();
         Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
-        Map<String, Integer> res;
         System.out.println("============== " + generationNum);
         System.out.println("table: " + table);
         System.out.println("matching: " + matching);
-        int tp, fp, fn;
-        double index = 0.0;
-        double jaccard;
-        for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);
-            System.out.println(cluster + ": " + res);
-            tp = res.get("tp");
-            fp = res.get("fp");
-            fn = res.get("fn");
-            jaccard = tp / (double) (tp + fp + fn);
-            System.out.println("jc = " + jaccard);
-            index += jaccard;
-        }
-        System.out.println("jaccard = " + (index / clusters.size()));
         System.out.println("external = " + external);
         
     }
