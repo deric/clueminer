@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.evolution.EvolutionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.event.EventListenerList;
@@ -63,6 +64,7 @@ public class AttrEvolution implements Runnable, Evolution {
         return dataset.attributeCount();
     }
 
+    @Override
     public Dataset<Instance> getDataset() {
         return dataset;
     }
@@ -70,12 +72,12 @@ public class AttrEvolution implements Runnable, Evolution {
     @Override
     public void run() {
         time.a = System.currentTimeMillis();
-        ArrayList<Individual> children = new ArrayList<Individual>();
+        LinkedList<Individual> children = new LinkedList<Individual>();
         Population pop = new Population(this, populationSize);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
-
+        ArrayList<Individual> selected = new ArrayList<Individual>(populationSize);
         //System.out.println(pop);
 
         for (int g = 0; g < generations && !isFinished; g++) {
@@ -108,32 +110,44 @@ public class AttrEvolution implements Runnable, Evolution {
             // count fitness of all changed individuals
             for (int i = 0; i < children.size(); i++) {
                 children.get(i).countFitness();
-                fitness = children.get(i).getFitness();
-                if(Double.isNaN(fitness)){
-                    children.remove(i);
+                children.get(i).getFitness();
+            }
+            selected.clear();
+            // merge new and old individuals
+            for (int i = children.size(); i < pop.individualsLength(); i++) {
+                Individual tmpi = pop.getIndividual(i).deepCopy();
+                tmpi.countFitness();                
+                selected.add(tmpi);
+            }
+            
+            for (Individual ind : children) {
+                fitness = ind.getFitness();
+                if (!Double.isNaN(fitness)) {
+                    selected.add(ind);
                 }
             }
 
-            // merge new and old individuals
+            // sort them by fitness (thanks to Individual implements interface Comparable)
+            Individual[] newIndsArr = selected.toArray(new Individual[0]);
+            //  for (int i = 0; i < newIndsArr.length; i++) {
+            //      System.out.println(i + ": " + newIndsArr[i].getFitness());
+            //  }
+            Arrays.sort(newIndsArr, Collections.reverseOrder());
             
-            for (int i = children.size(); i < pop.individualsLength(); i++) {
-                Individual tmpi = pop.getIndividual(i).deepCopy();
-                tmpi.countFitness();
-                fitness = tmpi.getFitness();
-                if(!Double.isNaN(fitness)){
-                    children.add(tmpi);
-                }                
+            int indsToCopy;
+            if (newIndsArr.length > pop.individualsLength()) {
+                indsToCopy = pop.individualsLength();
+            } else {
+                indsToCopy = newIndsArr.length;
+            }
+            if (indsToCopy > 0) {
+                //System.out.println("copying " + indsToCopy);
+                //TODO: old population should be sorted as well? take only part of the new population?
+                System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, indsToCopy);
+            } else {
+                throw new RuntimeException("no new individuals");
             }
 
-            // sort them by fitness (thanks to Individual implements interface Comparable)
-            Individual[] newIndsArr = children.toArray(new Individual[0]);            
-            //for (int i = 0; i < newIndsArr.length; i++) {
-            //    System.out.println(i + ": " + newIndsArr[i].getFitness());
-            //}
-            Arrays.sort(newIndsArr, Collections.reverseOrder());
-
-            // and take the better "half" (populationSize)
-            System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, pop.getIndividuals().length);
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());            
@@ -237,5 +251,5 @@ public class AttrEvolution implements Runnable, Evolution {
 
     public void setPopulationSize(int populationSize) {
         this.populationSize = populationSize;
-    }        
+    }
 }
