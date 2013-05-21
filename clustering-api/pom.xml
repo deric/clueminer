@@ -88,6 +88,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.clustering.api</publicPackage>
                         <publicPackage>org.clueminer.clustering.api.dendrogram</publicPackage>
+                        <publicPackage>org.clueminer.clustering.api.evolution</publicPackage>
                         <publicPackage>org.clueminer.clustering.gui</publicPackage>
                     </publicPackages>
                 </configuration>

@@ -1,14 +1,11 @@
 package org.clueminer.dataset.benchmark;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.evaluation.external.CountingPairs;
-import org.clueminer.evolution.Evolution;
-import org.clueminer.evolution.EvolutionListener;
-import org.clueminer.evolution.Individual;
-import org.clueminer.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 
 /**
  *
@@ -20,11 +17,7 @@ public class ConsoleDump implements EvolutionListener {
     @Override
     public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         Clustering<Cluster> clusters = best.getClustering();
-        Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
-        System.out.println("============== " + generationNum);
-        System.out.println("table: " + table);
-        System.out.println("matching: " + matching);
+        System.out.println("============== " + generationNum);        
         System.out.println("external = " + external);
         
     }

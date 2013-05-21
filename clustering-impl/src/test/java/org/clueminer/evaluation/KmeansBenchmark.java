@@ -1,6 +1,6 @@
 package org.clueminer.evaluation;
 
-import org.clueminer.utils.PointTypeIterator;
+import org.clueminer.dataset.benchmark.PointTypeIterator;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
 import java.io.File;

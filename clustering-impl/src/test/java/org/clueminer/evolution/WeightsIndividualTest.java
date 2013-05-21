@@ -1,5 +1,6 @@
 package org.clueminer.evolution;
 
+import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.dataset.api.Dataset;
@@ -19,14 +20,14 @@ import static org.junit.Assert.*;
  */
 public class WeightsIndividualTest {
     
-    private Evolution evolution;
+    private AttrEvolution evolution;
     private WeightsIndividual one;
     private Individual two;
     private static double delta = 1e-9;
     
     public WeightsIndividualTest() {
         Dataset<Instance> dataset = FakeClustering.irisDataset();
-        evolution = new Evolution(dataset, 5);
+        evolution = new AttrEvolution(dataset, 5);
         evolution.setEvaluator(new JaccardIndex());
         evolution.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         one = new WeightsIndividual(evolution);
