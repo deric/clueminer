@@ -2,6 +2,7 @@ package org.clueminer.evolution;
 
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.evolution.Evolution;
 
 /**
  * @TODO eventually move to the API package, when mature enough
@@ -11,7 +12,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 public abstract class AbstractIndividual<T extends Individual> implements Individual<T> {
 
     protected ClusteringAlgorithm algorithm;
-    protected AttrEvolution evolution;
+    protected Evolution evolution;
 
     @Override
     public ClusteringAlgorithm getAlgorithm() {
@@ -28,11 +29,14 @@ public abstract class AbstractIndividual<T extends Individual> implements Indivi
         double otherFitness = another.getFitness();
         double thisFitness = this.getFitness();
 
-        if (thisFitness > otherFitness) {
+        if (thisFitness == otherFitness) {
+            return 0;
+        }
+
+        if (evolution.getEvaluator().compareScore(thisFitness, otherFitness)) {
             return 1;
-        } else if (thisFitness < otherFitness) {
+        } else {
             return -1;
         }
-        return 0;
     }
 }

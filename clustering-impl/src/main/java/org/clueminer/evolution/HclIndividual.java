@@ -188,7 +188,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
 
 
 
-        fitness = evolution.evaluator.score(clust, evolution.getDataset());
+        fitness = evolution.getEvaluator().score(clust, evolution.getDataset());
         System.out.println("fitness = " + fitness);
     }
 
@@ -201,7 +201,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     @Override
     public void mutate() {
         for (int i = 0; i < weights.length; i++) {
-            if (rand.nextDouble() < evolution.mutationProbability) {
+            if (rand.nextDouble() < evolution.getMutationProbability()) {
                 weights[i] += rand.nextDouble();
             }
         }

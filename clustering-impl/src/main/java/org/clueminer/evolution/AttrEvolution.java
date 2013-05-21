@@ -50,6 +50,7 @@ public class AttrEvolution implements Runnable, Evolution {
     protected ClusterEvaluation evaluator;
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
+    private boolean maximizedFitness;
 
     public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
@@ -60,7 +61,8 @@ public class AttrEvolution implements Runnable, Evolution {
         time = new Pair<Long, Long>();
     }
 
-    protected int attributesCount() {
+    @Override
+    public int attributesCount() {
         return dataset.attributeCount();
     }
 
@@ -116,10 +118,10 @@ public class AttrEvolution implements Runnable, Evolution {
             // merge new and old individuals
             for (int i = children.size(); i < pop.individualsLength(); i++) {
                 Individual tmpi = pop.getIndividual(i).deepCopy();
-                tmpi.countFitness();                
+                tmpi.countFitness();
                 selected.add(tmpi);
             }
-            
+
             for (Individual ind : children) {
                 fitness = ind.getFitness();
                 if (!Double.isNaN(fitness)) {
@@ -132,8 +134,13 @@ public class AttrEvolution implements Runnable, Evolution {
             //  for (int i = 0; i < newIndsArr.length; i++) {
             //      System.out.println(i + ": " + newIndsArr[i].getFitness());
             //  }
-            Arrays.sort(newIndsArr, Collections.reverseOrder());
-            
+            if (maximizedFitness) {
+                Arrays.sort(newIndsArr, Collections.reverseOrder());
+            } else {
+                //natural ordering
+                Arrays.sort(newIndsArr);
+            }
+
             int indsToCopy;
             if (newIndsArr.length > pop.individualsLength()) {
                 indsToCopy = pop.individualsLength();
@@ -223,12 +230,19 @@ public class AttrEvolution implements Runnable, Evolution {
         this.algorithm = algorithm;
     }
 
+    @Override
     public ClusterEvaluation getEvaluator() {
         return evaluator;
     }
 
+    @Override
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
+        if (evaluator.compareScore(1.0, 0.0)) {
+            maximizedFitness = true;
+        } else {
+            maximizedFitness = false;
+        }
     }
 
     /**
@@ -237,19 +251,28 @@ public class AttrEvolution implements Runnable, Evolution {
      *
      * @return
      */
+    @Override
     public ClusterEvaluation getExternal() {
         return external;
     }
 
+    @Override
     public void setExternal(ClusterEvaluation external) {
         this.external = external;
     }
 
+    @Override
     public int getPopulationSize() {
         return populationSize;
     }
 
+    @Override
     public void setPopulationSize(int populationSize) {
         this.populationSize = populationSize;
+    }
+
+    @Override
+    public boolean isMaximizedFitness() {
+        return maximizedFitness;
     }
 }

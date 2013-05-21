@@ -3,6 +3,7 @@ package org.clueminer.evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
+import org.clueminer.clustering.api.evolution.Evolution;
 
 /**
  *
@@ -10,9 +11,9 @@ import java.util.List;
  */
 public class Population extends AbstractPopulation<WeightsIndividual> {
 
-    private AttrEvolution evolution;
+    private Evolution evolution;
 
-    public Population(AttrEvolution evolve, int size) {
+    public Population(Evolution evolve, int size) {
         this.evolution = evolve;
         individuals = new WeightsIndividual[size];
         for (int i = 0; i < individuals.length; i++) {
@@ -29,7 +30,7 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
      * @return List<Individual> of selected individuals
      */
     public List<? extends Individual> selectIndividuals(int count) {
-        ArrayList<WeightsIndividual> selected = new ArrayList<WeightsIndividual>();
+        ArrayList<WeightsIndividual> selected = new ArrayList<WeightsIndividual>(count);
         //tournament selection
         int rand_cnt = getIndividuals().length / 10;
         int rand[] = new int[rand_cnt];
@@ -40,7 +41,7 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
                 rand[j] = randomInt(getIndividuals().length - 1);
             }
             for (int j = 0; j < rand_cnt; j++) {
-                if (this.getIndividual(rand[j]).getFitness() > max) {
+                if (evolution.getEvaluator().compareScore(getIndividual(rand[j]).getFitness(), max)) {
                     max = this.getIndividual(rand[j]).getFitness();
                     max_id = j;
                 }
