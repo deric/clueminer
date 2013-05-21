@@ -277,7 +277,7 @@ public class BenchmarkTest {
         plotResults(datasetName, kmin, kmax, results, kreal, dir);
     }
 
-    //@Test
+    @Test
     public void testPlotting() throws IOException, Exception {
         String dir = createFolder("iris");
         int kmin = 2;
