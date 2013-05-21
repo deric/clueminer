@@ -143,8 +143,8 @@ public class Run {
         } else {
             System.out.println("dataset " + datasetName + " not found");
             System.out.println("known datasets: ");
-            for (Dataset<Instance> d : datasets.keySet()) {
-                System.out.print(d.getName() + " ");
+            for (String d : availableDatasets.keySet()) {
+                System.out.print(d + " ");
             }
         }
         // DatasetFixture.allDatasets();
