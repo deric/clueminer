@@ -3,6 +3,7 @@ package org.clueminer.evolution;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import org.openide.util.Exceptions;
@@ -12,11 +13,11 @@ import org.openide.util.Exceptions;
  * @author Tomas Barton
  */
 public class ResultsCollector implements EvolutionListener {
-    
+
     //reference to results table
     private Table<String, String, Double> table;
 
-    public ResultsCollector(Table<String, String, Double> table) {        
+    public ResultsCollector(Table<String, String, Double> table) {
         this.table = table;
     }
 
@@ -26,7 +27,7 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
-    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, 
+    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         table.put(evolution.getEvaluator().getName(), evolution.getDataset().getName(), external);
     }
@@ -54,14 +55,17 @@ public class ResultsCollector implements EvolutionListener {
                 }
                 csv.writeNext(line);
             }
-            writer.close();
-
+            csv.close();
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         } finally {
-            writer.close();
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 }
