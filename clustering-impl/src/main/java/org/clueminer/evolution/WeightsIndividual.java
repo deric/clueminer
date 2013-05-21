@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.AlgorithmParameters;
@@ -22,7 +23,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private AlgorithmParameters params;
     private Clustering<Cluster> clustering;
 
-    public WeightsIndividual(AttrEvolution evolution) {
+    public WeightsIndividual(Evolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         init();
@@ -57,7 +58,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     @Override
     public void countFitness() {
         clustering = updateCustering();
-        fitness = evolution.evaluator.score(clustering, evolution.getDataset());
+        fitness = evolution.getEvaluator().score(clustering, evolution.getDataset());
     }
 
     /**
@@ -101,7 +102,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     @Override
     public void mutate() {
         for (int i = 0; i < weights.length; i++) {
-            if (rand.nextDouble() < evolution.mutationProbability) {
+            if (rand.nextDouble() < evolution.getMutationProbability()) {
                 weights[i] = rand.nextDouble();
             }
         }

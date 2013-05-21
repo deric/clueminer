@@ -38,7 +38,7 @@ public interface ClusterEvaluation {
 
     /**
      * Compares the two scores according to the criterion in the implementation.
-     * Some score should be maxed, others should be minimized. This method
+     * Some score should be maximized, others should be minimized. This method
      * returns true if the first score is 'better' than the second score.
      *
      * @param score1 - the first score

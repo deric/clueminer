@@ -3,6 +3,7 @@ package org.clueminer.evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -20,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class WeightsIndividualTest {
     
-    private AttrEvolution evolution;
+    private Evolution evolution;
     private WeightsIndividual one;
     private Individual two;
     private static double delta = 1e-9;
