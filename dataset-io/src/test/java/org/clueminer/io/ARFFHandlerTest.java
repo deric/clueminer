@@ -41,6 +41,17 @@ public class ARFFHandlerTest {
     public void tearDown() {
     }
 
+    @Test
+    public void testAttributeDefinition() throws Exception {
+        assertTrue(arff.isValidAttributeDefinition("@ATTRIBUTE sepallength	REAL"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute a01 real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'CIRCULARITY' real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'DISTANCE CIRCULARITY' real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'MAX.LENGTH ASPECT RATIO' real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute definite_borders {0,1,2,3}"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute OD280/OD315_of_diluted_wines REAL"));
+    }
+
     /**
      * Test of load method, of class ARFFHandler.
      */
@@ -65,15 +76,6 @@ public class ARFFHandlerTest {
         arff.load(tf.yeastData(), data, 9, "\\s+", skippedIndexes);
         assertEquals(8, data.attributeCount());
         assertEquals(1484, data.size());
-    }
-
-    @Test
-    public void testAttributeDefinition() throws Exception {
-        assertTrue(arff.isValidAttributeDefinition("@ATTRIBUTE sepallength	REAL"));
-        assertTrue(arff.isValidAttributeDefinition("@attribute a01 real"));
-        assertTrue(arff.isValidAttributeDefinition("@attribute 'CIRCULARITY' real"));
-        assertTrue(arff.isValidAttributeDefinition("@attribute 'DISTANCE CIRCULARITY' real"));
-        assertTrue(arff.isValidAttributeDefinition("@attribute 'MAX.LENGTH ASPECT RATIO' real"));
     }
 
     /**
