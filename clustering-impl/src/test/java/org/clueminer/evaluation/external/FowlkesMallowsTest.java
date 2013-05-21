@@ -3,16 +3,8 @@ package org.clueminer.evaluation.external;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.exception.UnsupportedAttributeType;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -26,8 +18,7 @@ import static org.junit.Assert.*;
  */
 public class FowlkesMallowsTest {
 
-    private static Clustering clusters;
-    private static CommonFixture tf = new CommonFixture();
+    private static Clustering clusters;    
     private static Clustering iris;
     private static FowlkesMallows test;
     private static double delta = 1e-9;
@@ -35,13 +26,7 @@ public class FowlkesMallowsTest {
     public FowlkesMallowsTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
 
         clusters = FakeClustering.iris();
-
-        //now try some real clustering
-        ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
-        ARFFHandler arff = new ARFFHandler();
-        Dataset<Instance> irisDataset = new SampleDataset();
-        arff.load(tf.irisArff(), irisDataset, 4);
-        iris = km.partition(irisDataset);
+        iris = FakeClustering.irisWrong2();
     }
 
     @BeforeClass
@@ -82,7 +67,7 @@ public class FowlkesMallowsTest {
         long start = System.currentTimeMillis();
         score = test.score(iris, null);
         long end = System.currentTimeMillis();
-        assertEquals(2228.45, score, 25.0);
+        assertEquals(1565, score, 1.0);
         System.out.println("fm index = " + score);
         System.out.println("measuring Fowlkes-Mallows took " + (end - start) + " ms");
     }
