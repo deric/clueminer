@@ -67,6 +67,15 @@ public class ARFFHandlerTest {
         assertEquals(1484, data.size());
     }
 
+    @Test
+    public void testAttributeDefinition() throws Exception {
+        assertTrue(arff.isValidAttributeDefinition("@ATTRIBUTE sepallength	REAL"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute a01 real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'CIRCULARITY' real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'DISTANCE CIRCULARITY' real"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'MAX.LENGTH ASPECT RATIO' real"));
+    }
+
     /**
      * Test of load method, of class ARFFHandler.
      */

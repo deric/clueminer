@@ -33,7 +33,7 @@ public class ARFFHandler implements DatasetLoader {
      *
      * @ATTRIBUTE sepallength	REAL"
      */
-    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w\\\\/]*)['\"]?\\s+([\\w]*)", Pattern.CASE_INSENSITIVE);
+    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w .\\\\/]*)['\"]?\\s+([\\w]*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -143,5 +143,13 @@ public class ARFFHandler implements DatasetLoader {
             }
         }
         return true;
+    }
+    
+    protected boolean isValidAttributeDefinition(String line){
+        Matcher amatch;
+        if ((amatch = attribute.matcher(line)).matches()){
+            return true;
+        }
+        return false;
     }
 }
