@@ -141,9 +141,7 @@ public class Run {
             Map.Entry<Dataset<Instance>, Integer> entry = availableDatasets.get(datasetName);
             datasets.put(entry.getKey(), entry.getValue());
         } else {
-            System.out.println("no dataset specified, running iris");
-            Map.Entry<Dataset<Instance>, Integer> entry = availableDatasets.get("iris");
-            datasets.put(entry.getKey(), entry.getValue());
+            System.out.println("dataset "+datasetName+" not found");            
         }
         // DatasetFixture.allDatasets();
 
