@@ -41,7 +41,11 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
 
     @Override
     public String getFullName() {
-        return getId() + " - " + getName();
+        StringBuilder sb = new StringBuilder();
+        if(getId() != null){
+            sb.append(getId()).append(" - ");
+        }       
+        return sb.append(getName()).toString();
     }
 
     /**
