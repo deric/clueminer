@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
@@ -14,12 +14,14 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.Evolution;
+import org.clueminer.evolution.EvolutionListener;
+import org.clueminer.evolution.Individual;
+import org.clueminer.evolution.Pair;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
-import org.clueminer.utils.FileUtils;
 import org.clueminer.utils.PointTypeIterator;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
 
 /**
  *

@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Table;
@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import org.clueminer.evolution.Evolution;
+import org.clueminer.evolution.EvolutionListener;
+import org.clueminer.evolution.Individual;
+import org.clueminer.evolution.Pair;
 import org.openide.util.Exceptions;
 
 /**

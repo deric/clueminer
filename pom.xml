@@ -101,6 +101,7 @@
         <module>infopanel</module>
     <module>gnuplot</module>
     <module>clustering-benchmark</module>
+    <module>dataset-benchmark</module>
   </modules>
 
     <properties>

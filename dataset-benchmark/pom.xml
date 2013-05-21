@@ -8,11 +8,11 @@
   </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>clustering-impl</artifactId>
+    <artifactId>dataset-benchmark</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>clustering-impl</name>
+    <name>dataset-benchmark</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,13 +41,19 @@
             <version>RELEASE73</version>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>math-api</artifactId>
+            <artifactId>dataset-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>math-impl</artifactId>
+            <artifactId>clustering-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -57,47 +63,13 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>clustering-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gnuplot</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>fixtures</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -108,12 +80,6 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>RELEASE73</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-benchmark</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -126,16 +92,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.cluster</publicPackage>
-                        <publicPackage>org.clueminer.clustering</publicPackage>
-                        <publicPackage>org.clueminer.clustering.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.distance</publicPackage>
-                        <publicPackage>org.clueminer.evaluation</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.hclust</publicPackage>
-                        <publicPackage>org.clueminer.exec</publicPackage>
-                        <publicPackage>org.clueminer.hclust</publicPackage>
-                        <publicPackage>org.clueminer.hclust.linkage</publicPackage>
-                        <publicPackage>org.clueminer.utils</publicPackage>
+                        <publicPackage>org.clueminer.dataset.benchmark</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -1,4 +1,4 @@
-package org.clueminer.cluster;
+package org.clueminer.dataset.benchmark;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -11,9 +11,12 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Tomas Barton
+ * @author tombart
  */
 public class DatasetFixtureTest {
+
+    public DatasetFixtureTest() {
+    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -21,6 +24,21 @@ public class DatasetFixtureTest {
 
     @AfterClass
     public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() {
+    }
+
+    @After
+    public void tearDown() {
+    }
+
+    /**
+     * Test of allDatasets method, of class DatasetFixture.
+     */
+    @Test
+    public void testAllDatasets() {
     }
 
     @Test
