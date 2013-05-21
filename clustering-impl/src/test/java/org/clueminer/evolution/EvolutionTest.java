@@ -7,9 +7,11 @@ import com.google.common.collect.Tables;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.clueminer.cluster.DatasetFixture;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.algorithm.KMeans;
@@ -78,7 +80,7 @@ public class EvolutionTest {
 
     @AfterClass
     public static void tearDownClass() {
-
+        System.out.println("writing results to file: " + csvOutput);
         rc.writeToCsv(csvOutput);
     }
 
@@ -137,41 +139,50 @@ public class EvolutionTest {
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
-    
-   // @Test
+
+    @Test
     public void testVariousMeasuresAndDatasets() {
         ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
         ExternalEvaluator ext = new JaccardIndex();
-        List<Dataset<Instance>> datasets = new LinkedList();
-      //  datasets.add(irisDataset);
+      /*  Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        //  datasets.add(irisDataset);
         //datasets.add(DatasetFixture.wine());
-        datasets.add(DatasetFixture.yeast());
-       // datasets.add(DatasetFixture.yeast());
-        
+        datasets.put(DatasetFixture.vehicle(), 4);
+        datasets.put(DatasetFixture.yeast(), 10);
+        //datasets.put(DatasetFixture.iris(), 3);
+        //datasets.put(DatasetFixture.insect(), 3);*/
+        Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
         String name;
-        for (Dataset<Instance> dataset : datasets) {
+
+        for (Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
+            Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
             System.out.println("=== dataset " + name);
+            System.out.println("size: " + dataset.size());
+            System.out.println(dataset.toString());
+            String dataDir = benchmarkFolder + File.separatorChar + name;
+            (new File(dataDir)).mkdir();
             for (ClusterEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
                 test = new Evolution(dataset, 20);
-                test.setAlgorithm(new KMeans(3, 50, new EuclideanDistance()));
+                test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));
                 test.setEvaluator(eval);
                 test.setExternal(ext);
                 GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
                 gw.setPlotDumpMod(50);
                 //collect data from evolution
-                //test.addEvolutionListener(new ConsoleDump(ext));
+                test.addEvolutionListener(new ConsoleDump());
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
-                test.run(); 
-                rc.writeToCsv(csvOutput);
+                test.run();
             }
+            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
+            rc.writeToCsv(csvRes);
 
         }
     }
 
-    @Test
+    //@Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
         ClusterEvaluator eval = new Silhouette();

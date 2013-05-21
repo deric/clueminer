@@ -61,7 +61,7 @@ public class GnuplotWriter implements EvolutionListener {
         if (generationNum % plotDumpMod == 0) {
             String dataFile = writeData(generationNum, getDataDir(outputDir), best.getClustering());
             plots.add(plotIndividual(generationNum, 1, 2, getDataDir(outputDir), dataFile, best, external));
-            plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
+            //plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
         }
     }
 

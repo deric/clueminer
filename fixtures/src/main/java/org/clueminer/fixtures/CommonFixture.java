@@ -69,4 +69,8 @@ public class CommonFixture extends AbstractFixture {
     public File sonarArff() throws IOException {
         return resource("sonar/sonar.arff");
     }
+    
+    public File dermatologyArff() throws IOException {
+        return resource("dermatology/dermatology.arff");
+    }
 }

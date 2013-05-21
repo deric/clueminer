@@ -122,12 +122,10 @@ public class Evolution implements Runnable {
             }
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
-            Individual[] newIndsArr = children.toArray(new Individual[0]);
-            //    System.out.println("children " + g + ": " + newIndsArr.length);
-           // System.out.println("=== childern");
-            for (int i = 0; i < newIndsArr.length; i++) {
-                System.out.println(i + ": " + newIndsArr[i].getFitness());
-            }
+            Individual[] newIndsArr = children.toArray(new Individual[0]);            
+            //for (int i = 0; i < newIndsArr.length; i++) {
+            //    System.out.println(i + ": " + newIndsArr[i].getFitness());
+            //}
             Arrays.sort(newIndsArr, Collections.reverseOrder());
 
             // and take the better "half" (populationSize)
