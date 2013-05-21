@@ -22,7 +22,9 @@ public class DatasetFixture {
     private static CommonFixture tf = new CommonFixture();
 
     public static Map<Dataset<Instance>, Integer> allDatasets() {
+        //dataset, num_true_classes
         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        datasets.put(DatasetFixture.dermatology(), 6);
         datasets.put(DatasetFixture.glass(), 7);
         datasets.put(DatasetFixture.insect(), 3);
         datasets.put(DatasetFixture.ionosphere(), 2);
