@@ -39,10 +39,7 @@ public class JaccardIndexTest {
 
         //now try some real clustering
         ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
-        ARFFHandler arff = new ARFFHandler();
-        Dataset<Instance> irisDataset = new SampleDataset();
-        arff.load(tf.irisArff(), irisDataset, 4);
-        iris = km.partition(irisDataset);
+        iris = FakeClustering.irisWrong();
     }
 
     @BeforeClass
@@ -84,7 +81,7 @@ public class JaccardIndexTest {
         score = test.score(iris, null);
         long end = System.currentTimeMillis();
         //it should be 0.8045 or 0.81...
-        assertEquals(0.8141, score, 0.1);
+        assertEquals(0.15032686686154664, score, delta);
         System.out.println("jaccard index = " + score);
         System.out.println("measuring Jaccard took " + (end - start) + " ms");
         
