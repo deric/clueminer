@@ -8,43 +8,41 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
 
 /**
- * @see http://en.wikipedia.org/wiki/Fowlkes%E2%80%93Mallows_index
+ * Rand Index as defined in:
+ *
+ * L. Hubert and P. Arabie. Comparing partitions. Journal of Classification,
+ * 2:193–218, 1985.
+ *
  * @author Tomas Barton
  */
-public class JaccardIndex extends ExternalEvaluator {
+public class RandIndex extends ExternalEvaluator {
 
-    private static final long serialVersionUID = -1547620533572167033L;
-    private static String name = "Jaccard";
+    private static final long serialVersionUID = -7408696944704938976L;
+    private static String name = "Rand Index";
 
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     *
-     * @param clusters
-     * @param dataset
-     * @return Jaccard index which should be between 0.0 and 1.0 (bigger is
-     * better)
-     */
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
-        int tp, fp, fn;
+        int tp, fp, fn, tn;
         double index = 0.0;
-        double jaccard;        
+        double rand;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);            
+            res = CountingPairs.countAssignments(table, matching, cluster);
             tp = res.get("tp");
             fp = res.get("fp");
             fn = res.get("fn");
-            jaccard = tp / (double) (tp + fp + fn);
-            index += jaccard;            
+            tn = res.get("tn");
+            rand = (tp + tn) / (double) (tp + fp + fn + tn);
+            index += rand;
         }
 
         //average value
@@ -56,6 +54,14 @@ public class JaccardIndex extends ExternalEvaluator {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Should be maximized, lies in interval <0.0 ; 1.0> where 1.0 is the best
+     * value
+     *
+     * @param score1
+     * @param score2
+     * @return true if score1 is better than score2
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
         return score1 > score2;

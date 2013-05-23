@@ -64,12 +64,12 @@ public class CountingPairsTest {
     }
 
     /**
-     * Test of countPairs method, of class CountingPairs.
+     * Test of contingencyTable method, of class CountingPairs.
      */
     @Test
     public void testCountPairs() {
         //this clustering has all assignments correct
-        Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         for (String row : table.rowKeySet()) {
             Map<String, Integer> map = table.row(row);
             for (String klass : map.keySet()) {
@@ -86,7 +86,7 @@ public class CountingPairsTest {
      */
     @Test
     public void testFindMatching() {
-        Table<String, String, Integer> table = CountingPairs.countPairs(iris);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(iris);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         //we have 3 different classes
         assertEquals(3, matching.size());
@@ -95,7 +95,7 @@ public class CountingPairsTest {
         // Dataset<Instance> irisData = FakeClustering.irisDataset();
         Clustering<Cluster> irisClusters = FakeClustering.irisWrong();
 
-        table = CountingPairs.countPairs(irisClusters);
+        table = CountingPairs.contingencyTable(irisClusters);
         matching = CountingPairs.findMatching(table);
         //we have 3 different classes
         assertEquals(3, matching.size());
@@ -112,7 +112,7 @@ public class CountingPairsTest {
         System.out.println("===test empty class");
         Clustering<Cluster> irisClusters = FakeClustering.irisWrong2();
 
-        Table<String, String, Integer> table = CountingPairs.countPairs(irisClusters);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(irisClusters);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
 
         System.out.println("table: " + table);
@@ -138,7 +138,7 @@ public class CountingPairsTest {
      */
     @Test
     public void testCountAssignments() {
-        Table<String, String, Integer> table = CountingPairs.countPairs(iris);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(iris);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
