@@ -87,4 +87,10 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return centroid for all clusters
      */
     public Instance getCentroid();
+    
+    /**
+     * 
+     * @return sizes of all clusters
+     */
+    public Integer[] clusterSizes();
 }
