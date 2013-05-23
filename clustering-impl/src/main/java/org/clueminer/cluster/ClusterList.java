@@ -85,6 +85,15 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
         return new InstancesIterator();
     }
 
+    @Override
+    public Integer[] clusterSizes() {
+        Integer[] clusterSizes = new Integer[this.size()];
+        for (int i = 0; i < this.size(); i++) {
+            clusterSizes[i] = get(i).size();
+        }
+        return clusterSizes;
+    }
+
     /**
      * Should iterate over all instances in all clusters
      */

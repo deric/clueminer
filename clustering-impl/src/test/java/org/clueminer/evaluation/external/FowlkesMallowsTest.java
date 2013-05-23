@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
  */
 public class FowlkesMallowsTest {
 
-    private static Clustering irisCorrect;    
-    private static Clustering irisWrong;
     private static FowlkesMallows test;
+    private static Clustering irisCorrect;    
+    private static Clustering irisWrong;    
     private static double delta = 1e-9;
 
     public FowlkesMallowsTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
