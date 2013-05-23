@@ -33,7 +33,7 @@ public class Precision extends ExternalEvaluator {
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching, cluster);
-            tp = res.get("tp");            
+            tp = res.get("tp");
             fp = res.get("fp");
             precision = tp / (double) (tp + fp);
             index += precision;
@@ -48,8 +48,15 @@ public class Precision extends ExternalEvaluator {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Bigger is better
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 > score2;
     }
 }
