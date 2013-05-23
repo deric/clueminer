@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -23,7 +24,7 @@ public interface ClusterEvaluation {
      * @param dataset - the original dataset
      * @return the score the clusterer obtained on this particular dataset
      */
-    public double score(Clustering clusters, Dataset dataset);
+    public double score(Clustering<Cluster> clusters, Dataset<Instance> dataset);
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
@@ -34,7 +35,7 @@ public interface ClusterEvaluation {
      * @param proximity matrix of distiances between all points
      * @return
      */
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity);
+    public double score(Clustering<Cluster> clusters, Dataset<Instance> dataset, Matrix proximity);
 
     /**
      * Compares the two scores according to the criterion in the implementation.
