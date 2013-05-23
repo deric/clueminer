@@ -22,14 +22,15 @@ public class CountingPairs {
 
     /**
      * Should count number of item with same assignment to <Cluster A, Class X>
-     * Instances must have included information about class assignment
+     * Instances must have included information about class assignment. This
+     * table is sometimes called contingency table
      *
      * Classes are in rows, Clusters are in columns
      *
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public static Table<String, String, Integer> countPairs(Clustering<Cluster> clustering) {
+    public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = Tables.newCustomTable(
                 Maps.<String, Map<String, Integer>>newHashMap(),

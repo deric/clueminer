@@ -23,7 +23,7 @@ public class Precision extends ExternalEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset) {
-        Table<String, String, Integer> table = CountingPairs.countPairs(clusters);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
