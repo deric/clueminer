@@ -65,7 +65,7 @@ public class InterpolateDemo {
             MassSpectrum inst = dataset.get(i);
 
             List<Coord3d> output = new ArrayList<Coord3d>(ysteps);
-            double filter = 1e4;
+            double filter = 1e3;
             for (int yi = 0; yi < ysteps; yi++) {
                 double y = yrange.getMin() + yi * ystep;
                 double z = inst.zValueAt(y, dataset.getTimePoints());

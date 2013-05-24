@@ -2,25 +2,14 @@ package org.clueminer.xcalibour.files;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
-import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
-import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.longtask.spi.LongTask;
-import org.clueminer.types.TimePoint;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 import ucar.ma2.Array;
-import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.Attribute;
-import ucar.nc2.Dimension;
-import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
@@ -46,9 +35,6 @@ public class XCalibourImporter implements LongTask, Runnable {
     private SpectrumDataset<MassSpectrum> dataset;
 
     public XCalibourImporter(File file) {
-        if (!file.exists()) {
-            throw new RuntimeException("file " + file.getAbsolutePath() + " not found");
-        }
         this.file = file;
     }
 
@@ -72,6 +58,10 @@ public class XCalibourImporter implements LongTask, Runnable {
 
     @Override
     public void run() {
+        if (!file.exists()) {
+            throw new RuntimeException("file " + file.getAbsolutePath() + " not found");
+        }
+
         System.out.println("importing data");
 
         NetcdfFile ncfile = null;
@@ -96,8 +86,6 @@ public class XCalibourImporter implements LongTask, Runnable {
             }
 
             Array scan_indexes = scan_var.read();
-            System.out.println("scan indexes: " + scan_indexes.getShape());
-
 
             Array mass = null, intensity = null, total_intensity = null, scan_time = null;
             try {
@@ -226,16 +214,17 @@ public class XCalibourImporter implements LongTask, Runnable {
             //process(ncfile);
         } catch (IOException ioe) {
             // log("trying to open " + filename, ioe);
+            Exceptions.printStackTrace(ioe);
         } finally {
             if (null != ncfile) {
                 try {
                     ncfile.close();
                 } catch (IOException ioe) {
                     // log("trying to close " + filename, ioe);
+                    Exceptions.printStackTrace(ioe);
                 }
             }
         }
-
     }
 
     public SpectrumDataset<MassSpectrum> getDataset() {
