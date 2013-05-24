@@ -1,0 +1,3 @@
+maven assembly (build jar with dependencies)
+
+	mvn clean compile assembly:single

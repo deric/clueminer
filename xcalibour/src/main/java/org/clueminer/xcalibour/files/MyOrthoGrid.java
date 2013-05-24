@@ -25,7 +25,7 @@ public class MyOrthoGrid extends OrthonormalGrid {
 
         List<Coord3d> output = new ArrayList<Coord3d>(xsteps * ysteps);
 
-        double filter = 1e4;
+        double filter = 1e3;
         for (int xi = 0; xi < xsteps; xi++) {
             for (int yi = 0; yi < ysteps; yi++) {
                 double x = xrange.getMin() + xi * xstep;

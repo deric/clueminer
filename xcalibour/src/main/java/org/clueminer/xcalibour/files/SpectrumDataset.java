@@ -203,6 +203,10 @@ public class SpectrumDataset<E extends ContinuousInstance> extends AbstractDatas
     public TimePoint[] getTimePoints() {
         return timePoints;
     }
+    
+    public TimePoint getTimePoint(int i){
+        return timePoints[i];
+    }
 
     @Override
     public double[] getTimePointsArray() {
