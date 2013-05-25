@@ -2,6 +2,8 @@ package org.clueminer.xcalibour.files;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.utils.progress.ProgressTicket;
@@ -33,6 +35,7 @@ public class XCalibourImporter implements LongTask, Runnable {
     private ProgressHandle ph;
     private File file;
     private SpectrumDataset<MassSpectrum> dataset;
+    private static final Logger logger = Logger.getLogger(XCalibourImporter.class.getName());
 
     public XCalibourImporter(File file) {
         this.file = file;
@@ -61,12 +64,11 @@ public class XCalibourImporter implements LongTask, Runnable {
         if (!file.exists()) {
             throw new RuntimeException("file " + file.getAbsolutePath() + " not found");
         }
-
-        System.out.println("importing data");
+        logger.log(Level.FINE, "importing data");
 
         NetcdfFile ncfile = null;
         String filename = file.getAbsolutePath();
-        System.out.println("opening file: " + filename);
+        logger.log(Level.FINE, "opening file: {0}", filename);
 
         try {
             ncfile = NetcdfDataset.openFile(filename, null);
@@ -90,25 +92,25 @@ public class XCalibourImporter implements LongTask, Runnable {
             Array mass = null, intensity = null, total_intensity = null, scan_time = null;
             try {
                 String var = "mass_values";
-                System.out.println("variable: " + var);
+                logger.log(Level.FINE, "variable: {0}", var);
                 mass = ncfile.readSection(var);
 
                 //System.out.println(mass.toString());
 
                 var = "intensity_values";
-                System.out.println("variable: " + var);
+                logger.log(Level.FINE, "variable: {0}", var);
                 intensity = ncfile.readSection(var);
 
                 //System.out.println(intensity.toString());
 
                 var = "total_intensity";
-                System.out.println("variable: " + var);
+                logger.log(Level.FINE, "variable: {0}", var);
                 total_intensity = ncfile.readSection(var);
 
                 //System.out.println(total_intensity.toString());
 
                 var = "scan_acquisition_time";
-                System.out.println("variable: " + var);
+                logger.log(Level.FINE, "variable: {0}", var);
                 scan_time = ncfile.readSection(var);
 
             } catch (InvalidRangeException ex) {
@@ -138,7 +140,7 @@ public class XCalibourImporter implements LongTask, Runnable {
             TimePointAttribute[] timepoints = new TimePointAttribute[num_measurements];
             for (int i = 0; i < num_measurements; i++) {
                 //time is stored as a double value
-                timepoints[i] = new TimePointAttribute(i, 0, scan_time.getDouble(i));     
+                timepoints[i] = new TimePointAttribute(i, 0, scan_time.getDouble(i));
                 if ((i + 1) == num_measurements) {
                     // size of last segment is unknown, we read till end of array
                     next = (int) intensity.getSize();
@@ -157,8 +159,8 @@ public class XCalibourImporter implements LongTask, Runnable {
             }
             dataset.setTimePoints(timepoints);
 
-            System.out.println("dataset size = " + dataset.size());
-            System.out.println("dataset max attr = " + dataset.attributeCount());
+            logger.log(Level.FINE, "dataset size = {0}", dataset.size());
+            logger.log(Level.FINE, "dataset max attr = {0}", dataset.attributeCount());
 
 
             // List<Array> arry = ncfile.readArrays(variables);
