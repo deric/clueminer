@@ -23,7 +23,6 @@ public class Convertor {
         String input = null, output = "output.csv";
         int i = 0, j;
         String arg;
-        char flag;
         boolean vflag = false;
 
         while (i < args.length && args[i].startsWith("-")) {
@@ -61,6 +60,8 @@ public class Convertor {
 
         if (input != null && output != null) {
             convertor = new Convertor(input, output);
+        } else {
+            System.err.println("no input data");
         }
 
     }
@@ -104,7 +105,7 @@ public class Convertor {
             // Wait maximum of 1 second
             // for MessageLoop thread
             // to finish.
-           // System.out.print(".");
+            // System.out.print(".");
             Thread.sleep(100);
         }
         System.out.println("finished!");
@@ -127,9 +128,9 @@ public class Convertor {
                     sum += mass.get(i).getIntensity();
                 }
                 StringBuilder sb = new StringBuilder();
-                sb.append(dataset.getTimePoint(t).getTimestamp());
+                sb.append(dataset.getTimePoint(t).getPosition());
                 sb.append(',');
-                sb.append(sum).append("\n");                
+                sb.append(sum).append("\n");
                 writer.write(sb.toString());
             }
             writer.close();

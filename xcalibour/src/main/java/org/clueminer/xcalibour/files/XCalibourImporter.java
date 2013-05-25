@@ -128,7 +128,7 @@ public class XCalibourImporter implements LongTask, Runnable {
             }
 
             if (scan_time == null) {
-                throw new RuntimeException("total_intensity var is null!");
+                throw new RuntimeException("scan_time var is null!");
             }
 
             int curr = 0;
@@ -137,7 +137,8 @@ public class XCalibourImporter implements LongTask, Runnable {
             dataset = new SpectrumDataset<MassSpectrum>(num_measurements);
             TimePointAttribute[] timepoints = new TimePointAttribute[num_measurements];
             for (int i = 0; i < num_measurements; i++) {
-                timepoints[i] = new TimePointAttribute(i, scan_time.getLong(i));
+                //time is stored as a double value
+                timepoints[i] = new TimePointAttribute(i, 0, scan_time.getDouble(i));     
                 if ((i + 1) == num_measurements) {
                     // size of last segment is unknown, we read till end of array
                     next = (int) intensity.getSize();
