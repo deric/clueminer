@@ -102,6 +102,7 @@
     <module>gnuplot</module>
     <module>clustering-benchmark</module>
     <module>dataset-benchmark</module>
+    <module>posturomed</module>
   </modules>
 
     <properties>
