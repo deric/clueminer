@@ -50,18 +50,18 @@ public class Precision extends ExternalEvaluator {
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-            System.out.println("class: " + matching.inverse().get(cluster) + " cluster = " + cluster);
+            //System.out.println("class: " + matching.inverse().get(cluster) + " cluster = " + cluster);
             
-            System.out.println(res);
+            //System.out.println(res);
             tp = res.get("tp");
             fp = res.get("fp");
-            System.out.println("sum = " + (tp + fp + res.get("fn") + res.get("tn")));
+            //System.out.println("sum = " + (tp + fp + res.get("fn") + res.get("tn")));
             precision = tp / (double) (tp + fp);
+            //System.out.println("precision = " +precision);
             index += precision;
         }
 
-        //average value
-        System.out.println("matching size = " + matching.size());
+        //average value        
         return index / matching.size();
     }
 

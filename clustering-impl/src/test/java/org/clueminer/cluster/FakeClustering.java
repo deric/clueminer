@@ -158,17 +158,17 @@ public class FakeClustering {
             }
 
             String klass = "cabernet";
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < 13; i++) {
                 wine.add(wine.builder().create(new double[]{i}, klass));
             }
 
             String klass2 = "syrah";
             for (int i = 0; i < 9; i++) {
-                wine.add(wine.builder().create(new double[]{i*3+12}, klass2));
+                wine.add(wine.builder().create(new double[]{i*3+13}, klass2));
             }
 
             String klass3 = "pinot";
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 wine.add(wine.builder().create(new double[]{i*4+50}, klass3));
             }
         }
@@ -176,7 +176,7 @@ public class FakeClustering {
         return wine;
     }
 
-    public static Clustering simple() {
+    public static Clustering wineCorrect() {
         if (simpleClustering == null) {
             try {
                 simpleClustering = new ClusterList(3);
@@ -191,15 +191,15 @@ public class FakeClustering {
                 c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
 
                 Dataset<Instance> data = wine();
-                for (int i = 0; i < 12; i++) {
+                for (int i = 0; i < 13; i++) {
                     a.add(data.instance(i));
                 }
 
-                for (int i = 12; i < 21; i++) {
+                for (int i = 13; i < 22; i++) {
                     b.add(data.instance(i));
                 }
 
-                for (int i = 21; i < 27; i++) {
+                for (int i = 22; i < 27; i++) {
                     c.add(data.instance(i));                    
                 }
 
@@ -218,19 +218,19 @@ public class FakeClustering {
      * @see http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/PrecisionRecallEvaluation.html
      * @return 
      */
-    public static Clustering simpleResponse() {
+    public static Clustering wineClustering() {
 
         if (simpleResponse == null) {
             try {
                 simpleResponse = new ClusterList(3);
-                Cluster a = new BaseCluster(12);
+                Cluster a = new BaseCluster(13);
                 a.setName("cluster A");
                 a.setAttribute(0, a.attributeBuilder().create("x", AttributeType.INTEGER));
-                Cluster b = new BaseCluster(12);
+                Cluster b = new BaseCluster(9);
                 b.setName("cluster B");
                 b.setAttribute(0, b.attributeBuilder().create("x", AttributeType.INTEGER));
 
-                Cluster c = new BaseCluster(12);
+                Cluster c = new BaseCluster(5);
                 c.setName("cluster C");
                 c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
 
@@ -238,44 +238,36 @@ public class FakeClustering {
                 System.out.println("dataset size "+data.size());
                 // cabernet 9x -> a
                 for (int i = 0; i < 9; i++) {
-                    a.add(data.instance(i));
-                    System.out.println("A: " + data.instance(i).classValue());
+                    a.add(data.instance(i));                    
                 }
 
-                // cabernet 2x => b
-                for (int i = 9; i < 11; i++) {
-                    b.add(data.instance(i));
-                }
+                // cabernet 2x => b                
+                b.add(data.instance(9));
                 // cabernet 1x => c
-                c.add(data.instance(11));
+                c.add(data.instance(10));
+                b.add(data.instance(11));
+                b.add(data.instance(12));
 
                 // syrah 2x -> a
-                for (int i = 12; i < 14; i++) {
+                for (int i = 13; i < 15; i++) {
                     a.add(data.instance(i));
                 }
                 
-                // syrah 2x -> c
-                for (int i = 14; i < 15; i++) {
-                    c.add(data.instance(i));
-                }
-                a.add(data.instance(15));
+                // syrah 2x -> c                                
+                c.add(data.instance(15));
                 
 
                 // syrah 5x -> b
                 for (int i = 16; i < 21; i++) {
-                    b.add(data.instance(i));
-                    System.out.println("B: " + data.instance(i).classValue());
+                    b.add(data.instance(i));                    
                 }
-
+                a.add(data.instance(21));
                 // pinot 4x -> c
-                for (int i = 21; i < 25; i++) {
+                for (int i = 22; i < 26; i++) {
                     c.add(data.instance(i));
                 }
                 
-                // pinot -> cabernet cluster
-                for (int i = 25; i < 26; i++) {
-                    a.add(data.instance(i));                    
-                }
+                // pinot -> cabernet cluster                                
                 b.add(data.instance(26));
 
                 simpleResponse.add(a);
