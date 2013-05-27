@@ -3,16 +3,9 @@ package org.clueminer.evaluation.external;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -68,14 +61,14 @@ public class RecallTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(irisCorrect, null);
+        double score = test.score(irisCorrect, FakeClustering.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println(test.getName() + " = " + score);
 
         //delta here depends on random initialization of k-means
         long start = System.currentTimeMillis();
-        score = test.score(irisWrong, null);
+        score = test.score(irisWrong, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
         
         assertEquals(0.53403755868544, score, delta);

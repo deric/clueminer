@@ -1,8 +1,10 @@
 package org.clueminer.evaluation.external;
 
+import org.clueminer.clustering.api.ExternalEvaluator;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.util.Map;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
@@ -50,6 +52,11 @@ public class Recall extends ExternalEvaluator {
 
     @Override
     public boolean compareScore(double score1, double score2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

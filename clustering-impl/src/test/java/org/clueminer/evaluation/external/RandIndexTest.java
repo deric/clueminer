@@ -59,7 +59,7 @@ public class RandIndexTest {
     public void testScore_Clustering_Dataset() {
         long start, end;
         start = System.currentTimeMillis();
-        double score = test.score(irisCorrect, null);
+        double score = test.score(irisCorrect, FakeClustering.irisDataset());
         end = System.currentTimeMillis();
         System.out.println("AdjustedRand = " + score);
         System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
@@ -67,7 +67,7 @@ public class RandIndexTest {
         assertEquals(1.0, score, delta);
 
         start = System.currentTimeMillis();
-        score = test.score(irisWrong, null);
+        score = test.score(irisWrong, FakeClustering.irisDataset());
         end = System.currentTimeMillis();
         assertEquals(0.5111111111111111, score, delta);
         System.out.println("AdjustedRand = " + score);
@@ -76,7 +76,7 @@ public class RandIndexTest {
         //this clustering shouldn't be better than the previous one, 142 items are in one
         //cluster, so not really the best solution - though the coefficient would prefere this one
         start = System.currentTimeMillis();
-        score = test.score(FakeClustering.irisWrong(), null);
+        score = test.score(FakeClustering.irisWrong(), FakeClustering.irisDataset());
         end = System.currentTimeMillis();       
         assertEquals(0.5777777777777778, score, delta);
         System.out.println("AdjustedRand = " + score);

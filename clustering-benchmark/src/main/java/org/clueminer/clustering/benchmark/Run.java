@@ -18,7 +18,7 @@ import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.evaluation.external.ExternalEvaluator;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
 import org.clueminer.evolution.AttrEvolution;
 import org.clueminer.utils.FileUtils;

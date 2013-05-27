@@ -1,7 +1,6 @@
-package org.clueminer.evaluation.external;
+package org.clueminer.clustering.api;
 
 import java.io.Serializable;
-import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.distance.api.DistanceMeasure;
 
 /**
@@ -20,4 +19,13 @@ public abstract class ExternalEvaluator implements ClusterEvaluation, Serializab
     public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
+
+    /**
+     * We want to compare two clusterings to evaluate how similar they are
+     *
+     * @param c1
+     * @param c2
+     * @return
+     */
+    public abstract double score(Clustering<Cluster> c1, Clustering<Cluster> c2);
 }
