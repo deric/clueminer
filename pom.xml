@@ -14,20 +14,22 @@
         To create your own repository, use: nbm:populate-repository
         -->
         <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>netbeans</id>
             <name>NetBeans</name>
             <url>http://bits.netbeans.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
-        <repository>
-            <id>sonatypenexus</id>
-            <name>CDK</name>
-            <url>https://maven.ch.cam.ac.uk/content/groups/ucc/</url>
-        </repository>                
-        <repository>
-            <id>plovdiv</id>
-            <name>CDK</name>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/groups/public/</url>
-        </repository>            
     </repositories>
 
     <build>
@@ -99,11 +101,11 @@
         <module>hts-fluorescence</module>
         <module>explorer</module>
         <module>infopanel</module>
-    <module>gnuplot</module>
-    <module>clustering-benchmark</module>
-    <module>dataset-benchmark</module>
-    <module>posturomed</module>
-  </modules>
+        <module>gnuplot</module>
+        <module>clustering-benchmark</module>
+        <module>dataset-benchmark</module>
+        <module>posturomed</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
