@@ -32,7 +32,7 @@ public class Precision extends ExternalEvaluator {
         double precision;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             tp = res.get("tp");
             fp = res.get("fp");
             precision = tp / (double) (tp + fp);

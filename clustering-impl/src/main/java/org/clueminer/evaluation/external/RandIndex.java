@@ -36,7 +36,7 @@ public class RandIndex extends ExternalEvaluator {
         double rand;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             tp = res.get("tp");
             fp = res.get("fp");
             fn = res.get("fn");

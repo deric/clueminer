@@ -118,11 +118,12 @@ public class CountingPairs {
      * @return table containing positive/negative assignments (usually used in
      * supervised learning)
      */
-    public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, BiMap<String, String> matching, String clusterName) {
+    public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
         int value;
         //inverse map allows searching by value
-        String realClass = matching.inverse().get(clusterName);
+        //String realClass = matching.inverse().get(clusterName);
+        
         //true positive
         tp = table.get(clusterName, realClass);
 

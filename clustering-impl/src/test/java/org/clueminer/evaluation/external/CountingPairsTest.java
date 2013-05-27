@@ -5,8 +5,6 @@ import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import org.clueminer.cluster.BaseCluster;
-import org.clueminer.cluster.ClusterList;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
@@ -126,7 +124,7 @@ public class CountingPairsTest {
         Map<String, Integer> res;
 
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             System.out.println("wrong table: "+res);
         }
 
@@ -145,7 +143,7 @@ public class CountingPairsTest {
         int tp, fp, fn, tn, sum;
         for (String cluster : matching.values()) {
             System.out.println(cluster + " corresponds to " + matching.inverse().get(cluster));
-            res = CountingPairs.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             assertEquals(4, res.size());
             tp = res.get("tp");
             fp = res.get("fp");

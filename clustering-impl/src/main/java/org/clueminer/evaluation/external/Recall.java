@@ -32,7 +32,7 @@ public class Recall extends ExternalEvaluator {
         double precision;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching, cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             tp = res.get("tp");            
             fn = res.get("fn");
             precision = tp / (double) (tp + fn);

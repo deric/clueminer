@@ -57,15 +57,28 @@ public class RandIndexTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
+        long start, end;
+        start = System.currentTimeMillis();
         double score = test.score(irisCorrect, null);
+        end = System.currentTimeMillis();
+        System.out.println("AdjustedRand = " + score);
+        System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
         //this is the ideal case
         assertEquals(1.0, score, delta);
-        System.out.println("fm index = " + score);
 
-        long start = System.currentTimeMillis();
+        start = System.currentTimeMillis();
         score = test.score(irisWrong, null);
-        long end = System.currentTimeMillis();
+        end = System.currentTimeMillis();
         assertEquals(0.5111111111111111, score, delta);
+        System.out.println("AdjustedRand = " + score);
+        System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
+        
+        //this clustering shouldn't be better than the previous one, 142 items are in one
+        //cluster, so not really the best solution - though the coefficient would prefere this one
+        start = System.currentTimeMillis();
+        score = test.score(FakeClustering.irisWrong(), null);
+        end = System.currentTimeMillis();       
+        assertEquals(0.5777777777777778, score, delta);
         System.out.println("AdjustedRand = " + score);
         System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
     }
