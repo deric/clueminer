@@ -124,5 +124,9 @@ public class NMITest {
      */
     @Test
     public void testCompareScore() {
+        //one is better than zero
+        assertTrue(test.compareScore(1.0, 0.0));
+        assertTrue(test.compareScore(1.0, 0.5));
+        assertTrue(test.compareScore(1.0, 0.9999));
     }
 }
