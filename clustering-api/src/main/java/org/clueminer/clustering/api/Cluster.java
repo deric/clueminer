@@ -2,6 +2,7 @@ package org.clueminer.clustering.api;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.Set;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -9,7 +10,7 @@ import org.clueminer.dataset.api.Instance;
  *
  * @author Tomas Barton
  */
-public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Serializable {
+public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Serializable, Set<E> {
 
     /**
      * Set cluster identification number
