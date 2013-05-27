@@ -22,7 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.BICScore;
 import org.clueminer.evaluation.Silhouette;
-import org.clueminer.evaluation.external.ExternalEvaluator;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.utils.FileUtils;

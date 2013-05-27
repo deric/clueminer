@@ -60,14 +60,13 @@ public class PrecisionTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(clusters, null);
+        double score = test.score(clusters, FakeClustering.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println(test.getName() + " = " + score);
-
-        //delta here depends on random initialization of k-means
+        
         long start = System.currentTimeMillis();
-        score = test.score(iris, null);
+        score = test.score(iris, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
         
         assertEquals(0.36666666666, score, delta);

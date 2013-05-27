@@ -1,5 +1,6 @@
 package org.clueminer.evaluation.external;
 
+import org.clueminer.clustering.api.ExternalEvaluator;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class NMI extends ExternalEvaluator {
      * @param c2
      * @return
      */
+    @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         double nmi = 0.0;
         if (c1.size() == 0 || c2.size() == 0) {

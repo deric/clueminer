@@ -58,14 +58,14 @@ public class FowlkesMallowsTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(irisCorrect, null);
+        double score = test.score(irisCorrect, FakeClustering.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(2500.0, score, delta);
         System.out.println("fm index = " + score);
 
         //delta here depends on random initialization of k-means
         long start = System.currentTimeMillis();
-        score = test.score(irisWrong, null);
+        score = test.score(irisWrong, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
         assertEquals(1565, score, 1.0);
         System.out.println("fm index = " + score);
