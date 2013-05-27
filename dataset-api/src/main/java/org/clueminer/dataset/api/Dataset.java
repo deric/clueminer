@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.SortedSet;
 import javax.swing.JComponent;
 
@@ -12,7 +13,7 @@ import javax.swing.JComponent;
  *
  * @author Tomas Barton
  */
-public interface Dataset<E extends Instance> extends Cloneable, Serializable, Iterable<E>, Collection<E> {
+public interface Dataset<E extends Instance> extends Cloneable, Serializable, Iterable<E>, Collection<E>, Set<E> {
 
     /**
      * Unique identifier of dataset

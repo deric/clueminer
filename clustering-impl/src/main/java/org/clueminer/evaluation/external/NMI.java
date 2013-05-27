@@ -1,10 +1,14 @@
 package org.clueminer.evaluation.external;
 
+import com.google.common.collect.Sets;
+import com.google.common.collect.Table;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -53,48 +57,99 @@ public class NMI extends ExternalEvaluator {
             return nmi;
         }
         int instancesCnt = c1.instancesCount();
-        
-        if(c1.instancesCount() != c2.instancesCount()){
+
+        if (c1.instancesCount() != c2.instancesCount()) {
             throw new RuntimeException("clusterings have different numbers of instances");
         }
-        
+
         double c1entropy = entropy(c1.instancesCount(), c1.clusterSizes());
         double c2entropy = entropy(c2.instancesCount(), c2.clusterSizes());
-        
+
         double mutualInformation = 0;
-        for(Cluster a : c1){
+        int common;
+        for (Cluster<Instance> a : c1) {
             final int clusterSize = a.size();
-            for(Cluster b : c2){
-                Set intersect = new TreeSet(c1);
-                intersect.retainAll(b);
-                int common = intersect.size();//sets intersection
-                
-                if(common > 0){
-                    mutualInformation +=  (common / (double) instancesCnt)
+            for (Cluster<Instance> b : c2) {
+                Set<Instance> intersection = Sets.intersection(a, b);
+                common = intersection.size();
+                //System.out.println("a = " + a.getName() + ", b = " + b.getName());
+                //System.out.println("common = " + common);
+
+                if (common > 0) {
+                    mutualInformation += (common / (double) instancesCnt)
                             * Math.log(instancesCnt
                             * common / (double) (clusterSize * b.size()));
-                }                               
-            }            
+                }
+            }
         }
-        
+
         nmi = mutualInformation / ((c1entropy + c2entropy) / 2);
 
         return nmi;
     }
 
+    /**
+     * Computes score against class label (must be provided)
+     *
+     * @param clusters
+     * @param dataset
+     * @return
+     */
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
         double nmi = 0.0;
         if (clusters.size() == 0) {
             return nmi;
         }
-        Integer[] clusterSizes = new Integer[clusters.size()];
-        for (int i = 0; i < clusters.size(); i++) {
-            clusterSizes[i] = clusters.get(i).size();
+
+        int instancesCnt = clusters.instancesCount();
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
+        Map<String, Integer> res;
+        double c1entropy = entropy(clusters.instancesCount(), clusters.clusterSizes());
+
+
+        Map<String, Integer> klassSizes = new HashMap<String, Integer>(table.columnKeySet().size());
+
+        double mutualInformation = 0;
+        int common;
+        int klassSize;
+        for (String klass : table.columnKeySet()) {
+            for (String cluster : table.rowKeySet()) {
+                //has some assignments of class to a given cluster
+                if (table.get(cluster, klass) != null) {
+                    res = CountingPairs.countAssignments(table, klass, cluster);
+                    if (klassSizes.containsKey(klass)) {
+                        klassSize = klassSizes.get(klass);
+                    } else {
+                        klassSize = res.get("tp") + res.get("fp");                        
+                        klassSizes.put(klass, klassSize);
+                    }
+                    //System.out.println("klass size = " + klassSize);
+
+                    int clusterSize = res.get("tp") + res.get("fn");
+                    //itersection is number of true positives
+                    common = res.get("tp");
+                    //System.out.println("a = " + klass + ", b = " + cluster);
+                    //System.out.println("common = " + common);
+
+                    if (common > 0) {
+                        mutualInformation += (common / (double) instancesCnt)
+                                * Math.log(instancesCnt
+                                * common / (double) (klassSize * clusterSize));
+                    }
+                }
+
+            }
         }
-        double entropy = entropy(dataset.size(), clusterSizes);
+        Integer[] clusterSizes = new Integer[klassSizes.size()];
+        int i = 0;
+        for (String key : klassSizes.keySet()) {
+            clusterSizes[i++] = klassSizes.get(key);
+        }
 
+        double classEntropy = entropy(dataset.size(), clusterSizes);
 
+        nmi = mutualInformation / ((c1entropy + classEntropy) / 2);
 
         return nmi;
     }
