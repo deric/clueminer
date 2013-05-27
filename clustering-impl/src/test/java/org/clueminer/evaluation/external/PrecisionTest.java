@@ -2,7 +2,11 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.clueminer.attributes.AttributeType;
+import org.clueminer.cluster.BaseCluster;
+import org.clueminer.cluster.ClusterList;
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
@@ -64,11 +68,11 @@ public class PrecisionTest {
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println(test.getName() + " = " + score);
-        
+
         long start = System.currentTimeMillis();
         score = test.score(iris, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
-        
+
         assertEquals(0.36666666666, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
@@ -86,5 +90,49 @@ public class PrecisionTest {
      */
     @Test
     public void testCompareScore() {
+    }
+
+    /**
+     * Test of score method, of class Precision.
+     */
+    @Test
+    public void testScore_Clustering_Clustering() {
+        long start, end;
+        start = System.currentTimeMillis();
+        double score = test.score(FakeClustering.iris(), FakeClustering.iris());
+        end = System.currentTimeMillis();
+        //this is fixed clustering which correspods to true classes in dataset
+        assertEquals(1.0, score, delta);
+        System.out.println("precision  = " + score);
+        System.out.println("measuring precision took " + (end - start) + " ms");
+
+        /*   start = System.currentTimeMillis();
+         score = test.score(FakeClustering.irisWrong(), FakeClustering.iris());
+         end = System.currentTimeMillis();
+
+         assertEquals(0.3466666666666667, score, delta);
+         System.out.println(test.getName() + " = " + score);
+         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+        
+         start = System.currentTimeMillis();
+         score = test.score(FakeClustering.irisWrong2(), FakeClustering.iris());
+         end = System.currentTimeMillis();
+
+         assertEquals(0.5333333333333333, score, delta);
+         System.out.println(test.getName() + " = " + score);
+         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");*/
+
+
+
+        start = System.currentTimeMillis();
+        score = test.score(FakeClustering.simple(), FakeClustering.simpleResponse());
+        end = System.currentTimeMillis();
+
+  //      assertEquals(0.75, score, delta);
+        System.out.println(test.getName() + " = " + score);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+
+
+
     }
 }
