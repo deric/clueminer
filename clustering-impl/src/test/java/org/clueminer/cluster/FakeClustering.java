@@ -2,6 +2,7 @@ package org.clueminer.cluster;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.clueminer.attributes.AttributeType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -21,7 +22,10 @@ public class FakeClustering {
     private static Clustering<Cluster> irisClusters;
     private static Clustering<Cluster> irisWrong;
     private static Clustering<Cluster> irisWrong2;
+    private static Clustering<Cluster> simpleClustering;
+    private static Clustering<Cluster> simpleResponse;
     private static Dataset<Instance> irisData;
+    private static Dataset<Instance> wine;
 
     public static Clustering iris() {
         if (irisClusters == null) {
@@ -141,5 +145,147 @@ public class FakeClustering {
             irisWrong2.add(c);
         }
         return irisWrong2;
+    }
+
+    public static Dataset<Instance> wine() {
+        if (wine == null) {
+
+            wine = new SampleDataset(27);
+            try {
+                wine.setAttribute(0, wine.attributeBuilder().create("x", AttributeType.INTEGER));
+            } catch (UnsupportedAttributeType ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+            String klass = "cabernet";
+            for (int i = 0; i < 12; i++) {
+                wine.add(wine.builder().create(new double[]{i}, klass));
+            }
+
+            String klass2 = "syrah";
+            for (int i = 0; i < 9; i++) {
+                wine.add(wine.builder().create(new double[]{i*3+12}, klass2));
+            }
+
+            String klass3 = "pinot";
+            for (int i = 0; i < 6; i++) {
+                wine.add(wine.builder().create(new double[]{i*4+50}, klass3));
+            }
+        }
+
+        return wine;
+    }
+
+    public static Clustering simple() {
+        if (simpleClustering == null) {
+            try {
+                simpleClustering = new ClusterList(3);
+                Cluster a = new BaseCluster(12);
+                a.setName("cabernet");
+                a.setAttribute(0, a.attributeBuilder().create("x", AttributeType.INTEGER));
+                Cluster b = new BaseCluster(9);
+                b.setName("syrah");
+                b.setAttribute(0, b.attributeBuilder().create("x", AttributeType.INTEGER));
+                Cluster c = new BaseCluster(6);
+                c.setName("pinot");
+                c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
+
+                Dataset<Instance> data = wine();
+                for (int i = 0; i < 12; i++) {
+                    a.add(data.instance(i));
+                }
+
+                for (int i = 12; i < 21; i++) {
+                    b.add(data.instance(i));
+                }
+
+                for (int i = 21; i < 27; i++) {
+                    c.add(data.instance(i));                    
+                }
+
+                simpleClustering.add(a);
+                simpleClustering.add(b);
+                simpleClustering.add(c);
+            } catch (UnsupportedAttributeType ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+        return simpleClustering;
+    }
+
+    /**
+     * @see http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/PrecisionRecallEvaluation.html
+     * @return 
+     */
+    public static Clustering simpleResponse() {
+
+        if (simpleResponse == null) {
+            try {
+                simpleResponse = new ClusterList(3);
+                Cluster a = new BaseCluster(12);
+                a.setName("cluster A");
+                a.setAttribute(0, a.attributeBuilder().create("x", AttributeType.INTEGER));
+                Cluster b = new BaseCluster(12);
+                b.setName("cluster B");
+                b.setAttribute(0, b.attributeBuilder().create("x", AttributeType.INTEGER));
+
+                Cluster c = new BaseCluster(12);
+                c.setName("cluster C");
+                c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
+
+                Dataset<Instance> data = wine();
+                System.out.println("dataset size "+data.size());
+                // cabernet 9x -> a
+                for (int i = 0; i < 9; i++) {
+                    a.add(data.instance(i));
+                    System.out.println("A: " + data.instance(i).classValue());
+                }
+
+                // cabernet 2x => b
+                for (int i = 9; i < 11; i++) {
+                    b.add(data.instance(i));
+                }
+                // cabernet 1x => c
+                c.add(data.instance(11));
+
+                // syrah 2x -> a
+                for (int i = 12; i < 14; i++) {
+                    a.add(data.instance(i));
+                }
+                
+                // syrah 2x -> c
+                for (int i = 14; i < 15; i++) {
+                    c.add(data.instance(i));
+                }
+                a.add(data.instance(15));
+                
+
+                // syrah 5x -> b
+                for (int i = 16; i < 21; i++) {
+                    b.add(data.instance(i));
+                    System.out.println("B: " + data.instance(i).classValue());
+                }
+
+                // pinot 4x -> c
+                for (int i = 21; i < 25; i++) {
+                    c.add(data.instance(i));
+                }
+                
+                // pinot -> cabernet cluster
+                for (int i = 25; i < 26; i++) {
+                    a.add(data.instance(i));                    
+                }
+                b.add(data.instance(26));
+
+                simpleResponse.add(a);
+                simpleResponse.add(b);
+                simpleResponse.add(c);
+            } catch (UnsupportedAttributeType ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+        return simpleResponse;
     }
 }

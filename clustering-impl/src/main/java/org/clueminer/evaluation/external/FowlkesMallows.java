@@ -2,11 +2,14 @@ package org.clueminer.evaluation.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.util.Map;
+import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -50,7 +53,7 @@ public class FowlkesMallows extends ExternalEvaluator {
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
         return score(clusters, dataset);
     }
-
+    
     /**
      * Should be maximized
      *
@@ -65,6 +68,30 @@ public class FowlkesMallows extends ExternalEvaluator {
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double index = 0;
+
+        int instancesCnt = c1.instancesCount();
+
+        if (c1.instancesCount() != c2.instancesCount()) {
+            throw new RuntimeException("clusterings have different numbers of instances");
+        }
+
+        int common;
+        for (Cluster<Instance> a : c1) {
+            final int clusterSize = a.size();
+            for (Cluster<Instance> b : c2) {
+                Set<Instance> intersection = Sets.intersection(a, b);
+                common = intersection.size();
+                //System.out.println("a = " + a.getName() + ", b = " + b.getName());
+                //System.out.println("common = " + common);
+
+                if (common > 0) {
+                    index += (common / (double) instancesCnt)
+                            * Math.log(instancesCnt
+                            * common / (double) (clusterSize * b.size()));
+                }
+            }
+        }
+        return index;
     }
 }

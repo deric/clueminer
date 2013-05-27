@@ -6,9 +6,11 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -19,6 +21,17 @@ import org.clueminer.dataset.api.Instance;
  * @author Tomas Barton
  */
 public class CountingPairs {
+
+    public static Table<String, String, Integer> newTable() {
+        return Tables.newCustomTable(
+                Maps.<String, Map<String, Integer>>newHashMap(),
+                new Supplier<Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> get() {
+                return Maps.newHashMap();
+            }
+        });
+    }
 
     /**
      * Should count number of item with same assignment to <Cluster A, Class X>
@@ -32,14 +45,7 @@ public class CountingPairs {
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
-        Table<String, String, Integer> table = Tables.newCustomTable(
-                Maps.<String, Map<String, Integer>>newHashMap(),
-                new Supplier<Map<String, Integer>>() {
-            @Override
-            public Map<String, Integer> get() {
-                return Maps.newHashMap();
-            }
-        });
+        Table<String, String, Integer> table = newTable();
 
         //Cluster current;
         Instance inst;
@@ -65,13 +71,41 @@ public class CountingPairs {
     }
 
     /**
-     * Guesses which cluster corresponds to which class (this could be done by
-     * set intersect, but it would be very expensive)
+     * Find number of common instances in each cluster of A and B
      *
-     * @TODO there's set intersection in Guava:
-     * http://docs.guava-libraries.googlecode.com/git-history/v14.0/javadoc/com/google/common/collect/Sets.html#intersection%28java.util.Set,%20java.util.Set%29
+     * @param c1 clustering A
+     * @param c2 clustering B
+     * @return
+     */
+    public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        // a lookup table for storing same / differently classified items
+        Table<String, String, Integer> table = newTable();
+
+        //Cluster current;        
+        String label1, label2;
+        int cnt;
+        for (Cluster<Instance> a : c1) {
+            for (Cluster<Instance> b : c2) {
+
+                label1 = a.getName();
+                label2 = b.getName();
+
+                if (!table.contains(label1, label2)) {
+                    Set<Instance> tp = Sets.intersection(a, b);
+                    cnt = tp.size();
+                    if (cnt > 0) {
+                        table.put(label1, label2, cnt);
+                    }
+                }
+            }
+        }
+        return table;
+    }
+
+    /**
+     * Guesses which cluster corresponds to which class
      *
-     * @param table
+     * @param table contingency table
      * @return
      */
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
@@ -123,7 +157,7 @@ public class CountingPairs {
         int value;
         //inverse map allows searching by value
         //String realClass = matching.inverse().get(clusterName);
-        
+
         //true positive
         tp = table.get(clusterName, realClass);
 
