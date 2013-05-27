@@ -125,14 +125,24 @@ public class PrecisionTest {
 
 
         start = System.currentTimeMillis();
-        score = test.score(FakeClustering.simple(), FakeClustering.simpleResponse());
+        score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
         end = System.currentTimeMillis();
 
-  //      assertEquals(0.75, score, delta);
+        //each cluster should have this scores:
+        //Cabernet = 0.6923	
+        //Syrah = 0.5555
+        //Pinot = 0.8000
+        assertEquals(0.6826210826210826, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
 
-
+        start = System.currentTimeMillis();
+        double score2 = test.score(FakeClustering.wineClustering(), FakeClustering.wine());
+        end = System.currentTimeMillis();
+        //when using class labels result should be the same
+        assertEquals(score, score2, delta);
+        System.out.println(test.getName() + " = " + score2);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
 
     }
 }
