@@ -121,7 +121,7 @@ public class NMI extends ExternalEvaluator {
                     if (klassSizes.containsKey(klass)) {
                         klassSize = klassSizes.get(klass);
                     } else {
-                        klassSize = res.get("tp") + res.get("fp");                        
+                        klassSize = res.get("tp") + res.get("fp");
                         klassSizes.put(klass, klassSize);
                     }
                     //System.out.println("klass size = " + klassSize);
@@ -159,8 +159,15 @@ public class NMI extends ExternalEvaluator {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Should be maximized, maximum value is 1.0
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 > score2;
     }
 }
