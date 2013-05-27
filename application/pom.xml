@@ -13,6 +13,19 @@
 
     <name>clueminer-app</name>
     <url>http://www.clueminer.org</url>
+    
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
     <!-- Licenses -->
     <licenses>
@@ -159,6 +172,7 @@
                     <requiresRestart>true</requiresRestart>
                     <!-- path to default config that will be stored in etc/clueminer.conf -->
                     <etcConfFile>${basedir}/src/main/resources/${brandingToken}.conf</etcConfFile>
+                    <installerOsSolaris>false</installerOsSolaris>
                 </configuration>
             </plugin>
             <!-- Permits NbModuleSuite to be run in integration-test phase: -->
