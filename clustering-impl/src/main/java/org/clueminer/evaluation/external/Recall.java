@@ -23,9 +23,20 @@ public class Recall extends ExternalEvaluator {
         return name;
     }
 
+    /**
+     * Count Recall against class labels
+     *
+     * @param clusters
+     * @param dataset
+     * @return
+     */
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
+        return countScore(table);
+    }
+
+    public double countScore(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
@@ -35,30 +46,36 @@ public class Recall extends ExternalEvaluator {
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-            tp = res.get("tp");            
+            tp = res.get("tp");
             fn = res.get("fn");
             precision = tp / (double) (tp + fn);
             index += precision;
         }
 
         //average value
-        return index / clusters.size();
+        return index / matching.size();
     }
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
 
+    /**
+     * Should be maximized
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 > score2;
     }
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
+        return countScore(table);
     }
-
-
 }
