@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 public class RecallTest {
 
     private static Clustering irisCorrect;
-    private static CommonFixture tf = new CommonFixture();
     private static Clustering irisWrong;
     private static Recall test;
     private static double delta = 1e-9;
