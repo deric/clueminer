@@ -70,7 +70,7 @@ public class RecallTest {
         long start = System.currentTimeMillis();
         score = test.score(irisWrong, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
-        
+
         assertEquals(0.53403755868544, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
@@ -88,5 +88,36 @@ public class RecallTest {
      */
     @Test
     public void testCompareScore() {
+    }
+
+    /**
+     * Test of score method, of class Recall.
+     * @see http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/PrecisionRecallEvaluation.html
+     */
+    @Test
+    public void testScore_Clustering_Clustering() {
+        long start, end;
+        double score;
+
+        start = System.currentTimeMillis();
+        score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
+        end = System.currentTimeMillis();
+
+        //each cluster should have this scores:
+        //Cabernet = 0.7500	
+        //Syrah = 0.5555
+        //Pinot = 0.6666
+        assertEquals(0.6574074074074074, score, delta);
+        System.out.println(test.getName() + " = " + score);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+
+        start = System.currentTimeMillis();
+        double score2 = test.score(FakeClustering.wineClustering(), FakeClustering.wine());
+        end = System.currentTimeMillis();
+        //when using class labels result should be the same
+        assertEquals(score, score2, delta);
+        System.out.println(test.getName() + " = " + score2);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+
     }
 }
