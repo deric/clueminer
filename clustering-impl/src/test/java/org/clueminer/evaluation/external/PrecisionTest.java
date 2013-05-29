@@ -114,7 +114,7 @@ public class PrecisionTest {
         score = test.score(FakeClustering.irisWrong2(), FakeClustering.iris());
         end = System.currentTimeMillis();
 
-        assertEquals(0.8, score, delta);
+        assertEquals(0.5333333333333333, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
 

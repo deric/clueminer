@@ -58,7 +58,7 @@ public class FowlkesMallows extends ExternalEvaluator {
         }
 
         //average value
-        return index / matching.size();
+        return index / table.columnKeySet().size();
     }
 
     /**

@@ -75,7 +75,7 @@ public class CountingPairs {
      * Find number of common instances in each cluster of A and B
      *
      * @param c1 clustering A
-     * @param c2 clustering B
+     * @param c2 clustering B - reference cluster (considered as "correct")
      * @return
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
