@@ -51,11 +51,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.1.1</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>math-api</artifactId>
             <version>${project.version}</version>
@@ -86,6 +81,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>math-plot</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.2</version>
         </dependency>
     </dependencies>
 
