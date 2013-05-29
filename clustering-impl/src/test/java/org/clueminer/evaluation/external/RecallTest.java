@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.exception.UnsupportedAttributeType;
-import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
