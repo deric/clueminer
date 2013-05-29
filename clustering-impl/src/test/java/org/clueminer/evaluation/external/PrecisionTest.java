@@ -2,11 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.attributes.AttributeType;
-import org.clueminer.cluster.BaseCluster;
-import org.clueminer.cluster.ClusterList;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
@@ -144,5 +140,12 @@ public class PrecisionTest {
         System.out.println(test.getName() + " = " + score2);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
 
+    }
+
+    /**
+     * Test of countScore method, of class Precision.
+     */
+    @Test
+    public void testCountScore() {
     }
 }

@@ -37,13 +37,12 @@ public class Precision extends ExternalEvaluator {
     
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
     
     public double countScore(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
-        System.out.println(table);
         int tp, fp;
         double index = 0.0;
         double precision;
