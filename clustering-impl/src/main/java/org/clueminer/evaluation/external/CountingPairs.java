@@ -9,6 +9,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -117,25 +118,42 @@ public class CountingPairs {
 
         for (String rowKey : table.rowKeySet()) {
             sortedClusters.put(rowKey, table.row(rowKey).size());
-        }
+        }        
+        LinkedList<String> notAssigned = new LinkedList<String>();
         //for each real class we have to find best match
         for (String cluster : sortedClusters.keySet()) {
             Map<String, Integer> assign = table.row(cluster);
             int max = 0, value;
             String maxKey = null;
-            for (String key : assign.keySet()) {
-                value = assign.get(key);
+            for (String klass : assign.keySet()) {
+                value = assign.get(klass);
                 //if one class would have same number of assignments to two 
                 //clusters, it's hard to decide which is which                
-                if (value >= max && !matching.containsKey(key)) {
+                if (value >= max && !matching.containsKey(klass)) {
                     max = value;
-                    maxKey = key;
+                    maxKey = klass;
                 }
             }
             //one class could be assigned just to one cluster - hard membership
             //it's not guaranteed that we'll find matching class for each cluster
-            if (maxKey != null && !matching.containsKey(maxKey)) {
+            if (maxKey == null) {
+                notAssigned.push(cluster);
+            } else if (!matching.containsKey(maxKey)) {
                 matching.put(maxKey, cluster);
+            } else {
+                throw new RuntimeException("this should not happen");
+            }
+        }
+        //some cluster hasn't been assigned to a class
+        // matching.size() < sortedClusters.size()
+        if (notAssigned.size() > 0) {            
+            for (String cluster : notAssigned) {
+                for (String klass : table.columnKeySet()) {
+                    if (!matching.containsKey(klass)) {
+                        matching.put(klass, cluster);
+                        break;
+                    }
+                }
             }
         }
         return matching;
@@ -159,7 +177,11 @@ public class CountingPairs {
         //String realClass = matching.inverse().get(clusterName);
 
         //true positive
-        tp = table.get(clusterName, realClass);
+        if (table.contains(clusterName, realClass)) {
+            tp = table.get(clusterName, realClass);
+        } else {
+            tp = 0;
+        }
 
         //interate over clusters
         for (String clust : table.rowKeySet()) {

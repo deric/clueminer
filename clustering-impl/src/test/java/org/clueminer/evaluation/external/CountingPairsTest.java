@@ -115,8 +115,8 @@ public class CountingPairsTest {
 
         System.out.println("table: " + table);
         System.out.println("matching: " + matching);
-        //only 2 classes could be paired
-        assertEquals(2, matching.size());
+        //only 2 classes could be paired, third one is paired in a random way
+        assertEquals(3, matching.size());
         //Iris-setosa will be in all 3 clusters
         //cluster 3 should be mapped to Iris-versicolor
         System.out.println("versicolor: " + matching.get("Iris-versicolor"));
