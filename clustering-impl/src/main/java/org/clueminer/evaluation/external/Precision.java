@@ -61,7 +61,7 @@ public class Precision extends ExternalEvaluator {
         }
 
         //average value        
-        return index / matching.size();
+        return index / table.columnKeySet().size();
     }
 
     /**

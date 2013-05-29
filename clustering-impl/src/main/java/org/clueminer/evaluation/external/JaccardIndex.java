@@ -50,7 +50,7 @@ public class JaccardIndex extends ExternalEvaluator {
         }
 
         //average value
-        return index / clusters.size();
+        return index / table.columnKeySet().size();
     }
 
     @Override

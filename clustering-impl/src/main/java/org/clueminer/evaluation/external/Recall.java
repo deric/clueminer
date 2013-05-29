@@ -53,7 +53,7 @@ public class Recall extends ExternalEvaluator {
         }
 
         //average value
-        return index / matching.size();
+        return index / table.columnKeySet().size();
     }
 
     @Override

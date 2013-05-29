@@ -69,7 +69,7 @@ public class RandIndexTest {
         start = System.currentTimeMillis();
         score = test.score(irisWrong, FakeClustering.irisDataset());
         end = System.currentTimeMillis();
-        assertEquals(0.5111111111111111, score, delta);
+        assertEquals(0.6888888888888888, score, delta);
         System.out.println("AdjustedRand = " + score);
         System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
         

@@ -8,8 +8,9 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Ordering;
 
 class ValueComparableMap<K extends Comparable<K>, V> extends TreeMap<K, V> {
-    //A map for doing lookups on the keys for comparison so we don't get infinite loops
 
+    private static final long serialVersionUID = 3185543157057470654L;
+    //A map for doing lookups on the keys for comparison so we don't get infinite loops
     private final Map<K, V> valueMap;
 
     ValueComparableMap(final Ordering<? super V> partialValueOrdering) {

@@ -43,8 +43,8 @@ public class Accuracy extends ExternalEvaluator {
             index += accuracy;
         }
 
-        //average value
-        return index / matching.size();
+        //average value - divided by known number of classes (or should we divide it by number of clusters?)
+        return index / table.columnKeySet().size();
     }
 
     @Override

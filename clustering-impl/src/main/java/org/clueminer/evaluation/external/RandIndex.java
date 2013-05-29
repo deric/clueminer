@@ -38,17 +38,17 @@ public class RandIndex extends ExternalEvaluator {
         double rand;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);            
             tp = res.get("tp");
             fp = res.get("fp");
             fn = res.get("fn");
             tn = res.get("tn");
-            rand = (tp + tn) / (double) (tp + fp + fn + tn);
+            rand = (tp + tn) / (double) (tp + fp + fn + tn);            
             index += rand;
         }
 
-        //average value
-        return index / clusters.size();
+        //average value - divided by number of "real" classes
+        return index / table.columnKeySet().size();
     }
 
     @Override
