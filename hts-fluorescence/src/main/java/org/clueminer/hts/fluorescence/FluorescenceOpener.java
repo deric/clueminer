@@ -1,6 +1,5 @@
 package org.clueminer.hts.fluorescence;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import eu.medsea.mimeutil.MimeUtil2;
 import java.io.BufferedReader;
 import java.io.File;

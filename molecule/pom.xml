@@ -32,6 +32,22 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>sonatypenexus</id>
+            <name>CDK</name>
+            <url>https://maven.ch.cam.ac.uk/content/groups/ucc/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>  
+        <repository>
+            <id>plovdiv</id>
+            <name>CDK</name>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>  
     </repositories>
 
     <dependencies>
@@ -49,6 +65,11 @@
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-interfaces</artifactId>
             <version>1.4.16</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.2</version>
         </dependency>
     </dependencies>
 
