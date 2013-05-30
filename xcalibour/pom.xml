@@ -172,6 +172,32 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>2.0-rc11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>2.0-rc11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.swt.gtk.linux</groupId>
+            <artifactId>x86_64</artifactId>
+            <version>3.3.0-v3346</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.0-rc11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+            <version>2.0-rc11</version>
+        </dependency>
+        
     </dependencies>
 
     <build>
