@@ -43,8 +43,9 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
         try {
             byte[] data;
             InputStream in = new FileInputStream(file);
-            data = new byte[1024];
-            in.read(data, 0, 1024);
+            int bytes = 1024;
+            data = new byte[bytes];
+            in.read(data, 0, bytes);
             in.close();
             mimeTypes = mimeUtil.getMimeTypes(data);
         } catch (IOException ex) {
@@ -53,17 +54,41 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
         return mimeTypes;
     }
 
-    @Override
-    public boolean open(FileObject fileObject) {
-        File f = FileUtil.toFile(fileObject);
+    /**
+     * MIME type is too broad therefore we check extensions
+     *
+     * @TODO improve MIME detection (perhaps add some CDF type?)
+     * @param f
+     * @return
+     */
+    protected boolean openFile(File f) {
         Collection mimeTypes = detectMIME(f);
-        System.out.println("mime" + mimeTypes.toString());
-        if (mimeTypes.contains("application/x-msaccess") || mimeTypes.contains("application/vnd.ms-access")) {
+        String ext = getExtension(f.getPath());       
+        String mime = mimeTypes.toString();        
+        if ((ext.equals("cdf") || ext.equals("tmp")) && mime.contains("octet-stream")) {
             importer = new XCalibourImporter(f);
             openXCalibourFile(importer);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean open(FileObject fileObject) {
+        File f = FileUtil.toFile(fileObject);
+        return openFile(f);
+    }
+
+    protected String getExtension(String filename) {
+        String extension = "";
+        int i = filename.lastIndexOf('.');
+        int p = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = filename.substring(i + 1);
+        }
+
+        return extension;
     }
 
     @Override

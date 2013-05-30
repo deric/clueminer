@@ -26,6 +26,7 @@ public class XCalibourFileOpenerTest {
     @BeforeClass
     public static void setUpClass() {
         test = new XCalibourFileOpener();
+        fixture = new XCalibourFixture();
     }
 
     @AfterClass
@@ -45,19 +46,23 @@ public class XCalibourFileOpenerTest {
      */
     @Test
     public void testDetectMIME() {
-       /* try {
+        try {
             Collection<String> mime = test.detectMIME(fixture.testData());
-            System.out.println("mime: "+mime.toString());
+            String str = mime.toString();
+            System.out.println("mime: " + str);
+            assertEquals(true, str.contains("octet-stream"));
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
-        }*/
+        }
     }
 
     /**
      * Test of open method, of class XCalibourFileOpener.
      */
     @Test
-    public void testOpen() {
+    public void testOpen() throws IOException {        
+        boolean res = test.openFile(fixture.testData());
+        assertEquals(true, res);
     }
 
     /**
@@ -72,5 +77,14 @@ public class XCalibourFileOpenerTest {
      */
     @Test
     public void testOpenXCalibourFile() {
+    }
+
+    /**
+     * Test of getExtension method, of class XCalibourFileOpener.
+     */
+    @Test
+    public void testGetExtension() throws IOException {
+        //in this test we use file extracted from a jar file
+        assertEquals("tmp", test.getExtension(fixture.testData().getPath()));
     }
 }
