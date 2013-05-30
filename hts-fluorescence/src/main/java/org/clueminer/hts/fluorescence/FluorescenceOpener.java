@@ -121,10 +121,11 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
 
                 FluorescenceDataset normalized = (FluorescenceDataset) normalize(plate);
 
-                saveDataset(plate, "import");
-                saveDataset(normalized, "norm");
+                saveDataset(plate, "import", false);
+                saveDataset(normalized, "norm", true);
 
                 tc.setDataset(normalized);
+                //tc.setDataset(plate);
                 tc.setProject(project);
                 tc.setDisplayName(plate.getName());
                 tc.open();
@@ -146,7 +147,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         });
     }
 
-    public void saveDataset(FluorescenceDataset plate, String ident) {
+    public void saveDataset(FluorescenceDataset plate, String ident, boolean normalized) {
         String filename = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()
                  */ + "/" + "david-" + plate.getName() + "-" + ident + ".csv";
@@ -166,21 +167,39 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
              }
              writer.append(eol);*/
             //content
-            Instance current;
+            FluorescenceInstance current;
             String sampleName;
             logger.log(Level.INFO, "export size {0}", plate.size());
-            for (int i = 0; i < plate.size(); i++) {
-                current = plate.instance(i);
-                sampleName = current.getName();
 
-                writer.append(sampleName).append(separator);
+            if (normalized) {
+                for (int i = 0; i < plate.size(); i++) {
+                    current = plate.instance(i);
+                    if (current.getColumn() < 46) {
+                        sampleName = current.getName();
+                        writer.append(sampleName).append(separator);
 
-                for (int j = 0; j < plate.attributeCount(); j++) {
-                    value = plate.getAttributeValue(j, i);
-                    writer.append(String.valueOf(value)).append(separator);
+                        for (int j = 0; j < plate.attributeCount(); j++) {
+                            value = plate.getAttributeValue(j, i);
+                            writer.append(String.valueOf(value)).append(separator);
+                        }
+                        writer.append(eol);
+                    }
                 }
-                writer.append(eol);
+            } else {
+                for (int i = 0; i < plate.size(); i++) {
+                    current = plate.instance(i);
+                    sampleName = current.getName();
+                    writer.append(sampleName).append(separator);
+                    for (int j = 0; j < plate.attributeCount(); j++) {
+                        value = plate.getAttributeValue(j, i);
+                        writer.append(String.valueOf(value)).append(separator);
+                    }
+                    writer.append(eol);
+                }
+
             }
+
+
             writer.flush();
             writer.close();
         } catch (IOException e) {
