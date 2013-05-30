@@ -7,23 +7,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import org.clueminer.openfile.OpenFileImpl;
+import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
+import org.clueminer.project.api.Workspace;
+import org.clueminer.xcalibour.plot3d.XCalibour3dTopComponent;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.windows.WindowManager;
 
 /**
  *
  * @author Tomas Barton
  */
-@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 150)
+@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 80)
 public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
 
     private MimeUtil2 mimeUtil = new MimeUtil2();
@@ -63,8 +68,11 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
      */
     protected boolean openFile(File f) {
         Collection mimeTypes = detectMIME(f);
-        String ext = getExtension(f.getPath());       
-        String mime = mimeTypes.toString();        
+        String ext = getExtension(f.getPath());
+        String mime = mimeTypes.toString();
+        System.out.println("testing file: " + f.getPath());
+        System.out.println("ext: " + ext);
+        System.out.println("mime: " + mime);
         if ((ext.equals("cdf") || ext.equals("tmp")) && mime.contains("octet-stream")) {
             importer = new XCalibourImporter(f);
             openXCalibourFile(importer);
@@ -93,9 +101,38 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
 
     @Override
     public void taskFinished(Task task) {
-        /**
-         * @TODO implement opening tabs
-         */
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("opening task finished");
+                ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                project.add(importer.getDataset());
+
+
+                XCalibour3dTopComponent tc = new XCalibour3dTopComponent();
+
+                //tc.setDataset(normalized);
+                //tc.setProject(project);
+                //tc.setDisplayName(plate.getName());
+                tc.open();
+                tc.requestActive();
+
+
+                pc.openProject(project);
+                Workspace workspace = pc.getCurrentWorkspace();
+                if (workspace != null) {
+                    System.out.println("workspace: " + workspace.toString());
+                    System.out.println("adding plate to lookup");
+                    workspace.add(importer.getDataset());  //add plate to project's lookup
+                } else {
+                    System.out.println("workspace is null!!!!");
+                }
+
+                //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
+                //     preprocess.start();
+            }
+        });
+
     }
 
     protected void openXCalibourFile(XCalibourImporter importer) {
