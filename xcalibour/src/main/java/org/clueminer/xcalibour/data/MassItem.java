@@ -1,4 +1,4 @@
-package org.clueminer.xcalibour.files;
+package org.clueminer.xcalibour.data;
 
 import java.io.Serializable;
 import org.clueminer.math.Numeric;

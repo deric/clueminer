@@ -1,5 +1,7 @@
 package org.clueminer.xcalibour.files;
 
+import org.clueminer.xcalibour.data.SpectrumDataset;
+import org.clueminer.xcalibour.data.MassSpectrum;
 import org.clueminer.interpolation.CubicInterpolator;
 import org.clueminer.interpolation.LagrangeInterpolator;
 import org.clueminer.math.Interpolator;

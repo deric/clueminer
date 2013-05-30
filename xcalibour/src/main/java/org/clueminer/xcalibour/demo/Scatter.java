@@ -1,4 +1,4 @@
-package org.clueminer.xcalibour.files;
+package org.clueminer.xcalibour.demo;
 
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;

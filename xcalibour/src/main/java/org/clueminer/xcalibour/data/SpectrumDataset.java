@@ -1,4 +1,4 @@
-package org.clueminer.xcalibour.files;
+package org.clueminer.xcalibour.data;
 
 import java.util.Map;
 import java.util.Random;

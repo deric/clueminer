@@ -1,5 +1,6 @@
 package org.clueminer.xcalibour.files;
 
+import org.clueminer.xcalibour.data.MassItem;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -1,5 +1,7 @@
 package org.clueminer.xcalibour.files;
 
+import org.clueminer.xcalibour.data.SpectrumDataset;
+import org.clueminer.xcalibour.data.MassSpectrum;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
