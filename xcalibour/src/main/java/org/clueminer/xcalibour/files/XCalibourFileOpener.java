@@ -12,6 +12,7 @@ import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.Workspace;
+import org.clueminer.xcalibour.plot3d.Plot2dTopComponent;
 import org.clueminer.xcalibour.plot3d.XCalibour3dTopComponent;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -104,14 +105,19 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
                 System.out.println("opening task finished");
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
-
+                importer.getDataset().setName(importer.getFile().getName());
 
                 XCalibour3dTopComponent tc = new XCalibour3dTopComponent();
-                tc.setDataset(importer.getDataset());                
+                tc.setDataset(importer.getDataset());
                 //tc.setProject(project);
                 //tc.setDisplayName(plate.getName());
                 tc.open();
                 tc.requestActive();
+
+                Plot2dTopComponent plot = new Plot2dTopComponent();
+                //plot.setDataset(importer.getDataset());                
+                plot.open();
+                plot.requestActive();
 
 
                 pc.openProject(project);

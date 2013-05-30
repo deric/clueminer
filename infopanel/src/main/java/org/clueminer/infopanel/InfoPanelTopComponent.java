@@ -157,14 +157,16 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
     }
 
     private void updateDataset(Dataset<Instance> d) {
-        int attrCnt = 2;
-        String[][] data = new String[d.size()][attrCnt];
-        int i = 0;
-        for (Instance inst : d) {
-            data[i++] = new String[]{inst.getName(), inst.getId()};
+        if (d != null) {
+            int attrCnt = 2;
+            String[][] data = new String[d.size()][attrCnt];
+            int i = 0;
+            for (Instance inst : d) {
+                data[i++] = new String[]{inst.getName(), inst.getId()};
+            }
+            table.clear();
+            table.setData(data);
         }
-        table.clear();
-        table.setData(data);
     }
 
     private void updatePlate(HtsPlate<HtsInstance> d) {
