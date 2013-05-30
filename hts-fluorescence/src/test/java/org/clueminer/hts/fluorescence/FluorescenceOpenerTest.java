@@ -156,8 +156,8 @@ public class FluorescenceOpenerTest {
         importer.setProgressHandle(ph);
         importer.run();
         FluorescenceDataset plate = importer.getDataset();
-        opener.saveDataset(plate, "test");
+        opener.saveDataset(plate, "test", false);
         Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
-        opener.saveDataset((FluorescenceDataset) normalized, "test-norm");
+        opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true);
     }
 }
