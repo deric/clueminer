@@ -170,6 +170,7 @@ public final class XCalibour3dTopComponent extends TopComponent {
             ctc.start();
             jToggleButton1.setSelected(true);
             CameraMouseController camMouse = new CameraMouseController(chart);
+            chart.addController(camMouse);
             add(canvas, BorderLayout.CENTER);
 
             SpectrumMapper mapper = new SpectrumMapper();
