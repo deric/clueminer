@@ -1,5 +1,8 @@
 package org.clueminer.xcalibour.files;
 
+import org.clueminer.xcalibour.data.SpectrumDataset;
+import org.clueminer.xcalibour.data.MassSpectrum;
+import org.clueminer.xcalibour.data.MassItem;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

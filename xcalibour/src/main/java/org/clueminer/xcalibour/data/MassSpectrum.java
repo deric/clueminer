@@ -1,5 +1,6 @@
-package org.clueminer.xcalibour.files;
+package org.clueminer.xcalibour.data;
 
+import org.clueminer.xcalibour.data.MassItem;
 import java.util.Iterator;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;

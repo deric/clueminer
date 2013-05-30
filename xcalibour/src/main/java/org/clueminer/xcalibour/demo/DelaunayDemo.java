@@ -1,7 +1,12 @@
-package org.clueminer.xcalibour.files;
+package org.clueminer.xcalibour.demo;
 
 import java.io.IOException;
 import org.clueminer.fixtures.XCalibourFixture;
+import org.clueminer.xcalibour.data.MassSpectrum;
+import org.clueminer.xcalibour.files.MyOrthoGrid;
+import org.clueminer.xcalibour.data.SpectrumDataset;
+import org.clueminer.xcalibour.files.SpectrumMapper;
+import org.clueminer.xcalibour.files.XCalibourImporter;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.colors.Color;
