@@ -107,8 +107,7 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
 
 
                 XCalibour3dTopComponent tc = new XCalibour3dTopComponent();
-
-                //tc.setDataset(normalized);
+                tc.setDataset(importer.getDataset());                
                 //tc.setProject(project);
                 //tc.setDisplayName(plate.getName());
                 tc.open();

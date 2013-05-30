@@ -3,16 +3,19 @@ package org.clueminer.xcalibour.plot3d;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.RepaintManager;
+import org.clueminer.xcalibour.data.MassSpectrum;
+import org.clueminer.xcalibour.data.SpectrumDataset;
+import org.clueminer.xcalibour.files.MyOrthoGrid;
+import org.clueminer.xcalibour.files.SpectrumMapper;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.controllers.mouse.camera.CameraMouseController;
 import org.jzy3d.chart.controllers.thread.camera.CameraThreadController;
 import org.jzy3d.colors.Color;
 import org.jzy3d.colors.ColorMapper;
 import org.jzy3d.colors.colormaps.ColorMapRainbow;
+import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Range;
 import org.jzy3d.plot3d.builder.Builder;
-import org.jzy3d.plot3d.builder.Mapper;
-import org.jzy3d.plot3d.builder.concrete.OrthonormalGrid;
 import org.jzy3d.plot3d.primitives.Shape;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -52,6 +55,7 @@ public final class XCalibour3dTopComponent extends TopComponent {
     private CameraThreadController ctc;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToolBar jToolBar1;
+    private SpectrumDataset<MassSpectrum> dataset;
 
     public XCalibour3dTopComponent() {
         setOpaque(true);
@@ -158,7 +162,7 @@ public final class XCalibour3dTopComponent extends TopComponent {
     }
 
     private void createChart() {
-        if (chart == null) {
+        if (chart == null && dataset != null) {
             chart = new Chart(Quality.Advanced, "newt");
             chart.getView().setMaximized(true);
             canvas = (Component) chart.getCanvas();
@@ -167,18 +171,31 @@ public final class XCalibour3dTopComponent extends TopComponent {
             jToggleButton1.setSelected(true);
             CameraMouseController camMouse = new CameraMouseController(chart);
             add(canvas, BorderLayout.CENTER);
-            // Create a surface drawing that function
-            // Define a function to plot
-            Mapper mapper = new Mapper() {
-                public double f(double x, double y) {
-                    return 10 * Math.sin(x / 10) * Math.cos(y / 20) * x;
-                }
-            };
-            // Define range and precision for the function to plot
-            Range range = new Range(-150, 150);
-            int steps = 50;
-            surface = Builder.buildOrthonormal(new OrthonormalGrid(range, steps, range, steps), mapper);
+
+            SpectrumMapper mapper = new SpectrumMapper();
+            mapper.setDataset(dataset);
+
+// Define range and precision for the function to plot
+            Range xrange = new Range(0, dataset.attributeCount() - 1);
+            int xsteps = 2500;
+
+            Range yrange = new Range(30, 200);
+            int ysteps = 170;
+
+// Create a surface drawing that function
+            MyOrthoGrid grid = new MyOrthoGrid(xrange, xsteps, yrange, ysteps);
+            //OrthonormalGrid grid = new OrthonormalGrid(xrange, xsteps, yrange, ysteps);
+            surface = Builder.buildOrthonormal(grid, mapper);
             surface.setColorMapper(new ColorMapper(new ColorMapRainbow(), surface.getBounds().getZmin(), surface.getBounds().getZmax(), new Color(1, 1, 1, .5f)));
+            surface.setFaceDisplayed(true);
+            surface.setWireframeDisplayed(false);
+            surface.setWireframeColor(Color.BLACK); // set polygon border in black
+            //surface.setFace(new FaceColorbar(surface)); // attach a 2d panel
+            //surface.setFace2dDisplayed(true);         
+
+            //chart.setViewPoint( Coord3d.ORIGIN);
+            chart.setViewPoint(new Coord3d(0.5f, 0.5f, 0.5f));
+            //ChartLauncher.openChart(chart);
             surface.setFaceDisplayed(true);
             surface.setWireframeDisplayed(false);
             surface.setWireframeColor(Color.BLACK);
@@ -206,5 +223,13 @@ public final class XCalibour3dTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    public SpectrumDataset<MassSpectrum> getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(SpectrumDataset<MassSpectrum> dataset) {
+        this.dataset = dataset;
     }
 }
