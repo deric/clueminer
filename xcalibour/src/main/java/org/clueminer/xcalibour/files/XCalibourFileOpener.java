@@ -70,9 +70,6 @@ public class XCalibourFileOpener implements OpenFileImpl, TaskListener {
         Collection mimeTypes = detectMIME(f);
         String ext = getExtension(f.getPath());
         String mime = mimeTypes.toString();
-        System.out.println("testing file: " + f.getPath());
-        System.out.println("ext: " + ext);
-        System.out.println("mime: " + mime);
         if ((ext.equals("cdf") || ext.equals("tmp")) && mime.contains("octet-stream")) {
             importer = new XCalibourImporter(f);
             openXCalibourFile(importer);
