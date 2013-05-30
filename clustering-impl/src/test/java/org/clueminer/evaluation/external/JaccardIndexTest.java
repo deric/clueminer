@@ -80,12 +80,12 @@ public class JaccardIndexTest {
         assertEquals(0.15032686686154664, score, delta);
         System.out.println("jaccard index = " + score);
         System.out.println("measuring Jaccard took " + (end - start) + " ms");
-        
+
         Clustering<Cluster> irisWrong2 = FakeClustering.irisWrong2();
         score = test.score(irisWrong2, FakeClustering.irisDataset());
-         assertEquals(0.3666666666666667, score, delta);
+        assertEquals(0.3666666666666667, score, delta);
         System.out.println("jaccard index (wrong clust2) = " + score);
-        
+
     }
 
     /**
@@ -100,5 +100,34 @@ public class JaccardIndexTest {
      */
     @Test
     public void testCompareScore() {
+    }
+
+    /**
+     * Test of score method, of class JaccardIndex.
+     */
+    @Test
+    public void testScore_Clustering_Clustering() {
+        long start, end;
+        double score;
+
+        start = System.currentTimeMillis();
+        score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
+        end = System.currentTimeMillis();
+
+        //each cluster should have this scores:
+        //Cabernet = 0.5625	
+        //Syrah = 0.3846
+        //Pinot = 0.5714
+        assertEquals(0.5061813186813187, score, delta);
+        System.out.println(test.getName() + " = " + score);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+
+        start = System.currentTimeMillis();
+        double score2 = test.score(FakeClustering.wineClustering(), FakeClustering.wine());
+        end = System.currentTimeMillis();
+        //when using class labels result should be the same
+        assertEquals(score, score2, delta);
+        System.out.println(test.getName() + " = " + score2);
+        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
     }
 }

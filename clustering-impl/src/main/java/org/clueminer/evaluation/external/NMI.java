@@ -158,7 +158,7 @@ public class NMI extends ExternalEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
 
     /**

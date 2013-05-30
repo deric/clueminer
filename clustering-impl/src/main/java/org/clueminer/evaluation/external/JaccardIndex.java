@@ -10,7 +10,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
 
 /**
- * @see http://en.wikipedia.org/wiki/Fowlkes%E2%80%93Mallows_index
+ * @see http://en.wikipedia.org/wiki/Jaccard_index
  * @author Tomas Barton
  */
 public class JaccardIndex extends ExternalEvaluator {
@@ -23,6 +23,27 @@ public class JaccardIndex extends ExternalEvaluator {
         return name;
     }
 
+    private double countScore(Table<String, String, Integer> table) {
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        Map<String, Integer> res;
+
+        int tp, fp, fn;
+        double index = 0.0;
+        double jaccard;
+        //for each cluster we have score of quality
+        for (String cluster : matching.values()) {
+            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            tp = res.get("tp");
+            fp = res.get("fp");
+            fn = res.get("fn");
+            jaccard = tp / (double) (tp + fp + fn);
+            index += jaccard;
+        }
+
+        //average value
+        return index / table.columnKeySet().size();
+    }
+
     /**
      *
      * @param clusters
@@ -33,29 +54,12 @@ public class JaccardIndex extends ExternalEvaluator {
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
-        Map<String, Integer> res;
-
-        int tp, fp, fn;
-        double index = 0.0;
-        double jaccard;        
-        //for each cluster we have score of quality
-        for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);        
-            tp = res.get("tp");
-            fp = res.get("fp");
-            fn = res.get("fn");
-            jaccard = tp / (double) (tp + fp + fn);
-            index += jaccard;            
-        }
-
-        //average value
-        return index / table.columnKeySet().size();
+        return countScore(table);
     }
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
 
     @Override
@@ -65,6 +69,7 @@ public class JaccardIndex extends ExternalEvaluator {
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
+        return countScore(table);
     }
 }
