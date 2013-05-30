@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Range;
-import org.jzy3d.plot3d.builder.Grid;
 import org.jzy3d.plot3d.builder.Mapper;
 import org.jzy3d.plot3d.builder.concrete.OrthonormalGrid;
 
@@ -19,13 +18,14 @@ public class MyOrthoGrid extends OrthonormalGrid {
         super(xrange, xsteps, yrange, ysteps);
     }
 
+    @Override
     public List<Coord3d> apply(Mapper mapper) {
         double xstep = xrange.getRange() / (double) (xsteps - 1);
         double ystep = yrange.getRange() / (double) (ysteps - 1);
 
         List<Coord3d> output = new ArrayList<Coord3d>(xsteps * ysteps);
 
-        double filter = 1e3;
+        double filter = 1e4;
         for (int xi = 0; xi < xsteps; xi++) {
             for (int yi = 0; yi < ysteps; yi++) {
                 double x = xrange.getMin() + xi * xstep;
