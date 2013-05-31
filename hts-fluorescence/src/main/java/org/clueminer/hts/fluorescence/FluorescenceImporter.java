@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.TimePointAttribute;
@@ -55,14 +54,10 @@ public class FluorescenceImporter implements LongTask, Runnable {
         try {
             br = new BufferedReader(new FileReader(file));
             try {
-                StringBuilder sb = new StringBuilder();
-
                 parseVersion(br);
                 parseAttributes(br);
                 parseData(br);
-
-                String everything = sb.toString();
-                System.out.println(everything);
+                
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } finally {
