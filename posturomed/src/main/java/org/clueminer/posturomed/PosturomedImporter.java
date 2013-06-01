@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.TimePointAttribute;
@@ -80,7 +81,7 @@ public class PosturomedImporter implements LongTask, Runnable {
     }
 
     /**
-     * @see Posturomed_Commander-exp.m line 1943
+     * @see Posturomed_Commander-exp.m line 8863
      * @param br
      * @throws IOException 
      */
@@ -93,7 +94,14 @@ public class PosturomedImporter implements LongTask, Runnable {
         br.readLine();
         String date = br.readLine();
         String time = br.readLine();
-        String numMeasurements = br.readLine();
+        int numMeasurements = Integer.valueOf(br.readLine());
+        int frequency = Integer.valueOf(br.readLine());
+        ArrayList<Integer> measurementLength = new ArrayList<Integer>(10);
+        String daten = "Daten";
+        String line;        
+        while((line = br.readLine()).equals(daten)){
+            measurementLength.add(Integer.valueOf(line));
+        }
         
         dataset.setName(parseName(file));
 
