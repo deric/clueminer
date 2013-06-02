@@ -55,9 +55,9 @@ public class PosturomedImporter implements LongTask, Runnable {
         try {
             br = new BufferedReader(new FileReader(file));
             try {
-
-                parseHeader(br);
-                parseData(br);
+                String line;
+                line = parseHeader(br);
+                parseData(br, line);
 
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
@@ -83,9 +83,9 @@ public class PosturomedImporter implements LongTask, Runnable {
     /**
      * @see Posturomed_Commander-exp.m line 8863
      * @param br
-     * @throws IOException 
+     * @throws IOException
      */
-    private void parseHeader(BufferedReader br) throws IOException {        
+    private String parseHeader(BufferedReader br) throws IOException {
         dataset = new PosturomedDataset();
         String surname = br.readLine();
         String firstname = br.readLine();
@@ -98,13 +98,16 @@ public class PosturomedImporter implements LongTask, Runnable {
         int frequency = Integer.valueOf(br.readLine());
         ArrayList<Integer> measurementLength = new ArrayList<Integer>(10);
         String daten = "Daten";
-        String line;        
-        while((line = br.readLine()).equals(daten)){
+        String line;
+        line = br.readLine();
+        while (!line.equals(daten)) {
             measurementLength.add(Integer.valueOf(line));
+            line = br.readLine();
         }
-        
-        dataset.setName(parseName(file));
+        ph.start(numMeasurements * frequency * measurementLength.size());
 
+        dataset.setName(parseName(file));
+        return line;
     }
 
     private String parseName(File f) {
@@ -122,9 +125,9 @@ public class PosturomedImporter implements LongTask, Runnable {
         return name;
     }
 
-    private void parseData(BufferedReader br) throws IOException {
-        String current = br.readLine();
-        if (!current.equals("@data")) {
+    private void parseData(BufferedReader br, String line) throws IOException {
+        String current = line;
+        if (!current.equals("Daten")) {
             throw new RuntimeException("Unexpected line: " + current);
         }
 
@@ -132,7 +135,6 @@ public class PosturomedImporter implements LongTask, Runnable {
         PosturomedInstance inst;
         String[] measurements;
         int j = 0;
-        int row, col;
         while (!current.isEmpty()) {
             inst = new PosturomedInstance(dataset, timesCount);
             measurements = current.split(",");
