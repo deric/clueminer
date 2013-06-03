@@ -94,8 +94,8 @@ public class PosturomedImporter implements LongTask, Runnable {
         br.readLine();
         String date = br.readLine();
         String time = br.readLine();
-        int numMeasurements = Integer.valueOf(br.readLine());
-        int frequency = Integer.valueOf(br.readLine());
+        int measureTime = Integer.valueOf(br.readLine()); // 7
+        int frequency = Integer.valueOf(br.readLine()); // 8
         ArrayList<Integer> measurementLength = new ArrayList<Integer>(10);
         String daten = "Daten";
         String line;
@@ -104,7 +104,7 @@ public class PosturomedImporter implements LongTask, Runnable {
             measurementLength.add(Integer.valueOf(line));
             line = br.readLine();
         }
-        ph.start(numMeasurements * frequency * measurementLength.size());
+        ph.start(measureTime * frequency * measurementLength.size());
 
         dataset.setName(parseName(file));
         return line;
@@ -130,21 +130,41 @@ public class PosturomedImporter implements LongTask, Runnable {
         if (!current.equals("Daten")) {
             throw new RuntimeException("Unexpected line: " + current);
         }
+        
+        //skip until "1. check mark is found"
+        Pattern check = Pattern.compile("(\\d). Check");
+        Matcher m;
+        m = check.matcher(current);
+        while (!m.matches()) {
+            current = br.readLine();
+            m = check.matcher(current);
+        }
+        System.out.println("found check: "+current);
 
-        current = br.readLine();
+
+          
         PosturomedInstance inst;
         String[] measurements;
         int j = 0;
-        while (!current.isEmpty()) {
+        while (current != null) {
+            System.out.println(current);
+            current = br.readLine();
+            System.out.println("new instance; " + current);            
             inst = new PosturomedInstance(dataset, timesCount);
-            measurements = current.split(",");
+            //we have to detect "checks"
+            while(current != null && current.contains(",")){
+                //System.out.println("inst; " + current);            
+                current = br.readLine();
+            }
+            
+            /*measurements = current.split(",");
             for (int i = 0; i < timesCount; i++) {
                 inst.put(Integer.valueOf(measurements[i]));
             }
             //last one is name
             inst.setName(measurements[measurements.length - 1]);
             inst.setId(String.valueOf(j));
-
+*/
             dataset.add(inst);
             //update progress bar
             ph.progress(workUnits++);
@@ -152,7 +172,7 @@ public class PosturomedImporter implements LongTask, Runnable {
             j++;
         }
     }
-
+    
     public int translatePosition(int ord, int col, int colCnt) throws IOException {
         int res = ord * colCnt + col - 1;
         return res;
