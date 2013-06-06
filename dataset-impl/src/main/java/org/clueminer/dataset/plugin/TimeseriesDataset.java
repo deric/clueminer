@@ -126,7 +126,11 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<Integer, Attribute> map = new HashMap<Integer, Attribute>(timePoints.length);
+        for (int i = 0; i < timePoints.length; i++) {
+            map.put(i, timePoints[i]);
+        }
+        return map;
     }
 
     @Override

@@ -94,6 +94,12 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <version>3.8</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.clueminer.clustering.evaluators</publicPackage>
+                        <publicPackage>org.clueminer.clustering.preview</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
 
             <plugin>
