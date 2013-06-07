@@ -6,11 +6,11 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
  *
  * @author Tomas Barton
  */
-public class ChebyshevFunction implements UnivariateFunction {
+public class ChebyshevPolynomial implements UnivariateFunction {
 
     double[] coeff;
 
-    public ChebyshevFunction(int n) {
+    public ChebyshevPolynomial(int n) {
         initialize(n, -1.0, 1.0, -1.0, 1.0);
     }
 
