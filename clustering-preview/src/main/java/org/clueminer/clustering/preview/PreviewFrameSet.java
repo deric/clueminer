@@ -87,7 +87,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                         }
                     }
                 }
-
+                
                 add((JComponent) plot, c);
 
 
