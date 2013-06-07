@@ -1,10 +1,12 @@
 package org.clueminer.approximation;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
 /**
  *
  * @author Tomas Barton
  */
-public class ChebyshevFunction {
+public class ChebyshevFunction implements UnivariateFunction {
 
     double[] coeff;
 
@@ -85,5 +87,46 @@ public class ChebyshevFunction {
             a[i] -= b[i];
         }
         return a;
+    }
+
+    /**
+     * To maintain integral properties we have to scale data to interval where
+     * Chebyshev function have expected properties
+     *
+     * @param x should be in range <-1; 1>
+     * @return value of Chebyshev function at given x
+     */
+    @Override
+    public double value(double x) {
+        double value = 0.0;
+        for (int i = 0; i < coeff.length; i++) {
+            if (coeff[i] != 0) {
+                if (i > 0) {
+                    value += coeff[i] * Math.pow(x, i);
+                }else{
+                    value += coeff[i];
+                }
+            }
+        }
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        int j = 0;
+        for (int i = coeff.length - 1; i >= 0; i--) {
+            if (coeff[i] != 0) {
+                if (j > 0 && coeff[i] > 0) {
+                    sb.append(" + ");
+                }
+                j++; //how many non-null coefficients we have
+                sb.append(coeff[i]);
+                if (i > 0) {
+                    sb.append("*x^").append(i);
+                }
+            }
+        }
+        return sb.toString();
     }
 }
