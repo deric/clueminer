@@ -39,39 +39,39 @@ public class ChebyshevFunctionTest {
     }
 
     /**
-     * Test of chebyshev method, of class ChebyshevFunction.
+     * Test of chebyshev method, of class ChebyshevPolynomial.
      */
     @Test
     public void testChebyshev() {
     }
 
     /**
-     * Test of xTimes method, of class ChebyshevFunction.
+     * Test of xTimes method, of class ChebyshevPolynomial.
      */
     @Test
     public void testXTimes() {
     }
 
     /**
-     * Test of arrayShiftLeft method, of class ChebyshevFunction.
+     * Test of arrayShiftLeft method, of class ChebyshevPolynomial.
      */
     @Test
     public void testArrayShiftLeft() {
     }
 
     /**
-     * Test of arrayMinus method, of class ChebyshevFunction.
+     * Test of arrayMinus method, of class ChebyshevPolynomial.
      */
     @Test
     public void testArrayMinus() {
     }
 
     /**
-     * Test of value method, of class ChebyshevFunction.
+     * Test of value method, of class ChebyshevPolynomial.
      */
     @Test
     public void testValueAt() {
-        ChebyshevFunction t0 = new ChebyshevFunction(0);
+        ChebyshevPolynomial t0 = new ChebyshevPolynomial(0);
         System.out.println(t0.toString());
         System.out.println("T0 integral: " + integrate(t0));
 
@@ -87,9 +87,9 @@ public class ChebyshevFunctionTest {
         System.out.println("sims = " + sum);
         UnivariateFunction weight = new ChebyshevWeightingFactor();
 
-        ChebyshevFunction t1 = new ChebyshevFunction(1);
-        ChebyshevFunction t2 = new ChebyshevFunction(2);
-        ChebyshevFunction t3 = new ChebyshevFunction(3);
+        ChebyshevPolynomial t1 = new ChebyshevPolynomial(1);
+        ChebyshevPolynomial t2 = new ChebyshevPolynomial(2);
+        ChebyshevPolynomial t3 = new ChebyshevPolynomial(3);
         System.out.println(t1.toString());
         prod = new ScalarProduct(weight, t1, t1);
         // sum = sims.integrate(maxEval, prod, lower, upper);
