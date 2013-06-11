@@ -10,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import org.clueminer.gui.ColorPalette;
 
@@ -25,8 +26,11 @@ public class ColorScale extends JPanel {
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     private ColorPalette palette;
+    private boolean antialias = true;
+    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
     
-    public ColorScale() {
+    public ColorScale(ColorPalette palette) {
+        this.palette = palette;        
         setDoubleBuffered(false);       
         this.addComponentListener(new ComponentListener() {
             @Override
@@ -78,7 +82,7 @@ public class ColorScale extends JPanel {
         //draws box with colors
         for (int y = 2; y < colorBarHeight; y++) {
             yStart = colorBarHeight - y;
-            bufferedGraphics.setColor(panel.colorScheme.getColor(value));
+            bufferedGraphics.setColor(palette.getColor(value));
             value -= inc;
             bufferedGraphics.fillRect(1, yStart, colorBarWidth - 2, 1);
         }
@@ -89,13 +93,10 @@ public class ColorScale extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         
-        if (panel.dendroData == null) {
-            return;
-        }
         
-        double min = panel.dendroData.getMinValue();
-        double max = panel.dendroData.getMaxValue();
-        double mid = panel.dendroData.getMidValue();
+        double min = palette.getMin();
+        double max = palette.getMax();
+        double mid = palette.getMid();
         int colorBarHeight = this.getHeight() - insets.bottom - insets.top;
         if (colorBarHeight < 10) {
             //default height which is not bellow zero
@@ -112,7 +113,7 @@ public class ColorScale extends JPanel {
                 null);
         
         
-        if (panel.isAntiAliasing) {
+        if (antialias) {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
@@ -124,14 +125,14 @@ public class ColorScale extends JPanel {
         g2d.setColor(Color.black);
         int textWidth;
         int spaceBetweenBarAndLabels = 5;
-        String strMin = String.valueOf(panel.decimalFormat.format(min));
+        String strMin = String.valueOf(decimalFormat.format(min));
         textWidth = hfm.stringWidth(strMin); //usually longest string FIXME for smartest string width detection
         g2d.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
         
-        String strMid = String.valueOf(panel.decimalFormat.format(mid));
+        String strMid = String.valueOf(decimalFormat.format(mid));
         //textWidth = hfm.stringWidth(strMid);
         g2d.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
-        String strMax = String.valueOf(panel.decimalFormat.format(max));
+        String strMax = String.valueOf(decimalFormat.format(max));
         //textWidth = hfm.stringWidth(strMax);
         g2d.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
         
@@ -140,4 +141,28 @@ public class ColorScale extends JPanel {
         setMinimumSize(new Dimension(totalWidth, totalHeight));
     }
 
+    public ColorPalette getPalette() {
+        return palette;
+    }
+
+    public void setPalette(ColorPalette palette) {
+        this.palette = palette;
+    }
+
+    public boolean isAntialias() {
+        return antialias;
+    }
+
+    public void setAntialias(boolean antialias) {
+        this.antialias = antialias;
+    }
+
+    public DecimalFormat getDecimalFormat() {
+        return decimalFormat;
+    }
+
+    public void setDecimalFormat(DecimalFormat decimalFormat) {
+        this.decimalFormat = decimalFormat;
+    }
+    
 }

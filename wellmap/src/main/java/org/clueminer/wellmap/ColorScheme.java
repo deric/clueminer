@@ -16,20 +16,22 @@ public class ColorScheme implements ColorPalette {
     private BufferedImage negColorImage;
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private boolean useDoubleGradient = false;
+    private boolean useDoubleGradient = true;
     private ColorPalette palette;
     private double max;
     private double min;
-    private double mid;
+    private double mid;   
 
     public ColorScheme() {
         updateColors(Color.red, Color.black, Color.green);
     }
 
-    public ColorScheme(boolean useDouleGradient, ColorPalette palette) {
-        this.useDoubleGradient = useDouleGradient;
+    public ColorScheme(boolean useDoubleGradient, ColorPalette palette) {
+        this.useDoubleGradient = useDoubleGradient;
+        this.palette = palette;
     }
 
+    @Override
     public double getMax() {
         return max;
     }
@@ -39,10 +41,12 @@ public class ColorScheme implements ColorPalette {
      *
      * @return median
      */
+    @Override
     public double getMid() {
         return mid;
     }
 
+    @Override
     public double getMin() {
         return min;
     }
@@ -117,4 +121,13 @@ public class ColorScheme implements ColorPalette {
         //@test 1 - (-1) = 1-1 = 0
         return (maxValue - minValue) / 2 + minValue;
     }
+
+    public boolean isUseDoubleGradient() {
+        return useDoubleGradient;
+    }
+
+    public void setUseDoubleGradient(boolean useDoubleGradient) {
+        this.useDoubleGradient = useDoubleGradient;
+    }
+        
 }
