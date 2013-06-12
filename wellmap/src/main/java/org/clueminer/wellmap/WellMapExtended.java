@@ -36,7 +36,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         //wells        
         frame = new WellMapFrame();
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1.0;
         c.weighty = 1.0;
@@ -86,24 +86,25 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     public void setPlate(HtsPlate<HtsInstance> p) {
         frame.setPlate(p);
-        ColorPalette palette = scale.getPalette();
+        ColorPalette palette = scale.getPalette();        
         palette.setRange(p.getMin(), p.getMax());
+        System.out.println("min = "+p.getMin()+", max = "+p.getMax());
         if (metrics != null) {
             for (HtsInstance inst : p) {
-                try {
-                    Object v = metrics.invoke(p, (Object) null);
-                    double value = Double.valueOf(v.toString());
-                    inst.setColor(palette.getColor(value));
-                } catch (IllegalAccessException ex) {
+               // try {
+                    //Object v = metrics.invoke(p);
+                    //double value = Double.valueOf(v.toString());
+                    inst.setColor(palette.getColor(inst.getMax()));
+               /* } catch (IllegalAccessException ex) {
                     Exceptions.printStackTrace(ex);
                 } catch (IllegalArgumentException ex) {
                     Exceptions.printStackTrace(ex);
                 } catch (InvocationTargetException ex) {
                     Exceptions.printStackTrace(ex);
-                }
+                }*/
             }
         }else{
-            System.err.println("no metrics defined");
+            System.err.println("no metric defined");
         }
 
     }
@@ -116,7 +117,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         HtsInstance inst = p.instance(0);
         if (inst != null) {
             try {
-                metrics = inst.getClass().getMethod(method, (Class<?>) null);
+                metrics = inst.getClass().getMethod(method);
             } catch (NoSuchMethodException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (SecurityException ex) {

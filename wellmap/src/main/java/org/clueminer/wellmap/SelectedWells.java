@@ -127,7 +127,7 @@ public class SelectedWells extends JPanel {
                 selected[pos] = 1;
             }
         } else {
-            Logger.getLogger(SelectedWells.class.getName()).log(Level.INFO, "Invalid position of well = {0}", pos);
+            Logger.getLogger(SelectedWells.class.getName()).log(Level.INFO, "Invalid position of well = {0}, row= " + row + ", col = " + col, pos);
         }
     }
 
