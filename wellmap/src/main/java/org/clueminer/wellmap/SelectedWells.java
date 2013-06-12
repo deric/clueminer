@@ -119,7 +119,9 @@ public class SelectedWells extends JPanel {
     }
 
     public void select(int row, int col) {
-        int pos = col * (plate.getColumnsCount() - 1) + row;
+        System.out.println("columns cnt = "+plate.getColumnsCount());
+        int pos = row * plate.getColumnsCount() + col;
+        System.out.println("row = "+row+", col = "+col+" res = "+pos);
         if (pos >= 0 && pos < totalCnt) {
             if (selected[pos] == 1) {
                 selected[pos] = 0;
