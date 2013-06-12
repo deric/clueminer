@@ -16,8 +16,7 @@ public class ColorScheme implements ColorPalette {
     private BufferedImage negColorImage;
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private boolean useDoubleGradient = true;
-    private ColorPalette palette;
+    private boolean useDoubleGradient = true;    
     private double max;
     private double min;
     private double mid;   
@@ -26,9 +25,18 @@ public class ColorScheme implements ColorPalette {
         updateColors(Color.red, Color.black, Color.green);
     }
 
-    public ColorScheme(boolean useDoubleGradient, ColorPalette palette) {
+    public ColorScheme(boolean useDoubleGradient) {
         this.useDoubleGradient = useDoubleGradient;
-        this.palette = palette;
+    }
+    
+    public ColorScheme(Color min, Color max) {
+        this.useDoubleGradient = false;
+        updateColors(min, Color.gray, max);
+    }
+    
+    public ColorScheme(Color min, Color mid, Color max) {
+        this.useDoubleGradient = true;
+        updateColors(min, mid, max);
     }
 
     @Override
@@ -92,14 +100,6 @@ public class ColorScheme implements ColorPalette {
             rgb = posColorImage.getRGB(colorIndex, 0);
         }
         return new Color(rgb);
-    }
-
-    public ColorPalette getPalette() {
-        return palette;
-    }
-
-    public void setPalette(ColorPalette palette) {
-        this.palette = palette;
     }
 
     public final void updateColors(Color min, Color mid, Color max) {

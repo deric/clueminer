@@ -61,8 +61,7 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.8</version>
+                <artifactId>nbm-maven-plugin</artifactId>             
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
