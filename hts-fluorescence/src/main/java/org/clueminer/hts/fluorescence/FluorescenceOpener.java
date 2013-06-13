@@ -119,7 +119,8 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 DendrogramTopComponent tc = new DendrogramTopComponent();
                 FluorescenceDataset plate = importer.getDataset();
 
-                FluorescenceDataset normalized = (FluorescenceDataset) normalize(plate);
+                Normalization norm = new QuadruplicateNormalization();
+                FluorescenceDataset normalized = (FluorescenceDataset) norm.normalize(plate);
 
                 saveDataset(plate, "import", false);
                 saveDataset(normalized, "norm", true);
@@ -205,100 +206,5 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public Dataset<FluorescenceInstance> normalize(FluorescenceDataset plate) {
-        //Dataset normalized = plate.duplicate();
-        //columns are numbered from 0
-        int colCnt = plate.getColumnsCount();
-        System.out.println("normalizing dataset....");
-        System.out.println("col cnt: " + colCnt);
-        System.out.println("attr : " + plate.attributeCount());
-        double avg;
-        double sum, posCtrl;
-        Instance control1, control2;
-        FluorescenceDataset normalize = (FluorescenceDataset) plate.duplicate();
-        // time point for positive control
-        int positiveTimepoint = 9;
-        for (int i = 0; i < plate.getRowsCount() - 3; i += 4) {
-            try {
-
-                int pos;
-                Instance negativeControl = new FluorescenceInstance(plate, plate.attributeCount());
-                // Instance negativeControl = new FluorescenceInstance(plate, colCnt);
-                //System.out.println("row: " + i);
-                //compute average instance
-                posCtrl = 0.0;
-                for (int j = 0; j < 4; j++) {
-                    pos = i + j;
-
-                    control2 = plate.instance(translatePosition(pos, 46, colCnt));
-                    posCtrl += control2.value(positiveTimepoint);
-
-                }
-                posCtrl /= 4.0;
-
-                for (int k = 0; k < plate.attributeCount(); k++) {
-                    sum = 0.0;
-
-                    for (int j = 0; j < 4; j++) {
-                        pos = i + j;
-                        control1 = plate.instance(translatePosition(pos, 45, colCnt));
-                        //  System.out.println("control: " + control1.getFullName() + " - " + control1.toString());
-                        sum += control1.value(k);
-                        System.out.println("well " + control1.getName() + " = " + control1.value(k));
-                    }
-                    avg = sum / 4.0;
-                    negativeControl.put(k, avg);
-                }
-
-                logger.log(Level.INFO, "negative= {0}", negativeControl.toString());
-                logger.log(Level.INFO, "positive= {0}", posCtrl);
-                //normalize quadruplicate
-                double value, divisor;
-
-                for (int j = 0; j < 4; j++) {
-                    for (int m = 0; m < plate.getColumnsCount(); m++) {
-                        pos = (i + j) * colCnt + m;
-
-                        FluorescenceInstance inst = plate.instance(pos);
-                        //  System.out.println("well = "+inst.getName());
-                        FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalize, plate.attributeCount());
-                        for (int k = 0; k < plate.attributeCount(); k++) {
-                            //substract background
-                            divisor = posCtrl - negativeControl.value(k);
-
-                            if (divisor == 0.0) {
-                                value = 0.0;
-                            } else {
-                                value = ((inst.value(k) - negativeControl.value(k)) / divisor) * 100;
-                            }
-
-                            out.put(k, value);
-                            out.setName(inst.getName());
-                        }
-                        normalize.add(out);
-                    }
-                }
-
-
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return normalize;
-    }
-
-    /**
-     *
-     * @param ord
-     * @param col starts from 1, not zero!
-     * @param colCnt
-     * @return
-     * @throws IOException
-     */
-    public int translatePosition(int ord, int col, int colCnt) throws IOException {
-        int res = ord * colCnt + col - 1;
-        return res;
-    }
+    }  
 }
