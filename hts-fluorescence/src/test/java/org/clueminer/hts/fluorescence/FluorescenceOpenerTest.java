@@ -3,8 +3,9 @@ package org.clueminer.hts.fluorescence;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.FluorescenceFixture;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -99,7 +100,7 @@ public class FluorescenceOpenerTest {
             ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
             importer.setProgressHandle(ph);
             importer.run();
-            FluorescenceDataset plate = importer.getDataset();
+            HtsPlate<HtsInstance> plate = importer.getDataset();
 
             //Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
 
@@ -156,7 +157,7 @@ public class FluorescenceOpenerTest {
         ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
         importer.setProgressHandle(ph);
         importer.run();
-        FluorescenceDataset plate = importer.getDataset();
+        HtsPlate<HtsInstance> plate = importer.getDataset();
   /*      opener.saveDataset(plate, "test", false);
         Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
         opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true);*/

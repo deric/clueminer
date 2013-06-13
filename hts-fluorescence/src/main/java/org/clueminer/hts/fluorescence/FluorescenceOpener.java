@@ -16,6 +16,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dendrogram.DendrogramTopComponent;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectImpl;
@@ -117,10 +119,10 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
                 DendrogramTopComponent tc = new DendrogramTopComponent();
-                FluorescenceDataset plate = importer.getDataset();
+                HtsPlate<HtsInstance> plate = importer.getDataset();
 
                 Normalization norm = new QuadruplicateNormalization();
-                FluorescenceDataset normalized = (FluorescenceDataset) norm.normalize(plate);
+                HtsPlate<HtsInstance> normalized = norm.normalize(plate);
 
                 saveDataset(plate, "import", false);
                 saveDataset(normalized, "norm", true);
@@ -148,7 +150,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         });
     }
 
-    public void saveDataset(FluorescenceDataset plate, String ident, boolean normalized) {
+    public void saveDataset(HtsPlate<HtsInstance> plate, String ident, boolean normalized) {
         String filename = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()
                  */ + "/" + "david-" + plate.getName() + "-" + ident + ".csv";
@@ -168,7 +170,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
              }
              writer.append(eol);*/
             //content
-            FluorescenceInstance current;
+            HtsInstance current;
             String sampleName;
             logger.log(Level.INFO, "export size {0}", plate.size());
 

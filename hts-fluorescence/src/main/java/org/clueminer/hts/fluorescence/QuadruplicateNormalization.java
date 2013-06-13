@@ -3,9 +3,10 @@ package org.clueminer.hts.fluorescence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 
 /**
  *
@@ -22,7 +23,7 @@ public class QuadruplicateNormalization extends Normalization {
     }
 
     @Override
-    public Dataset<FluorescenceInstance> normalize(FluorescenceDataset plate) {
+    public HtsPlate<HtsInstance> normalize(HtsPlate<HtsInstance> plate) {
         //Dataset normalized = plate.duplicate();
         //columns are numbered from 0
         int colCnt = plate.getColumnsCount();
@@ -32,7 +33,7 @@ public class QuadruplicateNormalization extends Normalization {
         double avg;
         double sum, posCtrl;
         Instance control1, control2;
-        FluorescenceDataset normalize = (FluorescenceDataset) plate.duplicate();
+        HtsPlate normalize = (HtsPlate) plate.duplicate();
         // time point for positive control
         int positiveTimepoint = 9;
         for (int i = 0; i < plate.getRowsCount() - 3; i += 4) {
@@ -75,7 +76,7 @@ public class QuadruplicateNormalization extends Normalization {
                 for (int m = 0; m < plate.getColumnsCount(); m++) {
                     pos = (i + j) * colCnt + m;
 
-                    FluorescenceInstance inst = plate.instance(pos);
+                    HtsInstance inst = plate.instance(pos);
                     //  System.out.println("well = "+inst.getName());
                     FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalize, plate.attributeCount());
                     for (int k = 0; k < plate.attributeCount(); k++) {

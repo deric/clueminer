@@ -2,6 +2,8 @@ package org.clueminer.hts.fluorescence;
 
 import java.io.IOException;
 import org.clueminer.fixtures.FluorescenceFixture;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -71,13 +73,13 @@ public class FluorescenceImporterTest {
         }
 
         importer.run();
-        FluorescenceDataset dataset = importer.getDataset();
+        HtsPlate<HtsInstance> dataset = importer.getDataset();
         //should work, but we use tmp files extracted from jar, which have different name
         //assertEquals("AP-01_2012112", dataset.getName());
         assertEquals(15, dataset.attributeCount());
         assertEquals(1536, dataset.size());
 
-        FluorescenceInstance inst = dataset.get(0);
+        HtsInstance inst = dataset.instance(0);
         assertEquals("A1", inst.getName());
         assertEquals(424, inst.value(0), delta);
         assertEquals(4087, inst.value(dataset.attributeCount() - 1), delta);

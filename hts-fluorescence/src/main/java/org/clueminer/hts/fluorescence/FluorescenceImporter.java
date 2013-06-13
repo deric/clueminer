@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
@@ -23,7 +25,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
     private int timesCount = 0;
     private int workUnits = 0;
     private ProgressHandle ph;
-    private FluorescenceDataset plate;
+    private HtsPlate<HtsInstance> plate;
 
     public FluorescenceImporter(File file) {
         this.file = file;
@@ -92,7 +94,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
             int columnCount = Integer.valueOf(m.group(3));
             timesCount = Integer.valueOf(m.group(4));
             plate = new FluorescenceDataset(rowCount, columnCount);
-            plate.setName(parseName(file));
+            //plate.setName(parseName(file));
             //set work units to do
             ph.start(rowCount * columnCount);
         } else {
@@ -189,7 +191,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         return line;
     }
 
-    public FluorescenceDataset getDataset() {
+    public HtsPlate<HtsInstance> getDataset() {
         return plate;
     }
 }
