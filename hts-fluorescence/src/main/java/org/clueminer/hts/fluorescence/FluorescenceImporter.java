@@ -54,10 +54,9 @@ public class FluorescenceImporter implements LongTask, Runnable {
         try {
             br = new BufferedReader(new FileReader(file));
             try {
-                parseVersion(br);
-                parseAttributes(br);
-                parseData(br);
-                
+                parseVersion(br);                
+                parseData(parseAttributes(br), br);
+
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } finally {
@@ -97,7 +96,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
             //set work units to do
             ph.start(rowCount * columnCount);
         } else {
-            throw new RuntimeException("Unexpected line: '" + current + "'");
+            throw new RuntimeException("Unexpected line in header: '" + current + "'");
         }
     }
 
@@ -116,8 +115,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         return name;
     }
 
-    private void parseData(BufferedReader br) throws IOException {
-        String current = br.readLine();
+    private void parseData(String current, BufferedReader br) throws IOException {        
         if (!current.equals("@data")) {
             throw new RuntimeException("Unexpected line: " + current);
         }
@@ -154,7 +152,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         return res;
     }
 
-    private void parseAttributes(BufferedReader br) throws IOException {
+    private String parseAttributes(BufferedReader br) throws IOException {
         String current = br.readLine();
         Pattern p = Pattern.compile("@relation (.*)");
         Matcher m;
@@ -163,21 +161,31 @@ public class FluorescenceImporter implements LongTask, Runnable {
             current = br.readLine();
             m = p.matcher(current);
         }
-        Pattern attr = Pattern.compile("@attribute (\\d+) (\\w+)(.*)");
-        current = br.readLine();
-        m = attr.matcher(current);
-
+        Pattern attr = Pattern.compile("@attribute ([0-9]+) (\\w+)(.*)");
         TimePointAttribute[] timePoints = new TimePointAttribute[timesCount];
         int i = 0;
         long time;
-        while (m.matches()) {
-            current = br.readLine();
-            time = Integer.valueOf(m.group(1));
-            timePoints[i] = new TimePointAttribute(i++, time);
+        do {
+            current = readLineWithoutComments(br);
             m = attr.matcher(current);
-        }
+            if (m.matches()) {
+                if (!m.group(1).equals("name")) {
+                    time = Integer.valueOf(m.group(1));
+                    timePoints[i] = new TimePointAttribute(i++, time);
+                }
+            }
+        } while (m.matches());
         plate.setTimePoints(timePoints);
+        return current;
+    }
 
+    private String readLineWithoutComments(BufferedReader br) throws IOException {
+        String line = br.readLine();
+        int pos = line.indexOf('%');
+        if (pos != -1) {
+            line = line.substring(0, pos);
+        }
+        return line;
     }
 
     public FluorescenceDataset getDataset() {
