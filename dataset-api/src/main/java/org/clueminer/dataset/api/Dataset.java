@@ -71,6 +71,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public E instance(int index);
+    
+    /**
+     * as in array list
+     * @param index
+     * @return 
+     */
+    public E get(int index);
 
     /**
      * @return Random instance from the dataset
