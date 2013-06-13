@@ -27,6 +27,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
     private WellMapFrame frame;
     private ColorScale scale;
     private Method metrics;
+    private HtsPlate<HtsInstance> plate;
 
     public WellMapExtended() {
         initialize();
@@ -107,8 +108,14 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         } else {
             System.err.println("no metric defined");
         }
-
+        this.plate = p;
     }
+
+    public HtsPlate<HtsInstance> getPlate() {
+        return plate;
+    }
+    
+    
 
     public void setSelected(HtsPlate p) {
         frame.setSelected(p);
