@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Collection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.FluorescenceFixture;
-import org.clueminer.utils.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,8 +13,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -104,7 +101,7 @@ public class FluorescenceOpenerTest {
             importer.run();
             FluorescenceDataset plate = importer.getDataset();
 
-            Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
+            //Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
 
             // System.out.println(normalized);
             //    assertEquals(expResult, result);
@@ -136,11 +133,15 @@ public class FluorescenceOpenerTest {
         System.out.println("translatePosition");
         int ord = 0;
         int col = 0;
-        int colCnt = 0;
+        int colCnt = 32;
         FluorescenceOpener instance = new FluorescenceOpener();
         int expResult = 0;
-        int result = instance.translatePosition(ord, col, colCnt);
-        //   assertEquals(expResult, result);
+        Normalization norm = new QuadruplicateNormalization();
+        int result = norm.translatePosition(ord, col, colCnt);
+        assertEquals(expResult, result);
+        //last well
+        result = norm.translatePosition(47, 31, colCnt);
+        assertEquals(1535, result);
         // TODO review the generated test code and remove the default call to fail.
         //   fail("The test case is a prototype.");
     }
@@ -156,8 +157,8 @@ public class FluorescenceOpenerTest {
         importer.setProgressHandle(ph);
         importer.run();
         FluorescenceDataset plate = importer.getDataset();
-        opener.saveDataset(plate, "test", false);
+  /*      opener.saveDataset(plate, "test", false);
         Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
-        opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true);
+        opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true);*/
     }
 }
