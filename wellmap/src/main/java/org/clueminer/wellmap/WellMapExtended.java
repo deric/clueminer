@@ -23,6 +23,7 @@ import org.openide.util.Exceptions;
  */
 public class WellMapExtended extends JPanel implements DatasetListener, Serializable, TreeListener {
 
+    private static final long serialVersionUID = -236150462081587319L;
     private WellMapFrame frame;
     private ColorScale scale;
     private Method metrics;
@@ -86,24 +87,24 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     public void setPlate(HtsPlate<HtsInstance> p) {
         frame.setPlate(p);
-        ColorPalette palette = scale.getPalette();        
+        ColorPalette palette = scale.getPalette();
         palette.setRange(p.getMin(), p.getMax());
-        System.out.println("min = "+p.getMin()+", max = "+p.getMax());
+        System.out.println("min = " + p.getMin() + ", max = " + p.getMax());
         if (metrics != null) {
             for (HtsInstance inst : p) {
-               // try {
-                    //Object v = metrics.invoke(p);
-                    //double value = Double.valueOf(v.toString());
-                    inst.setColor(palette.getColor(inst.getMax()));
-               /* } catch (IllegalAccessException ex) {
-                    Exceptions.printStackTrace(ex);
-                } catch (IllegalArgumentException ex) {
-                    Exceptions.printStackTrace(ex);
-                } catch (InvocationTargetException ex) {
-                    Exceptions.printStackTrace(ex);
-                }*/
+                // try {
+                //Object v = metrics.invoke(p);
+                //double value = Double.valueOf(v.toString());
+                inst.setColor(palette.getColor(inst.getMax()));
+                /* } catch (IllegalAccessException ex) {
+                 Exceptions.printStackTrace(ex);
+                 } catch (IllegalArgumentException ex) {
+                 Exceptions.printStackTrace(ex);
+                 } catch (InvocationTargetException ex) {
+                 Exceptions.printStackTrace(ex);
+                 }*/
             }
-        }else{
+        } else {
             System.err.println("no metric defined");
         }
 
