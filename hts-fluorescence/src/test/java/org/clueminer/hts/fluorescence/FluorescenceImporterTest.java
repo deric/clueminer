@@ -84,7 +84,7 @@ public class FluorescenceImporterTest {
         assertEquals(15, inst.size());
         System.out.println("size: "+inst.size());
         System.out.println("a1: "+inst.toString());
-
+        assertEquals("CP-001073", dataset.getName());
     }
 
     /**

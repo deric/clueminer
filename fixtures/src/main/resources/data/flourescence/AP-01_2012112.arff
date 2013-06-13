@@ -18,7 +18,7 @@
 % Measinfo=De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A,De=1st Ex=Top Em=Top Wdw=N/A
 % Kinetics=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 % Measurement date=11/20/2012 2:12:58 AM,11/20/2012 3:17:04 AM,11/20/2012 4:21:15 AM,11/20/2012 5:25:27 AM,11/20/2012 6:29:44 AM,11/20/2012 8:53:17 AM,11/20/2012 10:59:44 AM,11/20/2012 1:03:59 PM,11/20/2012 3:08:16 PM,11/20/2012 5:12:32 PM,11/20/2012 7:16:45 PM,11/20/2012 9:20:59 PM,11/20/2012 11:25:13 PM,11/21/2012 1:29:27 AM,11/21/2012 3:33:41 AM
-@relation AP-01_2012112.arff
+@relation CP-001073
 @attribute 0 integer % 2012-11-20T02:10:18+00:00
 @attribute 3846 integer % 2012-11-20T03:14:24+00:00
 @attribute 7697 integer % 2012-11-20T04:18:35+00:00

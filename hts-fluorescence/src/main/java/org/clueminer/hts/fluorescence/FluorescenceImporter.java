@@ -161,7 +161,8 @@ public class FluorescenceImporter implements LongTask, Runnable {
             current = br.readLine();
             m = p.matcher(current);
         }
-        Pattern attr = Pattern.compile("@attribute ([0-9]+) (\\w+)(.*)");
+        plate.setName(m.group(1));
+        Pattern attr = Pattern.compile("@attribute ([A-Z-a-z0-9]+) (\\w+)(.*)");
         TimePointAttribute[] timePoints = new TimePointAttribute[timesCount];
         int i = 0;
         long time;
