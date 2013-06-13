@@ -1,6 +1,7 @@
 package org.clueminer.hts.fluorescence;
 
-import org.clueminer.dataset.api.Dataset;
+import org.clueminer.hts.api.HtsInstance;
+import org.clueminer.hts.api.HtsPlate;
 
 /**
  *
@@ -10,7 +11,7 @@ public abstract class Normalization {
 
     public abstract String getName();
 
-    public abstract Dataset<FluorescenceInstance> normalize(FluorescenceDataset plate);
+    public abstract HtsPlate<HtsInstance> normalize(HtsPlate<HtsInstance> plate);
 
     /**
      *

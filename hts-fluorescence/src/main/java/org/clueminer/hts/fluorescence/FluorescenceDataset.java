@@ -11,7 +11,7 @@ import org.clueminer.utils.DatasetWriter;
  *
  * @author Tomas Barton
  */
-public class FluorescenceDataset extends TimeseriesDataset<FluorescenceInstance> implements Timeseries<FluorescenceInstance>, Dataset<FluorescenceInstance>, HtsPlate<FluorescenceInstance> {
+public class FluorescenceDataset<E extends FluorescenceInstance> extends TimeseriesDataset<E> implements Timeseries<E>, Dataset<E>, HtsPlate<E> {
 
     private static final long serialVersionUID = -3437746341858198780L;
     private int rows;
@@ -24,8 +24,7 @@ public class FluorescenceDataset extends TimeseriesDataset<FluorescenceInstance>
     public FluorescenceDataset(int rows, int cols) {
         super(rows * cols);
         this.rows = rows;
-        this.cols = cols;
-
+        this.cols = cols;        
     }
 
     @Override

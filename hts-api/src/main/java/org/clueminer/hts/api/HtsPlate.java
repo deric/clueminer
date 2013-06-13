@@ -1,5 +1,7 @@
 package org.clueminer.hts.api;
 
+import java.util.Collection;
+import java.util.Set;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Timeseries;
 
@@ -11,7 +13,7 @@ import org.clueminer.dataset.api.Timeseries;
  *
  * @author Tomas Barton
  */
-public interface HtsPlate<E extends HtsInstance> extends Timeseries<E>, Dataset<E> {
+public interface HtsPlate<E extends HtsInstance> extends Timeseries<E>, Dataset<E>, Collection<E>, Set<E> {
 
     /**
      * Plate unique identification in database
