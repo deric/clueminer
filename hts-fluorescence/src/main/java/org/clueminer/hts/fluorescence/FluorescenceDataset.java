@@ -37,10 +37,18 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
         return cols;
     }
 
+    public void setRowsCount(int rows) {
+        this.rows = rows;
+    }
+
+    public void setColumnsCount(int cols) {
+        this.cols = cols;
+    }
+    
     @Override
     public FluorescenceDataset duplicate() {
-        FluorescenceDataset copy = new FluorescenceDataset(this.size());
-        copy.setName(this.getName());
+        FluorescenceDataset copy = new FluorescenceDataset(this.rows, this.cols);
+        copy.setName(this.getName());        
         copy.timePoints = this.timePoints;
         return copy;
     }
