@@ -33,13 +33,13 @@ public class QuadruplicateNormalization extends Normalization {
         double avg;
         double sum, posCtrl;
         Instance control1, control2;
-        HtsPlate normalize = (HtsPlate) plate.duplicate();
+        HtsPlate<HtsInstance> normalized = (HtsPlate) plate.duplicate();
         // time point for positive control
         int positiveTimepoint = 9;
         for (int i = 0; i < plate.getRowsCount() - 3; i += 4) {
 
             int pos;
-            Instance negativeControl = new FluorescenceInstance(plate, plate.attributeCount());
+            HtsInstance negativeControl = new FluorescenceInstance(plate, plate.attributeCount());
             // Instance negativeControl = new FluorescenceInstance(plate, colCnt);
             //System.out.println("row: " + i);
             //compute average instance
@@ -78,7 +78,7 @@ public class QuadruplicateNormalization extends Normalization {
 
                     HtsInstance inst = plate.instance(pos);
                     //  System.out.println("well = "+inst.getName());
-                    FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalize, plate.attributeCount());
+                    FluorescenceInstance out = new FluorescenceInstance((Timeseries<? extends ContinuousInstance>) normalized, plate.attributeCount());
                     for (int k = 0; k < plate.attributeCount(); k++) {
                         //substract background
                         divisor = posCtrl - negativeControl.value(k);
@@ -90,11 +90,14 @@ public class QuadruplicateNormalization extends Normalization {
                         }
                         out.put(k, value);
                         out.setName(inst.getName());
+                        out.setRow(inst.getRow());
+                        out.setColumn(inst.getColumn());
+                        out.setId(inst.getId());
                     }
-                    normalize.add(out);
+                    normalized.add(out);
                 }
             }
         }
-        return normalize;
+        return normalized;
     }
 }

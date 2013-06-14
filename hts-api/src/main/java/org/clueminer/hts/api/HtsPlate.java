@@ -8,8 +8,8 @@ import org.clueminer.dataset.api.Timeseries;
 /**
  * High-throughput screening plate
  *
- * Plates for screening have rectagonal shape, typically we have plates with
- * 96, 384 or 1536 wells
+ * Plates for screening have rectagonal shape, typically we have plates with 96,
+ * 384 or 1536 wells
  *
  * @author Tomas Barton
  */
@@ -36,4 +36,8 @@ public interface HtsPlate<E extends HtsInstance> extends Timeseries<E>, Dataset<
      * @return number of columns
      */
     public int getColumnsCount();
+
+    public void setRowsCount(int rows);
+
+    public void setColumnsCount(int cols);
 }

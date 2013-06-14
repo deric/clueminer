@@ -118,7 +118,7 @@ public class SelectedWells extends JPanel {
 
     }
 
-    public void select(int row, int col) {        
+    public void select(int row, int col) {
         int pos = row * plate.getColumnsCount() + col;
         if (pos >= 0 && pos < totalCnt) {
             if (selected[pos] == 1) {
@@ -127,7 +127,7 @@ public class SelectedWells extends JPanel {
                 selected[pos] = 1;
             }
         } else {
-            Logger.getLogger(SelectedWells.class.getName()).log(Level.INFO, "Invalid position of well = {0}, row= " + row + ", col = " + col, pos);
+            Logger.getLogger(SelectedWells.class.getName()).log(Level.INFO, "Invalid position of well = {0}, row= " + row + ", col = " + col + ", total cnt = " + totalCnt, pos);
         }
     }
 
