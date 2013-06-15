@@ -49,7 +49,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         c.gridy = 0;
         add(frame, c);
         //color scheme visualization
-        scale = new ColorScale(new ColorScheme());
+        scale = new HorizontalScale(new ColorScheme());
         c.anchor = GridBagConstraints.CENTER;
         c.gridy = 1;
         add(scale, c);
