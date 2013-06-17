@@ -61,7 +61,7 @@ public class QuadruplicateNormalization extends Normalization {
                     control1 = plate.instance(translatePosition(pos, 44, colCnt));
                     //  System.out.println("control: " + control1.getFullName() + " - " + control1.toString());
                     sum += control1.value(k);
-                    System.out.println("well " + control1.getName() + " = " + control1.value(k));
+                    //System.out.println("well " + control1.getName() + " = " + control1.value(k));
                 }
                 avg = sum / 4.0;
                 negativeControl.put(k, avg);
