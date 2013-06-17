@@ -1,9 +1,9 @@
 package org.clueminer.wellmap;
 
+import com.google.common.collect.MinMaxPriorityQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -88,9 +88,22 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     public void setPlate(HtsPlate<HtsInstance> p) {
         frame.setPlate(p);
+        this.plate = p;
+    }
+
+    public HtsPlate<HtsInstance> getPlate() {
+        return plate;
+    }
+
+    public void setSelected(HtsPlate<HtsInstance> p) {
         ColorPalette palette = scale.getPalette();
-        palette.setRange(p.getMin(), p.getMax());
-        System.out.println("min = " + p.getMin() + ", max = " + p.getMax());
+        
+        //find min-max values in selection
+        MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
+        for (HtsInstance inst : p) {
+            pq.add(inst.getMax());
+        }
+        palette.setRange(pq.peekFirst(), pq.peekLast());
         if (metrics != null) {
             for (HtsInstance inst : p) {
                 // try {
@@ -108,16 +121,6 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         } else {
             System.err.println("no metric defined");
         }
-        this.plate = p;
-    }
-
-    public HtsPlate<HtsInstance> getPlate() {
-        return plate;
-    }
-    
-    
-
-    public void setSelected(HtsPlate p) {
         frame.setSelected(p);
     }
 

@@ -37,10 +37,12 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
         return cols;
     }
 
+    @Override
     public void setRowsCount(int rows) {
         this.rows = rows;
     }
 
+    @Override
     public void setColumnsCount(int cols) {
         this.cols = cols;
     }
