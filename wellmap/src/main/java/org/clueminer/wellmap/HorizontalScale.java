@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import org.clueminer.gui.ColorPalette;
@@ -15,9 +16,12 @@ import org.clueminer.gui.ColorPalette;
  */
 public class HorizontalScale extends ColorScale {
 
+    private static final long serialVersionUID = -442964336904092850L;
+
     public HorizontalScale(ColorPalette palette) {
-        super(palette);        
+        super(palette);
         colorBarHeight = 30;
+        insets = new Insets(10, 10, 10, 10);
     }
 
     /**
@@ -49,7 +53,7 @@ public class HorizontalScale extends ColorScale {
             xStart = colorBarWidth - x;
             bufferedGraphics.setColor(palette.getColor(value));
             value -= inc;
-            bufferedGraphics.fillRect(xStart, 1, colorBarWidth - 2, 1);
+            bufferedGraphics.fillRect(xStart, 1, 1, colorBarHeight - 2);
         }
     }
 
@@ -58,15 +62,29 @@ public class HorizontalScale extends ColorScale {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-
         double min = palette.getMin();
         double max = palette.getMax();
         double mid = palette.getMid();
-        colorBarWidth = this.getWidth() - insets.left - insets.right;
+
+        FontMetrics hfm = g.getFontMetrics();
+        String strMin = String.valueOf(decimalFormat.format(min));
+        int minTextWidth = hfm.stringWidth(strMin);
+        int leftTextOverFlow = minTextWidth / 2;
+
+        String strMid = String.valueOf(decimalFormat.format(mid));
+        int midTextWidth = hfm.stringWidth(strMid);
+
+        String strMax = String.valueOf(decimalFormat.format(max));
+        int maxTextWidth = hfm.stringWidth(strMax);
+        int rightTextOverFlow = maxTextWidth / 2;
+
+
+        colorBarWidth = this.getWidth() - insets.left - insets.right - leftTextOverFlow - rightTextOverFlow;
         if (colorBarWidth < 10) {
             //default height which is not bellow zero
             colorBarWidth = 20;
         }
+        //colorBarHeight -= insets.top + insets.bottom;
         //create color palette
         if (bufferedImage == null) {
             drawData(colorBarWidth, colorBarHeight, min, max);
@@ -82,27 +100,37 @@ public class HorizontalScale extends ColorScale {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
+        //draw ticks
+        g2d.setColor(Color.black);
+        int yStart = colorBarHeight + insets.top;
+        int xPos = insets.left;
+        //min tick
+        g2d.drawLine(xPos, yStart, xPos, yStart + tickSize);
 
-        FontMetrics hfm = g.getFontMetrics();
-        // int descent = hfm.getDescent();
-        int fHeight = hfm.getHeight();
+        //mid tick
+        xPos = insets.left + colorBarWidth / 2;
+        g2d.drawLine(xPos, yStart, xPos, yStart + tickSize);
+
+        //max tick
+        xPos = insets.left + colorBarWidth - 1;
+        g2d.drawLine(xPos, yStart, xPos, yStart + tickSize);
 
         g2d.setColor(Color.black);
-        int textWidth;
         int spaceBetweenBarAndLabels = 5;
-        String strMin = String.valueOf(decimalFormat.format(min));
-        textWidth = hfm.stringWidth(strMin); //usually longest string FIXME for smartest string width detection
-        g2d.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
 
-        String strMid = String.valueOf(decimalFormat.format(mid));
-        //textWidth = hfm.stringWidth(strMid);
-        g2d.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
-        String strMax = String.valueOf(decimalFormat.format(max));
-        //textWidth = hfm.stringWidth(strMax);
-        g2d.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
+        xPos = insets.left - leftTextOverFlow;
+        yStart = colorBarHeight + spaceBetweenBarAndLabels + insets.top + insets.bottom + tickSize;
+        g2d.drawString(strMin, xPos, yStart);
 
-        int totalWidth = insets.left + colorBarWidth + spaceBetweenBarAndLabels + textWidth + insets.right;
-        int totalHeight = insets.top + colorBarHeight + insets.bottom;
+
+        xPos = colorBarWidth / 2 + insets.left - midTextWidth / 2;
+        g2d.drawString(strMid, xPos, yStart);
+
+        xPos = colorBarWidth - rightTextOverFlow + insets.left;
+        g2d.drawString(strMax, xPos, yStart);
+
+        int totalWidth = insets.left + leftTextOverFlow + colorBarWidth + rightTextOverFlow + insets.right;
+        int totalHeight = insets.top + colorBarHeight + spaceBetweenBarAndLabels + insets.bottom;
         setMinimumSize(new Dimension(totalWidth, totalHeight));
     }
 }
