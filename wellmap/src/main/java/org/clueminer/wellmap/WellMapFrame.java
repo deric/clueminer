@@ -3,6 +3,8 @@ package org.clueminer.wellmap;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 import javax.swing.JLayeredPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -13,7 +15,6 @@ import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
-
 
 /**
  *
