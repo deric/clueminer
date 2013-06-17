@@ -15,6 +15,8 @@ import org.clueminer.gui.ColorPalette;
  */
 public class VerticalScale extends ColorScale {
 
+    private static final long serialVersionUID = 5461063176271490884L;
+
     public VerticalScale(ColorPalette palette) {
         super(palette);
     }

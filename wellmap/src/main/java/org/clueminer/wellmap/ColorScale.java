@@ -14,8 +14,8 @@ import org.clueminer.gui.ColorPalette;
  * @author Tomas Barton
  */
 public abstract class ColorScale extends JPanel {
-    
-    protected static final long serialVersionUID = 5461063176271490884L;
+
+    private static final long serialVersionUID = 4165321091127479092L;
     protected Insets insets = new Insets(10, 10, 10, 0);
     protected int colorBarWidth = 30;
     protected int colorBarHeight;
@@ -23,39 +23,35 @@ public abstract class ColorScale extends JPanel {
     protected Graphics2D bufferedGraphics;
     protected ColorPalette palette;
     protected boolean antialias = true;
+    protected int tickSize = 5;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    
+
     public ColorScale(ColorPalette palette) {
-        this.palette = palette;        
-        setDoubleBuffered(false);       
+        this.palette = palette;
+        setDoubleBuffered(false);
         this.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
                 bufferedImage = null;
                 repaint();
             }
-            
+
             @Override
             public void componentMoved(ComponentEvent e) {
-                
             }
-            
+
             @Override
             public void componentShown(ComponentEvent e) {
-                
             }
-            
+
             @Override
             public void componentHidden(ComponentEvent e) {
-                
             }
         });
     }
-    
+
     protected abstract void drawData(int colorBarWidth, int colorBarHeight, double min, double max);
 
-  
-    
     public ColorPalette getPalette() {
         return palette;
     }
@@ -79,5 +75,4 @@ public abstract class ColorScale extends JPanel {
     public void setDecimalFormat(DecimalFormat decimalFormat) {
         this.decimalFormat = decimalFormat;
     }
-    
 }
