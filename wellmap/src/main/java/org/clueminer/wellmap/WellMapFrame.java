@@ -114,7 +114,7 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
         }
     }
 
-    public void setSelected(HtsPlate p) {
+    public void setSelected(HtsPlate<HtsInstance> p) {
         selectedWells.setSelected(p);
     }
 

@@ -111,6 +111,11 @@
             <artifactId>org-netbeans-api-progress</artifactId>
             <version>RELEASE73</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
