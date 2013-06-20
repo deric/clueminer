@@ -1,10 +1,12 @@
 package org.clueminer.wellmap;
 
 import com.google.common.collect.MinMaxPriorityQueue;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
@@ -28,6 +30,8 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
     private ColorScale scale;
     private Method metrics;
     private HtsPlate<HtsInstance> plate;
+    private HashSet<Integer> ignoredRows = new HashSet<Integer>(2);
+    private HashSet<Integer> ignoredColumns = new HashSet<Integer>(2);
 
     public WellMapExtended() {
         initialize();
@@ -97,11 +101,13 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     public void setSelected(HtsPlate<HtsInstance> p) {
         ColorPalette palette = scale.getPalette();
-        
+
         //find min-max values in selection
         MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
         for (HtsInstance inst : p) {
-            pq.add(inst.getMax());
+            if (!isIgnored(inst.getRow(), inst.getColumn())) {
+                pq.add(inst.getMax());
+            }
         }
         palette.setRange(pq.peekFirst(), pq.peekLast());
         if (metrics != null) {
@@ -109,7 +115,11 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
                 // try {
                 //Object v = metrics.invoke(p);
                 //double value = Double.valueOf(v.toString());
-                inst.setColor(palette.getColor(inst.getMax()));
+                if (!isIgnored(inst.getRow(), inst.getColumn())) {
+                    inst.setColor(palette.getColor(inst.getMax()));
+                }else{
+                    inst.setColor(Color.GRAY);
+                }
                 /* } catch (IllegalAccessException ex) {
                  Exceptions.printStackTrace(ex);
                  } catch (IllegalArgumentException ex) {
@@ -124,6 +134,25 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         frame.setSelected(p);
     }
 
+    /**
+     * Check whether well at given position is at blacklist
+     *
+     * @param row
+     * @param column
+     * @return
+     */
+    private boolean isIgnored(int row, int column) {
+        if (!ignoredColumns.isEmpty() && ignoredColumns.contains(column)) {
+            return true;
+        }
+
+        if (!ignoredRows.isEmpty() && ignoredRows.contains(row)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void setMetric(String method, HtsPlate<HtsInstance> p) {
         HtsInstance inst = p.instance(0);
         if (inst != null) {
@@ -135,5 +164,21 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
                 Exceptions.printStackTrace(ex);
             }
         }
+    }
+
+    public HashSet<Integer> getIgnoredRows() {
+        return ignoredRows;
+    }
+
+    public void setIgnoredRows(HashSet<Integer> ignoredRows) {
+        this.ignoredRows = ignoredRows;
+    }
+
+    public HashSet<Integer> getIgnoredColumns() {
+        return ignoredColumns;
+    }
+
+    public void setIgnoredColumns(HashSet<Integer> ignoredColumns) {
+        this.ignoredColumns = ignoredColumns;
     }
 }
