@@ -23,10 +23,20 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
     private static final long serialVersionUID = 660065260598083707L;
     private JSlider slider;
+    /**
+     * horizontal or vertical
+     * @see SwingConstants.HORIZONTAL
+     */
     private int orientation;
     private CutoffLine cutoffLine;
     private JPanel parent;
 
+    /**
+     * 
+     * @param panel
+     * @param orientation -- SwingConstants.HORIZONTAL
+     * @param cutoff 
+     */
     public CutoffSlider(JPanel panel, int orientation, CutoffLine cutoff) {
         this.parent = panel;
         this.orientation = orientation;
