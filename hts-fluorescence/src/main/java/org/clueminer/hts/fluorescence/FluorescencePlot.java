@@ -17,7 +17,7 @@ public class FluorescencePlot extends Plot2DPanel implements Plotter {
     }
     
     @Override
-    public void addInstance(Instance instance) {
+    public void addInstance(Instance instance) {        
         this.addLinePlot(instance.getName(), instance.arrayCopy());
     }
 
