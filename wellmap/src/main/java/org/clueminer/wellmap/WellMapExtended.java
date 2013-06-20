@@ -99,16 +99,17 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         return plate;
     }
 
-    public void setSelected(HtsPlate<HtsInstance> p) {
+    public void setSelected(HtsPlate<HtsInstance> p, int timepoint) {
         ColorPalette palette = scale.getPalette();
 
         //find min-max values in selection
         MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
         for (HtsInstance inst : p) {
             if (!isIgnored(inst.getRow(), inst.getColumn())) {
-                pq.add(inst.getMax());
+                pq.add(inst.value(timepoint));
             }
         }
+        System.out.println("min = "+ pq.peekFirst()+ ", max = "+pq.peekLast());
         palette.setRange(pq.peekFirst(), pq.peekLast());
         if (metrics != null) {
             for (HtsInstance inst : p) {
@@ -116,7 +117,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
                 //Object v = metrics.invoke(p);
                 //double value = Double.valueOf(v.toString());
                 if (!isIgnored(inst.getRow(), inst.getColumn())) {
-                    inst.setColor(palette.getColor(inst.getMax()));
+                    inst.setColor(palette.getColor(inst.value(timepoint)));
                 }else{
                     inst.setColor(Color.GRAY);
                 }
