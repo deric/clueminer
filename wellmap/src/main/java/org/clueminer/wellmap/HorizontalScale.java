@@ -68,8 +68,13 @@ public class HorizontalScale extends ColorScale {
 
         FontMetrics hfm = g.getFontMetrics();
         String strMin = String.valueOf(decimalFormat.format(min));
+        System.out.println("min format " + decimalFormat.format(min) + " strlen= " + strMin);
         int minTextWidth = hfm.stringWidth(strMin);
-        int leftTextOverFlow = minTextWidth / 2;
+        int leftTextOverFlow = (int) Math.ceil(minTextWidth / 2.0);
+        if(min < 0){
+            //space for minus sign
+            leftTextOverFlow -= hfm.stringWidth("-");
+        }
 
         String strMid = String.valueOf(decimalFormat.format(mid));
         int midTextWidth = hfm.stringWidth(strMid);
