@@ -69,4 +69,8 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
             writer.writeNext(inst.toArray());
         }
     }
+    
+    public void setAttributes(TimePointAttribute[] tp){
+        this.timePoints = tp;
+    }
 }

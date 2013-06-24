@@ -111,7 +111,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
         }
         System.out.println("min = "+ pq.peekFirst()+ ", max = "+pq.peekLast());
         palette.setRange(pq.peekFirst(), pq.peekLast());
-        if (metrics != null) {
+      //  if (metrics != null) {
             for (HtsInstance inst : p) {
                 // try {
                 //Object v = metrics.invoke(p);
@@ -129,9 +129,9 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
                  Exceptions.printStackTrace(ex);
                  }*/
             }
-        } else {
+     /*   } else {
             System.err.println("no metric defined");
-        }
+        }*/
         frame.setSelected(p);
     }
 
