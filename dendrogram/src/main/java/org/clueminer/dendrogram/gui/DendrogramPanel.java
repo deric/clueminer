@@ -404,8 +404,8 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener {
             width += rowAnnotationBar.getWidth();
         }
         width += columnsScale.getWidth();
-        System.out.println("new requested width= "+width);
-        System.out.println("rows treee "+rowsTree.getWidth()+" size: "+rowsTree.getSize());
+        System.out.println("new requested width= " + width);
+        System.out.println("rows treee " + rowsTree.getWidth() + " size: " + rowsTree.getSize());
         size.width = width;
     }
 
@@ -452,7 +452,10 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener {
     }
 
     public int getAnnotationWidth() {
-        return rowAnnotationBar.getWidth();
+        if (rowAnnotationBar != null) {
+            return rowAnnotationBar.getWidth();
+        }
+        return 0;
     }
 
     public void setHorizontalTreeVisible(boolean show) {
