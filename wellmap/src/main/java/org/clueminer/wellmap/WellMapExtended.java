@@ -109,29 +109,29 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
                 pq.add(inst.value(timepoint));
             }
         }
-        System.out.println("min = "+ pq.peekFirst()+ ", max = "+pq.peekLast());
+        System.out.println("min = " + pq.peekFirst() + ", max = " + pq.peekLast());
         palette.setRange(pq.peekFirst(), pq.peekLast());
-      //  if (metrics != null) {
-            for (HtsInstance inst : p) {
-                // try {
-                //Object v = metrics.invoke(p);
-                //double value = Double.valueOf(v.toString());
-                if (!isIgnored(inst.getRow(), inst.getColumn())) {
-                    inst.setColor(palette.getColor(inst.value(timepoint)));
-                }else{
-                    inst.setColor(Color.GRAY);
-                }
-                /* } catch (IllegalAccessException ex) {
-                 Exceptions.printStackTrace(ex);
-                 } catch (IllegalArgumentException ex) {
-                 Exceptions.printStackTrace(ex);
-                 } catch (InvocationTargetException ex) {
-                 Exceptions.printStackTrace(ex);
-                 }*/
+        //  if (metrics != null) {
+        for (HtsInstance inst : p) {
+            // try {
+            //Object v = metrics.invoke(p);
+            //double value = Double.valueOf(v.toString());
+            if (!isIgnored(inst.getRow(), inst.getColumn())) {
+                inst.setColor(palette.getColor(inst.value(timepoint)));
+            } else {
+                inst.setColor(Color.GRAY);
             }
-     /*   } else {
-            System.err.println("no metric defined");
-        }*/
+            /* } catch (IllegalAccessException ex) {
+             Exceptions.printStackTrace(ex);
+             } catch (IllegalArgumentException ex) {
+             Exceptions.printStackTrace(ex);
+             } catch (InvocationTargetException ex) {
+             Exceptions.printStackTrace(ex);
+             }*/
+        }
+        /*   } else {
+         System.err.println("no metric defined");
+         }*/
         frame.setSelected(p);
     }
 
@@ -181,5 +181,13 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     public void setIgnoredColumns(HashSet<Integer> ignoredColumns) {
         this.ignoredColumns = ignoredColumns;
+    }
+
+    public int wellPosToId(int row, int column) {
+        return frame.wellPosToId(row, column);
+    }
+    
+    public String numberToRowLabel(int row){
+        return frame.numberToRowLabel(row);
     }
 }
