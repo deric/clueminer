@@ -3,8 +3,6 @@ package org.clueminer.wellmap;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 import javax.swing.JLayeredPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -147,5 +145,13 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
 
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
+    }
+    
+    public int wellPosToId(int row, int column){
+        return grid.wellPosToId(row, column);
+    }
+    
+    public String numberToRowLabel(int row){
+        return grid.numberToRowLabel(row);
     }
 }

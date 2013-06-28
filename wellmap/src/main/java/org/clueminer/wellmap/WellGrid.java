@@ -102,7 +102,11 @@ public class WellGrid extends JPanel {
         square = r + vgap;
         pos = (y - insets.top - legendHspace) / square;
         int transY = (int) Math.floor(pos);
-        int id = cols * transY + transX;
+        return wellPosToId(transX, transY);
+    }
+    
+    public int wellPosToId(int row, int column){
+        int id = cols * row + column;
         if (id < 0 || id > maxId) {
             return -1;
         }
