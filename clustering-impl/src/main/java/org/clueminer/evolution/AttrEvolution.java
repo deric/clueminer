@@ -24,7 +24,7 @@ public class AttrEvolution implements Runnable, Evolution {
 
     private int populationSize = 100;
     private int generations;
-    private Dataset<Instance> dataset;
+    private Dataset<? extends Instance> dataset;
     private boolean isFinished = true;
     private Random rand = new Random();
     /**
@@ -53,6 +53,13 @@ public class AttrEvolution implements Runnable, Evolution {
     private boolean maximizedFitness;
     private static String name = "Attributes' evolution";
 
+    public AttrEvolution() {
+        isFinished = false;
+        avgFitness = new Pair<Double, Double>();
+        bestFitness = new Pair<Double, Double>();
+        time = new Pair<Long, Long>();
+    }
+
     public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
         isFinished = false;
@@ -73,8 +80,13 @@ public class AttrEvolution implements Runnable, Evolution {
     }
 
     @Override
-    public Dataset<Instance> getDataset() {
+    public Dataset<? extends Instance> getDataset() {
         return dataset;
+    }
+    
+    @Override
+    public void setDataset(Dataset<? extends Instance> dataset){
+        this.dataset = dataset;
     }
 
     @Override
