@@ -10,6 +10,12 @@ import org.clueminer.dataset.api.Instance;
  * @author Tomas Barton
  */
 public interface Evolution extends Runnable {
+    
+    /**
+     * 
+     * @return unique identification of algorithm 
+     */
+    public String getName();
 
     public Dataset<Instance> getDataset();
 

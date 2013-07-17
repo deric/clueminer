@@ -51,6 +51,7 @@ public class AttrEvolution implements Runnable, Evolution {
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
     private boolean maximizedFitness;
+    private static String name = "Attributes' evolution";
 
     public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
@@ -59,6 +60,11 @@ public class AttrEvolution implements Runnable, Evolution {
         avgFitness = new Pair<Double, Double>();
         bestFitness = new Pair<Double, Double>();
         time = new Pair<Long, Long>();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
