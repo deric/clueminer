@@ -15,11 +15,13 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = Evolution.class)
 public class AttrEvolution implements Runnable, Evolution {
 
     private int populationSize = 100;
@@ -208,6 +210,7 @@ public class AttrEvolution implements Runnable, Evolution {
         }
     }
 
+    @Override
     public void addEvolutionListener(EvolutionListener listener) {
         evoListeners.add(EvolutionListener.class, listener);
     }
@@ -224,26 +227,36 @@ public class AttrEvolution implements Runnable, Evolution {
         }
     }
 
+    @Override
     public double getMutationProbability() {
         return mutationProbability;
     }
 
+    @Override
     public void setMutationProbability(double mutationProbability) {
         this.mutationProbability = mutationProbability;
     }
 
+    @Override
     public double getCrossoverProbability() {
         return crossoverProbability;
     }
 
+    /**
+     *
+     * @param crossoverProbability
+     */
+    @Override
     public void setCrossoverProbability(double crossoverProbability) {
         this.crossoverProbability = crossoverProbability;
     }
 
+    @Override
     public ClusteringAlgorithm getAlgorithm() {
         return algorithm;
     }
 
+    @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
     }
@@ -293,4 +306,13 @@ public class AttrEvolution implements Runnable, Evolution {
     public boolean isMaximizedFitness() {
         return maximizedFitness;
     }
+
+    public int getGenerations() {
+        return generations;
+    }
+
+    @Override
+    public void setGenerations(int generations) {
+        this.generations = generations;
+    }       
 }
