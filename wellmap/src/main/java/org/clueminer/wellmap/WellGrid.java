@@ -101,15 +101,15 @@ public class WellGrid extends JPanel {
         int transX = (int) Math.floor(pos);
         square = r + vgap;
         pos = (y - insets.top - legendHspace) / square;
-        int transY = (int) Math.floor(pos);
+        int transY = (int) Math.floor(pos);        
         return wellPosToId(transX, transY);
     }
-    
-    public int wellPosToId(int row, int column){
+
+    public int wellPosToId(int column, int row) {
         int id = cols * row + column;
         if (id < 0 || id > maxId) {
             return -1;
-        }
+        }        
         return id;
     }
 
@@ -211,9 +211,11 @@ public class WellGrid extends JPanel {
     }
 
     /**
-     * Converts integer to alphabetic letters (0 => A, 1 => B, ... , 26 => AA, ...)
+     * Converts integer to alphabetic letters (0 => A, 1 => B, ... , 26 => AA,
+     * ...)
+     *
      * @param row
-     * @return 
+     * @return
      */
     public String numberToRowLabel(int row) {
         char sym;

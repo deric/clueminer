@@ -1,8 +1,5 @@
 package org.clueminer.wellmap;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Shape;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,21 +32,19 @@ public class WellGridTest {
     public void tearDown() {
     }
 
-
     /**
      * Test of translatePosition method, of class WellGrid.
      */
     @Test
-    public void testTranslatePosition() {
-        System.out.println("translatePosition");
-        int x = 0;
-        int y = 0;
+    public void testTranslatePosition() {                
         WellGrid instance = new WellGrid();
-        int expResult = 0;
-        //   int result = instance.translatePosition(x, y);
-        //   assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        //   fail("The test case is a prototype.");
+        instance.setDimensions(8, 12);
+        assertEquals(-1, instance.translatePosition(0, 0));
+        assertEquals(0, instance.wellPosToId(0, 0));
+        assertEquals(1, instance.wellPosToId(1, 0));
+        assertEquals(2, instance.wellPosToId(2, 0));
+        assertEquals(12, instance.wellPosToId(0, 1));
+        assertEquals(95, instance.wellPosToId(11, 7));
     }
 
     /**
