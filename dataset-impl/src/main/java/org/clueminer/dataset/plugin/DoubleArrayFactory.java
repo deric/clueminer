@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
@@ -49,6 +50,18 @@ public class DoubleArrayFactory implements InstanceBuilder {
     @Override
     public Instance create() {
         return new DoubleArrayDataRow(DEFAULT_CAPACITY);
+    }
+
+    @Override
+    public Instance createCopyOf(Instance orig) {
+        DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
+        row.setClassValue(orig.classValue());
+        return row;
+    }
+
+    @Override
+    public Instance createCopyOf(Instance orig, Dataset<Instance> parent) {
+        return createCopyOf(orig);
     }
 
     /**
