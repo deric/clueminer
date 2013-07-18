@@ -341,6 +341,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         mask = (mask || this.firstSelectedColumn >= 0 && this.lastSelectedColumn >= 0 && (column < this.firstSelectedColumn || column > this.lastSelectedColumn));
 //System.out.println("orig row "+row+" -> "+rowIndex(row)+" orig col= "+column+" -> "+colIndex(column));
         g.setColor(panel.colorScheme.getColor(this.dendroData.get(rowIndex(row), colIndex(column))));
+        //System.out.println("x: "+x+", y: "+y+" insets: "+insets+" element size: "+elementSize);
         g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         if (mask) {
             g.setColor(ColorScheme.maskColor);
