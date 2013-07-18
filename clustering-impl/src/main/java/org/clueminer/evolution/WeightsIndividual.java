@@ -73,13 +73,11 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
         double[] values;
         Instance copy;
         for (Instance inst : evolution.getDataset()) {
-            values = inst.arrayCopy();
+            copy = data.builder().createCopyOf(inst, data);            
 
-            for (int i = 0; i < values.length; i++) {
-                values[i] = values[i] * weights[i];
+            for (int i = 0; i < inst.size(); i++) {
+                copy.put(i, inst.value(i) * weights[i]);                
             }
-            copy = data.builder().create(values);
-            copy.setClassValue(inst.classValue());
             data.add(copy);
         }
         return algorithm.partition(data);
