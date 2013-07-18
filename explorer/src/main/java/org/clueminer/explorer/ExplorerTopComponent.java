@@ -2,6 +2,8 @@ package org.clueminer.explorer;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
@@ -20,7 +22,11 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.openide.util.Utilities;
+import org.openide.windows.CloneableTopComponent;
 
 /**
  * Top component which displays something.
@@ -30,8 +36,8 @@ import org.openide.util.Utilities;
         autostore = false)
 @TopComponent.Description(
         preferredID = "ExplorerTopComponent",
-        //iconBase="SET/PATH/TO/ICON/HERE", 
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/clueminer/explorer/evolution16.png",
+        persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.explorer.ExplorerTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
@@ -43,13 +49,16 @@ import org.openide.util.Utilities;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
+public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
     private transient ExplorerManager explorerManager = new ExplorerManager();
     private Lookup.Result<Clustering> result = null;
     private ClusteringNode root;
     private Dataset<? extends Instance> dataset;
+    private static final RequestProcessor RP = new RequestProcessor("Evolution");
+    private RequestProcessor.Task task;
+    private static final Logger logger = Logger.getLogger(ExplorerTopComponent.class.getName());
 
     public ExplorerTopComponent() {
         initComponents();
@@ -65,6 +74,7 @@ public final class ExplorerTopComponent extends TopComponent implements Explorer
     private String[] initEvolution() {
         EvolutionFactory ef = EvolutionFactory.getDefault();
         List<String> list = ef.getProviders();
+        System.out.println("evolution providers: "+list.size());
         String[] res = new String[list.size()];
         int i = 0;
         for (String s : list) {
@@ -84,10 +94,13 @@ public final class ExplorerTopComponent extends TopComponent implements Explorer
         explorerPane = new IconView();
         jToolBar1 = new javax.swing.JToolBar();
         btnStart = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
         comboEvolution = new javax.swing.JComboBox();
         comboEvolution.setModel(new DefaultComboBoxModel(initEvolution()));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
+        jLabel1 = new javax.swing.JLabel();
+        sliderGenerations = new javax.swing.JSlider();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         jToolBar1.setRollover(true);
 
@@ -101,45 +114,72 @@ public final class ExplorerTopComponent extends TopComponent implements Explorer
             }
         });
         jToolBar1.add(btnStart);
-        jToolBar1.add(filler1);
+        jToolBar1.add(filler3);
 
-        comboEvolution.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboEvolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboEvolutionActionPerformed(evt);
+            }
+        });
         jToolBar1.add(comboEvolution);
-        jToolBar1.add(filler2);
+        jToolBar1.add(filler4);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ExplorerTopComponent.class, "ExplorerTopComponent.jLabel1.text")); // NOI18N
+        jToolBar1.add(jLabel1);
+
+        sliderGenerations.setMaximum(200);
+        sliderGenerations.setMinimum(10);
+        sliderGenerations.setValue(10);
+        jToolBar1.add(sliderGenerations);
+        jToolBar1.add(filler1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(explorerPane)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(explorerPane, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(explorerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(explorerPane, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
+        System.out.println("start button clicked");
         if (dataset != null) {
             //start evolution
             String evolution = (String) comboEvolution.getSelectedItem();
             EvolutionFactory ef = EvolutionFactory.getDefault();
             Evolution alg = ef.getProvider(evolution);
             alg.setDataset(dataset);
+            alg.setGenerations(sliderGenerations.getValue());
             
+            logger.log(Level.INFO, "starting evolution...");
+            task = RP.create(alg);
+            task.addTaskListener(this);
+            task.schedule(0);
+
         }
     }//GEN-LAST:event_btnStartActionPerformed
+
+    private void comboEvolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvolutionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboEvolutionActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
     private javax.swing.JComboBox comboEvolution;
     private javax.swing.JScrollPane explorerPane;
     private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JSlider sliderGenerations;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -173,15 +213,21 @@ public final class ExplorerTopComponent extends TopComponent implements Explorer
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        for (Clustering c : allClusterings) {
+        System.out.println("got "+allClusterings.size() +" clusterings");
+        /*for (Clustering c : allClusterings) {
             System.out.println("clustring size" + c.size());
             root = new ClusteringNode(c);
             //
-        }
-        explorerManager.setRootContext(root);
+        }*/
+        //explorerManager.setRootContext(root);
     }
 
     public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+    }
+
+    @Override
+    public void taskFinished(Task task) {        
+        logger.log(Level.INFO, "evolution finished");
     }
 }
