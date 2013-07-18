@@ -28,6 +28,13 @@ public interface Evolution extends Runnable {
      */
     public int attributesCount();
 
+    /**
+     * Set number of generations in an evolutionary algorithm
+     *
+     * @param generations
+     */
+    public void setGenerations(int generations);
+
     public double getMutationProbability();
 
     public void setMutationProbability(double mutationProbability);

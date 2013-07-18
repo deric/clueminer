@@ -69,7 +69,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
      * @return clustering according to current parameters
      */
     private Clustering<Cluster> updateCustering() {
-        Dataset<Instance> data = evolution.getDataset().duplicate();
+        Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
         double[] values;
         Instance copy;
         for (Instance inst : evolution.getDataset()) {
