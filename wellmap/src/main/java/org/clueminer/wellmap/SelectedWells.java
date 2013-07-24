@@ -1,9 +1,12 @@
 package org.clueminer.wellmap;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.MouseAdapter;
@@ -34,6 +37,9 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
     private BufferedImage bufferedImage = null;
     private Graphics2D bufferedGraphics;
     protected JToolTip m_customToolTip = null;
+    private Rectangle captureRect;
+    private Point start;
+    private BufferedImage screenCopy;
 
     public SelectedWells(WellGrid g) {
         this.grid = g;
@@ -70,7 +76,7 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
         });
         this.addMouseMotionListener(this);
         //for any JComponent support
-  //      setCustomToolTip(new JCustomTooltip(this, new ToolTipContent()));
+        //      setCustomToolTip(new JCustomTooltip(this, new ToolTipContent()));
     }
 
     public void clearCache() {
@@ -160,18 +166,56 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-        //nothing to do
+    public void mouseDragged(MouseEvent me) {
+        Point end = me.getPoint();
+        System.out.println("mouse dragged: " + me);
+        captureRect = new Rectangle(start, new Dimension(end.x - start.x, end.y - start.y));
+
+        screenCopy = new BufferedImage(
+                bufferedImage.getWidth(),
+                bufferedImage.getHeight(),
+                bufferedImage.getType());
+
+        // repaint(bufferedImage, screenCopy);
+        
+        Graphics2D g = bufferedImage.createGraphics();
+
+        g.drawImage(bufferedImage, 0, 0, null);
+        if (captureRect != null) {
+            System.out.println("painting" + captureRect);
+            g.setColor(Color.RED);
+            g.draw(captureRect);
+            g.setColor(new Color(255, 255, 255, 150));
+            g.fill(captureRect);
+        }
+        repaint();
+
+        //screenLabel.repaint();
+        //selectionLabel.setText("Rectangle: " + captureRect);
+
+    }
+
+    public void repaint(BufferedImage orig, BufferedImage copy) {
+        Graphics2D g = copy.createGraphics();
+        g.drawImage(orig, 0, 0, null);
+        if (captureRect != null) {
+            g.setColor(Color.RED);
+            g.draw(captureRect);
+            g.setColor(new Color(255, 255, 255, 150));
+            g.fill(captureRect);
+        }
+        g.dispose();
     }
 
     @Override
     public void mouseMoved(final MouseEvent e) {
         //System.out.println("mouse: " + e.getX() + ", " + e.getY());
         final int pos = grid.translatePosition(e.getX(), e.getY());
-        if (pos > -1 && plate != null) {            
+        if (pos > -1 && plate != null) {
             HtsInstance inst = plate.instance(pos);
-            setToolTipText( plate.instance(pos).getName()+": " +inst.getMax());
+            setToolTipText(plate.instance(pos).getName() + ": " + inst.getMax());
         }
+        start = e.getPoint();
     }
 
     /**
