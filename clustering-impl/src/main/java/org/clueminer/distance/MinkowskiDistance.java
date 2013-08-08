@@ -32,7 +32,9 @@ public class MinkowskiDistance extends SymmetricDistance {
 
     @Override
     public double measure(Instance x, Instance y) {
-        assert (x.size() == y.size());
+        if (x.size() != y.size()) {
+            throw new RuntimeException("x size: " + x.size() + " != y size: " + y.size());
+        }
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             sum += Math.pow(Math.abs(y.value(i) - x.value(i)), power);
