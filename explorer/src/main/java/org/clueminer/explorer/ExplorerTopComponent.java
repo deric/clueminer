@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
@@ -158,6 +160,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             Evolution alg = ef.getProvider(evolution);
             alg.setDataset(dataset);
             alg.setGenerations(sliderGenerations.getValue());
+            alg.setAlgorithm(new KMeans(3, 100));
             
             logger.log(Level.INFO, "starting evolution...");
             task = RP.create(alg);
