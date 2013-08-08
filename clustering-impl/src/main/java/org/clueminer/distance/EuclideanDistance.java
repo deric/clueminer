@@ -1,5 +1,7 @@
 package org.clueminer.distance;
 
+import org.apache.commons.math3.util.FastMath;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
@@ -11,26 +13,28 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractDistance.class)
 public class EuclideanDistance extends MinkowskiDistance {
+
     private static String name = "Euclidean";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
     private static final long serialVersionUID = 3142545695613722167L;
-    
-    public EuclideanDistance(){
+
+    public EuclideanDistance() {
         this.power = 2;
     }
-            
+
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
-    
+
     /**
      * Calculate distance between 2 columns in given matrix
+     *
      * @param matrix
      * @param col1
      * @param col2
-     * @return 
+     * @return
      */
     @Override
     public double columns(Matrix matrix, int col1, int col2) {
@@ -44,7 +48,6 @@ public class EuclideanDistance extends MinkowskiDistance {
         return (Math.sqrt(sum));
     }
 
-    
     @Override
     public double rows(Matrix A, Matrix B, int e1, int e2) {
         int k = A.columnsCount();
@@ -56,7 +59,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         }
         return (Math.sqrt(sum));
     }
-    
+
     public double vector(MatrixVector A, MatrixVector B) {
         int k = A.size();
         double sum = 0.0;
@@ -67,8 +70,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         }
         return (Math.sqrt(sum));
     }
-    
-    
+
     @Override
     public float getSimilarityFactor() {
         return similarityFactor;
@@ -77,5 +79,32 @@ public class EuclideanDistance extends MinkowskiDistance {
     @Override
     public int getNodeOffset() {
         return offset;
+    }
+
+    @Override
+    public double measure(Instance x, Instance y) {
+        if (x.size() != y.size()) {
+            throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size());
+        }
+        double sum = 0;
+        for (int i = 0; i < x.size(); i++) {
+            //should be faster
+            sum += FastMath.pow(Math.abs(y.value(i) - x.value(i)), 2);
+        }
+
+        return Math.sqrt(sum);
+    }
+
+    @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        if (x.size() != y.size() || x.size() != weights.length) {
+            throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size() + ", weights size: " + weights.length);
+        }
+        double sum = 0;
+        for (int i = 0; i < x.size(); i++) {
+            sum += FastMath.pow(Math.abs(weights[i] * y.value(i) - weights[i] * x.value(i)), power);
+        }
+        
+        return Math.sqrt(sum);
     }
 }

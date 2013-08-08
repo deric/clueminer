@@ -1,5 +1,6 @@
 package org.clueminer.distance.api;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -80,5 +81,11 @@ public abstract class AbstractDistance implements DistanceMeasure {
     @Override
     public double columns(Matrix matrix, int e1, int e2, float factor) {
         return columns(matrix, e1, e2) * factor;
+    }
+
+    protected void checkInput(Instance x, Instance y) {
+        if (x.size() != y.size()) {
+            throw new IllegalArgumentException("Both instances should contain the same number of values! x size: " + x.size() + " != y size: " + y.size());
+        }
     }
 }

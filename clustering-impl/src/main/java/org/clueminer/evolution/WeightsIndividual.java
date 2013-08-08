@@ -70,14 +70,13 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
      */
     private Clustering<Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
-        double[] values;
-        Instance copy;
+        Instance copy;        
         for (Instance inst : evolution.getDataset()) {
-            copy = data.builder().createCopyOf(inst, data);            
+            copy = data.builder().createCopyOf(inst, data);
 
             for (int i = 0; i < inst.size(); i++) {
-                copy.put(i, inst.value(i) * weights[i]);                
-            }
+                copy.put(i, inst.value(i) * weights[i]);
+            }            
             data.add(copy);
         }
         return algorithm.partition(data);

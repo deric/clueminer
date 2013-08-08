@@ -21,6 +21,16 @@ public interface DistanceMeasure extends Serializable {
      * @return the distance between the two instances
      */
     public double measure(Instance x, Instance y);
+    
+    /**
+     * Calculates the distance between two instances.
+     * 
+     * @param x first instance
+     * @param y second instance
+     * @param weights multiplication factor (usually between 0 and 1)
+     * @return 
+     */
+    public double measure(Instance x, Instance y, double[] weights);
 
     /**
      * Returns whether the first distance, similarity or correlation is better
@@ -84,13 +94,13 @@ public interface DistanceMeasure extends Serializable {
      * {@code B}.
      */
     public boolean isSymmetric();
-    
+
     /**
      * Computes distance of two vectors
+     *
      * @param A
      * @param B
-     * @return 
+     * @return
      */
     public double vector(DoubleVector A, DoubleVector B);
-    
 }
