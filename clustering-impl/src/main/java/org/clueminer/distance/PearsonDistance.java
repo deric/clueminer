@@ -174,6 +174,11 @@ public class PearsonDistance extends SymmetricDistance {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Return true if X is better than Y
      *

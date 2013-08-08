@@ -125,7 +125,60 @@ public class CovarianceDistance extends AbstractDistance {
 
     @Override
     public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkInput(x, y);
+        double xt, yt;
+        double sxy = 0.0;
+        double avgX = 0.0;
+        double avgY = 0.0;
+        int k = x.size();
+        int n = 0;
+        int j;
+        for (j = 0; j < k; j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                avgX += x.value(j);
+                avgY += y.value(j);
+                n++;
+            }
+        }
+        avgX /= n;
+        avgY /= n;
+        for (j = 0; j < k; j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                xt = x.value(j) - avgX;
+                yt = y.value(j) - avgY;
+                sxy += xt * yt;
+            }
+        }
+        return (sxy / ((n - 1) * 1.0));
+    }
+
+    @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        checkInput(x, y);
+        double xt, yt;
+        double sxy = 0.0;
+        double ax = 0.0;
+        double ay = 0.0;
+        int k = x.size();
+        int n = 0;
+        int j;
+        for (j = 0; j < k; j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                ax += x.value(j);
+                ay += y.value(j);
+                n++;
+            }
+        }
+        ax /= n;
+        ay /= n;
+        for (j = 0; j < k; j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                xt = x.value(j) - ax;
+                yt = y.value(j) - ay;
+                sxy += xt * yt;
+            }
+        }
+        return (sxy / ((n - 1) * 1.0));
     }
 
     @Override

@@ -129,6 +129,11 @@ public class CosineDistance extends SymmetricDistance {
     }
 
     @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public double vector(DoubleVector x, DoubleVector y) {
         if (x.size() != y.size()) {
             throw new RuntimeException("Both instances should contain the same "

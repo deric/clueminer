@@ -82,6 +82,11 @@ public class ManhattanDistance extends SymmetricDistance {
     }
 
     @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public boolean compare(double x, double y) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
