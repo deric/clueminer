@@ -11,7 +11,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector<Integer>, Instance {
+public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer>, Instance<Integer> {
 
     private static final long serialVersionUID = -635455125197219190L;
     protected int[] data;
@@ -85,12 +85,12 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
         return value(index);
     }
 
-    public double get(int index) {
+    public double item(int index) {
         return data[index];
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         data[index] = (int) value;
         if (index >= last) {
             last = index + 1;
@@ -187,7 +187,7 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
     public Instance copy() {
         DoubleArrayDataRow copy = new DoubleArrayDataRow(this.size());
         for (int i = 0; i < this.size(); i++) {
-            copy.put(i, this.value(i));
+            copy.set(i, this.value(i));
         }
         return copy;
     }
@@ -223,7 +223,7 @@ public class IntegerDataRow extends DataRow implements Iterable<Integer>, Vector
         double m = 0;
         int length = size();
         for (int i = 0; i < length; ++i) {
-            double d = get(i);
+            double d = item(i);
             m += d * d;
         }
         return Math.sqrt(m);

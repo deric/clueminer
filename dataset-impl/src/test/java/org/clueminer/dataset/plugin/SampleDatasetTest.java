@@ -147,7 +147,7 @@ public class SampleDatasetTest {
         for (int i = 0; i < max; i++) {
             Instance inst = dataset.builder().create(dataset.attributeCount());
             for (int j = 0; j < dataset.attributeCount(); j++) {
-                inst.put(j, rand.nextDouble());
+                inst.set(j, rand.nextDouble());
                 //System.out.println(inst);
             }
             dataset.add(inst);

@@ -61,7 +61,7 @@ public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implem
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
         int index = attrNames.get(attributeName).intValue();
         if (index > -1) {
-            instance(instanceIdx).put(index, value);
+            instance(instanceIdx).set(index, value);
         } else {
             throw new RuntimeException("attribute " + attributeName + " not found");
         }

@@ -35,7 +35,7 @@ public class FloatArrayFactory implements InstanceBuilder {
     public FloatArrayDataRow create(double[] values) {
         FloatArrayDataRow row = new FloatArrayDataRow(values.length);
         for (int i = 0; i < values.length; i++) {
-            row.put(i, (float) values[i]);
+            row.set(i, (float) values[i]);
         }
         return row;
     }

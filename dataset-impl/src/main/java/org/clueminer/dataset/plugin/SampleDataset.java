@@ -317,7 +317,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         boolean success = false;
         while (i < attributeCount() && !success) {
             if (attributes.get(i).getName().equals(attributeName)) {
-                instance(instanceIdx).put(i, value);
+                instance(instanceIdx).set(i, value);
                 success = true;
             }
             i++;

@@ -10,13 +10,14 @@ import org.clueminer.dataset.api.Plotter;
 import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
+import org.clueminer.math.Vector;
 import org.clueminer.types.TimePoint;
 
 /**
  *
  * @author Tomas Barton
  */
-public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> implements Instance, ContinuousInstance, Iterable<E> {
+public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> implements Instance<E>, ContinuousInstance<E>, Iterable<E> {
 
     private static final long serialVersionUID = -1881645784146059894L;
     protected DataItem[] data;
@@ -86,12 +87,12 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public E get(int index) {
+    public E item(int index) {
         return (E) data[index];
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         if (index >= size()) {
             //extending array is rather expensive on 
             //reallocation of array, so we rather make bigger space
@@ -190,7 +191,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     public String toString() {
         StringBuilder str = new StringBuilder("DataItem [ \n");
         for (int i = 0; i < size(); i++) {
-            str.append(this.get(i).toString());
+            str.append(this.item(i).toString());
         }
         str.append("\n ]");
         return str.toString();
@@ -210,7 +211,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
         //@TODO coefficient are only a shallow copy
         c.coefficients = (HashMap<String, Double>) this.coefficients.clone();
         for (int i = 0; i < size(); i++) {
-            c.put(i, this.value(i));
+            c.set(i, this.value(i));
         }
         return c;
     }
@@ -240,5 +241,25 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
             res[i] = String.valueOf(value(i));
         }
         return res;
+    }
+
+    @Override
+    public Number getValue(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double magnitude() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(int index, Number value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector add(Vector other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

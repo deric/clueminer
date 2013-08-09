@@ -35,7 +35,7 @@ public class DoubleArrayFactory implements InstanceBuilder {
     public DoubleArrayDataRow create(double[] values) {
         DoubleArrayDataRow row = new DoubleArrayDataRow(values.length);
         for (int i = 0; i < values.length; i++) {
-            row.put(i, values[i]);
+            row.set(i, values[i]);
         }
         return row;
     }

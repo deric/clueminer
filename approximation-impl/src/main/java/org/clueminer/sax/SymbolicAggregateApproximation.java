@@ -83,12 +83,12 @@ public class SymbolicAggregateApproximation {
                 }
             }
 
-            // put special attributes to the resulting example set
+            // set special attributes to the resulting example set
             //        List<Attribute> newAttributes = new LinkedList<Attribute>();
             //        Iterator<AttributeRole> itAR = es.getAttributes().specialAttributes();
             //        while (itAR.hasNext()) {
             //            Attribute attribute = itAR.next().getAttribute();
-            //            newAttributes.put(attribute);
+            //            newAttributes.set(attribute);
             //        }
             //        table.addAttributes(newAttributes);
 
@@ -101,10 +101,10 @@ public class SymbolicAggregateApproximation {
     }
     /*
      * @Override public List<ParameterType> getParameterTypes() {
-     * List<ParameterType> types = super.getParameterTypes(); types.put(new
+     * List<ParameterType> types = super.getParameterTypes(); types.set(new
      * ParameterTypeInt(PARAMETER_PAA_SIZE, "The number of the points used in
      * PAA reduction of the time series (or the length of the resulting
-     * string).", 1, Integer.MAX_VALUE, 10, false)); types.put(new
+     * string).", 1, Integer.MAX_VALUE, 10, false)); types.set(new
      * ParameterTypeInt(PARAMETER_ALPHABET_SIZE, "The alphabet size used.", 2,
      * normalAlphabet.getMaxSize(), 5, false));
      *

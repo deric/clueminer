@@ -127,7 +127,7 @@ public class Convertor {
                 mass = dataset.get(t);
                 sum = 0.0;
                 for (int i = 0; i < mass.size(); i++) {
-                    sum += mass.get(i).getIntensity();
+                    sum += mass.item(i).getIntensity();
                 }
                 StringBuilder sb = new StringBuilder();
                 sb.append(dataset.getTimePoint(t).getPosition());

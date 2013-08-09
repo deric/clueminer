@@ -11,7 +11,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vector<Double> {
+public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Double>, Vector<Double> {
 
     private static final long serialVersionUID = -4054619137644952331L;
     private int last = 0;
@@ -42,9 +42,9 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
     @Override
     public String getFullName() {
         StringBuilder sb = new StringBuilder();
-        if(getId() != null){
+        if (getId() != null) {
             sb.append(getId()).append(" - ");
-        }       
+        }
         return sb.append(getName()).toString();
     }
 
@@ -86,12 +86,20 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
         return value(index);
     }
 
+    public double item(int index) {
+        return data[index];
+    }
+
     public double get(int index) {
         return data[index];
     }
 
+    public Double getDouble(int index) {
+        return value(index);
+    }
+
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         data[index] = (float) value;
     }
 
@@ -190,7 +198,7 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
     public Instance copy() {
         DoubleArrayDataRow copy = new DoubleArrayDataRow(this.size());
         for (int i = 0; i < this.size(); i++) {
-            copy.put(i, this.value(i));
+            copy.set(i, this.value(i));
         }
         return copy;
     }
@@ -217,7 +225,7 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
         double m = 0;
         int length = size();
         for (int i = 0; i < length; ++i) {
-            double d = get(i);
+            double d = item(i);
             m += d * d;
         }
         return Math.sqrt(m);
@@ -230,9 +238,18 @@ public class DoubleArrayDataRow extends DataRow implements Iterable<Double>, Vec
         }
         Vector<Double> res = new DoubleArrayDataRow(this.size());
         for (int i = 0; i < this.size(); i++) {
-            res.set(i, getValue(i).doubleValue() + other.getValue(i).doubleValue());
+            res.set(i, getDouble(i).doubleValue() + other.getValue(i).doubleValue());
         }
         return res;
+    }
+    
+    public double add(int index, double delta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public double[] toArray() {
+        double[] copy = Arrays.copyOf(data, size());
+        return copy;
     }
 
     class InstanceValueIterator implements Iterator<Double> {
