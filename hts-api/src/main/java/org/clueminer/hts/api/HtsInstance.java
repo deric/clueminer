@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
  *
  * @author Tomas Barton
  */
-public interface HtsInstance extends Comparable, ContinuousInstance, Serializable {
+public interface HtsInstance<T extends Number> extends Comparable, ContinuousInstance<T>, Serializable {
 
     /**
      * Usually starting from 0
