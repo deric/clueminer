@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractInstance implements Instance, Serializable, Cloneable {
+public abstract class AbstractInstance<E extends Number> implements Instance<E>, Serializable, Cloneable {
 
     private static final long serialVersionUID = -6423623520646880380L;
     protected String name;

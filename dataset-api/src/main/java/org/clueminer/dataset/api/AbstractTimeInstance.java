@@ -1,12 +1,10 @@
 package org.clueminer.dataset.api;
 
-import org.clueminer.math.Numeric;
-
 /**
  *
  * @author Tomas Barton
  */
-public abstract class AbstractTimeInstance<E extends Numeric> extends AbstractInstance implements Instance, ContinuousInstance, Iterable<E> {
+public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E> {
 
     private static final long serialVersionUID = 7144673261130372477L;
     protected double max = Double.MIN_VALUE;
@@ -66,7 +64,7 @@ public abstract class AbstractTimeInstance<E extends Numeric> extends AbstractIn
         E dc;
         for (int i = 0; i < size(); i++) {
             dc = item(i);
-            checkMinMax(dc.getValue());
+            checkMinMax(dc.doubleValue());
         }
     }
 

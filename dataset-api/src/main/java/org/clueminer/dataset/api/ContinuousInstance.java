@@ -8,7 +8,7 @@ import org.clueminer.math.Interpolator;
  *
  * @author Tomas Barton
  */
-public interface ContinuousInstance extends Instance {
+public interface ContinuousInstance<E extends Number> extends Instance<E> {
 
     public double valueAt(double x);
 

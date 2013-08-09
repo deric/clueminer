@@ -4,7 +4,7 @@ package org.clueminer.dataset.api;
  *
  * @author Tomas Barton
  */
-public abstract class DataRow extends AbstractInstance implements Instance {
+public abstract class DataRow<T extends Number> extends AbstractInstance<T> implements Instance<T> {
 
     private static final long serialVersionUID = 7076642394603104341L;
     protected Instance ancestor;

@@ -2,7 +2,7 @@ package org.clueminer.dataset.api;
 
 import java.awt.Color;
 import java.io.Serializable;
-import org.clueminer.math.DoubleVector;
+import org.clueminer.math.Vector;
 
 /**
  * An instance is a usually a row of data which contains a number of attributes
@@ -15,7 +15,7 @@ import org.clueminer.math.DoubleVector;
  *
  * @author Tomas Barton
  */
-public interface Instance extends Cloneable, Serializable, DoubleVector {
+public interface Instance<T extends Number> extends Cloneable, Serializable, Vector<T> {
 
     public String getId();
 
@@ -64,7 +64,6 @@ public interface Instance extends Cloneable, Serializable, DoubleVector {
      * @param index starting from 0
      * @param value
      */
-    @Override
     public void set(int index, double value);
 
     /**
