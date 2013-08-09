@@ -75,7 +75,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
             copy = data.builder().createCopyOf(inst, data);
 
             for (int i = 0; i < inst.size(); i++) {
-                copy.put(i, inst.value(i) * weights[i]);
+                copy.set(i, inst.value(i) * weights[i]);
             }            
             data.add(copy);
         }

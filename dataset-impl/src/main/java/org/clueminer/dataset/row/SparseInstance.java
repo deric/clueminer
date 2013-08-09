@@ -1,7 +1,6 @@
 package org.clueminer.dataset.row;
 
 import java.util.*;
-import javax.swing.JComponent;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
@@ -63,7 +62,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         data.clear();
         for (int i = 0; i < datavector.length; i++) {
             if (datavector[i] != defaultValue) {
-                put(i, datavector[i]);
+                set(i, datavector[i]);
             }
         }
     }
@@ -81,7 +80,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         while (data.containsKey(index)) {
             index++;
         }
-        put(index, value);
+        set(index, value);
         checkIndexInterval(index);
         return this.size();
     }
@@ -125,7 +124,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         data.put(index, value);
         checkIndexInterval(index);
     }
@@ -323,6 +322,26 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     @Override
     public Plotter getPlotter() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Number getValue(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double magnitude() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(int index, Number value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public org.clueminer.math.Vector add(org.clueminer.math.Vector other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class SparseInstanceIterator implements Iterator<Double> {

@@ -18,6 +18,7 @@ public class DoubleArrayDataRowTest {
     static DoubleArrayDataRow t2;
     //precision for comparing
     static double delta = 0.0001;
+    static double[] t1array = new double[]{1, 2, 3, 4, 5};
 
     public DoubleArrayDataRowTest() {
     }
@@ -33,8 +34,8 @@ public class DoubleArrayDataRowTest {
     @Before
     public void setUp() throws Exception {
         t1 = new DoubleArrayDataRow(5);
-        double[] array = new double[]{1, 2, 3, 4, 5};
-        t1.set(array);
+
+        t1.set(t1array);
         t2 = new DoubleArrayDataRow(new double[]{10.5, 24.5, 30.5, 10.0, 50.4});
     }
 
@@ -43,13 +44,13 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of put method, of class DoubleArrayDataRow.
+     * Test of set method, of class DoubleArrayDataRow.
      */
     @Test
     public void testAdd() {
         int expected = t1.getLast() + 1;
         t1.put(5);
-        //we put one more than is capacity of an array, it should be
+        //we set one more than is capacity of an t1array, it should be
         //extended to bigger size
         assertEquals(expected, t1.getLast());
     }
@@ -67,7 +68,7 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of get method, of class DoubleArrayDataRow.
+     * Test of item method, of class DoubleArrayDataRow.
      */
     @Test
     public void testGet_int() {
@@ -76,11 +77,11 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of get method, of class DoubleArrayDataRow.
+     * Test of item method, of class DoubleArrayDataRow.
      */
     @Test
     public void testGet_int_double() {
-        //if index is not in array, return default value
+        //if index is not in t1array, return default value
         assertEquals(100, t2.getValue(-1, 100), delta);
         assertEquals(100, t2.getValue(t2.size(), 100), delta);
     }
@@ -142,7 +143,7 @@ public class DoubleArrayDataRowTest {
         DoubleArrayDataRow copy = (DoubleArrayDataRow) t1.copy();
         System.out.println("copy: " + copy.toString());
         assertTrue(t1.equals(copy));
-        copy.put(0, 10);
+        copy.set(0, 10);
         assertFalse(t1.equals(copy));
     }
 
@@ -183,7 +184,7 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of put method, of class DoubleArrayDataRow.
+     * Test of set method, of class DoubleArrayDataRow.
      */
     @Test
     public void testPut_double() {
@@ -197,28 +198,28 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of getValue method, of class DoubleArrayDataRow.
+     * Test of getDouble method, of class DoubleArrayDataRow.
      */
     @Test
     public void testGetValue_int_double() {
     }
 
     /**
-     * Test of getValue method, of class DoubleArrayDataRow.
+     * Test of getDouble method, of class DoubleArrayDataRow.
      */
     @Test
     public void testGetValue_int() {
     }
 
     /**
-     * Test of get method, of class DoubleArrayDataRow.
+     * Test of item method, of class DoubleArrayDataRow.
      */
     @Test
     public void testGet() {
     }
 
     /**
-     * Test of put method, of class DoubleArrayDataRow.
+     * Test of set method, of class DoubleArrayDataRow.
      */
     @Test
     public void testPut_int_double() {
@@ -316,10 +317,55 @@ public class DoubleArrayDataRowTest {
         System.out.println(t1.toString());
         assertEquals("1.0,2.0,3.0,4.0,5.0", t1.toString());
     }
-    
+
     @Test
     public void testToStringArray() {
-   //     System.out.println(t1.toStringArray());
+        //     System.out.println(t1.toStringArray());
         //assertEquals("1.0,2.0,3.0,4.0,5.0", t1.toString());
+    }
+
+    /**
+     * Test of put method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testPut() {
+        int size = t1.size();
+        t1.put(123.);
+        assertEquals(size + 1, t1.size());
+    }
+
+    /**
+     * Test of item method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testItem() {
+    }
+
+    /**
+     * Test of getDouble method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testGetDouble() {
+    }
+
+    /**
+     * Test of add method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testAdd_Vector() {
+    }
+
+    /**
+     * Test of add method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testAdd_int_double() {
+    }
+
+    /**
+     * Test of toArray method, of class DoubleArrayDataRow.
+     */
+    @Test
+    public void testToArray() {
     }
 }

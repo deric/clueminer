@@ -20,7 +20,7 @@ public class SparseInstanceTest {
         instance = new SparseInstance(attrNum);
         Random generator = new Random();
         for (int i = 0; i < attrNum; i++) {
-            instance.put(i * 5, generator.nextDouble());
+            instance.set(i * 5, generator.nextDouble());
         }
     }
 
@@ -33,17 +33,17 @@ public class SparseInstanceTest {
     }
 
     /**
-     * Test of put method, of class SparseInstance.
+     * Test of set method, of class SparseInstance.
      */
     @Test
     public void testAdd() {
         double d = 123456.0;
-        instance.put(123, d);
+        instance.set(123, d);
         assertEquals(d, instance.value(123), 0.0001);
     }
 
     /**
-     * Test of put method, of class SparseInstance.
+     * Test of set method, of class SparseInstance.
      */
     @Test
     public void testPut() {
@@ -78,7 +78,7 @@ public class SparseInstanceTest {
     }
 
     /**
-     * Test of put method, of class SparseInstance.
+     * Test of set method, of class SparseInstance.
      */
     @Test
     public void testSetValue_int_double() {
@@ -146,7 +146,7 @@ public class SparseInstanceTest {
     }
 
     /**
-     * Test of put method, of class SparseInstance.
+     * Test of set method, of class SparseInstance.
      */
     @Test
     public void testSetValue_3args() {

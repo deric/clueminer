@@ -32,7 +32,7 @@ public class StreamHandler {
                     } catch (NumberFormatException e) {
                         val = Double.NaN;
                     }
-                    inst.put(Integer.parseInt(tmp[0]), val);
+                    inst.set(Integer.parseInt(tmp[0]), val);
                 }
             }
             if (inst.size() > maxAttributes) {

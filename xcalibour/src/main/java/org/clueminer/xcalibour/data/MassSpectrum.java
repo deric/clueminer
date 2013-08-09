@@ -1,20 +1,19 @@
 package org.clueminer.xcalibour.data;
 
-import org.clueminer.xcalibour.data.MassItem;
 import java.util.Iterator;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Numeric;
+import org.clueminer.math.Vector;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> implements Instance, ContinuousInstance, Iterable<E> {
+public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> implements ContinuousInstance<E>, Iterable<E> {
 
     private static final long serialVersionUID = 974569129848252471L;
     protected MassItem[] data;
@@ -26,7 +25,7 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public E get(int index) {
+    public E item(int index) {
         return (E) data[index];
     }
 
@@ -56,7 +55,7 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -147,5 +146,25 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
             result[i] = String.valueOf(data[i].getValue());
         }
         return result;
+    }
+
+    @Override
+    public Number getValue(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double magnitude() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(int index, Number value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector<E> add(Vector<E> other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

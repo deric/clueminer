@@ -65,12 +65,12 @@ public class IntegerDataRowTest {
     }
 
     /**
-     * Test of put method, of class IntegerDataRow.
+     * Test of set method, of class IntegerDataRow.
      */
     @Test
     public void testPut_int() {
         t1.put(42);
-        assertEquals(42, t1.get(t1.size() - 1), delta);
+        assertEquals(42, t1.item(t1.size() - 1), delta);
     }
 
     /**
@@ -90,34 +90,34 @@ public class IntegerDataRowTest {
     }
 
     /**
-     * Test of getValue method, of class IntegerDataRow.
+     * Test of getDouble method, of class IntegerDataRow.
      */
     @Test
     public void testGetValue_int_double() {
     }
 
     /**
-     * Test of getValue method, of class IntegerDataRow.
+     * Test of getDouble method, of class IntegerDataRow.
      */
     @Test
     public void testGetValue_int() {
     }
 
     /**
-     * Test of get method, of class IntegerDataRow.
+     * Test of item method, of class IntegerDataRow.
      */
     @Test
     public void testGet() {
-        assertEquals(424, t1.get(0), delta);
+        assertEquals(424, t1.item(0), delta);
     }
 
     /**
-     * Test of put method, of class IntegerDataRow.
+     * Test of set method, of class IntegerDataRow.
      */
     @Test
     public void testPut_int_double() {
-        t1.put(0, 500.0);
-        assertEquals(500, t1.get(0), delta);
+        t1.set(0, 500.0);
+        assertEquals(500, t1.item(0), delta);
     }
 
     /**
@@ -238,7 +238,7 @@ public class IntegerDataRowTest {
     }
 
     /**
-     * Test of put method, of class IntegerDataRow.
+     * Test of set method, of class IntegerDataRow.
      */
     @Test
     public void testPut_double() {

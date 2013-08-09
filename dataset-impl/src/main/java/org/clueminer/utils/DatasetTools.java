@@ -56,9 +56,9 @@ final public class DatasetTools {
                 index = attr.get(j).getIndex();
                 double val = i.value(index);
                 if (!max.containsKey(index)) {
-                    max.put(index, val);
+                    max.set(index, val);
                 } else if (max.value(index) < val) {
-                    max.put(index, val);
+                    max.set(index, val);
                 }
 
             }
@@ -83,9 +83,9 @@ final public class DatasetTools {
                 index = attr.get(j).getIndex();
                 double val = i.value(index);
                 if (!min.containsKey(index)) {
-                    min.put(index, val);
+                    min.set(index, val);
                 } else if (min.value(index) > val) {
-                    min.put(index, val);
+                    min.set(index, val);
                 }
             }
         }
@@ -105,7 +105,7 @@ final public class DatasetTools {
         /*
          * Instance sum = new DoubleArrayDataRow(avg.attrCount()); for (Instance
          * i : data) { Instance diff = i.minus(avg); sum =
-         * sum.put(diff.multiply(diff)); } sum = sum.divide(data.size()); return
+         * sum.set(diff.multiply(diff)); } sum = sum.divide(data.size()); return
          * sum.sqrt();
          */
         throw new UnsupportedOperationException("not implemented yet");

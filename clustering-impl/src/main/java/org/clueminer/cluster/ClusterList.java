@@ -68,14 +68,14 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
             for (Instance inst : c) {
                 //sum all features
                 for (int i = 0; i < inst.size(); i++) {
-                    centroid.put(i, inst.value(i) + centroid.value(i));
+                    centroid.set(i, inst.value(i) + centroid.value(i));
                 }
             }
         }
 
         //average of features
         for (int i = 0; i < first.attributeCount(); i++) {
-            centroid.put(i, centroid.value(i) / instancesCount());
+            centroid.set(i, centroid.value(i) / instancesCount());
         }
         return (E) centroid;
     }

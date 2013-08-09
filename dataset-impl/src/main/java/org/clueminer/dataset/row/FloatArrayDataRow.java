@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.math.Vector;
 
 /**
  * Implementation of DataRow that is backed by a float array. Please note that
@@ -15,7 +16,7 @@ import org.clueminer.dataset.api.Plotter;
  *
  * @author Tomas Barton
  */
-public class FloatArrayDataRow extends DataRow implements Iterable<Float> {
+public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float> {
 
     private static final long serialVersionUID = -9049887710056073109L;
     private int last = 0;
@@ -81,7 +82,7 @@ public class FloatArrayDataRow extends DataRow implements Iterable<Float> {
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         data[index] = (float) value;
     }
 
@@ -161,6 +162,28 @@ public class FloatArrayDataRow extends DataRow implements Iterable<Float> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
+    @Override
+    public Number getValue(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double magnitude() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(int index, Number value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector<Float> add(Vector<Float> other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
     class InstanceValueIterator implements Iterator<Float> {
 
         private int index = 0;
@@ -192,7 +215,7 @@ public class FloatArrayDataRow extends DataRow implements Iterable<Float> {
     public Instance copy() {
         FloatArrayDataRow copy = new FloatArrayDataRow(this.size());
         for (int i = 0; i < this.size(); i++) {
-            copy.put(i, this.value(i));
+            copy.set(i, this.value(i));
         }
         return copy;
     }
