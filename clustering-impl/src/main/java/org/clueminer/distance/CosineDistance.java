@@ -8,7 +8,8 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Cosine distance express angle between two vectors. It ranges from -1 to 1.
+ * Cosine distance express angle between two vectors. Normally it ranges from -1
+ * to 1 but we shift it to [0, 2]
  *
  * <math>\text{similarity} = \cos(\theta) = {A \cdot B \over \|A\| \|B\|} =
  * \frac{ \sum\limits_{i=1}^{n}{A_i \times B_i} }{
@@ -26,7 +27,7 @@ public class CosineDistance extends SymmetricDistance {
     private static float similarityFactor = 1.0f;
     /**
      * should be minNodeHeight - when computing tree heights, the distances must
-     * be positive, therefore we have to add the mininal distance
+     * be positive, therefore we have to add the minimal distance
      */
     private static int offset = 0;
     private static final long serialVersionUID = 4102385223200185396L;
@@ -46,7 +47,7 @@ public class CosineDistance extends SymmetricDistance {
      */
     @Override
     public double columns(Matrix matrix, int e1, int e2) {
-        int n, j, k;
+        int j, k;
         double sxy = 0.0;
         double sxx = 0.0;
         double syy = 0.0;
@@ -73,7 +74,6 @@ public class CosineDistance extends SymmetricDistance {
         double tx;
         double ty;
         int k = A.columnsCount();
-        int n = 0;
         int j;
         for (j = 0; j < k; j++) {
             if ((!Double.isNaN(A.get(e1, j))) && (!Double.isNaN(B.get(e2, j)))) {
@@ -82,7 +82,6 @@ public class CosineDistance extends SymmetricDistance {
                 sxy += tx * ty;
                 sxx += tx * tx;
                 syy += ty * ty;
-                n++;
             }
         }
         return (1 - (sxy / (Math.sqrt(sxx) * Math.sqrt(syy))));
@@ -112,10 +111,7 @@ public class CosineDistance extends SymmetricDistance {
      */
     @Override
     public double measure(Instance x, Instance y) {
-        if (x.size() != y.size()) {
-            throw new RuntimeException("Both instances should contain the same "
-                    + "number of values. x= " + x.size() + " != " + y.size());
-        }
+        checkInput(x, y);
         double sumTop = 0;
         double sumOne = 0;
         double sumTwo = 0;
