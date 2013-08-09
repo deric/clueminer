@@ -2,18 +2,20 @@ package org.clueminer.dataset.api;
 
 import java.awt.Color;
 import java.io.Serializable;
+import org.clueminer.math.DoubleVector;
 
 /**
  * An instance is a usually a row of data which contains a number of attributes
- * (that is its dimension). An attribute could be a number, boolean, string or
- * ordered nominal values (or any other type you will specify). This definition
- * should be as general as possible, however computing distances on nominal
- * attributes is tricky. In future in would be good to introduce a special
- * interface for string attributes.
+ * (that is its dimension). An attribute should be possible to cast to a number.
+ * This definition should be as general as possible, however computing distances
+ * on nominal attributes is tricky with strongly typed language.
+ *
+ * @TODO In future it would be good to introduce a special interface for string
+ * attributes.
  *
  * @author Tomas Barton
  */
-public interface Instance extends Cloneable, Serializable {
+public interface Instance extends Cloneable, Serializable, DoubleVector {
 
     public String getId();
 
@@ -62,13 +64,15 @@ public interface Instance extends Cloneable, Serializable {
      * @param index starting from 0
      * @param value
      */
-    public void put(int index, double value);
+    @Override
+    public void set(int index, double value);
 
     /**
      * Current number of attributes (dimension of the instance)
      *
      * @return
      */
+    @Override
     public int size();
 
     /**
@@ -136,10 +140,10 @@ public interface Instance extends Cloneable, Serializable {
      * @return serialized values
      */
     public String toString(String separator);
-    
+
     /**
      * Used for exporting dataset
-     * 
+     *
      * @return array of Strings
      */
     public String[] toStringArray();
@@ -151,11 +155,11 @@ public interface Instance extends Cloneable, Serializable {
      * @return Instance from which was this one derived
      */
     public Instance getAncestor();
-    
+
     /**
      * Set reference to original data row
-     * 
-     * @param instance 
+     *
+     * @param instance
      */
     public void setAncestor(Instance instance);
 
