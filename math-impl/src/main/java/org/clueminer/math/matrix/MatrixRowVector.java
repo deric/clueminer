@@ -35,8 +35,13 @@ public class MatrixRowVector implements MatrixVector {
     }
 
     @Override
-    public Double getValue(int index) {
+    public Double getDouble(int index) {
         return matrix.get(row, index);
+    }
+
+    @Override
+    public Number getValue(int index) {
+        return get(index);
     }
 
     @Override
@@ -48,8 +53,8 @@ public class MatrixRowVector implements MatrixVector {
     public double[] toArray() {
         double[] res = new double[matrix.columnsCount()];
         for (int i = 0; i < res.length; i++) {
-            res[i] =  matrix.get(row, i);
-            
+            res[i] = matrix.get(row, i);
+
         }
         return res;
     }

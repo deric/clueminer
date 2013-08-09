@@ -34,8 +34,13 @@ public class MatrixColumnVector implements MatrixVector {
     }
 
     @Override
-    public Double getValue(int index) {
-        return matrix.get(index, column);
+    public Double getDouble(int index) {
+        return get(index);
+    }
+
+    @Override
+    public Number getValue(int index) {
+        return get(index);
     }
 
     @Override

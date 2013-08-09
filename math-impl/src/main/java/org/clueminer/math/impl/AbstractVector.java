@@ -5,7 +5,7 @@ import org.clueminer.math.Vector;
 /**
  * An abstract base class that provides default implementations of common
  * methods in {@link Vector}. {@link Vector} implementations need only implement
- * {@link #size()} and {@link #getValue(int)} functionality to be read-only
+ * {@link #size()} and {@link #getDouble(int)} functionality to be read-only
  * vectors.
  */
 public abstract class AbstractVector<T extends Number> implements Vector<T> {

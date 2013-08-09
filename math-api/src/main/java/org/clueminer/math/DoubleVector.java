@@ -39,8 +39,7 @@ public interface DoubleVector extends Vector<Double> {
      * @param {@inheritDoc}
      * @return {@inheritDoc}
      */
-    @Override
-    public Double getValue(int index);
+    public Double getDouble(int index);
 
     /**
      * Sets the length in this vector (optional operation).
@@ -53,7 +52,7 @@ public interface DoubleVector extends Vector<Double> {
     /**
      * Returns a double array representing this vector.  The returned array will
      * be "safe" in that no changes to the array will be reflected in the
-     * vector, and likewise for changes to to the vector.  The caller is thus
+     * vector (a deep copy), and likewise for changes to to the vector.  The caller is thus
      * free to modify the returned array.
      *
      * @return a {@code double} array of this vector.

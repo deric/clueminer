@@ -84,7 +84,7 @@ public class ScaledDoubleVector implements DoubleVector {
      * {@inheritDoc}
      */
     @Override
-    public Double getValue(int index) {
+    public Double getDouble(int index) {
         return get(index);
     }
 
@@ -138,9 +138,14 @@ public class ScaledDoubleVector implements DoubleVector {
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.getValue(i).doubleValue();
+            v = other.getValue(i).doubleValue() + this.getDouble(i).doubleValue();
             this.set(i, v);
         }
         return this;
+    }
+
+    @Override
+    public Number getValue(int index) {
+        return get(index);
     }
 }

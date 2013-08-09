@@ -93,6 +93,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double magnitude() {
         if (magnitude < 0) {
             double m = 0;
@@ -107,6 +108,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void set(int index, double value) {
         magnitude = -1;
         vector[index] = value;
@@ -115,6 +117,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double[] toArray() {
         return Arrays.copyOf(vector, vector.length);
     }
@@ -132,9 +135,14 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.getValue(i).doubleValue();
+            v = other.getValue(i).doubleValue() + this.getDouble(i).doubleValue();
             this.set(i, v);
         }
         return this;
+    }
+
+    @Override
+    public Number getValue(int index) {
+        return get(index);
     }
 }

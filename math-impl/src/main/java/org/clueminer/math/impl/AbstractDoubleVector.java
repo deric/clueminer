@@ -49,7 +49,7 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
      * {@inheritDoc}
      */
     @Override
-    public Double getValue(int index) {
+    public Double getDouble(int index) {
         return get(index);
     }
 
