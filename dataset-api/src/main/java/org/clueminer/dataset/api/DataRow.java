@@ -55,7 +55,7 @@ public abstract class DataRow extends AbstractInstance implements Instance {
      * <code>value</code>.
      */
     public void setValue(Attribute attribute, double value) {
-        put(attribute.getIndex(), value);
+        set(attribute.getIndex(), value);
     }
 
     /**

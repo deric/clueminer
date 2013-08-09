@@ -58,14 +58,14 @@ public abstract class AbstractTimeInstance<E extends Numeric> extends AbstractIn
         return true;
     }
 
-    public abstract E get(int index);
+    public abstract E item(int index);
 
     public void resetMinMax() {
         this.min = Double.MAX_VALUE;
         this.max = Double.MIN_VALUE;
         E dc;
         for (int i = 0; i < size(); i++) {
-            dc = get(i);
+            dc = item(i);
             checkMinMax(dc.getValue());
         }
     }
