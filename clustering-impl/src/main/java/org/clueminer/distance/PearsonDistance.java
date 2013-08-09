@@ -12,9 +12,14 @@ import org.openide.util.lookup.ServiceProvider;
  * expression patterns. Two functions which differs just in an amplitude would
  * have still perfect Pearson correlation equal to 1.
  *
- * The Pearson correlation coefficient is always between -1 and 1, with 1
- * meaning that the two series are identical, 0 meaning they are completely
- * uncorrelated, and -1 meaning they are perfect opposites
+ * The Pearson correlation coefficient is always between -1 and 1, however
+ * Pearson distance we define as non-negative. With 0 meaning that the two
+ * series are identical, 1.0 meaning they are completely uncorrelated, and 2.0
+ * meaning they are perfect opposites
+ *
+ * This definition yields a semi-metric: d(a,b) >= 0, and d(a,b) = 0 iff a = b.
+ * but the triangular inequality d(a,b) + d(b,c) >= d(a,c) does not hold (e.g.,
+ * choose b = a + c).
  *
  *
  * @author Tomas Barton
@@ -24,16 +29,29 @@ public class PearsonDistance extends SymmetricDistance {
 
     private static String name = "Pearson";
     private static float similarityFactor = -1.0f;
+    /**
+     * FIXME should be 1
+     */
     private static int offset = 1;
+    /**
+     * FIXME should be 0
+     */
     private static final long serialVersionUID = -5861415196767414635L;
+    private static double TINY = Double.MIN_VALUE;
 
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * @deprecated will be removed soon
+     * @param matrix
+     * @param e1
+     * @param e2
+     * @return
+     */
     public double columns(Matrix matrix, int e1, int e2) {
-        double TINY = Double.MIN_VALUE;
         int n, j, k;
         double xt, yt;
         //standard deviation
@@ -65,6 +83,14 @@ public class PearsonDistance extends SymmetricDistance {
         return (sxy / (Math.sqrt(sxx * syy) + TINY));
     }
 
+    /**
+     * @deprecated will be removed soon
+     * @param X
+     * @param Y
+     * @param g1
+     * @param g2
+     * @return
+     */
     public double rows(Matrix X, Matrix Y, int g1, int g2) {
         double[] arrX = X.getColumnPackedCopy();
         double[] arrY = Y.getColumnPackedCopy(); //@TODO check this
@@ -125,38 +151,64 @@ public class PearsonDistance extends SymmetricDistance {
         return (dblUpper / (Math.sqrt(dblLower) + Double.MIN_VALUE));
     }
 
+    /**
+     * Classical "centered" Pearson correlation d = 1 - r (value lies between 0
+     * and 2)
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     @Override
     public double vector(DoubleVector x, DoubleVector y) {
-        double TINY = Double.MIN_VALUE;
-        int n, j, k;
+        int n, j;
         double xt, yt;
-        //standard deviation
-        double sxx = 0.0;
-        double syy = 0.0;
-        double sxy = 0.0;
-        double ax = 0.0;
-        double ay = 0.0;
-        k = x.size();
+
+        double sumX = 0.0;
+        double sumX2 = 0.0;
+        double sumY = 0.0;
+        double sumY2 = 0.0;
+        double sumXY = 0.0;
+        //number of non-zero elements
         n = 0;
-        for (j = 0; j < k; j++) {
+        for (j = 0; j < x.size(); j++) {
             if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
-                ax += x.get(j);
-                ay += y.get(j);
+                xt = x.get(j);
+                yt = y.get(j);
+
+                sumXY += xt * yt;
+                sumX += xt;
+                sumX2 += xt * xt;
+                sumY += yt;
+                sumY2 += yt * yt;
                 n++;
             }
         }
-        ax /= n;
-        ay /= n;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
-                xt = x.get(j) - ax;
-                yt = y.get(j) - ay;
-                sxx += xt * xt;
-                syy += yt * yt;
-                sxy += xt * yt;
-            }
+
+        double meanX = sumX / n;
+        double meanY = sumY / n;
+        double centeredSumXY = sumXY - meanY * sumX;
+        double centeredSumX2 = sumX2 - meanX * sumX;
+        double centeredSumY2 = sumY2 - meanY * sumY;
+
+
+        return correlation(n, centeredSumXY, centeredSumX2, centeredSumY2);
+    }
+
+    protected double correlation(int n, double sumXY, double sumX2, double sumY2) {
+        if (n == 0) {
+            return Double.NaN;
         }
-        return (sxy / (Math.sqrt(sxx * syy) + TINY));
+        // Note that sum of X and sum of Y don't appear here since they are assumed to be 0;
+        // the data is assumed to be centered.
+        double denominator = Math.sqrt(sumX2) * Math.sqrt(sumY2);
+        if (denominator == 0.0) {
+            // One or both parties has -all- the same ratings;
+            // can't really say much similarity under this measure
+            return Double.NaN;
+        }
+
+        return 1. - sumXY / denominator;
     }
 
     @Override
@@ -171,12 +223,79 @@ public class PearsonDistance extends SymmetricDistance {
 
     @Override
     public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int n, j;
+        double xt, yt;
+
+        double sumX = 0.0;
+        double sumX2 = 0.0;
+        double sumY = 0.0;
+        double sumY2 = 0.0;
+        double sumXY = 0.0;
+        //number of non-zero elements
+        n = 0;
+        for (j = 0; j < x.size(); j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                xt = x.value(j);
+                yt = y.value(j);
+
+                sumXY += xt * yt;
+                sumX += xt;
+                sumX2 += xt * xt;
+                sumY += yt;
+                sumY2 += yt * yt;
+                n++;
+            }
+        }
+
+        double meanX = sumX / n;
+        double meanY = sumY / n;
+        sumXY -= meanY * sumX;
+        sumX2 -= meanX * sumX;
+        sumY2 -= meanY * sumY;
+
+
+        return correlation(n, sumXY, sumX2, sumY2);
     }
 
     @Override
     public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int n, j;
+        double xt, yt;
+
+        double sumX = 0.0;
+        double sumX2 = 0.0;
+        double sumY = 0.0;
+        double sumY2 = 0.0;
+        double sumXY = 0.0;
+        double w;
+        //number of non-zero elements
+        n = 0;
+        for (j = 0; j < x.size(); j++) {
+            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+                w = weights[j];
+                xt = x.value(j);
+                yt = y.value(j);
+
+                sumXY += w * xt * yt;
+                sumX += w * xt;
+                sumX2 += w * xt * xt;
+                sumY += w * yt;
+                sumY2 += w * yt * yt;
+                n++;
+            }
+        }
+
+        double meanX = sumX / n;
+        double meanY = sumY / n;
+        //centering
+        // double centeredSumXY = sumXY - meanY * sumX - meanX * sumY + n * meanX * meanY;
+        // -> simplified to this
+        sumXY -= sumX * meanY;
+        sumX2 -= meanX * sumX;
+        sumY2 -= meanY * sumY;
+
+
+        return correlation(n, sumXY, sumX2, sumY2);
     }
 
     /**
@@ -192,22 +311,24 @@ public class PearsonDistance extends SymmetricDistance {
     }
 
     /**
-     * Instances are complete opposites
+     * Instances are the same (values are shifted to interval [0, 2] instead of
+     * standard [-1, 1])
      *
      * @return
      */
     @Override
     public double getMinValue() {
-        return -1;
+        return 0.;
     }
 
     /**
-     * Instances are the same
+     * Instances are complete opposites (values are shifted to interval [0, 2]
+     * instead of standard [-1, 1])
      *
      * @return
      */
     @Override
     public double getMaxValue() {
-        return 1;
+        return 2.;
     }
 }

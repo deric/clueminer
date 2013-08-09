@@ -139,4 +139,9 @@ public class MinDist implements DistanceMeasure {
     public double vector(DoubleVector A, DoubleVector B) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public double measure(Instance x, Instance y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
