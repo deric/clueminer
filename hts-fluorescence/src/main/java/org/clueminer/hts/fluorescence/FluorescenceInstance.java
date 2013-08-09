@@ -2,7 +2,6 @@ package org.clueminer.hts.fluorescence;
 
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
@@ -13,7 +12,7 @@ import org.clueminer.math.Interpolator;
  *
  * @author Tomas Barton
  */
-public class FluorescenceInstance extends IntegerDataRow implements Instance, ContinuousInstance, HtsInstance {
+public class FluorescenceInstance extends IntegerDataRow implements ContinuousInstance<Integer>, HtsInstance<Integer> {
 
     private static final long serialVersionUID = -7474451177647880896L;
     private int row;
@@ -58,9 +57,9 @@ public class FluorescenceInstance extends IntegerDataRow implements Instance, Co
     }
 
     @Override
-    public void put(int index, double value) {
+    public void set(int index, double value) {
         checkMinMax((int) value);
-        super.put(index, value);
+        super.set(index, value);
     }
 
     private void checkMinMax(int value) {

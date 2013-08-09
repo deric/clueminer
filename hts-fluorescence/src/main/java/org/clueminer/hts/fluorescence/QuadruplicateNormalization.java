@@ -64,7 +64,7 @@ public class QuadruplicateNormalization extends Normalization {
                     //System.out.println("well " + control1.getName() + " = " + control1.value(k));
                 }
                 avg = sum / 4.0;
-                negativeControl.put(k, avg);
+                negativeControl.set(k, avg);
             }
 
             logger.log(Level.INFO, "negative= {0}", negativeControl.toString());
@@ -88,7 +88,7 @@ public class QuadruplicateNormalization extends Normalization {
                         } else {
                             value = ((inst.value(k) - negativeControl.value(k)) / divisor) * 100;
                         }
-                        out.put(k, value);
+                        out.set(k, value);
                         out.setName(inst.getName());
                         out.setRow(inst.getRow());
                         out.setColumn(inst.getColumn());
