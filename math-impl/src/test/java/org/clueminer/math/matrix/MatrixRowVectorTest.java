@@ -69,17 +69,17 @@ public class MatrixRowVectorTest {
     }
 
     /**
-     * Test of getValue method, of class MatrixRowVector.
+     * Test of getDouble method, of class MatrixRowVector.
      */
     @Test
     public void testGetValue() {
         //Dump.matrix(array, "array: ", 3);
-        assertEquals(1.0, vector.getValue(0), eps);
-        assertEquals(2.0, vector.getValue(1),  eps);
-        assertEquals(3.0,vector.getValue(2),  eps);
-        assertEquals(4.0,vector.getValue(3),  eps);
-        assertEquals( 5.0, vector.getValue(4), eps);
-        assertEquals(16.0, matrix.getRowVector(4).getValue(4),  eps);
+        assertEquals(1.0, vector.getDouble(0), eps);
+        assertEquals(2.0, vector.getDouble(1),  eps);
+        assertEquals(3.0,vector.getDouble(2),  eps);
+        assertEquals(4.0,vector.getDouble(3),  eps);
+        assertEquals( 5.0, vector.getDouble(4), eps);
+        assertEquals(16.0, matrix.getRowVector(4).getDouble(4),  eps);
     }
 
     /**
@@ -88,7 +88,7 @@ public class MatrixRowVectorTest {
     @Test
     public void testSet_int_double() {
         vector.set(0, 15);
-        assertEquals(15, vector.getValue(0), eps);
+        assertEquals(15, vector.getDouble(0), eps);
         //change should be written to matrix
         assertEquals(15, matrix.get(0, 0), eps);
     }

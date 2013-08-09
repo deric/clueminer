@@ -181,4 +181,9 @@ public class CompactSparseVector extends AbstractDoubleVector
         }
         return this;
     }
+
+    @Override
+    public Number getValue(int index) {
+        return get(index);
+    }
 }
