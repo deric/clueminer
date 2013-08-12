@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 
 /**
  * FIXME cause problems with optimizing leaves order
@@ -58,17 +57,23 @@ public class BrayCurtisDistance extends SymmetricDistance {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
-        int k = A.size();
+    public double measure(Vector<Double> x, Vector<Double> y) {
+        checkInput(x, y);
+        int k = x.size();
         double numerator = 0.0;
         double denominator = 0.0;
         for (int i = 0; i < k; i++) {
-            if ((!Double.isNaN(A.get(i))) && (!Double.isNaN(B.get(i)))) {
-                numerator += Math.abs((A.get(i) - B.get(i)));
-                denominator += A.get(i) + B.get(i);
+            if ((!Double.isNaN(x.get(i))) && (!Double.isNaN(y.get(i)))) {
+                numerator += Math.abs((x.get(i) - y.get(i)));
+                denominator += x.get(i) + y.get(i);
             }
         }
         return (numerator / denominator);
+    }
+
+    @Override
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -84,16 +89,6 @@ public class BrayCurtisDistance extends SymmetricDistance {
     @Override
     public boolean useTreeHeight() {
         return true;
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

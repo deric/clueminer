@@ -73,15 +73,15 @@ public class PearsonDistanceTest {
         w = new DenseVector(new double[]{0, 1, 1});
 
 
-        double d = test.vector(u, w);
+        double d = test.measure(u, w);
         assertEquals(1.8660, d, delta);
         //triangle inequality
         //System.out.println("two sides: "+ test.vector(u, v) + test.vector(v, w));
         //System.out.println("third side: "+ test.vector(u, w));
-        boolean b = test.vector(u, v) + test.vector(v, w) > test.vector(u, w) ? true : false;
+        boolean b = test.measure(u, v) + test.measure(v, w) > test.measure(u, w) ? true : false;
         assertEquals(false, b); // correlation does not satisfy the triangle inequality
-        assertTrue(test.vector(u, w) + test.vector(w, v) > test.vector(u, v));
-        assertEquals(1.6340, test.vector(u, v) + test.vector(v, w), delta);
+        assertTrue(test.measure(u, w) + test.measure(w, v) > test.measure(u, v));
+        assertEquals(1.6340, test.measure(u, v) + test.measure(v, w), delta);
     }
 
     /**
@@ -142,7 +142,7 @@ public class PearsonDistanceTest {
         u = new DenseVector(new double[]{4., 2.});
         v = new DenseVector(new double[]{2., 1.});
 
-        assertEquals(0.0, test.vector(v, u), delta);
+        assertEquals(0.0, test.measure(v, u), delta);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class PearsonDistanceTest {
         u = new DenseVector(new double[]{3., -2.});
         v = new DenseVector(new double[]{3., -2.});
 
-        assertEquals(0.0, test.vector(v, u), delta);
+        assertEquals(0.0, test.measure(v, u), delta);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class PearsonDistanceTest {
         u = new DenseVector(new double[]{3., -2.});
         v = new DenseVector(new double[]{-3., 2.});
 
-        assertEquals(2.0, test.vector(u, v), delta);
+        assertEquals(2.0, test.measure(u, v), delta);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class PearsonDistanceTest {
         u = new DenseVector(new double[]{3., 3.});
         v = new DenseVector(new double[]{3., 3.});
 
-        double correlation = test.vector(u, v);
+        double correlation = test.measure(u, v);
         // Yeah, undefined in this case
         assertTrue(Double.isNaN(correlation));
     }
@@ -176,7 +176,7 @@ public class PearsonDistanceTest {
         u = new DenseVector(new double[]{Double.NaN, 1.0, Double.NaN});
         v = new DenseVector(new double[]{Double.NaN, Double.NaN, 1.0});
 
-        assertEquals(Double.NaN, test.vector(u, v), delta);
+        assertEquals(Double.NaN, test.measure(u, v), delta);
     }
 
     /**

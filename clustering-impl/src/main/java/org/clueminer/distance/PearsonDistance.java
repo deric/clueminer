@@ -1,10 +1,9 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -151,50 +150,6 @@ public class PearsonDistance extends SymmetricDistance {
         return (dblUpper / (Math.sqrt(dblLower) + Double.MIN_VALUE));
     }
 
-    /**
-     * Classical "centered" Pearson correlation d = 1 - r (value lies between 0
-     * and 2)
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    @Override
-    public double vector(DoubleVector x, DoubleVector y) {
-        int n, j;
-        double xt, yt;
-
-        double sumX = 0.0;
-        double sumX2 = 0.0;
-        double sumY = 0.0;
-        double sumY2 = 0.0;
-        double sumXY = 0.0;
-        //number of non-zero elements
-        n = 0;
-        for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
-                xt = x.get(j);
-                yt = y.get(j);
-
-                sumXY += xt * yt;
-                sumX += xt;
-                sumX2 += xt * xt;
-                sumY += yt;
-                sumY2 += yt * yt;
-                n++;
-            }
-        }
-
-        double meanX = sumX / n;
-        double meanY = sumY / n;
-        double centeredSumXY = sumXY - meanY * sumX;
-        double centeredSumX2 = sumX2 - meanX * sumX;
-        double centeredSumY2 = sumY2 - meanY * sumY;
-
-
-        return correlation(n, centeredSumXY, centeredSumX2, centeredSumY2);
-    }
-
     protected double correlation(int n, double sumXY, double sumX2, double sumY2) {
         if (n == 0) {
             return Double.NaN;
@@ -221,8 +176,16 @@ public class PearsonDistance extends SymmetricDistance {
         return offset;
     }
 
+    /**
+     * Classical "centered" Pearson correlation d = 1 - r (value lies between 0
+     * and 2)
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         int n, j;
         double xt, yt;
 
@@ -234,9 +197,9 @@ public class PearsonDistance extends SymmetricDistance {
         //number of non-zero elements
         n = 0;
         for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                xt = x.value(j);
-                yt = y.value(j);
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
+                xt = x.get(j);
+                yt = y.get(j);
 
                 sumXY += xt * yt;
                 sumX += xt;
@@ -258,7 +221,7 @@ public class PearsonDistance extends SymmetricDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         int n, j;
         double xt, yt;
 
@@ -271,10 +234,10 @@ public class PearsonDistance extends SymmetricDistance {
         //number of non-zero elements
         n = 0;
         for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
                 w = weights[j];
-                xt = x.value(j);
-                yt = y.value(j);
+                xt = x.get(j);
+                yt = y.get(j);
 
                 sumXY += w * xt * yt;
                 sumX += w * xt;

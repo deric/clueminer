@@ -1,10 +1,9 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,16 +53,21 @@ public class ManhattanDistance extends SymmetricDistance {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         int j;
         double sum = 0.0;
-        int n = A.size();
+        int n = x.size();
         for (j = 0; j < n; j++) {
-            if ((!Double.isNaN(A.get(j))) && (!Double.isNaN(B.get(j)))) {
-                sum += Math.abs(A.get(j) - A.get(j));
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
+                sum += Math.abs(x.get(j) - y.get(j));
             }
         }
         return sum;
+    }
+
+    @Override
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -74,16 +78,6 @@ public class ManhattanDistance extends SymmetricDistance {
     @Override
     public int getNodeOffset() {
         return offset;
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

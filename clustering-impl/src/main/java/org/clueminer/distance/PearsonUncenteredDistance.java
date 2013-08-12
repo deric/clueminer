@@ -1,8 +1,7 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.math.DoubleVector;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -28,32 +27,7 @@ public class PearsonUncenteredDistance extends PearsonDistance {
      * @return
      */
     @Override
-    public double vector(DoubleVector x, DoubleVector y) {
-        int n, j;
-        double xt, yt;
-
-        double sumX2 = 0.0;
-        double sumY2 = 0.0;
-        double sumXY = 0.0;
-        //number of non-zero elements
-        n = 0;
-        for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
-                xt = x.get(j);
-                yt = y.get(j);
-
-                sumXY += xt * yt;
-                sumX2 += xt * xt;
-                sumY2 += yt * yt;
-                n++;
-            }
-        }
-
-        return correlation(n, sumXY, sumX2, sumY2);
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         int n, j;
         double xt, yt;
         double sumX2 = 0.0;        
@@ -62,9 +36,9 @@ public class PearsonUncenteredDistance extends PearsonDistance {
         //number of non-zero elements
         n = 0;
         for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                xt = x.value(j);
-                yt = y.value(j);
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
+                xt = x.get(j);
+                yt = y.get(j);
 
                 sumXY += xt * yt;                
                 sumX2 += xt * xt;                
@@ -77,7 +51,7 @@ public class PearsonUncenteredDistance extends PearsonDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         int n, j;
         double xt, yt;
         
@@ -88,10 +62,10 @@ public class PearsonUncenteredDistance extends PearsonDistance {
         //number of non-zero elements
         n = 0;
         for (j = 0; j < x.size(); j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
                 w = weights[j];
-                xt = x.value(j);
-                yt = y.value(j);
+                xt = x.get(j);
+                yt = y.get(j);
 
                 sumXY += w * xt * yt;
                 sumX2 += w * xt * xt;               

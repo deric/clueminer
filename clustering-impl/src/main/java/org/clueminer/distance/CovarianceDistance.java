@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -81,34 +80,6 @@ public class CovarianceDistance extends AbstractDistance {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
-        double xt, yt;
-        double sxy = 0.0;
-        double ax = 0.0;
-        double ay = 0.0;
-        int k = A.size();
-        int n = 0;
-        int j;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(A.get(j))) && (!Double.isNaN(B.get(j)))) {
-                ax += A.get(j);
-                ay += B.get(j);
-                n++;
-            }
-        }
-        ax /= n;
-        ay /= n;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(A.get(j))) && (!Double.isNaN(B.get(j)))) {
-                xt = A.get(j) - ax;
-                yt = B.get(j) - ay;
-                sxy += xt * yt;
-            }
-        }
-        return (sxy / ((n - 1) * 1.0));
-    }
-
-    @Override
     public float getSimilarityFactor() {
         return similarityFactor;
     }
@@ -124,7 +95,7 @@ public class CovarianceDistance extends AbstractDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
         double xt, yt;
         double sxy = 0.0;
@@ -134,18 +105,18 @@ public class CovarianceDistance extends AbstractDistance {
         int n = 0;
         int j;
         for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                avgX += x.value(j);
-                avgY += y.value(j);
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
+                avgX += x.get(j);
+                avgY += y.get(j);
                 n++;
             }
         }
         avgX /= n;
         avgY /= n;
         for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                xt = x.value(j) - avgX;
-                yt = y.value(j) - avgY;
+            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
+                xt = x.get(j) - avgX;
+                yt = y.get(j) - avgY;
                 sxy += xt * yt;
             }
         }
@@ -153,32 +124,8 @@ public class CovarianceDistance extends AbstractDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        checkInput(x, y);
-        double xt, yt;
-        double sxy = 0.0;
-        double ax = 0.0;
-        double ay = 0.0;
-        int k = x.size();
-        int n = 0;
-        int j;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                ax += x.value(j);
-                ay += y.value(j);
-                n++;
-            }
-        }
-        ax /= n;
-        ay /= n;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(x.value(j))) && (!Double.isNaN(y.value(j)))) {
-                xt = x.value(j) - ax;
-                yt = y.value(j) - ay;
-                sxy += xt * yt;
-            }
-        }
-        return (sxy / ((n - 1) * 1.0));
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

@@ -82,7 +82,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     }
 
     @Override
-    public Number getValue(int index) {
+    public Double getValue(int index) {
         return value(index);
     }
 
@@ -90,6 +90,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         return data[index];
     }
 
+    @Override
     public double get(int index) {
         return data[index];
     }
