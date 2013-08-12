@@ -31,14 +31,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.sound.midi.Soundbank;
-import org.clueminer.cluster.HierachicalClusteringResult;
-import org.clueminer.clustering.AssigmentsImpl;
-import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.Pairing;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
-import org.clueminer.clustering.api.Assignment;
-import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
@@ -53,7 +47,6 @@ import org.clueminer.exec.WorkQueue;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.utils.AlgorithmParameters;
-import org.clueminer.utils.Dump;
 
 /**
  * A utility class for performing <a

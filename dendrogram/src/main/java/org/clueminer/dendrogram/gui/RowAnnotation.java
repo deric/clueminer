@@ -6,8 +6,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -27,8 +25,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     protected void render(Graphics2D g) {
-        if (rowsOrder != null) {
-            Dataset<? extends Instance> data = dendroData.getInstances();
+        if (rowsOrder != null) {            
             g.setColor(Color.black);
             int annY;
             g.setFont(defaultFont);
@@ -38,7 +35,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             int height = fm.getHeight();
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
                 annY = (row + 1) * elementSize.height - elementSize.height / 2 + height / 2;
-                String s = data.instance(this.rowsOrder[row]).getFullName();
+                String s = dendroData.getRowsResult().getInstance(row).getFullName();
 
                 if (row == firstSelectedRow) {
                     f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
@@ -150,8 +147,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     public void setDendrogramData(DendrogramData dendroData) {
-        this.dendroData = dendroData;
-        rowsOrder = dendroData.getRowsResult().getMapping();
+        this.dendroData = dendroData;        
         resetCache();
     }
 }

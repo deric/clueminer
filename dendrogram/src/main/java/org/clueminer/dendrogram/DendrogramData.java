@@ -9,6 +9,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 
 /**
+ * Data used for rendering dendrogram, might contain rows and columns clustering
+ * result.
  *
  * @author Tomas Barton
  */
@@ -39,9 +41,9 @@ public class DendrogramData implements DendrogramMapping {
         this.setMatrix(matrix);
         this.rowsResult = (HierachicalClusteringResult) rowResult;
     }
-    
-    public boolean isEmpty(){
-        if(getNumberOfColumns() == 0 || getNumberOfRows() == 0){
+
+    public boolean isEmpty() {
+        if (getNumberOfColumns() == 0 && getNumberOfRows() == 0) {
             return true;
         }
         return false;
@@ -56,7 +58,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     /**
-     * 
+     *
      */
     @Override
     public int getRowIndex(int row) {
@@ -165,7 +167,7 @@ public class DendrogramData implements DendrogramMapping {
     public void setColsResult(HierarchicalResult colsResult) {
         this.colsResult = (HierachicalClusteringResult) colsResult;
     }
-    
+
     public Clustering getRowsClustering() {
         return rowsResult.getClustering(instances);
     }
@@ -187,4 +189,19 @@ public class DendrogramData implements DendrogramMapping {
         colsResult.cutTreeByLevel(level);
     }
 
+    @Override
+    public boolean hasRowsClustering() {
+        if (rowsResult != null && getNumberOfRows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasColumnsClustering() {
+        if (colsResult != null && getNumberOfColumns() > 0) {
+            return true;
+        }
+        return false;
+    }
 }

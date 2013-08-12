@@ -152,10 +152,18 @@ public interface HierarchicalResult extends Serializable {
     public void setMappedIndex(int pos, int idx);
 
     /**
-     *
+     * @deprecated inner structure should be hidden behind interface
      * @return indexes of items
      */
     public int[] getMapping();
+
+    /**
+     * Return instance at given index -- that means either row or column
+     *
+     * @param index
+     * @return
+     */
+    public Instance getInstance(int index);
 
     public int[] getIntAssignments();
 
