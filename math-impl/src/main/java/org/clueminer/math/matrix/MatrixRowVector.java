@@ -35,12 +35,7 @@ public class MatrixRowVector implements MatrixVector {
     }
 
     @Override
-    public Double getDouble(int index) {
-        return matrix.get(row, index);
-    }
-
-    @Override
-    public Number getValue(int index) {
+    public Double getValue(int index) {
         return get(index);
     }
 

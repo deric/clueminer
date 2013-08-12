@@ -78,7 +78,7 @@ public class MatrixColumnVectorTest {
     @Test
     public void testSet_int_double() {
         vector.set(0, 15);
-        assertEquals(15, vector.getDouble(0), eps);
+        assertEquals(15, vector.getValue(0), eps);
         //change should be written to matrix
         assertEquals(15, matrix.get(0, 4), eps);
     }
