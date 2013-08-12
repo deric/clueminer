@@ -15,7 +15,7 @@ import org.clueminer.math.Vector;
  */
 public class DenseVector extends AbstractDoubleVector implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8381939903992766044L;
     /**
      * The values of this {@code DenseVector}.
      */
@@ -77,6 +77,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double add(int index, double delta) {
         magnitude = -1;
         vector[index] += delta;
@@ -86,8 +87,14 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double get(int index) {
         return vector[index];
+    }
+
+    @Override
+    public Double getValue(int index) {
+        return get(index);
     }
 
     /**
@@ -135,14 +142,9 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.getDouble(i).doubleValue();
+            v = other.getValue(i).doubleValue() + this.getValue(i).doubleValue();
             this.set(i, v);
         }
         return this;
-    }
-
-    @Override
-    public Number getValue(int index) {
-        return get(index);
     }
 }

@@ -49,14 +49,6 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
      * {@inheritDoc}
      */
     @Override
-    public Double getDouble(int index) {
-        return get(index);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int hashCode() {
         int len = size();
         int hash = 0;

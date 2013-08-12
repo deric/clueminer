@@ -109,6 +109,7 @@ public class CompactSparseVector extends AbstractDoubleVector
      * Returns an iterator over all the non-zero indices and values in this
      * vector.
      */
+    @Override
     public Iterator<DoubleEntry> iterator() {
         return vector.iterator();
     }
@@ -116,13 +117,20 @@ public class CompactSparseVector extends AbstractDoubleVector
     /**
      * {@inheritDoc}
      */
+    @Override
     public double get(int index) {
         return vector.getPrimitive(index);
+    }
+
+    @Override
+    public Double getValue(int index) {
+        return get(index);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] getNonZeroIndices() {
         return vector.getElementIndices();
     }
@@ -130,6 +138,7 @@ public class CompactSparseVector extends AbstractDoubleVector
     /**
      * {@inheritDoc}
      */
+    @Override
     public double magnitude() {
         // Check whether the current magnitude is valid and if not, recompute it
         if (magnitude < 0) {
@@ -180,10 +189,5 @@ public class CompactSparseVector extends AbstractDoubleVector
             this.set(i, v);
         }
         return this;
-    }
-
-    @Override
-    public Number getValue(int index) {
-        return get(index);
     }
 }
