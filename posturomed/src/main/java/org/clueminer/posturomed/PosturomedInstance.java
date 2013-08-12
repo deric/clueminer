@@ -12,7 +12,7 @@ import org.clueminer.math.Interpolator;
  *
  * @author Tomas Barton
  */
-public class PosturomedInstance extends IntegerDataRow implements Instance, ContinuousInstance {
+public class PosturomedInstance extends IntegerDataRow implements Instance<Integer>, ContinuousInstance<Integer> {
 
     private static final long serialVersionUID = -7474451177647880896L;
     private int row;
@@ -54,12 +54,6 @@ public class PosturomedInstance extends IntegerDataRow implements Instance, Cont
     public void set(int index, Number value) {
         checkMinMax(value.intValue());
         super.set(index, value);
-    }
-
-    @Override
-    public void put(int index, double value) {
-        checkMinMax((int) value);
-        super.put(index, value);
     }
 
     private void checkMinMax(int value) {
@@ -111,9 +105,9 @@ public class PosturomedInstance extends IntegerDataRow implements Instance, Cont
     public ContinuousInstance copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
-    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
+    public void setParent(Timeseries parent) {
         this.parent = parent;
     }
 
