@@ -1,8 +1,8 @@
 package org.clueminer.distance.api;
 
 import java.io.Serializable;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 
 /**
  *
@@ -19,7 +19,7 @@ public interface DistanceMeasure extends Serializable {
      * @param j the second instance
      * @return the distance between the two instances
      */
-    public double measure(DoubleVector x, DoubleVector y);
+    public double measure(Vector<Double> x, Vector<Double> y);
 
     /**
      * Calculates the distance between two instances. For some distance
@@ -31,7 +31,7 @@ public interface DistanceMeasure extends Serializable {
      * @param weights multiplication factor (usually between 0 and 1)
      * @return
      */
-    public double measure(DoubleVector x, DoubleVector y, double[] weights);
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights);
 
     /**
      * Returns whether the first distance, similarity or correlation is better

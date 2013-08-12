@@ -16,12 +16,23 @@ public interface Vector<T extends Number> {
     public boolean equals(Object o);
 
     /**
-     * Return the value of the vector at the given index as a {@code Number}.
+     * Return the value of the vector at the given index as a generic
+     * type{@code T}.
      *
      * @param index index to retrieve.
      * @return value at index.
      */
-    public Number getValue(int index);
+    public T getValue(int index);
+
+    /**
+     * Return double representation of the value. Most of computations are done
+     * with double precision, so this is act a default getter method. Use method
+     * {@code getValue} for getting type used for storing numbers.
+     *
+     * @param index in vector starting from 0
+     * @return value at given position
+     */
+    public double get(int index);
 
     /**
      * Returns the hash code as the sum of the vectors elements, normalized to
@@ -49,11 +60,12 @@ public interface Vector<T extends Number> {
      * @param value value to set in the vector.
      */
     public void set(int index, Number value);
-    
+
     /**
      * Adds other to this and return a new vecor with the result
+     *
      * @param other
-     * @return 
+     * @return
      */
     public Vector<T> add(Vector<T> other);
 }
