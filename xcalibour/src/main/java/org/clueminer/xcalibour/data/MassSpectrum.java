@@ -149,11 +149,6 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public Number getValue(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public double magnitude() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -166,5 +161,15 @@ public class MassSpectrum<E extends MassItem> extends AbstractTimeInstance<E> im
     @Override
     public Vector<E> add(Vector<E> other) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public E getValue(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double get(int index) {
+        return value(index);
     }
 }
