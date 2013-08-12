@@ -213,6 +213,7 @@ public class HClustResult implements HierarchicalResult {
            for(Merge m :merges){
                //m.
            }
+           throw new RuntimeException("not implemented yet");
         }
         return mapping;
     }
