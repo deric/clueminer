@@ -34,7 +34,7 @@ import org.openide.util.NbPreferences;
  */
 public class DendrogramDataTest {
 
-    protected static ClusteringAlgorithm algorithm;
+    private static ClusteringAlgorithm algorithm;
     private static Dataset<? extends Instance> dataset;
     private static DendrogramData dendroData;
 

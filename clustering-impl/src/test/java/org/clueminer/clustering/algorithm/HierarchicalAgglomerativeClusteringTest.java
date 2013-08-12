@@ -186,4 +186,18 @@ public class HierarchicalAgglomerativeClusteringTest {
     @Test
     public void testComputeColumnsSimilarityMatrix() {
     }
+
+    /**
+     * Test of cluster method, of class HierarchicalAgglomerativeClustering.
+     */
+    @Test
+    public void testCluster_5args() {
+    }
+
+    /**
+     * Test of clusterSimilarityMatrix method, of class HierarchicalAgglomerativeClustering.
+     */
+    @Test
+    public void testClusterSimilarityMatrix() {
+    }
 }

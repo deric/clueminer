@@ -1,7 +1,7 @@
 package org.clueminer.clustering.api;
 
 /**
- * A status object that represents the result of agglomeratively merging two
+ * A status object that represents the result of agglomerative merging of two
  * clusters. This class provides the information on which clusters were merged,
  * what the id of the remaining cluster is, and the similarity of the two
  * clusters at the point at which they were merged.
@@ -62,7 +62,7 @@ public class Merge implements java.io.Serializable {
     public String toString() {
         StringBuilder res = new StringBuilder();
         res.append("(").append(mergedCluster).append(" -> ")
-           .append(remainingCluster).append(": ").append(similarity).append(")");
+                .append(remainingCluster).append(": ").append(similarity).append(")");
         return res.toString();
     }
 }
