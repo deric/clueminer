@@ -29,7 +29,7 @@ import org.openide.util.Exceptions;
 public class GnuplotWriter implements EvolutionListener {
 
     private Evolution evolution;
-    private Dataset<Instance> dataset;
+    private Dataset<? extends Instance> dataset;
     private String benchmarkFolder;
     private String outputDir;
     private String dataDir;
@@ -273,7 +273,7 @@ public class GnuplotWriter implements EvolutionListener {
         return dir;
     }
 
-    public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<Instance> dataset) {
+    public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
         String[] header = new String[dataset.attributeCount() + 2];
         header[dataset.attributeCount()] = "label";
         header[dataset.attributeCount() + 1] = "class";
