@@ -1,8 +1,8 @@
 package org.clueminer.distance.api;
 
 import java.io.Serializable;
+import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.Vector;
 
 /**
  *
@@ -19,21 +19,23 @@ public interface DistanceMeasure extends Serializable {
      * @param j the second instance
      * @return the distance between the two instances
      */
-    public double measure(Vector<? extends Number> x, Vector<? extends Number> y);
-    
+    public double measure(DoubleVector x, DoubleVector y);
+
     /**
-     * Calculates the distance between two instances.
-     * 
+     * Calculates the distance between two instances. For some distance
+     * functions weighting does not make sense, in that case method will throw
+     * an exception
+     *
      * @param x first instance
      * @param y second instance
      * @param weights multiplication factor (usually between 0 and 1)
-     * @return 
+     * @return
      */
-    public double measure(Vector<? extends Number> x, Vector<? extends Number> y, double[] weights);
+    public double measure(DoubleVector x, DoubleVector y, double[] weights);
 
     /**
      * Returns whether the first distance, similarity or correlation is better
-     * than the second distance, similarity or correlation.
+     * than the second distance (similarity, correlation, etc.)
      *
      * Both values should be calculated using the same measure.
      *
@@ -69,17 +71,64 @@ public interface DistanceMeasure extends Serializable {
      * @return maximum possible value of the distance metric
      */
     public double getMaxValue();
-
+    
+    /**
+     * @deprecated 
+     * @param a
+     * @param b
+     * @param i
+     * @param j
+     * @return 
+     */
     public double rows(Matrix a, Matrix b, int i, int j);
-
+    
+    /**
+     * @deprecated
+     * @param a
+     * @param i
+     * @param j
+     * @return 
+     */
     public double columns(Matrix a, int i, int j);
 
+    /**
+     * @deprecated
+     * @param matrix
+     * @param e1
+     * @param e2
+     * @param factor
+     * @return 
+     */
     public double rows(Matrix matrix, int e1, int e2, float factor);
-
+    
+    /**
+     * @deprecated
+     * @param matrix
+     * @param e1
+     * @param e2
+     * @return 
+     */
     public double rows(Matrix matrix, int e1, int e2);
 
+    /**
+     * @deprecated
+     * @param A
+     * @param B
+     * @param e1
+     * @param e2
+     * @param factor
+     * @return 
+     */
     public double rows(Matrix A, Matrix B, int e1, int e2, float factor);
-
+    
+    /**
+     * @deprecated
+     * @param matrix
+     * @param e1
+     * @param e2
+     * @param factor
+     * @return 
+     */
     public double columns(Matrix matrix, int e1, int e2, float factor);
 
     public int getNodeOffset();
