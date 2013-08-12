@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -64,19 +63,24 @@ public class SupremumDistance extends AbstractDistance {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
-        int k = A.size();
+    public double measure(Vector<Double> x, Vector<Double> y) {
+        int k = x.size();
         double max = 0.0;
         double diff;
         for (int i = 0; i < k; i++) {
-            if ((!Double.isNaN(A.get(i))) && (!Double.isNaN(B.get(i)))) {
-                diff = Math.abs((A.get(i) - B.get(i)));
+            if ((!Double.isNaN(x.get(i))) && (!Double.isNaN(y.get(i)))) {
+                diff = Math.abs((x.get(i) - y.get(i)));
                 if (diff > max) {
                     max = diff;
                 }
             }
         }
         return max;
+    }
+
+    @Override
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -87,16 +91,6 @@ public class SupremumDistance extends AbstractDistance {
     @Override
     public int getNodeOffset() {
         return offset;
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

@@ -1,10 +1,9 @@
 package org.clueminer.distance;
 
 import org.apache.commons.math3.util.FastMath;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.MatrixVector;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -60,17 +59,6 @@ public class EuclideanDistance extends MinkowskiDistance {
         return (Math.sqrt(sum));
     }
 
-    public double vector(MatrixVector A, MatrixVector B) {
-        int k = A.size();
-        double sum = 0.0;
-        for (int i = 0; i < k; i++) {
-            if ((!Double.isNaN(A.get(i))) && (!Double.isNaN(B.get(i)))) {
-                sum += Math.pow((A.get(i) - B.get(i)), this.power);
-            }
-        }
-        return (Math.sqrt(sum));
-    }
-
     @Override
     public float getSimilarityFactor() {
         return similarityFactor;
@@ -82,27 +70,27 @@ public class EuclideanDistance extends MinkowskiDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         if (x.size() != y.size()) {
             throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size());
         }
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             //should be faster
-            sum += FastMath.pow(Math.abs(y.value(i) - x.value(i)), 2);
+            sum += FastMath.pow(Math.abs(y.get(i) - x.get(i)), 2);
         }
 
         return Math.sqrt(sum);
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         if (x.size() != y.size() || x.size() != weights.length) {
             throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size() + ", weights size: " + weights.length);
         }
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += FastMath.pow(Math.abs(weights[i] * y.value(i) - weights[i] * x.value(i)), power);
+            sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
         }
         
         return Math.sqrt(sum);

@@ -6,10 +6,9 @@ import edu.hawaii.jmotif.logic.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.logic.sax.alphabet.NormalAlphabet;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 
 /**
  * Implements SAX MINDIST nominal metric. Uses jMotif library
@@ -63,11 +62,6 @@ public class MinDist implements DistanceMeasure {
         //  Attribute[] attributes = es.getAttributes().
         //   alphabetSize = (int)es.getExample(0).getNumericalValue(attribute[0]);
 //        System.out.println("alphabetSize: "+alphabetSize);
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -136,12 +130,13 @@ public class MinDist implements DistanceMeasure {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

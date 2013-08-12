@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 
 /**
  *
@@ -31,38 +30,24 @@ public class MinkowskiDistance extends SymmetricDistance {
     }
 
     @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += Math.pow(Math.abs(y.value(i) - x.value(i)), power);
+            sum += Math.pow(Math.abs(y.get(i) - x.get(i)), power);
         }
 
         return Math.pow(sum, 1 / power);
     }
 
     @Override
-    public double measure(Instance x, Instance y, double[] weights) {
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         if (x.size() != y.size() || x.size() != weights.length) {
             throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size() + ", weights size: " + weights.length);
         }
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += Math.pow(Math.abs(weights[i] * y.value(i) - weights[i] * x.value(i)), power);
-        }
-
-        return Math.pow(sum, 1 / power);
-    }
-
-    @Override
-    public double vector(DoubleVector x, DoubleVector y) {
-        if (x.size() != y.size()) {
-            throw new IllegalArgumentException("Both instances should contain the same "
-                    + "number of values. x= " + x.size() + " != " + y.size());
-        }
-        double sum = 0;
-        for (int i = 0; i < x.size(); i++) {
-            sum += Math.pow(Math.abs(y.get(i) - x.get(i)), power);
+            sum += Math.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
         }
 
         return Math.pow(sum, 1 / power);

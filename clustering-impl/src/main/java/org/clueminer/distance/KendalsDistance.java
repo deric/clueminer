@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -98,17 +97,17 @@ public class KendalsDistance extends AbstractDistance {
     }
 
     @Override
-    public double vector(DoubleVector A, DoubleVector B) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         double TINY = Double.MIN_VALUE;
-        int n = A.size();
+        int n = x.size();
         int n2 = 0;
         int n1 = 0;
         int is = 0;
         double aa, a2, a1;
         for (int j = 0; j < n - 1; j++) {               //Loop over rst member of pair,
             for (int k = (j + 1); k < n; k++) {         //and second member.
-                a1 = A.get(j) - A.get(k);
-                a2 = B.get(j) - B.get(k);
+                a1 = x.get(j) - x.get(k);
+                a2 = y.get(j) - y.get(k);
                 aa = a1 * a2;
                 if (aa != 0.0) {                    // Neither array has a tie.
                     ++n1;
@@ -132,6 +131,11 @@ public class KendalsDistance extends AbstractDistance {
     }
 
     @Override
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public float getSimilarityFactor() {
         return similarityFactor;
     }
@@ -144,16 +148,6 @@ public class KendalsDistance extends AbstractDistance {
     @Override
     public boolean useTreeHeight() {
         return true;
-    }
-
-    @Override
-    public double measure(Instance x, Instance y) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

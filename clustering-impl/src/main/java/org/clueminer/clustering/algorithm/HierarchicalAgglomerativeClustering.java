@@ -669,7 +669,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             for (int i = 0; i < m.rowsCount(); ++i) {
                 for (int j = i + 1; j < m.rowsCount(); ++j) {
                     //double similarity =  Similarity.getSimilarity(similarityFunction, m.getRowVector(i), m.getRowVector(j));
-                    similarityMatrix.set(i, j, dm.vector(m.getRowVector(i), m.getRowVector(j)));
+                    similarityMatrix.set(i, j, dm.measure(m.getRowVector(i), m.getRowVector(j)));
                 }
             }
         } else {
@@ -681,7 +681,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
                      * measure is not symmetrical, we have to compute distance
                      * from A to B and from B to A
                      */
-                    similarity = dm.vector(m.getRowVector(i), m.getRowVector(j));
+                    similarity = dm.measure(m.getRowVector(i), m.getRowVector(j));
                     similarityMatrix.set(i, j, similarity);
                     similarityMatrix.set(j, i, similarity);
                 }
@@ -704,7 +704,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             similarityMatrix = new SymmetricMatrix(m.columnsCount(), m.columnsCount());
             for (int i = 0; i < m.columnsCount(); ++i) {
                 for (int j = i + 1; j < m.columnsCount(); ++j) {
-                    similarityMatrix.set(i, j, dm.vector(m.getColumnVector(i), m.getColumnVector(j)));
+                    similarityMatrix.set(i, j, dm.measure(m.getColumnVector(i), m.getColumnVector(j)));
                 }
             }
         } else {
@@ -716,7 +716,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
                      * measure is not symmetrical, we have to compute distance
                      * from A to B and from B to A
                      */
-                    similarity = dm.vector(m.getColumnVector(i), m.getColumnVector(j));
+                    similarity = dm.measure(m.getColumnVector(i), m.getColumnVector(j));
                     similarityMatrix.set(i, j, similarity);
                     similarityMatrix.set(j, i, similarity);
                 }

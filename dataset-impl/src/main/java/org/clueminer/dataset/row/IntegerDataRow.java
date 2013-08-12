@@ -81,11 +81,12 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     }
 
     @Override
-    public Number getValue(int index) {
-        return value(index);
+    public Integer getValue(int index) {
+        return data[index];
     }
 
-    public double item(int index) {
+    @Override
+    public double get(int index) {
         return data[index];
     }
 
@@ -223,7 +224,7 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
         double m = 0;
         int length = size();
         for (int i = 0; i < length; ++i) {
-            double d = item(i);
+            double d = get(i);
             m += d * d;
         }
         return Math.sqrt(m);

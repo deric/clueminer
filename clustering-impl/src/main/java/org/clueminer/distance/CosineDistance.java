@@ -1,10 +1,9 @@
 package org.clueminer.distance;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.DoubleVector;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -110,31 +109,8 @@ public class CosineDistance extends SymmetricDistance {
      * @return
      */
     @Override
-    public double measure(Instance x, Instance y) {
+    public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
-        double sumTop = 0;
-        double sumOne = 0;
-        double sumTwo = 0;
-        for (int i = 0; i < x.size(); i++) {
-            sumTop += x.value(i) * y.value(i);
-            sumOne += x.value(i) * x.value(i);
-            sumTwo += y.value(i) * y.value(i);
-        }
-        double cosSim = sumTop / (Math.sqrt(sumOne) * Math.sqrt(sumTwo));
-        return (1 - cosSim);
-    }
-
-    @Override
-    public double measure(Instance x, Instance y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double vector(DoubleVector x, DoubleVector y) {
-        if (x.size() != y.size()) {
-            throw new RuntimeException("Both instances should contain the same "
-                    + "number of values. x= " + x.size() + " != " + y.size());
-        }
         double sumTop = 0;
         double sumOne = 0;
         double sumTwo = 0;
@@ -145,6 +121,11 @@ public class CosineDistance extends SymmetricDistance {
         }
         double cosSim = sumTop / (Math.sqrt(sumOne) * Math.sqrt(sumTwo));
         return (1 - cosSim);
+    }
+
+    @Override
+    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

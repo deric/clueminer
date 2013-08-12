@@ -124,6 +124,29 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     }
 
     @Override
+    public double get(int index) {
+        return data.get(index);
+    }
+
+    @Override
+    protected double getValue(int index, double defaultValue) {
+        if (data.containsKey(index)) {
+            return data.get(index);
+        } else {
+            return defaultValue;
+        }
+    }
+
+    @Override
+    protected void setValue(int index, double value, double defaultValue) {
+        if (value == Double.NaN) {
+            data.put(index, defaultValue);
+        } else {
+            data.put(index, value);
+        }
+    }
+
+    @Override
     public void set(int index, double value) {
         data.put(index, value);
         checkIndexInterval(index);
@@ -204,24 +227,6 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         out.setClassValue(this.classValue());
         return out;
 
-    }
-
-    @Override
-    protected double getValue(int index, double defaultValue) {
-        if (data.containsKey(index)) {
-            return data.get(index);
-        } else {
-            return defaultValue;
-        }
-    }
-
-    @Override
-    protected void setValue(int index, double value, double defaultValue) {
-        if (value == Double.NaN) {
-            data.put(index, defaultValue);
-        } else {
-            data.put(index, value);
-        }
     }
 
     @Override

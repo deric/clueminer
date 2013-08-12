@@ -68,6 +68,17 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         }
         return value(index);
     }
+    
+
+    @Override
+    public Float getValue(int index) {
+        return data[index];
+    }
+
+    @Override
+    public double get(int index) {
+        return data[index];
+    }
 
     /**
      * Add value to row and increment counter of last used value
@@ -162,12 +173,6 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-    @Override
-    public Number getValue(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public double magnitude() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -182,7 +187,6 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
     public Vector<Float> add(Vector<Float> other) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     class InstanceValueIterator implements Iterator<Float> {
 

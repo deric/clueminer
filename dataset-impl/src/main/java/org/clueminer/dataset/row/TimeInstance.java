@@ -87,6 +87,16 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
+    public E getValue(int index) {
+        return (E) data[index];
+    }
+
+    @Override
+    public double get(int index) {
+        return data[index].value;
+    }
+
+    @Override
     public E item(int index) {
         return (E) data[index];
     }
@@ -241,11 +251,6 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
             res[i] = String.valueOf(value(i));
         }
         return res;
-    }
-
-    @Override
-    public Number getValue(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
