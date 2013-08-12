@@ -226,6 +226,11 @@ public class HClustResult implements HierarchicalResult {
     public void setMerges(List<Merge> merges) {
         this.merges = merges;
     }
+
+    @Override
+    public Instance getInstance(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

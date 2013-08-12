@@ -280,4 +280,15 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     public void setMerges(List<Merge> merges) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * Return Instance at given position in dendrogram
+     *
+     * @param index either row or column index in dendrogram
+     * @return
+     */
+    @Override
+    public Instance getInstance(int index) {
+        return dataset.get(this.getMappedIndex(index));
+    }
 }

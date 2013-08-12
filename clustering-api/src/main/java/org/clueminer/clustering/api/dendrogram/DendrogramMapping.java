@@ -21,4 +21,16 @@ public interface DendrogramMapping {
      public Matrix getMatrix();
      
      public Dataset<? extends Instance> getInstances();
+     
+     /**
+      * 
+      * @return true when rows clustering is available
+      */
+     public boolean hasRowsClustering();
+     
+     /**
+      * 
+      * @return true when columns clustering is available
+      */
+     public boolean hasColumnsClustering();
 }
