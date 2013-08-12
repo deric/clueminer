@@ -31,15 +31,8 @@ public interface DoubleVector extends Vector<Double> {
      * @param index index to retrieve.
      * @return value at index.
      */
+    @Override
     public double get(int index);
-
-    /**
-     * Returns the value of the vector at the given index as a {@code Double}.
-     *
-     * @param {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    public Double getDouble(int index);
 
     /**
      * Sets the length in this vector (optional operation).
