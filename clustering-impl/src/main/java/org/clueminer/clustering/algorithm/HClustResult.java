@@ -23,8 +23,7 @@ public class HClustResult implements HierarchicalResult {
     private static final long serialVersionUID = -515379303769981129L;
     private Matrix proximity;
     private Matrix similarity;
-    private Matrix inputData;
-    private int[] assign;
+    private Matrix inputData;    
     private int[] mapping;
     private Assignments assignments;
     private int numClusters = -1;
@@ -64,18 +63,13 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public int[] getIntAssignments() {
-        return assign;
-    }
-
-    @Override
-    public void setIntAssignments(int[] assignments) {
-        this.assign = assignments;
+    public void setMapping(int[] assignments) {
+        this.mapping = assignments;
     }
 
     public Assignments getAssignments() {
         if (assignments == null) {
-            assignments = toAssignments(getIntAssignments(), getInputData(), getNumClusters());
+            assignments = toAssignments(getMapping(), getInputData(), getNumClusters());
         }
         return assignments;
     }
@@ -206,15 +200,10 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public int[] getMapping() {
         if (mapping == null) {
-           if(merges == null){
-               throw new RuntimeException("expecting precomputed dendrogram merges");
-           }
-           mapping = new int[merges.size()];
-           for(Merge m :merges){
-               //m.
-           }
-           throw new RuntimeException("not implemented yet");
+            throw new RuntimeException("Empty mapping");
         }
+        System.out.println("merges:"+ merges.toString());
+        
         return mapping;
     }
 
@@ -232,6 +221,4 @@ public class HClustResult implements HierarchicalResult {
     public Instance getInstance(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 }

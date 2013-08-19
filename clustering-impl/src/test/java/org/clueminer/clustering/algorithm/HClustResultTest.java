@@ -12,6 +12,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -110,7 +111,7 @@ public class HClustResultTest {
     }
 
     /**
-     * Test of setIntAssignments method, of class HClustResult.
+     * Test of setMapping method, of class HClustResult.
      */
     @Test
     public void testSetIntAssignments() {
@@ -283,7 +284,7 @@ public class HClustResultTest {
     @Test
     public void testGetMapping() {
         int[] mapping = rowsResult.getMapping();
-        
+        Dump.array(mapping, "mapping");
         //@TODO implement tests
     }
 

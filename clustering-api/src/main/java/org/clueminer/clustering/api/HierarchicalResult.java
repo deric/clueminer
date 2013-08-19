@@ -152,7 +152,6 @@ public interface HierarchicalResult extends Serializable {
     public void setMappedIndex(int pos, int idx);
 
     /**
-     * @deprecated inner structure should be hidden behind interface
      * @return indexes of items
      */
     public int[] getMapping();
@@ -165,9 +164,12 @@ public interface HierarchicalResult extends Serializable {
      */
     public Instance getInstance(int index);
 
-    public int[] getIntAssignments();
-
-    public void setIntAssignments(int[] assignments);
+    /**
+     * Sets order of items in dendrogram
+     *
+     * @param mapping
+     */
+    public void setMapping(int[] mapping);
 
     public void setInputData(Matrix inputData);
 

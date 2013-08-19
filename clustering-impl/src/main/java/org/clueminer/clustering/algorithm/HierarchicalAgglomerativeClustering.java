@@ -285,7 +285,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * start at 0 and increase.
      */
     public static int[] partitionRows(Matrix m, int numClusters, ClusterLinkage linkage, DistanceMeasure similarityFunction) {
-        return cluster(m, -1, linkage, similarityFunction, numClusters).getIntAssignments();
+        return cluster(m, -1, linkage, similarityFunction, numClusters).getMapping();
     }
 
     /**
@@ -308,7 +308,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      */
     @SuppressWarnings("unchecked")
     public static int[] clusterRows(Matrix m, double clusterSimilarityThreshold, ClusterLinkage linkage, DistanceMeasure similarityFunction) {
-        return cluster(m, clusterSimilarityThreshold, linkage, similarityFunction, -1).getIntAssignments();
+        return cluster(m, clusterSimilarityThreshold, linkage, similarityFunction, -1).getMapping();
     }
 
     /**
@@ -461,7 +461,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
                     mostSimilarToMergedId));
         }
         
-        result.setIntAssignments(toAssignArray(assignments, rows));
+        result.setMapping(toAssignArray(assignments, rows));
         
         return result;
     }
@@ -620,6 +620,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             // Decide whether this cluster has already been assigned by picking
             // out the first element in the cluster and seeing if it has the
             // dummy cluster value (-1)
+            System.out.println("cluster: "+cluster.toString());
             int r = cluster.iterator().next();
             if (clusters[r] != -1) {
                 continue;
