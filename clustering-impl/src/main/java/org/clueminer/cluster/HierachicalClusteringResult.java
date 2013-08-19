@@ -247,13 +247,8 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     }
 
     @Override
-    public int[] getIntAssignments() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setIntAssignments(int[] assignments) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setMapping(int[] assignments) {
+        this.itemsMapping = assignments;
     }
 
     @Override
