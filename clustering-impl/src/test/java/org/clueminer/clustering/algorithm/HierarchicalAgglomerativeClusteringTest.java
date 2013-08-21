@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.hclust.linkage.CompleteLinkage;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
@@ -124,7 +125,7 @@ public class HierarchicalAgglomerativeClusteringTest {
      */
     @Test
     public void testCluster_3args() {
-        ClusterLinkage linkage = new SingleLinkage(new EuclideanDistance());
+        ClusterLinkage linkage = new CompleteLinkage(new EuclideanDistance());
         alg.setLinkage(linkage);
         //Preferences pref = NbPreferences.forModule(HierarchicalAgglomerativeClustering.class);
         HierarchicalResult rowsResult = HierarchicalAgglomerativeClustering.clusterSimilarityMatrix(similarityMatrix, -1, linkage, -1);
