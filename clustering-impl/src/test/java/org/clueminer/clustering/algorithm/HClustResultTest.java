@@ -284,7 +284,28 @@ public class HClustResultTest {
     @Test
     public void testGetMapping() {
         int[] mapping = rowsResult.getMapping();
+        //number of leaves should be the same as number of rows in similarity matrix
+        assertEquals(rowsResult.getSimilarityMatrix().rowsCount(), mapping.length);
+
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        for (int i = 0; i < mapping.length; i++) {
+            if (mapping[i] < min) {
+                min = mapping[i];
+            }
+
+            if (mapping[i] > max) {
+                max = mapping[i];
+            }
+        }
+        //minimum value must be 0
+        assertEquals(0, min);
+        //all numbers of rows should be there
+        assertEquals(mapping.length - 1, max);
+
         Dump.array(mapping, "mapping");
+
         //@TODO implement tests
     }
 
