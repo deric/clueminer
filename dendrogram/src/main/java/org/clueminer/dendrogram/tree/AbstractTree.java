@@ -15,7 +15,7 @@ import org.clueminer.dendrogram.events.DendrogramDataListener;
 import org.clueminer.dendrogram.gui.DendrogramPanel;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.gui.ColorGenerator;
-import org.clueminer.hclust.TreeData;
+import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.utils.Dump;
 
 public abstract class AbstractTree extends JPanel implements DendrogramDataListener, DendrogramTree {
@@ -36,7 +36,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     private boolean fitToArea = false;
     // initial data
     // a result data
-    protected TreeData treeData;
+    protected TreeDataImpl treeData;
     // helpers
     protected int stepSize = 1;
     protected int[] pHeights;
@@ -77,7 +77,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         addMouseListener(new Listener());
     }
 
-    public void setTreeData(TreeData treeData) {
+    public void setTreeData(TreeDataImpl treeData) {
         this.treeData = treeData;
         function = treeData.getFunction();
         // helpers
@@ -115,7 +115,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         this.useAbsoluteHeight = useAbsoluteHeight;
     }
 
-    protected TreeData getTreeData() {
+    protected TreeDataImpl getTreeData() {
         return this.treeData;
     }
 

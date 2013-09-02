@@ -191,12 +191,18 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int getMappedIndex(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (mapping == null) {
+            throw new RuntimeException("Empty mapping");
+        }
+        return mapping[idx];
     }
 
     @Override
     public void setMappedIndex(int pos, int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (mapping == null) {
+            throw new RuntimeException("Empty mapping");
+        }
+        mapping[pos] = idx;
     }
 
     @Override
@@ -217,7 +223,7 @@ public class HClustResult implements HierarchicalResult {
             }
             //convert List<Integer> to int[]
             mapping = Ints.toArray(samples);
-        }else{
+        } else {
             throw new RuntimeException("empty merges!");
         }
 
