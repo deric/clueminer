@@ -87,7 +87,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         setSize(this.size);
         setPreferredSize(size);
     }
-    
+
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
         setDendrogramData(dataset);
@@ -139,7 +139,9 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     @Override
     public void setDendrogramData(DendrogramData dendroData) {
         this.dendroData = dendroData;
-        columnsOrder = dendroData.getColsResult().getMapping();
-        resetCache();
+        if (dendroData.hasColumnsClustering()) {
+            columnsOrder = dendroData.getColsResult().getMapping();
+            resetCache();
+        }
     }
 }
