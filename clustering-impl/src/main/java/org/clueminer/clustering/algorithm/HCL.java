@@ -8,7 +8,7 @@ import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.hclust.TreeData;
+import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.distance.EuclideanDistance;
@@ -73,7 +73,7 @@ public class HCL implements ClusteringAlgorithm {
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters map) {
         System.out.println(map.toString());
 
-        TreeData treeData = new TreeData(distance);
+        TreeDataImpl treeData = new TreeDataImpl(distance);
         result = new HierachicalClusteringResult(dataset);
 
         if (input == null) {

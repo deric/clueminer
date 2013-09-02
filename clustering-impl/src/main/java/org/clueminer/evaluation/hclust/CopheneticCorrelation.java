@@ -3,7 +3,7 @@ package org.clueminer.evaluation.hclust;
 import org.clueminer.cluster.HierachicalClusteringResult;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.hclust.TreeData;
+import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
 /**
  * It is a measure of how faithfully the tree represents the dissimilarities among observations
@@ -40,7 +40,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @param n
      * @return
      */
-    public double[][] getCopheneticMatrix(TreeData tree, int m, int n) {
+    public double[][] getCopheneticMatrix(TreeDataImpl tree, int m, int n) {
         int i;
         int idx;
         int left, right;
@@ -72,7 +72,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @param right
      * @param height
      */
-    private void countDistance(TreeData tree, double[][] cophenetic, int left, int right, double height) {
+    private void countDistance(TreeDataImpl tree, double[][] cophenetic, int left, int right, double height) {
         //System.out.println("left= " + left + ", height= " + height + ", right= " + right);
         if (!tree.isLeaf(left)) {
             //set same level for its children

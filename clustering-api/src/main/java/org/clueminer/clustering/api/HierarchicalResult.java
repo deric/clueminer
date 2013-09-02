@@ -3,6 +3,7 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.clueminer.clustering.api.dendrogram.TreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
@@ -38,6 +39,9 @@ public interface HierarchicalResult extends Serializable {
      * @return
      */
     public int[] getClusters(int terminalsNum);
+    
+    
+    public TreeData getTreeData();
 
     /**
      * Set dendrogram tree cut-off, which determines number of clusters

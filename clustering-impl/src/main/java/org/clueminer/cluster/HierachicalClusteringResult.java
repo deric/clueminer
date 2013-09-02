@@ -8,11 +8,11 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
+import org.clueminer.clustering.api.dendrogram.TreeData;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.NaiveCutoff;
-import org.clueminer.hclust.TreeData;
 import org.clueminer.math.Matrix;
 
 /**
@@ -48,6 +48,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         this.proximity = m;
     }
 
+    @Override
     public TreeData getTreeData() {
         return treeData;
     }

@@ -125,11 +125,19 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      */
     private int rowIndex(int row) {
         //return this.clusters[this.clusterIndex][row];
-        return dendroData.getRowsResult().getMappedIndex(row);
+        if(dendroData.hasRowsClustering()){
+            return dendroData.getRowsResult().getMappedIndex(row);
+        }
+        //no ordering
+        return row;
     }
 
     private int colIndex(int column) {
-        return dendroData.getColsResult().getMappedIndex(column);
+        if(dendroData.hasColumnsClustering()){
+            return dendroData.getColsResult().getMappedIndex(column);
+        }
+        //no columns ordering
+        return column;
     }
 
     /**
