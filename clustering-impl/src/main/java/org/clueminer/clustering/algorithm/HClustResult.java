@@ -1,5 +1,7 @@
 package org.clueminer.clustering.algorithm;
 
+import com.google.common.primitives.Ints;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.AssigmentsImpl;
@@ -204,7 +206,19 @@ public class HClustResult implements HierarchicalResult {
         }
 
         if (merges != null) {
-            System.out.println("merges:" + merges.toString());
+            //we need a guarantee of ordered items
+            LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
+            for (Merge m : getMerges()) {
+                samples.add(m.mergedCluster()); //this should be unique
+                if (!samples.contains(m.remainingCluster())) {
+                    //linked sample (on higher levels cluster is marked with lowest number in the cluster)
+                    samples.add(m.remainingCluster());
+                }
+            }
+            //convert List<Integer> to int[]
+            mapping = Ints.toArray(samples);
+        }else{
+            throw new RuntimeException("empty merges!");
         }
 
         return mapping;

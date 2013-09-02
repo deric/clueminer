@@ -128,13 +128,12 @@ public class HierarchicalAgglomerativeClusteringTest {
         ClusterLinkage linkage = new CompleteLinkage(new EuclideanDistance());
         alg.setLinkage(linkage);
         //Preferences pref = NbPreferences.forModule(HierarchicalAgglomerativeClustering.class);
-        HierarchicalResult rowsResult = HierarchicalAgglomerativeClustering.clusterSimilarityMatrix(similarityMatrix, -1, linkage, -1);
-        Dump.array(rowsResult.getMapping(), "assignments");
-
+        HierarchicalResult rowsResult = HierarchicalAgglomerativeClustering.clusterSimilarityMatrix(similarityMatrix, -1, linkage, -1);       
         DendrogramBuilder db = new DendrogramBuilder();
         List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), linkage);
-        rowsResult.setMerges(merges);
+        rowsResult.setMerges(merges);        
         System.out.println("merges " + merges.toString());
+        Dump.array(rowsResult.getMapping(), "assignments");
 
 //        res.get
         //res.get

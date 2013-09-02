@@ -28,7 +28,7 @@ public class DendrogramBuilder {
     private static final Logger LOGGER = Logger.getLogger(DendrogramBuilder.class.getName());
 
     /**
-     * Builds a dendrogram of the rows of similarity matrix by iteratelyve
+     * Builds a dendrogram of the rows of similarity matrix by iteratively
      * linking each row according to the linkage policy in a bottom up manner.
      * The dendrogram is represented as a series of merge steps for the rows of
      * the similarity matrix, where each row is initially assigned to its own
@@ -110,7 +110,7 @@ public class DendrogramBuilder {
         // Create the initial set of clusters where each row is originally in
         // its own cluster
         final Map<Integer, Set<Integer>> clusterAssignment = HierarchicalAgglomerativeClustering.generateInitialAssignment(rows);
-
+        System.out.println("assignments: "+clusterAssignment.toString());
         LOGGER.log(Level.INFO, "Calculating initial inter-cluster similarity using {0}", linkage);
         // Generate the initial set of cluster pairings based on the highest
         // similarity.  This mapping will be update as the number of clusters
@@ -129,7 +129,7 @@ public class DendrogramBuilder {
 
         // Perform rows-1 merges to merge all elements
         for (int mergeIter = 0; mergeIter < rows - 1; ++mergeIter) {
-            LOGGER.log(Level.FINER, "Computing dendogram merge{0}/{1}", new Object[]{mergeIter, rows - 1});
+            //LOGGER.log(Level.FINER, "Computing dendogram merge{0}/{1}", new Object[]{mergeIter, rows - 1});
 
             // Find the two clusters that have the highest similarity
             int cluster1index = 0;
