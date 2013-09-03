@@ -12,9 +12,16 @@ public interface TreeData {
      * @return number of tree leaves
      */
     public int numLeaves();
-    
+
     /**
-     * 
+     * Total number of tree nodes including leaves.
+     *
+     * @return
+     */
+    public int numNodes();
+
+    /**
+     *
      * @return number of levels in tree
      */
     public int treeLevels();

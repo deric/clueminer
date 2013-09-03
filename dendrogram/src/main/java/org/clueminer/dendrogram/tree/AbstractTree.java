@@ -90,7 +90,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         //this.minHeight = getMinHeight(treeData.order, treeData.height);
         //this.maxHeight = getMaxHeight(treeData.order, treeData.height);
         this.zero_threshold = minHeight;
-        this.terminalNodes = new boolean[this.treeData.nodesNumber()];
+        this.terminalNodes = new boolean[this.treeData.numLeaves()];
 
         initializeParentNodeArray();
         //Dump.array(parentNodes, "parents ");
@@ -120,7 +120,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     }
 
     private void initializeParentNodeArray() {
-        parentNodes = new int[this.treeData.nodesNumber()];
+        parentNodes = new int[this.treeData.numLeaves()];
 
         for (int i = 0; i < this.treeData.getOrderLength(); i++) {
             if (this.treeData.getOrder(i) != -1) {
@@ -131,12 +131,12 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
 
     private int findParent(int index) {
         int node = this.treeData.getOrder(index);
-        for (int i = 0; i < this.treeData.nodesNumber(); i++) {
+        for (int i = 0; i < this.treeData.numLeaves(); i++) {
             if (this.treeData.getLeft(i) == node) {
                 return i;
             }
         }
-        for (int i = 0; i < this.treeData.nodesNumber(); i++) {
+        for (int i = 0; i < this.treeData.numLeaves(); i++) {
             if (this.treeData.getRight(i) == node) {
                 return i;
             }
@@ -222,7 +222,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
 //     */
 //    private float findMinDistance(){
 //        float min = Float.POSITIVE_INFINITY;
-//        for(int i = 0; i < treeData.nodesNumber();i++){
+//        for(int i = 0; i < treeData.numLeaves();i++){
 //            min = Math.min(min, treeData.height[i]);
 //        }
 //        return min;

@@ -48,7 +48,6 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         this.proximity = m;
     }
 
-    @Override
     public TreeData getTreeData() {
         return treeData;
     }
