@@ -150,6 +150,7 @@ public class TreeDataImpl implements Serializable, TreeData {
      *
      * @return int
      */
+    @Override
     public int treeLevels() {
         return order.length - 1;
     }
@@ -159,7 +160,8 @@ public class TreeDataImpl implements Serializable, TreeData {
      * 
      * @return 
      */
-    public int nodesNumber(){
+    @Override
+    public int numLeaves(){
         return height.length;
     }
 
