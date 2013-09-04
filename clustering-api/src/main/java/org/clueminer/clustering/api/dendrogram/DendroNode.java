@@ -57,4 +57,10 @@ public interface DendroNode {
     public DendroNode getParent();
 
     public void setParent(DendroNode parent);
+    
+    /**
+     * 
+     * @return number of children
+     */
+    public int childCnt();
 }
