@@ -70,7 +70,7 @@ public class VerticalTree extends AbstractTree {
         /*
          * if (flatTree || this.stepSize == elementSize.height) { return; }
          */
-        int length = (this.treeData == null ? 0 : this.treeData.getOrderLength());
+        int length = (this.treeData == null ? 0 : treeData.treeLevels());
         this.stepSize = this.elementSize.height;
         setOffsetY(-elementSize.height / 2);
         int height = this.stepSize * length;
@@ -84,8 +84,8 @@ public class VerticalTree extends AbstractTree {
         ys[1] = (int) (this.positions[k] * this.stepSize) + this.stepSize / 2;
         ys[2] = (int) (this.positions[k1] * this.stepSize) + this.stepSize / 2;
         xs[0] = x1;
-        xs[1] = this.pHeights[treeData.getOrder(treeData.getOrderLength() - 2)];
-        xs[2] = this.pHeights[treeData.getOrder(treeData.getOrderLength() - 2)];
+        xs[1] = this.pHeights[treeData.getOrder(treeData.treeLevels())];
+        xs[2] = this.pHeights[treeData.getOrder(treeData.treeLevels())];
     }
 
     @Override

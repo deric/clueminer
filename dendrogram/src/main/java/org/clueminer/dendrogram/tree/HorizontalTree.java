@@ -72,7 +72,7 @@ public class HorizontalTree extends AbstractTree {
         this.stepSize = elementSize.width;
         //move the tree branch to middle of cell
         setOffsetX(-elementSize.width / 2);
-        int width = stepSize * this.treeData.getOrderLength();
+        int width = stepSize * treeData.treeLevels();
         int height = getMaxDistance();//for scale
         //System.out.println("row tree width= "+width+", height= "+height);
         setSizes(width, height);
@@ -84,8 +84,8 @@ public class HorizontalTree extends AbstractTree {
         ys[1] = (int) (this.positions[k] * this.stepSize) + this.stepSize / 2;
         ys[2] = (int) (this.positions[k1] * this.stepSize) + this.stepSize / 2;
         xs[0] = x1;
-        xs[1] = -1 * this.pHeights[treeData.getOrder(treeData.getOrderLength() - 2)];
-        xs[2] = -1 * this.pHeights[treeData.getOrder(treeData.getOrderLength() - 2)];
+        xs[1] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels())];
+        xs[2] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels())];
     }
 
     @Override

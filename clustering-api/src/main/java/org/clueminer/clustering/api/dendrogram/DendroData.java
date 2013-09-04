@@ -4,7 +4,7 @@ package org.clueminer.clustering.api.dendrogram;
  *
  * @author Tomas Barton
  */
-public interface TreeData {
+public interface DendroData {
 
     /**
      * Return number of terminal nodes (leaves)
@@ -25,4 +25,10 @@ public interface TreeData {
      * @return number of levels in tree
      */
     public int treeLevels();
+    
+    /**
+     * 
+     * @return tree node
+     */
+    public DendroNode getRoot();
 }
