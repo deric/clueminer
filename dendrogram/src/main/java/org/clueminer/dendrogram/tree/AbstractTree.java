@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.dendrogram.DendroData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
@@ -36,7 +37,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     private boolean fitToArea = false;
     // initial data
     // a result data
-    protected TreeDataImpl treeData;
+    protected DendroData treeData;
     // helpers
     protected int stepSize = 1;
     protected int[] pHeights;
@@ -77,7 +78,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         addMouseListener(new Listener());
     }
 
-    public void setTreeData(TreeDataImpl treeData) {
+    public void setTreeData(DendroData treeData) {
         this.treeData = treeData;
         function = treeData.getFunction();
         // helpers

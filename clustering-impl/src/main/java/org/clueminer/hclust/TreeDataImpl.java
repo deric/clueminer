@@ -2,7 +2,7 @@ package org.clueminer.hclust;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import org.clueminer.clustering.api.dendrogram.TreeData;
+import org.clueminer.clustering.api.dendrogram.DendroData;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Dump;
 
@@ -25,7 +25,7 @@ import org.clueminer.utils.Dump;
  * 
  */
 
-public class TreeDataImpl implements Serializable, TreeData {
+public class TreeDataImpl implements Serializable, DendroData {
 
     private static final long serialVersionUID = -3984381476142130357L;
     private int[] left;
