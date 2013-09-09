@@ -44,7 +44,7 @@ public class DatasetTransformation {
                 instance.setId(input.getId());
                 instance.setAncestor(input);
                 output.add(instance);
-            }
+            }            
             for (Approximator a : approx) {
                 coefficients = new HashMap<String, Double>();
                 a.estimate(xAxis, input, coefficients);
@@ -88,8 +88,8 @@ public class DatasetTransformation {
                 for (String attribute : attrs) {
                     output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
                 }
-            }
-            for (int i = 0; i < dataset.size(); i++) {
+            }            
+            for (int i = 0; i < dataset.size(); i++) {                
                 item = dataset.instance(i);
                 approximate(i, xAxis, item, output, approx);
                 //output
