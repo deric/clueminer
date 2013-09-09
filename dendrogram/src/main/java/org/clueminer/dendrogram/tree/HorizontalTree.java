@@ -84,8 +84,8 @@ public class HorizontalTree extends AbstractTree {
         ys[1] = (int) (this.positions[k] * this.stepSize) + this.stepSize / 2;
         ys[2] = (int) (this.positions[k1] * this.stepSize) + this.stepSize / 2;
         xs[0] = x1;
-        xs[1] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels())];
-        xs[2] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels())];
+        xs[1] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels() - 1)];
+        xs[2] = -1 * this.pHeights[treeData.getOrder(treeData.treeLevels() - 1)];
     }
 
     @Override

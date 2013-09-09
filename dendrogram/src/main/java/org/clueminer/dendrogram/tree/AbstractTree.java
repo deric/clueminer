@@ -37,7 +37,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     private boolean fitToArea = false;
     // initial data
     // a result data
-    protected DendroData treeData;
+    protected TreeDataImpl treeData;
     // helpers
     protected int stepSize = 1;
     protected int[] pHeights;
@@ -78,7 +78,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         addMouseListener(new Listener());
     }
 
-    public void setTreeData(DendroData treeData) {
+    public void setTreeData(TreeDataImpl treeData) {
         this.treeData = treeData;
         function = treeData.getFunction();
         // helpers
@@ -116,7 +116,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         this.useAbsoluteHeight = useAbsoluteHeight;
     }
 
-    protected TreeDataImpl getTreeData() {
+    protected DendroData getTreeData() {
         return this.treeData;
     }
 
@@ -484,7 +484,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
             // System.out.println("color "+this.nodesColors[node]);
             if (this.nodesColors[node] == null) {
 
-                if (this.treeData.getHeight(node) >= zero_threshold) {
+                if (treeData.getHeight(node) >= zero_threshold) {
                     ///   System.out.println("tr height= "+this.treeData.height[node] );
                     g2.setColor(lineColor);
                     this.terminalNodes[node] = false;
@@ -497,7 +497,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
                 } else {
                     g2.setColor(belowThrColor);
                     this.terminalNodes[node] = false;
-                    if (this.treeData.getHeight(parentNodes[node]) >= zero_threshold) {
+                    if (treeData.getHeight(parentNodes[node]) >= zero_threshold) {
                         drawWedge(g2, node, child_1_x1, child_2_x1, child_1_y, child_2_y);
                         this.terminalNodes[node] = true;
                         this.terminalNodes[child_1] = false;
@@ -506,7 +506,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
                 }
             } else {
                 g2.setColor(this.nodesColors[node]);
-                if (this.treeData.getHeight(node) >= zero_threshold) {
+                if (treeData.getHeight(node) >= zero_threshold) {
                     //  g.setColor(lineColor);
                     this.terminalNodes[node] = false;
                     if (this.pHeights[child_1] == 0) {

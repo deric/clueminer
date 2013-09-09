@@ -8,11 +8,11 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
-import org.clueminer.clustering.api.dendrogram.DendroData;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.NaiveCutoff;
+import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
 
 /**
@@ -24,7 +24,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;
     private Matrix similarity;
-    private DendroData treeData;
+    private TreeDataImpl treeData;
     private Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private CutoffStrategy cutoff = new NaiveCutoff();
     private int[] itemsMapping;
@@ -48,11 +48,11 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         this.proximity = m;
     }
 
-    public DendroData getTreeData() {
+    public TreeDataImpl getTreeData() {
         return treeData;
     }
 
-    public void setTreeData(DendroData tree) {
+    public void setTreeData(TreeDataImpl tree) {
         this.treeData = tree;
         createDefaultMapping();
     }
