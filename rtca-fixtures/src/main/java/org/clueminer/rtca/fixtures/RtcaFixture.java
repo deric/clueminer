@@ -1,7 +1,8 @@
-package org.clueminer.fixtures;
+package org.clueminer.rtca.fixtures;
 
 import java.io.File;
 import java.io.IOException;
+import org.clueminer.fixtures.AbstractFixture;
 
 /**
  *
@@ -35,5 +36,9 @@ public class RtcaFixture  extends AbstractFixture {
 
     public File sdfTest() throws IOException {
         return resource("RTCA/plate.sdf");
+    }
+    
+    public File rtcaHts() throws IOException {
+        return resource("RTCA/1309051100HT1_A113710.plt");
     }
 }
