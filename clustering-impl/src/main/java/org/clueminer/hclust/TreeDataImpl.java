@@ -3,6 +3,7 @@ package org.clueminer.hclust;
 import java.io.Serializable;
 import java.util.Arrays;
 import org.clueminer.clustering.api.dendrogram.DendroData;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Dump;
 
@@ -195,7 +196,7 @@ public class TreeDataImpl implements Serializable, DendroData {
      * 
      * @return node's idx
      */
-    public int getRoot(){
+    public int getIntRoot(){
         return order[order.length - 2];
     }
     
@@ -233,14 +234,14 @@ public class TreeDataImpl implements Serializable, DendroData {
     public void formClusters(int nodesNum) {
        // int nodesNum = getNumberOfTerminalNodes(0.00001);
         clusters = new int[nodesNum];
-        findClusters(getRoot(), -1);
+        findClusters(getIntRoot(), -1);
     }
     
     public void formClusters() {
         int nodesNum = getNumberOfTerminalNodes(0.00001);
         clusters = new int[nodesNum];
         //System.out.println("expected nodes number "+nodesNum);
-        findClusters(getRoot(), -1);
+        findClusters(getIntRoot(), -1);
         //Dump.array(clusters, "result clusters");
     }
     
@@ -449,5 +450,15 @@ public class TreeDataImpl implements Serializable, DendroData {
 
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public int numNodes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DendroNode getRoot() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
