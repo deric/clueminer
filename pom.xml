@@ -105,7 +105,8 @@
         <module>clustering-benchmark</module>
         <module>dataset-benchmark</module>
         <module>posturomed</module>
-    </modules>
+    <module>rtca-fixtures</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>

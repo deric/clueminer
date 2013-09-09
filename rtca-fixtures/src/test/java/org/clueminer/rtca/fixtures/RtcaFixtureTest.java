@@ -1,5 +1,6 @@
-package org.clueminer.fixtures;
+package org.clueminer.rtca.fixtures;
 
+import org.clueminer.rtca.fixtures.RtcaFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,6 +53,7 @@ public class RtcaFixtureTest {
      */
     @Test
     public void testRtcaTextFile() throws Exception {
+        assertTrue(instance.rtcaTextFile().exists());
     }
 
     /**
@@ -59,5 +61,14 @@ public class RtcaFixtureTest {
      */
     @Test
     public void testSdfTest() throws Exception {
+        assertTrue(instance.sdfTest().exists());
+    }
+
+    /**
+     * Test of rtcaHts method, of class RtcaFixture.
+     */
+    @Test
+    public void testRtcaHts() throws Exception {
+        assertTrue(instance.rtcaHts().exists());
     }
 }

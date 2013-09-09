@@ -16,7 +16,7 @@ public class PosturomedFixture  extends AbstractFixture {
     }
 
     public File testData() throws IOException {        
-        return resource(folder + "HG01-VrbovaMartina.PSS");
+        return resource(folder + "HG01.PSS");
     }
 }
 
