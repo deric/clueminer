@@ -84,7 +84,8 @@ public class XCalibourFileOpenerTest {
      */
     @Test
     public void testGetExtension() throws IOException {
-        //in this test we use file extracted from a jar file
-        assertEquals("tmp", test.getExtension(fixture.testData().getPath()));
+        String ext = test.getExtension(fixture.testData().getPath());
+        //in this test we use file extracted from a jar file or loaded from disk
+        assertTrue(ext.equals("tmp") || ext.equals("cdf") );
     }
 }
