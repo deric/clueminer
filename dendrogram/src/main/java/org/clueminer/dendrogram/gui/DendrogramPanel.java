@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.dendrogram.DendrogramViewer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import javax.swing.Box;
@@ -8,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.dendrogram.DendroHeatmap;
 import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
@@ -63,7 +65,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     public DendrogramPanel(DendrogramViewer v) {
         size = new Dimension(10, 10);
         dendroViewer = v;
-        elementSize = v.elementSize;
+        elementSize = v.getElementSize();
         initComponents();
         updateLayout();
     }
@@ -563,5 +565,10 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     @Override
     public String formatNumber(Object number) {
         return decimalFormat.format(number);
+    }
+    
+    @Override
+    public DendroHeatmap getHeatmap() {
+        return heatmap;
     }
 }
