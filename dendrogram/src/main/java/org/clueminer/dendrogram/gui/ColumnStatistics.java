@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -27,7 +28,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     private int[] columnsOrder;
     private boolean isAntiAliasing = true;
     protected Dimension elementSize;
-    private DendrogramPanel panel;
+    private DendroPane panel;
     private int maxHeight;
     protected Dimension size = new Dimension(1, 1);
     private BufferedImage bufferedImage;
@@ -40,9 +41,9 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     private int lineSpacing = 2;
     private int fontSize = 10;
 
-    public ColumnStatistics(DendrogramPanel p) {
+    public ColumnStatistics(DendroPane p) {
         this.panel = p;
-        this.elementSize = panel.elementSize;
+        this.elementSize = panel.getElementSize();
         setBackground(Color.PINK);
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
     }
@@ -87,13 +88,13 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
             for (int col = 0; col < dataset.getNumberOfColumns(); col++) {
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
                 Attribute a = data.getAttribute(this.columnsOrder[col]);
-                String s = panel.decimalFormat.format(a.statistics(AttrNumStats.MIN));
+                String s = panel.formatNumber(a.statistics(AttrNumStats.MIN));
                 drawString(col, frc, s, coordX, 1);
-                s = panel.decimalFormat.format(a.statistics(AttrNumStats.MAX));
+                s = panel.formatNumber(a.statistics(AttrNumStats.MAX));
                 drawString(col, frc, s, coordX, 2);
-                s = panel.decimalFormat.format(a.statistics(AttrNumStats.AVG));
+                s = panel.formatNumber(a.statistics(AttrNumStats.AVG));
                 drawString(col, frc, s, coordX, 3);
-                s = panel.decimalFormat.format(a.statistics(AttrNumStats.STD_DEV));
+                s = panel.formatNumber(a.statistics(AttrNumStats.STD_DEV));
                 drawString(col, frc, s, coordX, 4);
             }
 

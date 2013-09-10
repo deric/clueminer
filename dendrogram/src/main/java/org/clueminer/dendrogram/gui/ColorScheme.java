@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import org.clueminer.dendrogram.DendroPane;
 
 /**
  *
@@ -15,9 +16,9 @@ public class ColorScheme {
     private BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private DendrogramPanel panel;
+    private DendroPane panel;
     
-    public ColorScheme(DendrogramPanel p){
+    public ColorScheme(DendroPane p){
         panel = p;
     }
 
@@ -40,23 +41,23 @@ public class ColorScheme {
 
         double maximum;
         int colorIndex, rgb;
-        if (panel.useDoubleGradient) {
-            maximum = value < panel.dendroData.getMidValue() ? panel.dendroData.getMinValue() : panel.dendroData.getMaxValue();
-            colorIndex = (int) (255 * (value - panel.dendroData.getMidValue()) / (maximum - panel.dendroData.getMidValue()));
+        if (panel.useDoubleGradient()) {
+            maximum = value < panel.getDendrogramData().getMidValue() ? panel.getDendrogramData().getMinValue() : panel.getDendrogramData().getMaxValue();
+            colorIndex = (int) (255 * (value - panel.getDendrogramData().getMidValue()) / (maximum - panel.getDendrogramData().getMidValue()));
             if (colorIndex < 0) {
                 colorIndex = -colorIndex;
             }
             colorIndex = colorIndex > 255 ? 255 : colorIndex;
-            rgb = value < panel.dendroData.getMidValue() ? negColorImage.getRGB(255 - colorIndex, 0)
+            rgb = value < panel.getDendrogramData().getMidValue() ? negColorImage.getRGB(255 - colorIndex, 0)
                     : posColorImage.getRGB(colorIndex, 0);
         } else {
-            double span = panel.dendroData.getMaxValue() - panel.dendroData.getMinValue();
-            if (value <= panel.dendroData.getMinValue()) {
+            double span = panel.getDendrogramData().getMaxValue() - panel.getDendrogramData().getMinValue();
+            if (value <= panel.getDendrogramData().getMinValue()) {
                 colorIndex = 0;
-            } else if (value >= panel.dendroData.getMaxValue()) {
+            } else if (value >= panel.getDendrogramData().getMaxValue()) {
                 colorIndex = 255;
             } else {
-                colorIndex = (int) (((value - panel.dendroData.getMinValue()) / span) * 255);
+                colorIndex = (int) (((value - panel.getDendrogramData().getMinValue()) / span) * 255);
             }
             rgb = posColorImage.getRGB(colorIndex, 0);
         }
