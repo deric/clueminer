@@ -135,6 +135,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.dendrogram.*</publicPackage>
+                        <publicPackage>org.clueminer.dgram</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.dendrogram.DendrogramViewer;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

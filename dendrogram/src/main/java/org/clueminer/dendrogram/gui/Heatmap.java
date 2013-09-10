@@ -15,6 +15,7 @@ import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dendrogram.DendroHeatmap;
 import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
@@ -27,7 +28,7 @@ import org.clueminer.dendrogram.tree.VerticalTree;
  *
  * @author Tomas Barton
  */
-public class Heatmap extends JPanel implements DendrogramDataListener, TreeListener {
+public class Heatmap extends JPanel implements DendrogramDataListener, TreeListener, DendroHeatmap {
 
     private static final long serialVersionUID = -676917065082387341L;
     private Dataset<? extends Instance> data;
@@ -222,7 +223,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      * This function should be called whenever the dendroData or the gradient
      * changes.
      */
-    protected void drawData() {
+    @Override
+    public void drawData() {
         this.setOpaque(true);
         //if we don't have any dendroData, ends here
         if (dendroData == null) {
