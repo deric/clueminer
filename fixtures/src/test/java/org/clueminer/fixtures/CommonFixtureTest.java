@@ -118,9 +118,14 @@ public class CommonFixtureTest {
     public void testSonarArff() throws Exception {
         assertTrue(instance.sonarArff().exists());
     }
-    
+
     @Test
     public void testDermatologyArff() throws Exception {
         assertTrue(instance.dermatologyArff().exists());
+    }
+
+    @Test
+    public void testSchoolData() throws Exception {
+        assertTrue(instance.schoolData().exists());
     }
 }
