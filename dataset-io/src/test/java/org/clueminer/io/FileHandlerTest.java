@@ -1,5 +1,9 @@
 package org.clueminer.io;
 
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -12,22 +16,22 @@ import static org.junit.Assert.*;
  * @author deric
  */
 public class FileHandlerTest {
-    
+
     public FileHandlerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -58,6 +62,12 @@ public class FileHandlerTest {
      */
     @Test
     public void testLoadDataset_4args() throws Exception {
+        CommonFixture tf = new CommonFixture();
+        Dataset<Instance> data = new SampleDataset();
+
+        FileHandler.loadDataset(tf.schoolData(), data, 4, " ");
+        assertEquals(4, data.attributeCount());
+        assertEquals(17, data.size());
     }
 
     /**

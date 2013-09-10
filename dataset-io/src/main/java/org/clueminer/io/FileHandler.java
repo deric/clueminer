@@ -16,10 +16,6 @@ import org.clueminer.dataset.api.Instance;
  * no labels, then all columns should be double values.
  *
  *
- * @see net.sf.javaml.core.Dataset
- * @see net.sf.javaml.core.Instance
- *
- *
  * @author Thomas Abeel
  *
  */
