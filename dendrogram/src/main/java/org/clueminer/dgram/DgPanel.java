@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.dendrogram.DendroHeatmap;
 import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
@@ -25,7 +26,7 @@ import org.clueminer.dendrogram.gui.ColumnAnnotation;
 import org.clueminer.dendrogram.gui.ColumnStatistics;
 import org.clueminer.dendrogram.gui.CutoffLine;
 import org.clueminer.dendrogram.gui.CutoffSlider;
-import org.clueminer.dendrogram.gui.DendrogramViewer;
+import org.clueminer.dendrogram.DendrogramViewer;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dendrogram.gui.Legend;
 import org.clueminer.dendrogram.gui.RowAnnotation;
@@ -585,5 +586,10 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     @Override
     public String formatNumber(Object number) {
         return decimalFormat.format(number);
+    }
+
+    @Override
+    public DendroHeatmap getHeatmap() {
+        return heatmap;
     }
 }
