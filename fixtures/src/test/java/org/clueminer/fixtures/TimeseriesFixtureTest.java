@@ -38,18 +38,11 @@ public class TimeseriesFixtureTest {
 
 
     /**
-     * Test of saxTimeseries method, of class TestFixture.
-     */
-    @Test
-    public void testSaxTimeseries() throws Exception {
-        assertTrue(new File(instance.saxTimeseries("timeseries01")).exists());
-    }
-
-    /**
      * Test of data01 method, of class TimeseriesFixture.
      */
     @Test
     public void testData01() throws Exception {
+        assertTrue(instance.data01().exists());
     }
 
     /**
@@ -57,5 +50,14 @@ public class TimeseriesFixtureTest {
      */
     @Test
     public void testData02() throws Exception {
+        assertTrue(instance.data02().exists());
+    }
+
+    /**
+     * Test of irBenzin method, of class TimeseriesFixture.
+     */
+    @Test
+    public void testIrBenzin() throws Exception {
+         assertTrue(instance.irBenzin().exists());
     }
 }
