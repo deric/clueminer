@@ -14,7 +14,7 @@ public interface DendroPane {
     public DendrogramData getDendrogramData();
 
     public boolean useDoubleGradient();
-    
+
     public boolean isAntiAliasing();
 
     /**
@@ -42,7 +42,13 @@ public interface DendroPane {
      * @param clust
      */
     public void fireClusteringChanged(Clustering clust);
-    
-    
+
     public String formatNumber(Object number);
+
+    /**
+     * Heatmap is a visualization of data
+     *
+     * @return heatmap
+     */
+    public DendroHeatmap getHeatmap();
 }
