@@ -93,9 +93,7 @@ public class ColorSchemeTest {
     /**
      * Test of countMedian method, of class ColorScheme.
      *
-     * @FIXME doesn't work on trais nor jenkins (without X server)
      */
-    //@Test
     public void testCountMedian() {
         ColorScheme cs = new ColorScheme();
         assertEquals(0.0, cs.countMedian(-10, 10), delta);
