@@ -3,10 +3,10 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
-import org.clueminer.dendrogram.gui.DendrogramPanel;
 
 /**
  *
@@ -16,7 +16,7 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
 
     private static final long serialVersionUID = 7372573252024305540L;
 
-    public HorizontalScale(HorizontalTree tree, DendrogramPanel panel) {
+    public HorizontalScale(HorizontalTree tree, DendroPane panel) {
         super(panel);
         this.tree = tree;
     }

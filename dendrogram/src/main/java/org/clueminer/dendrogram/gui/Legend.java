@@ -5,6 +5,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -17,14 +18,14 @@ public class Legend extends JPanel implements DendrogramDataListener {
     
     private static final long serialVersionUID = 5461063176271490884L;
     private Insets insets = new Insets(10, 10, 10, 0);
-    private DendrogramPanel panel;
+    private DendroPane panel;
     private int colorBarWidth = 30;
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     
-    public Legend(DendrogramPanel p) {
+    public Legend(DendroPane p) {
         this.panel = p;
-        this.setBackground(panel.bg);
+        this.setBackground(panel.getBackground());
         setDoubleBuffered(false);
         
         this.addComponentListener(new ComponentListener() {
@@ -77,7 +78,7 @@ public class Legend extends JPanel implements DendrogramDataListener {
         //draws box with colors
         for (int y = 2; y < colorBarHeight; y++) {
             yStart = colorBarHeight - y;
-            bufferedGraphics.setColor(panel.colorScheme.getColor(value));
+            bufferedGraphics.setColor(panel.getScheme().getColor(value));
             value -= inc;
             bufferedGraphics.fillRect(1, yStart, colorBarWidth - 2, 1);
         }
@@ -88,13 +89,13 @@ public class Legend extends JPanel implements DendrogramDataListener {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         
-        if (panel.dendroData == null) {
+        if (panel.getDendrogramData() == null) {
             return;
         }
         
-        double min = panel.dendroData.getMinValue();
-        double max = panel.dendroData.getMaxValue();
-        double mid = panel.dendroData.getMidValue();
+        double min = panel.getDendrogramData().getMinValue();
+        double max = panel.getDendrogramData().getMaxValue();
+        double mid = panel.getDendrogramData().getMidValue();
         int colorBarHeight = this.getHeight() - insets.bottom - insets.top;
         if (colorBarHeight < 10) {
             //default height which is not bellow zero
@@ -111,7 +112,7 @@ public class Legend extends JPanel implements DendrogramDataListener {
                 null);
         
         
-        if (panel.isAntiAliasing) {
+        if (panel.isAntiAliasing()) {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
@@ -123,14 +124,14 @@ public class Legend extends JPanel implements DendrogramDataListener {
         g2d.setColor(Color.black);
         int textWidth;
         int spaceBetweenBarAndLabels = 5;
-        String strMin = String.valueOf(panel.decimalFormat.format(min));
+        String strMin = String.valueOf(panel.formatNumber(min));
         textWidth = hfm.stringWidth(strMin); //usually longest string FIXME for smartest string width detection
         g2d.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
         
-        String strMid = String.valueOf(panel.decimalFormat.format(mid));
+        String strMid = String.valueOf(panel.formatNumber(mid));
         //textWidth = hfm.stringWidth(strMid);
         g2d.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
-        String strMax = String.valueOf(panel.decimalFormat.format(max));
+        String strMax = String.valueOf(panel.formatNumber(max));
         //textWidth = hfm.stringWidth(strMax);
         g2d.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
         

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 
 /**
@@ -17,7 +18,7 @@ import org.clueminer.dendrogram.DendrogramData;
 public abstract class AbstractAnnotation extends JPanel {
 
     private static final long serialVersionUID = 7226708070899572712L;
-    protected DendrogramPanel panel;
+    protected DendroPane panel;
     protected boolean isAntiAliasing = true;
     protected boolean visible = true;
     protected Dimension elementSize;
@@ -29,10 +30,10 @@ public abstract class AbstractAnnotation extends JPanel {
     protected int lineHeight = 12;
     protected int fontSize = 10;
 
-    public AbstractAnnotation(DendrogramPanel p) {
+    public AbstractAnnotation(DendroPane p) {
         this.panel = p;
-        this.elementSize = panel.elementSize;
-        setBackground(panel.bg);
+        this.elementSize = panel.getElementSize();
+        setBackground(panel.getBackground());
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
     }
 
@@ -44,7 +45,7 @@ public abstract class AbstractAnnotation extends JPanel {
         g = bufferedImage.createGraphics();
         this.setOpaque(false);
         // clear the panel
-        g.setColor(panel.bg);
+        g.setColor(panel.getBackground());
         g.fillRect(0, 0, size.width, size.height);
 
         g.setComposite(AlphaComposite.Src);
@@ -116,4 +117,9 @@ public abstract class AbstractAnnotation extends JPanel {
     }
     
     protected abstract void updateSize();
+    
+    
+    public Dimension getDimension(){
+        return size;
+    }
 }
