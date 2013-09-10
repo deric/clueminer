@@ -3,4 +3,4 @@ jdk:
   - oraclejdk7
   - openjdk7
 env:
-  - DISPLAY=:0.0
+  - DISPLAY=:0
