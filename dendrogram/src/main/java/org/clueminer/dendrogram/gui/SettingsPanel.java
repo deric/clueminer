@@ -1,5 +1,7 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.dendrogram.DendrogramViewer;
+
 /**
  *
  * @author deric

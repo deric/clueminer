@@ -1,4 +1,4 @@
-package org.clueminer.dendrogram.gui;
+package org.clueminer.dendrogram;
 
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
@@ -15,9 +15,9 @@ import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.dendrogram.gui.DendrogramPanel;
 import org.clueminer.utils.Exportable;
 
 /**
@@ -239,7 +239,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         this.elementSize = elementSize;
     }
     
-    protected void fireResultUpdate(HierarchicalResult clust) {
+    public void fireResultUpdate(HierarchicalResult clust) {
         ClusteringListener[] listeners;
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);
@@ -281,7 +281,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
             //this method invalidate buffered image which is usually necessary 
             //on component dimensions change (in case that the heatmap panel is bigger
             //than the frame)
-            dendrogramPanel.heatmap.drawData();
+            dendrogramPanel.getHeatmap().drawData();
             viewer.updateLayout();
             repaint();
         }
