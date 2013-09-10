@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.JPanel;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
-import org.clueminer.dendrogram.gui.DendrogramPanel;
 
 /**
  *
@@ -28,13 +28,13 @@ public abstract class AbstractScale extends JPanel implements DendrogramDataList
     protected Dimension size = new Dimension(5, 5);
     protected AbstractTree tree;
     protected Font defaultFont = new Font("verdana", Font.PLAIN, 10);
-    protected DendrogramPanel panel;
+    protected DendroPane panel;
 
     protected abstract void drawScale(Graphics2D g2);
 
     protected abstract void updateSize();
 
-    public AbstractScale(DendrogramPanel panel) {
+    public AbstractScale(DendroPane panel) {
         setDoubleBuffered(false);
         this.panel = panel;
     }

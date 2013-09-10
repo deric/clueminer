@@ -3,9 +3,9 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.gui.DendrogramPanel;
 
 /**
  *
@@ -15,7 +15,7 @@ public class VerticalTree extends AbstractTree {
 
     private static final long serialVersionUID = -8889564020379876891L;
 
-    public VerticalTree(DendrogramPanel panel) {
+    public VerticalTree(DendroPane panel) {
         super(panel);
     }
 

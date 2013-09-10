@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -22,7 +23,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     private int firstSelectedColumn = -1;
     private int lastSelectedColumn = -1;
 
-    public ColumnAnnotation(DendrogramPanel p) {
+    public ColumnAnnotation(DendroPane p) {
         super(p);
     }
 

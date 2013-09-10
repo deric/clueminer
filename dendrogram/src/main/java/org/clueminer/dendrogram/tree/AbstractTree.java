@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.dendrogram.DendroData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
 import org.clueminer.dendrogram.gui.DendrogramPanel;
@@ -63,14 +64,14 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     private double nodeHeightOffset = 0.0;
     protected DendrogramData dataset;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    protected DendrogramPanel panel;
+    protected DendroPane panel;
     protected Dimension elementSize;
     //preferred size of tree (does not include scale)
     protected Dimension size = new Dimension(10, 10);
     protected int sign = 1;
     protected EventListenerList treeListeners = new EventListenerList();
 
-    public AbstractTree(DendrogramPanel panel) {
+    public AbstractTree(DendroPane panel) {
         this.panel = panel;
         //don't paint background
         setOpaque(false);

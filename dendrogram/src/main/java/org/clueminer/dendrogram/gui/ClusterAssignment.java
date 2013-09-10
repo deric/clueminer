@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -20,16 +21,16 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private static final long serialVersionUID = 7662186965958650502L;
     private DendrogramData dataset;
     private Dimension size = new Dimension(0, 0);
-    private DendrogramPanel panel;
+    private DendroPane panel;
     private int stripeWidth = 20;
     private boolean isDrawBorders = true;
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     private Insets insets = new Insets(0, 15, 0, 10);
 
-    public ClusterAssignment(DendrogramPanel panel) {
+    public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
-        setBackground(panel.bg);
+        setBackground(panel.getBackground());
     }
 
     protected void setDimension(int width, int height) {
@@ -60,7 +61,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (panel.dendroData == null) {
+        if (panel.getDendrogramData() == null) {
             return;
         }
 
@@ -126,7 +127,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     }
 
     private int elemHeight() {
-        return panel.elementSize.height;
+        return panel.getElementSize().height;
     }
 
     @Override
