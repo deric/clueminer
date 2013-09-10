@@ -222,7 +222,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         clusteringListeners.remove(ClusteringListener.class, listener);
     }
 
-    protected void fireClusteringChanged(Clustering clust) {
+    public void fireClusteringChanged(Clustering clust) {
         ClusteringListener[] listeners;
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);
@@ -231,6 +231,14 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         }
     }
 
+    public Dimension getElementSize() {
+        return elementSize;
+    }
+
+    public void setElementSize(Dimension elementSize) {
+        this.elementSize = elementSize;
+    }
+    
     protected void fireResultUpdate(HierarchicalResult clust) {
         ClusteringListener[] listeners;
 

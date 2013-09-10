@@ -1,6 +1,13 @@
-package org.clueminer.dendrogram.gui;
+package org.clueminer.dgram;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
 import java.text.DecimalFormat;
 import javax.swing.Box;
 import javax.swing.JLayeredPane;
@@ -12,15 +19,30 @@ import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
-import org.clueminer.dendrogram.tree.*;
+import org.clueminer.dendrogram.gui.ClusterAssignment;
+import org.clueminer.dendrogram.gui.ColorScheme;
+import org.clueminer.dendrogram.gui.ColumnAnnotation;
+import org.clueminer.dendrogram.gui.ColumnStatistics;
+import org.clueminer.dendrogram.gui.CutoffLine;
+import org.clueminer.dendrogram.gui.CutoffSlider;
+import org.clueminer.dendrogram.gui.DendrogramViewer;
+import org.clueminer.dendrogram.gui.Heatmap;
+import org.clueminer.dendrogram.gui.Legend;
+import org.clueminer.dendrogram.gui.RowAnnotation;
+import org.clueminer.dendrogram.tree.AbstractScale;
+import org.clueminer.dendrogram.tree.HCLColorBar;
+import org.clueminer.dendrogram.tree.HorizontalScale;
+import org.clueminer.dendrogram.tree.HorizontalTree;
+import org.clueminer.dendrogram.tree.VerticalScale;
+import org.clueminer.dendrogram.tree.VerticalTree;
 
 /**
  *
  * @author Tomas Barton
  */
-public class DendrogramPanel extends JPanel implements DendrogramDataListener, DendroPane {
+public class DgPanel extends JPanel implements DendrogramDataListener, DendroPane {
 
-    private static final long serialVersionUID = 2763497503617997604L;
+    private static final long serialVersionUID = -5443298776673785208L;
     //component to draw a tree for rows
     private VerticalTree rowsTree;
     private AbstractScale rowsScale;
@@ -60,10 +82,10 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
 
-    public DendrogramPanel(DendrogramViewer v) {
+    public DgPanel(DendrogramViewer v) {
         size = new Dimension(10, 10);
         dendroViewer = v;
-        elementSize = v.elementSize;
+        elementSize = v.getElementSize();
         initComponents();
         updateLayout();
     }
@@ -419,7 +441,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
         }
         height += insets.bottom + insets.top;
         if (columnAnnotationBar != null) {
-            int colsize = Math.max(columnAnnotationBar.size.height, rowsScale.getHeight());
+            int colsize = Math.max(columnAnnotationBar.getDimension().height, rowsScale.getHeight());
             height += colsize;
         }
         size.height = height;

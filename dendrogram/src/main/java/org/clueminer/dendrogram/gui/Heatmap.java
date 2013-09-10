@@ -15,6 +15,7 @@ import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -56,17 +57,17 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     private Rectangle bounds;
-    private DendrogramPanel panel;
+    private DendroPane panel;
     private Dimension size = new Dimension(10, 10);
 
-    public Heatmap(DendrogramPanel p) {
+    public Heatmap(DendroPane p) {
         this.panel = p;
-        setBackground(panel.bg);
+        setBackground(panel.getBackground());
         Listener listener = new Listener();
         addMouseListener(listener);
         addMouseMotionListener(listener);
         this.setDoubleBuffered(false);
-        this.elementSize = panel.elementSize;
+        this.elementSize = p.getElementSize();
         updateSize();
     }
 
@@ -348,7 +349,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         boolean mask = this.firstSelectedRow >= 0 && this.lastSelectedRow >= 0 && (row < this.firstSelectedRow || row > this.lastSelectedRow);
         mask = (mask || this.firstSelectedColumn >= 0 && this.lastSelectedColumn >= 0 && (column < this.firstSelectedColumn || column > this.lastSelectedColumn));
 //System.out.println("orig row "+row+" -> "+rowIndex(row)+" orig col= "+column+" -> "+colIndex(column));
-        g.setColor(panel.colorScheme.getColor(this.dendroData.get(rowIndex(row), colIndex(column))));
+        g.setColor(panel.getScheme().getColor(this.dendroData.get(rowIndex(row), colIndex(column))));
         //System.out.println("x: "+x+", y: "+y+" insets: "+insets+" element size: "+elementSize);
         g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         if (mask) {

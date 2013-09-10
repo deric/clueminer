@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
@@ -19,7 +20,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     private int firstSelectedRow = -1;
     private int lastSelectedRow = -1;
 
-    public RowAnnotation(DendrogramPanel p) {
+    public RowAnnotation(DendroPane p) {
         super(p);
     }
 
