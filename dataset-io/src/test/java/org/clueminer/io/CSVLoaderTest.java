@@ -8,7 +8,6 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.math.Standardisation;
 import org.clueminer.std.StdScale;
-import org.clueminer.utils.Dump;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
