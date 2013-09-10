@@ -7,18 +7,16 @@ import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
-import org.clueminer.clustering.api.dendrogram.DendroData;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dendrogram.DendroPane;
 import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
-import org.clueminer.dendrogram.gui.DendrogramPanel;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.gui.ColorGenerator;
 import org.clueminer.hclust.TreeDataImpl;
-import org.clueminer.utils.Dump;
 
 public abstract class AbstractTree extends JPanel implements DendrogramDataListener, DendrogramTree {
 
@@ -117,7 +115,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         this.useAbsoluteHeight = useAbsoluteHeight;
     }
 
-    protected DendroData getTreeData() {
+    protected DendroTreeData getTreeData() {
         return this.treeData;
     }
 

@@ -12,7 +12,7 @@ import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.DendroData;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DynamicTreeData;
@@ -31,7 +31,7 @@ public class HClustResult implements HierarchicalResult {
     private int[] mapping;
     private Assignments assignments;
     private int numClusters = -1;
-    private DendroData treeData;
+    private DendroTreeData treeData;
     private double cutoff = Double.NaN;
     
     /**

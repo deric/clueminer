@@ -1,13 +1,13 @@
 package org.clueminer.hclust;
 
-import org.clueminer.clustering.api.dendrogram.DendroData;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 
 /**
  *
  * @author Tomas Barton
  */
-public class DynamicTreeData implements DendroData {
+public class DynamicTreeData implements DendroTreeData {
     
     private DendroNode root;
     
