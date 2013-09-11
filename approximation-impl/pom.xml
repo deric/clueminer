@@ -86,6 +86,18 @@
             <artifactId>commons-math3</artifactId>
             <version>3.2</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fixtures</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-io</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -106,6 +118,7 @@
                         <publicPackage>jaolho.data.lma</publicPackage>
                         <publicPackage>jaolho.data.lma.implementations</publicPackage>
                         <publicPackage>org.clueminer.approximation</publicPackage>
+                        <publicPackage>org.clueminer.asr</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
                         <publicPackage>org.clueminer.sax</publicPackage>
                     </publicPackages>
