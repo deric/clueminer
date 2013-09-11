@@ -14,6 +14,8 @@ import org.clueminer.math.Vector;
 import org.clueminer.types.TimePoint;
 
 /**
+ * Time dataset that allows having multiple data values per each time in one
+ * instance. e.g. in stock market you have typically opening, closing value etc.
  *
  * @author Tomas Barton
  */
