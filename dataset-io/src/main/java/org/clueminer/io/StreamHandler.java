@@ -113,7 +113,7 @@ public class StreamHandler {
     private static boolean isHeader(String row[]) {
         for (String attr : row) {
             try {
-                Double.parseDouble(attr);
+                Double.parseDouble(attr);                
                 //if number is successfully parsed, it's not a header
                 return false;
             } catch (NumberFormatException e) {
