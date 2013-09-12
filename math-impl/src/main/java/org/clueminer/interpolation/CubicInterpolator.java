@@ -1,5 +1,6 @@
 package org.clueminer.interpolation;
 
+import java.util.List;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Numeric;
 
@@ -28,8 +29,8 @@ public class CubicInterpolator extends Interpolator {
     @Override
     public double getValue(Numeric[] axisX, Numeric[] axisY, double x, int lower, int upper) {
         /*if (upper >= axisY.length) {
-            upper = axisY.length - 1;
-        }*/
+         upper = axisY.length - 1;
+         }*/
         double p0, p1, p2, p3;
         if (lower == 0) {
             p0 = axisY[lower].getValue();
@@ -82,5 +83,33 @@ public class CubicInterpolator extends Interpolator {
 
         return p1 + 0.5 * x * (p2 - p0 + x * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3
                 + x * (3.0 * (p1 - p2) + p3 - p0)));
+    }
+
+    @Override
+    public double getValue(Numeric[] x, List<Numeric> y, double z, int lower, int upper) {
+        double p0, p1, p2, p3;
+        if (lower == 0) {
+            p0 = y.get(lower).getValue();
+        } else {
+            p0 = y.get(lower - 1).getValue();
+        }
+        //System.out.println("diff= " + (axisY.length - lower) + " x= " + x + " axisY= " + axisY.length + " lower= " + lower);
+        if ((lower + 1) == y.size()) {
+            p0 = y.get(lower - 4).getValue();
+            p1 = y.get(lower - 3).getValue();
+            p2 = y.get(lower - 2).getValue();
+            p3 = y.get(lower - 1).getValue();
+        } else if (lower + 2 == y.size()) {
+            p1 = y.get(lower).getValue();
+            p2 = y.get(lower + 1).getValue();
+            p3 = y.get(lower + 1).getValue(); //we don't have higher index           
+        } else {
+            p1 = y.get(lower).getValue();
+            p2 = y.get(lower + 1).getValue();
+            p3 = y.get(lower + 2).getValue();
+        }
+
+        return p1 + 0.5 * z * (p2 - p0 + z * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3
+                + z * (3.0 * (p1 - p2) + p3 - p0)));
     }
 }
