@@ -23,5 +23,5 @@ public abstract class Interpolator {
 
     public abstract double getValue(double[] x, double[] y, double z, int lower, int upper);
 
-    public abstract double getValue(Numeric[] x, List<? extends Numeric> y, double z, int lower, int upper);
+    public abstract double getValue(Numeric[] x, List<? extends Number> y, double z, int lower, int upper);
 }
