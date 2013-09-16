@@ -86,27 +86,27 @@ public class CubicInterpolator extends Interpolator {
     }
 
     @Override
-    public double getValue(Numeric[] x, List<Numeric> y, double z, int lower, int upper) {
+    public double getValue(Numeric[] x, List<? extends Number> y, double z, int lower, int upper) {
         double p0, p1, p2, p3;
         if (lower == 0) {
-            p0 = y.get(lower).getValue();
+            p0 = y.get(lower).doubleValue();
         } else {
-            p0 = y.get(lower - 1).getValue();
+            p0 = y.get(lower - 1).doubleValue();
         }
         //System.out.println("diff= " + (axisY.length - lower) + " x= " + x + " axisY= " + axisY.length + " lower= " + lower);
         if ((lower + 1) == y.size()) {
-            p0 = y.get(lower - 4).getValue();
-            p1 = y.get(lower - 3).getValue();
-            p2 = y.get(lower - 2).getValue();
-            p3 = y.get(lower - 1).getValue();
+            p0 = y.get(lower - 4).doubleValue();
+            p1 = y.get(lower - 3).doubleValue();
+            p2 = y.get(lower - 2).doubleValue();
+            p3 = y.get(lower - 1).doubleValue();
         } else if (lower + 2 == y.size()) {
-            p1 = y.get(lower).getValue();
-            p2 = y.get(lower + 1).getValue();
-            p3 = y.get(lower + 1).getValue(); //we don't have higher index           
+            p1 = y.get(lower).doubleValue();
+            p2 = y.get(lower + 1).doubleValue();
+            p3 = y.get(lower + 1).doubleValue(); //we don't have higher index           
         } else {
-            p1 = y.get(lower).getValue();
-            p2 = y.get(lower + 1).getValue();
-            p3 = y.get(lower + 2).getValue();
+            p1 = y.get(lower).doubleValue();
+            p2 = y.get(lower + 1).doubleValue();
+            p3 = y.get(lower + 2).doubleValue();
         }
 
         return p1 + 0.5 * z * (p2 - p0 + z * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3

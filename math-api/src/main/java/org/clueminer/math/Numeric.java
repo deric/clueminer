@@ -7,7 +7,7 @@ package org.clueminer.math;
  *
  * @author Tomas Barton
  */
-public interface Numeric extends Comparable<Numeric> {
+public interface Numeric extends Comparable<Numeric>{
 
     public double getValue();
 
