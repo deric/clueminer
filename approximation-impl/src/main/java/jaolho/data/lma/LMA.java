@@ -93,9 +93,8 @@ public class LMA {
      * @param function The model function to be fitted. Must be able to take M
      * input parameters.
      * @param parameters The initial guess for the fit parameters, length M.
-     * @param dataPoints The data points in an
-     * array, <code>double[0 = x, 1 = y][point index]</code>. Size must
-     * be <code>double[2][N]</code>.
+     * @param dataPoints The data points in an *
+     * array, <code>double[0 = x, 1 = y][point index]</code>. Size must      * be <code>double[2][N]</code>.
      */
     public LMA(final LMAFunction function, double[] parameters, double[][] dataPoints) {
         this(function, parameters, dataPoints, function.constructWeights(dataPoints));
@@ -112,9 +111,8 @@ public class LMA {
      * @param function The model function to be fitted. Must be able to take M
      * input parameters.
      * @param parameters The initial guess for the fit parameters, length M.
-     * @param dataPoints The data points in an
-     * array, <code>double[0 = x, 1 = y][point index]</code>. Size must
-     * be <code>double[2][N]</code>.
+     * @param dataPoints The data points in an *
+     * array, <code>double[0 = x, 1 = y][point index]</code>. Size must      * be <code>double[2][N]</code>.
      */
     public LMA(final LMAFunction function, double[] parameters, double[][] dataPoints, double[] weights) {
         this(
@@ -150,8 +148,8 @@ public class LMA {
      * @param function The model function to be fitted. Must be able to take M
      * input parameters.
      * @param parameters The initial guess for the fit parameters, length M.
-     * @param dataPoints The data points in an
-     * array, <code>float[0 = x, 1 = y][point index]</code>. Size must
+     * @param dataPoints The data points in an *
+     * array, <code>float[0 = x, 1 = y][point index]</code>. Size must *
      * be <code>float[2][N]</code>.
      */
     public LMA(final LMAFunction function, float[] parameters, float[][] dataPoints) {
@@ -172,10 +170,10 @@ public class LMA {
      * @param function The model function to be fitted. Must be able to take M
      * input parameters.
      * @param parameters The initial guess for the fit parameters, length M.
-     * @param dataPoints The data points in an
-     * array, <code>float[0 = x, 1 = y][point index]</code>. Size must
+     * @param dataPoints The data points in an *
+     * array, <code>float[0 = x, 1 = y][point index]</code>. Size must *
      * be <code>float[2][N]</code>.
-     * @param weights The weights, normally given
+     * @param weights The weights, normally given *
      * as: <code>weights[i] = 1 / sigma_i^2</code>. If you have a bad data
      * point, set its weight to zero. If the given array is null, a new array is
      * created with all elements set to 1.
@@ -308,7 +306,7 @@ public class LMA {
      * ..<br>
      * dataPoints[N] = yN xN0 xN1 xN2 ... x[N-1][K-1]
      * <p>
-     * @param weights The weights, normally given
+     * @param weights The weights, normally given *
      * as: <code>weights[i] = 1 / sigma_i^2</code>. If you have a bad data
      * point, set its weight to zero. If the given array is null, a new array is
      * created with all elements set to 1.
@@ -341,7 +339,7 @@ public class LMA {
      * ..<br>
      * dataPoints[N] = yN xN0 xN1 xN2 ... x[N-1][K-1]
      * <p>
-     * @param weights The weights, normally given
+     * @param weights The weights, normally given *
      * as: <code>weights[i] = 1 / sigma_i^2</code>. If you have a bad data
      * point, set its weight to zero. If the given array is null, a new array is
      * created with all elements set to 1.
@@ -378,7 +376,7 @@ public class LMA {
 
     protected final void init(LMAMultiDimFunction function, double[] parameters, double[] yDataPoints, double[][] xDataPoints, double[] weights, LMAMatrix alpha) {
         if (yDataPoints.length != xDataPoints.length) {
-            throw new IllegalArgumentException("Data must contain an x-array for each y-value. Check your xDataPoints-array.");
+            throw new IllegalArgumentException("Data must contain an x-array for each y-value. Check your xDataPoints-array. " + yDataPoints.length + " vs. " + xDataPoints.length);
         }
         this.function = function;
         this.parameters = parameters;
