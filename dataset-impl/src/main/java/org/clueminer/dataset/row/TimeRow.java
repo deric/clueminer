@@ -2,6 +2,7 @@ package org.clueminer.dataset.row;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -20,7 +21,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     private static final long serialVersionUID = 6410706965541438907L;
     private Interpolator interpolator = new LinearInterpolator();
-    private ArrayList<E> data;
+    private List<E> data;
     private TimePointAttribute[] timePoints;
 
     public TimeRow(int capacity) {
@@ -62,7 +63,8 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public void setCapacity(int capacity) {
-        data.ensureCapacity(capacity);
+        //data.ensureCapacity(capacity);
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -124,7 +126,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public double valueAt(double x, Interpolator interpolator) {
-      /*  int idx = InterpolationSearch.search(timePoints, x);
+        int idx = InterpolationSearch.search(timePoints, x);
         int low, up;
         if (timePoints[idx].getValue() > x) {
             up = idx;
@@ -136,8 +138,8 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             //exact match
             return data.get(idx).doubleValue();
         }
-        return interpolator.getValue(timePoints, data, x, low, up);*/
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return interpolator.getValue(timePoints, data, x, low, up);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

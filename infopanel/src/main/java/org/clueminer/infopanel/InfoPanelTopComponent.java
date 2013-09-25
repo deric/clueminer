@@ -161,8 +161,17 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
             int attrCnt = 2;
             String[][] data = new String[d.size()][attrCnt];
             int i = 0;
+            String name, id;
             for (Instance inst : d) {
-                data[i++] = new String[]{inst.getName(), inst.getId()};
+                name = inst.getName();
+                id = inst.getId();
+                if (name == null) {
+                    name = "";
+                }
+                if (id == null) {
+                    id = "";
+                }
+                data[i++] = new String[]{name, id};
             }
             table.clear();
             table.setData(data);

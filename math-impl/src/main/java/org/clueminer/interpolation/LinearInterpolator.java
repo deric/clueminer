@@ -1,5 +1,6 @@
 package org.clueminer.interpolation;
 
+import java.util.List;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Numeric;
 
@@ -37,6 +38,22 @@ public class LinearInterpolator extends Interpolator {
         }
         double res = axisY[lower] + (axisY[upper] - axisY[lower]) * (x - axisX[lower]) / (axisX[upper] - axisX[lower]);
         System.out.println("x= " + x + " lower= " + lower + " upper= " + upper + ", ax.l=" + axisX.length + ", ay.l=" + axisY.length + " r= " + res);
+        return res;
+    }
+
+    @Override
+    public double getValue(Numeric[] x, List<? extends Number> y, double z, int l, int u) {
+        int lower = l;
+        int upper = u;
+        /**
+         * y = y_a + (y_b - y_a) * (x - x_a) / (x_b - x_a)
+         */
+        if (upper >= y.size()) {
+            upper = y.size() - 1;
+        }
+        double res = y.get(lower).doubleValue() + (y.get(upper).doubleValue() - y.get(lower).doubleValue())
+                * (z - x[lower].getValue()) / (x[upper].getValue() - x[lower].getValue());
+        //System.out.println("x= "+x+" lower= "+lower+" upper= "+upper+", ax.l="+axisX.length+", ay.l="+axisY.length+" r= "+res);
         return res;
     }
 }
