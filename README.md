@@ -1,5 +1,6 @@
 # Clueminer
 
+[![Build Status](https://travis-ci.org/deric/clueminer.png?branch=master)](https://travis-ci.org/deric/clueminer)
 
 Clueminer is a platform for interactive data-mining with special focus on clustering algorithms.
 
