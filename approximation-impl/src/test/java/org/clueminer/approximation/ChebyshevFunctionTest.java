@@ -18,6 +18,8 @@ import static org.junit.Assert.*;
  * @author deric
  */
 public class ChebyshevFunctionTest {
+    
+    private static double delta = 1e-9;
 
     public ChebyshevFunctionTest() {
     }
@@ -65,6 +67,39 @@ public class ChebyshevFunctionTest {
     @Test
     public void testArrayMinus() {
     }
+  
+    /**
+     * @see http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+     */
+    @Test
+    public void testDegree() {
+        ChebyshevPolynomial t0 = new ChebyshevPolynomial(0);
+        /**
+         * t0 = 1.0
+         */
+        assertEquals(1.0, t0.coeff[0], delta);
+        ChebyshevPolynomial t1 = new ChebyshevPolynomial(1);
+        /**
+         * t1 = 1.0*x^1
+         */
+        assertEquals(0.0, t1.coeff[0], delta);
+        assertEquals(1.0, t1.coeff[1], delta);
+        /**
+         * t2 = 2.0*x^2-1.0
+         */
+        ChebyshevPolynomial t2 = new ChebyshevPolynomial(2);
+        assertEquals(-1.0, t2.coeff[0], delta);
+        assertEquals(0.0, t2.coeff[1], delta);
+        assertEquals(2.0, t2.coeff[2], delta);
+        /**
+         * t3 = 4.0*x^3-3.0*x^1
+         */
+        ChebyshevPolynomial t3 = new ChebyshevPolynomial(3);
+        assertEquals(0.0, t3.coeff[0], delta);
+        assertEquals(-3.0, t3.coeff[1], delta);
+        assertEquals(0.0, t3.coeff[2], delta);
+        assertEquals(4.0, t3.coeff[3], delta);
+    }
 
     /**
      * Test of value method, of class ChebyshevPolynomial.
@@ -94,29 +129,29 @@ public class ChebyshevFunctionTest {
         prod = new ScalarProduct(weight, t1, t1);
         // sum = sims.integrate(maxEval, prod, lower, upper);
         //  System.out.println("T1-T1 integral: " + sum);
-        System.out.println("PI/2 = "+ (Math.PI / 2));
+     /*   System.out.println("PI/2 = " + (Math.PI / 2));
         System.out.println("T1-T1= " + integrate(prod));
 
         prod = new ScalarProduct(weight, t2, t2);
         System.out.println("T2-T2= " + integrate(prod));
-        
+
         prod = new ScalarProduct(weight, t3, t3);
         System.out.println("T3-T3= " + integrate(prod));
         //sum = sims.integrate(maxEval, prod, lower, upper);
         //System.out.println("T3-T3 integral: " + sum);
-        /*       
-         System.out.println(t2.toString());
-         System.out.println("T2-T2 integral: " + integrate(t2, t2));
 
-         
-         System.out.println(t3.toString());
-         System.out.println("T3-T3 integral: " + integrate(t3, t3));
+        System.out.println("t2 = " + t2.toString());
+        System.out.println("T2-T2 integral: " + integrate(t2, t2));
 
 
-         System.out.println("T0-T1 integral: " + integrate(t0, t1));
-         System.out.println("T0-T2 integral: " + integrate(t0, t2));
-         System.out.println("T1-T2 integral: " + integrate(t1, t2));
-         System.out.println("T1-T3 integral: " + integrate(t1, t3));*/
+        System.out.println("t3 = " + t3.toString());
+        System.out.println("T3-T3 integral: " + integrate(t3, t3));
+
+
+        System.out.println("T0-T1 integral: " + integrate(t0, t1));
+        System.out.println("T0-T2 integral: " + integrate(t0, t2));
+        System.out.println("T1-T2 integral: " + integrate(t1, t2));
+        System.out.println("T1-T3 integral: " + integrate(t1, t3)); */
 
     }
 
