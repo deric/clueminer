@@ -126,9 +126,9 @@ public class ChebyshevFunctionTest {
         ChebyshevPolynomial t2 = new ChebyshevPolynomial(2);
         ChebyshevPolynomial t3 = new ChebyshevPolynomial(3);
         System.out.println(t1.toString());
-        prod = new ScalarProduct(weight, t1, t1);
-        // sum = sims.integrate(maxEval, prod, lower, upper);
-        //  System.out.println("T1-T1 integral: " + sum);
+        //prod = new ScalarProduct(weight, t1, t1);
+        //sum = sims.integrate(maxEval, prod, lower, upper);
+        System.out.println("T1-T1 integral: " + sum);
      /*   System.out.println("PI/2 = " + (Math.PI / 2));
         System.out.println("T1-T1= " + integrate(prod));
 

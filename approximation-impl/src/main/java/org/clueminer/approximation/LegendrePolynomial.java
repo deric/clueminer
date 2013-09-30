@@ -15,9 +15,11 @@ import org.apache.commons.math3.util.FastMath;
 public class LegendrePolynomial implements UnivariateFunction {
 
     double[] coeff;
+    private int n;
 
     public LegendrePolynomial(int n) {
         generate(n);
+        this.n = n;
     }
 
     /**
@@ -30,7 +32,7 @@ public class LegendrePolynomial implements UnivariateFunction {
     private void generate(int n) {
         coeff = new double[n + 1]; //n degrees + constant        
         double twoN = FastMath.pow(2, n);
-        double binomDivi;        
+        double binomDivi;
         for (int k = 0; k <= n; k++) {
             binomDivi = (n + k - 1) / 2.0;
             //requires binomial coefficient which accepts double as argument
@@ -97,5 +99,18 @@ public class LegendrePolynomial implements UnivariateFunction {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Factor times Kronecker Delta should be either 0 when Legendre polynomial
+     * have different degree or equal to 1.0 when have the same degree
+     * 
+     * \int_{-1}^{1} p_m(x) * p_n(x) dx = delta_{mn} * constFactor(n)
+     * 
+     * @see http://mathworld.wolfram.com/KroneckerDelta.html
+     * @return
+     */
+    public double constFactor() {
+        return 2.0 / (2 * n + 1);
     }
 }
