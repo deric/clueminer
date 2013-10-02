@@ -92,7 +92,6 @@
         <module>perspective-api</module>
         <module>perspective-impl</module>
         <module>clustering-preview</module>
-        <module>rtca</module>
         <module>approximation-api</module>
         <module>approximation-impl</module>
         <module>molecule</module>
@@ -105,8 +104,8 @@
         <module>clustering-benchmark</module>
         <module>dataset-benchmark</module>
         <module>posturomed</module>
-    <module>rtca-fixtures</module>
-  </modules>
+        <module>rtca-fixtures</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
