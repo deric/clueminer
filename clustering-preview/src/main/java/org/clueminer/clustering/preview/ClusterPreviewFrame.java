@@ -1,12 +1,20 @@
 package org.clueminer.clustering.preview;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.Serializable;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 
@@ -14,28 +22,39 @@ import org.clueminer.clustering.api.Clustering;
  *
  * @author Tomas Barton
  */
-public class ClusterPreviewFrame extends JPanel implements Serializable, AdjustmentListener {
+public class ClusterPreviewFrame extends JPanel implements Serializable, AdjustmentListener, ChangeListener {
 
     private static final long serialVersionUID = -8719504995316248781L;
     private JScrollPane scroller;
     private PreviewFrameSet previewSet;
+    private JSlider chartSizeSlider;
+    private JToolBar toolbar;
+    private int minChartHeight = 150;
+    private int maxChartHeight = 650;
 
     public ClusterPreviewFrame() {
         initComponents();
     }
 
     private void initComponents() {
-        setLayout(new GridBagLayout());
+        //setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         previewSet = new PreviewFrameSet(this);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = 0;
-        c.gridy = 0;
+        chartSizeSlider = new JSlider(SwingConstants.HORIZONTAL);
+        chartSizeSlider.setMinimum(minChartHeight);
+        chartSizeSlider.setMaximum(maxChartHeight);
+        chartSizeSlider.addChangeListener(this);
+        chartSizeSlider.setMaximumSize(new Dimension(250, 20));
+        chartSizeSlider.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createBevelBorder(2),
+                BorderFactory.createEmptyBorder(10,10,10,10)));
+        
+        toolbar = new JToolBar(SwingConstants.HORIZONTAL);
+        JLabel label = new JLabel(java.util.ResourceBundle.getBundle("org/clueminer/clustering/preview/Bundle").getString("CHART HEIGHT:"));
+        toolbar.add(label);
+        toolbar.add(chartSizeSlider);
+        toolbar.setAlignmentX( Component.LEFT_ALIGNMENT );
 
         scroller = new JScrollPane(previewSet);
         scroller.getViewport().setDoubleBuffered(true);
@@ -43,9 +62,9 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroller.getVerticalScrollBar().addAdjustmentListener(this);
 
-
+        add(toolbar);
         scroller.getViewport().revalidate();
-        add(scroller, c);
+        add(scroller);
     }
 
     public PreviewFrameSet getViewer() {
@@ -68,5 +87,13 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
 
     public void setClustering(Clustering<Cluster> clustering) {
         previewSet.setClustering(clustering);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider) e.getSource();
+        if (!source.getValueIsAdjusting()) {            
+            previewSet.setChartHeight(chartSizeSlider.getValue());
+        }
     }
 }

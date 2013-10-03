@@ -1,7 +1,7 @@
 package org.clueminer.clustering.preview;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
@@ -20,6 +20,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
     private JPanel parent;
+    private Plotter[] plots;
     private Clustering<Cluster> clust;
 
     public PreviewFrameSet(JPanel parent) {
@@ -28,7 +29,8 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
     }
 
     private void initComponents() {
-        setLayout(new GridBagLayout());
+        //   setLayout(new GridBagLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
     private void redraw() {
@@ -43,87 +45,84 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
         clusterNum = clust.size();
         System.out.println("got " + clusterNum + " clusters");
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTH;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = 0;
-
         Instance inst;
 
-        int i = 0;
-        for (Cluster<? extends Instance> d : clust) {
-            c.gridy = i++;
+        if (clusterNum > 0) {
+            plots = new Plotter[clusterNum];
 
-            Cluster<? extends Instance> dataset = d;
-            System.out.println("cluster size = " + d.size());
-            if (dataset != null && d.size() > 0) {
-                inst = dataset.instance(0);
-                /**
-                 * @TODO We can't support visualization of all possible kinds of
-                 * data, this ability should be implemented elsewhere (dataset
-                 * itself or a visualization controller...)
-                 */
-                System.out.println("dataset is kind of " + dataset.getClass().toString());
-                System.out.println("instace is kind of " + inst.getClass().toString());
-                System.out.println("ancestor is  " + inst.getAncestor());
-                Instance anc = inst.getAncestor();
-                Plotter plot;
-                if (anc != null) {
-                    System.out.println("ancestor is "+anc.getClass().toString());
-                    plot = anc.getPlotter();
-                    if (dataset.size() > 1) {
-                        for (int k = 1; k < dataset.size(); k++) {
-                            plot.addInstance(dataset.instance(k).getAncestor());
+            int i = 0;
+            for (Cluster<? extends Instance> d : clust) {
+                //  c.gridy = i++;
+
+                Cluster<? extends Instance> dataset = d;
+                System.out.println("cluster size = " + d.size());
+                if (dataset != null && d.size() > 0) {
+                    inst = dataset.instance(0);
+                    /**
+                     * @TODO We can't support visualization of all possible
+                     * kinds of data, this ability should be implemented
+                     * elsewhere (dataset itself or a visualization
+                     * controller...)
+                     */
+                    System.out.println("dataset is kind of " + dataset.getClass().toString());
+                    System.out.println("instace is kind of " + inst.getClass().toString());
+                    System.out.println("ancestor is  " + inst.getAncestor());
+                    Instance anc = inst.getAncestor();
+                    Plotter plot;
+                    if (anc != null) {
+                        System.out.println("ancestor is " + anc.getClass().toString());
+                        plot = anc.getPlotter();
+                        if (dataset.size() > 1) {
+                            for (int k = 1; k < dataset.size(); k++) {
+                                plot.addInstance(dataset.instance(k).getAncestor());
+                            }
+                        }
+                    } else {
+                        plot = inst.getPlotter();
+                        if (dataset.size() > 1) {
+                            for (int k = 1; k < dataset.size(); k++) {
+                                plot.addInstance(dataset.instance(k));
+                            }
                         }
                     }
-                } else {
-                    plot = inst.getPlotter();
-                    if (dataset.size() > 1) {
-                        for (int k = 1; k < dataset.size(); k++) {
-                            plot.addInstance(dataset.instance(k));
-                        }
-                    }
+                    plots[i++] = plot;
+                    add((JComponent) plot);
+
+
+                    /* if (inst.getClass().isInstance(AbstractTimeInstance.class)) {
+                     charts = new ArrayList<PreviewFrame>();
+                     charts.ensureCapacity(50);
+                     PreviewFrame f = new PreviewFrame();
+                     f.setDataset((Timeseries) dataset);
+                     charts.add(f);
+                     add(f, c);
+                     } else if (inst.getClass().isInstance(Instance.class)) {
+                     Plot2DPanel plot = new Plot2DPanel();
+
+                     double[] x = new double[dataset.size()];
+                     double[] y = new double[dataset.size()];
+                     // Dump.printMatrix(data.length,data[0].length,data,2,5);
+                     int k = 5;
+                     for (int j = 0; j < dataset.size(); j++) {
+                     x[j] = dataset.getAttributeValue(k, j);
+                     }
+
+                     k = 0;
+                     for (int j = 0; j < dataset.size(); j++) {
+                     //Attribute ta =  dataset.getAttribute(j);
+                     y[j] = dataset.getAttributeValue(k, j);
+
+                     }
+                     //Dump.array(x,"x");
+                     //Dump.array(y,"y");
+
+                     plot.addScatterPlot("Cluster " + i, x, y);
+                     add(plot, c);
+                     System.out.println("adding plot " + i);
+                     } else {
+                     throw new RuntimeException("unsupported object type, expected child of Dataset, got " + inst.getClass().toString());
+                     }*/
                 }
-                
-                add((JComponent) plot, c);
-
-
-                /* if (inst.getClass().isInstance(AbstractTimeInstance.class)) {
-                 charts = new ArrayList<PreviewFrame>();
-                 charts.ensureCapacity(50);
-                 PreviewFrame f = new PreviewFrame();
-                 f.setDataset((Timeseries) dataset);
-                 charts.add(f);
-                 add(f, c);
-                 } else if (inst.getClass().isInstance(Instance.class)) {
-                 Plot2DPanel plot = new Plot2DPanel();
-
-                 double[] x = new double[dataset.size()];
-                 double[] y = new double[dataset.size()];
-                 // Dump.printMatrix(data.length,data[0].length,data,2,5);
-                 int k = 5;
-                 for (int j = 0; j < dataset.size(); j++) {
-                 x[j] = dataset.getAttributeValue(k, j);
-                 }
-
-                 k = 0;
-                 for (int j = 0; j < dataset.size(); j++) {
-                 //Attribute ta =  dataset.getAttribute(j);
-                 y[j] = dataset.getAttributeValue(k, j);
-
-                 }
-                 //Dump.array(x,"x");
-                 //Dump.array(y,"y");
-
-                 plot.addScatterPlot("Cluster " + i, x, y);
-                 add(plot, c);
-                 System.out.println("adding plot " + i);
-                 } else {
-                 throw new RuntimeException("unsupported object type, expected child of Dataset, got " + inst.getClass().toString());
-                 }*/
             }
         }
         //setPreferredSize(getPreferredSize());
@@ -147,5 +146,23 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
         this.clust = clustering;
         redraw();
         parent.repaint();
+    }
+
+    /**
+     * Updates sizes of charts, so that the information will be readable
+     *
+     * @param height
+     */
+    public void setChartHeight(int height) {
+        if (plots != null) {
+            Dimension dim;
+            for (Plotter plot : plots) {
+                dim = new Dimension(plot.getWidth(), height);
+                plot.setPreferredSize(dim);
+                plot.setMinimumSize(dim);
+                plot.revalidate();
+            }
+            revalidate();
+        }
     }
 }
