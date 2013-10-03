@@ -71,11 +71,12 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public E instance(int index);
-    
+
     /**
      * as in array list
+     *
      * @param index
-     * @return 
+     * @return
      */
     public E get(int index);
 
@@ -244,4 +245,18 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public JComponent getPlotter();
+
+    /**
+     * Make sure that dataset will be able to store given number of elements
+     *
+     * @param size
+     */
+    public void ensureCapacity(int size);
+
+    /**
+     * Current capacity of dataset structure
+     *
+     * @return
+     */
+    public int getCapacity();
 }
