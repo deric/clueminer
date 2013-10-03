@@ -102,6 +102,8 @@ public class HCLDialog extends ClusteringDialog {
         lbCutoffMethod = new javax.swing.JLabel();
         comboCutoff = new javax.swing.JComboBox();
         chkBoxLogScale = new javax.swing.JCheckBox();
+        chckRows = new javax.swing.JCheckBox();
+        chckColumns = new javax.swing.JCheckBox();
 
         inputGroup.add(radioInputCI);
         radioInputCI.setSelected(true);
@@ -141,6 +143,12 @@ public class HCLDialog extends ClusteringDialog {
 
         chkBoxLogScale.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chkBoxLogScale.text")); // NOI18N
 
+        chckRows.setSelected(true);
+        chckRows.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chckRows.text")); // NOI18N
+
+        chckColumns.setSelected(true);
+        chckColumns.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chckColumns.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -175,10 +183,15 @@ public class HCLDialog extends ClusteringDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbCutoffMethod)
                                 .addGap(42, 42, 42)
-                                .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chckColumns)
+                                    .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(chkBoxLogScale)))
+                        .addGap(102, 102, 102)
+                        .addComponent(chkBoxLogScale))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(chckRows)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -212,12 +225,19 @@ public class HCLDialog extends ClusteringDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbCutoffMethod)
                     .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chckRows)
+                    .addComponent(chckColumns))
                 .addGap(18, 18, 18)
                 .addComponent(chkBoxLogScale)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chckColumns;
+    private javax.swing.JCheckBox chckRows;
     private javax.swing.JCheckBox chkBoxLogScale;
     private javax.swing.JComboBox comboCutoff;
     private javax.swing.JComboBox comboDistance;
@@ -283,7 +303,8 @@ public class HCLDialog extends ClusteringDialog {
         params.setProperty("optimize-rows-ordering", String.valueOf(true));
 
         //Clustering by Samples
-        params.setProperty("calculate-rows", String.valueOf(true));
+        params.setProperty("calculate-rows", String.valueOf(chckRows.isSelected()));
+        params.setProperty("calculate-columns", String.valueOf(chckColumns.isSelected()));
         //data.addParam("calculate-genes", String.valueOf(false));
         params.setProperty("optimize-cols-ordering", String.valueOf(true));
 
@@ -294,7 +315,6 @@ public class HCLDialog extends ClusteringDialog {
 
         //Clustering by Samples
             /*
-         * data.addParam("calculate-genes", String.valueOf(false));
          * data.addParam("optimize-sample-ordering", String.valueOf(false));
          *
          * data.addParam("optimize-sample-ordering", String.valueOf(true));

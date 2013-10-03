@@ -135,7 +135,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public Attribute[] copyAttributes() {
-        return timePoints;
+        return timePoints.clone();
     }
 
     @Override

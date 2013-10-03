@@ -183,6 +183,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
             int attrCnt = 3;
             String[][] data = new String[d.size()][attrCnt];
             int i = 0;
+            System.out.println("hts plate: " + d.getName() + ", " + d.getId());
             for (HtsInstance inst : d) {
                 data[i++] = new String[]{inst.getName(), String.valueOf(inst.getRow()), String.valueOf(inst.getColumn())};
             }
