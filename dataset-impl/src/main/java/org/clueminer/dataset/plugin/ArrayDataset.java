@@ -17,7 +17,7 @@ import org.math.plot.Plot2DPanel;
  *
  * @author Tomas Barton
  */
-public class ArrayDataset<E extends Instance> extends AbstractDataset<E> implements Dataset<E> {
+public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = -5482153886671625555L;
     private Instance[] data;
@@ -26,8 +26,8 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
     private TreeSet<Object> classes = new TreeSet<Object>();
     protected Attribute[] attributes;
     /**
-     * index of last inserted item, represents also current number of instances
-     * in dataset
+     * (n - 1) is index of last inserted item, n itself represents current
+     * number of instances in this dataset
      */
     private int n = 0;
 
@@ -43,6 +43,10 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
 
     @Override
     public boolean add(Instance i) {
+        if((n+1) >= getCapacity()){
+            int capacity = (int) (n * 1.618); //golden ratio :)
+            ensureCapacity(capacity);
+        }
         data[n++] = i;
         return true;
     }
@@ -143,20 +147,21 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
     public Attribute getAttribute(int i) {
         return attributes[i];
     }
-    
+
     /**
      * Get i-th attribute by its name
+     *
      * @param attributeName
-     * @return 
+     * @return
      */
     @Override
     public Attribute getAttribute(String attributeName) {
         for (int i = 0; i < attributes.length; i++) {
-            if(attributes[i].getName().equals(attributeName)){
+            if (attributes[i].getName().equals(attributeName)) {
                 return attributes[i];
-            }            
+            }
         }
-        throw new RuntimeException("Attribute with name "+attributeName+" was not found");
+        throw new RuntimeException("Attribute with name " + attributeName + " was not found");
     }
 
     /**
@@ -281,6 +286,73 @@ public class ArrayDataset<E extends Instance> extends AbstractDataset<E> impleme
         ArrayDataset<E> copy = new ArrayDataset<E>(this.size(), this.attributeCount());
         copy.attributes = this.attributes;
         return copy;
+    }
+
+    @Override
+    public int getCapacity() {
+        if (data != null) {
+            return data.length;
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public E get(int index) {
+        return (E) data[index];
+    }
+
+    @Override
+    public void ensureCapacity(int capacity) {        
+        if (capacity > size()){            
+            Instance[] tmp = new Instance[capacity];
+            System.arraycopy(data, 0, tmp, 0, n);
+            data = tmp;
+        }
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object[] toArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return (T[]) data;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {
