@@ -1,4 +1,4 @@
-package org.clueminer.tranform;
+package org.clueminer.transform;
 
 import java.util.ArrayList;
 import java.util.HashMap;

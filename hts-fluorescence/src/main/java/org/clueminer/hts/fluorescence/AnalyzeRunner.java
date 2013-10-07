@@ -1,6 +1,6 @@
 package org.clueminer.hts.fluorescence;
 
-import org.clueminer.tranform.DatasetTransformation;
+import org.clueminer.transform.DatasetTransformation;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -27,7 +27,7 @@ public class AnalyzeRunner extends Task implements Runnable {
     @Override
     public void run() {
         DatasetTransformation trans = new DatasetTransformation();
-        trans.analyze(dataset, output, p, false); //for debugging can save results to CSV file
+        trans.analyze(dataset, output, p); //for debugging can save results to CSV file
     }
     
     public Dataset<Instance> getAnalyzedData(){

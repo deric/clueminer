@@ -1,4 +1,4 @@
-package org.clueminer.tranform;
+package org.clueminer.transform;
 
 import java.io.FileWriter;
 import java.io.IOException;
