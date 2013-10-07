@@ -40,12 +40,25 @@
                                   <Component id="lbDistanceFactor" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="spnDistanceFactor" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboDistance" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboStandardisation" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="spnDistanceFactor" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="148" max="-2" attributes="0"/>
+                              <Component id="chckColumns" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
+                      <Component id="chkBoxLogScale" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="chckRows" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="lbLinkage" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -58,23 +71,22 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="lbCutoffMethod" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="chckColumns" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboCutoff" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="comboCutoff" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
-                      <Component id="chkBoxLogScale" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="chckRows" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbTransform" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="comboStandardisation" min="-2" max="-2" attributes="0"/>
+                          <Component id="comboTransform" min="-2" max="-2" attributes="0"/>
+                          <Component id="comboDistance" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="122" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -85,6 +97,11 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="radioInputFitted" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="radioInputCI" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="7" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lbTransform" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboTransform" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -115,7 +132,7 @@
                   <Component id="lbCutoffMethod" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboCutoff" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="11" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="chckRows" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chckColumns" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -269,6 +286,20 @@
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/clueminer/clustering/gui/Bundle.properties" key="HCLDialog.chckColumns.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lbTransform">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/clueminer/clustering/gui/Bundle.properties" key="HCLDialog.lbTransform.text_1" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboTransform">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new DefaultComboBoxModel(initTransform())" type="code"/>
         </Property>
       </Properties>
     </Component>

@@ -2,6 +2,7 @@ package org.clueminer.clustering.gui;
 
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -76,6 +77,18 @@ public class HCLDialog extends ClusteringDialog {
         return res;
     }
 
+    private String[] initTransform() {
+        DataTransformFactory df = DataTransformFactory.getDefault();
+        List<String> list = df.getProviders();
+        list.add("-- no transformation --");
+        String[] res = new String[list.size()];
+        int i = 0;
+        for (String s : list) {
+            res[i++] = s;
+        }
+        return res;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -104,6 +117,8 @@ public class HCLDialog extends ClusteringDialog {
         chkBoxLogScale = new javax.swing.JCheckBox();
         chckRows = new javax.swing.JCheckBox();
         chckColumns = new javax.swing.JCheckBox();
+        lbTransform = new javax.swing.JLabel();
+        comboTransform = new javax.swing.JComboBox();
 
         inputGroup.add(radioInputCI);
         radioInputCI.setSelected(true);
@@ -149,6 +164,10 @@ public class HCLDialog extends ClusteringDialog {
         chckColumns.setSelected(true);
         chckColumns.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chckColumns.text")); // NOI18N
 
+        lbTransform.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.lbTransform.text_1")); // NOI18N
+
+        comboTransform.setModel(new DefaultComboBoxModel(initTransform()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -169,10 +188,19 @@ public class HCLDialog extends ClusteringDialog {
                                     .addComponent(lbDistanceFunction)
                                     .addComponent(lbDistanceFactor))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(148, 148, 148)
+                                .addComponent(chckColumns))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(102, 102, 102)
+                        .addComponent(chkBoxLogScale))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(chckRows))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbLinkage)
                                 .addGap(18, 18, 18)
@@ -183,16 +211,16 @@ public class HCLDialog extends ClusteringDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbCutoffMethod)
                                 .addGap(42, 42, 42)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chckColumns)
-                                    .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addComponent(chkBoxLogScale))
+                                .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(chckRows)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(lbTransform)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,6 +229,10 @@ public class HCLDialog extends ClusteringDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioInputFitted)
                     .addComponent(radioInputCI))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbTransform)
+                    .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbStandard)
@@ -225,7 +257,7 @@ public class HCLDialog extends ClusteringDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbCutoffMethod)
                     .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chckRows)
                     .addComponent(chckColumns))
@@ -234,7 +266,6 @@ public class HCLDialog extends ClusteringDialog {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chckColumns;
     private javax.swing.JCheckBox chckRows;
@@ -242,12 +273,14 @@ public class HCLDialog extends ClusteringDialog {
     private javax.swing.JComboBox comboCutoff;
     private javax.swing.JComboBox comboDistance;
     private javax.swing.JComboBox comboStandardisation;
+    private javax.swing.JComboBox comboTransform;
     private javax.swing.ButtonGroup inputGroup;
     private javax.swing.JLabel lbCutoffMethod;
     private javax.swing.JLabel lbDistanceFactor;
     private javax.swing.JLabel lbDistanceFunction;
     private javax.swing.JLabel lbLinkage;
     private javax.swing.JLabel lbStandard;
+    private javax.swing.JLabel lbTransform;
     private javax.swing.ButtonGroup linkageGroup;
     private javax.swing.JRadioButton radioInputCI;
     private javax.swing.JRadioButton radioInputFitted;
@@ -285,6 +318,9 @@ public class HCLDialog extends ClusteringDialog {
             //cell index values
             //m = dataset.createFloatMatrix(std);
         }
+
+        params.setProperty("dataset", (String) comboTransform.getSelectedItem() );
+
         /**
          * 0 for ALC method, 1 for CLC or -1 otherwise
          */
