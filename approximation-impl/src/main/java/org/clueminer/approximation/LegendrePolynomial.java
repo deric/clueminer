@@ -104,13 +104,22 @@ public class LegendrePolynomial implements UnivariateFunction {
     /**
      * Factor times Kronecker Delta should be either 0 when Legendre polynomial
      * have different degree or equal to 1.0 when have the same degree
-     * 
+     *
      * \int_{-1}^{1} p_m(x) * p_n(x) dx = delta_{mn} * constFactor(n)
-     * 
+     *
      * @see http://mathworld.wolfram.com/KroneckerDelta.html
      * @return
      */
     public double constFactor() {
         return 2.0 / (2 * n + 1);
+    }
+
+    /**
+     * Return number of polynomial coefficients
+     *
+     * @return
+     */
+    public int numParams() {
+        return coeff.length;
     }
 }

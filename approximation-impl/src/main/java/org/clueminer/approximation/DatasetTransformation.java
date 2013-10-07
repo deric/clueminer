@@ -34,7 +34,7 @@ public class DatasetTransformation {
      *
      * @return
      */
-    public void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) throws UnsupportedAttributeType {
+    private void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) throws UnsupportedAttributeType {
         HashMap<String, Double> coefficients;
         if (input.size() > 0) {
             InstanceBuilder builder = output.builder();
