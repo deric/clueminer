@@ -1,5 +1,6 @@
 package org.clueminer.hts.fluorescence;
 
+import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -23,12 +24,12 @@ public class DataPreprocessing implements TaskListener {
 
     private Dataset<? extends Instance> plate;
     private Dataset<Instance> output;
-    private DendrogramTopComponent dendrogram;
+    private DataTransform transform;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
 
-    public DataPreprocessing(Dataset<? extends Instance> plate, DendrogramTopComponent dendrogram) {
+    public DataPreprocessing(Dataset<? extends Instance> plate, DataTransform transform) {
         this.plate = plate;
-        this.dendrogram = dendrogram;
+        this.transform = transform;
     }
 
     public void start() {
@@ -37,8 +38,8 @@ public class DataPreprocessing implements TaskListener {
         Timeseries<ContinuousInstance> dataset = (Timeseries<ContinuousInstance>) plate;
         output = new SampleDataset<Instance>();
         output.setParent((Dataset<Instance>) plate);
-
-        final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, ph));
+        
+        final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, transform, ph));
         taskAnalyze.addTaskListener(this);
         taskAnalyze.schedule(0);
     }
@@ -52,6 +53,6 @@ public class DataPreprocessing implements TaskListener {
             System.out.println("adding preprocessed plate to lookup");
             workspace.add(output);  //add plate to project's lookup
         }
-        dendrogram.setPreprocessedDataset(output);
+        plate.addChild(transform.getName(), output);
     }
 }

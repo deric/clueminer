@@ -35,8 +35,6 @@ public class DendrogramComponent extends ClusterAnalysis {
     private ClusteringAlgorithm algorithm;
     //original dataset
     private Dataset<? extends Instance> dataset;
-    //approximation (model) of dataset
-    private Dataset<? extends Instance> approx;
     private ClusteringToolbar toolbar;
     private ClusteringProperties properities;
     private SettingsPanel panel;
@@ -109,16 +107,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         this.dataset = dataset;
     }
 
-    /**
-     * Approximated dataset
-     *
-     * @param dataset
-     */
-    @Override
-    public void setApproximated(Dataset<? extends Instance> dataset) {
-        this.approx = dataset;
-    }
-
     public Matrix standartize(Dataset<? extends Instance> data, String method, boolean logScale) {
         return Scaler.standartize(data.arrayCopy(), method, logScale);
     }
@@ -136,11 +124,15 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         long start = System.currentTimeMillis();
         Dataset<? extends Instance> data;
-        if (params.getBoolean("fitted-params")) {
-            data = this.approx;
-        } else {
+        String datasetTransform = params.getString("dataset");
+        if (datasetTransform.equals("-- no transformation --")) {
             data = this.dataset;
-            System.out.println("data: "+data.size());
+            System.out.println("data: " + data.size());
+        } else {
+            data = dataset.getChild(datasetTransform);
+            if (data == null) {
+                throw new RuntimeException("dataset is not available yet");
+            }
         }
 
         Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
@@ -174,11 +166,11 @@ public class DendrogramComponent extends ClusterAnalysis {
         System.out.println("clustering took " + time + " ms");
 
 
-    /*    double cutoff = rowsResult.findCutoff();
-        System.out.println("rows tree cutoff = " + cutoff);
+        /*    double cutoff = rowsResult.findCutoff();
+         System.out.println("rows tree cutoff = " + cutoff);
 
-        cutoff = columnsResult.findCutoff();
-        System.out.println("columns tree cutoff = " + cutoff);*/
+         cutoff = columnsResult.findCutoff();
+         System.out.println("columns tree cutoff = " + cutoff);*/
 
         DendrogramData dendroData = new DendrogramData(data, input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);

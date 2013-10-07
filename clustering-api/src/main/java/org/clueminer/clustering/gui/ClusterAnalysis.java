@@ -36,13 +36,6 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
      */
     public abstract void setDataset(Dataset<? extends Instance> dataset);
 
-    /**
-     * Approximated (simplified) dataset by some models
-     *
-     * @param approx
-     */
-    public abstract void setApproximated(Dataset<? extends Instance> approx);
-
     public abstract void execute(AlgorithmParameters map);
 
     public abstract void zoomIn();

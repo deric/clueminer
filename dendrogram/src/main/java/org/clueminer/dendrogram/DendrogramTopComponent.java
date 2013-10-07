@@ -227,10 +227,6 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         this.dendrogram.setDataset(dataset);
     }
 
-    public void setPreprocessedDataset(Dataset<? extends Instance> dataset) {
-        this.dendrogram.setApproximated(dataset);
-    }
-
     /**
      * Currently dendrogram is the main view for a opened project. It might
      * change in the future

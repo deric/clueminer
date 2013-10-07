@@ -41,6 +41,7 @@ public class HCLDialog extends ClusteringDialog {
     private void setDefaults() {
         comboDistance.setSelectedItem("Euclidean");
         comboStandardisation.setSelectedItem("Min-Max");
+        comboTransform.setSelectedItem("-- no transformation --");
     }
 
     private String[] initDistance() {

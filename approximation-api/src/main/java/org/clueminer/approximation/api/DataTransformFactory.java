@@ -2,7 +2,6 @@ package org.clueminer.approximation.api;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
@@ -12,8 +11,7 @@ import org.openide.util.Lookup;
  */
 public class DataTransformFactory extends ServiceFactory<DataTransform> {
 
-    private static DataTransformFactory instance;
-    private static List<String> paramNames = null;
+    private static DataTransformFactory instance;    
 
     public static DataTransformFactory getDefault() {
         if (instance == null) {
