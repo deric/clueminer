@@ -259,4 +259,21 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     public int getCapacity();
+
+    /**
+     * Add reference to a dataset which was usually created by transformation of
+     * this dataset.
+     *
+     * @param key must be unique
+     * @param dataset
+     */
+    public void addChild(String key, Dataset<Instance> dataset);
+
+    /**
+     * Return dataset if exists, otherwise null
+     *
+     * @param key
+     * @return
+     */
+    public Dataset<Instance> getChild(String key);
 }
