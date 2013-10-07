@@ -121,6 +121,7 @@
                         <publicPackage>org.clueminer.asr</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
                         <publicPackage>org.clueminer.sax</publicPackage>
+                        <publicPackage>org.clueminer.tranform</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

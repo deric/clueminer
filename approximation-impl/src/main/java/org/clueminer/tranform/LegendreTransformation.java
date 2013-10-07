@@ -1,4 +1,4 @@
-package org.clueminer.approximation;
+package org.clueminer.tranform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.approximation.LegendreApproximator;
 import org.clueminer.approximation.api.Approximator;
+import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -16,13 +18,23 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-public class LegendreTransformation {
+@ServiceProvider(service = DataTransform.class)
+public class LegendreTransformation implements DataTransform {
 
+    private static String name = "ortho-polynomials (Legendre)";
+    
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
@@ -35,7 +47,7 @@ public class LegendreTransformation {
         }
         ContinuousInstance item;
         try {
-            int j = 0;            
+            int j = 0;
             //create attribute for each parameter
             List<Approximator> approx = new ArrayList<Approximator>();
             approx.add(new LegendreApproximator(5));

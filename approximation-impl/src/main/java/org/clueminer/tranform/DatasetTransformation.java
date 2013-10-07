@@ -1,4 +1,4 @@
-package org.clueminer.approximation;
+package org.clueminer.tranform;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.ApproximatorFactory;
+import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -21,12 +22,23 @@ import org.clueminer.math.Standardisation;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-public class DatasetTransformation {
+@ServiceProvider(service = DataTransform.class)
+public class DatasetTransformation implements DataTransform {
+
+    private boolean save = false;
+    private static String name = "approx cubic-exp-poly9";
+    
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     /**
      * Computes characteristic values for dataset, should be run each time
@@ -44,7 +56,7 @@ public class DatasetTransformation {
                 instance.setId(input.getId());
                 instance.setAncestor(input);
                 output.add(instance);
-            }            
+            }
             for (Approximator a : approx) {
                 coefficients = new HashMap<String, Double>();
                 a.estimate(xAxis, input, coefficients);
@@ -57,7 +69,8 @@ public class DatasetTransformation {
         }
     }
 
-    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, boolean save) {
+    @Override
+    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
@@ -88,8 +101,8 @@ public class DatasetTransformation {
                 for (String attribute : attrs) {
                     output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
                 }
-            }            
-            for (int i = 0; i < dataset.size(); i++) {                
+            }
+            for (int i = 0; i < dataset.size(); i++) {
                 item = dataset.instance(i);
                 approximate(i, xAxis, item, output, approx);
                 //output
@@ -216,5 +229,13 @@ public class DatasetTransformation {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isSave() {
+        return save;
+    }
+
+    public void setSave(boolean save) {
+        this.save = save;
     }
 }

@@ -1,6 +1,6 @@
 package org.clueminer.hts.fluorescence;
 
-import org.clueminer.approximation.DatasetTransformation;
+import org.clueminer.tranform.DatasetTransformation;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
