@@ -1,5 +1,6 @@
 package org.clueminer.dataset.plugin;
 
+import java.util.HashMap;
 import javax.swing.event.EventListenerList;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
@@ -9,7 +10,8 @@ import org.clueminer.events.DatasetListener;
 
 /**
  * Until java will have mix-ins we need this sort of code duplication:
- * AbstractArrayDataset and ArrayDataset are pretty much same
+ * AbstractDataset and AbstractArrayDataset are pretty much same just one use
+ * methods inherited from ArrayList and the other use array storage.
  *
  * @author Tomas Barton
  */
@@ -21,6 +23,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     protected String name;
     protected ColorGenerator colorGenerator;
     protected Dataset<? extends Instance> parent = null;
+    protected HashMap<String, Dataset<Instance>> children;
 
     public AbstractArrayDataset() {
         //do nothing
@@ -97,5 +100,21 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
             }
         }
         return res;
+    }
+    
+    @Override
+    public void addChild(String key, Dataset<Instance> dataset){
+        if(children == null){
+           children = new HashMap<String, Dataset<Instance>>(5);
+        }
+        children.put(key, dataset);
+    }
+    
+    @Override
+    public Dataset<Instance> getChild(String key){
+        if(children == null){
+            return null;
+        }
+        return children.get(key);
     }
 }

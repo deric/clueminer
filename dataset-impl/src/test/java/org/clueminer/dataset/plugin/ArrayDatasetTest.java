@@ -1,8 +1,13 @@
 package org.clueminer.dataset.plugin;
 
 import java.util.Iterator;
+import java.util.Random;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.Standardisation;
+import org.clueminer.std.Scaler;
+import org.clueminer.std.StdDev;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,6 +24,7 @@ public class ArrayDatasetTest {
     private static ArrayDataset<Instance> dataset;
     private static int dataCapacity = 10;
     private static int attributesCnt = 2;
+    private static Random rand;
 
     public ArrayDatasetTest() {
     }
@@ -27,6 +33,7 @@ public class ArrayDatasetTest {
     public static void setUpClass() {
         dataset = new ArrayDataset<Instance>(dataCapacity, attributesCnt);
         dataset.builder().create(new double[]{1, 2});
+        rand = new Random();
     }
 
     @AfterClass
@@ -36,7 +43,7 @@ public class ArrayDatasetTest {
     @Before
     public void setUp() {
         //before each testing method we add an instance to the dataset
-        dataset.add(new DoubleArrayDataRow(new double[]{5, 5}));
+        dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
     }
 
     @After
@@ -76,7 +83,7 @@ public class ArrayDatasetTest {
         assertNotNull(inst);
         assertEquals(attributesCnt, inst.size());
     }
-    
+
     @Test
     public void testSetName() {
         String name = "foo";
@@ -98,7 +105,8 @@ public class ArrayDatasetTest {
     public void testSize() {
         int size = dataset.size();
         //if executed in random order we can't be sure what's the size
-        assertEquals(true, (size < dataset.getCapacity() && size > 1));
+        System.out.println("size= " + dataset.size() + " capacity = " + dataset.getCapacity());
+        assertEquals(true, (size <= dataset.getCapacity() && size > 0));
     }
 
     /**
@@ -342,10 +350,28 @@ public class ArrayDatasetTest {
         int size = dataset.size();
         int i = 0;
         Iterator it = dataset.iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             it.next();
             i++;
         }
-        assertEquals(size, i);        
+        assertEquals(size, i);
+    }
+
+    @Test
+    public void testAddChild() {
+        double data[][] = dataset.arrayCopy();
+        Matrix m = Scaler.standartize(data, "z-score", false);
+
+        m.print(6, 2);
+        ArrayDataset<Instance> copy = (ArrayDataset<Instance>) dataset.duplicate();
+        for (int i = 0; i < m.rowsCount(); i++) {
+            Instance inst = new DoubleArrayDataRow(m.getRowVector(i).toArray());
+            copy.add(inst);
+        }
+        String key = "z-score";
+        dataset.addChild(key, copy);
+
+        assertEquals(copy, dataset.getChild(key));
+
     }
 }

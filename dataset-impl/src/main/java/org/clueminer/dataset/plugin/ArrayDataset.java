@@ -43,7 +43,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public boolean add(Instance i) {
-        if((n+1) >= getCapacity()){
+        if ((n + 1) >= getCapacity()) {
             int capacity = (int) (n * 1.618); //golden ratio :)
             ensureCapacity(capacity);
         }
@@ -281,6 +281,11 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return plot;
     }
 
+    /**
+     * Copies attributes but not data itself
+     *
+     * @return copy of dataset structure
+     */
     @Override
     public Dataset<E> duplicate() {
         ArrayDataset<E> copy = new ArrayDataset<E>(this.size(), this.attributeCount());
@@ -307,8 +312,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public void ensureCapacity(int capacity) {        
-        if (capacity > size()){            
+    public void ensureCapacity(int capacity) {
+        if (capacity > size()) {
             Instance[] tmp = new Instance[capacity];
             System.arraycopy(data, 0, tmp, 0, n);
             data = tmp;
