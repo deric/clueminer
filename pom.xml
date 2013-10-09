@@ -103,8 +103,9 @@
         <module>gnuplot</module>
         <module>clustering-benchmark</module>
         <module>dataset-benchmark</module>
-        <module>posturomed</module>        
-    </modules>
+        <module>posturomed</module>
+    <module>mlearn</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
