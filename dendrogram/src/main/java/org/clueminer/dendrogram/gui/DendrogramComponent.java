@@ -109,7 +109,7 @@ public class DendrogramComponent extends ClusterAnalysis {
 
     @Override
     public boolean hasDataset() {
-        return dataset == null;
+        return dataset != null;
     }
 
     @Override

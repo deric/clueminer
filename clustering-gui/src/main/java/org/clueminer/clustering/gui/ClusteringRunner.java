@@ -62,7 +62,6 @@ public class ClusteringRunner implements Runnable {
                         }
                     }
                 }
-                throw new RuntimeException("dataset is not available yet");
             }
             analysis.setDataset(transform);
         }
