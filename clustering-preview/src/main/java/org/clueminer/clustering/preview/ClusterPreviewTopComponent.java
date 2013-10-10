@@ -3,8 +3,6 @@ package org.clueminer.clustering.preview;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import javax.swing.SwingUtilities;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -16,14 +14,12 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
+import static org.clueminer.clustering.preview.Bundle.*;
 
 /**
  * Top component which displays something.
@@ -58,7 +54,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
         initComponents();
         //Add the dynamic object to the TopComponent Lookup:
         associateLookup(new AbstractLookup(content));
-        setName(NbBundle.getMessage(ClusterPreviewTopComponent.class, "CTL_ClusterPreviewAction"));
+        setName(CTL_ClusterPreviewAction());
         setToolTipText(Bundle.HINT_ClusterPreviewTopComponent());
         putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         frame = new ClusterPreviewFrame();
