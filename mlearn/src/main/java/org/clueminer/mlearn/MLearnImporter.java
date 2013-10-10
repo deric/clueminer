@@ -14,7 +14,6 @@ import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 
-
 /**
  *
  * @author Tomas Barton
@@ -53,13 +52,16 @@ public class MLearnImporter implements LongTask, Runnable {
     @Override
     public void run() {
         BufferedReader br = null;
+        if (ph == null) {
+            throw new RuntimeException("Progress handle not set");
+        }
         try {
             br = new BufferedReader(new FileReader(file));
             try {
                 ph.start(0);
                 //it would be nice to know number of lines
                 dataset = new SampleDataset<Instance>(100);
-                FileHandler.loadDataset(file, dataset);
+                FileHandler.loadDataset(file, dataset, ",");
 
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
@@ -82,7 +84,6 @@ public class MLearnImporter implements LongTask, Runnable {
         this.file = file;
     }
 
-
     private String parseName(File f) {
         String name = f.getName();
         //remove extension
@@ -97,7 +98,6 @@ public class MLearnImporter implements LongTask, Runnable {
         }
         return name;
     }
-
 
     public Dataset<Instance> getDataset() {
         return dataset;
