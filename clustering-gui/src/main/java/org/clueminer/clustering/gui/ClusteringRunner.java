@@ -4,6 +4,7 @@ import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.FakeDataset;
 import org.clueminer.utils.AlgorithmParameters;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -23,6 +24,7 @@ public class ClusteringRunner implements Runnable {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private static String rawData = "-- no transformation --";
     private boolean preprocessingFinished = false;
+    private Dataset<? extends Instance> transform;
 
     public ClusteringRunner(ClusterAnalysis clust, ClusteringDialog config) {
         this.analysis = clust;
@@ -31,6 +33,7 @@ public class ClusteringRunner implements Runnable {
 
     @Override
     public void run() {
+        Dataset<? extends Instance> dataset;
         AlgorithmParameters params = config.getParams();
 
 
@@ -44,10 +47,12 @@ public class ClusteringRunner implements Runnable {
 
         Dataset<? extends Instance> data = analysis.getDataset();
         if (!datasetTransform.equals(rawData)) {
-            Dataset<? extends Instance> transform;
+            //make sure we don't have old data
+            transform = null;
             //check if there's preloaded dataset available
             transform = data.getChild(datasetTransform);
             if (transform == null) {
+                System.out.println("missing child ");
                 //run analysis and wait
                 final Object lock = new Object();
 
@@ -63,10 +68,27 @@ public class ClusteringRunner implements Runnable {
                     }
                 }
             }
-            analysis.setDataset(transform);
+            System.out.println("trasformed dataset " + transform.getClass().toString() + " name: " + transform.getName() + ", size = " + transform.size());
+
+            //wait until real data are loaded
+            if (transform.equals(new FakeDataset<Instance>())) {
+                System.out.println("waiting for data");
+                while ((transform = data.getChild(datasetTransform)) == null) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            }
+
+            dataset = transform;
+        } else {
+            dataset = data;
         }
 
-        analysis.execute(params);
+
+        analysis.execute(params, dataset);
     }
 
     private void runPreprocessing(final Object lock, final Dataset<? extends Instance> data, String datasetTransform) {
@@ -87,6 +109,10 @@ public class ClusteringRunner implements Runnable {
             @Override
             public void taskFinished(Task task) {
                 synchronized (lock) {
+                    System.out.println("preprocessing finished.");
+                    System.out.println("output dataset " + output.getClass().toString() + " name: " + output.getName() + ", size = " + output.size());
+                    transform = output;
+
                     preprocessingFinished = true;
                     lock.notifyAll();
                 }

@@ -101,8 +101,6 @@ public class HCLDialog extends ClusteringDialog {
 
         inputGroup = new javax.swing.ButtonGroup();
         linkageGroup = new javax.swing.ButtonGroup();
-        radioInputCI = new javax.swing.JRadioButton();
-        radioInputFitted = new javax.swing.JRadioButton();
         lbStandard = new javax.swing.JLabel();
         comboStandardisation = new javax.swing.JComboBox();
         lbDistanceFunction = new javax.swing.JLabel();
@@ -121,13 +119,6 @@ public class HCLDialog extends ClusteringDialog {
         lbTransform = new javax.swing.JLabel();
         comboTransform = new javax.swing.JComboBox();
 
-        inputGroup.add(radioInputCI);
-        radioInputCI.setSelected(true);
-        radioInputCI.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.radioInputCI.text")); // NOI18N
-
-        inputGroup.add(radioInputFitted);
-        radioInputFitted.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.radioInputFitted.text")); // NOI18N
-
         lbStandard.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.lbStandard.text_1")); // NOI18N
 
         comboStandardisation.setModel(new DefaultComboBoxModel(initStandardisation()));
@@ -136,7 +127,6 @@ public class HCLDialog extends ClusteringDialog {
 
         comboDistance.setModel(new DefaultComboBoxModel(initDistance()));
 
-        lbLinkage.setLabelFor(radioInputFitted);
         lbLinkage.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.lbLinkage.text")); // NOI18N
 
         linkageGroup.add(radioLinkageSingle);
@@ -179,11 +169,6 @@ public class HCLDialog extends ClusteringDialog {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(94, 94, 94)
-                                .addComponent(radioInputFitted)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(radioInputCI))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lbStandard)
                                     .addComponent(lbDistanceFunction)
@@ -221,16 +206,12 @@ public class HCLDialog extends ClusteringDialog {
                             .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(213, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioInputFitted)
-                    .addComponent(radioInputCI))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbTransform)
                     .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -283,8 +264,6 @@ public class HCLDialog extends ClusteringDialog {
     private javax.swing.JLabel lbStandard;
     private javax.swing.JLabel lbTransform;
     private javax.swing.ButtonGroup linkageGroup;
-    private javax.swing.JRadioButton radioInputCI;
-    private javax.swing.JRadioButton radioInputFitted;
     private javax.swing.JRadioButton radioLinkageAverage;
     private javax.swing.JRadioButton radioLinkageComplete;
     private javax.swing.JRadioButton radioLinkageSingle;
@@ -309,16 +288,6 @@ public class HCLDialog extends ClusteringDialog {
 
         String standard = (String) comboStandardisation.getSelectedItem();
         params.setProperty("std", standard);
-
-        if (radioInputFitted.isSelected()) {
-            //getting parameters
-            params.setProperty("fitted-params", String.valueOf(true));
-            //m = this.createParamsMatrix(dataset, std);
-        } else {
-            params.setProperty("fitted-params", String.valueOf(false));
-            //cell index values
-            //m = dataset.createFloatMatrix(std);
-        }
 
         params.setProperty("dataset", (String) comboTransform.getSelectedItem() );
 

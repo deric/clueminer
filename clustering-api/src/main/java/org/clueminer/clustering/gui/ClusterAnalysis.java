@@ -50,7 +50,14 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
      */
     public abstract Dataset<? extends Instance> getDataset();
 
-    public abstract void execute(AlgorithmParameters map);
+    /**
+     * Method is executed by external module which could modify the original
+     * dataset (preprocessing, dimensionality reduction)
+     *
+     * @param map
+     * @param dataset
+     */
+    public abstract void execute(AlgorithmParameters map, Dataset<? extends Instance> dataset);
 
     public abstract void zoomIn();
 

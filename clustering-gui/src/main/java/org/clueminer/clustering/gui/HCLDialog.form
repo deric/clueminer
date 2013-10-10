@@ -28,12 +28,6 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
-                              <Component id="radioInputFitted" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="radioInputCI" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lbStandard" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="lbDistanceFunction" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -86,19 +80,14 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="122" max="32767" attributes="0"/>
+              <EmptySpace pref="213" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="radioInputFitted" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="radioInputCI" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="7" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lbTransform" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboTransform" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -145,27 +134,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JRadioButton" name="radioInputCI">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="inputGroup"/>
-        </Property>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/clueminer/clustering/gui/Bundle.properties" key="HCLDialog.radioInputCI.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JRadioButton" name="radioInputFitted">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="inputGroup"/>
-        </Property>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/clueminer/clustering/gui/Bundle.properties" key="HCLDialog.radioInputFitted.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="lbStandard">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -197,7 +165,7 @@
     <Component class="javax.swing.JLabel" name="lbLinkage">
       <Properties>
         <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="radioInputFitted"/>
+          <ComponentRef name="default"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/clueminer/clustering/gui/Bundle.properties" key="HCLDialog.lbLinkage.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>

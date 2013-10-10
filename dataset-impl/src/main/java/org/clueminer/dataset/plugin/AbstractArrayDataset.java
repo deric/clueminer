@@ -101,7 +101,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
         }
         return res;
     }
-    
+
     @Override
     public void addChild(String key, Dataset<Instance> dataset){
         if(children == null){
@@ -109,9 +109,9 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
         }
         children.put(key, dataset);
     }
-    
+
     @Override
-    public Dataset<Instance> getChild(String key){
+    public Dataset<Instance> getChild(String key) {
         if(children == null){
             return null;
         }
