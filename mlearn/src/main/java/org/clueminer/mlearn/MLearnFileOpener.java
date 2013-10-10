@@ -60,26 +60,6 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         return mimeTypes;
     }
 
-    protected boolean isAsciiFile(File file) throws FileNotFoundException, IOException {
-        InputStream in = new FileInputStream(file);
-        byte[] bytes = new byte[500];
-
-        in.read(bytes, 0, bytes.length);
-        int x = 0;
-        short bin = 0;
-
-        for (byte thisByte : bytes) {
-            //char it = (char) thisByte;
-            //if (!Character.isWhitespace(it) && Character.isISOControl(it)) {
-            if (thisByte < 32 || thisByte > 127) {
-                bin++;
-            }
-            x++;
-        }
-        in.close();
-        return true;
-    }
-
     /**
      * Return true is file seems to be in format which is supported by this
      * package
@@ -87,10 +67,11 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
      * @param f
      * @return boolean
      */
-    protected boolean isFileSupported(File f) {
+    protected boolean isFileSupported(File f) throws FileNotFoundException, IOException {
         Collection mimeTypes = detectMIME(f);
         String mime = mimeTypes.toString();
-        if (mime.contains("application/octet-stream") || mime.contains("text/x-tex")) {
+        //almost any file matches this :(
+        if (mime.contains("text") || mime.contains("octet-stream")) {
             return true;
         }
         return false;
@@ -99,13 +80,18 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     @Override
     public boolean open(FileObject fileObject) {
         File f = FileUtil.toFile(fileObject);
-        if (isFileSupported(f)) {
-            importer = new MLearnImporter(f);
-            openDataFile(importer);
-            return true;
-        } else {
-            return false;
+        try {
+            if (isFileSupported(f)) {
+                importer = new MLearnImporter(f);
+                openDataFile(importer);
+                return true;
+            }
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
+        return false;
     }
 
     protected String getExtension(String filename) {

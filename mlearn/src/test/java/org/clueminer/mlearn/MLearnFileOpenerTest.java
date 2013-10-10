@@ -2,7 +2,9 @@ package org.clueminer.mlearn;
 
 import java.io.IOException;
 import java.util.Collection;
+import org.clueminer.fixtures.ImageFixture;
 import org.clueminer.fixtures.MLearnFixture;
+import org.clueminer.fixtures.XCalibourFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +43,10 @@ public class MLearnFileOpenerTest {
         col = subject.detectMIME(fixtures.dermatology());
         System.out.println(col);
         assertEquals(true, col.contains("text/x-tex"));
+        ImageFixture inf = new ImageFixture();
+        col = subject.detectMIME(inf.insect3d());
+        System.out.println("image: " + col);
+
     }
 
     /**
@@ -56,6 +62,8 @@ public class MLearnFileOpenerTest {
         assertEquals(true, subject.isFileSupported(fixtures.bosthouse()));
         assertEquals(true, subject.isFileSupported(fixtures.dermatology()));
         assertEquals(true, subject.isFileSupported(fixtures.forrestFires()));
+        ImageFixture inf = new ImageFixture();
+        assertEquals(false, subject.isFileSupported(inf.insect3d()));
     }
 
     /**
@@ -84,18 +92,5 @@ public class MLearnFileOpenerTest {
      */
     @Test
     public void testOpenDataFile() {
-    }
-
-    /**
-     * Test of isAsciiFile method, of class MLearnFileOpener.
-     */
-    @Test
-    public void testIsAsciiFile() throws Exception {
-        assertEquals(true, subject.isAsciiFile(fixtures.iris()));
-        assertEquals(true, subject.isAsciiFile(fixtures.bosthouse()));
-        assertEquals(true, subject.isAsciiFile(fixtures.cars()));
-        assertEquals(true, subject.isAsciiFile(fixtures.forrestFires()));
-        assertEquals(true, subject.isAsciiFile(fixtures.irisMissing()));
-        assertEquals(true, subject.isAsciiFile(fixtures.dermatology()));
     }
 }
