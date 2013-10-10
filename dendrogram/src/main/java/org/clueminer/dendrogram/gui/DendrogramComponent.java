@@ -133,20 +133,8 @@ public class DendrogramComponent extends ClusterAnalysis {
         //algorithm.addAlgorithmListener(new Listener());
 
         long start = System.currentTimeMillis();
-        Dataset<? extends Instance> data;
-        String datasetTransform = params.getString("dataset");
-        System.out.println("using: " + datasetTransform);
-        if (datasetTransform.equals("-- no transformation --")) {
-            data = this.dataset;
-            System.out.println("data: " + data.size());
-        } else {
-            data = dataset.getChild(datasetTransform);
-            if (data == null) {
-                throw new RuntimeException("dataset is not available yet");
-            }
-        }
 
-        Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
+        Matrix input = standartize(dataset, params.getString("std"), params.getBoolean("log-scale"));
         if (debug) {
             System.out.println("input matrix");
             input.print(5, 2);
@@ -154,12 +142,12 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         //   progress.setTitle("Clustering by rows");
         params.setProperty("calculate-rows", String.valueOf(true));
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, data, params);
+        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
 
 
         //   progress.setTitle("Clustering by columns");
         params.setProperty("calculate-rows", String.valueOf(false));
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, data, params);
+        HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
         // validate(columnsResult);
 
         //System.out.println("params: " + params.toString());
@@ -183,7 +171,7 @@ public class DendrogramComponent extends ClusterAnalysis {
          cutoff = columnsResult.findCutoff();
          System.out.println("columns tree cutoff = " + cutoff);*/
 
-        DendrogramData dendroData = new DendrogramData(data, input, rowsResult, columnsResult);
+        DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);
         String cutoffAlg = params.getString("cutoff");
         Clustering clust;
@@ -230,7 +218,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         scores.append(cutoffAlg).append("\t");
 
         for (ClusterEvaluator c : list) {
-            s = c.score(clust, data);
+            s = c.score(clust, dataset);
             scores.append(s).append("\t");
             evaluators.append(c.getName()).append("\t");
         }
