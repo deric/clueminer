@@ -15,6 +15,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -28,13 +29,18 @@ import org.openide.util.lookup.ServiceProvider;
 public class LegendreTransformation implements DataTransform {
 
     private static String name = "ortho-polynomials (Legendre)";
-    
+
     @Override
     public String getName() {
         return name;
     }
 
     @Override
+    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+        Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
+        analyze(d, output, ph);
+    }
+
     public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
@@ -101,5 +107,10 @@ public class LegendreTransformation implements DataTransform {
                 }
             }
         }
+    }
+
+    @Override
+    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
+        return new AttrHashDataset(input.size());
     }
 }

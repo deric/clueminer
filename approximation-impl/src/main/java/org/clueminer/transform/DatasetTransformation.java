@@ -17,11 +17,13 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.math.Standardisation;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +35,6 @@ public class DatasetTransformation implements DataTransform {
 
     private boolean save = false;
     private static String name = "approx cubic-exp-poly9";
-    
 
     @Override
     public String getName() {
@@ -70,7 +71,13 @@ public class DatasetTransformation implements DataTransform {
     }
 
     @Override
-    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+        //this will cause casting exception if used in incorrect context
+        Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
+        analyze(d, output, ph);
+    }
+
+    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
@@ -104,7 +111,7 @@ public class DatasetTransformation implements DataTransform {
             }
             for (int i = 0; i < dataset.size(); i++) {
                 item = dataset.instance(i);
-                approximate(i, xAxis, item, output, approx);
+                approximate(i, xAxis, item, (Dataset<Instance>) output, approx);
                 //output
                 ph.progress(++analyzeProgress);
             }
@@ -169,7 +176,7 @@ public class DatasetTransformation implements DataTransform {
                 writer.append(sampleName).append(separator);
                 for (Approximator a : am.getAll()) {
                     rmse = 0;
-                    //find indexes for given approximator and fetch them from 
+                    //find indexes for given approximator and fetch them from
                     //params dataset
                     for (j = 0; j < timePoints.length; j++) {
                         diff = a.getFunctionValue(timePoints[j].getPosition(), params.instance(j).arrayCopy()) - current.value(j);
@@ -184,7 +191,7 @@ public class DatasetTransformation implements DataTransform {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 
@@ -227,7 +234,7 @@ public class DatasetTransformation implements DataTransform {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 
@@ -237,5 +244,10 @@ public class DatasetTransformation implements DataTransform {
 
     public void setSave(boolean save) {
         this.save = save;
+    }
+
+    @Override
+    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
+        return new AttrHashDataset(input.size());
     }
 }

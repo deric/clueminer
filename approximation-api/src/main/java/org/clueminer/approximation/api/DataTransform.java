@@ -27,7 +27,9 @@ public interface DataTransform {
      * Creates preferred data structure for storing results of this
      * transformation
      *
+     * @param input input dataset, usually we use number of instances or
+     * dimensionality to optimize output storage
      * @return dataset for storing results
      */
-    public Dataset<? extends Instance> createDefaultOutput();
+    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input);
 }
