@@ -4,7 +4,6 @@ import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.FakeDataset;
 import org.clueminer.utils.AlgorithmParameters;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -71,7 +70,7 @@ public class ClusteringRunner implements Runnable {
             System.out.println("trasformed dataset " + transform.getClass().toString() + " name: " + transform.getName() + ", size = " + transform.size());
 
             //wait until real data are loaded
-            if (transform.equals(new FakeDataset<Instance>())) {
+            if ((transform instanceof Dataset) && transform.isEmpty()) {
                 System.out.println("waiting for data");
                 while ((transform = data.getChild(datasetTransform)) == null) {
                     try {
