@@ -9,6 +9,7 @@
 .project
 .settings/
 target/
+logs/
 /nbproject/private/
 /clustering-gui/src/main/resources/Dendrogram/build/
 /clustering-gui/src/main/resources/Dendrogram/nbproject/private

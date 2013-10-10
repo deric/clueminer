@@ -1,9 +1,9 @@
 package org.clueminer.mlearn;
 
-
 import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -32,7 +32,7 @@ import org.openide.windows.WindowManager;
 @org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
 public class MLearnFileOpener implements OpenFileImpl, TaskListener {
 
-    private MimeUtil2 mimeUtil = new MimeUtil2();    
+    private MimeUtil2 mimeUtil = new MimeUtil2();
     private static Project project;
     private MLearnImporter importer;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
@@ -60,18 +60,37 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         return mimeTypes;
     }
 
+    protected boolean isAsciiFile(File file) throws FileNotFoundException, IOException {
+        InputStream in = new FileInputStream(file);
+        byte[] bytes = new byte[500];
+
+        in.read(bytes, 0, bytes.length);
+        int x = 0;
+        short bin = 0;
+
+        for (byte thisByte : bytes) {
+            //char it = (char) thisByte;
+            //if (!Character.isWhitespace(it) && Character.isISOControl(it)) {
+            if (thisByte < 32 || thisByte > 127) {
+                bin++;
+            }
+            x++;
+        }
+        in.close();
+        return true;
+    }
+
     /**
-     * MIME type
-     *     
+     * Return true is file seems to be in format which is supported by this
+     * package
+     *
      * @param f
-     * @return
+     * @return boolean
      */
-    protected boolean openFile(File f) {
+    protected boolean isFileSupported(File f) {
         Collection mimeTypes = detectMIME(f);
         String mime = mimeTypes.toString();
-        if (mime.contains("octet-stream")) {
-            importer = new MLearnImporter(f);
-            openDataFile(importer);
+        if (mime.contains("application/octet-stream") || mime.contains("text/x-tex")) {
             return true;
         }
         return false;
@@ -80,7 +99,13 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     @Override
     public boolean open(FileObject fileObject) {
         File f = FileUtil.toFile(fileObject);
-        return openFile(f);
+        if (isFileSupported(f)) {
+            importer = new MLearnImporter(f);
+            openDataFile(importer);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected String getExtension(String filename) {
@@ -104,9 +129,9 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
                 importer.getDataset().setName(importer.getFile().getName());
-                
+
                 DendrogramTopComponent tc = new DendrogramTopComponent();
-                
+
                 tc.setDataset(importer.getDataset());
                 //tc.setProject(project);
                 //tc.setDisplayName(plate.getName());
