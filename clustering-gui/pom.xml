@@ -120,6 +120,11 @@
             <artifactId>approximation-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE73</version>
+        </dependency>
     </dependencies>
 
     <build>

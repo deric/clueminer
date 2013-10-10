@@ -21,12 +21,12 @@ public interface InstanceBuilder {
      * @return new Instance
      */
     public Instance createCopyOf(Instance orig);
-    
+
     /**
-     *      
+     *
      * @param orig original instance
      * @param parent dataset which will be considered as new instance parent
-     * @return 
+     * @return
      */
     public Instance createCopyOf(Instance orig, Dataset<Instance> parent);
 

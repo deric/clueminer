@@ -6,7 +6,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.api.Workspace;
 import org.netbeans.api.progress.ProgressHandle;
@@ -38,7 +37,7 @@ public class DataPreprocessing implements TaskListener {
         Timeseries<ContinuousInstance> dataset = (Timeseries<ContinuousInstance>) plate;
         output = new SampleDataset<Instance>();
         output.setParent((Dataset<Instance>) plate);
-        
+
         final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, transform, ph));
         taskAnalyze.addTaskListener(this);
         taskAnalyze.schedule(0);
