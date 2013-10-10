@@ -107,6 +107,16 @@ public class DendrogramComponent extends ClusterAnalysis {
         this.dataset = dataset;
     }
 
+    @Override
+    public boolean hasDataset() {
+        return dataset == null;
+    }
+
+    @Override
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
+    }
+
     public Matrix standartize(Dataset<? extends Instance> data, String method, boolean logScale) {
         return Scaler.standartize(data.arrayCopy(), method, logScale);
     }
@@ -125,6 +135,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         long start = System.currentTimeMillis();
         Dataset<? extends Instance> data;
         String datasetTransform = params.getString("dataset");
+        System.out.println("using: " + datasetTransform);
         if (datasetTransform.equals("-- no transformation --")) {
             data = this.dataset;
             System.out.println("data: " + data.size());

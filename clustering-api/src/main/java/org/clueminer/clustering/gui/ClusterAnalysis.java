@@ -36,6 +36,20 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
      */
     public abstract void setDataset(Dataset<? extends Instance> dataset);
 
+    /**
+     * Check if dataset is loaded
+     *
+     * @return true when data available
+     */
+    public abstract boolean hasDataset();
+
+    /**
+     * Return dataset to be clustered
+     *
+     * @return dataset
+     */
+    public abstract Dataset<? extends Instance> getDataset();
+
     public abstract void execute(AlgorithmParameters map);
 
     public abstract void zoomIn();
@@ -50,7 +64,8 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
 
     /**
      * Method is executed when clustering task is finished
-     * @param task 
+     *
+     * @param task
      */
     @Override
     public abstract void taskFinished(Task task);
