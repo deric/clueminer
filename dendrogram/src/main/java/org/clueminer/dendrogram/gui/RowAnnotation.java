@@ -36,7 +36,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             int height = fm.getHeight();
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
                 annY = (row + 1) * elementSize.height - elementSize.height / 2 + height / 2;
-                String s = dendroData.getRowsResult().getInstance(row).getFullName();
+                String s = dendroData.getRowsResult().getInstance(row).getName();
 
                 if (row == firstSelectedRow) {
                     f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);

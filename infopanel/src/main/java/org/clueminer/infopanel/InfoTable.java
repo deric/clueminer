@@ -64,7 +64,6 @@ public class InfoTable extends JPanel {
         for (Object[] line : data) {
             //convert to String
             String[] stringArray = Arrays.copyOf(line, line.length, String[].class);
-            Dump.array(stringArray, "info");
             propertieList.add(stringArray);
         }
     }

@@ -51,7 +51,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
     private Lookup.Result<Dataset> result = null;
     private Lookup.Result<HtsPlate> htsResult = null;
     protected static Project project;
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private static final Logger logger = Logger.getLogger(InfoPanelTopComponent.class.getName());
 
     public InfoPanelTopComponent() {
         initComponents();
@@ -82,7 +82,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                logger.log(Level.INFO, "wellmap listener initialized");
+                logger.log(Level.INFO, "panel initialized");
             }
 
             @Override
@@ -158,6 +158,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
 
     private void updateDataset(Dataset<Instance> d) {
         if (d != null) {
+            System.out.println("info panel: res change. dataset size" +d.size());
             int attrCnt = 2;
             String[][] data = new String[d.size()][attrCnt];
             int i = 0;
