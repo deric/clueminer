@@ -37,5 +37,5 @@ public interface HtsInstance<T extends Number> extends Comparable, ContinuousIns
      *
      * @return string in smilies format
      */
-    public String getSmiliesFormula();
+    public String getSmilesFormula();
 }

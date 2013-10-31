@@ -62,8 +62,8 @@ public class AnalyzeRunnerTest {
 
         //FluorescenceDataset dataset = importer.getDataset();
         Dataset<? extends Instance> plate = importer.getDataset();
-        System.out.println("inst A1 "+ plate.instance(0).toString());
-        System.out.println("plate "+plate.toString());
+        //System.out.println("inst A1 "+ plate.instance(0).toString());
+        //System.out.println("plate "+plate.toString());
         Dataset<Instance> output = new SampleDataset<Instance>();
         output.setParent((Dataset<Instance>) plate);
         ProgressHandle ph = ProgressHandleFactory.createHandle("Analyzing dataset");

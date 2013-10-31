@@ -163,4 +163,18 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
         }
         return res;
     }
+    /**
+     * not supported yet
+     *
+     * @return
+     */
+    @Override
+    public boolean hasFormula() {
+        return false;
+    }
+
+    @Override
+    public String getSmilesFormula() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
