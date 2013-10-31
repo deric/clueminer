@@ -26,7 +26,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     protected void render(Graphics2D g) {
-        if (rowsOrder != null) {            
+        if (rowsOrder != null) {
             g.setColor(Color.black);
             int annY;
             g.setFont(defaultFont);
@@ -148,7 +148,10 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     public void setDendrogramData(DendrogramData dendroData) {
-        this.dendroData = dendroData;        
-        resetCache();
+        this.dendroData = dendroData;
+        if (dendroData.hasRowsClustering()) {
+            rowsOrder = dendroData.getRowsResult().getMapping();
+            resetCache();
+        }
     }
 }
