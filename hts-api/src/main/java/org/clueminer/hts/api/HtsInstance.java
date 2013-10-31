@@ -24,4 +24,18 @@ public interface HtsInstance<T extends Number> extends Comparable, ContinuousIns
      * @return column number
      */
     public int getColumn();
+
+    /**
+     * Return true is there is chemical formula in any format
+     *
+     * @return true is any chemical structure available
+     */
+    public boolean hasFormula();
+
+    /**
+     * Chemical structure in smilies format
+     *
+     * @return string in smilies format
+     */
+    public String getSmiliesFormula();
 }
