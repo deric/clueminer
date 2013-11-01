@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.project.api.Project;
@@ -15,7 +13,6 @@ import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -24,10 +21,6 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
-import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.exception.InvalidSmilesException;
-import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.smiles.SmilesParser;
 
 /**
  * Top component which displays structure of molecules.
@@ -54,7 +47,6 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
 
     private static final long serialVersionUID = -2559104276598823748L;
     private final InstanceContent content = new InstanceContent();
-    private Lookup.Result result = null;
     private MoleculesGroup panel;
     private Lookup.Result<HtsPlate> htsResult = null;
     private static final Logger logger = Logger.getLogger(MoleculePanelTopComponent.class.getName());
@@ -104,29 +96,17 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
 
                 HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
                 System.out.println("got plate, size: " + plt);
-                //  result.addLookupListener(parent);
-
-
-                Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
-                if (dataset != null) {
-                    System.out.println("well map");
-                    System.out.println("dataset size = " + dataset.size());
-                    for (Instance inst : dataset) {
-                        System.out.println("inst: " + inst.toString());
-                    }
-                }
-
+                panel.plateUpdate(plt);
             }
 
             @Override
             public void unselect(Workspace workspace) {
-                if (result != null) {
-                    //   result.removeLookupListener(parent);
-                }
+                logger.log(Level.INFO, "component unselected");
             }
 
             @Override
             public void close(Workspace workspace) {
+                logger.log(Level.INFO, "component closed");
             }
 
             @Override
@@ -141,16 +121,13 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
             }
         });
 
-
-
-
-        result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
-        result.addLookupListener(this);
+        htsResult = Utilities.actionsGlobalContext().lookupResult(HtsPlate.class);
+        htsResult.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        result.removeLookupListener(this);
+        htsResult.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -165,52 +142,15 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
         // TODO read your settings according to their version
     }
 
-    private void updateDataset(Dataset<Instance> d) {
-        if (d != null) {
-            System.out.println("molecule panel: res change. dataset size" + d.size());
-
-            for (Instance inst : d) {
-                System.out.println("normal instance: " + inst.getName());
-            }
-
-        }
-    }
-
-    private void updatePlate(HtsPlate<HtsInstance> d) {
-        if (d != null) {
-
-            System.out.println("hts plate: " + d.getName() + ", " + d.getId());
-            for (HtsInstance inst : d) {
-                System.out.println("instance: " + inst.getName());
-                if (inst.hasFormula()) {
-                    System.out.println("formula: " + inst.getSmiles());
-
-                    try {
-                        SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
-                        IMolecule m = sp.parseSmiles( inst.getSmiles());
-                    } catch (InvalidSmilesException ise) {
-                        Exceptions.printStackTrace(ise);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void resultChanged(LookupEvent ev) {
         System.out.println("molecule event :" + ev.toString());
-        if (result != null) {
-            Collection<? extends Dataset> allDatasets = result.allInstances();
-            for (Dataset<Instance> d : allDatasets) {
-                updateDataset(d);
-            }
-        }
 
         if (htsResult != null) {
             System.out.println("molecule panel: got HTS Plate");
             Collection<? extends HtsPlate> allPlates = htsResult.allInstances();
             for (HtsPlate<HtsInstance> d : allPlates) {
-                updatePlate(d);
+                panel.plateUpdate(d);
             }
         }
     }
@@ -221,7 +161,7 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateDataset(plt);
+                panel.plateUpdate(plt);
             }
         });
 
