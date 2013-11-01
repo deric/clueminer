@@ -13,13 +13,42 @@
 
     <name>clueminer-app</name>
     <url>http://www.clueminer.org</url>
-    
+
     <repositories>
+        <!--
+        Repository hosting NetBeans modules, especially APIs.
+        Versions are based on IDE releases, e.g.: RELEASE691
+        To create your own repository, use: nbm:populate-repository
+        -->
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://bits.netbeans.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>central</id>
             <name>Maven Repository Switchboard</name>
             <layout>default</layout>
             <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatypenexus</id>
+            <name>CDK</name>
+            <url>https://maven.ch.cam.ac.uk/content/groups/ucc/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>plovdiv</id>
+            <name>CDK</name>
+            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -73,6 +102,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dataset-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>rtca</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -181,6 +215,21 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>explorer</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>molecule</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>java3d</groupId>
+            <artifactId>vecmath</artifactId>
+            <version>1.3.1</version>
         </dependency>
     </dependencies>
 
