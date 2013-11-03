@@ -7,15 +7,11 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-//import org.clueminer.clustering.api.Clustering;
-//import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
-import org.clueminer.project.api.Workspace;
-import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -23,12 +19,10 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
@@ -54,12 +48,11 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
 
     private static final long serialVersionUID = -818362881805020235L;
     private final InstanceContent content = new InstanceContent();
-    private Lookup.Result<HtsPlate> result = null;
-    //private Lookup.Result<SampleDataset> selection = null;
+    private Lookup.Result<HtsPlate> htsResult = null;
+    private Lookup.Result<Dataset> result = null;
+    private static final Logger logger = Logger.getLogger(WellMapTopComponent.class.getName());
     private WellMapFrame wellMap;
-    //private ClusterAnalysis clust;
     protected static Project project;
-    private WorkspaceListener workspaceListener;
 
     public WellMapTopComponent() {
         //Add the dynamic object to the TopComponent Lookup:
@@ -90,70 +83,22 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
     @Override
     public void componentOpened() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-            @Override
-            public void initialize(Workspace workspace) {
-                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "wellmap listener initialized");
-            }
+        pc.addWorkspaceListener(new WellMapLookupListener(this, htsResult));
 
-            @Override
-            public void select(Workspace workspace) {
-                System.out.println("workspace: " + workspace.toString());
-                Logger.getLogger(this.getClass().getName()).log(Level.INFO, "wellmap selected");
-                System.out.println("workspace selected: got result (plate)");
-                result = workspace.getLookup().lookupResult(HtsPlate.class);
-                System.out.println("lookup res= " + result.toString());
-
-                HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
-                System.out.println("got plate, size: " + plt);
-                //  result.addLookupListener(parent);
-
-
-                Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
-                if (dataset != null) {
-                    System.out.println("well map");
-                    System.out.println("dataset size = " + dataset.size());
-                    for(Instance inst: dataset){
-                        System.out.println("inst: "+inst.toString());
-                    }
-                }
-
-            }
-
-            @Override
-            public void unselect(Workspace workspace) {
-                if (result != null) {
-                    //   result.removeLookupListener(parent);
-                }
-            }
-
-            @Override
-            public void close(Workspace workspace) {
-            }
-
-            @Override
-            public void disable() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void projectActivated(Project proj) {
-                project = proj;
-                projectChanged();
-            }
-        });
-
-
-        /* selection = Utilities.actionsGlobalContext().lookupResult(SampleDataset.class);
-
-         selection.addLookupListener(this);
-         resultChanged(new LookupEvent(selection));*/
+        result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
+        result.addLookupListener(this);
+        //InstanceContent
+        //htsResult = Utilities.actionsGlobalContext().lookupResult(HtsPlate.class);
+        //htsResult.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.removeWorkspaceListener(workspaceListener);
+        //    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        //   pc.removeWorkspaceListener(workspaceListener);
+        if (htsResult != null) {
+            htsResult.removeLookupListener(this);
+        }
     }
 
     void writeProperties(java.util.Properties p) {
@@ -168,43 +113,49 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         // TODO read your settings according to their version
     }
 
-    /*
-     @Override
-     public void projectOpened(ProjectEvent evt) {
-     System.out.println("well map: project opened");
-     wellMap.setPlate((Plate) ((IProjectFrame) evt.getSource()).getDataset());
-     System.out.println("looking up for DendrogramViewer class");
-     clust = Lookup.getDefault().lookup(DendrogramComponent.class);
-     if (clust != null) {
-     clust.addRowsTreeListener(wellMap);
-     System.out.println("registrered listener to " + clust.getName());
-     }
-     repaint();
-     }
-     */
+    protected void update(HtsPlate p) {
+        logger.log(Level.INFO, "updating wellMap!!!");
+        wellMap.setPlate(p);
+    }
+
+    private void updateDataset(Dataset<Instance> d) {
+        if (d != null) {
+            logger.log(Level.INFO, "well map: res change. dataset size{0}", d.size());
+            logger.log(Level.INFO, "class: " + d, getClass().getName());
+            for (Instance inst : d) {
+                System.out.println("inst: " + inst.getName());
+            }
+        }
+    }
+
     @Override
     public void resultChanged(LookupEvent ev) {
-        System.out.println("well map result " + ev.toString());
+
+
         if (result != null) {
-            Collection<? extends HtsPlate> allPlatex = result.allInstances();
-            for (HtsPlate p : allPlatex) {
-                System.out.println("got plate " + p.getName());
-                wellMap.setPlate(p);
+            Collection<? extends Dataset> allDatasets = result.allInstances();
+            for (Dataset<Instance> d : allDatasets) {
+                updateDataset(d);
             }
         }
 
-        /*  if (selection != null) {
-         System.out.println("selection " + selection.toString());
-         }*/
+        logger.log(Level.INFO, "well map result {0}", ev.toString());
+        if (htsResult != null) {
+            Collection<? extends HtsPlate> allPlatex = htsResult.allInstances();
+            for (HtsPlate p : allPlatex) {
+                logger.log(Level.INFO, "got plate {0}", p.getName());
+                wellMap.setPlate(p);
+            }
+        }
     }
 
     protected void projectChanged() {
-        HtsPlate plt = project.getLookup().lookup(HtsPlate.class);
-        wellMap.setPlate(plt);
+        final HtsPlate plt = project.getLookup().lookup(HtsPlate.class);
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                wellMap.update();
+                update(plt);
                 setVisible(true);
             }
         });

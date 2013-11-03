@@ -1,6 +1,5 @@
 package org.clueminer.wellmap;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -11,12 +10,12 @@ import javax.swing.JPanel;
 public class ToolTipContent extends JPanel {
 
     private static final long serialVersionUID = 5130456589140462562L;
-    
-    public ToolTipContent(){
+
+    public ToolTipContent() {
         initialize();
     }
-    
-    private void initialize(){
+
+    private void initialize() {
         add(new JLabel("no well selected"));
     }
 }
