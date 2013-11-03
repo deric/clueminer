@@ -83,7 +83,7 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                logger.log(Level.INFO, "info panel listener initialized");
+                logger.log(Level.INFO, "molecule panel listener initialized");
             }
 
             @Override
@@ -120,7 +120,7 @@ public final class MoleculePanelTopComponent extends TopComponent implements Loo
                 projectChanged();
             }
         });
-
+        //this should display content from InstanceContent
         htsResult = Utilities.actionsGlobalContext().lookupResult(HtsPlate.class);
         htsResult.addLookupListener(this);
     }

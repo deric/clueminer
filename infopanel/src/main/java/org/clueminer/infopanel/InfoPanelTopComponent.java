@@ -87,8 +87,8 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
 
             @Override
             public void select(Workspace workspace) {
-                System.out.println("workspace: " + workspace.toString());
-                logger.log(Level.INFO, "wellmap selected");
+                logger.log(Level.INFO, "workspace: {0}", workspace.toString());
+                logger.log(Level.INFO, "infopanel selected");
                 System.out.println("workspace selected: got result (plate)");
                 htsResult = workspace.getLookup().lookupResult(HtsPlate.class);
                 System.out.println("lookup res= " + htsResult.toString());
@@ -132,9 +132,6 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
             }
         });
 
-
-
-
         result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
         result.addLookupListener(this);
     }
@@ -158,7 +155,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
 
     private void updateDataset(Dataset<Instance> d) {
         if (d != null) {
-            System.out.println("info panel: res change. dataset size" +d.size());
+            logger.log(Level.INFO, "info panel: res change. dataset size{0}", d.size());
             int attrCnt = 2;
             String[][] data = new String[d.size()][attrCnt];
             int i = 0;
@@ -184,7 +181,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
             int attrCnt = 3;
             String[][] data = new String[d.size()][attrCnt];
             int i = 0;
-            System.out.println("hts plate: " + d.getName() + ", " + d.getId());
+            logger.log(Level.INFO, "hts plate: {0}, {1}", new Object[]{d.getName(), d.getId()});
             for (HtsInstance inst : d) {
                 data[i++] = new String[]{inst.getName(), String.valueOf(inst.getRow()), String.valueOf(inst.getColumn())};
             }
@@ -204,7 +201,7 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
         }
 
         if (htsResult != null) {
-            System.out.println("got HTS Plate");
+            logger.log(Level.INFO, "got HTS Plate");
             Collection<? extends HtsPlate> allPlates = htsResult.allInstances();
             for (HtsPlate<HtsInstance> d : allPlates) {
                 updatePlate(d);
