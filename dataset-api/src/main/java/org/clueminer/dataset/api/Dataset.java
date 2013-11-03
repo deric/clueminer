@@ -113,6 +113,12 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public void setParent(Dataset<? extends Instance> parent);
 
     /**
+     *
+     * @return true when parent Dataset exists
+     */
+    public boolean hasParent();
+
+    /**
      * The maximum number of attributes in each instance. Generally instances
      * might have different number of attributes. When the data set contains no
      * instances, this method should return 0.

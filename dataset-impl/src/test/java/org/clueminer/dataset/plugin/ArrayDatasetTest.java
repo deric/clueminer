@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.Iterator;
 import java.util.Random;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Matrix;
@@ -372,6 +373,14 @@ public class ArrayDatasetTest {
         dataset.addChild(key, copy);
 
         assertEquals(copy, dataset.getChild(key));
+    }
 
+    @Test
+    public void testHasParent() {
+        assertEquals(false, dataset.hasParent());
+
+        Dataset<Instance> dupl = dataset.duplicate();
+        dataset.setParent(dupl);
+        assertEquals(true, dataset.hasParent());
     }
 }

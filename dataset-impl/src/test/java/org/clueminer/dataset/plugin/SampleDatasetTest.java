@@ -274,4 +274,13 @@ public class SampleDatasetTest {
     @Test
     public void testToString() {
     }
+
+    @Test
+    public void testHasParent() {
+        assertEquals(false, dataset.hasParent());
+
+        Dataset<Instance> dupl = dataset.duplicate();
+        dataset.setParent(dupl);
+        assertEquals(true, dataset.hasParent());
+    }
 }

@@ -60,6 +60,11 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
+    public boolean hasParent() {
+        return this.parent != null;
+    }
+
+    @Override
     public void setColorGenerator(ColorGenerator cg) {
         this.colorGenerator = cg;
     }
@@ -103,16 +108,16 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
-    public void addChild(String key, Dataset<Instance> dataset){
-        if(children == null){
-           children = new HashMap<String, Dataset<Instance>>(5);
+    public void addChild(String key, Dataset<Instance> dataset) {
+        if (children == null) {
+            children = new HashMap<String, Dataset<Instance>>(5);
         }
         children.put(key, dataset);
     }
 
     @Override
     public Dataset<Instance> getChild(String key) {
-        if(children == null){
+        if (children == null) {
             return null;
         }
         return children.get(key);

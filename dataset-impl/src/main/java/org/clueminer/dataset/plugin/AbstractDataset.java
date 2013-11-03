@@ -65,6 +65,11 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
+    public boolean hasParent() {
+        return this.parent != null;
+    }
+
+    @Override
     public void setColorGenerator(ColorGenerator cg) {
         this.colorGenerator = cg;
     }
