@@ -40,7 +40,7 @@ public class WellMapLookupListener implements WorkspaceListener {
 
         HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
         logger.log(Level.INFO, "got plate, size: {0}", plt);
-        component.update(plt);
+        component.updatePlate(plt);
     }
 
     @Override

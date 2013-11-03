@@ -158,6 +158,7 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
         this.plate = p;
         totalCnt = p.getColumnsCount() * p.getRowsCount();
         selected = new int[totalCnt];
+        revalidate();
     }
 
     public void updateSize(Dimension size) {
@@ -177,7 +178,7 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
                 bufferedImage.getType());
 
         // repaint(bufferedImage, screenCopy);
-        
+
         Graphics2D g = bufferedImage.createGraphics();
 
         g.drawImage(bufferedImage, 0, 0, null);
@@ -211,9 +212,12 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
     public void mouseMoved(final MouseEvent e) {
         //System.out.println("mouse: " + e.getX() + ", " + e.getY());
         final int pos = grid.translatePosition(e.getX(), e.getY());
+        HtsInstance inst;
         if (pos > -1 && plate != null) {
-            HtsInstance inst = plate.instance(pos);
-            setToolTipText(plate.instance(pos).getName() + ": " + inst.getMax());
+            inst = plate.instance(pos);
+            if (inst != null) {
+                setToolTipText(plate.instance(pos).getName() + ": " + inst.getMax());
+            }
         }
         start = e.getPoint();
     }

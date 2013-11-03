@@ -1,5 +1,6 @@
 package org.clueminer.wellmap;
 
+import com.google.common.collect.MinMaxPriorityQueue;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -9,6 +10,8 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.gui.ColorPalette;
+import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
@@ -53,6 +56,7 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
     private static final Logger logger = Logger.getLogger(WellMapTopComponent.class.getName());
     private WellMapFrame wellMap;
     protected static Project project;
+    private ColorPalette palette;
 
     public WellMapTopComponent() {
         //Add the dynamic object to the TopComponent Lookup:
@@ -63,6 +67,7 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         setBackground(Color.LIGHT_GRAY);
         //component is responsible for all pixels within the component
         setOpaque(true);
+        palette = new ColorScheme();
         wellMap = new WellMapFrame();
         add(wellMap, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
@@ -113,9 +118,36 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         // TODO read your settings according to their version
     }
 
-    protected void update(HtsPlate p) {
+    protected void updatePlate(HtsPlate<HtsInstance> p) {
         logger.log(Level.INFO, "updating wellMap!!!");
+        //plate dimensions
         wellMap.setPlate(p);
+        //selected wells
+        if (!p.isEmpty()) {
+            //find min-max values in selection
+            MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
+            for (HtsInstance inst : p) {
+                pq.add(inst.getMax());
+            }
+            System.out.println("min = " + pq.peekFirst() + ", max = " + pq.peekLast());
+            palette.setRange(pq.peekFirst(), pq.peekLast());
+            for (HtsInstance inst : p) {
+                inst.setColor(palette.getColor(inst.getMax()));
+            }
+            wellMap.setSelected(p);
+        }
+    }
+
+    protected void updatePlate(Dataset<? extends Instance> selection, HtsPlate p) {
+        logger.log(Level.INFO, "selection size = {0}, orig plate size = {1}", new Object[]{selection.size(), p.size()});
+        for (Instance inst : selection) {
+            if (inst instanceof HtsInstance) {
+                logger.log(Level.INFO, "got HTS instance");
+
+            } else {
+                logger.log(Level.INFO, "some other instance");
+            }
+        }
     }
 
     private void updateDataset(Dataset<Instance> d) {
@@ -130,12 +162,26 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
 
     @Override
     public void resultChanged(LookupEvent ev) {
-
-
         if (result != null) {
             Collection<? extends Dataset> allDatasets = result.allInstances();
+            Dataset<? extends Instance> parent;
             for (Dataset<Instance> d : allDatasets) {
-                updateDataset(d);
+                parent = null;
+                if (d.hasParent()) {
+                    parent = d;
+                    while (parent.hasParent()) {
+                        logger.log(Level.INFO, "dataset with parent");
+                        parent = (Dataset<Instance>) d.getParent();
+                    }
+                }
+                logger.log(Level.INFO, "dataset class {0}", d.getClass().getName());
+                if (d instanceof HtsPlate) {
+                    logger.log(Level.INFO, "got directly plate!!!");
+                    updatePlate((HtsPlate) d);
+                } else if (parent instanceof HtsPlate) {
+                    logger.log(Level.INFO, "got plate!!!");
+                    updatePlate(d, (HtsPlate) parent);
+                }
             }
         }
 
@@ -155,7 +201,7 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                update(plt);
+                updatePlate(plt);
                 setVisible(true);
             }
         });

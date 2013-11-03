@@ -114,6 +114,7 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
 
     public void setSelected(HtsPlate<HtsInstance> p) {
         selectedWells.setSelected(p);
+        revalidate();
     }
 
     /**
@@ -146,12 +147,12 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
     }
-    
-    public int wellPosToId(int row, int column){
+
+    public int wellPosToId(int row, int column) {
         return grid.wellPosToId(row, column);
     }
-    
-    public String numberToRowLabel(int row){
+
+    public String numberToRowLabel(int row) {
         return grid.numberToRowLabel(row);
     }
 }
