@@ -114,7 +114,7 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
 
     public void setSelected(HtsPlate<HtsInstance> p) {
         selectedWells.setSelected(p);
-        revalidate();
+        selectedWells.repaint();
     }
 
     /**
@@ -140,8 +140,8 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
             grid.setDimensions(p.getRowsCount(), p.getColumnsCount());
             selectedWells.clearCache();
             selectedWells.setPlate(p);
-
         }
+        selectedWells.repaint();
     }
 
     @Override

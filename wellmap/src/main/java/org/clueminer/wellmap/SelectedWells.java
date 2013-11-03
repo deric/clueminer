@@ -40,6 +40,7 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
     private Rectangle captureRect;
     private Point start;
     private BufferedImage screenCopy;
+    private static final Logger logger = Logger.getLogger(SelectedWells.class.getName());
 
     public SelectedWells(WellGrid g) {
         this.grid = g;
@@ -142,7 +143,7 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
                 selected[pos] = 1;
             }
         } else {
-            Logger.getLogger(SelectedWells.class.getName()).log(Level.INFO, "Invalid position of well = {0}, row= " + row + ", col = " + col + ", total cnt = " + totalCnt, pos);
+            logger.log(Level.INFO, "Invalid position of well = {0}, row= " + row + ", col = " + col + ", total cnt = " + totalCnt, pos);
         }
     }
 

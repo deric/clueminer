@@ -119,22 +119,25 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
     }
 
     protected void updatePlate(HtsPlate<HtsInstance> p) {
-        logger.log(Level.INFO, "updating wellMap!!!");
-        //plate dimensions
-        wellMap.setPlate(p);
-        //selected wells
-        if (!p.isEmpty()) {
-            //find min-max values in selection
-            MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
-            for (HtsInstance inst : p) {
-                pq.add(inst.getMax());
+        if (p != null) {
+            logger.log(Level.INFO, "updating wellMap!!!");
+            //plate dimensions
+            wellMap.setPlate(p);
+            //selected wells
+            if (!p.isEmpty()) {
+                //find min-max values in selection
+                MinMaxPriorityQueue<Double> pq = MinMaxPriorityQueue.<Double>create();
+                for (HtsInstance inst : p) {
+                    pq.add(inst.getMax());
+                }
+                System.out.println("min = " + pq.peekFirst() + ", max = " + pq.peekLast());
+                palette.setRange(pq.peekFirst(), pq.peekLast());
+                for (HtsInstance inst : p) {
+                    inst.setColor(palette.getColor(inst.getMax()));
+                }
+                wellMap.setSelected(p);
+                repaint();
             }
-            System.out.println("min = " + pq.peekFirst() + ", max = " + pq.peekLast());
-            palette.setRange(pq.peekFirst(), pq.peekLast());
-            for (HtsInstance inst : p) {
-                inst.setColor(palette.getColor(inst.getMax()));
-            }
-            wellMap.setSelected(p);
         }
     }
 
