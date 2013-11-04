@@ -22,6 +22,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
     private JPanel parent;
     private Plotter[] plots;
     private Clustering<Cluster> clust;
+    private Dimension dimChart;
 
     public PreviewFrameSet(JPanel parent) {
         this.parent = parent;
@@ -66,7 +67,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                      */
                     System.out.println("dataset is kind of " + dataset.getClass().toString());
                     System.out.println("instace is kind of " + inst.getClass().toString());
-                    System.out.println("ancestor is  " + inst.getAncestor());
+                    //System.out.println("ancestor is  " + inst.getAncestor());
                     Instance anc = inst.getAncestor();
                     Plotter plot;
                     if (anc != null) {
@@ -85,6 +86,11 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                             }
                         }
                     }
+                    if (dimChart == null) {
+                        dimChart = new Dimension(this.getWidth(), 100);
+                    }
+                    plot.setMinimumSize(dimChart);
+                    plot.setPreferredSize(dimChart);
                     plots[i++] = plot;
                     add((JComponent) plot);
 
@@ -155,13 +161,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
      */
     public void setChartHeight(int height) {
         if (plots != null) {
-            Dimension dim;
+            Dimension dim = null;
             for (Plotter plot : plots) {
                 dim = new Dimension(plot.getWidth(), height);
                 plot.setPreferredSize(dim);
                 plot.setMinimumSize(dim);
                 plot.revalidate();
             }
+            this.dimChart = dim;
             revalidate();
         }
     }

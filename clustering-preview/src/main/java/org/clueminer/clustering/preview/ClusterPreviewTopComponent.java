@@ -103,12 +103,14 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        // TODO store your settings
+        p.setProperty("chart_size", String.valueOf(frame.getChartSize()));
     }
 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+        int chartSize = Integer.valueOf(p.getProperty("chart_size", "0"));
+        frame.setChartSize(chartSize);
     }
 
 
