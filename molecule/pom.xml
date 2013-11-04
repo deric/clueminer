@@ -173,17 +173,6 @@
             <version>1.4.16</version>
         </dependency>
         <dependency>
-            <groupId>org.openscience.cdk</groupId>
-            <artifactId>jchempaint-all</artifactId>
-            <version>3.3-1210</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.openscience.cdk</groupId>
-            <artifactId>jchempaint</artifactId>
-            <version>3.3-1210</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>org-apache-commons-lang</artifactId>
             <version>RELEASE74</version>
@@ -194,8 +183,13 @@
             <version>1.3.1</version>
         </dependency>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
             <groupId>org.openscience.cdk</groupId>
-            <artifactId>cdk-qsarmolecular</artifactId>
+            <artifactId>cdk-sdg</artifactId>
             <version>1.4.16</version>
         </dependency>
     </dependencies>
