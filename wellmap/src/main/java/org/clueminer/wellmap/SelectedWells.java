@@ -173,6 +173,9 @@ public class SelectedWells extends JPanel implements MouseMotionListener {
         System.out.println("mouse dragged: " + me);
         captureRect = new Rectangle(start, new Dimension(end.x - start.x, end.y - start.y));
 
+        if (bufferedImage == null) {
+            return;
+        }
         screenCopy = new BufferedImage(
                 bufferedImage.getWidth(),
                 bufferedImage.getHeight(),
