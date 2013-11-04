@@ -64,6 +64,10 @@ public class LegendreApproximator extends Approximator {
                 params[j] += polynomials[j].value(xAxis[i]) * instance.value(i);
             }
         }
+
+        for (int i = 0; i < params.length; i++) {
+            coefficients.put(names[i], params[i]);
+        }
     }
 
     @Override
@@ -71,7 +75,7 @@ public class LegendreApproximator extends Approximator {
         if (names == null) {
             names = new String[params.length];
             for (int i = 0; i < polynomials.length; i++) {
-                names[i] = getName() + "-" + (i + 1); //we skip polynomial of 0 degree 
+                names[i] = getName() + "-" + (i + 1); //we skip polynomial of 0 degree
             }
         }
         return names;

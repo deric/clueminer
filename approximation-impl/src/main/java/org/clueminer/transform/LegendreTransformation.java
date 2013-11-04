@@ -38,10 +38,10 @@ public class LegendreTransformation implements DataTransform {
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
-        analyze(d, output, ph);
+        analyzeTimeseries(d, (Dataset<Instance>) output, ph);
     }
 
-    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
+    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
