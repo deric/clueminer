@@ -64,8 +64,10 @@ public class TimeRowTest {
      */
     @Test
     public void testPut() {
+        int size = subject.size();
         subject.put(123.0);
         assertEquals(123.0, subject.get(subject.size() - 1), delta);
+        assertEquals(size + 1, subject.size());
     }
 
     /**
@@ -223,5 +225,20 @@ public class TimeRowTest {
     @Test
     public void testSize() {
         assertEquals(4, subject.size());
+    }
+
+    /**
+     * Test of multiply method, of class TimeRow.
+     */
+    @Test
+    public void testMultiply() {
+        double[] expected = new double[]{2.0, 10.0, 6.28, 5.62};
+        TimeRow res = subject.multiply(2.0);
+        double[] copy = res.arrayCopy();
+        int i = 0;
+        for (double d : copy) {
+            assertEquals(d, expected[i], delta);
+            i++;
+        }
     }
 }

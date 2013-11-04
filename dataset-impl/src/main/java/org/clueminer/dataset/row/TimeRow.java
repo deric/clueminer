@@ -120,6 +120,19 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Multiply by given factor and return new instance of TimeRo
+     */
+    public TimeRow<E> multiply(double factor) {
+        TimeRow<E> res = new TimeRow(this.size());
+        res.timePoints = this.timePoints; // TODO: implement duplicate method
+
+        for (int i = 0; i < size(); i++) {
+            res.put(this.get(i) * factor);
+        }
+        return res;
+    }
+
     @Override
     public double valueAt(double x) {
         return valueAt(x, interpolator);
