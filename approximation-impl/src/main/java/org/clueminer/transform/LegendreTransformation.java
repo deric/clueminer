@@ -29,6 +29,15 @@ import org.openide.util.lookup.ServiceProvider;
 public class LegendreTransformation implements DataTransform {
 
     private static String name = "ortho-polynomials (Legendre)";
+    protected int degree;
+
+    public LegendreTransformation() {
+        degree = 5;
+    }
+
+    public LegendreTransformation(int degree) {
+        this.degree = degree;
+    }
 
     @Override
     public String getName() {
@@ -56,7 +65,7 @@ public class LegendreTransformation implements DataTransform {
             int j = 0;
             //create attribute for each parameter
             List<Approximator> approx = new ArrayList<Approximator>();
-            approx.add(new LegendreApproximator(5));
+            approx.add(new LegendreApproximator(degree));
 
 
             for (Approximator a : approx) {

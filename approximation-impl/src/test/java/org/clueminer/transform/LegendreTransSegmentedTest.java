@@ -42,7 +42,7 @@ public class LegendreTransSegmentedTest {
 
 
         CSVReader csv = new CSVReader(new FileReader(f));
-        ContinuousInstance inst = new TimeRow(15);
+        TimeRow inst = new TimeRow(15);
         int i = 0;
         String[] row;
         double value;

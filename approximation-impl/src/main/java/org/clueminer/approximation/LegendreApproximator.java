@@ -58,6 +58,7 @@ public class LegendreApproximator extends Approximator {
      */
     @Override
     public void estimate(double[] xAxis, ContinuousInstance instance, HashMap<String, Double> coefficients) {
+        params = new double[maxDegree];
         // sum product of two functions
         for (int i = 0; i < xAxis.length; i++) {
             for (int j = 0; j < polynomials.length; j++) {
