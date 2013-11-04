@@ -1,10 +1,7 @@
 package org.clueminer.transform;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.approximation.LegendreApproximator;
@@ -13,11 +10,10 @@ import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.types.TimePoint;
+import org.clueminer.utils.Dump;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,9 +22,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DataTransform.class)
-public class LegendreTransformation implements DataTransform {
+public class LegendreTransSegmented extends LegendreTransformation implements DataTransform {
 
-    private static String name = "ortho-polynomials (Legendre)";
+    private static String name = "Legendre segmented";
 
     @Override
     public String getName() {
@@ -38,7 +34,16 @@ public class LegendreTransformation implements DataTransform {
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
+
+        //split dataset
+        // number of segments
+        int n = 3;
+
+
+        System.out.println("input: " + dataset.toString());
+
         analyzeTimeseries(d, (Dataset<Instance>) output, ph);
+        System.out.println("output: " + output.toString());
     }
 
     public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
@@ -65,8 +70,12 @@ public class LegendreTransformation implements DataTransform {
                     output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
                 }
             }
+            System.out.println("out attr = " + output.attributeCount());
             for (int i = 0; i < dataset.size(); i++) {
                 item = dataset.instance(i);
+                System.out.println("approximating cls: " + item.getClass().getName());
+                System.out.println("[0] = " + item.value(0));
+                Dump.array(item.arrayCopy(), "item");
                 approximate(i, xAxis, item, output, approx);
                 //output
                 ph.progress(++analyzeProgress);
@@ -80,37 +89,4 @@ public class LegendreTransformation implements DataTransform {
         ph.finish();
     }
 
-    /**
-     * Computes characteristic values for dataset, should be run each time
-     * values changes
-     *
-     * @return
-     */
-    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) throws UnsupportedAttributeType {
-        HashMap<String, Double> coefficients;
-        if (input.size() > 0) {
-            InstanceBuilder builder = output.builder();
-            if (output.size() <= i) {
-                Instance instance = builder.create(output.attributeCount());
-                instance.setName(input.getFullName());
-                instance.setId(input.getId());
-                instance.setAncestor(input);
-                output.add(instance);
-            }
-            for (Approximator a : approx) {
-                coefficients = new HashMap<String, Double>();
-                a.estimate(xAxis, input, coefficients);
-
-                for (Iterator<Map.Entry<String, Double>> it = coefficients.entrySet().iterator(); it.hasNext();) {
-                    Map.Entry<String, Double> item = it.next();
-                    output.setAttributeValue(item.getKey(), i, item.getValue());
-                }
-            }
-        }
-    }
-
-    @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return new AttrHashDataset(input.size());
-    }
 }
