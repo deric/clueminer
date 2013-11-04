@@ -23,6 +23,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     private Interpolator interpolator = new LinearInterpolator();
     private List<E> data;
     private TimePointAttribute[] timePoints;
+    private Iterator<E> it;
 
     public TimeRow(int capacity) {
         data = new ArrayList<E>(capacity);
@@ -96,12 +97,12 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public E getValue(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return data.get(index);
     }
 
     @Override
     public double get(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return data.get(index).doubleValue();
     }
 
     @Override
@@ -111,7 +112,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public void set(int index, Number value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        set(index, value.doubleValue());
     }
 
     @Override
@@ -157,8 +158,41 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    class InstanceValueIterator<E extends Number> implements Iterator<E> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
+
+        }
+
+        @Override
+        public E next() {
+            index++;
+            return (E) getValue(index - 1);
+        }
+    }
+
     @Override
     public Iterator<E> iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (it == null) {
+            it = new InstanceValueIterator();
+        }
+        return it;
+    }
+
+    @Override
+    public int size() {
+        if (data != null) {
+            return data.size();
+        }
+        return 0;
     }
 }
