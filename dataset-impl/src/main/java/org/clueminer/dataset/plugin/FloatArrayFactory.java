@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.FloatArrayDataRow;
 import org.clueminer.dataset.row.Tools;
@@ -15,7 +14,7 @@ import org.clueminer.exception.EscapeException;
  *
  * @author Tomas Barton
  */
-public class FloatArrayFactory implements InstanceBuilder {
+public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
 
     private static int DEFAULT_CAPACITY = 50;
     /**
@@ -56,19 +55,19 @@ public class FloatArrayFactory implements InstanceBuilder {
      * Creates a new DataRow with the given initial capacity.
      */
     @Override
-    public DataRow create(int size) {
+    public FloatArrayDataRow create(int size) {
         return new FloatArrayDataRow(size);
     }
 
     @Override
-    public Instance createCopyOf(Instance orig) {
+    public FloatArrayDataRow createCopyOf(FloatArrayDataRow orig) {
         FloatArrayDataRow row = new FloatArrayDataRow(orig.size());
         row.setClassValue(orig.classValue());
         return row;
     }
 
     @Override
-    public Instance createCopyOf(Instance orig, Dataset<Instance> parent) {
+    public FloatArrayDataRow createCopyOf(FloatArrayDataRow orig, Dataset<FloatArrayDataRow> parent) {
         return createCopyOf(orig);
     }
 
@@ -81,8 +80,8 @@ public class FloatArrayFactory implements InstanceBuilder {
      * @see FileDataRowReader
      */
     @Override
-    public DataRow create(String[] strings, Attribute[] attributes) {
-        DataRow dataRow = create(strings.length);
+    public FloatArrayDataRow create(String[] strings, Attribute[] attributes) {
+        FloatArrayDataRow dataRow = create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();

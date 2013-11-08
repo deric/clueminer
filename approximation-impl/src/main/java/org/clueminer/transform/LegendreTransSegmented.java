@@ -47,7 +47,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         int i = 0;
         for (Timeseries<ContinuousInstance> input : segments) {
             System.out.println("input: " + input.toString());
-            Dump.matrix(input.arrayCopy(), "input " + i, 2);
+//            Dump.matrix(input.arrayCopy(), "input " + i, 2);
             i++;
         }
 
@@ -79,7 +79,11 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
                     System.out.println("[" + k + ", " + j + "] = " + source.getAttributeValue(offset + k, j));
-                    res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
+                    /**
+                     * TODO fix underlying implementation so that we can set
+                     * value on (almost) any index
+                     */
+                    //res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
                 }
             }
             offset += inc;

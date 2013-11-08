@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.row.Tools;
@@ -15,7 +14,7 @@ import org.clueminer.exception.EscapeException;
  *
  * @author Tomas Barton
  */
-public class DoubleArrayFactory implements InstanceBuilder {
+public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
 
     private static int DEFAULT_CAPACITY = 50;
     /**
@@ -48,19 +47,19 @@ public class DoubleArrayFactory implements InstanceBuilder {
     }
 
     @Override
-    public Instance create() {
+    public DoubleArrayDataRow create() {
         return new DoubleArrayDataRow(DEFAULT_CAPACITY);
     }
 
     @Override
-    public Instance createCopyOf(Instance orig) {
+    public DoubleArrayDataRow createCopyOf(DoubleArrayDataRow orig) {
         DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
         row.setClassValue(orig.classValue());
         return row;
     }
 
     @Override
-    public Instance createCopyOf(Instance orig, Dataset<Instance> parent) {
+    public DoubleArrayDataRow createCopyOf(DoubleArrayDataRow orig, Dataset<DoubleArrayDataRow> parent) {
         return createCopyOf(orig);
     }
 
@@ -81,8 +80,8 @@ public class DoubleArrayFactory implements InstanceBuilder {
      * @see FileDataRowReader
      */
     @Override
-    public DataRow create(String[] strings, Attribute[] attributes) {
-        DataRow dataRow = create(strings.length);
+    public DoubleArrayDataRow create(String[] strings, Attribute[] attributes) {
+        DoubleArrayDataRow dataRow = create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();

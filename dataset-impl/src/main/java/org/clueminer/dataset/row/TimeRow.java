@@ -22,7 +22,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     private static final long serialVersionUID = 6410706965541438907L;
     private Interpolator interpolator = new LinearInterpolator();
     private List<E> data;
-    private TimePointAttribute[] timePoints;
+    protected TimePointAttribute[] timePoints;
     private Iterator<E> it;
 
     public TimeRow(int capacity) {

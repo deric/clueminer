@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.row.TimeRowFactory;
 import org.clueminer.math.Interpolator;
 import org.clueminer.types.TimePoint;
 
@@ -48,7 +49,10 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public int attributeCount() {
-        return timePoints.length;
+        if (timePoints != null) {
+            return timePoints.length;
+        }
+        return 0;
     }
 
     /**
@@ -348,7 +352,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public InstanceBuilder builder() {
         if (builder == null) {
-            builder = new DoubleArrayFactory('.');
+            builder = new TimeRowFactory(attributeCount());
         }
         return builder;
     }
@@ -372,19 +376,11 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
-    public boolean hasIndex(int idx) {
-        if (idx < 0 || idx > size()) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public E instance(int index) {
         if (hasIndex(index)) {
             return get(index);
         } else if (index == size()) {
-            E inst = (E) builder.create(this.attributeCount());
+            E inst = (E) builder().create(this.attributeCount());
             add(inst);
             return inst;
         }

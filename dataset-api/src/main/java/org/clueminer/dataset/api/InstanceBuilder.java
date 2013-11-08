@@ -4,14 +4,14 @@ package org.clueminer.dataset.api;
  *
  * @author Tomas Barton
  */
-public interface InstanceBuilder {
+public interface InstanceBuilder<E extends Instance> {
 
     /**
      * Create an empty instance
      *
      * @return
      */
-    public Instance create();
+    public E create();
 
     /**
      * Depending on implementation copies relevant (meta)data from the original
@@ -20,7 +20,7 @@ public interface InstanceBuilder {
      * @param orig
      * @return new Instance
      */
-    public Instance createCopyOf(Instance orig);
+    public E createCopyOf(E orig);
 
     /**
      *
@@ -28,14 +28,14 @@ public interface InstanceBuilder {
      * @param parent dataset which will be considered as new instance parent
      * @return
      */
-    public Instance createCopyOf(Instance orig, Dataset<Instance> parent);
+    public E createCopyOf(E orig, Dataset<E> parent);
 
     /**
      *
      * @param capacity maximum number of items in set (array)
      * @return object for storing values (numerical, nominal, etc.)
      */
-    public Instance create(int capacity);
+    public E create(int capacity);
 
     /**
      * Create an instance from double values
@@ -43,7 +43,7 @@ public interface InstanceBuilder {
      * @param values
      * @return
      */
-    public Instance create(double[] values);
+    public E create(double[] values);
 
     /**
      * Create an instance from double values
@@ -52,7 +52,7 @@ public interface InstanceBuilder {
      * @param classValue
      * @return
      */
-    public Instance create(double[] values, Object classValue);
+    public E create(double[] values, Object classValue);
 
-    public Instance create(String[] strings, Attribute[] attributes);
+    public E create(String[] strings, Attribute[] attributes);
 }
