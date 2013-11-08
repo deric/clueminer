@@ -76,6 +76,14 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
+    public boolean hasIndex(int idx) {
+        if (idx >= 0 && data[idx] != null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public E getRandom(Random rand) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

@@ -389,4 +389,16 @@ public class ArrayDatasetTest {
         dataset.setParent(dupl);
         assertEquals(true, dataset.hasParent());
     }
+
+    /**
+     * Test of hasIndex method, of class ArrayDataset.
+     */
+    @Test
+    public void testHasIndex() {
+        assertEquals(true, dataset.hasIndex(0));
+        assertEquals(true, dataset.hasIndex(dataset.size() - 1));
+        assertEquals(false, dataset.hasIndex(dataset.size()));
+        assertEquals(false, dataset.hasIndex(dataset.size() + 1));
+        assertEquals(false, dataset.hasIndex(-1));
+    }
 }

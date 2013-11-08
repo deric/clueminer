@@ -81,6 +81,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public E get(int index);
 
     /**
+     * Return true if dataset contains Instance at index idx
+     *
+     * @param idx
+     * @return true if instance exists at given index
+     */
+    public boolean hasIndex(int idx);
+
+    /**
      * @return Random instance from the dataset
      */
     public E getRandom(Random rand);

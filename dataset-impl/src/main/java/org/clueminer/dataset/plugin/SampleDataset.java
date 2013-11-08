@@ -136,6 +136,14 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     }
 
     @Override
+    public boolean hasIndex(int idx) {
+        if (idx < 0 || idx >= size()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public E getRandom(Random rand) {
         int max = this.size();
         int min = 0;

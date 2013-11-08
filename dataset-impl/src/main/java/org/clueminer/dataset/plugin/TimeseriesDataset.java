@@ -372,8 +372,23 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
+    public boolean hasIndex(int idx) {
+        if (idx < 0 || idx > size()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public E instance(int index) {
-        return get(index);
+        if (hasIndex(index)) {
+            return get(index);
+        } else if (index == size()) {
+            E inst = (E) builder.create(this.attributeCount());
+            add(inst);
+            return inst;
+        }
+        throw new RuntimeException("can't get instance at position: " + index);
     }
 
     @Override
