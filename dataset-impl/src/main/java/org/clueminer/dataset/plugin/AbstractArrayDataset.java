@@ -92,6 +92,15 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
+    public void setAttributeValue(int attrIdx, int instanceIdx, double value) {
+        if (attrIdx > -1) {
+            instance(instanceIdx).set(attrIdx, value);
+        } else {
+            throw new RuntimeException("Invalid attribute index: " + attrIdx);
+        }
+    }
+
+    @Override
     public double[][] arrayCopy() {
         double[][] res = new double[this.size()][attributeCount()];
         int cols = this.attributeCount();

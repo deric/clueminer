@@ -6,9 +6,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.Standardisation;
 import org.clueminer.std.Scaler;
-import org.clueminer.std.StdDev;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -26,6 +24,7 @@ public class ArrayDatasetTest {
     private static int dataCapacity = 10;
     private static int attributesCnt = 2;
     private static Random rand;
+    private static double delta = 1e-7;
 
     public ArrayDatasetTest() {
     }
@@ -173,6 +172,13 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testSetAttribute() {
+    }
+
+    @Test
+    public void testSetAttributeValueIntInt() {
+        double value = 1.23;
+        dataset.setAttributeValue(0, 0, value);
+        assertEquals(value, dataset.getAttributeValue(0, 0), delta);
     }
 
     /**

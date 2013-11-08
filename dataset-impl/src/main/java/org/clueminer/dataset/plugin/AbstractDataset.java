@@ -113,6 +113,15 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
+    public void setAttributeValue(int attrIdx, int instanceIdx, double value) {
+        if (attrIdx > -1) {
+            instance(instanceIdx).set(attrIdx, value);
+        } else {
+            throw new RuntimeException("Invalid attribute index: " + attrIdx);
+        }
+    }
+
+    @Override
     public int getCapacity() {
         return capacity;
     }

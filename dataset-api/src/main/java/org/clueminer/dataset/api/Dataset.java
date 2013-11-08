@@ -189,7 +189,23 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
 
     public double getAttributeValue(int attributeIndex, int instanceIdx);
 
+    /**
+     * Set attribute value by its name and index in the dataset
+     *
+     * @param attributeName
+     * @param instanceIdx
+     * @param value
+     */
     public void setAttributeValue(String attributeName, int instanceIdx, double value);
+
+    /**
+     * Set attribute value by its index and position in dataset
+     *
+     * @param attrIdx attribute index - starts from 0
+     * @param instanceIdx instance index - starts from 0
+     * @param value
+     */
+    public void setAttributeValue(int attrIdx, int instanceIdx, double value);
 
     /**
      * Set i-th attribute (column)

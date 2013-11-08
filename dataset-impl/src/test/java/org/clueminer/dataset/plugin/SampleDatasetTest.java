@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,9 +19,22 @@ import org.junit.Test;
  */
 public class SampleDatasetTest {
 
-    private SampleDataset dataset;
+    private static SampleDataset dataset;
+    private static double delta = 1e-7;
 
     public SampleDatasetTest() throws UnsupportedAttributeType {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @Before
+    public void setUp() throws UnsupportedAttributeType {
         dataset = new SampleDataset(5);
         AttributeBuilder builder = dataset.attributeBuilder();
         dataset.setAttribute(0, builder.create("first", AttributeType.NUMERICAL));
@@ -38,14 +52,6 @@ public class SampleDatasetTest {
         dataset.add(inst);
 
         dataset.setName("test dataset");
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     /**
@@ -282,5 +288,12 @@ public class SampleDatasetTest {
         Dataset<Instance> dupl = dataset.duplicate();
         dataset.setParent(dupl);
         assertEquals(true, dataset.hasParent());
+    }
+
+    @Test
+    public void testSetAttributeValueIntInt() {
+        double value = 1.23;
+        dataset.setAttributeValue(0, 0, value);
+        assertEquals(value, dataset.getAttributeValue(0, 0), delta);
     }
 }

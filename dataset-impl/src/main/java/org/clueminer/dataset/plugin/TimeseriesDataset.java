@@ -178,7 +178,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             pointsNew[i].setTimestamp(pointsNew[i].getTimestamp() - startTime);
         }
 
-        //relative time 
+        //relative time
         double time, endTime = pointsNew[pointsNew.length - 1].getTimestamp();
         //precomputed value for faster chart rendering
         for (int i = 0; i < size; i++) {
@@ -301,7 +301,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         super.hashCode();
         int hash = 5;
         hash = 79 * hash + Arrays.deepHashCode(this.timePoints);
-        //hash of 
+        //hash of
         hash += super.hashCode();
         return hash;
     }
