@@ -147,4 +147,12 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
         }
         return children.get(key);
     }
+
+    @Override
+    public boolean hasIndex(int idx) {
+        if (idx < 0 || idx >= size()) {
+            return false;
+        }
+        return true;
+    }
 }
