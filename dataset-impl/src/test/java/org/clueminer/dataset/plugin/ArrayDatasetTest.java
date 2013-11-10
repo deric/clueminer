@@ -400,5 +400,6 @@ public class ArrayDatasetTest {
         assertEquals(false, dataset.hasIndex(dataset.size()));
         assertEquals(false, dataset.hasIndex(dataset.size() + 1));
         assertEquals(false, dataset.hasIndex(-1));
+        assertEquals(false, dataset.hasIndex(99999));
     }
 }

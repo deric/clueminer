@@ -77,7 +77,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public boolean hasIndex(int idx) {
-        if (idx >= 0 && data[idx] != null) {
+        if (idx >= 0 && idx < size()) {
             return true;
         }
         return false;
