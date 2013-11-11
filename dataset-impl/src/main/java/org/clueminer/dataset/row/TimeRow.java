@@ -1,8 +1,7 @@
 package org.clueminer.dataset.row;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.Iterator;
-import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -21,17 +20,18 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     private static final long serialVersionUID = 6410706965541438907L;
     private Interpolator interpolator = new LinearInterpolator();
-    private List<E> data;
+    private E[] data;
     protected TimePointAttribute[] timePoints;
     private Iterator<E> it;
+    private int n = 0;
 
-    public TimeRow(int capacity) {
-        data = new ArrayList<E>(capacity);
+    public TimeRow(Class<E> klass, int capacity) {
+        data = (E[]) Array.newInstance(klass, capacity);
     }
 
     @Override
     public E item(int index) {
-        return data.get(index);
+        return data[index];
     }
 
     @Override
@@ -42,24 +42,25 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public int put(double value) {
         Number v = value;
-        data.add((E) v);
-        return data.size();
+        data[n++] = (E) v;
+        return n;
     }
 
     @Override
     public void remove(int index) {
-        data.remove(index);
+        throw new UnsupportedOperationException("Remove is not supported for an array storage");
     }
+
 
     @Override
     public double value(int index) {
-        return data.get(index).doubleValue();
+        return item(index).doubleValue();
     }
 
     @Override
     public void set(int index, double value) {
         Number element = value;
-        data.set(index, (E) element);
+        data[index] = (E) element;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             if (i > 0) {
                 sb.append(separator);
             }
-            sb.append(data.get(i).toString());
+            sb.append(item(i).toString());
         }
         return sb.toString();
     }
@@ -97,12 +98,12 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public E getValue(int index) {
-        return data.get(index);
+        return item(index);
     }
 
     @Override
     public double get(int index) {
-        return data.get(index).doubleValue();
+        return item(index).doubleValue();
     }
 
     @Override
@@ -124,7 +125,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
      * Multiply by given factor and return new instance of TimeRo
      */
     public TimeRow<E> multiply(double factor) {
-        TimeRow<E> res = new TimeRow(this.size());
+        TimeRow<E> res = new TimeRow(Double.class, this.size());
         res.timePoints = this.timePoints; // TODO: implement duplicate method
 
         for (int i = 0; i < size(); i++) {
@@ -150,10 +151,10 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             up = idx + 1;
         } else {
             //exact match
-            return data.get(idx).doubleValue();
+            return item(idx).doubleValue();
         }
-        return interpolator.getValue(timePoints, data, x, low, up);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //  return interpolator.getValue(timePoints, data, x, low, up);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -203,9 +204,6 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public int size() {
-        if (data != null) {
-            return data.size();
-        }
-        return 0;
+        return n;
     }
 }

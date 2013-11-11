@@ -30,7 +30,7 @@ public class TimeRowTest {
 
     @Before
     public void setUp() {
-        subject = new TimeRow(15);
+        subject = new TimeRow(Double.class, 15);
         subject.put(1.0);
         subject.put(5.0);
         subject.put(3.14);

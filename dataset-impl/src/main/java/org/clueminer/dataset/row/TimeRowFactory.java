@@ -23,12 +23,12 @@ public class TimeRowFactory implements InstanceBuilder<TimeRow> {
 
     @Override
     public TimeRow create() {
-        return new TimeRow(capacity);
+        return new TimeRow(Double.class, capacity);
     }
 
     @Override
     public TimeRow createCopyOf(TimeRow orig) {
-        TimeRow copy = new TimeRow(orig.getCapacity());
+        TimeRow copy = new TimeRow(Double.class, orig.getCapacity());
         copy.timePoints = orig.timePoints;
         return copy;
     }
@@ -40,12 +40,12 @@ public class TimeRowFactory implements InstanceBuilder<TimeRow> {
 
     @Override
     public TimeRow create(int capacity) {
-        return new TimeRow(capacity);
+        return new TimeRow(Double.class, capacity);
     }
 
     @Override
     public TimeRow create(double[] values) {
-        TimeRow inst = new TimeRow(capacity);
+        TimeRow inst = new TimeRow(Double.class, capacity);
         for (int i = 0; i < values.length; i++) {
             inst.set(i, values[i]);
         }
