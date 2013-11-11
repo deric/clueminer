@@ -41,13 +41,13 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         degree = 7;
         //split dataset
         // number of segments
-        int n = 2;
+        int n = 3;
 
         segments = splitIntoSegments(d, n);
         int i = 0;
         for (Timeseries<ContinuousInstance> input : segments) {
             System.out.println("input: " + input.toString());
-//            Dump.matrix(input.arrayCopy(), "input " + i, 2);
+            Dump.matrix(input.arrayCopy(), "input " + i, 2);
             i++;
         }
 
@@ -83,7 +83,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                      * TODO fix underlying implementation so that we can set
                      * value on (almost) any index
                      */
-                    //res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
+                    res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
                 }
             }
             offset += inc;
