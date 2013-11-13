@@ -1,6 +1,7 @@
 package org.clueminer.magic;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  *
@@ -8,5 +9,5 @@ import java.io.BufferedReader;
  */
 public interface Detector {
 
-    public DatasetProperties detect(BufferedReader file);
+    public DatasetProperties detect(BufferedReader file) throws IOException;
 }

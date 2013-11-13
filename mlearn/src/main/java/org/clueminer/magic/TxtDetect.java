@@ -1,6 +1,8 @@
 package org.clueminer.magic;
 
+import com.google.common.base.CharMatcher;
 import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  *
@@ -9,7 +11,14 @@ import java.io.BufferedReader;
 public class TxtDetect implements Detector {
 
     @Override
-    public DatasetProperties detect(BufferedReader file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public DatasetProperties detect(BufferedReader br) throws IOException {
+        String line;
+        while ((line = br.readLine()) != null) {
+            int count = CharMatcher.is(',').countIn(line);
+            // System.out.println(line);
+            // System.out.println("comma cnt: " + count);
+            //
+        }
+        return null;
     }
 }
