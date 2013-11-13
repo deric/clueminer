@@ -10,6 +10,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.io.FileHandler;
 import org.clueminer.longtask.spi.LongTask;
+import org.clueminer.magic.DatasetProperties;
+import org.clueminer.magic.Detector;
+import org.clueminer.magic.TxtDetect;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
@@ -59,7 +62,21 @@ public class MLearnImporter implements LongTask, Runnable {
             br = new BufferedReader(new FileReader(file));
             try {
                 ph.start(0);
-                //it would be nice to know number of lines
+                //it would be nice to know number of lines, but we don't unless
+                int numLines = 100;
+                //we would read the whole file
+                String ext = MLearnImporter.getFileExtension(file.getName());
+                if ("arff".equals(ext)) {
+                    // @TODO run ARFF analyzer
+                } else {
+                    //txt, csv, ...
+                    Detector detector = new TxtDetect();
+                    DatasetProperties props = detector.detect(br);
+
+                }
+
+                //
+
                 dataset = new SampleDataset<Instance>(100);
                 FileHandler.loadDataset(file, dataset, ",");
 
@@ -82,6 +99,17 @@ public class MLearnImporter implements LongTask, Runnable {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public static String getFileExtension(String fileName) {
+        String extension = "";
+        int i = fileName.lastIndexOf('.');
+        int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+
+        if (i > p) {
+            extension = fileName.substring(i + 1);
+        }
+        return extension;
     }
 
     private String parseName(File f) {

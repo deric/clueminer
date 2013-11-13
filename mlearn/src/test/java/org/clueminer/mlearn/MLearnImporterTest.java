@@ -103,4 +103,14 @@ public class MLearnImporterTest {
     @Test
     public void testGetDataset() {
     }
+
+    /**
+     * Test of getFileExtension method, of class MLearnImporter.
+     */
+    @Test
+    public void testGetFileExtension() {
+        assertEquals("csv", MLearnImporter.getFileExtension("foo.csv"));
+        assertEquals("csv", MLearnImporter.getFileExtension("/var/bar/foo.csv"));
+        assertEquals("csv", MLearnImporter.getFileExtension("/var/bar.foo/foo.csv"));
+    }
 }
