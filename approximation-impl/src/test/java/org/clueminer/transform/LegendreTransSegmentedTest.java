@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
@@ -53,14 +54,26 @@ public class LegendreTransSegmentedTest {
         }
         csv.close();
 
-        TimePointAttribute[] tp = new TimePointAttribute[i];
+        simple = generateDataset(1, i);
+        simple.add(inst);
+    }
+
+    private static TimeseriesDataset generateDataset(int capacity, int attrCnt) {
+        TimePointAttribute[] tp = new TimePointAttribute[attrCnt];
         for (int j = 0; j < tp.length; j++) {
             tp[j] = new TimePointAttribute(j, j, j);
         }
 
-        simple = new TimeseriesDataset<ContinuousInstance>(1, tp);
-        simple.add(inst);
+        return new TimeseriesDataset<ContinuousInstance>(capacity, tp);
+    }
 
+    private static ContinuousInstance generateInstance(int attrCnt) {
+        TimeRow inst = new TimeRow(Double.class, attrCnt);
+        Random rand = new Random();
+        for (int i = 0; i < attrCnt; i++) {
+            inst.set(i, rand.nextDouble());
+        }
+        return inst;
     }
 
     @AfterClass
@@ -114,5 +127,26 @@ public class LegendreTransSegmentedTest {
      */
     @Test
     public void testCreateDefaultOutput() {
+    }
+
+    /**
+     * Test of splitIntoSegments method, of class LegendreTransSegmented.
+     */
+    @Test
+    public void testSplitIntoSegments() {
+        int size = 5;
+        int attrCnt = 10;
+        Timeseries<ContinuousInstance> t1 = generateDataset(size, attrCnt);
+        for (int i = 0; i < size; i++) {
+            t1.add(generateInstance(attrCnt));
+        }
+
+        Timeseries<ContinuousInstance>[] res = subject.splitIntoSegments(t1, 3);
+        //split dataset into 3 segments
+        //assertEquals(3, res[0].size());
+        //assertEquals(3, res[1].size());
+        //last one should contain remaining values
+        //  assertEquals(4, res[2].size());
+
     }
 }

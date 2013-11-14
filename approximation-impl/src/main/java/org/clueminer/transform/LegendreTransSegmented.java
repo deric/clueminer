@@ -67,6 +67,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         int offset = 0;
         for (int i = 0; i < n; i++) {
             res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
+            System.out.println("res class = " + res.getClass().getName());
             int pos = offset;
             TimePoint[] tp = new TimePointAttribute[inc];
             //create attributes
@@ -86,6 +87,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                     res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
                 }
             }
+            System.out.println("offset = " + offset);
             offset += inc;
         }
 
