@@ -649,64 +649,6 @@ public class JMatrixTest {
             errorCount = try_failure(errorCount, "arrayTimesEquals... ", "(A = R, A = A.*B, but A./B != R)");
         }
 
-        /**
-         * I/O methods: read print serializable: writeObject readObject
-         *
-         */
-        print("\nTesting I/O methods...\n");
-        try {
-            DecimalFormat fmt = new DecimalFormat("0.0000E00");
-            fmt.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-
-            PrintWriter FILE = new PrintWriter(new FileOutputStream("JamaTestMatrix.out"));
-            A.print(FILE, fmt, 10);
-            FILE.close();
-            R = MatrixHelper.read(new BufferedReader(new FileReader("JamaTestMatrix.out")));
-            if (A.minus(R).norm1() < .001) {
-                try_success("print()/read()...", "");
-            } else {
-                errorCount = try_failure(errorCount, "print()/read()...", "Matrix read from file does not match Matrix printed to file");
-            }
-        } catch (java.io.IOException ioe) {
-            warningCount = try_warning(warningCount, "print()/read()...", "unexpected I/O error, unable to run print/read test;  check write permission in current directory and retry");
-        } catch (Exception e) {
-            try {
-                e.printStackTrace(System.out);
-                warningCount = try_warning(warningCount, "print()/read()...", "Formatting error... will try JDK1.1 reformulation...");
-                DecimalFormat fmt = new DecimalFormat("0.0000");
-                PrintWriter FILE = new PrintWriter(new FileOutputStream("JamaTestMatrix.out"));
-                A.print(FILE, fmt, 10);
-                FILE.close();
-                R = MatrixHelper.read(new BufferedReader(new FileReader("JamaTestMatrix.out")));
-                if (A.minus(R).norm1() < .001) {
-                    try_success("print()/read()...", "");
-                } else {
-                    errorCount = try_failure(errorCount, "print()/read() (2nd attempt) ...", "Matrix read from file does not match Matrix printed to file");
-                }
-            } catch (java.io.IOException ioe) {
-                warningCount = try_warning(warningCount, "print()/read()...", "unexpected I/O error, unable to run print/read test;  check write permission in current directory and retry");
-            }
-        }
-
-        R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
-        String tmpname = "TMPMATRIX.serial";
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmpname));
-            out.writeObject(R);
-            ObjectInputStream sin = new ObjectInputStream(new FileInputStream(tmpname));
-            A = (Matrix) sin.readObject();
-
-            try {
-                check(A, R);
-                try_success("writeObject(Matrix)/readObject(Matrix)...", "");
-            } catch (java.lang.RuntimeException e) {
-                errorCount = try_failure(errorCount, "writeObject(Matrix)/readObject(Matrix)...", "Matrix not serialized correctly");
-            }
-        } catch (java.io.IOException ioe) {
-            warningCount = try_warning(warningCount, "writeObject()/readObject()...", "unexpected I/O error, unable to run serialization test;  check write permission in current directory and retry");
-        } catch (Exception e) {
-            errorCount = try_failure(errorCount, "writeObject(Matrix)/readObject(Matrix)...", "unexpected error in serialization test");
-        }
 
         /**
          * LA methods: transpose times cond rank det trace norm1 norm2 normF
@@ -1292,6 +1234,48 @@ public class JMatrixTest {
      */
     @Test
     public void testPrint_int_int() {
+        A = new JMatrix(columnwise, validld);
+        R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
+
+        /**
+         * I/O methods: read print serializable: writeObject readObject
+         *
+         */
+        print("\nTesting I/O methods...\n");
+        try {
+            DecimalFormat fmt = new DecimalFormat("0.0000E00");
+            fmt.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+            File tmpfile = File.createTempFile("JamaTestMatrix", ".out");
+            PrintWriter FILE = new PrintWriter(new FileOutputStream(tmpfile));
+            A.print(FILE, fmt, 10);
+            FILE.close();
+            R = MatrixHelper.read(new BufferedReader(new FileReader(tmpfile)));
+            if (A.minus(R).norm1() < .001) {
+                try_success("print()/read()...", "");
+            } else {
+                errorCount = try_failure(errorCount, "print()/read()...", "Matrix read from file does not match Matrix printed to file");
+            }
+        } catch (java.io.IOException ioe) {
+            warningCount = try_warning(warningCount, "print()/read()...", "unexpected I/O error, unable to run print/read test;  check write permission in current directory and retry");
+        } catch (Exception e) {
+            try {
+                e.printStackTrace(System.out);
+                warningCount = try_warning(warningCount, "print()/read()...", "Formatting error... will try JDK1.1 reformulation...");
+                DecimalFormat fmt = new DecimalFormat("0.0000");
+                File tmpfile = File.createTempFile("JamaTestMatrix", ".out");
+                PrintWriter FILE = new PrintWriter(new FileOutputStream(tmpfile));
+                A.print(FILE, fmt, 10);
+                FILE.close();
+                R = MatrixHelper.read(new BufferedReader(new FileReader(tmpfile)));
+                if (A.minus(R).norm1() < .001) {
+                    try_success("print()/read()...", "");
+                } else {
+                    errorCount = try_failure(errorCount, "print()/read() (2nd attempt) ...", "Matrix read from file does not match Matrix printed to file");
+                }
+            } catch (java.io.IOException ioe) {
+                warningCount = try_warning(warningCount, "print()/read()...", "unexpected I/O error, unable to run print/read test;  check write permission in current directory and retry");
+            }
+        }
     }
 
     /**
@@ -1312,7 +1296,27 @@ public class JMatrixTest {
      * Test of print method, of class JMatrix.
      */
     @Test
-    public void testPrint_3args_2() {
+    public void testPrint_3args_2() throws IOException {
+        A = new JMatrix(columnwise, validld);
+        R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
+        File tmpfile = File.createTempFile("TMPMATRIX", ".out");
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmpfile));
+            out.writeObject(R);
+            ObjectInputStream sin = new ObjectInputStream(new FileInputStream(tmpfile));
+            A = (Matrix) sin.readObject();
+
+            try {
+                check(A, R);
+                try_success("writeObject(Matrix)/readObject(Matrix)...", "");
+            } catch (java.lang.RuntimeException e) {
+                errorCount = try_failure(errorCount, "writeObject(Matrix)/readObject(Matrix)...", "Matrix not serialized correctly");
+            }
+        } catch (java.io.IOException ioe) {
+            warningCount = try_warning(warningCount, "writeObject()/readObject()...", "unexpected I/O error, unable to run serialization test;  check write permission in current directory and retry");
+        } catch (Exception e) {
+            errorCount = try_failure(errorCount, "writeObject(Matrix)/readObject(Matrix)...", "unexpected error in serialization test");
+        }
     }
 
     /**
