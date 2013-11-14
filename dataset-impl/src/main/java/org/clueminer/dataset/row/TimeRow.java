@@ -24,6 +24,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     protected TimePointAttribute[] timePoints;
     private Iterator<E> it;
     private int n = 0;
+    private double defaultValue = Double.NaN;
 
     public TimeRow(Class<E> klass, int capacity) {
         data = (E[]) Array.newInstance(klass, capacity);
@@ -51,16 +52,28 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         throw new UnsupportedOperationException("Remove is not supported for an array storage");
     }
 
-
     @Override
     public double value(int index) {
         return item(index).doubleValue();
     }
 
+    /**
+     * Sets value at given index
+     *
+     * We might set value in middle of an array (values before are filled with
+     * defaultValues)
+     *
+     * @param index
+     * @param value
+     */
     @Override
     public void set(int index, double value) {
         Number element = value;
         data[index] = (E) element;
+        if (!hasIndex(index)) {
+            //increase current number of values
+            n = index + 1;
+        }
     }
 
     @Override
@@ -101,9 +114,31 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return item(index);
     }
 
+    /**
+     *
+     * @param idx
+     * @return true when index present
+     */
+    public boolean hasIndex(int idx) {
+        if (idx < 0 || idx >= size()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Return double value at given index, if value is not set (null) will
+     * return *defaultValue*
+     *
+     * @param idx
+     * @return
+     */
     @Override
     public double get(int index) {
-        return item(index).doubleValue();
+        if (hasIndex(index)) {
+            return item(index).doubleValue();
+        }
+        return defaultValue;
     }
 
     @Override
@@ -205,5 +240,15 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public int size() {
         return n;
+    }
+
+    /**
+     * Default value is returned in case that value at requested position is
+     * unknown
+     *
+     * @param value
+     */
+    public void setDefaultValue(double value) {
+        this.defaultValue = value;
     }
 }

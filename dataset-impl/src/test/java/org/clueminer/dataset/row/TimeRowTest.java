@@ -89,6 +89,17 @@ public class TimeRowTest {
      */
     @Test
     public void testSet_int_double() {
+        //first item
+        int index = 0;
+        double prev = subject.get(index);
+        subject.set(index, prev + 1);
+        assertEquals(prev + 1, subject.get(index), delta);
+
+        //setting value on a null position
+        index = 5;
+        prev = 123;
+        subject.set(index, prev);
+        assertEquals(prev, subject.get(index), delta);
     }
 
     /**
@@ -240,5 +251,28 @@ public class TimeRowTest {
             assertEquals(d, expected[i], delta);
             i++;
         }
+    }
+
+    /**
+     * Test of hasIndex method, of class TimeRow.
+     */
+    @Test
+    public void testHasIndex() {
+        assertEquals(true, subject.hasIndex(0));
+        assertEquals(true, subject.hasIndex(1));
+        assertEquals(true, subject.hasIndex(2));
+        assertEquals(true, subject.hasIndex(3));
+        assertEquals(false, subject.hasIndex(4));
+        assertEquals(false, subject.hasIndex(-1));
+        assertEquals(false, subject.hasIndex(subject.size()));
+    }
+
+    /**
+     * Test of setDefaultValue method, of class TimeRow.
+     */
+    @Test
+    public void testSetDefaultValue() {
+        subject.setDefaultValue(-1.0);
+        assertEquals(-1.0, subject.get(-1), delta);
     }
 }
