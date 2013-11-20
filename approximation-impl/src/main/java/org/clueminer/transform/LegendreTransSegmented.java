@@ -33,6 +33,13 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         return name;
     }
 
+    /**
+     * Analyze allows user to provide own data structure for storing results
+     *
+     * @param dataset
+     * @param output result is saved into this variable
+     * @param ph
+     */
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
@@ -44,53 +51,58 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         int n = 3;
 
         segments = splitIntoSegments(d, n);
-        int i = 0;
+        int seg = 0;
+        //items to finish
+        ph.start(n * dataset.size());
         for (Timeseries<ContinuousInstance> input : segments) {
-            System.out.println("input: " + input.toString());
-            Dump.matrix(input.arrayCopy(), "input " + i, 2);
-            i++;
+            System.out.println("segment: " + seg);
+            analyzeTimeseries(input, (Dataset<Instance>) output, ph, seg);
+            Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
+            seg++;
         }
-
-        Dump.matrix(d.arrayCopy(), "input", 2);
-
-        analyzeTimeseries(d, (Dataset<Instance>) output, ph);
-
-        Dump.matrix(output.arrayCopy(), "output", 2);
     }
 
     protected Timeseries<ContinuousInstance>[] splitIntoSegments(Timeseries<ContinuousInstance> source, int n) {
         int inc = source.attributeCount() / n;
-        System.out.println("attr cnt = " + source.attributeCount());
-        System.out.println("inc = " + inc);
 
         Timeseries<ContinuousInstance>[] res = new Timeseries[n];
         int offset = 0;
+        int attrCnt = source.attributeCount();
+        int remain;
+        int uppper;
+        double p;
+        double pInc;
+        int m;
         for (int i = 0; i < n; i++) {
             res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
-            System.out.println("res class = " + res.getClass().getName());
             int pos = offset;
+            //if remaining attributes won't fill next segment, just make longer one
+            remain = attrCnt - offset;
+            if (remain < 2 * inc) {
+                inc = remain;
+            }
             TimePoint[] tp = new TimePointAttribute[inc];
+            // position in interval <0, 1>
+            pInc = 1.0 / (double) (inc - 1);
+            p = 0.0;
+            m = 0;
+            uppper = offset + inc;
             //create attributes
-            while (pos < inc && pos < n) {
-                tp[pos] = new TimePointAttribute(pos, pos, (offset - pos) / (double) pos);
+            while (pos < uppper) {
+                tp[m] = new TimePointAttribute(m, pos, p);
+                p += pInc;
                 pos++;
+                m++;
             }
             res[i].setTimePoints(tp);
-            System.out.println("seg dataset has: " + res[i].attributeCount() + " attributes. and z");
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
-                    System.out.println("[" + k + ", " + j + "] = " + source.getAttributeValue(offset + k, j));
-                    /**
-                     * TODO fix underlying implementation so that we can set
-                     * value on (almost) any index
-                     */
                     res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
                 }
             }
-            System.out.println("offset = " + offset);
+            Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
             offset += inc;
         }
-
         return res;
     }
 }

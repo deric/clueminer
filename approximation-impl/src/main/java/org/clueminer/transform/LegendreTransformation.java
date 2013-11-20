@@ -47,22 +47,27 @@ public class LegendreTransformation implements DataTransform {
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
-        analyzeTimeseries(d, (Dataset<Instance>) output, ph);
+        ph.start(dataset.size());
+        analyzeTimeseries(d, (Dataset<Instance>) output, ph, 0);
     }
 
-    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph) {
+    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
         int analyzeProgress = 0;
-        ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
         System.out.println("starting analysis timepoints " + timePoints.length);
         double[] xAxis = new double[timePoints.length];
+        System.out.println("attr size= " + dataset.attributeCount());
+        System.out.println("timepoints =" + timePoints.length);
         for (int i = 0; i < timePoints.length; i++) {
+            System.out.println("i= " + i + ": " + timePoints[i]);
             xAxis[i] = timePoints[i].getPosition();
         }
         ContinuousInstance item;
         try {
             int j = 0;
+            //segment start
+            int offset = output.attributeCount();
             //create attribute for each parameter
             List<Approximator> approx = new ArrayList<Approximator>();
             approx.add(new LegendreApproximator(degree));
@@ -71,12 +76,17 @@ public class LegendreTransformation implements DataTransform {
             for (Approximator a : approx) {
                 String[] attrs = a.getParamNames();
                 for (String attribute : attrs) {
-                    output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
+                    if (segment > 0) {
+                        attribute = segment + "_" + attribute;
+                    }
+                    System.out.println("setting attr = " + (j + offset));
+                    output.setAttribute(offset + j, output.attributeBuilder().create(attribute, "NUMERIC"));
+                    j++;
                 }
             }
             for (int i = 0; i < dataset.size(); i++) {
                 item = dataset.instance(i);
-                approximate(i, xAxis, item, output, approx);
+                approximate(i, xAxis, item, output, approx, offset);
                 //output
                 ph.progress(++analyzeProgress);
             }
@@ -95,8 +105,9 @@ public class LegendreTransformation implements DataTransform {
      *
      * @return
      */
-    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) throws UnsupportedAttributeType {
+    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx, int offset) throws UnsupportedAttributeType {
         HashMap<String, Double> coefficients;
+        int idx;
         if (input.size() > 0) {
             InstanceBuilder builder = output.builder();
             if (output.size() <= i) {
@@ -109,10 +120,10 @@ public class LegendreTransformation implements DataTransform {
             for (Approximator a : approx) {
                 coefficients = new HashMap<String, Double>();
                 a.estimate(xAxis, input, coefficients);
-
+                idx = offset;
                 for (Iterator<Map.Entry<String, Double>> it = coefficients.entrySet().iterator(); it.hasNext();) {
                     Map.Entry<String, Double> item = it.next();
-                    output.setAttributeValue(item.getKey(), i, item.getValue());
+                    output.setAttributeValue(idx++, i, item.getValue());
                 }
             }
         }
