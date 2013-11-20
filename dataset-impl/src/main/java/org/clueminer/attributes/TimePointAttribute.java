@@ -162,6 +162,7 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     public String toString() {
         StringBuilder str = new StringBuilder("TimePoint [");
         str.append("index: ").append(index).append(", timestamp: ").append(timestamp);
+        str.append(", pos: ").append(position);
         str.append("] \n");
         return str.toString();
     }
