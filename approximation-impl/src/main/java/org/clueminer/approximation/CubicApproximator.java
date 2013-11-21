@@ -16,8 +16,10 @@ import org.openide.util.lookup.ServiceProvider;
 public final class CubicApproximator extends Approximator {
 
     private static String name = "cubic";
-    private double[] params = new double[4]; //+1 constant
+    private static int numCoeff = 4;
+    private double[] params = new double[numCoeff]; //+1 constant
     private static String[] names = null;
+
 
     public CubicApproximator() {
         getParamNames();
@@ -61,5 +63,10 @@ public final class CubicApproximator extends Approximator {
     public double getFunctionValue(double x, double[] coeff) {
         LMAFunction func = new PolynomialFit();
         return func.getY(x, coeff);
+    }
+
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
     }
 }

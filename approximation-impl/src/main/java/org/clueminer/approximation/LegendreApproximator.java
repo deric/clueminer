@@ -90,4 +90,9 @@ public class LegendreApproximator extends Approximator {
     public int getMaxDegree() {
         return maxDegree;
     }
+
+    @Override
+    public int getNumCoefficients() {
+        return getMaxDegree();
+    }
 }

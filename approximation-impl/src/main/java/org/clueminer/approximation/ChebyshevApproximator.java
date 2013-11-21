@@ -14,11 +14,13 @@ public class ChebyshevApproximator extends Approximator {
 
     protected static String name = "chebyshev";
     protected static String[] names = null;
-    double[] params;
+    protected double[] params;
     protected static LMAFunction func = new ChebyshevFit();
-    
-    public ChebyshevApproximator(int degree){
-        params = new double[degree+1]; //+1 constant
+    protected int numCoeff;
+
+    public ChebyshevApproximator(int degree) {
+        numCoeff = degree + 1;
+        params = new double[numCoeff]; //+1 constant
         getParamNames();
     }
 
@@ -35,25 +37,29 @@ public class ChebyshevApproximator extends Approximator {
         lma.fit();
 
         int e = 0;
-        for(int i=0; i < params.length; i++){
-            coefficients.put(getName() + "-"+i, lma.parameters[e+i]);
+        for (int i = 0; i < params.length; i++) {
+            coefficients.put(getName() + "-" + i, lma.parameters[e + i]);
         }
     }
 
     @Override
     public final String[] getParamNames() {
-        if(names == null){
+        if (names == null) {
             names = new String[params.length];
-            for(int i = 0; i < params.length; i++){
-                names[i] = getName() + "-"+i;
+            for (int i = 0; i < params.length; i++) {
+                names[i] = getName() + "-" + i;
             }
         }
         return names;
     }
-    
+
     @Override
-    public double getFunctionValue(double x, double[] coeff){
+    public double getFunctionValue(double x, double[] coeff) {
         return func.getY(x, coeff);
     }
-}
 
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
+    }
+}

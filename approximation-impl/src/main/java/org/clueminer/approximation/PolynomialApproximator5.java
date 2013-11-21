@@ -16,14 +16,15 @@ import org.openide.util.lookup.ServiceProvider;
 public final class PolynomialApproximator5 extends Approximator {
 
     private static String name = "poly5";
-    private double[] params = new double[6]; //+1 constant
+    private static int numCoeff = 6;
+    private double[] params = new double[numCoeff]; //+1 constant
     private static String[] names = null;
     private static LMAFunction func = new PolynomialFit();
-    
+
     public PolynomialApproximator5(){
         getParamNames();
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -32,7 +33,7 @@ public final class PolynomialApproximator5 extends Approximator {
     @Override
     public void estimate(double[] xAxis, ContinuousInstance dataset, HashMap<String, Double> coefficients) {
         double[][] data = {xAxis, dataset.arrayCopy()};
-        
+
         LMA lma = new LMA(func, params, data);
         lma.fit();
 
@@ -56,9 +57,14 @@ public final class PolynomialApproximator5 extends Approximator {
         }
         return names;
     }
-    
+
     @Override
     public double getFunctionValue(double x, double[] coeff){
         return func.getY(x, coeff);
+    }
+
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
     }
 }

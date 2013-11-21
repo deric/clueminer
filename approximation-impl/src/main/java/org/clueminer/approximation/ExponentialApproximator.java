@@ -8,16 +8,17 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Exponential fitting 
+ * Exponential fitting
  *  y(t) = a * e^(-bt) + c
- * 
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Approximator.class)
 public final class ExponentialApproximator extends Approximator {
 
     private static String name = "exp";
-    private double[] params = new double[3];
+    private static int numCoeff = 3;
+    private double[] params = new double[numCoeff];
     private static String[] paramNames = null;
     private static LMAFunction func = new ExponentialFit(1);
 
@@ -65,5 +66,10 @@ public final class ExponentialApproximator extends Approximator {
     @Override
     public double getFunctionValue(double x, double[] coeff) {
         return func.getY(x, coeff);
+    }
+
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
     }
 }

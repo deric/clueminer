@@ -8,16 +8,17 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Exponential fitting 
+ * Exponential fitting
  *  y(t) = a * e^(-t) + c
- * 
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Approximator.class)
 public final class InvExpApproximator extends Approximator {
 
     private static String name = "exp-inv";
-    private double[] params = new double[4];
+    private static int numCoeff = 4;
+    private double[] params = new double[numCoeff];
     private static String[] paramNames = null;
     private static LMAFunction func = new InvExpFit(1);
 
@@ -38,7 +39,7 @@ public final class InvExpApproximator extends Approximator {
         params[2] = 0.1;
         params[3] = 0.9;
         //a*e^(-b*t) + c*t
-        
+
         LMA lma = new LMA(func, params, data);
         lma.fit();
         //  System.out.println("\t\titerations=" + lma.iterationCount);
@@ -69,5 +70,10 @@ public final class InvExpApproximator extends Approximator {
     @Override
     public double getFunctionValue(double x, double[] coeff) {
         return func.getY(x, coeff);
+    }
+
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
     }
 }

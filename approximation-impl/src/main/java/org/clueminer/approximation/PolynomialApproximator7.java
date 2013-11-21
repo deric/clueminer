@@ -17,9 +17,10 @@ public final class PolynomialApproximator7 extends Approximator {
 
     public static String name = "poly7";
     private static String[] names = null;
-    double[] params = new double[8]; //+1 constant
+    private static int numCoeff = 8;
+    protected double[] params = new double[numCoeff]; //+1 constant
     private static LMAFunction func = new PolynomialFit();
-    
+
     public PolynomialApproximator7(){
         getParamNames();
     }
@@ -56,9 +57,14 @@ public final class PolynomialApproximator7 extends Approximator {
         }
         return names;
     }
-    
+
     @Override
     public double getFunctionValue(double x, double[] coeff){
         return func.getY(x, coeff);
+    }
+
+    @Override
+    public int getNumCoefficients() {
+        return numCoeff;
     }
 }
