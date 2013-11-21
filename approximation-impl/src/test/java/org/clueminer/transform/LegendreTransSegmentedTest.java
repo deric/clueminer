@@ -116,13 +116,17 @@ public class LegendreTransSegmentedTest {
     @Test
     public void testAnalyzeTimeseries() {
         ProgressHandle ph = ProgressHandleFactory.createHandle("Trasforming dataset");
-        Dataset<Instance> output = new ArrayDataset<Instance>(10, 21);
+        int segments = 3;
+        int degree = 7;
+        // 7 is the default degree of Legendre
+        Dataset<Instance> output = new ArrayDataset<Instance>(10, segments * degree);
         //analyze data
-        subject.analyze(simple, output, ph);
+        subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());
         for (int i = 0; i < output.attributeCount(); i++) {
             //check that all attributes were assigned some value
-            assertEquals(true, output.getAttributeValue(i, 0) != 0);
+            System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
+            assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
         }
     }
 

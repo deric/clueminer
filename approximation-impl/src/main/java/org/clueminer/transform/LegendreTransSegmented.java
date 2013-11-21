@@ -6,6 +6,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
 import org.netbeans.api.progress.ProgressHandle;
@@ -42,20 +43,23 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      */
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
-        analyze(dataset, output, ph, 2);
+        // last two params: number of segments and degree of polynomials
+        analyze(dataset, output, ph, 2, 7);
     }
+
     /**
      *
      * @param dataset
      * @param output
      * @param ph
      * @param n number of segments
+     * @param deg max degree of Legendre polynomials
      */
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph, int n) {
+    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph, int n, int deg) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
         Timeseries<ContinuousInstance>[] segments;
         //protected var
-        degree = 7;
+        degree = deg;
         //items to finish
         ph.start(n * dataset.size());
         segments = splitIntoSegments(d, n);
@@ -65,11 +69,11 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             //Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
             seg++;
         }
+        System.out.println("finished");
     }
 
     protected Timeseries<ContinuousInstance>[] splitIntoSegments(Timeseries<ContinuousInstance> source, int n) {
         int inc = source.attributeCount() / n;
-
         Timeseries<ContinuousInstance>[] res = new Timeseries[n];
         int offset = 0;
         int attrCnt = source.attributeCount();
@@ -77,7 +81,9 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         int uppper;
         double p;
         double pInc;
+        double value, min, max;
         int m;
+        StdScale scale = new StdScale();
         for (int i = 0; i < n; i++) {
             res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
             int pos = offset;
@@ -88,8 +94,8 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             }
             TimePoint[] tp = new TimePointAttribute[inc];
             // position in interval <0, 1>
-            pInc = 1.0 / (double) (inc - 1);
-            p = 0.0;
+            pInc = 2.0 / (double) (inc - 1);
+            p = -1.0;
             m = 0;
             uppper = offset + inc;
             //create attributes
@@ -100,9 +106,25 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                 m++;
             }
             res[i].setTimePoints(tp);
+            min = Double.MAX_VALUE;
+            max = Double.MIN_VALUE;
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
-                    res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
+                    value = source.getAttributeValue(offset + k, j);
+                    if (value < min) {
+                        min = value;
+                    }
+                    if (value > max) {
+                        max = value;
+                    }
+                    res[i].setAttributeValue(k, j, value);
+                }
+            }
+            for (int j = 0; j < source.size(); j++) {
+                for (int k = 0; k < res[i].attributeCount(); k++) {
+                    value = source.getAttributeValue(offset + k, j);
+                    value = scale.scaleToRange(value, min, max, -1.0, 1.0);
+                    res[i].setAttributeValue(k, j, value);
                 }
             }
             //Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
