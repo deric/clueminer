@@ -42,22 +42,27 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      */
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+        analyze(dataset, output, ph, 2);
+    }
+    /**
+     *
+     * @param dataset
+     * @param output
+     * @param ph
+     * @param n number of segments
+     */
+    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph, int n) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
         Timeseries<ContinuousInstance>[] segments;
         //protected var
         degree = 7;
-        //split dataset
-        // number of segments
-        int n = 3;
-
-        segments = splitIntoSegments(d, n);
-        int seg = 0;
         //items to finish
         ph.start(n * dataset.size());
+        segments = splitIntoSegments(d, n);
+        int seg = 0;
         for (Timeseries<ContinuousInstance> input : segments) {
-            System.out.println("segment: " + seg);
             analyzeTimeseries(input, (Dataset<Instance>) output, ph, seg);
-            Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
+            //Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
             seg++;
         }
     }
@@ -100,7 +105,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                     res[i].setAttributeValue(k, j, source.getAttributeValue(offset + k, j));
                 }
             }
-            Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
+            //Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
             offset += inc;
         }
         return res;

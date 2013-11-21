@@ -55,31 +55,25 @@ public class LegendreTransformation implements DataTransform {
         int analyzeProgress = 0;
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
-        System.out.println("starting analysis timepoints " + timePoints.length);
         double[] xAxis = new double[timePoints.length];
-        System.out.println("attr size= " + dataset.attributeCount());
-        System.out.println("timepoints =" + timePoints.length);
         for (int i = 0; i < timePoints.length; i++) {
-            System.out.println("i= " + i + ": " + timePoints[i]);
             xAxis[i] = timePoints[i].getPosition();
         }
         ContinuousInstance item;
         try {
             int j = 0;
             //segment start
-            int offset = output.attributeCount();
+
             //create attribute for each parameter
             List<Approximator> approx = new ArrayList<Approximator>();
             approx.add(new LegendreApproximator(degree));
-
-
+            int offset = totalAttributes(approx) * segment;
             for (Approximator a : approx) {
                 String[] attrs = a.getParamNames();
                 for (String attribute : attrs) {
                     if (segment > 0) {
                         attribute = segment + "_" + attribute;
                     }
-                    System.out.println("setting attr = " + (j + offset));
                     output.setAttribute(offset + j, output.attributeBuilder().create(attribute, "NUMERIC"));
                     j++;
                 }
@@ -94,9 +88,16 @@ public class LegendreTransformation implements DataTransform {
         } catch (UnsupportedAttributeType ex) {
             Logger.getLogger(DatasetTransformation.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("approximation finished");
 
         ph.finish();
+    }
+
+    public int totalAttributes(List<Approximator> approx) {
+        int cnt = 0;
+        for (Approximator a : approx) {
+            cnt += a.getNumCoefficients();
+        }
+        return cnt;
     }
 
     /**

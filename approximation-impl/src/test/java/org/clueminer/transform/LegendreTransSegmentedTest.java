@@ -113,15 +113,17 @@ public class LegendreTransSegmentedTest {
     /**
      * Test of analyzeTimeseries method, of class LegendreTransSegmented.
      */
-    // @Test
+    @Test
     public void testAnalyzeTimeseries() {
         ProgressHandle ph = ProgressHandleFactory.createHandle("Trasforming dataset");
-        Dataset<Instance> output = new ArrayDataset<Instance>(10, 30);
+        Dataset<Instance> output = new ArrayDataset<Instance>(10, 21);
         //analyze data
         subject.analyze(simple, output, ph);
-
-
-        //assertEquals(5, output.size());
+        assertEquals(1, output.size());
+        for (int i = 0; i < output.attributeCount(); i++) {
+            //check that all attributes were assigned some value
+            assertEquals(true, output.getAttributeValue(i, 0) != 0);
+        }
     }
 
     /**
@@ -134,7 +136,7 @@ public class LegendreTransSegmentedTest {
     /**
      * Test of splitIntoSegments method, of class LegendreTransSegmented.
      */
-    // @Test
+    @Test
     public void testSplitIntoSegments() {
         int size = 5;
         int attrCnt = 10;
