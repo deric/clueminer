@@ -1,21 +1,20 @@
 package au.com.bytecode.opencsv;
 
 /**
- Copyright 2005 Bytecode Pty Ltd.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2005 Bytecode Pty Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 import org.junit.Test;
 
 import java.io.*;
@@ -27,7 +26,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class CSVWriterTest {
-
 
     /**
      * Test routine for converting output to a string.
@@ -85,7 +83,8 @@ public class CSVWriterTest {
         assertEquals("'a','b,b,b','c'\n", output);
 
         // test empty elements
-        String[] empty = {,};
+        String[] empty = {,
+        };
         output = invokeWriter(empty);
         assertEquals("\n", output);
 
@@ -93,7 +92,6 @@ public class CSVWriterTest {
         String[] multiline = {"This is a \n multiline entry", "so is \n this"};
         output = invokeWriter(multiline);
         assertEquals("'This is a \n multiline entry','so is \n this'\n", output);
-
 
         // test quoted line
         String[] quoteLine = {"This is a \" multiline entry", "so is \n this"};
@@ -137,7 +135,8 @@ public class CSVWriterTest {
         assertEquals("'a','b,b,b','c'\n", output);
 
         // test empty elements
-        String[] empty = {,};
+        String[] empty = {,
+        };
         output = invokeNoEscapeWriter(empty);
         assertEquals("\n", output);
 
@@ -154,7 +153,6 @@ public class CSVWriterTest {
         String output = invokeNoEscapeWriter(quoteLine);
         assertEquals("'This is a \" 'multiline' entry','so is \n this'\n", output);
     }
-
 
     /**
      * Test writing to a list.
@@ -247,7 +245,8 @@ public class CSVWriterTest {
     }
 
     /**
-     * Tests the ability for the writer to apply quotes only where strings contain the separator, escape, quote or new line characters.
+     * Tests the ability for the writer to apply quotes only where strings
+     * contain the separator, escape, quote or new line characters.
      */
     @Test
     public void testIntelligentQuotes() {
@@ -259,7 +258,6 @@ public class CSVWriterTest {
 
         assertEquals("1,Foo,\"With,Separator\",\"Line\nBreak\",\"Hello \"\"Foo Bar\"\" World\",Bar\n", result);
     }
-
 
     /**
      * Test null values.
@@ -282,11 +280,11 @@ public class CSVWriterTest {
     @Test
     public void testStreamFlushing() throws IOException {
 
-        String WRITE_FILE = "myfile.csv";
+        File tmpFile = File.createTempFile("myfile", ".csv");
 
         String[] nextLine = new String[]{"aaaa", "bbbb", "cccc", "dddd"};
 
-        FileWriter fileWriter = new FileWriter(WRITE_FILE);
+        FileWriter fileWriter = new FileWriter(tmpFile);
         CSVWriter writer = new CSVWriter(fileWriter);
 
         writer.writeNext(nextLine);
@@ -313,7 +311,6 @@ public class CSVWriterTest {
         csvw.writeNext(line);
         csvw.flushQuietly();
     }
-
 
     @Test
     public void testAlternateEscapeChar() {
