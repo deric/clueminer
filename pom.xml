@@ -6,7 +6,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>clueminer-parent</name>
-    
+
     <repositories>
         <!--
         Repository hosting NetBeans modules, especially APIs.
@@ -38,7 +38,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>3.8</version>
+                    <version>3.11.1</version>
                     <extensions>true</extensions>
                     <configuration>
                         <brandingToken>${brandingToken}</brandingToken>
@@ -104,8 +104,8 @@
         <module>clustering-benchmark</module>
         <module>dataset-benchmark</module>
         <module>posturomed</module>
-    <module>mlearn</module>
-  </modules>
+        <module>mlearn</module>
+    </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>
