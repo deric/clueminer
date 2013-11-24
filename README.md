@@ -19,3 +19,10 @@ Prerequisites:
             git submodule init
             git submodule update
             mvn install
+
+### From NetBeans
+
+   1. open the clueminer directory (which is a maven module) -- this module is called `clueminer-parent`
+   2. from dependent modules of `clueminer-parent` open `clueminer-app`
+   3. execute "Build with dependencies"
+   4. now you can run the main application (run module `clueminer-app`)
