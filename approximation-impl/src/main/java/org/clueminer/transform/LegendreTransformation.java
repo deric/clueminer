@@ -2,7 +2,6 @@ package org.clueminer.transform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -104,7 +103,13 @@ public class LegendreTransformation implements DataTransform {
      * Computes characteristic values for dataset, should be run each time
      * values changes
      *
-     * @return
+     * @param i
+     * @param xAxis
+     * @param input
+     * @param output
+     * @param approx
+     * @param offset
+     * @throws UnsupportedAttributeType
      */
     protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx, int offset) throws UnsupportedAttributeType {
         HashMap<String, Double> coefficients;
@@ -122,8 +127,7 @@ public class LegendreTransformation implements DataTransform {
                 coefficients = new HashMap<String, Double>();
                 a.estimate(xAxis, input, coefficients);
                 idx = offset;
-                for (Iterator<Map.Entry<String, Double>> it = coefficients.entrySet().iterator(); it.hasNext();) {
-                    Map.Entry<String, Double> item = it.next();
+                for (Map.Entry<String, Double> item : coefficients.entrySet()) {
                     output.setAttributeValue(idx++, i, item.getValue());
                 }
             }

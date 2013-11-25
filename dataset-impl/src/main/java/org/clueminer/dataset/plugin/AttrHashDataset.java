@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.Instance;
  * Keep HashMap of attributes' names for fast lookup
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implements Dataset<E> {
 
