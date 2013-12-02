@@ -14,8 +14,8 @@ import org.junit.Test;
  */
 public class DoubleArrayDataRowTest {
 
-    static DoubleArrayDataRow t1;
-    static DoubleArrayDataRow t2;
+    private DoubleArrayDataRow t1;
+    private DoubleArrayDataRow t2;
     //precision for comparing
     static double delta = 0.0001;
     static double[] t1array = new double[]{1, 2, 3, 4, 5};
@@ -34,8 +34,8 @@ public class DoubleArrayDataRowTest {
     @Before
     public void setUp() throws Exception {
         t1 = new DoubleArrayDataRow(5);
-
-        t1.set(t1array);
+        //we have to ensure test independency
+        t1.set(t1array.clone());
         t2 = new DoubleArrayDataRow(new double[]{10.5, 24.5, 30.5, 10.0, 50.4});
     }
 
@@ -91,6 +91,11 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testSet_int_double() {
+        double value = 789.654;
+        int idx = 1;
+        assertNotSame(value, t1.get(idx));
+        t1.set(idx, value);
+        assertEquals(value, t1.get(idx), delta);
     }
 
     /**
