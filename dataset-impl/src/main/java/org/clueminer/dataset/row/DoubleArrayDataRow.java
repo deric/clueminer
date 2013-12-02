@@ -130,7 +130,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
             //last should point to next empty space
             last = index + 1;
         }
-        data[index] = (float) value;
+        data[index] = value;
     }
 
     public final void set(double[] data) {

@@ -17,7 +17,7 @@ public class DoubleArrayDataRowTest {
     private DoubleArrayDataRow t1;
     private DoubleArrayDataRow t2;
     //precision for comparing
-    static double delta = 0.0001;
+    static double delta = 1e-9;
     static double[] t1array = new double[]{1, 2, 3, 4, 5};
 
     public DoubleArrayDataRowTest() {
@@ -94,6 +94,14 @@ public class DoubleArrayDataRowTest {
         double value = 789.654;
         int idx = 1;
         assertNotSame(value, t1.get(idx));
+        t1.set(idx, value);
+        assertEquals(value, t1.get(idx), delta);
+    }
+
+    @Test
+    public void testSetWithoutLoosingPrecision() {
+        double value = 789.123456789123123456456789;
+        int idx = 3;
         t1.set(idx, value);
         assertEquals(value, t1.get(idx), delta);
     }
