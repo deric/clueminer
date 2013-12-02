@@ -23,6 +23,8 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     /**
      * Creates a new data row backed by an primitive array.
+     *
+     * @param data initial data
      */
     public DoubleArrayDataRow(double[] data) {
         super(null);
@@ -31,12 +33,12 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     public DoubleArrayDataRow(int size) {
         super(null);
-        set(new double[size]);
+        this.data = new double[size];
     }
 
     public DoubleArrayDataRow(int size, Object classValue) {
         super(classValue);
-        set(new double[size]);
+        this.data = new double[size];
     }
 
     @Override
@@ -57,7 +59,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     @Override
     public int put(double value) {
         if (last >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (last * 1.5));
         }
@@ -72,6 +74,10 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     /**
      * Returns the desired data for the given index.
+     *
+     * @param index
+     * @param defaultValue
+     * @return
      */
     @Override
     protected double getValue(int index, double defaultValue) {
@@ -116,6 +122,10 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     /**
      * Sets the given data for the given index.
+     *
+     * @param index
+     * @param value
+     * @param defaultValue
      */
     @Override
     protected void setValue(int index, double value, double defaultValue) {
@@ -135,9 +145,14 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         return last;
     }
 
+    /**
+     * Does not check allocated capacity
+     *
+     * @return True when vector does not contain any data
+     */
     @Override
     public boolean isEmpty() {
-        return (size() == 0);
+        return (last == 0);
     }
 
     /**
@@ -243,7 +258,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         }
         return res;
     }
-    
+
     public double add(int index, double delta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -311,6 +326,8 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     /**
      * Returns a string representation of the data row.
+     *
+     * @return
      */
     @Override
     public String toString() {

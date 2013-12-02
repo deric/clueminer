@@ -133,6 +133,8 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testSize() {
+        assertEquals(5, t1.size());
+        assertEquals(5, t2.size());
     }
 
     /**
@@ -188,6 +190,9 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testPut_double() {
+        int size = t1.size();
+        t1.put(123.0);
+        assertEquals(size + 1, t1.size());
     }
 
     /**
@@ -251,6 +256,9 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testIsEmpty() {
+        assertEquals(false, t1.isEmpty());
+        assertEquals(true, new DoubleArrayDataRow(0).isEmpty());
+        assertEquals(true, new DoubleArrayDataRow(5).isEmpty());
     }
 
     /**
