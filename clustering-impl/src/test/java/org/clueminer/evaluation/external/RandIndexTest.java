@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,7 +22,7 @@ public class RandIndexTest {
     private static RandIndex test;
     private static double delta = 1e-9;
 
-    public RandIndexTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public RandIndexTest() throws FileNotFoundException, IOException {
         test = new RandIndex();
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
@@ -72,12 +71,12 @@ public class RandIndexTest {
         assertEquals(0.6888888888888888, score, delta);
         System.out.println("AdjustedRand = " + score);
         System.out.println("measuring AdjustedRand took " + (end - start) + " ms");
-        
+
         //this clustering shouldn't be better than the previous one, 142 items are in one
         //cluster, so not really the best solution - though the coefficient would prefere this one
         start = System.currentTimeMillis();
         score = test.score(FakeClustering.irisWrong(), FakeClustering.irisDataset());
-        end = System.currentTimeMillis();       
+        end = System.currentTimeMillis();
         assertEquals(0.5777777777777778, score, delta);
         System.out.println("AdjustedRand = " + score);
         System.out.println("measuring AdjustedRand took " + (end - start) + " ms");

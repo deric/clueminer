@@ -9,7 +9,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
 import org.junit.After;
@@ -18,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openide.util.Exceptions;
 
 /**
  * This test was inspired by example here:
@@ -40,7 +38,7 @@ public class CopheneticCorrelationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-      
+
     }
 
     @AfterClass
@@ -49,17 +47,14 @@ public class CopheneticCorrelationTest {
 
     @Before
     public void setUp() throws Exception {
-          test = new CopheneticCorrelation();
+        test = new CopheneticCorrelation();
 
         int instanceCnt = 10;
         dataset = new SampleDataset<Instance>(instanceCnt);
         dataset.setName("test");
-        try {
-            dataset.setAttribute(0, dataset.attributeBuilder().create("X", "NUMERIC"));
-            dataset.setAttribute(1, dataset.attributeBuilder().create("Y", "NUMERIC"));
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        dataset.setAttribute(0, dataset.attributeBuilder().create("X", "NUMERIC"));
+        dataset.setAttribute(1, dataset.attributeBuilder().create("Y", "NUMERIC"));
+
         Instance i;
         i = dataset.builder().create(new double[]{1, 1});
         i.setName("A");
@@ -145,8 +140,8 @@ public class CopheneticCorrelationTest {
         System.out.println("cophenetic= " + cpcc);
         assertEquals(0.861, cpcc, 0.001);
     }
-    
-     /**
+
+    /**
      * Test of score method, of class CopheneticCorrelation.
      *
      * @TODO according to Matlab implementation, the result should be 0.8658
@@ -156,7 +151,7 @@ public class CopheneticCorrelationTest {
         ClusteringAlgorithm algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.setProperty("method-linkage", String.valueOf(1)); //-1=single, 0=complete, 1/2=average
-        rowsResult = algorithm.hierarchy(input,dataset, params);
+        rowsResult = algorithm.hierarchy(input, dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
         System.out.println("cophenetic= " + cpcc);
@@ -178,7 +173,7 @@ public class CopheneticCorrelationTest {
         rowsResult = algorithm.hierarchy(input, dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
-        HierachicalClusteringResult r = (HierachicalClusteringResult) rowsResult; 
+        HierachicalClusteringResult r = (HierachicalClusteringResult) rowsResult;
         double[][] copheneticMatrix = test.getCopheneticMatrix(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
         //symetrical matrix
         assertEquals(copheneticMatrix[1][2], copheneticMatrix[2][1], precision);
@@ -199,7 +194,6 @@ public class CopheneticCorrelationTest {
         assertEquals(copheneticMatrix[2][3], 1.41, precision);
         assertEquals(copheneticMatrix[5][3], 0.50, precision);
         assertEquals(copheneticMatrix[5][4], 1.00, precision);
-
 
         //  Covariance cov = new Covariance();
     }

@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,12 +19,12 @@ import static org.junit.Assert.*;
 public class PrecisionTest {
 
     private static Clustering clusters;
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
     private static Clustering iris;
     private static Precision test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
-    public PrecisionTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public PrecisionTest() throws FileNotFoundException, IOException {
 
         clusters = FakeClustering.iris();
         iris = FakeClustering.irisWrong();
@@ -125,7 +124,7 @@ public class PrecisionTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        //Cabernet = 0.6923	
+        //Cabernet = 0.6923
         //Syrah = 0.5555
         //Pinot = 0.8000
         assertEquals(0.6826210826210826, score, delta);

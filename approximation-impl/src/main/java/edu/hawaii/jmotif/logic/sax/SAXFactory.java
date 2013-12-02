@@ -15,7 +15,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.openide.util.Exceptions;
 
 /**
@@ -206,7 +205,6 @@ public final class SAXFactory {
 
             // Z normalize it
             // subSection = TSUtils.normalize(subSection);
-
             // perform PAA conversion if needed
             Timeseries paa;
             try {
@@ -401,11 +399,7 @@ public final class SAXFactory {
         // get the timestamps and data attributes
         //
         Attribute dataAttribute = null;
-        try {
-            dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
 
         // now init the SAX structures
         //
@@ -416,7 +410,7 @@ public final class SAXFactory {
         SAXTrie data = new SAXTrie(tsData.size() - windowSize, alphabetSize);
         if (debug) {
             System.out.println("Data size: " + tsData.size() + ", window size: " + windowSize
-                    + ", SAX Trie size: " + (tsData.size()- windowSize));
+                    + ", SAX Trie size: " + (tsData.size() - windowSize));
         }
         Alphabet normalA = new NormalAlphabet();
 
@@ -445,7 +439,6 @@ public final class SAXFactory {
         // *****************************************************************************
         // WORTH noting that here we just build a structure. No search was conducted yet.
         //
-
         // THIS IS AN OUTER LOOP IN THE ARTICLE
         //
         double bestSoFarDistance = 0.0D;
@@ -467,11 +460,11 @@ public final class SAXFactory {
             // get the list of the same SAX occurrences & create the visited locations register
             //
             List<Integer> occurrences = data.getOccurences(e.getStr());
-            VisitRegistry registry = new VisitRegistry(tsData.attributeCount()- windowSize);
+            VisitRegistry registry = new VisitRegistry(tsData.attributeCount() - windowSize);
             int visitingCount = 0;
             // mark all trivial matches as visited
             for (int i = currPosition - windowSize; i < currPosition + windowSize; i++) {
-                if (i > 0 && i < (tsData.attributeCount()- windowSize)) {
+                if (i > 0 && i < (tsData.attributeCount() - windowSize)) {
                     registry.markVisited(i);
                 }
             }
@@ -646,7 +639,6 @@ public final class SAXFactory {
         // *****************************************************************************
         // WORTH noting that here we just build a structure. No search was conducted yet.
         //
-
         // THIS IS AN OUTER LOOP IN THE ARTICLE
         //
         double bestSoFarDistance = 0.0D;
@@ -834,7 +826,6 @@ public final class SAXFactory {
         // from the other end - we have motifs - the most frequent entries
         //
         // what I'll do here - is to populate non-trivial frequent entries into the resulting container
-
         if (debug) {
             System.out.println("Words in the trie: " + frequencies.size());
         }
@@ -865,7 +856,6 @@ public final class SAXFactory {
         // *****************************************************************************
         // WORTH noting that here we just build a structure. No search was conducted yet.
         //
-
         // THIS IS AN OUTER LOOP IN THE ARTICLE
         //
         double bestSoFarDistance = 0.0D;
@@ -1045,11 +1035,7 @@ public final class SAXFactory {
         // get the timestamps and data attributes
         //
         Attribute dataAttribute = null;
-        try {
-            dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
 
         double[] distances = new double[controls.length];
         int[] maxPos = new int[controls.length];
@@ -1084,7 +1070,6 @@ public final class SAXFactory {
         // for (int i = 0; i < controls.length; i++) {
         // System.out.println(controls[i] + " - " + distances[i] + ", at " + maxPos[i]);
         // }
-
         // for (int i = 0; i < controls.length; i++) {
         // double[] is = getSubSeries(tsData, dataAttribute, controls[i], controls[i] + window);
         // double[] os = getSubSeries(tsData, dataAttribute, maxPos[i], maxPos[i] + window);
@@ -1129,7 +1114,7 @@ public final class SAXFactory {
 
         // run the search loop
         //
-        for (int i = 0; i < tsData.attributeCount()- windowLength; i++) {
+        for (int i = 0; i < tsData.attributeCount() - windowLength; i++) {
 
             if (i % 100 == 0) {
                 XMLGregorianCalendar nTstamp = makeTimestamp(System.currentTimeMillis());
@@ -1151,7 +1136,7 @@ public final class SAXFactory {
 
             // the inner loop
             //
-            for (int j = 0; j < tsData.attributeCount()- windowLength; j++) {
+            for (int j = 0; j < tsData.attributeCount() - windowLength; j++) {
 
                 // check for the trivial match
                 //
@@ -1161,7 +1146,6 @@ public final class SAXFactory {
                     //
                     // char[] ssB = TSUtils.ts2String(TSUtils.paa(TSUtils.normalize(Arrays
                     // .copyOfRange(theRawData, j, j + windowLength)), paaSize), cuts);
-
                     char[] ssB = TSUtils.ts2String(
                             TSUtils.paa(Arrays.copyOfRange(theRawData, j, j + windowLength), paaSize), cuts);
 
@@ -1281,7 +1265,6 @@ public final class SAXFactory {
                     //
                     // char[] ssB = TSUtils.ts2String(TSUtils.paa(TSUtils.normalize(Arrays
                     // .copyOfRange(theRawData, j, j + windowLength)), paaSize), cuts);
-
                     char[] ssB = TSUtils.ts2String(
                             TSUtils.paa(Arrays.copyOfRange(theRawData, j, j + windowLength), paaSize), cuts);
 

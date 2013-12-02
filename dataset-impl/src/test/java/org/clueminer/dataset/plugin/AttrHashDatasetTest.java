@@ -6,7 +6,6 @@ import org.clueminer.attributes.AttributeType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,7 +35,7 @@ public class AttrHashDatasetTest {
     }
 
     @Before
-    public void setUp() throws UnsupportedAttributeType {
+    public void setUp() {
         dataset = new AttrHashDataset<Instance>(10);
         this.builder = dataset.attributeBuilder();
         dataset.setAttribute(0, builder.create("first", AttributeType.NUMERICAL));
@@ -68,10 +67,9 @@ public class AttrHashDatasetTest {
 
     /**
      * Test of setAttribute method, of class AttrHashDataset.
-     * @throws org.clueminer.exception.UnsupportedAttributeType
      */
     @Test
-    public void testSetAttribute() throws UnsupportedAttributeType {
+    public void testSetAttribute() {
         dataset.setAttribute(3, builder.create("foo", AttributeType.NUMERIC));
         assertEquals(4, dataset.attributeCount());
     }
@@ -80,7 +78,7 @@ public class AttrHashDatasetTest {
      * Test of setAttributes method, of class AttrHashDataset.
      */
     @Test
-    public void testSetAttributes() throws UnsupportedAttributeType {
+    public void testSetAttributes() {
         Map<Integer, Attribute> attr = new HashMap<Integer, Attribute>();
         attr.put(3, builder.create("foo", AttributeType.NUMERIC));
         attr.put(4, builder.create("bar", AttributeType.NUMERIC));

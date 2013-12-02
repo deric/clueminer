@@ -24,7 +24,6 @@ import org.clueminer.evaluation.BICScore;
 import org.clueminer.evaluation.Silhouette;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.evaluation.external.JaccardIndex;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.utils.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,7 +37,7 @@ import org.openide.util.NbBundle;
  * @author tombart
  */
 public class AttrEvolutionTest {
-    
+
     private static Dataset<Instance> irisDataset;
     private AttrEvolution test;
     //table for keeping results from experiments
@@ -46,7 +45,7 @@ public class AttrEvolutionTest {
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
-    
+
     public AttrEvolutionTest() {
         table = Tables.newCustomTable(
                 Maps.<String, Map<String, Double>>newHashMap(),
@@ -56,7 +55,7 @@ public class AttrEvolutionTest {
                 return Maps.newHashMap();
             }
         });
-        
+
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
                 FileUtils.class,
@@ -67,7 +66,7 @@ public class AttrEvolutionTest {
         rc = new ResultsCollector(table);
         csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
     }
-    
+
     private void createFolder(String folder) {
         File file = new File(folder);
         if (!file.exists()) {
@@ -78,22 +77,22 @@ public class AttrEvolutionTest {
             }
         }
     }
-    
+
     @BeforeClass
-    public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public static void setUpClass() throws FileNotFoundException, IOException {
         irisDataset = DatasetFixture.iris();
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
         System.out.println("writing results to file: " + csvOutput);
         rc.writeToCsv(csvOutput);
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -153,9 +152,9 @@ public class AttrEvolutionTest {
         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
         //just to make the test fast
         datasets.put(DatasetFixture.insect(), 3);
-        
+
         String name;
-        
+
         for (Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
             Dataset<Instance> dataset = entry.getKey();
             name = dataset.getName();
@@ -180,10 +179,10 @@ public class AttrEvolutionTest {
             }
             String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
             rc.writeToCsv(csvRes);
-            
+
         }
     }
-    
+
     //@Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
@@ -195,7 +194,7 @@ public class AttrEvolutionTest {
         test.setAlgorithm(new KMeans(7, 100, new EuclideanDistance()));
         test.setEvaluator(eval);
         test.setExternal(ext);
-        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));       
+        GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
         gw.setPlotDumpMod(50);
         //collect data from evolution
         //test.addEvolutionListener(new ConsoleDump(ext));
@@ -203,7 +202,7 @@ public class AttrEvolutionTest {
         //test.setEvaluator(new JaccardIndex());
         test.run();
     }
-    
+
     private String safeName(String name) {
         return name.toLowerCase().replace(" ", "_");
     }

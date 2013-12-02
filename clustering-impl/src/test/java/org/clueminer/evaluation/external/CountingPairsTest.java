@@ -14,7 +14,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
@@ -38,7 +37,7 @@ public class CountingPairsTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public static void setUpClass() throws FileNotFoundException, IOException {
         clusters = FakeClustering.iris();
 
         //now try some real clustering

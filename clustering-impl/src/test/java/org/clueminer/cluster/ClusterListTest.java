@@ -10,7 +10,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
@@ -34,7 +33,7 @@ public class ClusterListTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws UnsupportedAttributeType, IOException {
+    public static void setUpClass() throws IOException {
         CommonFixture tf = new CommonFixture();
         data = new SampleDataset();
         ARFFHandler arff = new ARFFHandler();
@@ -126,5 +125,5 @@ public class ClusterListTest {
         }
         assertEquals(clusters.instancesCount(), i);
     }
-    
+
 }

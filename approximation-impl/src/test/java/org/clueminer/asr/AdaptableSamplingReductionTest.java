@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.io.CsvLoader;
@@ -22,27 +21,27 @@ import static org.junit.Assert.*;
  * @author deric
  */
 public class AdaptableSamplingReductionTest {
-    
+
     private static Timeseries<ContinuousInstance> dataset;
-    
+
     public AdaptableSamplingReductionTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public static void setUpClass() throws FileNotFoundException, IOException {
         TimeseriesFixture tf = new TimeseriesFixture();
-        dataset = new TimeseriesDataset<ContinuousInstance>(1880);        
+        dataset = new TimeseriesDataset<ContinuousInstance>(1880);
         //FileHandler.loadDataset(tf.irBenzin(), dataset, ",");
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }

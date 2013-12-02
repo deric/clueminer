@@ -18,7 +18,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AttrHashDataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.math.Standardisation;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
@@ -47,7 +46,7 @@ public class DatasetTransformation implements DataTransform {
      *
      * @return
      */
-    private void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) throws UnsupportedAttributeType {
+    private void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) {
         HashMap<String, Double> coefficients;
         if (input.size() > 0) {
             InstanceBuilder builder = output.builder();
@@ -61,9 +60,7 @@ public class DatasetTransformation implements DataTransform {
             for (Approximator a : approx) {
                 coefficients = new HashMap<String, Double>();
                 a.estimate(xAxis, input, coefficients);
-
-                for (Iterator<Entry<String, Double>> it = coefficients.entrySet().iterator(); it.hasNext();) {
-                    Entry<String, Double> item = it.next();
+                for (Entry<String, Double> item : coefficients.entrySet()) {
                     output.setAttributeValue(item.getKey(), i, item.getValue());
                 }
             }
@@ -88,37 +85,34 @@ public class DatasetTransformation implements DataTransform {
             xAxis[i] = timePoints[i].getPosition();
         }
         ContinuousInstance item;
-        try {
-            int j = 0;
-            ApproximatorFactory am = ApproximatorFactory.getDefault();
-            //create attribute for each parameter
-            List<Approximator> approx = new ArrayList<Approximator>();
+
+        int j = 0;
+        ApproximatorFactory am = ApproximatorFactory.getDefault();
+        //create attribute for each parameter
+        List<Approximator> approx = new ArrayList<Approximator>();
             //for(Approximator ap : am.getAll()){
-            //    System.out.println(ap.getName());
-            //}
+        //    System.out.println(ap.getName());
+        //}
 
-            approx.add(am.getProvider("cubic"));
-            approx.add(am.getProvider("exp"));
-            approx.add(am.getProvider("exp-inv"));
-            approx.add(am.getProvider("avg"));
-            approx.add(am.getProvider("poly9"));
-            //approx.add(am.getProvider("chebyshev-5"));
-            for (Approximator a : approx) {
-                String[] attrs = a.getParamNames();
-                for (String attribute : attrs) {
-                    output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
-                }
+        approx.add(am.getProvider("cubic"));
+        approx.add(am.getProvider("exp"));
+        approx.add(am.getProvider("exp-inv"));
+        approx.add(am.getProvider("avg"));
+        approx.add(am.getProvider("poly9"));
+        //approx.add(am.getProvider("chebyshev-5"));
+        for (Approximator a : approx) {
+            String[] attrs = a.getParamNames();
+            for (String attribute : attrs) {
+                output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
             }
-            for (int i = 0; i < dataset.size(); i++) {
-                item = dataset.instance(i);
-                approximate(i, xAxis, item, (Dataset<Instance>) output, approx);
-                //output
-                ph.progress(++analyzeProgress);
-            }
-
-        } catch (UnsupportedAttributeType ex) {
-            Logger.getLogger(DatasetTransformation.class.getName()).log(Level.SEVERE, null, ex);
         }
+        for (int i = 0; i < dataset.size(); i++) {
+            item = dataset.instance(i);
+            approximate(i, xAxis, item, (Dataset<Instance>) output, approx);
+            //output
+            ph.progress(++analyzeProgress);
+        }
+
         System.out.println("approximation finished");
         //save approximation to file
         String prefix = System.getProperty("user.home") /*
@@ -143,6 +137,12 @@ public class DatasetTransformation implements DataTransform {
 
     /**
      * Computes RMSE between approximated and real data
+     * @param dataset
+     * @param params
+     * @param timePoints
+     * @param filename
+     * @param separator
+     * @param eol
      */
     public void approximationRMSE(Timeseries<ContinuousInstance> dataset, Dataset<Instance> params, TimePoint[] timePoints, String filename, String separator, String eol) {
         ApproximatorFactory am = ApproximatorFactory.getDefault();

@@ -13,7 +13,6 @@ import org.clueminer.dataset.row.SparseInstance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.CIndex;
 import org.clueminer.evaluation.Gamma;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.FileHandler;
 import org.junit.AfterClass;
@@ -48,7 +47,7 @@ public class KMeansTest {
      * 2; the latter are NOT linearly separable from each other.
      */
     @Test
-    public void testIris() throws UnsupportedAttributeType {
+    public void testIris() {
         try {
             /*
              * Load a dataset
@@ -92,6 +91,7 @@ public class KMeansTest {
 
     /**
      * Test endless loop
+     *
      * @TODO make a thread safe implementation
      */
     @Test
@@ -100,24 +100,20 @@ public class KMeansTest {
 
             @Override
             public void run() {
-                try {
-                    SparseInstance i1 = new SparseInstance(2);
-                    SparseInstance i2 = new SparseInstance(2);
-                    i1.put(1d);
-                    i2.put(2d);
-                    System.out.println("i1 size: " + i1.size());
+                SparseInstance i1 = new SparseInstance(2);
+                SparseInstance i2 = new SparseInstance(2);
+                i1.put(1d);
+                i2.put(2d);
+                System.out.println("i1 size: " + i1.size());
                     //current implementation is not thread safe!!!
-                    //however this test sometimes passes
-                    Dataset dataset = new SampleDataset(2);
-                    dataset.setAttribute(0, dataset.attributeBuilder().create("a", "NUMERIC"));
-                    dataset.setAttribute(1, dataset.attributeBuilder().create("b", "NUMERIC"));
-                    dataset.add(i1);
-                    dataset.add(i2);
-                    KMeans cluster = new KMeans(2, 1);
-                    cluster.partition(dataset);
-                } catch (UnsupportedAttributeType ex) {
-                    Exceptions.printStackTrace(ex);
-                }
+                //however this test sometimes passes
+                Dataset dataset = new SampleDataset(2);
+                dataset.setAttribute(0, dataset.attributeBuilder().create("a", "NUMERIC"));
+                dataset.setAttribute(1, dataset.attributeBuilder().create("b", "NUMERIC"));
+                dataset.add(i1);
+                dataset.add(i2);
+                KMeans cluster = new KMeans(2, 1);
+                cluster.partition(dataset);
             }
         });
         t.start();
@@ -131,7 +127,6 @@ public class KMeansTest {
          * If it is still alive, it is endlessly looping
          */
         assertFalse(t.isAlive());
-
 
     }
 }

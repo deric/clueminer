@@ -14,7 +14,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.exception.OperatorException;
-import org.clueminer.exception.UnsupportedAttributeType;
 
 /**
  *
@@ -42,61 +41,54 @@ public class SymbolicAggregateApproximation {
      */
     public Dataset apply(Dataset input, int PAASize, int alphabetSize) throws OperatorException {
         Dataset output = new SampleDataset(input.size());
-        try {
-            if (PAASize > input.attributeCount()) {
-                throw new OperatorException("Parameter PAA_size must not be greater than number of regular attributes in input set.");
-            }
-            // deliver parameters to output port
-            //   double[][] p = {{alphabetSize}, {PAASize}};
-            //   ExampleSet params = ExampleSetFactory.createExampleSet(p);
-            //   SAXParametersOutputPort.deliver(params);
 
-            Attribute SAXAttributes[] = {input.attributeBuilder().create("SAX_Value", AttributeType.NOMINAL)};
+        if (PAASize > input.attributeCount()) {
+            throw new OperatorException("Parameter PAA_size must not be greater than number of regular attributes in input set.");
+        }
+            // deliver parameters to output port
+        //   double[][] p = {{alphabetSize}, {PAASize}};
+        //   ExampleSet params = ExampleSetFactory.createExampleSet(p);
+        //   SAXParametersOutputPort.deliver(params);
+
+        Attribute SAXAttributes[] = {input.attributeBuilder().create("SAX_Value", AttributeType.NOMINAL)};
 
             //    MemoryExampleTable table = new MemoryExampleTable(SAXAttributes);
+        Map<Integer, Attribute> attributes = input.getAttributes();
 
-            Map<Integer, Attribute> attributes = input.getAttributes();
+        for (int i = 0; i < input.size(); i++) {
+            int j = 0;
+            Timeseries timeSeries = new Timeseries();
+            Instance inst = input.instance(i);
 
-
-            for (int i = 0; i < input.size(); i++) {
-                int j = 0;
-                Timeseries timeSeries = new Timeseries();
-                Instance inst = input.instance(i);
-
-                for (Attribute attribute : attributes.values()) {
-                    double value = inst.value(attribute.getIndex());
-                    timeSeries.add(new TPoint(value, j));
-                    j++;
-                }
-
-                try {
-                    // perform the transformation
-                    String[] SAXValue = {new String(TSUtils.ts2String(TSUtils.paa(timeSeries, PAASize), normalAlphabet, alphabetSize))};
-
-                    Instance row = output.builder().create(SAXValue, SAXAttributes);
-                    output.add(row);
-
-                    //                System.out.println(SAXValue);
-                } catch (Exception e) {
-                    System.err.println(e);
-                    throw new OperatorException("Error during transformation.");
-                }
+            for (Attribute attribute : attributes.values()) {
+                double value = inst.value(attribute.getIndex());
+                timeSeries.add(new TPoint(value, j));
+                j++;
             }
 
-            // set special attributes to the resulting example set
-            //        List<Attribute> newAttributes = new LinkedList<Attribute>();
-            //        Iterator<AttributeRole> itAR = es.getAttributes().specialAttributes();
-            //        while (itAR.hasNext()) {
-            //            Attribute attribute = itAR.next().getAttribute();
-            //            newAttributes.set(attribute);
-            //        }
-            //        table.addAttributes(newAttributes);
+            try {
+                // perform the transformation
+                String[] SAXValue = {new String(TSUtils.ts2String(TSUtils.paa(timeSeries, PAASize), normalAlphabet, alphabetSize))};
 
-            // return resulting example set
+                Instance row = output.builder().create(SAXValue, SAXAttributes);
+                output.add(row);
 
-        } catch (UnsupportedAttributeType ex) {
-            Logger.getLogger(SymbolicAggregateApproximation.class.getName()).log(Level.SEVERE, null, ex);
+                //                System.out.println(SAXValue);
+            } catch (Exception e) {
+                System.err.println(e);
+                throw new OperatorException("Error during transformation.");
+            }
         }
+
+            // set special attributes to the resulting example set
+        //        List<Attribute> newAttributes = new LinkedList<Attribute>();
+        //        Iterator<AttributeRole> itAR = es.getAttributes().specialAttributes();
+        //        while (itAR.hasNext()) {
+        //            Attribute attribute = itAR.next().getAttribute();
+        //            newAttributes.set(attribute);
+        //        }
+        //        table.addAttributes(newAttributes);
+            // return resulting example set
         return output;
     }
     /*

@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,9 +26,9 @@ public class JaccardIndexTest {
     private static CommonFixture tf = new CommonFixture();
     private static Clustering iris;
     private static JaccardIndex test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
-    public JaccardIndexTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public JaccardIndexTest() throws FileNotFoundException, IOException {
 
         clusters = FakeClustering.iris();
 
@@ -115,7 +114,7 @@ public class JaccardIndexTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        //Cabernet = 0.5625	
+        //Cabernet = 0.5625
         //Syrah = 0.3846
         //Pinot = 0.5714
         assertEquals(0.5061813186813187, score, delta);

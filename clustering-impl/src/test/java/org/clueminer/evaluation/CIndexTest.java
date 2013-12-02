@@ -10,7 +10,6 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.FileHandler;
@@ -40,7 +39,7 @@ public class CIndexTest {
      * Test of score method, of class CIndex.
      */
     @Test
-    public void testScore() throws IOException, FileNotFoundException, UnsupportedAttributeType {
+    public void testScore() throws IOException, FileNotFoundException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
         data.setAttribute(0, data.attributeBuilder().create("x", AttributeType.NUMERICAL));
@@ -113,14 +112,14 @@ public class CIndexTest {
     }
 
     @Test
-    public void testIris() throws IOException, UnsupportedAttributeType {
+    public void testIris() throws IOException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
         data.setAttribute(0, data.attributeBuilder().create("sepal length", AttributeType.NUMERICAL));
         data.setAttribute(1, data.attributeBuilder().create("sepal width", AttributeType.NUMERICAL));
         data.setAttribute(2, data.attributeBuilder().create("petal length", AttributeType.NUMERICAL));
         data.setAttribute(3, data.attributeBuilder().create("petal width", AttributeType.NUMERICAL));
-        
+
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
         int evalNum = 9;
         ClusterEvaluation[] eval = new ClusterEvaluation[evalNum];

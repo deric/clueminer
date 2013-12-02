@@ -13,7 +13,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.io.ARFFHandler;
@@ -52,8 +51,6 @@ public class DendrogramDataTest {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         }
         algorithm = new HierarchicalAgglomerativeClustering();
 
@@ -66,7 +63,7 @@ public class DendrogramDataTest {
         HierarchicalResult rowsResult = algorithm.cluster(input, pref);
         System.out.println(rowsResult.toString());
         DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), new SingleLinkage(new EuclideanDistance()));        
+        List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), new SingleLinkage(new EuclideanDistance()));
         rowsResult.setMerges(merges);
 
         dendroData = new DendrogramData(dataset, input, rowsResult, null);

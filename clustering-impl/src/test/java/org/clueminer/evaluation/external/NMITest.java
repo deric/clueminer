@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,9 +20,9 @@ public class NMITest {
     private static NMI test;
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
-    public NMITest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public NMITest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
     }

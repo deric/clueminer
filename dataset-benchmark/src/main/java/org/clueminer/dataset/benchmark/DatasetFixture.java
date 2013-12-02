@@ -8,7 +8,6 @@ import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.openide.util.Exceptions;
@@ -43,9 +42,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.irisArff(), data, 4);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        }  catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -60,8 +57,6 @@ public class DatasetFixture {
             File file = tf.wineArff();
             ARFFHandler arff = new ARFFHandler();
             arff.load(file, data, 0);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -79,8 +74,6 @@ public class DatasetFixture {
             data.setName(datasetName);
             ARFFHandler arff = new ARFFHandler();
             arff.load(file, data, 9, "\\s+", skippedIndexes);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -94,8 +87,6 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.insectArff(), data, 3);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -109,8 +100,6 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.vehicleArff(), data, 18);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -124,9 +113,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.ionosphereArff(), data, 34);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        }catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -139,8 +126,6 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.glassArff(), data, 9);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -154,8 +139,6 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.sonarArff(), data, 60);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -169,9 +152,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.dermatologyArff(), data, 34);
             data.setName(datasetName);
-        } catch (UnsupportedAttributeType ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        }catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;

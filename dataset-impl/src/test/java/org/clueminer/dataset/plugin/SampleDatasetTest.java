@@ -6,7 +6,6 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -22,7 +21,7 @@ public class SampleDatasetTest {
     private static SampleDataset dataset;
     private static final double delta = 1e-7;
 
-    public SampleDatasetTest() throws UnsupportedAttributeType {
+    public SampleDatasetTest() {
     }
 
     @BeforeClass
@@ -34,7 +33,7 @@ public class SampleDatasetTest {
     }
 
     @Before
-    public void setUp() throws UnsupportedAttributeType {
+    public void setUp() {
         dataset = new SampleDataset(5);
         AttributeBuilder builder = dataset.attributeBuilder();
         dataset.setAttribute(0, builder.create("first", AttributeType.NUMERICAL));

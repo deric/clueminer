@@ -15,7 +15,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AttrHashDataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
@@ -59,33 +58,28 @@ public class LegendreTransformation implements DataTransform {
             xAxis[i] = timePoints[i].getPosition();
         }
         ContinuousInstance item;
-        try {
-            int j = 0;
+        int j = 0;
             //segment start
 
-            //create attribute for each parameter
-            List<Approximator> approx = new ArrayList<Approximator>();
-            approx.add(new LegendreApproximator(degree));
-            int offset = totalAttributes(approx) * segment;
-            for (Approximator a : approx) {
-                String[] attrs = a.getParamNames();
-                for (String attribute : attrs) {
-                    if (segment > 0) {
-                        attribute = segment + "_" + attribute;
-                    }
-                    output.setAttribute(offset + j, output.attributeBuilder().create(attribute, "NUMERIC"));
-                    j++;
+        //create attribute for each parameter
+        List<Approximator> approx = new ArrayList<Approximator>();
+        approx.add(new LegendreApproximator(degree));
+        int offset = totalAttributes(approx) * segment;
+        for (Approximator a : approx) {
+            String[] attrs = a.getParamNames();
+            for (String attribute : attrs) {
+                if (segment > 0) {
+                    attribute = segment + "_" + attribute;
                 }
+                output.setAttribute(offset + j, output.attributeBuilder().create(attribute, "NUMERIC"));
+                j++;
             }
-            for (int i = 0; i < dataset.size(); i++) {
-                item = dataset.instance(i);
-                approximate(i, xAxis, item, output, approx, offset);
-                //output
-                ph.progress(++analyzeProgress);
-            }
-
-        } catch (UnsupportedAttributeType ex) {
-            Logger.getLogger(DatasetTransformation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (int i = 0; i < dataset.size(); i++) {
+            item = dataset.instance(i);
+            approximate(i, xAxis, item, output, approx, offset);
+            //output
+            ph.progress(++analyzeProgress);
         }
 
         ph.finish();
@@ -109,9 +103,8 @@ public class LegendreTransformation implements DataTransform {
      * @param output
      * @param approx
      * @param offset
-     * @throws UnsupportedAttributeType
      */
-    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx, int offset) throws UnsupportedAttributeType {
+    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx, int offset) {
         HashMap<String, Double> coefficients;
         int idx;
         if (input.size() > 0) {

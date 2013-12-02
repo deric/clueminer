@@ -2,12 +2,7 @@ package org.clueminer.approximation;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.attributes.TimePointAttribute;
-import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.TimeseriesFixture;
-import org.clueminer.io.CsvLoader;
 import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,25 +16,25 @@ import static org.junit.Assert.*;
  * @author deric
  */
 public class LegendreApproximatorTest {
-    
+
     private static LegendreApproximator test;
-    
+
     public LegendreApproximatorTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
         test = new LegendreApproximator(2);
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -66,15 +61,15 @@ public class LegendreApproximatorTest {
      * Test of estimate method, of class LegendreApproximator.
      */
     @Test
-    public void testEstimate() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public void testEstimate() throws FileNotFoundException, IOException {
         TimeseriesFixture tf = new TimeseriesFixture();
         //CsvLoader loader = new CsvLoader();
         //TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(20);
-        
+
         //dataset.setAttribute(0, new TimePointAttribute);
         /*dataset.attributeBuilder().create("y", "REAL");
         loader.load(tf.irBenzin(), dataset);
-        
+
         ContinuousInstance inst = dataset.instance(0);*/
     }
 
@@ -87,7 +82,7 @@ public class LegendreApproximatorTest {
         assertEquals("legendre-1", names[0]);
         Dump.array(names, "names");
     }
-    
+
 
     /**
      * Test of getFunctionValue method, of class LegendreApproximator.

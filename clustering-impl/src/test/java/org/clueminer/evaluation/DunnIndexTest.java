@@ -1,6 +1,5 @@
 package org.clueminer.evaluation;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.AfterClass;
@@ -65,7 +63,7 @@ public class DunnIndexTest {
      * Test of score method, of class DunnIndex.
      */
     @Test
-    public void testScore() throws IOException, FileNotFoundException, UnsupportedAttributeType {
+    public void testScore() throws IOException, FileNotFoundException {
         ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> iris = new SampleDataset();

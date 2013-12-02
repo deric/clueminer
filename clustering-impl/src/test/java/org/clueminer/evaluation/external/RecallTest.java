@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,9 +20,9 @@ public class RecallTest {
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
     private static Recall test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
-    public RecallTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public RecallTest() throws FileNotFoundException, IOException {
 
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong();
@@ -102,7 +101,7 @@ public class RecallTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        //Cabernet = 0.7500	
+        //Cabernet = 0.7500
         //Syrah = 0.5555
         //Pinot = 0.6666
         assertEquals(0.6574074074074074, score, delta);

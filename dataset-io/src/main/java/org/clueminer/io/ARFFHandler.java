@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.clueminer.utils.DatasetLoader;
 
 /**
@@ -48,7 +47,7 @@ public class ARFFHandler implements DatasetLoader {
      * @throws FileNotFoundException if the file can not be found.
      */
     @Override
-    public boolean load(File file, Dataset dataset) throws FileNotFoundException, UnsupportedAttributeType {
+    public boolean load(File file, Dataset dataset) throws FileNotFoundException {
         return load(file, dataset, -1, ",", new ArrayList<Integer>());
     }
 
@@ -61,13 +60,14 @@ public class ARFFHandler implements DatasetLoader {
      * @return the data set represented in the provided file
      * @throws FileNotFoundException - if the file can not be found
      */
-    public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException, UnsupportedAttributeType {
+    public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException {
         return load(file, dataset, classIndex, ",", new ArrayList<Integer>());
     }
 
     /**
      *
      * @param file
+     * @param out
      * @param classIndex - indexed from zero!
      * @param separator - for eliminating all white characters (" ",\n, \t) use
      * "\\s+"
@@ -77,7 +77,7 @@ public class ARFFHandler implements DatasetLoader {
      * @throws IllegalArgumentException when type is not convertible to Enum
      * IAttributeType
      */
-    public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws FileNotFoundException, UnsupportedAttributeType {
+    public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) {
         LineIterator it = new LineIterator(file);
         it.setSkipBlanks(true);
         it.setCommentIdentifier("%");
@@ -158,9 +158,6 @@ public class ARFFHandler implements DatasetLoader {
 
     protected boolean isValidAttributeDefinition(String line) {
         Matcher amatch;
-        if ((amatch = attribute.matcher(line)).matches()) {
-            return true;
-        }
-        return false;
+        return (amatch = attribute.matcher(line)).matches();
     }
 }

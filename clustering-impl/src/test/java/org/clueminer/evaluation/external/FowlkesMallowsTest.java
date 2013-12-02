@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,9 +20,9 @@ public class FowlkesMallowsTest {
     private static FowlkesMallows test;
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
-    public FowlkesMallowsTest() throws FileNotFoundException, UnsupportedAttributeType, IOException {
+    public FowlkesMallowsTest() throws FileNotFoundException, IOException {
 
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
@@ -101,7 +100,7 @@ public class FowlkesMallowsTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        
+
         assertEquals(0.6688096636728896, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
@@ -110,9 +109,9 @@ public class FowlkesMallowsTest {
         double score2 = test.score(FakeClustering.wineClustering(), FakeClustering.wine());
         end = System.currentTimeMillis();
         System.out.println(test.getName() + " = " + score2);
-        //when using class labels result should be the same        
+        //when using class labels result should be the same
         assertEquals(score, score2, delta);
-        
+
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
     }
 }

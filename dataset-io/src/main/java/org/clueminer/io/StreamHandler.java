@@ -5,7 +5,6 @@ import be.abeel.io.LineIterator;
 import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.exception.UnsupportedAttributeType;
 import org.openide.util.Exceptions;
 
 /**
@@ -113,7 +112,7 @@ public class StreamHandler {
     private static boolean isHeader(String row[]) {
         for (String attr : row) {
             try {
-                Double.parseDouble(attr);                
+                Double.parseDouble(attr);
                 //if number is successfully parsed, it's not a header
                 return false;
             } catch (NumberFormatException e) {
@@ -126,14 +125,11 @@ public class StreamHandler {
     private static void createHeader(String row[], Dataset<Instance> dataset, int classIndex) {
         int i = 0;
         for (String attr : row) {
-            try {
-                if (i != classIndex) {
-                    dataset.setAttribute(i, dataset.attributeBuilder().create(attr, "NUMERICAL"));
-                }
-                i++;
-            } catch (UnsupportedAttributeType ex) {
-                Exceptions.printStackTrace(ex);
+            if (i != classIndex) {
+                dataset.setAttribute(i, dataset.attributeBuilder().create(attr, "NUMERICAL"));
             }
+            i++;
+
         }
     }
 }
