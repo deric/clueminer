@@ -30,7 +30,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
  */
 public class LegendreTransSegmentedTest {
 
-    private static TimeseriesFixture fixtures = new TimeseriesFixture();
+    private static final TimeseriesFixture fixtures = new TimeseriesFixture();
     private static Timeseries<ContinuousInstance> simple;
     private static LegendreTransSegmented subject;
 
@@ -41,7 +41,6 @@ public class LegendreTransSegmentedTest {
     @BeforeClass
     public static void setUpClass() throws IOException {
         File f = fixtures.data01();
-
 
         CSVReader csv = new CSVReader(new FileReader(f));
         TimeRow inst = new TimeRow(Double.class, 15);
@@ -120,6 +119,23 @@ public class LegendreTransSegmentedTest {
         int degree = 7;
         // 7 is the default degree of Legendre
         Dataset<Instance> output = new ArrayDataset<Instance>(10, segments * degree);
+        //analyze data
+        subject.analyze(simple, output, ph, segments, degree);
+        assertEquals(1, output.size());
+        for (int i = 0; i < output.attributeCount(); i++) {
+            //check that all attributes were assigned some value
+            System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
+            assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
+        }
+    }
+
+    @Test
+    public void testAnalyzeTimeseries2() {
+        ProgressHandle ph = ProgressHandleFactory.createHandle("Trasforming dataset");
+        int segments = 3;
+        int degree = 7;
+        // 7 is the default degree of Legendre
+        Dataset<Instance> output = new AttrHashDataset<Instance>(10);
         //analyze data
         subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());

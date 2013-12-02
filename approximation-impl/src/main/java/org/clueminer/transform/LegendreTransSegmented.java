@@ -1,5 +1,7 @@
 package org.clueminer.transform;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -20,6 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LegendreTransSegmented extends LegendreTransformation implements DataTransform {
 
     private static String name = "Legendre segmented";
+    private static final Logger logger = Logger.getLogger(LegendreTransSegmented.class.getName());
 
     public LegendreTransSegmented() {
         //nothing to do
@@ -84,6 +87,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         double value, min, max;
         int m;
         StdScale scale = new StdScale();
+        logger.log(Level.INFO, "splitting: {0} size= {1} attr cnt = {2}", new Object[]{source.getClass().getName(), source.size(), source.attributeCount()});
         for (int i = 0; i < n; i++) {
             res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
             int pos = offset;
@@ -127,7 +131,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                     res[i].setAttributeValue(k, j, value);
                 }
             }
-            //Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
+            Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
             offset += inc;
         }
         return res;

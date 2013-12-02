@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.approximation.LegendreApproximator;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.DataTransform;
@@ -14,6 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -129,6 +128,8 @@ public class LegendreTransformation implements DataTransform {
 
     @Override
     public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return new AttrHashDataset(input.size());
+        //number of attributes is some default, could be expanded
+        System.out.println("legrendge: " + input.size() + " attrs: " + input.attributeCount());
+        return new AttrHashDataset<Instance>(input.size());
     }
 }
