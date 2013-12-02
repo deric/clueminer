@@ -18,6 +18,7 @@ import org.openide.util.lookup.ServiceProvider;
  * flexibility.
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = Dataset.class)
 public class SampleDataset<E extends Instance> extends AbstractDataset<E> implements Dataset<E> {

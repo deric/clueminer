@@ -20,7 +20,7 @@ import org.junit.Test;
 public class SampleDatasetTest {
 
     private static SampleDataset dataset;
-    private static double delta = 1e-7;
+    private static final double delta = 1e-7;
 
     public SampleDatasetTest() throws UnsupportedAttributeType {
     }
