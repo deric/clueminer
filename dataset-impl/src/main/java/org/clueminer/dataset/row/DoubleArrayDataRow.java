@@ -14,12 +14,16 @@ import org.clueminer.math.Vector;
 public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Double>, Vector<Double> {
 
     private static final long serialVersionUID = -4054619137644952331L;
+    /**
+     * last is pointing to next empty space
+     */
     private int last = 0;
     /**
      * Holds the values for all attributes
      */
     private double[] data;
     private Iterator<Double> it;
+    private double unknown = Double.NaN;
 
     /**
      * Creates a new data row backed by an primitive array.
@@ -58,10 +62,10 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
      */
     @Override
     public int put(double value) {
-        if (last >= size()) {
+        if (last >= data.length) {
             //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
-            setCapacity((int) (last * 1.5));
+            setCapacity((int) (last * 1.618));
         }
         data[last] = value;
         return last++;
@@ -69,7 +73,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public double value(int index) {
-        return data[index];
+        return get(index);
     }
 
     /**
@@ -96,8 +100,17 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         return data[index];
     }
 
+    /**
+     * For values out of array bounds will return unknown value
+     *
+     * @param index
+     * @return
+     */
     @Override
     public double get(int index) {
+        if (index < 0 || index >= last) {
+            return unknown;
+        }
         return data[index];
     }
 
@@ -107,6 +120,16 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public void set(int index, double value) {
+        // if we're trying to reach out of array bounds
+        if (index >= data.length) {
+            //extending array is rather expensive on
+            //reallocation of array, so we rather make bigger space
+            setCapacity((int) (last * 1.618));
+        }
+        if (index >= last) {
+            //last should point to next empty space
+            last = index + 1;
+        }
         data[index] = (float) value;
     }
 
@@ -117,7 +140,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public void set(int index, Number value) {
-        data[index] = value.doubleValue();
+        set(index, value.doubleValue());
     }
 
     /**
@@ -129,7 +152,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
      */
     @Override
     protected void setValue(int index, double value, double defaultValue) {
-        data[index] = value;
+        set(index, value);
     }
 
     /**
@@ -322,6 +345,19 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
             return false;
         }
         return true;
+    }
+
+    /**
+     * Unknown is value for a missing value in a dataset
+     *
+     * @return by default Double.NaN, but could be changed to some other value
+     */
+    public double getUnknown() {
+        return unknown;
+    }
+
+    public void setUnknown(double unknown) {
+        this.unknown = unknown;
     }
 
     /**

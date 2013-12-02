@@ -88,6 +88,18 @@ public class AttrHashDatasetTest {
         assertEquals(6, dataset.attributeCount());
     }
 
+    @Test
+    public void testSetValuesForNewAttributes() {
+        Map<Integer, Attribute> attr = new HashMap<Integer, Attribute>();
+        attr.put(3, builder.create("foo", AttributeType.NUMERIC));
+        attr.put(4, builder.create("bar", AttributeType.NUMERIC));
+        dataset.setAttributes(attr);
+        double value = 456.0;
+        dataset.setAttributeValue("foo", 0, value);
+        assertEquals(value, dataset.getAttributeValue("foo", 0), delta);
+    }
+
+
     /**
      * Test of getAttributeValue method, of class AttrHashDataset.
      *

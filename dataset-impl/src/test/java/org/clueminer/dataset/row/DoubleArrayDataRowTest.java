@@ -99,6 +99,18 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
+     * Try setting value over capacity of an array
+     */
+    @Test
+    public void testSetOutOfCapacity_int_double() {
+        double value = 7;
+        int idx = 6;
+        assertNotSame(value, t1.get(idx));
+        t1.set(idx, value);
+        assertEquals(value, t1.get(idx), delta);
+    }
+
+    /**
      * Test of set method, of class DoubleArrayDataRow.
      */
     @Test
