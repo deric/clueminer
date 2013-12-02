@@ -30,7 +30,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     @Override
     protected void render(Graphics2D g) {
         //we draw strings in rows and then we rotate the whole image
-
+        String s;
         if (columnsOrder != null) {
             Dataset<? extends Instance> data = dendroData.getInstances();
             g.setColor(Color.black);
@@ -40,12 +40,16 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
             FontMetrics fm = g.getFontMetrics();
             Font f;
             int height = fm.getHeight();
-            // clockwise 90 degrees 
+            // clockwise 90 degrees
             g.rotate(Math.PI / 2.0);
             for (int col = 0; col < dendroData.getNumberOfColumns(); col++) {
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
                 Attribute a = data.getAttribute(this.columnsOrder[col]);
-                String s = a.getName();
+                if (a != null) {
+                    s = a.getName();
+                } else {
+                    s = "(unknown)";
+                }
                 if (col == firstSelectedColumn) {
                     f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
                     g.setFont(f);
