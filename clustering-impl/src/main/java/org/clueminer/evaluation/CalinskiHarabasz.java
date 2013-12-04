@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CalinskiHarabasz extends ClusterEvaluator {
 
     private static final long serialVersionUID = -2699019526373205522L;
-    private static String name = "Calinski-Harabasz";
+    private static final String name = "Calinski-Harabasz";
 
     public CalinskiHarabasz() {
         dm = new EuclideanDistance();

@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -54,6 +56,7 @@ public class AttrEvolution implements Runnable, Evolution {
     protected ClusteringAlgorithm algorithm;
     private boolean maximizedFitness;
     private static String name = "Attributes' evolution";
+    private static Logger logger = Logger.getLogger(AttrEvolution.class.getName());
 
     public AttrEvolution() {
         isFinished = false;
@@ -85,9 +88,9 @@ public class AttrEvolution implements Runnable, Evolution {
     public Dataset<? extends Instance> getDataset() {
         return dataset;
     }
-    
+
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset){
+    public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
     }
 
@@ -167,17 +170,18 @@ public class AttrEvolution implements Runnable, Evolution {
             } else {
                 indsToCopy = newIndsArr.length;
             }
+            System.out.println("individuals in population: " + indsToCopy);
             if (indsToCopy > 0) {
                 //System.out.println("copying " + indsToCopy);
                 //TODO: old population should be sorted as well? take only part of the new population?
                 System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, indsToCopy);
             } else {
-                throw new RuntimeException("no new individuals");
+                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                //    throw new RuntimeException("no new individuals");
             }
 
-
             // print statistic
-            // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());            
+            // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
             fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());
         }
 
@@ -204,8 +208,8 @@ public class AttrEvolution implements Runnable, Evolution {
 
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
+            for (EvolutionListener listener : listeners) {
+                listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
             }
         }
     }
@@ -221,8 +225,8 @@ public class AttrEvolution implements Runnable, Evolution {
 
         if (evoListeners != null) {
             listeners = evoListeners.getListeners(EvolutionListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
+            for (EvolutionListener listener : listeners) {
+                listener.finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
             }
         }
     }
@@ -269,11 +273,7 @@ public class AttrEvolution implements Runnable, Evolution {
     @Override
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
-        if (evaluator.compareScore(1.0, 0.0)) {
-            maximizedFitness = true;
-        } else {
-            maximizedFitness = false;
-        }
+        maximizedFitness = evaluator.compareScore(1.0, 0.0);
     }
 
     /**
@@ -314,5 +314,5 @@ public class AttrEvolution implements Runnable, Evolution {
     @Override
     public void setGenerations(int generations) {
         this.generations = generations;
-    }       
+    }
 }
