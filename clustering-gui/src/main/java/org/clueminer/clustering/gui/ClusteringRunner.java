@@ -51,7 +51,7 @@ public class ClusteringRunner implements Runnable {
         logger.log(Level.INFO, "dataset size: {0}", data.size());
         logger.log(Level.INFO, "dataset has {0} attributes", data.attributeCount());
 
-        if (data.isEmpty()) {
+        if (data.isEmpty() || data.attributeCount() == 0) {
             throw new RuntimeException("dataset is empty!");
         }
 
