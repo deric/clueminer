@@ -120,6 +120,7 @@ public class LegendreTransSegmentedTest {
         // 7 is the default degree of Legendre
         Dataset<Instance> output = new ArrayDataset<Instance>(10, segments * degree);
         //analyze data
+        ph.start(segments * simple.size());
         subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());
         for (int i = 0; i < output.attributeCount(); i++) {
@@ -127,6 +128,7 @@ public class LegendreTransSegmentedTest {
             System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
             assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
         }
+        ph.finish();
     }
 
     @Test
@@ -137,6 +139,7 @@ public class LegendreTransSegmentedTest {
         // 7 is the default degree of Legendre
         Dataset<Instance> output = new AttrHashDataset<Instance>(10);
         //analyze data
+        ph.start(segments * simple.size());
         subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());
         for (int i = 0; i < output.attributeCount(); i++) {
@@ -144,6 +147,7 @@ public class LegendreTransSegmentedTest {
             System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
             assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
         }
+        ph.finish();
     }
 
     /**

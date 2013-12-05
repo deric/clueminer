@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.approximation.LegendreApproximator;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.DataTransform;
@@ -12,7 +14,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -27,6 +28,7 @@ public class LegendreTransformation implements DataTransform {
 
     private static String name = "ortho-polynomials (Legendre)";
     protected int degree;
+    private static final Logger logger = Logger.getLogger(LegendreTransformation.class.getName());
 
     public LegendreTransformation() {
         degree = 5;
@@ -44,12 +46,16 @@ public class LegendreTransformation implements DataTransform {
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
+        logger.log(Level.INFO, "starting transformation {0}", name);
         ph.start(dataset.size());
         analyzeTimeseries(d, (Dataset<Instance>) output, ph, 0);
+        logger.log(Level.INFO, "finished transformation {0}", name);
+        ph.finish();
     }
 
     public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
-        int analyzeProgress = 0;
+        //initial value of progress handle
+        int analyzeProgress = segment * dataset.size();
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
         double[] xAxis = new double[timePoints.length];
@@ -80,8 +86,6 @@ public class LegendreTransformation implements DataTransform {
             //output
             ph.progress(++analyzeProgress);
         }
-
-        ph.finish();
     }
 
     public int totalAttributes(List<Approximator> approx) {
@@ -129,7 +133,7 @@ public class LegendreTransformation implements DataTransform {
     @Override
     public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
         //number of attributes is some default, could be expanded
-        System.out.println("legrendge: " + input.size() + " attrs: " + input.attributeCount());
+        logger.log(Level.INFO, "input size: {0} attrs {1}", new Object[]{input.size(), input.attributeCount()});
         return new AttrHashDataset<Instance>(input.size());
     }
 }

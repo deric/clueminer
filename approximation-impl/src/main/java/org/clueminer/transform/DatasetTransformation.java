@@ -33,7 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DatasetTransformation implements DataTransform {
 
     private boolean save = false;
-    private static String name = "approx cubic-exp-poly9";
+    private static final String name = "approx cubic-exp-poly9";
+    private static final Logger logger = Logger.getLogger(DatasetTransformation.class.getName());
 
     @Override
     public String getName() {
@@ -79,7 +80,7 @@ public class DatasetTransformation implements DataTransform {
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
-        System.out.println("starting analysis timepoints " + timePoints.length);
+        logger.log(Level.INFO, "starting analysis timepoints {0}", timePoints.length);
         double[] xAxis = new double[timePoints.length];
         for (int i = 0; i < timePoints.length; i++) {
             xAxis[i] = timePoints[i].getPosition();
@@ -90,7 +91,7 @@ public class DatasetTransformation implements DataTransform {
         ApproximatorFactory am = ApproximatorFactory.getDefault();
         //create attribute for each parameter
         List<Approximator> approx = new ArrayList<Approximator>();
-            //for(Approximator ap : am.getAll()){
+        //for(Approximator ap : am.getAll()){
         //    System.out.println(ap.getName());
         //}
 
@@ -112,8 +113,7 @@ public class DatasetTransformation implements DataTransform {
             //output
             ph.progress(++analyzeProgress);
         }
-
-        System.out.println("approximation finished");
+        logger.log(Level.INFO, "approximation finished");
         //save approximation to file
         String prefix = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()
@@ -137,6 +137,7 @@ public class DatasetTransformation implements DataTransform {
 
     /**
      * Computes RMSE between approximated and real data
+     *
      * @param dataset
      * @param params
      * @param timePoints

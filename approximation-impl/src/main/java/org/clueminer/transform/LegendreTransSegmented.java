@@ -47,10 +47,16 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         // last two params: number of segments and degree of polynomials
-        analyze(dataset, output, ph, 2, 7);
+        int n = 2;
+        int workunits = n * dataset.size();
+        logger.log(Level.INFO, "work units = {0}", workunits);
+        ph.start(workunits);
+        analyze(dataset, output, ph, n, 7);
+        ph.finish();
     }
 
     /**
+     * Make sure you allocate enough work units for the progress bar
      *
      * @param dataset
      * @param output
@@ -64,15 +70,16 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         //protected var
         degree = deg;
         //items to finish
-        ph.start(n * dataset.size());
+
         segments = splitIntoSegments(d, n);
         int seg = 0;
         for (Timeseries<ContinuousInstance> input : segments) {
             analyzeTimeseries(input, (Dataset<Instance>) output, ph, seg);
             //Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
+            logger.log(Level.INFO, "segment {0}", seg);
             seg++;
         }
-        System.out.println("finished");
+        logger.log(Level.INFO, "finished");
     }
 
     protected Timeseries<ContinuousInstance>[] splitIntoSegments(Timeseries<ContinuousInstance> source, int n) {
