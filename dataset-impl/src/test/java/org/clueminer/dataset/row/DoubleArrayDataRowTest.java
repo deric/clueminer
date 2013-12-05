@@ -17,8 +17,8 @@ public class DoubleArrayDataRowTest {
     private DoubleArrayDataRow t1;
     private DoubleArrayDataRow t2;
     //precision for comparing
-    static double delta = 1e-9;
-    static double[] t1array = new double[]{1, 2, 3, 4, 5};
+    private static final double delta = 1e-9;
+    private static final double[] t1array = new double[]{1, 2, 3, 4, 5};
 
     public DoubleArrayDataRowTest() {
     }

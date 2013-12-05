@@ -9,9 +9,10 @@ import java.util.SortedSet;
 import javax.swing.JComponent;
 
 /**
- * Interface for a dataset.
+ * Universal interface for a numerical dataset (something like spreadsheet).
  *
  * @author Tomas Barton
+ * @param <E> type of data that is stored in the dataset
  */
 public interface Dataset<E extends Instance> extends Cloneable, Serializable, Iterable<E>, Collection<E>, Set<E> {
 
@@ -27,6 +28,8 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
 
     /**
      * Returns the name of Dataset
+     *
+     * @return should be unique name of the dataset
      */
     public String getName();
 
@@ -89,6 +92,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public boolean hasIndex(int idx);
 
     /**
+     * @param rand seed
      * @return Random instance from the dataset
      */
     public E getRandom(Random rand);
@@ -139,7 +143,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Returns the index of the class value in the supplied data set. This
      * method will return -1 if the class value of this instance is not set.
      *
-     * @param data - the data set to give the index for
+     * @param clazz class we are looking for (e.g. as a String)
      * @return the index of the class value
      */
     public int classIndex(Object clazz);
@@ -176,9 +180,9 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public Attribute getAttribute(int index);
 
     /**
-     * Return attribute at position specified by attribute's name
+     * Return attribute at position specified by name of an attribute
      *
-     * @param index
+     * @param attributeName
      * @return
      */
     public Attribute getAttribute(String attributeName);
@@ -261,6 +265,8 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
 
     /**
      * Return copy of data as an array of double
+     *
+     * @return dataset as 2D array
      */
     public double[][] arrayCopy();
 
