@@ -1,5 +1,7 @@
 package org.clueminer.clustering.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
@@ -21,9 +23,10 @@ public class ClusteringRunner implements Runnable {
     private ClusteringDialog config = null;
     private ClusterAnalysis analysis;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
-    private static String rawData = "-- no transformation --";
+    private static final String rawData = "-- no transformation --";
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
+    private static final Logger logger = Logger.getLogger(ClusteringRunner.class.getName());
 
     public ClusteringRunner(ClusterAnalysis clust, ClusteringDialog config) {
         this.analysis = clust;
@@ -37,7 +40,7 @@ public class ClusteringRunner implements Runnable {
 
 
         String datasetTransform = params.getString("dataset");
-        System.out.println("using: " + datasetTransform);
+        logger.log(Level.INFO, "using trasformation: {0}", datasetTransform);
 
 
         if (!analysis.hasDataset()) {
@@ -45,6 +48,13 @@ public class ClusteringRunner implements Runnable {
         }
 
         Dataset<? extends Instance> data = analysis.getDataset();
+        logger.log(Level.INFO, "dataset size: {0}", data.size());
+        logger.log(Level.INFO, "dataset has {0} attributes", data.attributeCount());
+
+        if (data.isEmpty()) {
+            throw new RuntimeException("dataset is empty!");
+        }
+
         if (!datasetTransform.equals(rawData)) {
             //make sure we don't have old data
             transform = null;
