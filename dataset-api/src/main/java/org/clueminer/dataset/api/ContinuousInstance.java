@@ -7,6 +7,7 @@ import org.clueminer.math.Interpolator;
  * any point between begin and end)
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public interface ContinuousInstance<E extends Number> extends Instance<E> {
 

@@ -3,6 +3,7 @@ package org.clueminer.dataset.api;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E> {
 
@@ -49,11 +50,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
      * @return
      */
     public boolean contains(int idx) {
-        if ((idx >= size() || idx < 0)) {
-            return false;
-        }
-
-        return true;
+        return (idx < size() && idx >= 0);
     }
 
     public abstract E item(int index);
@@ -94,11 +91,17 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
 
     @Override
     public double getMax() {
+        if (max == Double.MIN_VALUE) {
+            resetMinMax();
+        }
         return max;
     }
 
     @Override
     public double getMin() {
+        if (min == Double.MAX_VALUE) {
+            resetMinMax();
+        }
         return min;
     }
 

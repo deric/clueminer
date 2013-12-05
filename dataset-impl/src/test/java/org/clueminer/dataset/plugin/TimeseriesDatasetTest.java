@@ -39,7 +39,15 @@ public class TimeseriesDatasetTest {
         }
         dataset.setTimePoints(tp);
         InstanceBuilder builder = dataset.builder();
-        //dataset.add((ContinuousInstance) builder.create(new double[]{1, 2, 3, 4, 5, 6}));
+        double[] data;
+        int size = 10;
+        for (int i = 0; i < size; i++) {
+            data = new double[tp.length];
+            for (int j = 0; j < data.length; j++) {
+                data[j] = Math.random();
+            }
+            dataset.add((ContinuousInstance) builder.create(data));
+        }
     }
 
     @After
@@ -162,14 +170,10 @@ public class TimeseriesDatasetTest {
      * Test of getMin method, of class TimeseriesDataset.
      */
     @Test
-    public void testGetMin() {
-    }
-
-    /**
-     * Test of getMax method, of class TimeseriesDataset.
-     */
-    @Test
-    public void testGetMax() {
+    public void testGetMinMax() {
+        double min = dataset.getMin();
+        double max = dataset.getMax();
+        assertEquals(true, max >= min);
     }
 
     /**
@@ -240,6 +244,14 @@ public class TimeseriesDatasetTest {
      */
     @Test
     public void testInstance() {
+        assertNotNull(dataset.instance(0));
+        assertNotNull(dataset.instance(1));
+        assertNotNull(dataset.instance(dataset.size() - 1));
+    }
+
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testInstanceException() {
+        dataset.instance(-1);
     }
 
     /**

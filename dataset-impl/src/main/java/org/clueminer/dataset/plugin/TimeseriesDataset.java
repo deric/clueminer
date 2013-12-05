@@ -19,6 +19,7 @@ import org.clueminer.types.TimePoint;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDataset<E> implements Timeseries<E>, Dataset<E> {
 
@@ -79,8 +80,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public void setAttributes(Map<Integer, Attribute> attr) {
-        for (Iterator<Entry<Integer, Attribute>> it = attr.entrySet().iterator(); it.hasNext();) {
-            Entry<Integer, Attribute> next = it.next();
+        for (Entry<Integer, Attribute> next : attr.entrySet()) {
             timePoints[next.getKey()] = (TimePointAttribute) next.getValue();
         }
     }
@@ -103,6 +103,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         boolean success = true;
         for (E instance : d) {
             check(instance);
+            checkMinMax(instance);
             success &= add(instance);
         }
         return success;
@@ -191,7 +192,6 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             pointsNew[i].setPosition(time / endTime);
         }
 
-
         resetMinMax();
         for (int i = 0; i < size(); i++) {
             ContinuousInstance inst = this.get(i);
@@ -258,7 +258,6 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             up = idx + 1;
         }
 
-
         return interpolator.getValue(getTimePointsArray(), curr.arrayCopy(), x, low, up);
     }
 
@@ -269,6 +268,9 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public double getMin() {
+        if (min == Double.MAX_VALUE) {
+            resetMinMax();
+        }
         return min;
     }
 
@@ -279,6 +281,9 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public double getMax() {
+        if (max == Double.MIN_VALUE) {
+            resetMinMax();
+        }
         return max;
     }
 
@@ -293,11 +298,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             return false;
         }
         TimeseriesDataset<ContinuousInstance> that = (TimeseriesDataset<ContinuousInstance>) obj;
-
-        if (that.hashCode() != this.hashCode()) {
-            return false;
-        }
-        return true;
+        return that.hashCode() == this.hashCode();
     }
 
     @Override
@@ -314,8 +315,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("TimeseriesDataset [");
-        for (Iterator<E> it = this.iterator(); it.hasNext();) {
-            Instance i = it.next();
+        for (Instance i : this) {
             sb.append(i.toString()).append("\n");
         }
         sb.append("]");
@@ -384,7 +384,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             add(inst);
             return inst;
         }
-        throw new RuntimeException("can't get instance at position: " + index);
+        throw new ArrayIndexOutOfBoundsException("can't get instance at position: " + index);
     }
 
     @Override
