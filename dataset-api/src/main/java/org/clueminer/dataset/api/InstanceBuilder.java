@@ -3,6 +3,7 @@ package org.clueminer.dataset.api;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public interface InstanceBuilder<E extends Instance> {
 

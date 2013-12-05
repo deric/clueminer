@@ -85,14 +85,20 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         }
     }
 
+    /**
+     * Adds new instance and checks consistency with the dataset. We don't have
+     * to check min/mix is will be computed when min/max is requested (lazy
+     * approach)
+     *
+     * @param instance
+     * @return
+     */
     @Override
     public boolean add(E instance) {
         if (instance.getName() == null) {
             instance.setName(this.getName() + "-" + this.size());
         }
         check(instance);
-        //instance might not contain any data yet
-        checkMinMax(instance);
         instance.setParent(this);
         instance.setColor(colorGenerator.next());
         return super.add(instance);

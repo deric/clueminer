@@ -3,6 +3,7 @@ package org.clueminer.dataset.plugin;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.types.TimePoint;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,6 +19,7 @@ import static org.junit.Assert.*;
 public class TimeseriesDatasetTest {
 
     private static TimeseriesDataset<ContinuousInstance> dataset;
+    private static final double delta = 1e-9;
 
     public TimeseriesDatasetTest() {
     }
@@ -87,6 +89,9 @@ public class TimeseriesDatasetTest {
      */
     @Test
     public void testAdd() {
+        int size = dataset.size();
+        dataset.add(new TimeInstance(dataset.attributeCount()));
+        assertEquals(size + 1, dataset.size());
     }
 
     /**
@@ -150,6 +155,14 @@ public class TimeseriesDatasetTest {
      */
     @Test
     public void testCheckMinMax() {
+        double[] data = new double[dataset.attributeCount()];
+        for (int j = 0; j < data.length; j++) {
+            data[j] = Math.random();
+        }
+        double max = Math.random() * 100000;
+        data[0] = max;
+        dataset.add((ContinuousInstance) dataset.builder().create(data));
+        assertEquals(max, dataset.getMax(), delta);
     }
 
     /**

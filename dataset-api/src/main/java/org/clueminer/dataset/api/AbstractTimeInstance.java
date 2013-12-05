@@ -1,5 +1,8 @@
 package org.clueminer.dataset.api;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Tomas Barton
@@ -15,6 +18,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     //real count
     protected int last = 0;
     protected long startTime;
+    protected static final Logger logger = Logger.getLogger(AbstractTimeInstance.class.getName());
 
     public AbstractTimeInstance() {
     }
@@ -61,7 +65,11 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
         E dc;
         for (int i = 0; i < size(); i++) {
             dc = item(i);
-            checkMinMax(dc.doubleValue());
+            if (dc != null) {
+                checkMinMax(dc.doubleValue());
+            } else {
+                logger.log(Level.INFO, "instance at pos = {0} is null, instance size = {1}", new Object[]{i, size()});
+            }
         }
     }
 
@@ -91,7 +99,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
 
     @Override
     public double getMax() {
-        if (max == Double.MIN_VALUE) {
+        if (max == Double.MIN_VALUE && !isEmpty()) {
             resetMinMax();
         }
         return max;
@@ -99,7 +107,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
 
     @Override
     public double getMin() {
-        if (min == Double.MAX_VALUE) {
+        if (min == Double.MAX_VALUE && !isEmpty()) {
             resetMinMax();
         }
         return min;

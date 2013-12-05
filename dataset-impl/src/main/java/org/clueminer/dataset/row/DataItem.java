@@ -12,7 +12,7 @@ import org.clueminer.math.Numeric;
 public class DataItem extends Number implements Serializable, Numeric {
 
     private static final long serialVersionUID = 6001059665840018727L;
-    protected double value;
+    protected double value = Double.NaN;
 
     public DataItem() {
     }
@@ -45,7 +45,7 @@ public class DataItem extends Number implements Serializable, Numeric {
     public double getValue() {
         return value;
     }
-    
+
     protected void setValue(double value){
         this.value = value;
     }

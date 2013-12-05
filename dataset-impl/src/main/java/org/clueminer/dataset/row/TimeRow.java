@@ -15,6 +15,7 @@ import org.clueminer.math.Vector;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implements Instance<E>, ContinuousInstance<E>, Iterable<E> {
 
@@ -23,7 +24,6 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     private E[] data;
     protected TimePointAttribute[] timePoints;
     private Iterator<E> it;
-    private int n = 0;
     private double defaultValue = Double.NaN;
 
     public TimeRow(Class<E> klass, int capacity) {
@@ -43,8 +43,8 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public int put(double value) {
         Number v = value;
-        data[n++] = (E) v;
-        return n;
+        data[last++] = (E) v;
+        return last;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         data[index] = (E) element;
         if (!hasIndex(index)) {
             //increase current number of values
-            n = index + 1;
+            last = index + 1;
         }
     }
 
@@ -120,17 +120,14 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
      * @return true when index present
      */
     public boolean hasIndex(int idx) {
-        if (idx < 0 || idx >= size()) {
-            return false;
-        }
-        return true;
+        return idx >= 0 && idx < size();
     }
 
     /**
      * Return double value at given index, if value is not set (null) will
      * return *defaultValue*
      *
-     * @param idx
+     * @param index
      * @return
      */
     @Override
@@ -158,6 +155,8 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     /**
      * Multiply by given factor and return new instance of TimeRo
+     * @param factor
+     * @return
      */
     public TimeRow<E> multiply(double factor) {
         TimeRow<E> res = new TimeRow(Double.class, this.size());
@@ -239,7 +238,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public int size() {
-        return n;
+        return last;
     }
 
     /**
@@ -250,5 +249,10 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
      */
     public void setDefaultValue(double value) {
         this.defaultValue = value;
+    }
+
+    @Override
+    public String toString() {
+        return "TimeRow[" + size() + "] " + toString(",");
     }
 }
