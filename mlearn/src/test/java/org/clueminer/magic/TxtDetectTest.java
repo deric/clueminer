@@ -17,8 +17,8 @@ import static org.junit.Assert.*;
  */
 public class TxtDetectTest {
 
-    private TxtDetect subject;
-    private CommonFixture fixture = new CommonFixture();
+    private final TxtDetect subject;
+    private final CommonFixture fixture = new CommonFixture();
 
     public TxtDetectTest() {
         subject = new TxtDetect();
@@ -34,6 +34,8 @@ public class TxtDetectTest {
 
     /**
      * Test of detect method, of class TxtDetect.
+     *
+     * @throws java.io.FileNotFoundException
      */
     @Test
     public void testDetect() throws FileNotFoundException, IOException {
