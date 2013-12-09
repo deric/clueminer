@@ -8,6 +8,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
@@ -47,7 +48,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         // last two params: number of segments and degree of polynomials
-        int n = 2;
+        int n = 3;
         int workunits = n * dataset.size();
         logger.log(Level.INFO, "work units = {0}", workunits);
         ph.start(workunits);
@@ -96,7 +97,9 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         StdScale scale = new StdScale();
         logger.log(Level.INFO, "splitting: {0} size= {1} attr cnt = {2}", new Object[]{source.getClass().getName(), source.size(), source.attributeCount()});
         for (int i = 0; i < n; i++) {
-            res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
+            //res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
+            res[i] = new TimeseriesDataset<ContinuousInstance>(source.size());
+            res[i].setName(source.getName() + " segment " + i);
             int pos = offset;
             //if remaining attributes won't fill next segment, just make longer one
             remain = attrCnt - offset;
@@ -129,7 +132,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                         max = value;
                     }
                     res[i].setAttributeValue(k, j, value);
-                    //System.out.println(res[i].toString());
+                    //System.out.println(res[i].instance(j).toString());
                 }
             }
             //   Dump.matrix(res[i].arrayCopy(), "not scaled-" + i, 2);
@@ -139,8 +142,9 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                     value = scale.scaleToRange(value, min, max, -1.0, 1.0);
                     res[i].setAttributeValue(k, j, value);
                 }
+                res[i].instance(j).setAncestor(source.instance(j));
             }
-            Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
+            // Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
             offset += inc;
         }
         return res;

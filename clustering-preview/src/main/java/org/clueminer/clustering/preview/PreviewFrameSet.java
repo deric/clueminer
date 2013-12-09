@@ -1,6 +1,8 @@
 package org.clueminer.clustering.preview;
 
 import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -19,10 +21,11 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
-    private JPanel parent;
+    private final JPanel parent;
     private Plotter[] plots;
     private Clustering<Cluster> clust;
     private Dimension dimChart;
+    private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
 
     public PreviewFrameSet(JPanel parent) {
         this.parent = parent;
@@ -65,27 +68,23 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                      * elsewhere (dataset itself or a visualization
                      * controller...)
                      */
-                    System.out.println("dataset is kind of " + dataset.getClass().toString());
-                    System.out.println("instace is kind of " + inst.getClass().toString());
-                    //System.out.println("ancestor is  " + inst.getAncestor());
-                    Instance anc = inst.getAncestor();
-                    Plotter plot;
-                    if (anc != null) {
-                        System.out.println("ancestor is " + anc.getClass().toString());
-                        plot = anc.getPlotter();
-                        if (dataset.size() > 1) {
-                            for (int k = 1; k < dataset.size(); k++) {
-                                plot.addInstance(dataset.instance(k).getAncestor());
+                    logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
+                    logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
+                    while (inst.getAncestor() != null) {
+                        inst = inst.getAncestor();
+                    }
+
+                    Plotter plot = inst.getPlotter();
+                    if (dataset.size() > 1) {
+                        for (int k = 1; k < dataset.size(); k++) {
+                            inst = dataset.instance(k);
+                            while (inst.getAncestor() != null) {
+                                inst = inst.getAncestor();
                             }
-                        }
-                    } else {
-                        plot = inst.getPlotter();
-                        if (dataset.size() > 1) {
-                            for (int k = 1; k < dataset.size(); k++) {
-                                plot.addInstance(dataset.instance(k));
-                            }
+                            plot.addInstance(inst);
                         }
                     }
+
                     if (dimChart == null) {
                         dimChart = new Dimension(this.getWidth(), 100);
                     }
