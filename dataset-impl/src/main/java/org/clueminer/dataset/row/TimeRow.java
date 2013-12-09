@@ -94,7 +94,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             if (i > 0) {
                 sb.append(separator);
             }
-            sb.append(item(i).toString());
+            sb.append(String.format("%.2f", item(i)));
         }
         return sb.toString();
     }
@@ -155,6 +155,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     /**
      * Multiply by given factor and return new instance of TimeRo
+     *
      * @param factor
      * @return
      */

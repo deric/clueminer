@@ -6,6 +6,7 @@ import java.io.Serializable;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public abstract class AbstractInstance<E extends Number> implements Instance<E>, Serializable, Cloneable {
 
@@ -29,12 +30,12 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public String getId(){
         return this.id;
     }
-    
+
     @Override
     public void setId(String id){
         this.id = id;

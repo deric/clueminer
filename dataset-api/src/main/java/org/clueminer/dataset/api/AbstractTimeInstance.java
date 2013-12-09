@@ -60,6 +60,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     public abstract E item(int index);
 
     public void resetMinMax() {
+
         this.min = Double.MAX_VALUE;
         this.max = Double.MIN_VALUE;
         E dc;
@@ -68,7 +69,8 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
             if (dc != null) {
                 checkMinMax(dc.doubleValue());
             } else {
-                logger.log(Level.INFO, "instance at pos = {0} is null, instance size = {1}", new Object[]{i, size()});
+                logger.log(Level.INFO, "data-item at pos = {0} is null, instance size = {1}", new Object[]{i, size()});
+                System.out.println(toString());
             }
         }
     }

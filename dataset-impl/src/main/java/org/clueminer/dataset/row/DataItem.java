@@ -46,7 +46,7 @@ public class DataItem extends Number implements Serializable, Numeric {
         return value;
     }
 
-    protected void setValue(double value){
+    public void setValue(double value) {
         this.value = value;
     }
 
