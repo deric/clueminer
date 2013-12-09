@@ -15,6 +15,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AttrHashDataset;
+import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
@@ -53,15 +54,31 @@ public class LegendreTransformation implements DataTransform {
         ph.finish();
     }
 
-    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
-        //initial value of progress handle
-        int analyzeProgress = segment * dataset.size();
+    /**
+     * Scale time points to interval -1.0 to 1.0
+     *
+     * @param dataset
+     * @return array of numbers representing X axis
+     */
+    private double[] scaleTimePoints(Timeseries<ContinuousInstance> dataset) {
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
         double[] xAxis = new double[timePoints.length];
+        double min = timePoints[0].getPosition();
+        double max = timePoints[timePoints.length - 1].getPosition();
+        StdScale scale = new StdScale();
+
         for (int i = 0; i < timePoints.length; i++) {
-            xAxis[i] = timePoints[i].getPosition();
+            xAxis[i] = scale.scaleToRange(timePoints[i].getPosition(), min, max, -1.0, 1.0);
         }
+
+        return xAxis;
+    }
+
+    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
+        //initial value of progress handle
+        int analyzeProgress = segment * dataset.size();
+        double[] xAxis = scaleTimePoints(dataset);
         ContinuousInstance item;
         int j = 0;
             //segment start

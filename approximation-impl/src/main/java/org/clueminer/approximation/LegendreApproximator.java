@@ -3,6 +3,7 @@ package org.clueminer.approximation;
 import java.util.HashMap;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -60,12 +61,12 @@ public class LegendreApproximator extends Approximator {
     public void estimate(double[] xAxis, ContinuousInstance instance, HashMap<String, Double> coefficients) {
         params = new double[maxDegree];
         // sum product of two functions
-        for (int i = 0; i < xAxis.length; i++) {
-            for (int j = 0; j < polynomials.length; j++) {
+        for (int j = 0; j < maxDegree; j++) {
+            for (int i = 0; i < xAxis.length; i++) {
                 params[j] += polynomials[j].value(xAxis[i]) * instance.value(i);
             }
         }
-
+    
         for (int i = 0; i < params.length; i++) {
             coefficients.put(names[i], params[i]);
         }

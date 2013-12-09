@@ -15,7 +15,7 @@ import org.apache.commons.math3.util.FastMath;
 public class LegendrePolynomial implements UnivariateFunction {
 
     double[] coeff;
-    private int n;
+    private final int n;
 
     public LegendrePolynomial(int n) {
         generate(n);
@@ -30,7 +30,7 @@ public class LegendrePolynomial implements UnivariateFunction {
      * @param n
      */
     private void generate(int n) {
-        coeff = new double[n + 1]; //n degrees + constant        
+        coeff = new double[n + 1]; //n degrees + constant
         double twoN = FastMath.pow(2, n);
         double binomDivi;
         for (int k = 0; k <= n; k++) {

@@ -129,8 +129,10 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                         max = value;
                     }
                     res[i].setAttributeValue(k, j, value);
+                    //System.out.println(res[i].toString());
                 }
             }
+            //   Dump.matrix(res[i].arrayCopy(), "not scaled-" + i, 2);
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
                     value = source.getAttributeValue(offset + k, j);
