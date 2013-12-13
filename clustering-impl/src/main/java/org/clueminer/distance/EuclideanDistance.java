@@ -13,7 +13,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractDistance.class)
 public class EuclideanDistance extends MinkowskiDistance {
 
-    private static String name = "Euclidean";
+    private static final String name = "Euclidean";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
     private static final long serialVersionUID = 3142545695613722167L;
@@ -92,7 +92,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         for (int i = 0; i < x.size(); i++) {
             sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
         }
-        
+
         return Math.sqrt(sum);
     }
 }
