@@ -19,6 +19,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     private int maxWidth;
     private int firstSelectedRow = -1;
     private int lastSelectedRow = -1;
+    private static final String unknownLabel = "(unknown)";
 
     public RowAnnotation(DendroPane p) {
         super(p);
@@ -37,7 +38,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
                 annY = (row + 1) * elementSize.height - elementSize.height / 2 + height / 2;
                 String s = dendroData.getRowsResult().getInstance(row).getName();
-
+                if (s == null) {
+                    s = unknownLabel;
+                }
                 if (row == firstSelectedRow) {
                     f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
                     g.setFont(f);
