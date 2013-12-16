@@ -29,12 +29,12 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -109,7 +109,7 @@
   </modules>
 
     <properties>
-        <netbeans.version>RELEASE73</netbeans.version>
+        <netbeans.version>RELEASE74</netbeans.version>
         <brandingToken>clueminer</brandingToken>
     </properties>
 </project>

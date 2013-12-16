@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
@@ -89,17 +89,17 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
@@ -114,7 +114,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE73</version>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
