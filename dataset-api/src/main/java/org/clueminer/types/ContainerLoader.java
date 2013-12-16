@@ -1,4 +1,4 @@
-package org.clueminer.api;
+package org.clueminer.types;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

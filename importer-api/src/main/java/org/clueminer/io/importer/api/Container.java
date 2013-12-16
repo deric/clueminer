@@ -1,6 +1,6 @@
 package org.clueminer.io.importer.api;
 
-import org.clueminer.api.ContainerLoader;
+import org.clueminer.types.ContainerLoader;
 
 /**
  * A container is created each time data are imported by <b>importers</b>. Its

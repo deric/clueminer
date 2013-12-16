@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.clueminer.api.FileType;
+import org.clueminer.types.FileType;
 import org.clueminer.gui.DialogFileFilter;
 import org.clueminer.importer.ImportControllerUI;
 import org.clueminer.longtask.LongTaskErrorHandler;

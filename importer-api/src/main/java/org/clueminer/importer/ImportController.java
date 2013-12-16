@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
-import org.clueminer.api.FileType;
+import org.clueminer.types.FileType;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
 import org.clueminer.processor.spi.Processor;

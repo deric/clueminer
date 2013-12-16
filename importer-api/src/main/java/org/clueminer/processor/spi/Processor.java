@@ -1,6 +1,6 @@
 package org.clueminer.processor.spi;
 
-import org.clueminer.api.ContainerLoader;
+import org.clueminer.types.ContainerLoader;
 import org.clueminer.project.api.Workspace;
 
 /**

@@ -105,7 +105,8 @@
         <module>dataset-benchmark</module>
         <module>posturomed</module>
         <module>mlearn</module>
-    </modules>
+    <module>importer-impl</module>
+  </modules>
 
     <properties>
         <netbeans.version>RELEASE73</netbeans.version>

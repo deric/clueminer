@@ -1,4 +1,4 @@
-package org.clueminer.api;
+package org.clueminer.types;
 
 /**
  * File type definition. A simple class which contains a <b>name</b> and

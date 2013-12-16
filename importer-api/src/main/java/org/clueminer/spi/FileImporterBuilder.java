@@ -1,6 +1,6 @@
 package org.clueminer.spi;
 
-import org.clueminer.api.FileType;
+import org.clueminer.types.FileType;
 import org.openide.filesystems.FileObject;
 
 /**
