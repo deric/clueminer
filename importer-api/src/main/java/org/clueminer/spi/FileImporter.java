@@ -11,6 +11,13 @@ import java.util.Collection;
 public interface FileImporter extends Importer {
 
     /**
+     * Should be unique importer ID
+     *
+     * @return importer identification
+     */
+    public String getName();
+
+    /**
      * Sets the reader where characters can be retrieved.
      *
      * @param reader the reader on data
