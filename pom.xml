@@ -62,6 +62,16 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <modules>
@@ -105,9 +115,19 @@
         <module>dataset-benchmark</module>
         <module>posturomed</module>
         <module>mlearn</module>
-    <module>importer-impl</module>
-  </modules>
-
+        <module>importer-impl</module>
+    </modules>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>config/sun_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
     <properties>
         <netbeans.version>RELEASE74</netbeans.version>
         <brandingToken>clueminer</brandingToken>
