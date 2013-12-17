@@ -32,7 +32,7 @@ import org.openide.windows.WindowManager;
 @org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
 public class MLearnFileOpener implements OpenFileImpl, TaskListener {
 
-    private MimeUtil2 mimeUtil = new MimeUtil2();
+    private final MimeUtil2 mimeUtil = new MimeUtil2();
     private static Project project;
     private MLearnImporter importer;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
@@ -70,11 +70,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     protected boolean isFileSupported(File f) throws FileNotFoundException, IOException {
         Collection mimeTypes = detectMIME(f);
         String mime = mimeTypes.toString();
-        //almost any file matches this :(
-        if (mime.contains("text") || mime.contains("octet-stream")) {
-            return true;
-        }
-        return false;
+        return mime.contains("text") || mime.contains("octet-stream");
     }
 
     @Override

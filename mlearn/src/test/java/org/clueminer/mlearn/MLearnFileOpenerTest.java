@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import org.clueminer.fixtures.ImageFixture;
 import org.clueminer.fixtures.MLearnFixture;
-import org.clueminer.fixtures.XCalibourFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,12 +15,10 @@ import static org.junit.Assert.*;
  */
 public class MLearnFileOpenerTest {
 
-    private MLearnFileOpener subject;
-    private MLearnFixture fixtures;
+    private final MLearnFileOpener subject = new MLearnFileOpener();
+    private final MLearnFixture fixtures = new MLearnFixture();
 
     public MLearnFileOpenerTest() {
-        subject = new MLearnFileOpener();
-        fixtures = new MLearnFixture();
     }
 
     @Before
@@ -34,6 +31,8 @@ public class MLearnFileOpenerTest {
 
     /**
      * Test of detectMIME method, of class MLearnFileOpener.
+     *
+     * @throws java.io.IOException
      */
     @Test
     public void testDetectMIME() throws IOException {
@@ -46,11 +45,18 @@ public class MLearnFileOpenerTest {
         ImageFixture inf = new ImageFixture();
         col = subject.detectMIME(inf.insect3d());
         System.out.println("image: " + col);
+    }
 
+    @Test
+    public void testDetectMIMECsv() throws IOException {
+        Collection col = subject.detectMIME(fixtures.forrestFires());
+        assertEquals(true, col.contains("application/octet-stream"));
     }
 
     /**
      * Test of isFileSupported method, of class MLearnFileOpener.
+     *
+     * @throws java.io.IOException
      */
     @Test
     public void testIsFileSupported() throws IOException {
