@@ -26,3 +26,9 @@ Prerequisites:
    2. from dependent modules of `clueminer-parent` open `clueminer-app`
    3. execute "Build with dependencies"
    4. now you can run the main application (run module `clueminer-app`)
+
+## How to increase heap size
+
+In `application/src/main/resources/clueminer.conf` adjust Java options:
+
+    default_options="--branding clueminer -J-Xms24m -J-Xmx2048m"
