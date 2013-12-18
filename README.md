@@ -32,3 +32,15 @@ Prerequisites:
 In `application/src/main/resources/clueminer.conf` adjust Java options:
 
     default_options="--branding clueminer -J-Xms24m -J-Xmx2048m"
+
+
+## OpenGL support
+
+For OpenGL visualizations you'll need native extensions
+
+### Debian/Ubuntu
+
+jzy3d is using jogl library which has native bindings:
+
+    sudo apt-get install libjogl-java
+

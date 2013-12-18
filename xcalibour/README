@@ -1,3 +1,13 @@
+# xcalibour
+
 maven assembly (build jar with dependencies)
 
 	mvn clean compile assembly:single
+
+# install
+
+you might need native dependencies for your platform:
+
+ - Debian/Ubuntu
+
+   sudo apt-get install libjogl-java
