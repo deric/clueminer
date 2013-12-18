@@ -140,6 +140,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.clueminer.magic</publicPackage>
+                        <publicPackage>org.clueminer.mlearn</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
 
             <plugin>

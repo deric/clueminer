@@ -31,19 +31,19 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * Action which allows user open file from disk. It is installed
- * in Menu | File | Open file... .
- * 
+ * Action which allows user open file from disk. It is installed in Menu | File
+ * | Open file... .
+ *
  * Inspired by NetBeans IDE OpenFileAction
  *
  * @author Jesse Glick
  * @author Marian Petras
  */
 @ActionID(
-    category = "File",
-id = "org.clueminer.branding.actions.OpenFileAction")
+        category = "File",
+        id = "org.clueminer.branding.actions.OpenFileAction")
 @ActionRegistration(iconBase = "org/clueminer/branding/actions/open-folder16.png",
-displayName = "#CTL_OpenFile")
+        displayName = "#CTL_OpenFile")
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1150, separatorBefore = 1100),
     @ActionReference(path = "Toolbars/File", position = 300),
@@ -146,8 +146,8 @@ public final class OpenFileAction implements ActionListener {
             } catch (UserCancelException ex) {
                 return;
             }
-            for (int i = 0; i < files.length; i++) {
-                OpenFile.openFile(files[i]);
+            for (File file : files) {
+                OpenFile.openFile(file);
             }
         } finally {
             running = false;
@@ -173,8 +173,8 @@ public final class OpenFileAction implements ActionListener {
             return currentDirectory;
         }
         // Fall back to default location ($HOME or similar).
-        currentDirectory =
-                FileSystemView.getFileSystemView().getDefaultDirectory();
+        currentDirectory
+                = FileSystemView.getFileSystemView().getDefaultDirectory();
         return currentDirectory;
     }
 
@@ -215,7 +215,7 @@ public final class OpenFileAction implements ActionListener {
                 }
                 DialogDisplayer.getDefault().notify(
                         new NotifyDescriptor.Message(
-                        panel, NotifyDescriptor.WARNING_MESSAGE));
+                                panel, NotifyDescriptor.WARNING_MESSAGE));
                 return false;
             }
         }
