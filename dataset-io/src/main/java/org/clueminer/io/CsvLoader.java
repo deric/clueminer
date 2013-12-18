@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.utils.DatasetLoader;
 
 /**
@@ -14,7 +15,8 @@ import org.clueminer.utils.DatasetLoader;
  */
 public class CsvLoader implements DatasetLoader {
 
-    private boolean hasHeader = false;
+    private boolean hasHeader = true;
+    private boolean skipHeader = false;
     private String separator = ",";
     private int classIndex = -1;
     private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
@@ -37,16 +39,10 @@ public class CsvLoader implements DatasetLoader {
         it.setSkipBlanks(true);
         it.setCommentIdentifier("#");
         it.setSkipComments(true);
+        InstanceBuilder builder = dataset.builder();
 
-        //we expect first line to be a hasHeader
-        String first = it.next();
-        String[] header = first.split(separator);
-
-        int j = 0;
-        for (int i = 0; i < header.length; i++) {
-            if (i != classIndex && !skipIndex.contains(i)) {
-                dataset.setAttribute(j++, dataset.attributeBuilder().create(header[i], "NUMERICAL"));
-            }
+        if (hasHeader && !skipHeader) {
+            parseHeader(it);
         }
 
         for (String line : it) {
@@ -78,11 +74,24 @@ public class CsvLoader implements DatasetLoader {
                     }
                 }
             }
-            inst = dataset.builder().create(values, classValue);
+            inst = builder.create(values, classValue);
             dataset.add(inst);
 
         }
         return true;
+    }
+
+    private void parseHeader(LineIterator it) {
+        //we expect first line to be a hasHeader
+        String first = it.next();
+        String[] header = first.split(separator);
+
+        int j = 0;
+        for (int i = 0; i < header.length; i++) {
+            if (i != classIndex && !skipIndex.contains(i)) {
+                dataset.setAttribute(j++, dataset.attributeBuilder().create(header[i], "NUMERICAL"));
+            }
+        }
     }
 
     public boolean hasHeader() {
@@ -133,4 +142,13 @@ public class CsvLoader implements DatasetLoader {
     public void skip(int i) {
         skipIndex.add(i);
     }
+
+    public boolean isSkipHeader() {
+        return skipHeader;
+    }
+
+    public void setSkipHeader(boolean skipHeader) {
+        this.skipHeader = skipHeader;
+    }
+
 }
