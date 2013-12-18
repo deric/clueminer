@@ -1,7 +1,6 @@
 package org.clueminer.io;
 
 import java.io.File;
-import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -19,8 +18,8 @@ import org.junit.Test;
  */
 public class CSVLoaderTest {
 
-    private static CommonFixture tf = new CommonFixture();
-    private static CsvLoader loader = new CsvLoader();
+    private static final CommonFixture tf = new CommonFixture();
+    private static final CsvLoader loader = new CsvLoader();
 
     public CSVLoaderTest() {
     }
@@ -35,6 +34,8 @@ public class CSVLoaderTest {
 
     /**
      * Test of load method, of class CsvLoader.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testLoad_File_Dataset() throws Exception {
@@ -42,6 +43,8 @@ public class CSVLoaderTest {
 
     /**
      * Test of load method, of class CsvLoader.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testCommaSeparatedFileWithHeader() throws Exception {
@@ -49,9 +52,10 @@ public class CSVLoaderTest {
         assertTrue(file.exists());
 
         Dataset<Instance> output = new SampleDataset(15);
-        ArrayList<Integer> skipped = new ArrayList<Integer>();
-        skipped.add(0);
-        assertTrue(loader.load(file, output, 1, ",", skipped));
+        loader.skip(0);
+        loader.setClassIndex(1);
+        loader.setDataset(output);
+        assertTrue(loader.load(file));
         assertEquals(3, output.attributeCount());
         assertEquals(84, output.size());
         Standardisation std = new StdScale();
