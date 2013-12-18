@@ -2,30 +2,30 @@ package org.clueminer.hclust;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.utils.Dump;
 
 /**
- * 
+ *
  * Stores tree structure
- * 
+ *
  *                     says what is this level height and at which index are children
- * Example:                                         v 
+ * Example:                                         v
  *   idx  | 0 |  1 |  2  | 3 |  4 |  5 |  6 |  7 |  8 |  9 |
  * -------------------------------------------------------------------------------------
- * height: 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.5, 1.9, 7.4, 0.0 
- * left:    -1,  -1,  -1,  -1,  -1,   1,   2,   0,   5,  -1 
- * right:   -1,  -1,  -1,  -1,  -1,   3,   4,   6,   7,  -1 
+ * height: 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.5, 1.9, 7.4, 0.0
+ * left:    -1,  -1,  -1,  -1,  -1,   1,   2,   0,   5,  -1
+ * right:   -1,  -1,  -1,  -1,  -1,   3,   4,   6,   7,  -1
  * order: 5, 6, 7, 8, -1         ^
  *                 ^       node is a leaf
  *            tree top level
- * 
+ *
  * @author Tomas Barton
- * 
+ *
  */
-
 public class TreeDataImpl implements Serializable, DendroTreeData {
 
     private static final long serialVersionUID = -3984381476142130357L;
@@ -35,10 +35,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     private double[] height;
     private DistanceMeasure function;
     private double cutoff = -1;
-    private int[] clusters;
+    private int clusters[];
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
-    
+    private static final Logger logger = Logger.getLogger(TreeDataImpl.class.getName());
+
     /**
      * number of cluster starts from 1, if num eq 0, node wasn't visited by the
      * numbering algorithm
@@ -52,6 +53,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     /**
      * Array size is 2*height
      *
+     * @param idx
      * @return index in height array
      */
     public int getLeft(int idx) {
@@ -59,20 +61,21 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * @param node index
-     * @param node position
+     * @param idx
+     * @param left_children
      */
     public void setLeft(int idx, int left_children) {
         this.left[idx] = left_children;
     }
-    
-    public void setLeft(int[] left){
+
+    public void setLeft(int[] left) {
         this.left = left;
     }
 
     /**
      * Array size is 2*height if height(right[idx]) == 0 => node is leaf
      *
+     * @param idx
      * @return index in height array
      */
     public int getRight(int idx) {
@@ -80,32 +83,35 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * @param indexes in height array
+     * @param idx
+     * @param right_children
      */
     public void setRight(int idx, int right_children) {
         this.right[idx] = right_children;
     }
-    
-    public void setRight(int[] right){
+
+    public void setRight(int[] right) {
         this.right = right;
     }
-    
-    public void setOrder(int[] order){
+
+    public void setOrder(int[] order) {
         this.order = order;
     }
 
     /**
+     * @param idx
      * @return node index of tree levels
      */
     public int getOrder(int idx) {
         return this.order[idx];
     }
-    
-    public int getOrderLength(){
+
+    public int getOrderLength() {
         return order.length;
     }
 
     /**
+     * @param idx
      * @return tree heights at @idx level
      */
     public double getHeight(int idx) {
@@ -119,7 +125,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
      */
     public void setHeight(double[] height) {
         this.height = height;
-        
+
         //some distance functions might produce negative values which doesn't
         //make much sense in context of tree's height, therefore we have to
         //move the range
@@ -129,8 +135,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         } else {
             nodeHeightOffset = function.getNodeOffset();
         }
-        
-        if(nodeHeightOffset != 0.0){
+
+        if (nodeHeightOffset != 0.0) {
             for (int i = 0; i < height.length; i++) {
                 height[i] += nodeHeightOffset;
             }
@@ -155,19 +161,19 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     public int treeLevels() {
         return order.length - 1;
     }
-    
+
     /**
      * Number of terminal nodes
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
-    public int numLeaves(){
+    public int numLeaves() {
         return height.length;
     }
 
     public boolean isLeaf(int idx) {
-        if(getLeft(idx) == -1 && getRight(idx) == -1){
+        if (getLeft(idx) == -1 && getRight(idx) == -1) {
             return true;
         }
         return false;
@@ -190,32 +196,32 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return n + 1;
     }
-    
+
     /**
      * Get idx of tree's root
-     * 
+     *
      * @return node's idx
      */
-    public int getIntRoot(){
+    public int getIntRoot() {
         return order[order.length - 2];
     }
-    
+
     /**
      * From tree cutoff we can determine the number of clusters
-     * 
+     *
      * @return number between 0 and max tree height
-     */    
-    public double getCutoff(){
+     */
+    public double getCutoff() {
         return this.cutoff;
     }
-    
-    public void setCutoff(double cutoff){
+
+    public void setCutoff(double cutoff) {
         clusters = null; //clear result, if any
         clusterNum = 0;
         this.cutoff = cutoff;
     }
-    
-        public double treeCutByLevel(int level) {
+
+    public double treeCutByLevel(int level) {
         double lower = 0.0, upper, dist = 0.0;
         int idx;
         if (level < treeLevels()) {
@@ -230,49 +236,74 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         //half of distance between two levels
         return (dist / 2 + lower);
     }
-    
+
     public void formClusters(int nodesNum) {
-       // int nodesNum = getNumberOfTerminalNodes(0.00001);
-        clusters = new int[nodesNum];
+        if (nodesNum < 1) {
+            formClusters();
+        }
+        // int nodesNum = getNumberOfTerminalNodes(0.00001);        
+        ensureClusters(nodesNum);
         findClusters(getIntRoot(), -1);
     }
-    
+
+    private void ensureClusters(int capacity) {
+        logger.log(Level.INFO, "term nodes: ensuring tree clusters size to: {0}, root is {1}", new Object[]{capacity, getIntRoot()});
+        synchronized (this) {
+            if (clusters == null) {
+                clusters = new int[capacity];
+            } else {
+                int[] aryCpy = new int[capacity];
+                System.arraycopy(clusters, 0, aryCpy, 0, clusters.length);
+                clusters = aryCpy;
+                logger.log(Level.INFO, "reallocated array: {0}", new Object[]{clusters.length});
+            }
+        }
+    }
+
     public void formClusters() {
         int nodesNum = getNumberOfTerminalNodes(0.00001);
-        clusters = new int[nodesNum];
+
+        ensureClusters(nodesNum);
         //System.out.println("expected nodes number "+nodesNum);
         findClusters(getIntRoot(), -1);
         //Dump.array(clusters, "result clusters");
     }
-    
+
     /**
      * Number specifies cluster assignment
-     * 
+     *
      * clusters [ 1 2 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 ]
+     *
+     * @param terminalsNum
      * @return array of node's assignments
      */
-    public int[] getClusters(int terminalsNum){
-        if(clusters == null){
+    public int[] getClusters(int terminalsNum) {
+        if (clusters == null) {
             formClusters(terminalsNum);
         }
-        return clusters;
+        int[] clust = new int[clusterNum];
+        //copy just filled part
+        System.arraycopy(clusters, 0, clust, 0, clusterNum);
+        return clust;
     }
-    
+
     /**
      * Number of cluster found by given cutoff
-     * @return 
+     *
+     * @return
      */
-    public int getNumberOfClusters(){
-        if(clusterNum == 0){
+    public int getNumberOfClusters() {
+        if (clusterNum == 0) {
             formClusters();
         }
         return clusterNum;
     }
-    
+
     /**
      * According to given cutoff, assign items to clusters numbered from 1 to k
+     *
      * @param idx
-     * @param parent 
+     * @param parent
      */
     public void findClusters(int idx, int parent) {
         if (parent > -1) {
@@ -284,23 +315,30 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
 
         if (isLeaf(idx)) {
+            //Logger.getLogger(TreeDataImpl.class.getName()).log(Level.INFO, "getting {0} clusters size: {1}", new Object[]{idx, clusters.length});
             //assign cluster's id
+            //logger.log(Level.INFO, "setting idx: {0} to cluster {1}", new Object[]{idx, clusterNum});
+            if (idx >= clusters.length) {
+                int capacity = (int) (idx * 1.618);
+                ensureClusters(capacity);
+            }
+
             clusters[idx] = clusterNum;
             return;
         }
-        
+
         //left node
         findClusters(getLeft(idx), idx);
         //right node
         findClusters(getRight(idx), idx);
     }
 
-    
-     /**
+    /**
      * Returns min height of the tree nodes.
+     * @return
      */
     public double getMinHeight() {
-        if(min == Double.MAX_VALUE){
+        if (min == Double.MAX_VALUE) {
             for (int i = 0; i < order.length - 1; i++) {
                 min = Math.min(min, height[order[i]]);
             }
@@ -310,20 +348,21 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
 
     /**
      * Returns max height of the tree nodes.
+     * @return
      */
     public double getMaxHeight() {
-        if(max == Double.MIN_VALUE){
+        if (max == Double.MIN_VALUE) {
             for (int i = 0; i < order.length - 1; i++) {
                 max = Math.max(max, height[order[i]]);
             }
         }
         return max;
     }
-    
-    
+
     /**
-    * Returns true if tree is flat
-    */
+     * Returns true if tree is flat
+     * @return
+     */
     public boolean flatTreeCheck() {
         if (height.length == 1) {
             return false;
@@ -336,10 +375,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return true;
     }
-    
+
     /**
-    * Calculates tree node positions.
-    */
+     * Calculates tree node positions.
+     * @return
+     */
     public float[] getPositions() {
         float[] pos = new float[left.length];
         Arrays.fill(pos, -1);
@@ -354,7 +394,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return pos;
     }
-    
+
     private int fillPositions(float[] positions, int[] child1, int[] child2, int pos, int index) {
         if (child1[index] != -1) {
             pos = fillPositions(positions, child1, child2, pos, child1[index]);
@@ -367,12 +407,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return pos;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return this.height == null;
     }
-    
-    
+
     public int[] createTreeOrder() {
         return createTreeOrder(null);
     }
@@ -394,17 +433,17 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         fillLeafOrder(leafOrder, left, right, 0, left.length - 2, indices);
         return leafOrder;
     }
-    
+
     /**
      * @TODO rewrite to iterative version
-     * 
+     *
      * @param leafOrder
      * @param child1
      * @param child2
      * @param pos
      * @param index
      * @param indices
-     * @return 
+     * @return
      */
     private int fillLeafOrder(int[] leafOrder, int[] child1, int[] child2, int pos, int index, int[] indices) {
         if (child1[index] != -1) {
@@ -418,7 +457,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return pos;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
