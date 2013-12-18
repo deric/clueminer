@@ -1,7 +1,7 @@
 package org.clueminer.evaluation.external;
 
 import com.google.common.collect.Table;
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -116,7 +116,9 @@
         <module>posturomed</module>
         <module>mlearn</module>
         <module>importer-impl</module>
-    </modules>
+    <module>clustering-evolution</module>
+    <module>fixtures-clustering</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>

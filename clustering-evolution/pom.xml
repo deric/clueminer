@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>clustering-impl</artifactId>
+    <artifactId>clustering-evolution</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>clustering-impl</name>
+    <name>clustering-evolution</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,27 +42,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>math-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>math-impl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-impl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dataset-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>clustering-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -77,8 +62,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>gnuplot</artifactId>
+            <artifactId>math-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fixtures-clustering</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -90,41 +85,19 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-io</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE74</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>RELEASE74</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dataset-benchmark</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>math-impl</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>fixtures-clustering</artifactId>
+            <artifactId>utils</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -133,28 +106,17 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <version>3.11</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.cluster</publicPackage>
-                        <publicPackage>org.clueminer.cluster.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.clustering</publicPackage>
-                        <publicPackage>org.clueminer.clustering.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.distance</publicPackage>
-                        <publicPackage>org.clueminer.evaluation</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.external</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.hclust</publicPackage>
                         <publicPackage>org.clueminer.evolution</publicPackage>
-                        <publicPackage>org.clueminer.exec</publicPackage>
-                        <publicPackage>org.clueminer.hclust</publicPackage>
-                        <publicPackage>org.clueminer.hclust.linkage</publicPackage>
-                        <publicPackage>org.clueminer.utils</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
 
             <plugin>
-                <!-- NetBeans 6.9+ requires JDK 6 -->
+                <!-- NetBeans 6.9+ requires JDK 6, starting NetBeans 7.4 source 1.7 will be required   -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>

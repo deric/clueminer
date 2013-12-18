@@ -1,6 +1,6 @@
 package org.clueminer.evaluation;
 
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.Clustering;

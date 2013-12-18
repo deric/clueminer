@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;

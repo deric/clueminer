@@ -172,7 +172,8 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     @Override
     public void setCutoff(double cutoff) {
         treeData.setCutoff(cutoff);
-        treeData.formClusters();
+        //maximum number of clusters is number of instances
+        treeData.formClusters(dataset.size());
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
