@@ -21,7 +21,7 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 public class MLearnImporterTest {
 
     private MLearnImporter subject;
-    private CommonFixture fixture = new CommonFixture();
+    private final CommonFixture fixture = new CommonFixture();
 
     public MLearnImporterTest() {
     }
@@ -48,11 +48,31 @@ public class MLearnImporterTest {
         ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
         subject = new MLearnImporter(f, ph);
         subject.run();
-        Dataset<Instance> dataset = subject.getDataset();
+        Dataset<? extends Instance> dataset = subject.getDataset();
         assertNotNull(subject);
         // assertEquals(150, dataset.size());
         System.out.println(dataset.instance(0).toString());
         System.out.println(dataset.toString());
+    }
+
+    /**
+     * @TODO move this dataset to fixtures repo and then we can enable the test
+     * @throws IOException
+     */
+    //@Test
+    public void testTimeseries() throws IOException {
+        File dir = new File(getClass().getProtectionDomain().getCodeSource().
+                getLocation().getFile() + "/../../../../../_data");
+        String path = dir.getCanonicalPath() + "/" + "sgs/disk_ba_enum0.txt";
+
+        System.out.println("path: " + path);
+        File file = new File(path);
+        System.out.println("file exists? " + file.exists());
+        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        subject = new MLearnImporter(file, ph);
+        subject.loadTimeseries(file);
+
+        System.out.println("dataset size: " + subject.getDataset().size());
     }
 
     /**
