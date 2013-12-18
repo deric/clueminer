@@ -52,8 +52,8 @@ public class KmeansBenchmark {
         evaluators = Lookup.getDefault().lookupAll(ClusterEvaluator.class);
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         benchmarkFolder = home + File.separatorChar + "benchmark";
         File f = new File(benchmarkFolder);
         System.out.println("Writing output to " + f.toString());
@@ -180,7 +180,6 @@ public class KmeansBenchmark {
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);
 
-
             String dataDir = getDataDir(dir);
             (new File(dataDir)).mkdir();
             String strn = String.format("%02d", n);
@@ -220,11 +219,11 @@ public class KmeansBenchmark {
         PrintWriter template = new PrintWriter(shFile, "UTF-8");
         template.write(bashTemplate());
         template.write("TERM=\"" + term + "\"\n");
-        for (int j = 0; j < files.length; j++) {
-            template.write("gnuplot -e \"${TERM}\" " + files[j] + "." + ext + "\n");
+        for (String file : files) {
+            template.write("gnuplot -e \"${TERM}\" " + file + "." + ext + "\n");
         }
-        for (int j = 0; j < plots.length; j++) {
-            template.write("gnuplot -e \"${TERM}\" " + plots[j] + gnuplotExtension + " > ../eval-" + plots[j] + "." + ext + "\n");
+        for (String plot : plots) {
+            template.write("gnuplot -e \"${TERM}\" " + plot + gnuplotExtension + " > ../eval-" + plot + "." + ext + "\n");
         }
 
         template.close();
@@ -267,8 +266,8 @@ public class KmeansBenchmark {
                 + "set ylabel 'score'\n"
                 + "set xlabel 'number of clusters'\n"
                 + "plot '-' title 'Datafile' with linespoints linewidth 2 pointtype 7 pointsize 0.3 ;\n";
-        for (int i = 0; i < score.length; i++) {
-            res += String.valueOf(score[i][0]) + " " + String.valueOf(score[i][1]) + " \n";
+        for (double[] score1 : score) {
+            res += String.valueOf(score1[0]) + " " + String.valueOf(score1[1]) + " \n";
         }
         res += "e\n";
         return res;
@@ -315,7 +314,9 @@ public class KmeansBenchmark {
         Dataset data = new SampleDataset();
         data.setName(datasetName);
         CsvLoader csv = new CsvLoader();
-        csv.load(tf.wellSeparatedCsv(), data, 2, ",", new ArrayList<Integer>());
+        csv.setDataset(data);
+        csv.setClassIndex(2);
+        csv.load(tf.wellSeparatedCsv());
         assertTrue(1777 == data.size());
         int kmin = 2;
         //max k we test
@@ -335,12 +336,12 @@ public class KmeansBenchmark {
     }
 
     @Test
-    public void testYeast() throws IOException, Exception {        
+    public void testYeast() throws IOException, Exception {
         int kmin = 2;
         //max k we test
         int kmax = 15;
         int kreal = 10;
-        runExperiment(DatasetFixture.yeast(), kmin, kmax, kreal, 1, 2);   
+        runExperiment(DatasetFixture.yeast(), kmin, kmax, kreal, 1, 2);
     }
 
     @Test

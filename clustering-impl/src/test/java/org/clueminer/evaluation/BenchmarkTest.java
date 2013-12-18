@@ -56,8 +56,8 @@ public class BenchmarkTest {
         evaluators = Lookup.getDefault().lookupAll(ClusterEvaluator.class);
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         benchmarkFolder = home + File.separatorChar + "benchmark";
         File f = new File(benchmarkFolder);
         System.out.println("Writing output to " + f.toString());
@@ -82,18 +82,18 @@ public class BenchmarkTest {
         }
         return dir;
     }
-    
+
     /**
      * @TODO rewrite tests, so that gnuplot is not needed
-     * 
-     * 
+     *
+     *
      * @param datasetName
      * @param kmin
      * @param kmax
      * @param results
      * @param kreal
      * @param dir
-     * @throws IOException 
+     * @throws IOException
      */
     private void plotResults(String datasetName, int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
         int i = 0;
@@ -140,7 +140,6 @@ public class BenchmarkTest {
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(p.getCommands());
             out.close();
-
 
             i++;
         }
@@ -205,7 +204,7 @@ public class BenchmarkTest {
                     //going through all clusters
                     int clust = 0;
                     for (Cluster cluster : clusters) {
-                        //  System.out.println(inst);  
+                        //  System.out.println(inst);
                         //     p.set("arrow", "from " + kreal + ", graph 0 to " + kreal + ", graph 1 nohead ls 4");
                         //     p.set("xtics", "add ('k=" + kreal + "' " + kreal + ")");
                         //reformat data for plotting
@@ -235,7 +234,6 @@ public class BenchmarkTest {
 
                         //save values to a file
                         //subPlot.setTitle("iris " + m + ":" + l);
-
                         //subPlot.setSmooth(Smooth.UNIQUE);
                         gr.getAxis("x").setLabel(data.getAttribute(m).getName());
                         gr.getAxis("y").setLabel(data.getAttribute(l).getName());
@@ -255,7 +253,6 @@ public class BenchmarkTest {
              * AutoGraphLayout lo = new AutoGraphLayout(); lo.setColumns(2);
              * p.getPage().setLayout(lo);
              */
-
             p.plot();
             String name = String.valueOf(n);
             name = name.toLowerCase().replace(" ", "_");
@@ -318,7 +315,9 @@ public class BenchmarkTest {
         String datasetName = "well-separated";
         Dataset data = new SampleDataset();
         CsvLoader csv = new CsvLoader();
-        csv.load(tf.wellSeparatedCsv(), data, 2, ",", new ArrayList<Integer>());
+        csv.setClassIndex(2);
+        csv.setDataset(data);
+        csv.load(tf.wellSeparatedCsv(), data);
         assertTrue(1777 == data.size());
         int kmin = 2;
         //max k we test
