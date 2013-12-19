@@ -7,6 +7,7 @@ import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.plot.TimePlot;
 import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
@@ -106,7 +107,10 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public Plotter getPlotter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TimePlot plot = new TimePlot();
+        // add a line plot to the PlotPanel
+        plot.addLinePlot(getName(), parent.getTimePointsArray(), this.arrayCopy());
+        return plot;
     }
 
     @Override
