@@ -1,4 +1,4 @@
-package org.clueminer.fixtures.clustering;
+package org.clueminer.evolution;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

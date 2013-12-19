@@ -1,7 +1,6 @@
 package org.clueminer.evolution;
 
 import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
