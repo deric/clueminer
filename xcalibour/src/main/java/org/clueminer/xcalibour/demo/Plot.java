@@ -39,7 +39,8 @@ public static void main(String[] args) {
         surface.setWireframeColor(Color.BLACK);
 
         // Create a chart and add the surface
-        Chart chart = new Chart(Quality.Advanced, "newt");
+        //Chart chart = new Chart(Quality.Advanced, "newt");
+    Chart chart = new Chart(Quality.Fastest, "awt");
         chart.getScene().getGraph().add(surface);
         ChartLauncher.openChart(chart);
     }

@@ -89,7 +89,6 @@
         <module>xcalibour</module>
         <module>fixtures</module>
         <module>dataset-visualization</module>
-        <module>jzy3d-convexhull</module>
         <module>dataset-io</module>
         <module>jzy3d-api</module>
         <module>clustering-impl</module>
@@ -116,9 +115,8 @@
         <module>posturomed</module>
         <module>mlearn</module>
         <module>importer-impl</module>
-    <module>clustering-evolution</module>
-    <module>fixtures-clustering</module>
-  </modules>
+        <module>clustering-evolution</module>
+    </modules>
     <reporting>
         <plugins>
             <plugin>
