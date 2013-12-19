@@ -29,7 +29,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Tomas Barton
  */
-@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 60)
+@org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
 public class MLearnFileOpener implements OpenFileImpl, TaskListener {
 
     private final MimeUtil2 mimeUtil = new MimeUtil2();

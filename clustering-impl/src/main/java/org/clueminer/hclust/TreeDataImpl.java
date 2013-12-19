@@ -238,18 +238,20 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     public void formClusters(int nodesNum) {
-        if (nodesNum < 1) {
-            formClusters();
+        synchronized (this) {
+            if (nodesNum < 1) {
+                formClusters();
+            }
+            // int nodesNum = getNumberOfTerminalNodes(0.00001);
+            ensureClusters(nodesNum);
+            findClusters(getIntRoot(), -1);
         }
-        // int nodesNum = getNumberOfTerminalNodes(0.00001);        
-        ensureClusters(nodesNum);
-        findClusters(getIntRoot(), -1);
     }
 
     private void ensureClusters(int capacity) {
         logger.log(Level.INFO, "term nodes: ensuring tree clusters size to: {0}, root is {1}", new Object[]{capacity, getIntRoot()});
         synchronized (this) {
-            if (clusters == null) {
+            if (clusters == null || clusters.length == 0) {
                 clusters = new int[capacity];
             } else {
                 int[] aryCpy = new int[capacity];
@@ -281,6 +283,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         if (clusters == null) {
             formClusters(terminalsNum);
         }
+
         int[] clust = new int[clusterNum];
         //copy just filled part
         System.arraycopy(clusters, 0, clust, 0, clusterNum);

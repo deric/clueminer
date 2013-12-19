@@ -2,6 +2,8 @@ package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -11,6 +13,7 @@ import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
 import org.clueminer.gui.ColorGenerator;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -27,6 +30,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     private Insets insets = new Insets(0, 15, 0, 10);
+    private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
 
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
@@ -89,12 +93,19 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         if (dataset != null) {
             HierarchicalResult clustering = dataset.getRowsResult();
             int[] clusters = clustering.getClusters(dataset.getNumberOfRows());
+            Dump.array(clusters, "cluster assignments");
             int i = 0;
+            if (clusters.length == 0) {
+                logger.log(Level.INFO, "clusters size is 0!!!");
+                return;
+            }
             int currClust = clusters[i];
             int start = 0;
             int x = 0;
+            int mapped;
             while (i < clusters.length) {
-                if (clusters[clustering.getMappedIndex(i)] != currClust) {
+                mapped = clustering.getMappedIndex(i);
+                if (clusters[mapped] != currClust) {
                     drawCluster(bufferedGraphics, x, start, i, false);
                     start = i; //index if new cluster start
                     currClust = clusters[clustering.getMappedIndex(i)];

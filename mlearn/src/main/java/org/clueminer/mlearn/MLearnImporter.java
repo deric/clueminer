@@ -10,14 +10,9 @@ import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
-import org.clueminer.io.FileHandler;
 import org.clueminer.longtask.spi.LongTask;
-import org.clueminer.magic.DatasetProperties;
-import org.clueminer.magic.Detector;
-import org.clueminer.magic.TxtDetect;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
@@ -69,13 +64,11 @@ public class MLearnImporter implements LongTask, Runnable {
         int i = 0;
         int index;
         int last = firstLine.length - 1;
-        TimePoint tp[] = new TimePointAttribute[last - 1];
-        double pos = 0;
+        TimePoint tp[] = new TimePointAttribute[last - 1];        
         for (String item : firstLine) {
             if (i > 0 && i < last) {
                 index = Integer.valueOf(item.substring(1));
-                tp[i - 1] = new TimePointAttribute(index, i, pos);
-                pos += 0.1;
+                tp[i - 1] = new TimePointAttribute(index, index, index);                
             }
             i++;
         }
