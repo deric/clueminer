@@ -1,6 +1,6 @@
 package org.clueminer.evaluation;
 
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
