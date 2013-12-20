@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.MLearnFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -56,22 +57,40 @@ public class MLearnImporterTest {
     }
 
     /**
-     * @TODO move this dataset to fixtures repo and then we can enable the test
+     * IR spectrum
+     * @throws IOException
+     */
+    @Test
+    public void testTimeseries() throws IOException {
+        MLearnFixture mlFixture = new MLearnFixture();
+        File file = mlFixture.irBaClassification();
+        System.out.println("file exists? " + file.exists());
+        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        subject = new MLearnImporter(file, ph);
+        subject.loadTimeseries(file);
+        assertEquals(254, subject.getDataset().size());
+        assertEquals(1651, subject.getDataset().attributeCount());
+    }
+
+    /**
+     * Temporarily disabled until data publicly available
+     *
      * @throws IOException
      */
     //@Test
-    public void testTimeseries() throws IOException {
+    public void testMTimeseries() throws IOException {
         File dir = new File(getClass().getProtectionDomain().getCodeSource().
                 getLocation().getFile() + "/../../../../../_data");
-        String path = dir.getCanonicalPath() + "/" + "sgs/disk_ba_enum0.txt";
+        String path = dir.getCanonicalPath() + "/" + "csv/Data_Milka_20131219_100260.csv";
 
         System.out.println("path: " + path);
         File file = new File(path);
         System.out.println("file exists? " + file.exists());
         ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
         subject = new MLearnImporter(file, ph);
-        subject.loadTimeseries(file);
-
+        subject.loadMTimeseries(file);
+        assertEquals(801, subject.getDataset().size());
+        assertEquals(37, subject.getDataset().attributeCount());
         System.out.println("dataset size: " + subject.getDataset().size());
     }
 

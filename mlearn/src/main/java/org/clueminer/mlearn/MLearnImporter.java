@@ -82,6 +82,41 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.load(file);
     }
 
+    public void loadMTimeseries(File file) throws FileNotFoundException {
+        String separator = ",";
+        dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skipped = new ArrayList<Integer>();
+        //skipped.add(0); //first one is ID
+        for (int i = 1; i < 7; i++) {
+            skipped.add(i);
+        }
+
+        String[] firstLine = firstLine(file, separator);
+        int i = 0;
+        int index;
+        int last = firstLine.length - 1;
+        int offset = 6;
+        TimePoint tp[] = new TimePointAttribute[last - offset];
+        double pos;
+        for (String item : firstLine) {
+            if (i > offset) {
+                index = i - offset - 1;
+                pos = Double.valueOf(item);
+                tp[index] = new TimePointAttribute(index, index, pos);
+            }
+            i++;
+        }
+        ((TimeseriesDataset<ContinuousInstance>) dataset).setTimePoints(tp);
+        loader.setSkipIndex(skipped);
+        loader.setSeparator(separator);
+        loader.setClassIndex(0);
+        loader.setSkipHeader(true);
+        Dataset<Instance> d = (Dataset<Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+    }
+
     private String[] firstLine(File file, String separator) {
         String[] result = null;
         try {
@@ -106,7 +141,8 @@ public class MLearnImporter implements LongTask, Runnable {
     public void run() {
         try {
             ph.start();
-            loadTimeseries(file);
+            //loadTimeseries(file);
+            loadMTimeseries(file);
             ph.finish();
 
             /*     BufferedReader br = null;
