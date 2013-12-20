@@ -4,3 +4,6 @@
 [submodule "fixtures-cdf"]
 	path = fixtures-cdf
 	url = https://github.com/deric/clueminer-fixtures-cdf.git
+[submodule "jzy3d-api"]
+	path = jzy3d-api
+	url = https://github.com/deric/jzy3d-api.git
