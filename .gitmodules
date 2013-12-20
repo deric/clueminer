@@ -1,7 +1,0 @@
-[submodule "jzy3d-api"]
-	path = jzy3d-api
-	url = https://github.com/deric/jzy3d-api.git
-
-[submodule "jzy3d-convexhull"]
-	path = jzy3d-convexhull
-	url = https://github.com/deric/jzy3d-tools-convexhull.git
