@@ -1,0 +1,6 @@
+[submodule "fixtures"]
+	path = fixtures
+	url = https://github.com/deric/clueminer-fixtures.git
+[submodule "fixtures-cdf"]
+	path = fixtures-cdf
+	url = https://github.com/deric/clueminer-fixtures-cdf.git
