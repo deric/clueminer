@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -182,6 +183,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
 
     /**
      * doesn't work with negative distances
+     * @param zero_threshold
+     * @return
      */
     public int getNumberOfTerminalNodes(double zero_threshold) {
         int n = 0;
@@ -241,8 +244,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         synchronized (this) {
             if (nodesNum < 1) {
                 formClusters();
-            }
-            // int nodesNum = getNumberOfTerminalNodes(0.00001);
+            }            
             ensureClusters(nodesNum);
             findClusters(getIntRoot(), -1);
         }
@@ -251,11 +253,18 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     private void ensureClusters(int capacity) {
         logger.log(Level.INFO, "term nodes: ensuring tree clusters size to: {0}, root is {1}", new Object[]{capacity, getIntRoot()});
         synchronized (this) {
+            // we can't have more clusters than data
+            if (capacity > numLeaves()) {
+                logger.log(Level.WARNING, "wooha mister won't go to {0}. maximum number of clusters set to: {1}", new Object[]{capacity, numLeaves()});
+                capacity = numLeaves();
+            }
             if (clusters == null || clusters.length == 0) {
                 clusters = new int[capacity];
             } else {
                 int[] aryCpy = new int[capacity];
-                System.arraycopy(clusters, 0, aryCpy, 0, clusters.length);
+                int minSize = clusters.length < capacity ? clusters.length : capacity;
+                // if array will be smaller, copy only data that will fit
+                System.arraycopy(clusters, 0, aryCpy, 0, minSize);
                 clusters = aryCpy;
                 logger.log(Level.INFO, "reallocated array: {0}", new Object[]{clusters.length});
             }
@@ -263,12 +272,13 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     public void formClusters() {
-        int nodesNum = getNumberOfTerminalNodes(0.00001);
-
-        ensureClusters(nodesNum);
-        //System.out.println("expected nodes number "+nodesNum);
-        findClusters(getIntRoot(), -1);
-        //Dump.array(clusters, "result clusters");
+        synchronized (this) {
+            int nodesNum = getNumberOfTerminalNodes(0.00001);
+            logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});
+            ensureClusters(nodesNum);
+            findClusters(getIntRoot(), -1);
+            Dump.array(clusters, "result clusters");
+        }
     }
 
     /**
