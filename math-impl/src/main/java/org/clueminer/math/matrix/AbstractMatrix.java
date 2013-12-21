@@ -263,6 +263,64 @@ public abstract class AbstractMatrix implements Matrix {
         output.println();   // end with blank line.
     }
 
+    @Override
+    public void printUpper(int w, int d) {
+        printUL(new PrintWriter(System.out, true), w, d, true);
+    }
+
+    @Override
+    public void printLower(int w, int d) {
+        printUL(new PrintWriter(System.out, true), w, d, false);
+    }
+
+    public void printUL(PrintWriter output, int w, int d, boolean upper) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        if (upper) {
+            printUpper(output, format, w + 2);
+        } else {
+            printLower(output, format, w + 2);
+        }
+    }
+
+    public void printUpper(PrintWriter output, NumberFormat format, int width) {
+        output.println();  // start on new line.
+        for (int i = 0; i < rowsCount(); i++) {
+            // diagonal should be zero
+            for (int j = i; j < columnsCount(); j++) {
+                String s = format.format(get(i, j)); // format the number
+                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        output.println();   // end with blank line.
+    }
+
+    public void printLower(PrintWriter output, NumberFormat format, int width) {
+        output.println();  // start on new line.
+        for (int i = 0; i < rowsCount(); i++) {
+            // diagonal should be zero
+            for (int j = 0; j < i; j++) {
+                String s = format.format(get(i, j)); // format the number
+                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        output.println();   // end with blank line.
+    }
+
     /**
      * sqrt(a^2 + b^2) without under/overflow.
      */
