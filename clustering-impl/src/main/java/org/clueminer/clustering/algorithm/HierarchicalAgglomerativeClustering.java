@@ -337,7 +337,8 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             ClusterLinkage linkage, DistanceMeasure similarityFunction, int maxNumberOfClusters) {
         LOGGER.log(Level.INFO, "Generating similarity matrix for {0} data points", m.rowsCount());
         Matrix similarityMatrix = computeRowSimilarityMatrix(m, similarityFunction);
-        similarityMatrix.print(5, 2);
+        //similarityMatrix.print(5, 2);        
+        similarityMatrix.printLower(5, 2);
         return clusterSimilarityMatrix(similarityMatrix, clusterSimilarityThreshold, linkage, maxNumberOfClusters);
     }
 
@@ -658,6 +659,9 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     /**
      * Computes and returns the similarity matrix for {@code m} using the
      * specified similarity function
+     * @param m
+     * @param dm
+     * @return
      */
     public static Matrix computeRowSimilarityMatrix(Matrix m, DistanceMeasure dm) {
         Matrix similarityMatrix;

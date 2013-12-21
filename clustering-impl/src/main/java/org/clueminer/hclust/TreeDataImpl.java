@@ -240,42 +240,27 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         return (dist / 2 + lower);
     }
 
-    public void formClusters(int nodesNum) {
+    public void formClusters(int leavesNum) {
         synchronized (this) {
-            if (nodesNum < 1) {
-                formClusters();
-            }            
-            ensureClusters(nodesNum);
+            if (leavesNum < 1) {
+                throw new RuntimeException("number of nodes " + leavesNum + " is invalid");
+            }
+            //ensureClusters(nodesNum);
+            logger.log(Level.INFO, "allocating space for : {0}", new Object[]{leavesNum});
+            clusters = new int[leavesNum];
             findClusters(getIntRoot(), -1);
         }
     }
 
-    private void ensureClusters(int capacity) {
-        logger.log(Level.INFO, "term nodes: ensuring tree clusters size to: {0}, root is {1}", new Object[]{capacity, getIntRoot()});
-        synchronized (this) {
-            // we can't have more clusters than data
-            if (capacity > numLeaves()) {
-                logger.log(Level.WARNING, "wooha mister won't go to {0}. maximum number of clusters set to: {1}", new Object[]{capacity, numLeaves()});
-                capacity = numLeaves();
-            }
-            if (clusters == null || clusters.length == 0) {
-                clusters = new int[capacity];
-            } else {
-                int[] aryCpy = new int[capacity];
-                int minSize = clusters.length < capacity ? clusters.length : capacity;
-                // if array will be smaller, copy only data that will fit
-                System.arraycopy(clusters, 0, aryCpy, 0, minSize);
-                clusters = aryCpy;
-                logger.log(Level.INFO, "reallocated array: {0}", new Object[]{clusters.length});
-            }
-        }
-    }
 
+    /**
+     * @deprecated this might cause strange null pointer exception
+     */
     public void formClusters() {
         synchronized (this) {
             int nodesNum = getNumberOfTerminalNodes(0.00001);
-            logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});
-            ensureClusters(nodesNum);
+            logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});            
+            clusters = new int[nodesNum];
             findClusters(getIntRoot(), -1);
             Dump.array(clusters, "result clusters");
         }
@@ -293,11 +278,9 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         if (clusters == null) {
             formClusters(terminalsNum);
         }
-
-        int[] clust = new int[clusterNum];
-        //copy just filled part
-        System.arraycopy(clusters, 0, clust, 0, clusterNum);
-        return clust;
+        // for each leaf we want its cluster assignment
+        logger.log(Level.INFO, "leaves {0}, actual clusters size {1}", new Object[]{numLeaves(), clusters.length});
+        return clusters;
     }
 
     /**
@@ -307,7 +290,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
      */
     public int getNumberOfClusters() {
         if (clusterNum == 0) {
-            formClusters();
+            //each node is a cluster for itself. we don't have clustering yet
+            return numLeaves();
         }
         return clusterNum;
     }
@@ -331,11 +315,6 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
             //Logger.getLogger(TreeDataImpl.class.getName()).log(Level.INFO, "getting {0} clusters size: {1}", new Object[]{idx, clusters.length});
             //assign cluster's id
             //logger.log(Level.INFO, "setting idx: {0} to cluster {1}", new Object[]{idx, clusterNum});
-            if (idx >= clusters.length) {
-                int capacity = (int) (idx * 1.618);
-                ensureClusters(capacity);
-            }
-
             clusters[idx] = clusterNum;
             return;
         }

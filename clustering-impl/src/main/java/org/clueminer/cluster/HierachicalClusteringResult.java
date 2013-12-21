@@ -3,6 +3,8 @@ package org.clueminer.cluster;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -14,6 +16,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.NaiveCutoff;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -27,9 +30,10 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private TreeDataImpl treeData;
     private Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private CutoffStrategy cutoffStrategy = new NaiveCutoff();
-    private int[] itemsMapping;    
+    private int[] itemsMapping;
     private Matrix inputData;
     private Clustering clustering = null;
+    private static final Logger logger = Logger.getLogger(HierachicalClusteringResult.class.getName());
     /**
      * original dataset
      */
@@ -113,8 +117,11 @@ public class HierachicalClusteringResult implements HierarchicalResult {
 
         //we need number of instances in dataset
         int[] clusters = treeData.getClusters(parent.size());
+        Dump.array(clusters, "cluster assignments");
+        logger.log(Level.WARNING, "assign size = " + clusters.length + " parent dataset size = " + parent.size());
         Clustering result = new ClusterList(treeData.getNumberOfClusters());
         if (treeData.getNumberOfClusters() <= 0) {
+            logger.log(Level.WARNING, "0 clusters according to treeData");
             return result;
         }
         //estimated capacity
@@ -126,23 +133,26 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         int cnt = 1;
         for (int i = 0; i < clusters.length; i++) {
             num = clusters[i] - 1; //numbering starts from 1
-            if (!result.hasAt(num)) {
-                clust = new BaseCluster<Instance>(perCluster);
-                clust.setName("Cluster " + (cnt++));
-                clust.setParent(parent);
+            //if clustering wasn't computed yet, we have to wait...
+            if (num > 0) {
+                if (!result.hasAt(num)) {
+                    clust = new BaseCluster<Instance>(perCluster);
+                    clust.setName("Cluster " + (cnt++));
+                    clust.setParent(parent);
 
-                Attribute[] attr = parent.copyAttributes();
-                for (int j = 0; j < attr.length; j++) {
-                    clust.setAttribute(j, attr[j]);
+                    Attribute[] attr = parent.copyAttributes();
+                    for (int j = 0; j < attr.length; j++) {
+                        clust.setAttribute(j, attr[j]);
+                    }
+                    //result.put(num, clust);
+                    result.put(clust);
+                } else {
+                    clust = result.get(num);
                 }
-                //result.put(num, clust);
-                result.put(clust);
-            } else {
-                clust = result.get(num);
+                idx = itemsMapping[i];
+                //mapping is tracked in cluster
+                clust.add(parent.instance(idx), idx);
             }
-            idx = itemsMapping[i];
-            //mapping is tracked in cluster
-            clust.add(parent.instance(idx), idx);
         }
 
         return result;
@@ -186,7 +196,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     public void setCutoff(double cutoff) {
         treeData.setCutoff(cutoff);
         //maximum number of clusters is number of instances
-        treeData.formClusters(dataset.size());
+        treeData.formClusters(similarity.rowsCount());
         updateClustering();
     }
 

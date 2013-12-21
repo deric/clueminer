@@ -22,7 +22,7 @@ import org.clueminer.utils.Dump;
 public class ClusterAssignment extends JPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 7662186965958650502L;
-    private DendrogramData dataset;
+    private DendrogramData dendroData;
     private Dimension size = new Dimension(0, 0);
     private DendroPane panel;
     private int stripeWidth = 20;
@@ -55,9 +55,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private void updateSize() {
         int width = 0;
         int height = 0;
-        if (dataset != null) {
+        if (dendroData != null) {
             width = stripeWidth;
-            height = panel.getElementSize().height * dataset.getNumberOfRows() + 2;
+            height = panel.getElementSize().height * dendroData.getNumberOfRows() + 2;
         }
         setDimension(width, height);
     }
@@ -90,9 +90,10 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         bufferedGraphics = bufferedImage.createGraphics();
 
-        if (dataset != null) {
-            HierarchicalResult clustering = dataset.getRowsResult();
-            int[] clusters = clustering.getClusters(dataset.getNumberOfRows());
+        if (dendroData != null) {
+            HierarchicalResult clustering = dendroData.getRowsResult();
+            logger.log(Level.INFO, "number of dataset rows {0}", dendroData.getNumberOfRows());
+            int[] clusters = clustering.getClusters(dendroData.getNumberOfRows());
             Dump.array(clusters, "cluster assignments");
             int i = 0;
             if (clusters.length == 0) {
@@ -132,7 +133,6 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
                 g.fillRect(x + 1, y - 1, stripeWidth - 2, y2);
                 g.setColor(Color.black);
                 g.drawRect(x, y - 1, stripeWidth - 1, y2);
-
             }
         }
     }
@@ -142,8 +142,8 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
-        this.dataset = dataset;
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dendroData) {
+        this.dendroData = dendroData;
         updateSize();
         bufferedImage = null; //clear cached image
         repaint();
