@@ -116,6 +116,7 @@
         <module>mlearn</module>
         <module>importer-impl</module>
         <module>clustering-evolution</module>
+        <module>fixtures-cdf</module>
     </modules>
     <reporting>
         <plugins>
