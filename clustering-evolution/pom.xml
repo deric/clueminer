@@ -73,12 +73,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>fixtures-clustering</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>fixtures</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -106,7 +100,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.11</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
