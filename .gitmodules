@@ -1,6 +1,6 @@
 [submodule "fixtures"]
 	path = fixtures
-	url = git@github.com:deric/clueminer-fixtures.git
+	url = https://github.com/deric/clueminer-fixtures.git
 [submodule "fixtures-cdf"]
 	path = fixtures-cdf
 	url = https://github.com/deric/clueminer-fixtures-cdf.git
