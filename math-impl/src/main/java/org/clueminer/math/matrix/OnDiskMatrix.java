@@ -17,7 +17,6 @@ import org.clueminer.math.MatrixVector;
 import org.clueminer.math.QRDecomposition;
 import org.clueminer.math.SingularValueDecomposition;
 import org.clueminer.math.SparseVector;
-import org.clueminer.math.impl.DenseVector;
 import org.clueminer.utils.Duple;
 
 /**
@@ -560,6 +559,16 @@ public class OnDiskMatrix implements Matrix {
 
     @Override
     public void print(PrintWriter output, NumberFormat format, int width) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void printUpper(int w, int d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void printLower(int w, int d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
