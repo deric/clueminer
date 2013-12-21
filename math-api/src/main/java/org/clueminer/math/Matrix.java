@@ -430,6 +430,22 @@ public interface Matrix extends Serializable {
     public void print(int w, int d);
 
     /**
+     * Print upper matrix without numbers on diagonal
+     *
+     * @param w
+     * @param d
+     */
+    public void printUpper(int w, int d);
+
+    /**
+     * Print lower matrix without numbers on diagonal
+     *
+     * @param w
+     * @param d
+     */
+    public void printLower(int w, int d);
+
+    /**
      * Print the matrix to the output stream. Line the elements up in columns
      * with a Fortran-like 'Fw.d' style format.
      *
