@@ -37,7 +37,7 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return
      */
-    public int[] getClusters(int terminalsNum);    
+    public int[] getClusters(int terminalsNum);
 
     /**
      * Set dendrogram tree cut-off, which determines number of clusters
@@ -64,6 +64,7 @@ public interface HierarchicalResult extends Serializable {
 
     /**
      * Find and sets optimal cutoff with default strategy
+     * @return
      */
     public double findCutoff();
 
@@ -71,6 +72,7 @@ public interface HierarchicalResult extends Serializable {
      * Find and sets optimal cutoff with given strategy
      *
      * @param strategy
+     * @return
      */
     public double findCutoff(CutoffStrategy strategy);
 
@@ -84,8 +86,7 @@ public interface HierarchicalResult extends Serializable {
     /**
      * Forces number of clusters, if -1 then is leaved undecided
      *
-     * @param num
-     * @return
+     * @param num     
      */
     public void setNumClusters(int num);
 
@@ -144,6 +145,7 @@ public interface HierarchicalResult extends Serializable {
      * Translate position of row/column which has been moved during clustering
      * process
      *
+     * @param idx position in input matrix/dataset
      * @return row/column index in original dataset that maps from passed
      * row/column index.
      */
@@ -187,4 +189,14 @@ public interface HierarchicalResult extends Serializable {
      * @param merges
      */
     public void setMerges(List<Merge> merges);
+
+    /**
+     * Return ID of cluster to which was item at given position in input dataset
+     * assigned. In case that assignment to clusters is unknown, all items
+     * will be in one cluster (cluster 0)
+     *
+     * @param idx position in input dataset/matrix
+     * @return cluster ID
+     */
+    public int assignedCluster(int idx);
 }

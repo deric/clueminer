@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> implements Clustering<Cluster<E>> {
 
@@ -20,10 +21,7 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
 
     @Override
     public boolean hasAt(int index) {
-        if (index > (this.size() - 1)) {
-            return false;
-        }
-        return true;
+        return index <= (this.size() - 1);
     }
 
     @Override
@@ -32,8 +30,8 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
     }
 
     @Override
-    public void put(Cluster d) {
-        this.add(d);
+    public void put(Cluster<? extends Instance> d) {
+        this.add((Cluster) d);
     }
 
     @Override
@@ -92,6 +90,24 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
             clusterSizes[i] = get(i).size();
         }
         return clusterSizes;
+    }
+
+    /**
+     * Returns ID of assigned cluster, if ID not found it could be caused
+     * by using methods which didn't supply original mapping (or it's really
+     * not present)
+     *
+     * @param instanceId
+     * @return original instance ID
+     */
+    @Override
+    public int assignedCluster(int instanceId) {
+        for (Cluster<E> cluster : this) {
+            if (cluster.contains(instanceId)) {
+                return cluster.getClusterId();
+            }
+        }
+        return -1;
     }
 
     /**

@@ -49,7 +49,7 @@ public class TraceScatterMatrix extends ClusterEvaluator {
         // calculate centroid all instances
         // firs put all cluster back together
         Dataset data = new SampleDataset();
-        data.setAttributes(clusters.get(0).getAttributes());
+        data.setAttributes(dataset.getAttributes());
         for (int i = 0; i < clusters.size(); i++) {
             for (int j = 0; j < clusters.get(i).size(); j++) {
                 data.add(clusters.get(i).instance(j));

@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.Instance;
  * Dataset interface.
  *
  * @author Tomas Barton
+ * @param <T>
  */
 public interface Clustering<T extends Cluster> extends Cloneable, Serializable, Iterable<T>, Collection<T> {
 
@@ -32,7 +33,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @param d
      */
-    public void put(Cluster<Instance> d);
+    public void put(Cluster<? extends Instance> d);
 
     /**
      * Inserts Dataset at i-th position
@@ -93,4 +94,12 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return sizes of all clusters
      */
     public Integer[] clusterSizes();
+
+    /**
+     * Return ID of item's cluster
+     *
+     * @param instanceId
+     * @return
+     */
+    public int assignedCluster(int instanceId);
 }

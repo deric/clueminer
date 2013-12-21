@@ -26,9 +26,10 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private Matrix similarity;
     private TreeDataImpl treeData;
     private Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
-    private CutoffStrategy cutoff = new NaiveCutoff();
-    private int[] itemsMapping;
+    private CutoffStrategy cutoffStrategy = new NaiveCutoff();
+    private int[] itemsMapping;    
     private Matrix inputData;
+    private Clustering clustering = null;
     /**
      * original dataset
      */
@@ -83,7 +84,17 @@ public class HierachicalClusteringResult implements HierarchicalResult {
 
     @Override
     public Clustering getClustering() {
-        return getClustering(dataset);
+        if (clustering == null) {
+            updateClustering();
+        }
+        return clustering;
+    }
+
+    public void updateClustering() {
+        clustering = getClustering(dataset);
+        /**
+         * TODO: fire result?
+         */
     }
 
     /**
@@ -106,6 +117,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         if (treeData.getNumberOfClusters() <= 0) {
             return result;
         }
+        //estimated capacity
         int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
         int num, idx;
         Cluster<Instance> clust;
@@ -129,7 +141,8 @@ public class HierachicalClusteringResult implements HierarchicalResult {
                 clust = result.get(num);
             }
             idx = itemsMapping[i];
-            clust.add(parent.instance(idx));
+            //mapping is tracked in cluster
+            clust.add(parent.instance(idx), idx);
         }
 
         return result;
@@ -174,6 +187,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         treeData.setCutoff(cutoff);
         //maximum number of clusters is number of instances
         treeData.formClusters(dataset.size());
+        updateClustering();
     }
 
     @Override
@@ -183,7 +197,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
 
     @Override
     public double findCutoff() {
-        double cut = cutoff.findCutoff(this);
+        double cut = cutoffStrategy.findCutoff(this);
         setCutoff(cut);
         System.out.println(treeData.toString());
         return cut;
@@ -247,9 +261,14 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         itemsMapping[pos] = idx;
     }
 
+    /**
+     * Mapping between dendrogram order and input matrix
+     *
+     * @param mapping
+     */
     @Override
-    public void setMapping(int[] assignments) {
-        this.itemsMapping = assignments;
+    public void setMapping(int[] mapping) {
+        this.itemsMapping = mapping;
     }
 
     @Override
@@ -287,4 +306,31 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     public Instance getInstance(int index) {
         return dataset.get(this.getMappedIndex(index));
     }
+
+    @Override
+    public int assignedCluster(int idx) {
+        if (clustering == null) {
+            return 0;
+        }
+        int assig = clustering.assignedCluster(idx);
+        if (assig != -1) {
+            return assig;
+        }
+        //this shouldn't happen :)
+        return 0;
+    }
+
+    public CutoffStrategy getCutoffStrategy() {
+        return cutoffStrategy;
+    }
+
+    /**
+     *  Strategy for cutting dendrogram tree
+     *
+     *  @param cutoffStrategy
+     */
+    public void setCutoffStrategy(CutoffStrategy cutoffStrategy) {
+        this.cutoffStrategy = cutoffStrategy;
+    }
+
 }

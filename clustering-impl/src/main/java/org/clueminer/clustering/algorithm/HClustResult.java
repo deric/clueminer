@@ -15,7 +15,6 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 
 /**
@@ -247,6 +246,11 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public Instance getInstance(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int assignedCluster(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

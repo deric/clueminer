@@ -1,5 +1,6 @@
 package org.clueminer.cluster;
 
+import com.google.common.collect.Sets;
 import java.awt.Color;
 import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
@@ -9,6 +10,7 @@ import org.clueminer.dataset.plugin.SampleDataset;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class BaseCluster<E extends Instance> extends SampleDataset<E> implements Cluster<E>, Set<E> {
 
@@ -16,9 +18,26 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
     private int clusterId;
     private Color color;
     private E centroid;
+    private final Set<Integer> mapping = Sets.newHashSet();
 
     public BaseCluster(int capacity) {
         super(capacity);
+    }
+
+    /**
+     *
+     * @param inst
+     * @param origId
+     */
+    @Override
+    public void add(E inst, int origId) {
+        add(inst);
+        mapping.add(origId);
+    }
+
+    @Override
+    public boolean contains(int origId) {
+        return mapping.contains(origId);
     }
 
     @Override
