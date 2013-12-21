@@ -8,7 +8,7 @@ import org.clueminer.xcalibour.data.SpectrumDataset;
 import org.clueminer.xcalibour.files.MyOrthoGrid;
 import org.clueminer.xcalibour.files.SpectrumMapper;
 import org.jzy3d.chart.Chart;
-import org.jzy3d.chart.controllers.mouse.camera.CameraMouseController;
+import org.jzy3d.chart.controllers.mouse.camera.NewtCameraMouseController;
 import org.jzy3d.chart.controllers.thread.camera.CameraThreadController;
 import org.jzy3d.colors.Color;
 import org.jzy3d.colors.ColorMapper;
@@ -169,7 +169,7 @@ public final class XCalibour3dTopComponent extends TopComponent {
             ctc = new CameraThreadController(chart);
             ctc.start();
             jToggleButton1.setSelected(true);
-            CameraMouseController camMouse = new CameraMouseController(chart);
+            NewtCameraMouseController camMouse = new NewtCameraMouseController(chart);
             chart.addController(camMouse);
             add(canvas, BorderLayout.CENTER);
 
