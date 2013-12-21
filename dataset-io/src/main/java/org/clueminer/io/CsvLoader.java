@@ -24,8 +24,14 @@ public class CsvLoader implements DatasetLoader {
 
     @Override
     public boolean load(File file, Dataset output) throws FileNotFoundException {
-        setDataset(dataset);
+        setDataset(output);
         return load(file);
+    }
+
+    private void checkDataset() {
+        if (dataset == null) {
+            throw new RuntimeException("dataset is null");
+        }
     }
 
     /**
@@ -39,10 +45,13 @@ public class CsvLoader implements DatasetLoader {
         it.setSkipBlanks(true);
         it.setCommentIdentifier("#");
         it.setSkipComments(true);
+        checkDataset();
         InstanceBuilder builder = dataset.builder();
 
         if (hasHeader && !skipHeader) {
             parseHeader(it);
+        } else if (skipHeader) {
+            it.next(); // just skip it
         }
 
         for (String line : it) {

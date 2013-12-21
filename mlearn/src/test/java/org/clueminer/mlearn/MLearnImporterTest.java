@@ -23,6 +23,7 @@ public class MLearnImporterTest {
 
     private MLearnImporter subject;
     private final CommonFixture fixture = new CommonFixture();
+    private static final double delta = 1e-9;
 
     public MLearnImporterTest() {
     }
@@ -77,7 +78,7 @@ public class MLearnImporterTest {
      *
      * @throws IOException
      */
-    //@Test
+    @Test
     public void testMTimeseries() throws IOException {
         File dir = new File(getClass().getProtectionDomain().getCodeSource().
                 getLocation().getFile() + "/../../../../../_data");
@@ -92,6 +93,12 @@ public class MLearnImporterTest {
         assertEquals(801, subject.getDataset().size());
         assertEquals(37, subject.getDataset().attributeCount());
         System.out.println("dataset size: " + subject.getDataset().size());
+        Dataset<? extends Instance> dataset = subject.getDataset();
+        assertNotNull(subject);
+        Instance inst = dataset.instance(0);
+        //assertEquals(0.128, inst.value(0), delta);
+        inst = dataset.instance(1);
+        assertEquals(0.965, inst.value(0), delta);
     }
 
     /**
