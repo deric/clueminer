@@ -31,16 +31,23 @@ public interface Plotter extends Serializable {
     public int getWidth();
 
     public int getHeight();
-    
+
     /**
      * Repaint the component
      */
     public void repaint();
-    
+
     public void revalidate();
 
     /**
      * Clear all currently painted data
      */
     public void clearAll();
+
+    /**
+     * Set plot title
+     * <p>
+     * @param title
+     */
+    public void setTitle(String title);
 }
