@@ -47,7 +47,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
         this.removeAll();
 
         clusterNum = clust.size();
-        System.out.println("got " + clusterNum + " clusters");
+        logger.log(Level.INFO, "got {0} clusters", clusterNum);
 
         Instance inst;
 
@@ -55,12 +55,12 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
             plots = new Plotter[clusterNum];
 
             int i = 0;
+            int total = 0;
             for (Cluster<? extends Instance> d : clust) {
                 //  c.gridy = i++;
-
+                logger.log(Level.INFO, "{0}", new Object[]{d.toString()});
                 Cluster<? extends Instance> dataset = d;
-                System.out.println("cluster size = " + d.size());
-                if (dataset != null && d.size() > 0) {
+                if (dataset != null && dataset.size() > 0) {
                     inst = dataset.instance(0);
                     /**
                      * @TODO We can't support visualization of all possible
@@ -68,8 +68,8 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                      * elsewhere (dataset itself or a visualization
                      * controller...)
                      */
-                    logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
-                    logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
+                    //logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
+                    //logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
                     while (inst.getAncestor() != null) {
                         inst = inst.getAncestor();
                     }
@@ -82,6 +82,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                                 inst = inst.getAncestor();
                             }
                             plot.addInstance(inst);
+                            //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
                         }
                     }
 
@@ -90,48 +91,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
                     }
                     plot.setMinimumSize(dimChart);
                     plot.setPreferredSize(dimChart);
+                    plot.setTitle(d.getName());
                     plots[i++] = plot;
                     add((JComponent) plot);
-
-
-                    /* if (inst.getClass().isInstance(AbstractTimeInstance.class)) {
-                     charts = new ArrayList<PreviewFrame>();
-                     charts.ensureCapacity(50);
-                     PreviewFrame f = new PreviewFrame();
-                     f.setDataset((Timeseries) dataset);
-                     charts.add(f);
-                     add(f, c);
-                     } else if (inst.getClass().isInstance(Instance.class)) {
-                     Plot2DPanel plot = new Plot2DPanel();
-
-                     double[] x = new double[dataset.size()];
-                     double[] y = new double[dataset.size()];
-                     // Dump.printMatrix(data.length,data[0].length,data,2,5);
-                     int k = 5;
-                     for (int j = 0; j < dataset.size(); j++) {
-                     x[j] = dataset.getAttributeValue(k, j);
-                     }
-
-                     k = 0;
-                     for (int j = 0; j < dataset.size(); j++) {
-                     //Attribute ta =  dataset.getAttribute(j);
-                     y[j] = dataset.getAttributeValue(k, j);
-
-                     }
-                     //Dump.array(x,"x");
-                     //Dump.array(y,"y");
-
-                     plot.addScatterPlot("Cluster " + i, x, y);
-                     add(plot, c);
-                     System.out.println("adding plot " + i);
-                     } else {
-                     throw new RuntimeException("unsupported object type, expected child of Dataset, got " + inst.getClass().toString());
-                     }*/
+                    total += d.size();
                 }
             }
+            logger.log(Level.INFO, "total num of instances: {0}", total);
         }
-        //setPreferredSize(getPreferredSize());
-        System.out.println("size " + this.getSize());
     }
 
     @Override

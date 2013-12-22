@@ -91,4 +91,22 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
     public int countMutualElements(Cluster c) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Cluster ");
+        sb.append(getName());
+        sb.append(" (").append(size()).append(") ");
+        sb.append(" [ ");
+        E elem;
+        for (int i = 0; i < this.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            elem = this.get(i);
+            sb.append(elem.getName());
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
 }

@@ -28,7 +28,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private Matrix proximity;
     private Matrix similarity;
     private TreeDataImpl treeData;
-    private Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
+    private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private CutoffStrategy cutoffStrategy = new NaiveCutoff();
     private int[] itemsMapping;
     private Matrix inputData;
@@ -111,19 +111,23 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     @Override
     public Clustering getClustering(Dataset<? extends Instance> parent) {
         setDataset(parent);
-        if (itemsMapping == null) {
-            createDefaultMapping();
-        }
+        /*if (itemsMapping == null) {
+         createDefaultMapping();
+         }*/
 
         //we need number of instances in dataset
         int[] clusters = treeData.getClusters(parent.size());
         Dump.array(clusters, "cluster assignments");
-        logger.log(Level.WARNING, "assign size = " + clusters.length + " parent dataset size = " + parent.size());
+
         Clustering result = new ClusterList(treeData.getNumberOfClusters());
         if (treeData.getNumberOfClusters() <= 0) {
             logger.log(Level.WARNING, "0 clusters according to treeData");
             return result;
         }
+        if (clusters.length != parent.size()) {
+            throw new RuntimeException("unexpected size of clustering result " + clusters.length + ", dataset size is " + parent.size());
+        }
+
         //estimated capacity
         int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
         int num, idx;
@@ -134,7 +138,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         for (int i = 0; i < clusters.length; i++) {
             num = clusters[i] - 1; //numbering starts from 1
             //if clustering wasn't computed yet, we have to wait...
-            if (num > 0) {
+            if (num >= 0) {
                 if (!result.hasAt(num)) {
                     clust = new BaseCluster<Instance>(perCluster);
                     clust.setName("Cluster " + (cnt++));
@@ -150,11 +154,18 @@ public class HierachicalClusteringResult implements HierarchicalResult {
                     clust = result.get(num);
                 }
                 idx = itemsMapping[i];
+                //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
+                logger.log(Level.WARNING, "{0} -> {1}", new Object[]{i, idx});
                 //mapping is tracked in cluster
-                clust.add(parent.instance(idx), idx);
+                // values in cluster array doesn't need mapping!
+                clust.add(dataset.get(i), idx);
             }
         }
-
+        for (Object c : result) {
+            logger.log(Level.INFO, "{0}", c.toString());
+        }
+        proximity.printLower(5, 2);
+        similarity.print(4, 2);
         return result;
     }
 
@@ -335,9 +346,9 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     }
 
     /**
-     *  Strategy for cutting dendrogram tree
+     * Strategy for cutting dendrogram tree
      *
-     *  @param cutoffStrategy
+     * @param cutoffStrategy
      */
     public void setCutoffStrategy(CutoffStrategy cutoffStrategy) {
         this.cutoffStrategy = cutoffStrategy;

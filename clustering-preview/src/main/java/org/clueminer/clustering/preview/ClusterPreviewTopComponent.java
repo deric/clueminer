@@ -3,6 +3,8 @@ package org.clueminer.clustering.preview;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -25,18 +27,18 @@ import static org.clueminer.clustering.preview.Bundle.*;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-    dtd = "-//org.clueminer.clusterpreview//ClusterPreview//EN",
-autostore = false)
+        dtd = "-//org.clueminer.clusterpreview//ClusterPreview//EN",
+        autostore = false)
 @TopComponent.Description(
-    preferredID = "ClusterPreviewTopComponent",
-iconBase = "org/clueminer/clusterpreview/chart16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        preferredID = "ClusterPreviewTopComponent",
+        iconBase = "org/clueminer/clusterpreview/chart16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.clusterpreview.ClusterPreviewTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-    displayName = "#CTL_ClusterPreviewAction",
-preferredID = "ClusterPreviewTopComponent")
+        displayName = "#CTL_ClusterPreviewAction",
+        preferredID = "ClusterPreviewTopComponent")
 @Messages({
     "CTL_ClusterPreviewAction=ClusterPreview",
     "CTL_ClusterPreviewTopComponent=ClusterPreview Window",
@@ -47,8 +49,9 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
     private static final long serialVersionUID = -9187536896216095176L;
     private final InstanceContent content = new InstanceContent();
     private Lookup.Result<Clustering> result = null;
-    private ClusterPreviewFrame frame;
+    private final ClusterPreviewFrame frame;
     private Dataset<Instance> dataset;
+    private static final Logger logger = Logger.getLogger(ClusterPreviewTopComponent.class.getName());
 
     public ClusterPreviewTopComponent() {
         initComponents();
@@ -86,7 +89,6 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
                 System.out.println("dataset size = " + dataset.size());
             }
         }
-
 
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
         result.addLookupListener(this);
@@ -130,6 +132,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
+        logger.log(Level.INFO, "clustering lookup: got {0} clusterings", allClusterings.size());
         for (Clustering c : allClusterings) {
             System.out.println("clustring size" + c.size());
             frame.setClustering(c);

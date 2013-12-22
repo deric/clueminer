@@ -87,9 +87,9 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     private void updateLayout() {
         int heatmapSize = this.getSize().width - dendrogramPanel.getVerticalTreeSize().width - dendrogramPanel.getAnnotationWidth();
         System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
-        
+
         System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
-        System.out.println("heatmap "+dendrogramPanel.getHeatmapSize());
+        System.out.println("heatmap " + dendrogramPanel.getHeatmapSize());
         System.out.println("clustering view size" + this.getSize() + " heatmap size= " + heatmapSize);
 
         //System.out.println("feature length = "+featuresLenght+ " heat map width = "+dendrogramPanel.getHeatmapWidth() );
@@ -226,8 +226,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         ClusteringListener[] listeners;
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].clusteringChanged(clust);
+        for (ClusteringListener listener : listeners) {
+            listener.clusteringChanged(clust);
         }
     }
 
@@ -238,7 +238,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     public void setElementSize(Dimension elementSize) {
         this.elementSize = elementSize;
     }
-    
+
     public void fireResultUpdate(HierarchicalResult clust) {
         ClusteringListener[] listeners;
 
@@ -278,7 +278,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         @Override
         public void componentResized(ComponentEvent ce) {
             Component c = (Component) ce.getSource();
-            //this method invalidate buffered image which is usually necessary 
+            //this method invalidate buffered image which is usually necessary
             //on component dimensions change (in case that the heatmap panel is bigger
             //than the frame)
             dendrogramPanel.getHeatmap().drawData();
