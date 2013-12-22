@@ -16,6 +16,7 @@ import org.clueminer.gui.ColorGenerator;
 import org.clueminer.utils.Dump;
 
 /**
+ * Color stripe for showing assignments to clusters
  *
  * @author Tomas Barton
  */
@@ -24,12 +25,13 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private static final long serialVersionUID = 7662186965958650502L;
     private DendrogramData dendroData;
     private Dimension size = new Dimension(0, 0);
-    private DendroPane panel;
+    private final DendroPane panel;
     private int stripeWidth = 20;
     private boolean isDrawBorders = true;
+    private boolean drawLabels = true;
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
-    private Insets insets = new Insets(0, 15, 0, 10);
+    private final Insets insets = new Insets(0, 15, 0, 10);
     private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
 
     public ClusterAssignment(DendroPane panel) {
@@ -80,9 +82,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         Graphics2D g2d = (Graphics2D) g;
         //places color bar to canvas
         g2d.drawImage(bufferedImage,
-                insets.left, insets.top,
-                size.width, size.height,
-                null);
+                      insets.left, insets.top,
+                      size.width, size.height,
+                      null);
         g2d.dispose();
     }
 
@@ -107,31 +109,33 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             while (i < clusters.length) {
                 mapped = clustering.getMappedIndex(i);
                 if (clusters[mapped] != currClust) {
-                    drawCluster(bufferedGraphics, x, start, i, false);
+                    drawCluster(bufferedGraphics, x, start, i);
                     start = i; //index if new cluster start
                     currClust = clusters[clustering.getMappedIndex(i)];
                 }
                 i++;
             }
             //close unfinished cluster
-            drawCluster(bufferedGraphics, x, start, i, true);
+            drawCluster(bufferedGraphics, x, start, i);
         }
         bufferedGraphics.dispose(); //finished drawing
     }
 
-    private void drawCluster(Graphics g, int x, int start, int end, boolean isLast) {
+    private void drawCluster(Graphics g, int x, int start, int end) {
         int y = start * elemHeight();
         int y2 = (end - start) * elemHeight();
-        if (this.isDrawBorders) {
-            if (y == 0) {
-                g.setColor(ColorGenerator.getRandomColor());
-                g.fillRect(x + 1, y + 1, stripeWidth - 2, y2 - 2);
-                g.setColor(Color.black);
+        if (y == 0) {
+            g.setColor(ColorGenerator.getRandomColor());
+            g.fillRect(x + 1, y + 1, stripeWidth - 2, y2 - 2);
+            g.setColor(Color.black);
+            if (this.isDrawBorders) {
                 g.drawRect(x, y, stripeWidth - 1, y2 - 1);
-            } else {
-                g.setColor(ColorGenerator.getRandomColor());
-                g.fillRect(x + 1, y - 1, stripeWidth - 2, y2);
-                g.setColor(Color.black);
+            }
+        } else {
+            g.setColor(ColorGenerator.getRandomColor());
+            g.fillRect(x + 1, y - 1, stripeWidth - 2, y2);
+            g.setColor(Color.black);
+            if (this.isDrawBorders) {
                 g.drawRect(x, y - 1, stripeWidth - 1, y2);
             }
         }
@@ -174,5 +178,13 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
         //
+    }
+
+    public boolean isDrawLabels() {
+        return drawLabels;
+    }
+
+    public void setDrawLabels(boolean drawLabels) {
+        this.drawLabels = drawLabels;
     }
 }
