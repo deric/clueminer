@@ -50,9 +50,9 @@ public abstract class AbstractAnnotation extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+                           RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.isAntiAliasing) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -92,9 +92,9 @@ public abstract class AbstractAnnotation extends JPanel {
         }
         if (bufferedImage != null) {
             g2.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                         0, 0,
+                         size.width, size.height,
+                         null);
         }
     }
 
@@ -109,17 +109,16 @@ public abstract class AbstractAnnotation extends JPanel {
     }
 
     public abstract void setDendrogramData(DendrogramData dendroData);
-    
-    public void resetCache(){
+
+    public void resetCache() {
         updateSize();
         createBufferedGraphics();
         repaint();
     }
-    
+
     protected abstract void updateSize();
-    
-    
-    public Dimension getDimension(){
+
+    public Dimension getDimension() {
         return size;
     }
 }

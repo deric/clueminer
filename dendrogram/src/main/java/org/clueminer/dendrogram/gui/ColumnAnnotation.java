@@ -40,6 +40,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
             FontMetrics fm = g.getFontMetrics();
             Font f;
             int height = fm.getHeight();
+            int width;
             // clockwise 90 degrees
             g.rotate(Math.PI / 2.0);
             for (int col = 0; col < dendroData.getNumberOfColumns(); col++) {
@@ -55,7 +56,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
                     g.setFont(f);
                 }
 
-                int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+                width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
                 checkMax(width);
 
                 g.drawString(s, 0, -coordX);

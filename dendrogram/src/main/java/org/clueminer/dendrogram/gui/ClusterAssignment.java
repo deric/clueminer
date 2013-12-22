@@ -1,6 +1,7 @@
 package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,12 +28,16 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private Dimension size = new Dimension(0, 0);
     private final DendroPane panel;
     private int stripeWidth = 20;
-    private boolean isDrawBorders = true;
+    private int maxTextWidth = 30;
+    private boolean drawBorders = true;
     private boolean drawLabels = true;
     private BufferedImage bufferedImage;
-    private Graphics2D bufferedGraphics;
+    private Graphics2D buffGr;
     private final Insets insets = new Insets(0, 15, 0, 10);
     private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
+    private Font font = new Font("verdana", Font.BOLD, 12);
+    private int lineHeight;
+    private final int labelOffset = 5;
 
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
@@ -58,7 +63,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         int width = 0;
         int height = 0;
         if (dendroData != null) {
-            width = stripeWidth;
+            width = stripeWidth + 2 * labelOffset + maxTextWidth;
             height = panel.getElementSize().height * dendroData.getNumberOfRows() + 2;
         }
         setDimension(width, height);
@@ -90,7 +95,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
     private void drawData(int width, int height) {
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        bufferedGraphics = bufferedImage.createGraphics();
+        buffGr = bufferedImage.createGraphics();
+        buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        buffGr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         if (dendroData != null) {
             HierarchicalResult clustering = dendroData.getRowsResult();
@@ -102,6 +109,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
                 logger.log(Level.INFO, "clusters size is 0!!!");
                 return;
             }
+            buffGr.setFont(font);
+            FontMetrics fm = buffGr.getFontMetrics();
+            lineHeight = fm.getHeight();
             int currClust = clusters[i];
             int start = 0;
             int x = 0;
@@ -109,35 +119,54 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             while (i < clusters.length) {
                 mapped = clustering.getMappedIndex(i);
                 if (clusters[mapped] != currClust) {
-                    drawCluster(bufferedGraphics, x, start, i);
+                    drawCluster(buffGr, x, start, i, currClust, false);
                     start = i; //index if new cluster start
                     currClust = clusters[clustering.getMappedIndex(i)];
                 }
                 i++;
             }
             //close unfinished cluster
-            drawCluster(bufferedGraphics, x, start, i);
+            drawCluster(buffGr, x, start, i, currClust, true);
         }
-        bufferedGraphics.dispose(); //finished drawing
+        buffGr.dispose(); //finished drawing
     }
 
-    private void drawCluster(Graphics g, int x, int start, int end) {
+    private void drawCluster(Graphics2D g, int x, int start, int end, int clusterNum, boolean isLast) {
         int y = start * elemHeight();
         int y2 = (end - start) * elemHeight();
+        FontRenderContext frc = g.getFontRenderContext();
         if (y == 0) {
             g.setColor(ColorGenerator.getRandomColor());
             g.fillRect(x + 1, y + 1, stripeWidth - 2, y2 - 2);
             g.setColor(Color.black);
-            if (this.isDrawBorders) {
+            if (this.drawBorders) {
                 g.drawRect(x, y, stripeWidth - 1, y2 - 1);
             }
         } else {
             g.setColor(ColorGenerator.getRandomColor());
             g.fillRect(x + 1, y - 1, stripeWidth - 2, y2);
             g.setColor(Color.black);
-            if (this.isDrawBorders) {
+            if (this.drawBorders) {
                 g.drawRect(x, y - 1, stripeWidth - 1, y2);
             }
+        }
+        if (!isLast) {
+            drawLabel(g, y + y2 / 2.0, clusterNum, frc);
+        }
+    }
+
+    private void drawLabel(Graphics2D g, double y, int clusterNum, FontRenderContext frc) {
+        String label;
+        int labelWidth;
+        double xLabel, yLabel;
+
+        if (drawLabels) {
+            label = String.valueOf(clusterNum);
+            labelWidth = (int) (g.getFont().getStringBounds(label, frc).getWidth()) + 10;
+            checkMax(labelWidth);
+            yLabel = y + lineHeight / 2.0;
+            xLabel = stripeWidth + labelOffset;
+            g.drawString(label, (float) xLabel, (float) yLabel);
         }
     }
 
@@ -161,18 +190,12 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
         updateSize();
-        bufferedImage = null; //clear cached image
-        repaint();
-    }
-
-    private void invalidateCache() {
-        bufferedImage = null;
+        createBufferedGraphics();
     }
 
     @Override
     public void clusteringChanged(Clustering clust) {
-        invalidateCache();
-        repaint();
+        createBufferedGraphics();
     }
 
     @Override
@@ -186,5 +209,26 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
     public void setDrawLabels(boolean drawLabels) {
         this.drawLabels = drawLabels;
+    }
+
+    public boolean isDrawBorders() {
+        return drawBorders;
+    }
+
+    public void setDrawBorders(boolean drawBorders) {
+        this.drawBorders = drawBorders;
+    }
+
+    private void checkMax(int width) {
+        if (width > maxTextWidth) {
+            maxTextWidth = width;
+            updateSize();
+            createBufferedGraphics();
+        }
+    }
+
+    private void createBufferedGraphics() {
+        bufferedImage = null; //clear cached image
+        repaint();
     }
 }
