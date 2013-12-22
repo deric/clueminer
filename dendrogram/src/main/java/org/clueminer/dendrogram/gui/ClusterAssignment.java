@@ -149,8 +149,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             if (this.drawBorders) {
                 g.drawRect(x, y - 1, stripeWidth - 1, y2);
             }
+
         }
-        if (!isLast) {
+        if (y2 > 0) {
             drawLabel(g, y + y2 / 2.0, clusterNum, frc);
         }
     }
@@ -166,6 +167,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             checkMax(labelWidth);
             yLabel = y + lineHeight / 2.0;
             xLabel = stripeWidth + labelOffset;
+            //logger.log(Level.INFO, "label {0} at {1}, {2}", new Object[]{label, xLabel, yLabel});
             g.drawString(label, (float) xLabel, (float) yLabel);
         }
     }
