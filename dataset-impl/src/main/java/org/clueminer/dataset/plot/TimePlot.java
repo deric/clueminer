@@ -2,8 +2,10 @@ package org.clueminer.dataset.plot;
 
 import java.awt.Color;
 import java.awt.Font;
+import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Timeseries;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.plotObjects.BaseLabel;
 
@@ -21,7 +23,9 @@ public class TimePlot extends Plot2DPanel implements Plotter {
 
     @Override
     public void addInstance(Instance instance) {
-        this.addLinePlot(instance.getName(), instance.arrayCopy());
+        ContinuousInstance inst = (ContinuousInstance) instance;
+        Timeseries dataset = inst.getParent();
+        this.addLinePlot(instance.getName(), dataset.getTimePointsArray(), instance.arrayCopy());
     }
 
     @Override
