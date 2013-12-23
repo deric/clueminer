@@ -11,7 +11,6 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
-import org.clueminer.utils.Dump;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,7 +41,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      * Analyze allows user to provide own data structure for storing results
      *
      * @param dataset
-     * @param output result is saved into this variable
+     * @param output  result is saved into this variable
      * @param ph
      */
     @Override
@@ -62,8 +61,8 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      * @param dataset
      * @param output
      * @param ph
-     * @param n number of segments
-     * @param deg max degree of Legendre polynomials
+     * @param n       number of segments
+     * @param deg     max degree of Legendre polynomials
      */
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph, int n, int deg) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
@@ -143,6 +142,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
                     res[i].setAttributeValue(k, j, value);
                 }
                 res[i].instance(j).setAncestor(source.instance(j));
+                res[i].instance(j).setName(source.instance(j).getName());
             }
             // Dump.matrix(res[i].arrayCopy(), "dataset-" + i, 2);
             offset += inc;
