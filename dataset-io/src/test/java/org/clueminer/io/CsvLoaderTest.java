@@ -1,6 +1,7 @@
 package org.clueminer.io;
 
 import java.io.File;
+import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -19,6 +20,7 @@ public class CsvLoaderTest {
     private static CsvLoader subject;
     private static final CommonFixture fixture = new CommonFixture();
     private static final double delta = 1e-9;
+
     public CsvLoaderTest() {
     }
 
@@ -33,6 +35,7 @@ public class CsvLoaderTest {
 
     /**
      * Test of load method, of class CsvLoader.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -63,9 +66,33 @@ public class CsvLoaderTest {
 
     /**
      * Test of setHeader method, of class CsvLoader.
+     *
+     * @throws java.io.IOException
      */
     @Test
-    public void testSetHeader() {
+    public void testSetHeader() throws IOException {
+        File file = fixture.irisData();
+        Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
+        subject.setClassIndex(4);
+        subject.setHeader(false);
+        //run
+        subject.load(file, dataset);
+        assertEquals(4, dataset.attributeCount());
+        assertEquals(150, dataset.size());
+        assertEquals(true, dataset.getAttribute(0).isNumerical());
+        assertEquals(5.1, dataset.instance(0).value(0), delta);
+    }
+
+    @Test
+    public void testLoadingNames() throws IOException {
+        File file = fixture.irisData();
+        Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
+        subject.setClassIndex(4);
+        subject.setHeader(false);
+        subject.addNameAttr(4);
+        //run
+        subject.load(file, dataset);
+        assertEquals("Iris-setosa", dataset.instance(0).getName());
     }
 
     /**

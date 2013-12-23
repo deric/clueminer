@@ -20,6 +20,7 @@ public class CsvLoader implements DatasetLoader {
     private String separator = ",";
     private int classIndex = -1;
     private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
+    private ArrayList<Integer> nameAttr = new ArrayList<Integer>();
     private Dataset<Instance> dataset;
 
     @Override
@@ -42,6 +43,7 @@ public class CsvLoader implements DatasetLoader {
     public boolean load(File file) {
         LineIterator it = new LineIterator(file);
         Instance inst;
+        StringBuilder name = new StringBuilder();
         it.setSkipBlanks(true);
         it.setCommentIdentifier("#");
         it.setSkipComments(true);
@@ -54,11 +56,19 @@ public class CsvLoader implements DatasetLoader {
             it.next(); // just skip it
         }
 
+        int skip;
+        int skipSize;
+        double[] values;
+        String[] arr;
+        int num = 0;
         for (String line : it) {
-            String[] arr = line.split(separator);
-            double[] values;
-            int skipSize = skipIndex.size();
-            int skip = 0;
+            arr = line.split(separator);
+            if (num == 0 && dataset.attributeCount() == 0) {
+                //detect types from first line
+                createAttributes(arr, false);
+            }
+            skipSize = skipIndex.size();
+            skip = 0;
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
             }
@@ -82,10 +92,14 @@ public class CsvLoader implements DatasetLoader {
                         skip++;
                     }
                 }
+                if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
+                    name.append(arr[i]).append(" ");
+                }
             }
             inst = builder.create(values, classValue);
+            inst.setName(name.toString().trim());
             dataset.add(inst);
-
+            num++;
         }
         return true;
     }
@@ -94,11 +108,19 @@ public class CsvLoader implements DatasetLoader {
         //we expect first line to be a hasHeader
         String first = it.next();
         String[] header = first.split(separator);
+        createAttributes(header, false);
+    }
 
+    private void createAttributes(String[] line, boolean detectTypes) {
         int j = 0;
-        for (int i = 0; i < header.length; i++) {
+        for (int i = 0; i < line.length; i++) {
             if (i != classIndex && !skipIndex.contains(i)) {
-                dataset.setAttribute(j++, dataset.attributeBuilder().create(header[i], "NUMERICAL"));
+                if (!detectTypes) {
+                    dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], "NUMERICAL"));
+                } else {
+                    //TODO: try to parse double from string
+                    throw new UnsupportedOperationException("not implemented yet");
+                }
             }
         }
     }
@@ -158,6 +180,23 @@ public class CsvLoader implements DatasetLoader {
 
     public void setSkipHeader(boolean skipHeader) {
         this.skipHeader = skipHeader;
+    }
+
+    /**
+     * Value from column(s) will used as the name
+     *
+     * @param column column
+     */
+    public void addNameAttr(int column) {
+        nameAttr.add(column);
+    }
+
+    public ArrayList<Integer> getNameAttr() {
+        return nameAttr;
+    }
+
+    public void setNameAttr(ArrayList<Integer> nameAttr) {
+        this.nameAttr = nameAttr;
     }
 
 }
