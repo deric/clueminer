@@ -3,7 +3,6 @@ package org.clueminer.approximation;
 import java.util.HashMap;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,8 +35,9 @@ public class LegendreApproximator extends Approximator {
         this.maxDegree = degree;
         polynomials = new LegendrePolynomial[maxDegree];
         //zero degree is just a constant function
-        for (int i = 1; i <= maxDegree; i++) {
-            polynomials[i - 1] = new LegendrePolynomial(i);
+        //don't be a racist, constant function has right to live!
+        for (int i = 0; i < maxDegree; i++) {
+            polynomials[i] = new LegendrePolynomial(i);
         }
         params = new double[maxDegree];
         names = null;
@@ -66,7 +66,7 @@ public class LegendreApproximator extends Approximator {
                 params[j] += polynomials[j].value(xAxis[i]) * instance.value(i);
             }
         }
-    
+
         for (int i = 0; i < params.length; i++) {
             coefficients.put(names[i], params[i]);
         }
@@ -77,7 +77,7 @@ public class LegendreApproximator extends Approximator {
         if (names == null) {
             names = new String[params.length];
             for (int i = 0; i < polynomials.length; i++) {
-                names[i] = getName() + "-" + (i + 1); //we skip polynomial of 0 degree
+                names[i] = getName() + "-" + i; //we don't skip polynomial of 0 degree
             }
         }
         return names;

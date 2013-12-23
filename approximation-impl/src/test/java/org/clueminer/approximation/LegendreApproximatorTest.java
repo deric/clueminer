@@ -68,9 +68,9 @@ public class LegendreApproximatorTest {
 
         //dataset.setAttribute(0, new TimePointAttribute);
         /*dataset.attributeBuilder().create("y", "REAL");
-        loader.load(tf.irBenzin(), dataset);
+         loader.load(tf.irBenzin(), dataset);
 
-        ContinuousInstance inst = dataset.instance(0);*/
+         ContinuousInstance inst = dataset.instance(0);*/
     }
 
     /**
@@ -79,10 +79,9 @@ public class LegendreApproximatorTest {
     @Test
     public void testGetParamNames() {
         String[] names = test.getParamNames();
-        assertEquals("legendre-1", names[0]);
+        assertEquals("legendre-0", names[0]);
         Dump.array(names, "names");
     }
-
 
     /**
      * Test of getFunctionValue method, of class LegendreApproximator.
