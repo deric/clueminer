@@ -93,6 +93,7 @@ public class CsvLoaderTest {
         //run
         subject.load(file, dataset);
         assertEquals("Iris-setosa", dataset.instance(0).getName());
+        assertEquals("Iris-virginica", dataset.instance(149).getName());
     }
 
     /**

@@ -43,7 +43,6 @@ public class CsvLoader implements DatasetLoader {
     public boolean load(File file) {
         LineIterator it = new LineIterator(file);
         Instance inst;
-        StringBuilder name = new StringBuilder();
         it.setSkipBlanks(true);
         it.setCommentIdentifier("#");
         it.setSkipComments(true);
@@ -60,6 +59,7 @@ public class CsvLoader implements DatasetLoader {
         int skipSize;
         double[] values;
         String[] arr;
+        StringBuilder name = null;
         int num = 0;
         for (String line : it) {
             arr = line.split(separator);
@@ -67,7 +67,11 @@ public class CsvLoader implements DatasetLoader {
                 //detect types from first line
                 createAttributes(arr, false);
             }
+            if (nameAttr.size() > 0) {
+                name = new StringBuilder();
+            }
             skipSize = skipIndex.size();
+
             skip = 0;
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
@@ -97,7 +101,9 @@ public class CsvLoader implements DatasetLoader {
                 }
             }
             inst = builder.create(values, classValue);
-            inst.setName(name.toString().trim());
+            if (!nameAttr.isEmpty()) {
+                inst.setName(name.toString().trim());
+            }
             dataset.add(inst);
             num++;
         }
