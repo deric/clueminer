@@ -155,7 +155,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
                 }
                 idx = itemsMapping[i];
                 //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
-                logger.log(Level.WARNING, "{0} -> {1}", new Object[]{i, idx});
+                //logger.log(Level.WARNING, "{0} -> {1}", new Object[]{i, idx});
                 //mapping is tracked in cluster
                 // values in cluster array doesn't need mapping!
                 clust.add(dataset.get(i), idx);
@@ -164,7 +164,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         for (Object c : result) {
             logger.log(Level.INFO, "{0}", c.toString());
         }
-       //proximity.printLower(5, 2);
+        //proximity.printLower(5, 2);
         // similarity.print(4, 2);
         return result;
     }

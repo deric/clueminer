@@ -33,8 +33,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     protected Dimension elementSize;
     protected DendrogramData data;
     private boolean fitToPanel = true;
-    private transient EventListenerList datasetListeners = new EventListenerList();
-    private transient EventListenerList clusteringListeners = new EventListenerList();
+    private final transient EventListenerList datasetListeners = new EventListenerList();
+    private final transient EventListenerList clusteringListeners = new EventListenerList();
 
     public DendrogramViewer() {
         setBackground(Color.WHITE);
@@ -244,15 +244,19 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);
         System.out.println("fireing results update, listeners size: " + listeners.length);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].resultUpdate(clust);
-            System.out.println("listerner: " + listeners[i].getClass().toString());
+        for (ClusteringListener listener : listeners) {
+            listener.resultUpdate(clust);
+            System.out.println("listerner: " + listener.getClass().toString());
         }
     }
 
     @Override
     public BufferedImage getBufferedImage(int w, int h) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Dimension dim = dendrogramPanel.getPreferredSize();
+        BufferedImage bi = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bi.createGraphics();
+        dendrogramPanel.print(g);
+        return bi;
     }
 
     @Override

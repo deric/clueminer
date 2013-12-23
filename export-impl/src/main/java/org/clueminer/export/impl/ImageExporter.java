@@ -83,10 +83,9 @@ public class ImageExporter {
                     fileChooser.addChoosableFileFilter(pngFilter);
                 }
 
-                fileChooser.setSelectedFile(new File(panel.getName()));
+                //     fileChooser.setSelectedFile(new File(panel.getName()));
                 defaultFolder = fileChooser.getCurrentDirectory();
-                p.put("default_folder", fileChooser.getCurrentDirectory().getAbsolutePath());
-
+                //     p.put("default_folder", fileChooser.getCurrentDirectory().getAbsolutePath());
                 if (fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow()) == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     String filename = file.getName();
