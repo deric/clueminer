@@ -164,8 +164,8 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         for (Object c : result) {
             logger.log(Level.INFO, "{0}", c.toString());
         }
-        proximity.printLower(5, 2);
-        similarity.print(4, 2);
+       //proximity.printLower(5, 2);
+        // similarity.print(4, 2);
         return result;
     }
 

@@ -24,11 +24,11 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private HierarchicalResult clustering;
     final static float dash1[] = {10.0f};
     private int linepos;
-    final static BasicStroke dashed =
-            new BasicStroke(1.0f,
-            BasicStroke.CAP_BUTT,
-            BasicStroke.JOIN_MITER,
-            10.0f, dash1, 0.0f);
+    final static BasicStroke dashed
+            = new BasicStroke(1.0f,
+                              BasicStroke.CAP_BUTT,
+                              BasicStroke.JOIN_MITER,
+                              10.0f, dash1, 0.0f);
 
     public CutoffLine(DendroPane p, AbstractTree tree) {
         this.panel = p;
@@ -38,9 +38,9 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
 
     private void drawLine(Graphics2D g2) {
         g2.setColor(Color.RED);
-        
+
         //no data available
-        if(clustering == null){
+        if (clustering == null) {
             return;
         }
 
@@ -94,11 +94,13 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      * Cutoff is in range from 0 to max_pixels of dendrogram tree
      *
      * @param pos
+     * @param isAdjusting
      */
     public void setCutoff(int pos, boolean isAdjusting) {
         double cut = computeCutoff(pos);
-        clustering.setCutoff(cut);
         if (!isAdjusting) {
+            //quite expensive to compute
+            clustering.setCutoff(cut);
             //@TODO depending on horizontal or vertical position we shoud choose rows or columns
             panel.fireClusteringChanged(panel.getDendrogramData().getRowsClustering());
         }
