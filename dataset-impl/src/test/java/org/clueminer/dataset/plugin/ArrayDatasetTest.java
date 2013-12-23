@@ -21,10 +21,10 @@ import static org.junit.Assert.*;
 public class ArrayDatasetTest {
 
     private static ArrayDataset<Instance> dataset;
-    private static int dataCapacity = 10;
-    private static int attributesCnt = 2;
+    private static final int dataCapacity = 10;
+    private static final int attributesCnt = 2;
     private static Random rand;
-    private static double delta = 1e-7;
+    private static final double delta = 1e-7;
 
     public ArrayDatasetTest() {
     }
@@ -33,6 +33,8 @@ public class ArrayDatasetTest {
     public static void setUpClass() {
         dataset = new ArrayDataset<Instance>(dataCapacity, attributesCnt);
         dataset.builder().create(new double[]{1, 2});
+        dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
+        dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
         rand = new Random();
     }
 
@@ -150,7 +152,7 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testAttributeCount() {
-        assertEquals(attributesCnt, dataset.attributeCount());
+        assertEquals(2, dataset.attributeCount());
     }
 
     /**

@@ -13,6 +13,7 @@ import org.math.plot.Plot2DPanel;
 /**
  * Dataset with fixed number of items
  *
+ * @param <E>
  * @TODO consider performance of this dataset and possible removal
  *
  * @author Tomas Barton
@@ -23,8 +24,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     private Instance[] data;
     private InstanceBuilder builder;
     private AttributeBuilder attributeBuilder;
-    private TreeSet<Object> classes = new TreeSet<Object>();
+    private final TreeSet<Object> classes = new TreeSet<Object>();
     protected Attribute[] attributes;
+    private int attrCnt = 0;
     /**
      * (n - 1) is index of last inserted item, n itself represents current
      * number of instances in this dataset
@@ -45,6 +47,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public boolean add(Instance i) {
         if ((n + 1) >= getCapacity()) {
             int capacity = (int) (n * 1.618); //golden ratio :)
+            if (capacity == size()) {
+                capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
+            }
             ensureCapacity(capacity);
         }
         data[n++] = i;
@@ -63,11 +68,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
             Instance i = it.next();
             data[n++] = i;
         }
-        //not all of items did fit
-        if (it.hasNext()) {
-            return false;
-        }
-        return true;
+        return !it.hasNext();
     }
 
     @Override
@@ -77,10 +78,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public boolean hasIndex(int idx) {
-        if (idx >= 0 && idx < size()) {
-            return true;
-        }
-        return false;
+        return idx >= 0 && idx < size();
     }
 
     @Override
@@ -140,9 +138,14 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return attributeBuilder;
     }
 
+    /**
+     * Real attribute count, doesn't include null attributes
+     *
+     * @return actual number of attributes
+     */
     @Override
     public int attributeCount() {
-        return attributes.length;
+        return attrCnt;
     }
 
     /**
@@ -164,9 +167,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Attribute getAttribute(String attributeName) {
-        for (int i = 0; i < attributes.length; i++) {
-            if (attributes[i].getName().equals(attributeName)) {
-                return attributes[i];
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equals(attributeName)) {
+                return attribute;
             }
         }
         throw new RuntimeException("Attribute with name " + attributeName + " was not found");
@@ -181,6 +184,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public void setAttribute(int i, Attribute attr) {
         attr.setIndex(i);
+        if (attributes[i] == null) {
+            attrCnt++;
+        }
         attributes[i] = attr;
     }
 
@@ -232,8 +238,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         if (cols <= 0) {
             throw new ArrayIndexOutOfBoundsException("given dataset has width " + cols);
         }
-        for (Iterator<E> it = this.iterator(); it.hasNext();) {
-            Instance inst = it.next();
+        for (Instance inst : this) {
             for (int j = 0; j < inst.size(); j++) {
                 res[i][j] = inst.value(j);///scaleToRange((float)inst.value(j), min, max, -10, 10);
             }
@@ -298,6 +303,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public Dataset<E> duplicate() {
         ArrayDataset<E> copy = new ArrayDataset<E>(this.size(), this.attributeCount());
         copy.attributes = this.attributes;
+        copy.attrCnt = this.attrCnt;
         return copy;
     }
 
