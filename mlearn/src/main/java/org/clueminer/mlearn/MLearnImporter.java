@@ -64,11 +64,11 @@ public class MLearnImporter implements LongTask, Runnable {
         int i = 0;
         int index;
         int last = firstLine.length - 1;
-        TimePoint tp[] = new TimePointAttribute[last - 1];        
+        TimePoint tp[] = new TimePointAttribute[last - 1];
         for (String item : firstLine) {
             if (i > 0 && i < last) {
                 index = Integer.valueOf(item.substring(1));
-                tp[i - 1] = new TimePointAttribute(index, index, index);                
+                tp[i - 1] = new TimePointAttribute(index, index, index);
             }
             i++;
         }
@@ -91,6 +91,10 @@ public class MLearnImporter implements LongTask, Runnable {
         for (int i = 1; i < 7; i++) {
             skipped.add(i);
         }
+        for (int j = 0; j < 7; j++) {
+            loader.addNameAttr(j); //meta attributes
+        }
+        loader.setNameJoinChar(", ");
 
         String[] firstLine = firstLine(file, separator);
         int i = 0;

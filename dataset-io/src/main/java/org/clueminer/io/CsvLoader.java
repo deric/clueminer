@@ -22,8 +22,10 @@ public class CsvLoader implements DatasetLoader {
     private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
     private ArrayList<Integer> nameAttr = new ArrayList<Integer>();
     private Dataset<Instance> dataset;
+    private String nameJoinChar = " ";
 
     @Override
+
     public boolean load(File file, Dataset output) throws FileNotFoundException {
         setDataset(output);
         return load(file);
@@ -61,6 +63,7 @@ public class CsvLoader implements DatasetLoader {
         String[] arr;
         StringBuilder name = null;
         int num = 0;
+        int nameApp = 0;
         for (String line : it) {
             arr = line.split(separator);
             if (num == 0 && dataset.attributeCount() == 0) {
@@ -71,7 +74,7 @@ public class CsvLoader implements DatasetLoader {
                 name = new StringBuilder();
             }
             skipSize = skipIndex.size();
-
+            nameApp = 0;
             skip = 0;
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
@@ -97,7 +100,11 @@ public class CsvLoader implements DatasetLoader {
                     }
                 }
                 if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
-                    name.append(arr[i]).append(" ");
+                    name.append(arr[i]);
+                    nameApp++;
+                    if (nameAttr.size() != nameApp) {
+                        name.append(nameJoinChar);
+                    }
                 }
             }
             inst = builder.create(values, classValue);
@@ -203,6 +210,20 @@ public class CsvLoader implements DatasetLoader {
 
     public void setNameAttr(ArrayList<Integer> nameAttr) {
         this.nameAttr = nameAttr;
+    }
+
+    public String getNameJoinChar() {
+        return nameJoinChar;
+    }
+
+    /**
+     * In case that name is constructed from few columns, nameJoinChar is
+     * used for joining them into one string
+     *
+     * @param nameJoinChar
+     */
+    public void setNameJoinChar(String nameJoinChar) {
+        this.nameJoinChar = nameJoinChar;
     }
 
 }
