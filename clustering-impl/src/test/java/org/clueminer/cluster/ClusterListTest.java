@@ -108,6 +108,8 @@ public class ClusterListTest {
         ClusterList subject = new ClusterList(10);
         assertEquals(0, subject.size());
         subject.put(1, new BaseCluster(1));
+        assertEquals(true, subject.hasAt(1));
+        assertEquals(false, subject.hasAt(0));
         subject.put(3, new BaseCluster(1));
         assertEquals(2, subject.size());
         subject.put(0, new BaseCluster(1));
