@@ -99,16 +99,21 @@ public class CsvExporter {
 
                     if (retval.equals(NotifyDescriptor.YES_OPTION)) {
                         CSVWriter writer = new CSVWriter(new FileWriter(file));
-                        String[] line;
+                        String[] line, tmp;
+                        int size;
                         try {
                             HierarchicalResult result = analysis.getResult();
                             if (result != null) {
                                 Clustering<Cluster> clust = result.getClustering();
                                 for (Cluster<? extends Instance> c : clust) {
                                     for (Instance inst : c) {
-                                        line = new String[2];
-                                        line[0] = inst.getName();
-                                        line[1] = c.getName();
+                                        line = inst.getName().split(",");
+                                        size = line.length + 1;
+                                        //append cluster label
+                                        tmp = new String[size];
+                                        System.arraycopy(line, 0, tmp, 0, line.length);
+                                        line = tmp;
+                                        line[size - 1] = c.getName();
                                         writer.writeNext(line);
                                     }
                                 }
