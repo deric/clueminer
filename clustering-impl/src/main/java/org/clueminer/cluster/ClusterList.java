@@ -73,7 +73,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         if (index >= getCapacity()) {
             ensureCapacity((int) (size() * 1.618));
         }
-        if (index >= size()) {
+        if (data[index] == null) {
             n++;
         }
         data[index] = x;

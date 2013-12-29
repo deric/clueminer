@@ -103,6 +103,17 @@ public class ClusterListTest {
         assertEquals(1, subject.size());
     }
 
+    @Test
+    public void testPut_rand_idx() {
+        ClusterList subject = new ClusterList(10);
+        assertEquals(0, subject.size());
+        subject.put(1, new BaseCluster(1));
+        subject.put(3, new BaseCluster(1));
+        assertEquals(2, subject.size());
+        subject.put(0, new BaseCluster(1));
+        assertEquals(3, subject.size());
+    }
+
     /**
      * Test of merge method, of class ClusterList.
      */
