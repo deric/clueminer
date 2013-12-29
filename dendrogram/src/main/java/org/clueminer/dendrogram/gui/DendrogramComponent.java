@@ -134,9 +134,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         // input.print(5, 2);
 
         //AlgorithmFactory factory = framework.getAlgorithmFactory();
-
         //algorithm.addAlgorithmListener(new Listener());
-
         long start = System.currentTimeMillis();
 
         Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
@@ -149,7 +147,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         params.setProperty("calculate-rows", String.valueOf(true));
         HierarchicalResult rowsResult = algorithm.hierarchy(input, data, params);
 
-
         //   progress.setTitle("Clustering by columns");
         params.setProperty("calculate-rows", String.valueOf(false));
         HierarchicalResult columnsResult = algorithm.hierarchy(input, data, params);
@@ -157,7 +154,6 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         //System.out.println("params: " + params.toString());
         //printResult(rowsResult);
-
         if (debug) {
             Matrix proximity = rowsResult.getProximityMatrix();
             Matrix cprox = columnsResult.getProximityMatrix();
@@ -175,7 +171,6 @@ public class DendrogramComponent extends ClusterAnalysis {
 
          cutoff = columnsResult.findCutoff();
          System.out.println("columns tree cutoff = " + cutoff);*/
-
         DendrogramData dendroData = new DendrogramData(data, input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);
         String cutoffAlg = params.getString("cutoff");
@@ -302,5 +297,9 @@ public class DendrogramComponent extends ClusterAnalysis {
     public void taskFinished(Task task) {
         //notify other components
         viewer.fireResultUpdate(finalResult);
+    }
+
+    public HierarchicalResult getResult() {
+        return finalResult;
     }
 }

@@ -8,6 +8,7 @@ import static javax.swing.Action.LONG_DESCRIPTION;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
 import static javax.swing.Action.SMALL_ICON;
+import org.clueminer.export.impl.CsvExporter;
 import org.clueminer.export.impl.ImageExporter;
 import org.netbeans.api.print.PrintManager;
 import org.openide.DialogDescriptor;
@@ -58,6 +59,10 @@ public final class ClusterActions {
         return ChartProps.getAction(clusteringFrame);
     }
 
+    public static Action clusterExport(ClusterAnalysis clusteringFrame) {
+        return ClusterExport.getAction(clusteringFrame);
+    }
+
     public static Action saveToTemplate(ClusterAnalysis clusteringFrame) {
         return SaveToTemplate.getAction(clusteringFrame);
     }
@@ -91,16 +96,16 @@ public final class ClusterActions {
         public MainAction(String name, boolean flag) {
             putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_" + name));
             putValue(SHORT_DESCRIPTION,
-                    NbBundle.getMessage(ClusterActions.class, "TOOL_" + name));
+                     NbBundle.getMessage(ClusterActions.class, "TOOL_" + name));
             System.out.println("org/clueminer/clustering/resources/" + name.toLowerCase() + "16.png");
             if (flag) {
                 Icon ico = ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", true);
                 System.out.println("ico: " + name + " = " + ico);
                 putValue(SMALL_ICON,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", true));
+                         ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "16.png", true));
                 putValue(LONG_DESCRIPTION, name);
                 putValue(LARGE_ICON_KEY,
-                        ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "24.png", true));
+                         ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/" + name + "24.png", true));
             }
         }
     }
@@ -253,6 +258,30 @@ public final class ClusterActions {
         }
     }
 
+    private static class ClusterExport extends AbstractAction {
+
+        private static final long serialVersionUID = -661781520577850266L;
+        private final ClusterAnalysis clusteringFrame;
+
+        public static Action getAction(ClusterAnalysis clusteringFrame) {
+            return new ClusterExport(clusteringFrame);
+        }
+
+        private ClusterExport(ClusterAnalysis clusteringFrame) {
+            this.clusteringFrame = clusteringFrame;
+            putValue(NAME, NbBundle.getMessage(ClusterActions.class, "ACT_ClusterExport"));
+            putValue(SHORT_DESCRIPTION, NbBundle.getMessage(ClusterActions.class, "TOOL_ClusterExport"));
+            putValue(SMALL_ICON, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/csvexport16.png", true));
+            putValue(LONG_DESCRIPTION, "Export cluster assignments");
+            putValue(LARGE_ICON_KEY, ImageUtilities.loadImageIcon("org/clueminer/clustering/resources/csvexport24.png", true));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CsvExporter.getDefault().export(clusteringFrame);
+        }
+    }
+
     private static class PrintChart extends AbstractAction {
 
         private static final long serialVersionUID = -8912120693706179845L;
@@ -280,7 +309,7 @@ public final class ClusterActions {
     private static class ChartProps extends AbstractAction {
 
         private static final long serialVersionUID = -2363806065135286271L;
-        private ClusterAnalysis clusteringFrame;
+        private final ClusterAnalysis clusteringFrame;
 
         public static Action getAction(ClusterAnalysis clusteringFrame) {
             return new ChartProps(clusteringFrame);
@@ -314,8 +343,8 @@ public final class ClusterActions {
     private static class ToggleToolbarSmallIcons extends MainAction {
 
         private static final long serialVersionUID = 1L;
-        private ClusterAnalysis clusteringFrame;
-        private ClusteringToolbar clusteringToolbar;
+        private final ClusterAnalysis clusteringFrame;
+        private final ClusteringToolbar clusteringToolbar;
 
         public static Action getAction(ClusterAnalysis clusteringFrame, ClusteringToolbar clusteringToolbar) {
             return new ToggleToolbarSmallIcons(clusteringFrame, clusteringToolbar);

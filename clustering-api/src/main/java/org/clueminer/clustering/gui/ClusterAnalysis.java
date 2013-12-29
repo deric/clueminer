@@ -3,6 +3,7 @@ package org.clueminer.clustering.gui;
 import java.io.Serializable;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -76,4 +77,6 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
      */
     @Override
     public abstract void taskFinished(Task task);
+
+    public abstract HierarchicalResult getResult();
 }

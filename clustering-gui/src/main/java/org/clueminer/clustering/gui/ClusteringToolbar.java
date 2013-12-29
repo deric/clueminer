@@ -24,6 +24,7 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
     private ToolbarButton exportBtn;
     private ToolbarButton printBtn;
     private ToolbarButton propertiesBtn;
+    private ToolbarButton clusterExportBtn;
 
     public ClusteringToolbar(ClusterAnalysis frame) {
         super("ClusteringToolbar", JToolBar.HORIZONTAL);
@@ -37,6 +38,7 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
     private void initComponents() {
         add(clusterBtn = ToolbarButton.getButton(ClusterActions.clusterPopup(parent)));
         add(exportBtn = ToolbarButton.getButton(ClusterActions.exportImage(parent)));
+        add(clusterExportBtn = ToolbarButton.getButton(ClusterActions.clusterExport(parent)));
         add(printBtn = ToolbarButton.getButton(ClusterActions.printChart(parent)));
         add(propertiesBtn = ToolbarButton.getButton(ClusterActions.chartProperties(parent)));
 
@@ -49,6 +51,7 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
         boolean show = parent.getClusteringProperties().getToolbarShowLabels();
         clusterBtn.toggleLabel(show);
         exportBtn.toggleLabel(show);
+        clusterExportBtn.toggleLabel(show);
         printBtn.toggleLabel(show);
         propertiesBtn.toggleLabel(show);
     }
@@ -57,6 +60,7 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
         boolean small = parent.getClusteringProperties().getToolbarSmallIcons();
         clusterBtn.toggleIcon(small);
         exportBtn.toggleIcon(small);
+        clusterExportBtn.toggleIcon(small);
         printBtn.toggleIcon(small);
         propertiesBtn.toggleIcon(small);
     }
