@@ -4,8 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.events.ProjectEvent;
-import org.clueminer.events.ProjectListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -20,27 +18,27 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-    dtd = "-//org.clueminer.evaluators//EvaluatorChart//EN",
-autostore = false)
+        dtd = "-//org.clueminer.evaluators//EvaluatorChart//EN",
+        autostore = false)
 @TopComponent.Description(
-    preferredID = "EvaluatorChartTopComponent",
-iconBase = "org/clueminer/evaluators/indicator16.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        preferredID = "EvaluatorChartTopComponent",
+        iconBase = "org/clueminer/evaluators/indicator16.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.evaluators.EvaluatorChartTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-    displayName = "#CTL_EvaluatorChartAction",
-preferredID = "EvaluatorChartTopComponent")
+        displayName = "#CTL_EvaluatorChartAction",
+        preferredID = "EvaluatorChartTopComponent")
 @Messages({
     "CTL_EvaluatorChartAction=EvaluatorChart",
     "CTL_EvaluatorChartTopComponent=EvaluatorChart Window",
     "HINT_EvaluatorChartTopComponent=This is a EvaluatorChart window"
 })
-public final class EvaluatorChartTopComponent extends TopComponent implements ProjectListener, LookupListener {
+public final class EvaluatorChartTopComponent extends TopComponent implements LookupListener {
 
     private static final long serialVersionUID = 3847461878488077650L;
-    private EvaluatorPlot plot;
+    private final EvaluatorPlot plot;
     private Lookup.Result<HierarchicalResult> result = null;
 
     public EvaluatorChartTopComponent() {
@@ -102,8 +100,8 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Pr
 
     private void comboEvaluatorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorsActionPerformed
         String item = (String) comboEvaluators.getSelectedItem();
-        if(item != null){
-            
+        if (item != null) {
+
         }
     }//GEN-LAST:event_comboEvaluatorsActionPerformed
 
@@ -137,21 +135,9 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Pr
     }
 
     @Override
-    public void projectClosed() {
-        // @TODO implement
-    }
-
-    @Override
-    public void projectOpened(ProjectEvent evt) {
-        System.out.println("looking up for DendrogramViewer class");
-        //ProjectFrame pf = (ProjectFrame) evt.getSource();
-
-    }
-
-    @Override
     public void resultChanged(LookupEvent le) {
         Collection<? extends HierarchicalResult> clusterings = result.allInstances();
-        System.out.println("lookup event, result size: "+clusterings.size());
+        System.out.println("lookup event, result size: " + clusterings.size());
         if (!clusterings.isEmpty()) {
             HierarchicalResult clust = clusterings.iterator().next();
             plot.setClustering(clust);

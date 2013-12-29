@@ -28,17 +28,17 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.clueminer.infopanel//InfoPanel//EN",
-        autostore = false)
+                     autostore = false)
 @TopComponent.Description(preferredID = "InfoPanelTopComponent",
-        iconBase = "org/clueminer/infopanel/info16.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+                          iconBase = "org/clueminer/infopanel/info16.png",
+                          persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.infopanel.InfoPanelTopComponent")
 @ActionReference(path = "Menu/Window" /*
-         * , position = 333
-         */)
+ * , position = 333
+ */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_InfoPanelAction",
-        preferredID = "InfoPanelTopComponent")
+                                     preferredID = "InfoPanelTopComponent")
 @Messages({
     "CTL_InfoPanelAction=InfoPanel",
     "CTL_InfoPanelTopComponent=InfoPanel Window",
@@ -77,7 +77,6 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
     @Override
     public void componentOpened() {
 
-
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
@@ -96,7 +95,6 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
                 HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
                 System.out.println("got plate, size: " + plt);
                 //  result.addLookupListener(parent);
-
 
                 Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
                 if (dataset != null) {
