@@ -88,6 +88,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
             if (dataset != null) {
                 System.out.println("dataset size = " + dataset.size());
             }
+            workspace.add(frame.getViewer());
         }
 
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);

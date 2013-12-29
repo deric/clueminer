@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 
@@ -17,7 +18,7 @@ import org.clueminer.dataset.api.Plotter;
  *
  * @author Tomas Barton
  */
-public class PreviewFrameSet extends JPanel implements ClusteringListener {
+public class PreviewFrameSet extends JPanel implements ClusteringListener, ClusterPreviewer {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
@@ -114,6 +115,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener {
         //new clustering result
     }
 
+    @Override
     public void setClustering(Clustering<Cluster> clustering) {
         this.clust = clustering;
         redraw();

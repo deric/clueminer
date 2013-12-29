@@ -29,8 +29,8 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
     private PreviewFrameSet previewSet;
     private JSlider chartSizeSlider;
     private JToolBar toolbar;
-    private int minChartHeight = 150;
-    private int maxChartHeight = 650;
+    private final int minChartHeight = 150;
+    private final int maxChartHeight = 650;
 
     public ClusterPreviewFrame() {
         initComponents();

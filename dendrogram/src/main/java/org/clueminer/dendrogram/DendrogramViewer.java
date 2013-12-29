@@ -7,6 +7,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
@@ -15,10 +17,15 @@ import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.dendrogram.events.DendrogramDataEvent;
 import org.clueminer.dendrogram.events.DendrogramDataListener;
 import org.clueminer.dendrogram.gui.DendrogramPanel;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
+import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -35,6 +42,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     private boolean fitToPanel = true;
     private final transient EventListenerList datasetListeners = new EventListenerList();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
+    private static final Logger logger = Logger.getLogger(DendrogramViewer.class.getName());
 
     public DendrogramViewer() {
         setBackground(Color.WHITE);
@@ -171,8 +179,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].datasetChanged(evt, data);
+            for (DendrogramDataListener listener : listeners) {
+                listener.datasetChanged(evt, data);
             }
         }
         return true;
@@ -183,8 +191,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].cellWidthChanged(evt, width, isAdjusting);
+            for (DendrogramDataListener listener : listeners) {
+                listener.cellWidthChanged(evt, width, isAdjusting);
             }
         }
         return true;
@@ -195,8 +203,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].cellHeightChanged(evt, height, isAdjusting);
+            for (DendrogramDataListener listener : listeners) {
+                listener.cellHeightChanged(evt, height, isAdjusting);
             }
         }
         return true;
@@ -255,7 +263,24 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         Dimension dim = dendrogramPanel.getPreferredSize();
         BufferedImage bi = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bi.createGraphics();
-        dendrogramPanel.print(g);
+        dendrogramPanel.paint(g);
+        logger.log(Level.INFO, "exporting to bitmap, export size: {0}", dim.toString());
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace workspace = pc.getCurrentWorkspace();
+        JPanel previews = null;
+        if (workspace != null) {
+            previews = (JPanel) workspace.getLookup().lookup(ClusterPreviewer.class);
+            logger.log(Level.INFO, "previews: {0}", previews);
+        }
+
+        previews = (JPanel) Utilities.actionsGlobalContext().lookup(ClusterPreviewer.class);
+        logger.log(Level.INFO, "previews: {0}", previews);
+        if (previews != null) {
+            System.out.println("previews: " + previews);
+            previews.paint(g);
+        }
+
         return bi;
     }
 

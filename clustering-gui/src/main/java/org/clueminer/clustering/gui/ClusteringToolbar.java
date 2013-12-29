@@ -14,12 +14,12 @@ import org.clueminer.gui.ToolbarButton;
  *
  * @author Tomas Barton
  */
-
 public class ClusteringToolbar extends JToolBar implements Serializable {
+
     private static final long serialVersionUID = 1205882231518456747L;
-    
-    private ClusterAnalysis parent;
-    
+
+    private final ClusterAnalysis parent;
+
     private ToolbarButton clusterBtn;
     private ToolbarButton exportBtn;
     private ToolbarButton printBtn;
@@ -69,7 +69,6 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
                 ClusterActions.toggleToolbarSmallIcons(parent, this)));
         item.setMargin(new Insets(0, 0, 0, 0));
         item.setState(parent.getClusteringProperties().getToolbarSmallIcons());
-
 
         popup.add(item = new JCheckBoxMenuItem(
                 ClusterActions.toggleToolbarShowLabels(parent, this)));
