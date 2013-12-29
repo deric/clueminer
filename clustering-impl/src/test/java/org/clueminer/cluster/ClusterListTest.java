@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
@@ -63,6 +64,9 @@ public class ClusterListTest {
      */
     @Test
     public void testHasAt() {
+        assertEquals(true, clusters.hasAt(0));
+        assertEquals(true, clusters.hasAt(1));
+        assertEquals(true, clusters.hasAt(2));
     }
 
     /**
@@ -84,6 +88,19 @@ public class ClusterListTest {
      */
     @Test
     public void testPut_int_Cluster() {
+        Cluster clus = new BaseCluster(5);
+        clusters.put(3, clus);
+        assertEquals(clus, clusters.get(3));
+    }
+
+    @Test
+    public void testPut_int_0_Cluster() {
+        ClusterList subject = new ClusterList(10);
+        assertEquals(0, subject.size());
+        assertEquals(10, subject.getCapacity());
+
+        subject.put(0, new BaseCluster(1));
+        assertEquals(1, subject.size());
     }
 
     /**
@@ -118,12 +135,143 @@ public class ClusterListTest {
         Iterator<Instance> iter = clusters.instancesIterator();
         Instance elem;
         int i = 0;
-        while(iter.hasNext()){
+        while (iter.hasNext()) {
             elem = iter.next();
             assertNotNull(elem);
             i++;
         }
         assertEquals(clusters.instancesCount(), i);
+    }
+
+    /**
+     * Test of ensureCapacity method, of class ClusterList.
+     */
+    @Test
+    public void testEnsureCapacity() {
+    }
+
+    /**
+     * Test of add method, of class ClusterList.
+     */
+    @Test
+    public void testAdd() {
+    }
+
+    /**
+     * Test of getCapacity method, of class ClusterList.
+     */
+    @Test
+    public void testGetCapacity() {
+    }
+
+    /**
+     * Test of size method, of class ClusterList.
+     */
+    @Test
+    public void testSize() {
+        assertEquals(3, clusters.size());
+    }
+
+    /**
+     * Test of clusterSizes method, of class ClusterList.
+     */
+    @Test
+    public void testClusterSizes() {
+    }
+
+    /**
+     * Test of assignedCluster method, of class ClusterList.
+     */
+    @Test
+    public void testAssignedCluster() {
+    }
+
+    /**
+     * Test of get method, of class ClusterList.
+     */
+    @Test
+    public void testGet() {
+    }
+
+    /**
+     * Test of iterator method, of class ClusterList.
+     */
+    @Test
+    public void testIterator() {
+    }
+
+    /**
+     * Test of isEmpty method, of class ClusterList.
+     */
+    @Test
+    public void testIsEmpty() {
+        assertEquals(false, clusters.isEmpty());
+    }
+
+    /**
+     * Test of contains method, of class ClusterList.
+     */
+    @Test
+    public void testContains() {
+    }
+
+    /**
+     * Test of toArray method, of class ClusterList.
+     */
+    @Test
+    public void testToArray_0args() {
+        Object[] ary = clusters.toArray();
+        assertNotNull(ary);
+        assertEquals(3, ary.length);
+    }
+
+    /**
+     * Test of toArray method, of class ClusterList.
+     */
+    @Test
+    public void testToArray_GenericType() {
+    }
+
+    /**
+     * Test of remove method, of class ClusterList.
+     */
+    @Test
+    public void testRemove() {
+    }
+
+    /**
+     * Test of containsAll method, of class ClusterList.
+     */
+    @Test
+    public void testContainsAll() {
+    }
+
+    /**
+     * Test of addAll method, of class ClusterList.
+     */
+    @Test
+    public void testAddAll() {
+    }
+
+    /**
+     * Test of removeAll method, of class ClusterList.
+     */
+    @Test
+    public void testRemoveAll() {
+    }
+
+    /**
+     * Test of retainAll method, of class ClusterList.
+     */
+    @Test
+    public void testRetainAll() {
+    }
+
+    /**
+     * Test of clear method, of class ClusterList.
+     */
+    @Test
+    public void testClear() {
     }
 
 }

@@ -1,6 +1,6 @@
 package org.clueminer.cluster;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -11,17 +11,51 @@ import org.clueminer.dataset.api.Instance;
  * @author Tomas Barton
  * @param <E>
  */
-public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> implements Clustering<Cluster<E>> {
+public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
-    private static final long serialVersionUID = 5866077228917808994L;
+    private static final long serialVersionUID = 5866077228917808995L;
+    private Cluster<E>[] data;
+    /**
+     * (n - 1) is index of last inserted item, n itself represents current
+     * number of instances in this dataset
+     */
+    private int n = 0;
 
     public ClusterList(int capacity) {
-        super(capacity);
+        data = new Cluster[capacity];
+    }
+
+    public final void ensureCapacity(int capacity) {
+        if (capacity > size()) {
+            Cluster[] tmp = new Cluster[capacity];
+            System.arraycopy(data, 0, tmp, 0, n);
+            data = tmp;
+        }
     }
 
     @Override
     public boolean hasAt(int index) {
-        return index <= (this.size() - 1);
+        return index >= 0 && index < size();
+    }
+
+    @Override
+    public boolean add(Cluster<E> e) {
+        if ((n + 1) >= getCapacity()) {
+            int capacity = (int) (n * 1.618); //golden ratio :)
+            if (capacity == size()) {
+                capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
+            }
+            ensureCapacity(capacity);
+        }
+        data[n++] = e;
+        return true;
+    }
+
+    public int getCapacity() {
+        if (data != null) {
+            return data.length;
+        }
+        return 0;
     }
 
     @Override
@@ -35,13 +69,24 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
     }
 
     @Override
-    public void put(int index, Cluster d) {
-        this.add(index, d);
+    public void put(int index, Cluster x) {
+        if (index >= getCapacity()) {
+            ensureCapacity((int) (size() * 1.618));
+        }
+        if (index >= size()) {
+            n++;
+        }
+        data[index] = x;
     }
 
     @Override
     public void merge(Cluster... datasets) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int size() {
+        return n;
     }
 
     /**
@@ -108,6 +153,88 @@ public class ClusterList<E extends Instance> extends ArrayList<Cluster<E>> imple
             }
         }
         return -1;
+    }
+
+    @Override
+    public Cluster<E> get(int index) {
+        return data[index];
+    }
+
+    @Override
+    public Iterator<Cluster<E>> iterator() {
+        return new ClusterIterator();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return (size() == 0);
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object[] toArray() {
+        return data;
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return (T[]) data;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Cluster<E>> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    class ClusterIterator implements Iterator<Cluster<E>> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public Cluster<E> next() {
+            index++;
+            return get(index - 1);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from dataset using the iterator.");
+
+        }
     }
 
     /**

@@ -148,14 +148,15 @@ public class HierachicalClusteringResult implements HierarchicalResult {
                     for (int j = 0; j < attr.length; j++) {
                         clust.setAttribute(j, attr[j]);
                     }
+                    logger.log(Level.WARNING, "adding cluster at position: {0}", new Object[]{num});
                     //result.put(num, clust);
-                    result.put(clust);
+                    result.put(num, clust);
                 } else {
                     clust = result.get(num);
                 }
                 idx = itemsMapping[i];
                 //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
-                //logger.log(Level.WARNING, "{0} -> {1}", new Object[]{i, idx});
+                logger.log(Level.WARNING, "{0} -> {1}: cluster {2}", new Object[]{i, idx, num});
                 //mapping is tracked in cluster
                 // values in cluster array doesn't need mapping!
                 clust.add(dataset.get(i), idx);
