@@ -13,20 +13,26 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ClusterPreviewer.class)
 public class PreviewFrameSet extends JPanel implements ClusteringListener, ClusterPreviewer {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
-    private final JPanel parent;
+    private JPanel parent;
     private Plotter[] plots;
     private Clustering<Cluster> clust;
     private Dimension dimChart;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
+
+    public PreviewFrameSet() {
+        initComponents();
+    }
 
     public PreviewFrameSet(JPanel parent) {
         this.parent = parent;
@@ -107,7 +113,9 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         System.out.println("PreviewFrameSet: clustering changed");
         this.clust = clust;
         redraw();
-        parent.repaint();
+        if (parent != null) {
+            parent.repaint();
+        }
     }
 
     @Override
@@ -119,7 +127,9 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     public void setClustering(Clustering<Cluster> clustering) {
         this.clust = clustering;
         redraw();
-        parent.repaint();
+        if (parent != null) {
+            parent.repaint();
+        }
     }
 
     /**
@@ -139,5 +149,9 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
             this.dimChart = dim;
             revalidate();
         }
+    }
+
+    public void setParent(JPanel p) {
+        this.parent = p;
     }
 }
