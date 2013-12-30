@@ -22,8 +22,8 @@ public class ApplicationTest extends NbTestCase {
     public void testApplication() {
         // pass if there are merely no warnings/exceptions
         /* Example of using Jelly Tools with gui(true):
-        new ActionNoBlock("Help|About", null).performMenu();
-        new NbDialogOperator("About").closeByButton();
+         new ActionNoBlock("Help|About", null).performMenu();
+         new NbDialogOperator("About").closeByButton();
          */
     }
 
