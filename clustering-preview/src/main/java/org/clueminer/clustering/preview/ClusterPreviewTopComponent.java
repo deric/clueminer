@@ -44,7 +44,7 @@ import static org.clueminer.clustering.preview.Bundle.*;
     "CTL_ClusterPreviewTopComponent=ClusterPreview Window",
     "HINT_ClusterPreviewTopComponent=This is a ClusterPreview window"
 })
-public final class ClusterPreviewTopComponent extends TopComponent implements LookupListener {
+public final class ClusterPreviewTopComponent extends TopComponent implements LookupListener, Lookup.Provider {
 
     private static final long serialVersionUID = -9187536896216095176L;
     private final InstanceContent content = new InstanceContent();
@@ -89,6 +89,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
                 System.out.println("dataset size = " + dataset.size());
             }
             workspace.add(frame.getViewer());
+            content.add(frame.getViewer());
         }
 
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);

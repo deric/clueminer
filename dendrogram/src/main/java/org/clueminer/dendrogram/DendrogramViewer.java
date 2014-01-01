@@ -7,6 +7,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -25,7 +26,8 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -269,13 +271,20 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = pc.getCurrentWorkspace();
         JPanel previews = null;
+        logger.log(Level.INFO, "workspace: {0}", workspace);
         if (workspace != null) {
-            previews = (JPanel) workspace.getLookup().lookup(ClusterPreviewer.class);
-            logger.log(Level.INFO, "previews: {0}", previews);
+            Collection<? extends ClusterPreviewer> col = workspace.getLookup().lookupAll(ClusterPreviewer.class);
+            for (ClusterPreviewer prev : col) {
+                logger.log(Level.INFO, "wsp previews: {0}", prev);
+            }
+            ClusterPreviewer prev = workspace.getLookup().lookup(ClusterPreviewer.class);
+            logger.log(Level.INFO, "wsp previews: {0}", prev);
         }
 
-        previews = (JPanel) Utilities.actionsGlobalContext().lookup(ClusterPreviewer.class);
-        logger.log(Level.INFO, "previews: {0}", previews);
+        TopComponent tc = WindowManager.getDefault().findTopComponent("ClusterPreviewTopComponent");
+        Lookup tcLookup = tc.getLookup();
+        previews = (JPanel) tcLookup.lookup(ClusterPreviewer.class);
+        logger.log(Level.INFO, "tc previews: {0}", previews);
         if (previews != null) {
             System.out.println("previews: " + previews);
             previews.paint(g);
