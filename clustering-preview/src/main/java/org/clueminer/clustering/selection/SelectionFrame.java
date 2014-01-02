@@ -1,6 +1,5 @@
 package org.clueminer.clustering.selection;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -22,11 +21,10 @@ public class SelectionFrame extends JPanel {
     private Dataset<? extends Instance> dataset;
     private Dimension dimChart;
     private static final Logger logger = Logger.getLogger(SelectionFrame.class.getName());
-    private int minWidth = 100;
+    private final int minWidth = 100;
 
     public SelectionFrame() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        setBackground(Color.red);
     }
 
     private void redraw() {
@@ -68,10 +66,13 @@ public class SelectionFrame extends JPanel {
             plot.setMinimumSize(dimChart);
             plot.setPreferredSize(dimChart);
             this.setPreferredSize(dimChart);
-            plot.setTitle(dataset.getName());
+            String title = dataset.getName();
+            if (title != null) {
+                plot.setTitle(dataset.getName());
+            }
             add((JComponent) plot, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
             revalidate();
-            logger.log(Level.INFO, "preview size " + dimChart.toString());
+            logger.log(Level.INFO, "preview size {0}", dimChart.toString());
             super.repaint();
         }
 
