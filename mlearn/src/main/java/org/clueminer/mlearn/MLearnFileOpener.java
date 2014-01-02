@@ -102,34 +102,38 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         return extension;
     }
 
+    protected String getTitle(String filename) {
+        String title = filename;
+        int pos = filename.lastIndexOf('.');
+        if (pos > -1) {
+            title = filename.substring(0, pos - 1).trim();
+        }
+        return title;
+    }
+
     @Override
     public void taskFinished(Task task) {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                System.out.println("opening task finished");
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
-                importer.getDataset().setName(importer.getFile().getName());
+                String filename = importer.getFile().getName();
+                importer.getDataset().setName(filename);
 
                 DendrogramTopComponent tc = new DendrogramTopComponent();
 
                 tc.setDataset(importer.getDataset());
                 //tc.setProject(project);
-                //tc.setDisplayName(plate.getName());
+                tc.setDisplayName(getTitle(filename));
                 tc.open();
                 tc.requestActive();
 
                 pc.openProject(project);
                 Workspace workspace = pc.getCurrentWorkspace();
                 if (workspace != null) {
-                    System.out.println("workspace: " + workspace.toString());
-                    System.out.println("adding plate to lookup");
                     workspace.add(importer.getDataset());  //add plate to project's lookup
-                } else {
-                    System.out.println("workspace is null!!!!");
                 }
-
                 //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
                 //     preprocess.start();
             }

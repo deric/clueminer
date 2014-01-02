@@ -5,9 +5,11 @@ import java.util.Collection;
 import org.clueminer.fixtures.ImageFixture;
 import org.clueminer.fixtures.MLearnFixture;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
@@ -19,6 +21,14 @@ public class MLearnFileOpenerTest {
     private final MLearnFixture fixtures = new MLearnFixture();
 
     public MLearnFileOpenerTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
     }
 
     @Before
@@ -98,5 +108,14 @@ public class MLearnFileOpenerTest {
      */
     @Test
     public void testOpenDataFile() {
+    }
+
+    /**
+     * Test of getTitle method, of class MLearnFileOpener.
+     */
+    @Test
+    public void testGetTitle() {
+        String title = subject.getTitle("Data_20131211_100260.csv");
+        assertNotNull(title);
     }
 }
