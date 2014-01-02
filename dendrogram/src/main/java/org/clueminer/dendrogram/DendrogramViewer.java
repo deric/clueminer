@@ -50,6 +50,15 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         this.setDoubleBuffered(true);
     }
 
+    @Override
+    public String getName() {
+        if (data != null) {
+            return data.getInstances().getName();
+        } else {
+            return DendrogramViewer.class.getName();
+        }
+    }
+
     public void setDataset(DendrogramData dataset) {
         this.data = dataset;
         fireDatasetChanged(new DendrogramDataEvent(this));

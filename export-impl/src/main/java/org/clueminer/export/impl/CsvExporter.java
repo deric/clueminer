@@ -27,6 +27,7 @@ public class CsvExporter {
     private File defaultFolder = null;
     private JFileChooser fileChooser;
     private FileFilter csvFilter;
+    private static final String prefKey = "last_folder";
 
     public static CsvExporter getDefault() {
         if (instance == null) {
@@ -41,8 +42,8 @@ public class CsvExporter {
     public void export(ClusterAnalysis analysis) {
         if (analysis != null) {
             try {
-                Preferences p = NbPreferences.root().node("/clueminer/csvexporter");
-                String folder = p.get("default_folder", null);
+                Preferences p = NbPreferences.root().node("/clueminer/exporter");
+                String folder = p.get(prefKey, null);
                 if (folder != null) {
                     defaultFolder = new File(folder);
                 } else {
@@ -74,7 +75,7 @@ public class CsvExporter {
 
                 //     fileChooser.setSelectedFile(new File(panel.getName()));
                 defaultFolder = fileChooser.getCurrentDirectory();
-                //     p.put("default_folder", fileChooser.getCurrentDirectory().getAbsolutePath());
+                p.put(prefKey, fileChooser.getCurrentDirectory().getAbsolutePath());
                 if (fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow()) == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     String filename = file.getName();

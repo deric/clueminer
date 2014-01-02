@@ -24,6 +24,7 @@ public class ImageExporter {
     private JFileChooser fileChooser;
     private FileFilter jpegFilter;
     private FileFilter pngFilter;
+    private static final String prefKey = "last_folder";
 
     public static ImageExporter getDefault() {
         if (instance == null) {
@@ -38,8 +39,8 @@ public class ImageExporter {
     public void export(Exportable panel) {
         if (panel != null) {
             try {
-                Preferences p = NbPreferences.root().node("/clueminer/imageexporter");
-                String folder = p.get("default_folder", null);
+                Preferences p = NbPreferences.root().node("/clueminer/exporter");
+                String folder = p.get(prefKey, null);
                 if (folder != null) {
                     defaultFolder = new File(folder);
                 } else {
@@ -51,6 +52,10 @@ public class ImageExporter {
                     fileChooser.setDialogTitle("Export Image");
                     fileChooser.setAcceptAllFileFilterUsed(true);
                     fileChooser.setCurrentDirectory(defaultFolder);
+                    String name = panel.getName();
+                    if (name != null) {
+                        fileChooser.setSelectedFile(new File(folder + "/" + name));
+                    }
 
                     jpegFilter = new FileFilter() {
 
@@ -85,7 +90,7 @@ public class ImageExporter {
 
                 //     fileChooser.setSelectedFile(new File(panel.getName()));
                 defaultFolder = fileChooser.getCurrentDirectory();
-                //     p.put("default_folder", fileChooser.getCurrentDirectory().getAbsolutePath());
+                p.put(prefKey, fileChooser.getCurrentDirectory().getAbsolutePath());
                 if (fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow()) == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     String filename = file.getName();
