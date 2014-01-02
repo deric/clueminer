@@ -102,6 +102,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.clustering.evaluators</publicPackage>
                         <publicPackage>org.clueminer.clustering.preview</publicPackage>
+                        <publicPackage>org.clueminer.clustering.selection</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
