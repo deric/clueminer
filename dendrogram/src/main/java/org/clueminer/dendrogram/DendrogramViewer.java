@@ -286,6 +286,8 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = bi.createGraphics();
+        g.setPaint(Color.WHITE);
+        g.fillRect(0, 0, width, height);
         dendrogramPanel.paint(g);
         logger.log(Level.INFO, "exporting dendrogram to bitmap, export size: {0}x{1}", new Object[]{width, height});
         if (prev != null) {
