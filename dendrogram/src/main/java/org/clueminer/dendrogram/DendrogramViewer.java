@@ -7,7 +7,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -26,8 +25,6 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
 import org.openide.util.Lookup;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -262,34 +259,41 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
     @Override
     public BufferedImage getBufferedImage(int w, int h) {
-        Dimension dim = dendrogramPanel.getPreferredSize();
-        BufferedImage bi = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = bi.createGraphics();
-        dendrogramPanel.paint(g);
-        logger.log(Level.INFO, "exporting to bitmap, export size: {0}", dim.toString());
+        Dimension dendroDim = dendrogramPanel.getPreferredSize();
+        int width, height;
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = pc.getCurrentWorkspace();
         JPanel previews = null;
-        logger.log(Level.INFO, "workspace: {0}", workspace);
         if (workspace != null) {
-            Collection<? extends ClusterPreviewer> col = workspace.getLookup().lookupAll(ClusterPreviewer.class);
-            for (ClusterPreviewer prev : col) {
-                logger.log(Level.INFO, "wsp previews: {0}", prev);
-            }
-            ClusterPreviewer prev = workspace.getLookup().lookup(ClusterPreviewer.class);
-            logger.log(Level.INFO, "wsp previews: {0}", prev);
+            previews = (JPanel) workspace.getLookup().lookup(ClusterPreviewer.class);
         }
-
-        TopComponent tc = WindowManager.getDefault().findTopComponent("ClusterPreviewTopComponent");
-        Lookup tcLookup = tc.getLookup();
-        previews = (JPanel) tcLookup.lookup(ClusterPreviewer.class);
-        logger.log(Level.INFO, "tc previews: {0}", previews);
+        Dimension dimPrev = null;
+        BufferedImage prev = null;
         if (previews != null) {
-            System.out.println("previews: " + previews);
-            previews.paint(g);
+            dimPrev = previews.getSize();
+            prev = new BufferedImage(dimPrev.width, dimPrev.height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D gp = prev.createGraphics();
+            previews.paint(gp);
         }
 
+        width = dendroDim.width;
+        height = dendroDim.height;
+        if (dimPrev != null) {
+            width += dimPrev.width;
+            height = Math.max(dendroDim.height, dimPrev.height);
+        }
+
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = bi.createGraphics();
+        dendrogramPanel.paint(g);
+        logger.log(Level.INFO, "exporting dendrogram to bitmap, export size: {0}x{1}", new Object[]{width, height});
+        if (prev != null) {
+            //combine images
+            g.drawImage(prev, dendroDim.width, 0, null);
+        }
+
+        g.dispose();
         return bi;
     }
 

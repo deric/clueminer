@@ -22,6 +22,8 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
 import static org.clueminer.clustering.preview.Bundle.*;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.WorkspaceListener;
 
 /**
  * Top component which displays something.
@@ -91,6 +93,39 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
             workspace.add(frame.getViewer());
             content.add(frame.getViewer());
         }
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            @Override
+            public void initialize(Workspace workspace) {
+                //add preview class to lookup
+                workspace.add(frame.getViewer());
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+                workspace.remove(frame.getViewer());
+            }
+
+            @Override
+            public void disable() {
+
+            }
+
+            @Override
+            public void projectActivated(Project project) {
+                
+            }
+        });
 
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
         result.addLookupListener(this);
