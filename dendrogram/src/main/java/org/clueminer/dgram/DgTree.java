@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 import org.clueminer.cluster.HierachicalClusteringResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  *
@@ -17,11 +17,11 @@ import org.clueminer.dendrogram.events.DendrogramDataListener;
 public class DgTree extends JPanel implements DendrogramDataListener, DendrogramTree {
 
     private DendroTreeData treeData;
-    private DendrogramData dendroData;
+    private DendrogramMapping dendroData;
     private static final long serialVersionUID = -6201677645559622330L;
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
         treeData = clustering.getTreeData();

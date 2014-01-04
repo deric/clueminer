@@ -11,10 +11,9 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.HorizontalTree;
 import org.clueminer.stats.AttrNumStats;
 
@@ -33,7 +32,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     protected Dimension size = new Dimension(1, 1);
     private BufferedImage bufferedImage;
     private Graphics2D g;
-    private DendrogramData dataset;
+    private DendrogramMapping dataset;
     private int firstSelectedColumn = -1;
     private int lastSelectedColumn = -1;
     private Font defaultFont;
@@ -61,21 +60,19 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
         //  g.setColor(panel.bg);
         //  g.fillRect(0, 0, size.width, size.height);
 
-
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+                           RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.isAntiAliasing) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 
         //we draw strings in rows and then we rotate the whole image
-
         if (columnsOrder != null) {
             g.setColor(Color.black);
             int coordX;
@@ -83,7 +80,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
             int height = fm.getHeight();
-            maxHeight = (lineHeight+lineSpacing) *4;
+            maxHeight = (lineHeight + lineSpacing) * 4;
 
             for (int col = 0; col < dataset.getNumberOfColumns(); col++) {
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
@@ -98,7 +95,6 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
                 drawString(col, frc, s, coordX, 4);
             }
 
-
         }
         g.dispose();
     }
@@ -110,16 +106,14 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
             g.setFont(f);
         }
 
-      //  int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
-        
-        int y = lineHeight*row+lineSpacing;
-        
+        //  int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+        int y = lineHeight * row + lineSpacing;
+
         g.drawString(s, coordX, y);
         if (col == lastSelectedColumn) {
             g.setFont(defaultFont);
         }
     }
-
 
     @Override
     public void paint(Graphics g) {
@@ -158,7 +152,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     private void updateSize() {
         int width, height = 150 + maxHeight;
         width = elementSize.width * dataset.getNumberOfColumns() + 1;
-        
+
         this.size.width = width;
         this.size.height = height;
         //System.out.println("setting columns legend to " + this.size);
@@ -168,7 +162,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dataset = dataset;
         updateSize();
         createBufferedGraphics();

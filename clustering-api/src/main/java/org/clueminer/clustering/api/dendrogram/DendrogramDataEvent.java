@@ -1,4 +1,4 @@
-package org.clueminer.dendrogram.events;
+package org.clueminer.clustering.api.dendrogram;
 
 import java.util.EventObject;
 

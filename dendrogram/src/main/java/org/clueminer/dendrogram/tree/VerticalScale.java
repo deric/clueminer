@@ -3,10 +3,10 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  * Rows tree scale
@@ -66,7 +66,7 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         updateSize();
         bufferedImage = null;
         repaint();

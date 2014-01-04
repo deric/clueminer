@@ -1,4 +1,4 @@
-package org.clueminer.dendrogram;
+package org.clueminer.clustering.api.dendrogram;
 
 /**
  *

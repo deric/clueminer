@@ -1,6 +1,5 @@
 package org.clueminer.dendrogram.gui;
 
-import org.clueminer.dendrogram.DendrogramViewer;
 import java.awt.*;
 import java.text.DecimalFormat;
 import javax.swing.Box;
@@ -9,11 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendroHeatmap;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dendrogram.tree.*;
 
 /**
@@ -31,7 +30,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     private AbstractScale columnsScale;
     //component to draw clusters colors and descriptions
     protected HCLColorBar colorBar;
-    protected DendrogramData dendroData;
+    protected DendrogramMapping dendroData;
     //component to draw an experiment dendroData
     protected Heatmap heatmap;
     //component to draw an experiment annotations
@@ -57,7 +56,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     protected boolean useDoubleGradient = true;
     protected boolean isAntiAliasing = true;
     protected Color bg = Color.WHITE;
-    protected ColorScheme colorScheme;
+    protected ColorSchemeImpl colorScheme;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
@@ -72,7 +71,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
 
     private void initComponents() {
         setBackground(bg);
-        colorScheme = new ColorScheme(this);
+        colorScheme = new ColorSchemeImpl(this);
     }
 
     /**
@@ -119,7 +118,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
         if (showColorBar) {
             colorBar = new HCLColorBar();
             add(colorBar);
-            //this.colorBar.addMouseListener(listener); 
+            //this.colorBar.addMouseListener(listener);
         }
         addColumnAnnotationBar(gridx, ++gridy);
         //addColumnStatistics(gridx, ++gridy);
@@ -387,7 +386,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         System.out.println("DendroPanel: dataset changed");
         this.dendroData = dataset;
         rowsTree.fireTreeUpdated();
@@ -538,7 +537,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     }
 
     @Override
-    public DendrogramData getDendrogramData() {
+    public DendrogramMapping getDendrogramData() {
         return dendroData;
     }
 
@@ -548,7 +547,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     }
 
     @Override
-    public ColorScheme getScheme() {
+    public ColorSchemeImpl getScheme() {
         return colorScheme;
     }
 
@@ -566,7 +565,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     public String formatNumber(Object number) {
         return decimalFormat.format(number);
     }
-    
+
     @Override
     public DendroHeatmap getHeatmap() {
         return heatmap;

@@ -8,8 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  *
@@ -25,7 +25,7 @@ public abstract class AbstractAnnotation extends JPanel {
     protected Dimension size = new Dimension(0, 0);
     protected BufferedImage bufferedImage;
     protected Graphics2D g;
-    protected DendrogramData dendroData;
+    protected DendrogramMapping dendroData;
     protected Font defaultFont;
     protected int lineHeight = 12;
     protected int fontSize = 10;
@@ -66,6 +66,8 @@ public abstract class AbstractAnnotation extends JPanel {
 
     /**
      * Sets a new element height.
+     *
+     * @param height one line height
      */
     public void setLineHeight(int height) {
         if (height > 8) {
@@ -108,7 +110,7 @@ public abstract class AbstractAnnotation extends JPanel {
         g.drawImage(bufferedImage, 0, 0, size.width, size.height, null);
     }
 
-    public abstract void setDendrogramData(DendrogramData dendroData);
+    public abstract void setDendrogramData(DendrogramMapping dendroData);
 
     public void resetCache() {
         updateSize();

@@ -9,10 +9,9 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.HorizontalTree;
 
 public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
@@ -95,7 +94,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         setDendrogramData(dataset);
     }
 
@@ -143,7 +142,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     }
 
     @Override
-    public void setDendrogramData(DendrogramData dendroData) {
+    public void setDendrogramData(DendrogramMapping dendroData) {
         this.dendroData = dendroData;
         if (dendroData.hasColumnsClustering()) {
             columnsOrder = dendroData.getColsResult().getMapping();

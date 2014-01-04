@@ -3,9 +3,9 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import org.clueminer.cluster.HierachicalClusteringResult;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  *
@@ -31,7 +31,7 @@ public class VerticalTree extends AbstractTree {
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dataset = dataset;
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
         setTreeData(clustering.getTreeData());
@@ -74,7 +74,7 @@ public class VerticalTree extends AbstractTree {
         this.stepSize = this.elementSize.height;
         setOffsetY(-elementSize.height / 2);
         int height = this.stepSize * length;
-        System.out.println("vertical tree size width = "+getMaxDistance()+ " height = "+height );
+        System.out.println("vertical tree size width = " + getMaxDistance() + " height = " + height);
         setSizes(getMaxDistance(), height);
     }
 

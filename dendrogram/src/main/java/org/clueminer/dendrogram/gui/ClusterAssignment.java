@@ -9,10 +9,10 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.gui.ColorGenerator;
 import org.clueminer.utils.Dump;
 
@@ -24,7 +24,7 @@ import org.clueminer.utils.Dump;
 public class ClusterAssignment extends JPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 7662186965958650502L;
-    private DendrogramData dendroData;
+    private DendrogramMapping dendroData;
     private Dimension size = new Dimension(0, 0);
     private final DendroPane panel;
     private int stripeWidth = 20;
@@ -177,7 +177,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dendroData) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dendroData) {
         this.dendroData = dendroData;
         updateSize();
         bufferedImage = null; //clear cached image

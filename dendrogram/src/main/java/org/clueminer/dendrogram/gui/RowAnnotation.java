@@ -6,10 +6,9 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.VerticalTree;
 
 public class RowAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
@@ -74,9 +73,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                0, 0,
-                size.width, size.height,
-                null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
     }
 
     /**
@@ -104,7 +103,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dendroData) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dendroData) {
         setDendrogramData(dendroData);
     }
 
@@ -150,7 +149,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     }
 
     @Override
-    public void setDendrogramData(DendrogramData dendroData) {
+    public void setDendrogramData(DendrogramMapping dendroData) {
         this.dendroData = dendroData;
         if (dendroData.hasRowsClustering()) {
             rowsOrder = dendroData.getRowsResult().getMapping();

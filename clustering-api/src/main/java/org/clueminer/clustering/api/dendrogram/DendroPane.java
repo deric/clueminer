@@ -1,9 +1,8 @@
-package org.clueminer.dendrogram;
+package org.clueminer.clustering.api.dendrogram;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dendrogram.gui.ColorScheme;
 
 /**
  *
@@ -11,7 +10,7 @@ import org.clueminer.dendrogram.gui.ColorScheme;
  */
 public interface DendroPane {
 
-    public DendrogramData getDendrogramData();
+    public DendrogramMapping getDendrogramData();
 
     public boolean useDoubleGradient();
 

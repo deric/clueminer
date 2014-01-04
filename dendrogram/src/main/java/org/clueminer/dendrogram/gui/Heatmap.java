@@ -15,11 +15,10 @@ import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendroHeatmap;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.VerticalTree;
 
 /**
@@ -54,7 +53,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private boolean inColorbarDrag = false;
     private int dragRow = 0;
     private int dragColumn = 0;
-    private DendrogramData dendroData;
+    private DendrogramMapping dendroData;
     private BufferedImage bufferedImage;
     private Graphics2D bufferedGraphics;
     private Rectangle bounds;
@@ -123,11 +122,11 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     /**
      * Returns the row index in the experiment's
      * <code>FloatMatrix<\code>
-     *  corresponding to the passed index to the clusters array
+     * corresponding to the passed index to the clusters array
      */
     private int rowIndex(int row) {
         //return this.clusters[this.clusterIndex][row];
-        if(dendroData.hasRowsClustering()){
+        if (dendroData.hasRowsClustering()) {
             return dendroData.getRowsResult().getMappedIndex(row);
         }
         //no ordering
@@ -135,7 +134,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     private int colIndex(int column) {
-        if(dendroData.hasColumnsClustering()){
+        if (dendroData.hasColumnsClustering()) {
             return dendroData.getColsResult().getMappedIndex(column);
         }
         //no columns ordering
@@ -253,7 +252,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
          * { for (int row = top; row < bottom; row++) {
          * fillRectAt(bufferedGraphics, row, column); } }
          */
-
         for (int column = 0; column < dendroData.getNumberOfColumns(); column++) {
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
                 fillRectAt(bufferedGraphics, row, column);
@@ -268,11 +266,11 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         bufferedGraphics.dispose();
     }
 
-    // Always required for good double-buffering. 
-    // This will cause the applet not to first wipe off 
-    // previous drawings but to immediately repaint. 
-    // the wiping off also causes flickering. 
-    // Update is called automatically when repaint() is called. 
+    // Always required for good double-buffering.
+    // This will cause the applet not to first wipe off
+    // previous drawings but to immediately repaint.
+    // the wiping off also causes flickering.
+    // Update is called automatically when repaint() is called.
     @Override
     public void update(Graphics g) {
         paint(g);
@@ -302,14 +300,13 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
         // The dendroData plot itself is drawn with 1 pixel per dendroData point, and the
         // drawImage method scales that up to fit our current window size. This
-        // is very fast, and is much faster than the previous version, which 
+        // is very fast, and is much faster than the previous version, which
         // redrew the dendroData plot each time we had to repaint the screen.
-
         //draws buffered image
         g.drawImage(bufferedImage,
-                0, 0,
-                size.width, size.height,
-                null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
 
         if (dendroData != null) {
             int oldWidth = colorWidth;
@@ -355,7 +352,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         //System.out.println("x: "+x+", y: "+y+" insets: "+insets+" element size: "+elementSize);
         g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         if (mask) {
-            g.setColor(ColorScheme.maskColor);
+            g.setColor(ColorSchemeImpl.maskColor);
             g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         }
         if (this.isDrawBorders) {
@@ -409,7 +406,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
          * i; foundit = true; break; } } if (foundit) { break; } } } spacesOver
          * = ColorOverlaps[activeCluster]; int expWidth = samples *
          * this.elementSize.width + 5 + this.elementSize.width * spacesOver;
-         * fillClusterRectAt(g, row, expWidth, colors[clusters]); }
+         * fillClusterRectAt(g, row, expWidth, colors[clusters]); }public double getMidValue()
          }
          */
     }
@@ -532,10 +529,10 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
         onDataChanged(dataset.getInstances());
-        // this is the expensive function that draws the dendroData plot into a 
+        // this is the expensive function that draws the dendroData plot into a
         // BufferedImage. The dendroData plot is then cheaply drawn to the screen when
         // needed, saving us a lot of time in the end.
         drawData();
@@ -550,10 +547,10 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         Graphics2D g = (Graphics2D) this.getGraphics();
         if (bufferedImage != null) {
             g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
-        }else{
+                        0, 0,
+                        size.width, size.height,
+                        null);
+        } else {
             Logger.getLogger(Heatmap.class.getName()).log(Level.SEVERE, "missing buffered image {0}", elementSize);
         }
 

@@ -6,10 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dendrogram.tree.AbstractTree;
 
 /**
@@ -108,7 +108,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.clustering = dataset.getRowsResult();
         updateSize();
         repaint();

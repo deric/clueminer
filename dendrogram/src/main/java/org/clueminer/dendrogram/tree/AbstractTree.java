@@ -11,9 +11,9 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.gui.ColorGenerator;
 import org.clueminer.hclust.TreeDataImpl;
@@ -60,7 +60,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     protected DistanceMeasure function;
     private double similarityFactor = 1.0;
     private double nodeHeightOffset = 0.0;
-    protected DendrogramData dataset;
+    protected DendrogramMapping dataset;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     protected DendroPane panel;
     protected Dimension elementSize;
@@ -358,7 +358,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         int child_1, child_2;
         //  System.out.println("scale " + scale + " levels= " + height(treeData.node_order[0]));
         for (int i = treeData.getOrderLength() - 2; i >= 0; i--) {
-            //  for (int i =0; i <  nodeOrder.length-1; i++) { 
+            //  for (int i =0; i <  nodeOrder.length-1; i++) {
             node = treeData.getOrder(i);
             child_1 = treeData.getLeft(node);
             child_2 = treeData.getRight(node);
@@ -426,7 +426,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
             g2.setColor(Color.black);
             g2.drawLine(0, 0, 10, 0);
         }
-        //moves the [0;0] point 
+        //moves the [0;0] point
         //System.out.println(this.getClass().toString() + "translate " + xOffset + " ; " + yOffset);
         g2.translate(xOffset, yOffset);
 
@@ -478,8 +478,6 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
              * "+child_2_y );
              */
             // System.out.println("render node " + node + " col " + g.getColor() + " - h=" + treeData.height[node]+" x "+child_1_x1 );
-
-
             // System.out.println("color "+this.nodesColors[node]);
             if (this.nodesColors[node] == null) {
 
@@ -558,7 +556,6 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     public void drawWedge(Graphics g, int node, int x1, int x2, int y1, int y2) {
         int[] xs = new int[3];
         int[] ys = new int[3];
-
 
         int k = node;
         int k1 = node;
@@ -726,18 +723,18 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         }
         return true;
     }
-    
+
     /**
      * Fired when tree dimensions (or data) has changed
      */
     public void fireTreeUpdated() {
         TreeListener[] listeners;
         System.out.println("tree updated");
-        
+
         if (treeListeners != null) {
-            
+
             listeners = treeListeners.getListeners(TreeListener.class);
-            System.out.println("listeners size "+listeners.length);
+            System.out.println("listeners size " + listeners.length);
             for (int i = 0; i < listeners.length; i++) {
                 listeners[i].treeUpdated(this, size.width, size.height);
             }

@@ -11,9 +11,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 
 /**
  *
@@ -25,6 +24,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     private JSlider slider;
     /**
      * horizontal or vertical
+     *
      * @see SwingConstants.HORIZONTAL
      */
     private int orientation;
@@ -32,10 +32,10 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     private JPanel parent;
 
     /**
-     * 
+     *
      * @param panel
      * @param orientation -- SwingConstants.HORIZONTAL
-     * @param cutoff 
+     * @param cutoff
      */
     public CutoffSlider(JPanel panel, int orientation, CutoffLine cutoff) {
         this.parent = panel;
@@ -64,7 +64,6 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         slider.addChangeListener(this);
         slider.setBackground(parent.getBackground());
 
-
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.SOUTH;
@@ -78,7 +77,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
     }
 
     @Override

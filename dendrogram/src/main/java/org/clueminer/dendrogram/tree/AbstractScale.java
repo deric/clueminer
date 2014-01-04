@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import javax.swing.JPanel;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 
 /**
  *

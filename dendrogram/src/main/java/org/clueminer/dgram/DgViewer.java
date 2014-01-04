@@ -1,4 +1,4 @@
-package org.clueminer.dendrogram;
+package org.clueminer.dgram;
 
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
@@ -18,9 +18,10 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterPreviewer;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
-import org.clueminer.dendrogram.gui.DendrogramPanel;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.dendrogram.DendrogramData;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
@@ -30,20 +31,20 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-public class DendrogramViewer extends JPanel implements Exportable, AdjustmentListener {
+public class DgViewer extends JPanel implements Exportable, AdjustmentListener, DendroViewer {
 
     private static final long serialVersionUID = -9145028094444482028L;
     protected ArrayList<TreeCluster> clusters;
-    protected DendrogramPanel dendrogramPanel;
+    protected DgPanel dendrogramPanel;
     private JScrollPane scroller;
     protected Dimension elementSize;
     protected DendrogramData data;
     private boolean fitToPanel = true;
     private final transient EventListenerList datasetListeners = new EventListenerList();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
-    private static final Logger logger = Logger.getLogger(DendrogramViewer.class.getName());
+    private static final Logger logger = Logger.getLogger(DgViewer.class.getName());
 
-    public DendrogramViewer() {
+    public DgViewer() {
         setBackground(Color.WHITE);
         elementSize = new Dimension(15, 15);
         initComponents();
@@ -55,7 +56,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         if (data != null) {
             return data.getInstances().getName();
         } else {
-            return DendrogramViewer.class.getName();
+            return DgViewer.class.getName();
         }
     }
 
@@ -81,7 +82,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         c.gridy = 0;
         c.gridheight = 1;
         c.gridwidth = 1;
-        dendrogramPanel = new DendrogramPanel(this);
+        dendrogramPanel = new DgPanel(this);
         // header = new ExperimentHeader();
         // add(header);
         //    colorBar.setClusters(clusters); //
@@ -322,9 +323,9 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
 
     private class ViewerComponentListener implements ComponentListener {
 
-        DendrogramViewer viewer;
+        DgViewer viewer;
 
-        ViewerComponentListener(DendrogramViewer inst) {
+        ViewerComponentListener(DgViewer inst) {
             viewer = inst;
         }
 

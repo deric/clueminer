@@ -1,5 +1,6 @@
 package org.clueminer.dgram;
 
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -14,19 +15,19 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.DendroHeatmap;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
-import org.clueminer.dendrogram.gui.ColorScheme;
+import org.clueminer.dendrogram.gui.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
 import org.clueminer.dendrogram.gui.ColumnStatistics;
 import org.clueminer.dendrogram.gui.CutoffLine;
 import org.clueminer.dendrogram.gui.CutoffSlider;
-import org.clueminer.dendrogram.DendrogramViewer;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dendrogram.gui.Legend;
 import org.clueminer.dendrogram.gui.RowAnnotation;
@@ -52,7 +53,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private AbstractScale columnsScale;
     //component to draw clusters colors and descriptions
     protected HCLColorBar colorBar;
-    protected DendrogramData dendroData;
+    protected DendrogramMapping dendroData;
     //component to draw an experiment dendroData
     protected Heatmap heatmap;
     //component to draw an experiment annotations
@@ -69,7 +70,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private boolean showLegend = true;
     private boolean showLabels = true;
     private boolean showSlider = true;
-    protected DendrogramViewer dendroViewer;
+    protected DendroViewer dendroViewer;
     private Legend legend;
     protected Dimension size;
     /**
@@ -78,12 +79,12 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     protected boolean useDoubleGradient = true;
     protected boolean isAntiAliasing = true;
     protected Color bg = Color.WHITE;
-    protected ColorScheme colorScheme;
+    protected ColorSchemeImpl colorScheme;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
 
-    public DgPanel(DendrogramViewer v) {
+    public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
         dendroViewer = v;
         elementSize = v.getElementSize();
@@ -93,7 +94,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
 
     private void initComponents() {
         setBackground(bg);
-        colorScheme = new ColorScheme(this);
+        colorScheme = new ColorSchemeImpl(this);
     }
 
     /**
@@ -140,7 +141,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         if (showColorBar) {
             colorBar = new HCLColorBar();
             add(colorBar);
-            //this.colorBar.addMouseListener(listener); 
+            //this.colorBar.addMouseListener(listener);
         }
         addColumnAnnotationBar(gridx, ++gridy);
         //addColumnStatistics(gridx, ++gridy);
@@ -408,7 +409,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         System.out.println("DendroPanel: dataset changed");
         this.dendroData = dataset;
         rowsTree.fireTreeUpdated();
@@ -559,7 +560,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     }
 
     @Override
-    public DendrogramData getDendrogramData() {
+    public DendrogramMapping getDendrogramData() {
         return dendroData;
     }
 

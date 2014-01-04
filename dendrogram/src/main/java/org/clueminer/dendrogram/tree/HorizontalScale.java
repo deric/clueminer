@@ -3,10 +3,10 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import org.clueminer.dendrogram.DendroPane;
-import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.dendrogram.events.DendrogramDataEvent;
-import org.clueminer.dendrogram.events.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  *
@@ -31,16 +31,16 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
         //verticle line
         // System.out.println("drawing scale at "+distToScale);
         g2.drawLine(0, distToScale,
-                -(tree.max_pixels - 1), distToScale);
+                    -(tree.max_pixels - 1), distToScale);
         //top tick
         g2.drawLine(0, distToScale,
-                0, distToScale + scaleTickLength);
+                    0, distToScale + scaleTickLength);
         //middle tick
         g2.drawLine(-(tree.max_pixels - 1) / 2, distToScale,
-                -(tree.max_pixels - 1) / 2, distToScale + scaleTickLength);
+                    -(tree.max_pixels - 1) / 2, distToScale + scaleTickLength);
         //bottom tick
         g2.drawLine(-(tree.max_pixels - 1), distToScale,
-                -(tree.max_pixels - 1), distToScale + scaleTickLength);
+                    -(tree.max_pixels - 1), distToScale + scaleTickLength);
 
         g2.rotate(Math.PI / 2.0);
         int textWidth;
@@ -52,28 +52,28 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
             maxTextWidth = textWidth;
         }
         g2.drawString(tree.getMaxHeightDisplay(),
-                (distToScale + scaleTickLength), 10);
+                      (distToScale + scaleTickLength), 10);
         //mid Label
         textWidth = hfm.stringWidth(tree.getMidHeightDisplay());
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
         g2.drawString(tree.getMidHeightDisplay(),//(this.maxHeight -this.minHeight)/2+this.minHeight),
-                (distToScale + scaleTickLength), (tree.max_pixels - 1) / 2 + 4);
+                      (distToScale + scaleTickLength), (tree.max_pixels - 1) / 2 + 4);
         //bottom Label
         textWidth = hfm.stringWidth(tree.getMinHeightDisplay());
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
         g2.drawString(tree.getMinHeightDisplay(),//this.minHeight),
-                (distToScale + scaleTickLength), (tree.max_pixels - 1));
+                      (distToScale + scaleTickLength), (tree.max_pixels - 1));
 
         g2.rotate(-Math.PI / 2.0);
         maxScaleDimension = distToScale + scaleTickLength + maxTextWidth;
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramData dataset) {
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         updateSize();
         bufferedImage = null;
         repaint();

@@ -64,6 +64,7 @@ public interface HierarchicalResult extends Serializable {
 
     /**
      * Find and sets optimal cutoff with default strategy
+     *
      * @return
      */
     public double findCutoff();
@@ -79,14 +80,14 @@ public interface HierarchicalResult extends Serializable {
     /**
      *
      * @return return current number of clusters (computed accoring to current
-     * cutoff)
+     *         cutoff)
      */
     public int getNumClusters();
 
     /**
      * Forces number of clusters, if -1 then is leaved undecided
      *
-     * @param num     
+     * @param num
      */
     public void setNumClusters(int num);
 
@@ -147,7 +148,7 @@ public interface HierarchicalResult extends Serializable {
      *
      * @param idx position in input matrix/dataset
      * @return row/column index in original dataset that maps from passed
-     * row/column index.
+     *         row/column index.
      */
     public int getMappedIndex(int idx);
 
@@ -199,4 +200,11 @@ public interface HierarchicalResult extends Serializable {
      * @return cluster ID
      */
     public int assignedCluster(int idx);
+
+    /**
+     * Sets original dataset which was used to obtain the result
+     *
+     * @param dataset input dataset
+     */
+    public void setDataset(Dataset<? extends Instance> dataset);
 }

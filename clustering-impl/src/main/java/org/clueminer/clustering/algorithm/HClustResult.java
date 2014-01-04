@@ -32,11 +32,20 @@ public class HClustResult implements HierarchicalResult {
     private int numClusters = -1;
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
-    
+    private Dataset<? extends Instance> dataset;
+
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
      */
-    List<Merge> merges;
+    private List<Merge> merges;
+
+    public HClustResult() {
+
+    }
+
+    public HClustResult(Dataset<? extends Instance> dataset) {
+        this.dataset = dataset;
+    }
 
     @Override
     public Matrix getInputData() {
@@ -246,11 +255,20 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public Instance getInstance(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (dataset != null) {
+            return dataset.instance(index);
+        } else {
+            throw new RuntimeException("dataset is null");
+        }
     }
 
     @Override
     public int assignedCluster(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        this.dataset = dataset;
     }
 }

@@ -4,27 +4,33 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import org.clueminer.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.ColorScheme;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ColorScheme {
+public class ColorSchemeImpl implements ColorScheme {
 
     private BufferedImage posColorImage = createGradientImage(Color.black, Color.green);
     private BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
     private DendroPane panel;
-    
-    public ColorScheme(DendroPane p){
+
+    public ColorSchemeImpl(DendroPane p) {
         panel = p;
     }
 
     /**
      * Creates a gradient image with specified initial colors.
+     *
+     * @param color1
+     * @param color2
+     * @return
      */
+    @Override
     public BufferedImage createGradientImage(Color color1, Color color2) {
         BufferedImage image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(256, 1);
         Graphics2D graphics = image.createGraphics();
@@ -34,7 +40,7 @@ public class ColorScheme {
         return image;
     }
 
-   public Color getColor(double value) {
+    public Color getColor(double value) {
         if (Double.isNaN(value)) {
             return missingColor;
         }

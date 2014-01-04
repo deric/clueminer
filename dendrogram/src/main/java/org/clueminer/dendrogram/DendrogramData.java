@@ -51,6 +51,9 @@ public class DendrogramData implements DendrogramMapping {
 
     /**
      * Returns column index
+     *
+     * @param column
+     * @return
      */
     @Override
     public int getColumnIndex(int column) {
@@ -59,6 +62,8 @@ public class DendrogramData implements DendrogramMapping {
 
     /**
      *
+     * @param row
+     * @return
      */
     @Override
     public int getRowIndex(int row) {
@@ -67,6 +72,8 @@ public class DendrogramData implements DendrogramMapping {
 
     /**
      * Returns number of instances
+     *
+     * @return
      */
     @Override
     public int getNumberOfRows() {
@@ -75,6 +82,8 @@ public class DendrogramData implements DendrogramMapping {
 
     /**
      * Returns number of parameters (features)
+     *
+     * @return
      */
     @Override
     public int getNumberOfColumns() {
@@ -152,6 +161,7 @@ public class DendrogramData implements DendrogramMapping {
         this.instances = instances;
     }
 
+    @Override
     public HierarchicalResult getRowsResult() {
         return rowsResult;
     }
@@ -160,6 +170,7 @@ public class DendrogramData implements DendrogramMapping {
         this.rowsResult = (HierachicalClusteringResult) rowsResult;
     }
 
+    @Override
     public HierarchicalResult getColsResult() {
         return colsResult;
     }
@@ -168,10 +179,12 @@ public class DendrogramData implements DendrogramMapping {
         this.colsResult = (HierachicalClusteringResult) colsResult;
     }
 
+    @Override
     public Clustering getRowsClustering() {
         return rowsResult.getClustering(instances);
     }
 
+    @Override
     public Clustering getColumnsClustering() {
         return colsResult.getClustering(instances);
     }
@@ -191,17 +204,11 @@ public class DendrogramData implements DendrogramMapping {
 
     @Override
     public boolean hasRowsClustering() {
-        if (rowsResult != null && getNumberOfRows() > 0) {
-            return true;
-        }
-        return false;
+        return rowsResult != null && getNumberOfRows() > 0;
     }
 
     @Override
     public boolean hasColumnsClustering() {
-        if (colsResult != null && getNumberOfColumns() > 0) {
-            return true;
-        }
-        return false;
+        return colsResult != null && getNumberOfColumns() > 0;
     }
 }
