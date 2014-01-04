@@ -19,9 +19,9 @@ import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
-import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
@@ -38,7 +38,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     protected DgPanel dendrogramPanel;
     private JScrollPane scroller;
     protected Dimension elementSize;
-    protected DendrogramData data;
+    protected DendrogramMapping data;
     private boolean fitToPanel = true;
     private final transient EventListenerList datasetListeners = new EventListenerList();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
@@ -60,13 +60,14 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         }
     }
 
-    public void setDataset(DendrogramData dataset) {
+    @Override
+    public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
         fireDatasetChanged(new DendrogramDataEvent(this));
         updateLayout();
     }
 
-    public DendrogramData getDendrogramData() {
+    public DendrogramMapping getDendrogramData() {
         return this.data;
     }
 

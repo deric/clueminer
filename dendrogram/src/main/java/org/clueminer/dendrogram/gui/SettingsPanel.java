@@ -1,5 +1,7 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
+
 /**
  *
  * @author deric
@@ -7,7 +9,7 @@ package org.clueminer.dendrogram.gui;
 public class SettingsPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 4032782319733814128L;
-    private DendrogramViewer viewer;
+    private DendroViewer viewer;
 
     /**
      * Creates new form SettingsPanel
@@ -16,12 +18,12 @@ public class SettingsPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public SettingsPanel(DendrogramViewer v) {
+    public SettingsPanel(DendroViewer v) {
         initComponents();
         setViewer(v);
     }
 
-    public final void setViewer(DendrogramViewer v) {
+    public final void setViewer(DendroViewer v) {
         viewer = v;
         // slideCellWidth.setValue(viewer.getCellWidth());
         // slideCellHeight.setValue(viewer.getCellHeight());
@@ -182,7 +184,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_slideCellWidthStateChanged
 
     private void chckFitToPanelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckFitToPanelActionPerformed
-        if(viewer != null){
+        if (viewer != null) {
             viewer.setFitToPanel(!viewer.isFitToPanel());
         }
     }//GEN-LAST:event_chckFitToPanelActionPerformed
@@ -209,8 +211,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     private void chckShowLabelsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chckShowLabelsStateChanged
         if (viewer != null) {
             viewer.setLabelsVisible(chckShowLabels.isSelected()
-        
-    );
+            );
         }
     }//GEN-LAST:event_chckShowLabelsStateChanged
 

@@ -31,4 +31,30 @@ public interface DendroViewer {
      */
     public void fireClusteringChanged(Clustering clust);
 
+    public boolean isHorizontalTreeVisible();
+
+    public boolean isVerticalTreeVisible();
+
+    public boolean isLegendVisible();
+
+    public void setHorizontalTreeVisible(boolean show);
+
+    public void setVerticalTreeVisible(boolean show);
+
+    public void setLegendVisible(boolean show);
+
+    public void setLabelsVisible(boolean show);
+
+    public boolean isLabelVisible();
+
+    public void setCellWidth(int width, boolean isAdjusting);
+
+    public void setFitToPanel(boolean fitToPanel);
+
+    public void setCellHeight(int height, boolean isAdjusting);
+
+    public boolean isFitToPanel();
+
+    public void setDataset(DendrogramMapping dataset);
+
 }
