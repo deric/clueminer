@@ -8,11 +8,11 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
  * @author Tomas Barton
  */
 public class DynamicTreeData implements DendroTreeData {
-    
+
     private DendroNode root;
-    
-    public DynamicTreeData(){
-        
+
+    public DynamicTreeData() {
+
     }
 
     @Override
@@ -27,14 +27,29 @@ public class DynamicTreeData implements DendroTreeData {
 
     @Override
     public int numNodes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return root.childCnt();
     }
 
     @Override
     public DendroNode getRoot() {
         return root;
     }
-    
-    
+
+    @Override
+    public void setRoot(DendroNode root) {
+        this.root = root;
+    }
+
+    @Override
+    public DendroNode first() {
+        if (root == null) {
+            throw new RuntimeException("root is empty");
+        }
+        DendroNode current = root;
+        while (!current.isLeaf()) {
+            current = current.getLeft();
+        }
+        return current;
+    }
 
 }

@@ -1,4 +1,4 @@
-    package org.clueminer.hclust;
+package org.clueminer.hclust;
 
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 
@@ -7,6 +7,10 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
  * @author Tomas Barton
  */
 public class DTreeLeaf extends DTreeNode implements DendroNode {
+
+    public DTreeLeaf(DendroNode parent) {
+        this.parent = parent;
+    }
 
     @Override
     public boolean isLeaf() {
@@ -20,7 +24,7 @@ public class DTreeLeaf extends DTreeNode implements DendroNode {
 
     @Override
     public DendroNode getLeft() {
-        throw new RuntimeException("Invalid operation. Leaf can't have childern nodes."); 
+        throw new RuntimeException("Invalid operation. Leaf can't have childern nodes.");
     }
 
     @Override
@@ -30,7 +34,7 @@ public class DTreeLeaf extends DTreeNode implements DendroNode {
 
     @Override
     public DendroNode getRight() {
-        throw new RuntimeException("Invalid operation. Leaf can't have childern nodes."); 
+        throw new RuntimeException("Invalid operation. Leaf can't have childern nodes.");
     }
 
     @Override
@@ -39,12 +43,12 @@ public class DTreeLeaf extends DTreeNode implements DendroNode {
     }
 
     @Override
-    public double height() {
-        return 0.0;
+    public int level() {
+        return 0;
     }
-    
+
     @Override
-    public int childCnt(){
+    public int childCnt() {
         return 0;
     }
 

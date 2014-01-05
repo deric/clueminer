@@ -2,8 +2,12 @@ package org.clueminer.dgram;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.event.EventListenerList;
 import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
@@ -24,6 +28,8 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
     private int width;
     private int height;
     private static final long serialVersionUID = -6201677645559622330L;
+    protected EventListenerList treeListeners = new EventListenerList();
+    private static final Logger logger = Logger.getLogger(DgTree.class.getName());
 
     public DgTree(DendroPane panel) {
         this.panel = panel;
@@ -34,6 +40,12 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         this.dendroData = dataset;
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
         treeData = clustering.getTreeData();
+        logger.log(Level.INFO, "rendering tree" + treeData);
+
+        DendroNode root = treeData.getRoot();
+        System.out.println("tree has " + root.childCnt() + " nodes");
+        System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
+
         repaint();
     }
 
@@ -54,67 +66,74 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
 
     @Override
     public int getMinDistance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 
     @Override
     public int getMaxDistance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 42;
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
-        if (this.treeData == null) {
+
+        if (!hasData()) {
             //no data
-            return;
+            g.dispose();
+            //return;
         }
+
+        DendroNode root = treeData.getRoot();
+        System.out.println("tree has " + root.childCnt() + " nodes");
+        System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
+        DendroNode current = treeData.first();
 
     }
 
     @Override
     public void setTreeData(DendroTreeData treeData) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.treeData = treeData;
     }
 
     @Override
     public DendroTreeData getTreeData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return treeData;
     }
 
     @Override
     public void addTreeListener(TreeListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        treeListeners.add(TreeListener.class, listener);
     }
 
     @Override
     public void removeTreeListener(TreeListener listener) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        treeListeners.remove(TreeListener.class, listener);
     }
 
     @Override
     public boolean hasData() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return treeData != null;
     }
 
     @Override
     public void fireTreeUpdated() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
     @Override
     public double getMinTreeHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0.0;
     }
 
     @Override
     public double getMidTreeHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 21;
     }
 
     @Override
     public double getMaxTreeHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 42;
     }
 }

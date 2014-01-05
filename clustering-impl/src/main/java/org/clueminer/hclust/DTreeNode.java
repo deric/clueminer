@@ -8,13 +8,19 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
  */
 public class DTreeNode implements DendroNode {
 
-    private boolean leaf = false;
+    private final boolean leaf = false;
     private boolean root = false;
-    private DendroNode left;
-    private DendroNode right;
-    private DendroNode parent;
+    protected DendroNode left;
+    protected DendroNode right;
+    protected DendroNode parent;
+    private double height;
+    private int level = -1;
 
     public DTreeNode() {
+    }
+
+    public DTreeNode(DendroNode parent) {
+        this.parent = parent;
     }
 
     public DTreeNode(boolean root) {
@@ -52,8 +58,22 @@ public class DTreeNode implements DendroNode {
     }
 
     @Override
-    public double height() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setLeft(DendroNode left) {
+        this.left = left;
+    }
+
+    @Override
+    public void setRight(DendroNode right) {
+        this.right = right;
+    }
+
+    @Override
+    public int level() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     @Override
@@ -77,4 +97,15 @@ public class DTreeNode implements DendroNode {
         }
         return cnt;
     }
+
+    @Override
+    public double getHeight() {
+        return height;
+    }
+
+    @Override
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
 }

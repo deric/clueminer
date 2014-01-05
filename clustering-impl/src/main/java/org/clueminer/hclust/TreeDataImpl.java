@@ -9,15 +9,15 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Dump;
 
-/**
+/*
  *
  * Stores tree structure
  *
- *                     says what is this level height and at which index are children
+ *                     says what is this level level and at which index are children
  * Example:                                         v
  *   idx  | 0 |  1 |  2  | 3 |  4 |  5 |  6 |  7 |  8 |  9 |
  * -------------------------------------------------------------------------------------
- * height: 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.5, 1.9, 7.4, 0.0
+ * level: 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.5, 1.9, 7.4, 0.0
  * left:    -1,  -1,  -1,  -1,  -1,   1,   2,   0,   5,  -1
  * right:   -1,  -1,  -1,  -1,  -1,   3,   4,   6,   7,  -1
  * order: 5, 6, 7, 8, -1         ^
@@ -52,10 +52,10 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * Array size is 2*height
+     * Array size is 2*level
      *
      * @param idx
-     * @return index in height array
+     * @return index in level array
      */
     public int getLeft(int idx) {
         return this.left[idx];
@@ -74,10 +74,10 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * Array size is 2*height if height(right[idx]) == 0 => node is leaf
+     * Array size is 2*level if level(right[idx]) == 0 => node is leaf
      *
      * @param idx
-     * @return index in height array
+     * @return index in level array
      */
     public int getRight(int idx) {
         return right[idx];
@@ -113,22 +113,22 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
 
     /**
      * @param idx
-     * @return tree heights at @idx level
+     * @return tree levels at @idx level
      */
     public double getHeight(int idx) {
         return this.height[idx];
     }
 
     /**
-     * height[0] says on which level are children in
+     * level[0] says on which level are children in
      *
-     * @param height array of level's heights
+     * @param height array of level's levels
      */
     public void setHeight(double[] height) {
         this.height = height;
 
         //some distance functions might produce negative values which doesn't
-        //make much sense in context of tree's height, therefore we have to
+        //make much sense in context of tree's level, therefore we have to
         //move the range
         double nodeHeightOffset;
         if (function.useTreeHeight()) {
@@ -142,7 +142,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
                 height[i] += nodeHeightOffset;
             }
         }
-        //Dump.array(height, "tree height");
+        //Dump.array(level, "tree level");
     }
 
     public void setFunction(DistanceMeasure function) {
@@ -174,15 +174,12 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     public boolean isLeaf(int idx) {
-        if (getLeft(idx) == -1 && getRight(idx) == -1) {
-            return true;
-        }
-        return false;
-        //return (getHeight(idx) == 0.0); -too expensive and possible source of errors
+        return getLeft(idx) == -1 && getRight(idx) == -1;
     }
 
     /**
      * doesn't work with negative distances
+     *
      * @param zero_threshold
      * @return
      */
@@ -212,7 +209,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     /**
      * From tree cutoff we can determine the number of clusters
      *
-     * @return number between 0 and max tree height
+     * @return number between 0 and max tree level
      */
     public double getCutoff() {
         return this.cutoff;
@@ -252,14 +249,13 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
     }
 
-
     /**
      * @deprecated this might cause strange null pointer exception
      */
     public void formClusters() {
         synchronized (this) {
             int nodesNum = getNumberOfTerminalNodes(0.00001);
-            logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});            
+            logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});
             clusters = new int[nodesNum];
             findClusters(getIntRoot(), -1);
             Dump.array(clusters, "result clusters");
@@ -326,7 +322,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * Returns min height of the tree nodes.
+     * Returns min level of the tree nodes.
+     *
      * @return
      */
     public double getMinHeight() {
@@ -339,7 +336,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     /**
-     * Returns max height of the tree nodes.
+     * Returns max level of the tree nodes.
+     *
      * @return
      */
     public double getMaxHeight() {
@@ -353,6 +351,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
 
     /**
      * Returns true if tree is flat
+     *
      * @return
      */
     public boolean flatTreeCheck() {
@@ -370,6 +369,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
 
     /**
      * Calculates tree node positions.
+     *
      * @return
      */
     public float[] getPositions() {
@@ -488,8 +488,57 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Converts array representation to a tree structure
+     *
+     * @return tree root
+     */
     @Override
     public DendroNode getRoot() {
+        int id = getIntRoot();
+        int level = treeLevels();
+        DTreeNode root = new DTreeNode(true);
+        root.setHeight(getHeight(id));
+        root.setLevel(level);
+
+        root.setLeft(constructSubTree(getLeft(id), root, level - 1));
+        root.setRight(constructSubTree(getRight(id), root, level - 1));
+
+        return root;
+    }
+
+    private DendroNode constructSubTree(int node, DTreeNode parent, int level) {
+        DTreeNode current;
+        if (isLeaf(node)) {
+            current = new DTreeLeaf(parent);
+        } else {
+            current = new DTreeNode(parent);
+            current.setHeight(getHeight(node));
+            current.setLevel(level);
+            //explore subtree
+            current.setLeft(constructSubTree(getLeft(node), current, level - 1));
+            current.setRight(constructSubTree(getRight(node), current, level - 1));
+        }
+
+        return current;
+    }
+
+    @Override
+    public void setRoot(DendroNode root) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Left-most node
+     *
+     * @return
+     */
+    @Override
+    public DendroNode first() {
+        DendroNode current = getRoot();
+        while (!current.isLeaf()) {
+            current = current.getLeft();
+        }
+        return current;
     }
 }

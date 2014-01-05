@@ -15,6 +15,8 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.DTreeNode;
+import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 
 /**
@@ -289,5 +291,15 @@ public class HClustResult implements HierarchicalResult {
         if (merges == null) {
             throw new RuntimeException("merges empty!");
         }
+
+        treeData = new DynamicTreeData();
+
+        DTreeNode current = null;
+        for (Merge m : getMerges()) {
+            current = new DTreeNode();
+            System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster());
+        }
+
+        treeData.setRoot(current);
     }
 }

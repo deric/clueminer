@@ -25,10 +25,23 @@ public interface DendroTreeData {
      * @return number of levels in tree
      */
     public int treeLevels();
-    
+
     /**
-     * 
+     *
      * @return tree node
      */
     public DendroNode getRoot();
+
+    /**
+     *
+     * @param root
+     */
+    public void setRoot(DendroNode root);
+
+    /**
+     *
+     * @return first leaf
+     */
+    public DendroNode first();
+
 }

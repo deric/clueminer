@@ -24,6 +24,8 @@ public interface DendroNode {
      */
     public DendroNode getLeft();
 
+    public void setLeft(DendroNode left);
+
     /**
      *
      * @return true when left node exists
@@ -36,18 +38,21 @@ public interface DendroNode {
      */
     public DendroNode getRight();
 
+    public void setRight(DendroNode right);
+
     /**
      *
      * @return true when right node exists
      */
+
     public boolean hasRight();
 
     /**
-     * (Sub)tree height
+     * (Sub)tree level
      *
      * @return number of levels under this node
      */
-    public double height();
+    public int level();
 
     /**
      * If root node, parent is null
@@ -57,10 +62,14 @@ public interface DendroNode {
     public DendroNode getParent();
 
     public void setParent(DendroNode parent);
-    
+
     /**
-     * 
+     *
      * @return number of children
      */
     public int childCnt();
+
+    public double getHeight();
+
+    public void setHeight(double height);
 }

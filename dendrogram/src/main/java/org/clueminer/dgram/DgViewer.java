@@ -104,15 +104,15 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
 
     private void updateLayout() {
         int heatmapSize = this.getSize().width - dendrogramPanel.getVerticalTreeSize().width - dendrogramPanel.getAnnotationWidth();
-        System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
+        /*  System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
 
-        System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
-        System.out.println("heatmap " + dendrogramPanel.getHeatmapSize());
-        System.out.println("clustering view size" + this.getSize() + " heatmap size= " + heatmapSize);
+         System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
+         System.out.println("heatmap " + dendrogramPanel.getHeatmapSize());
+         System.out.println("clustering view size" + this.getSize() + " heatmap size= " + heatmapSize);
 
-        //System.out.println("feature length = "+featuresLenght+ " heat map width = "+dendrogramPanel.getHeatmapWidth() );
-        //dendrogramPanel.getHeatmapWidth() / featuresLenght;///data.getFeaturesSize();
-        System.out.println("new element size " + elementSize);
+         //System.out.println("feature length = "+featuresLenght+ " heat map width = "+dendrogramPanel.getHeatmapWidth() );
+         //dendrogramPanel.getHeatmapWidth() / featuresLenght;///data.getFeaturesSize();
+         System.out.println("new element size " + elementSize);*/
         //setMinimumSize(dendrogramPanel.getSize());
         //update size of scrollbars
         scroller.getViewport().revalidate();
