@@ -40,6 +40,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private static final Logger logger = Logger.getLogger(TreeDataImpl.class.getName());
+    private int numLeaves;
 
     /**
      * number of cluster starts from 1, if num eq 0, node wasn't visited by the
@@ -384,6 +385,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
             node = order[i];
             pos[node] = (pos[left[node]] + pos[right[node]]) / 2f;
         }
+        Dump.array(pos, "positions");
         return pos;
     }
 
@@ -497,6 +499,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     public DendroNode getRoot() {
         int id = getIntRoot();
         int level = treeLevels();
+        numLeaves = 0; // just a counter
         DTreeNode root = new DTreeNode(true);
         root.setHeight(getHeight(id));
         root.setLevel(level);
@@ -504,13 +507,28 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         root.setLeft(constructSubTree(getLeft(id), root, level - 1));
         root.setRight(constructSubTree(getRight(id), root, level - 1));
 
+        //computes node's position
+        updatePositions(root);
+
         return root;
+    }
+
+    private double updatePositions(DendroNode node) {
+        if (node.isLeaf()) {
+            return node.getPosition();
+        }
+        double position = updatePositions(node.getLeft()) + updatePositions(node.getRight()) / 2.0;
+
+        node.setPosition(position);
+        return position;
     }
 
     private DendroNode constructSubTree(int node, DTreeNode parent, int level) {
         DTreeNode current;
         if (isLeaf(node)) {
             current = new DTreeLeaf(parent);
+            //first node has 0, leaves has coordinates [0, position]
+            current.setPosition(numLeaves++);
         } else {
             current = new DTreeNode(parent);
             current.setHeight(getHeight(node));

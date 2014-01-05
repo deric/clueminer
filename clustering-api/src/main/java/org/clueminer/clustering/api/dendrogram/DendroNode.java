@@ -44,7 +44,6 @@ public interface DendroNode {
      *
      * @return true when right node exists
      */
-
     public boolean hasRight();
 
     /**
@@ -72,4 +71,13 @@ public interface DendroNode {
     public double getHeight();
 
     public void setHeight(double height);
+
+    /**
+     * Position of last node is also width of the tree
+     *
+     * @return width of tree
+     */
+    public double getPosition();
+
+    public void setPosition(double value);
 }

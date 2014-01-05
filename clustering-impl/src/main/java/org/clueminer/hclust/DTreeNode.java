@@ -14,6 +14,7 @@ public class DTreeNode implements DendroNode {
     protected DendroNode right;
     protected DendroNode parent;
     private double height;
+    private double position;
     private int level = -1;
 
     public DTreeNode() {
@@ -106,6 +107,16 @@ public class DTreeNode implements DendroNode {
     @Override
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    @Override
+    public double getPosition() {
+        return position;
+    }
+
+    @Override
+    public void setPosition(double position) {
+        this.position = position;
     }
 
 }
