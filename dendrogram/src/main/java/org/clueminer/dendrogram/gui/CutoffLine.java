@@ -10,7 +10,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.dendrogram.tree.AbstractTree;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
  *
@@ -20,7 +20,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
 
     private static final long serialVersionUID = -8874221664051165124L;
     private DendroPane panel;
-    private AbstractTree tree;
+    private DendrogramTree tree;
     private HierarchicalResult clustering;
     final static float dash1[] = {10.0f};
     private int linepos;
@@ -30,7 +30,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                               BasicStroke.JOIN_MITER,
                               10.0f, dash1, 0.0f);
 
-    public CutoffLine(DendroPane p, AbstractTree tree) {
+    public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
         this.tree = tree;
         this.setOpaque(false); //don't paint background (parent component is responsible for that)

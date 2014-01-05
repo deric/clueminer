@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
 import org.clueminer.dendrogram.gui.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
@@ -36,7 +37,6 @@ import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
 import org.clueminer.dendrogram.tree.HorizontalTree;
 import org.clueminer.dendrogram.tree.VerticalScale;
-import org.clueminer.dendrogram.tree.VerticalTree;
 
 /**
  *
@@ -46,7 +46,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
 
     private static final long serialVersionUID = -5443298776673785208L;
     //component to draw a tree for rows
-    private VerticalTree rowsTree;
+    private DendrogramTree rowsTree;
     private AbstractScale rowsScale;
     private CutoffLine cutoff;
     private HorizontalTree columnsTree;
@@ -210,7 +210,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private void addRowsTree(int column, int row) {
         //we call constructor just one
         if (rowsTree == null) {
-            rowsTree = new VerticalTree(this);
+            rowsTree = new DgTree(this);
             dendroViewer.addDendrogramDataListener(rowsTree);
             //listen to cluster selection
             rowsTree.addTreeListener(heatmap);
@@ -260,7 +260,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         });
 
         treeLayered.add(cutoff, 0); //lower level
-        treeLayered.add(rowsTree, 1); //upper level
+        treeLayered.add((Component) rowsTree, 1); //upper level
         add(treeLayered, c);
 
         if (showScale) {

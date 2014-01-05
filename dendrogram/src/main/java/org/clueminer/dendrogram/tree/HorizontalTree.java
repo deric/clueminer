@@ -33,7 +33,7 @@ public class HorizontalTree extends AbstractTree {
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dataset = dataset;
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getColsResult();
-        setTreeData(clustering.getTreeData());
+        setDTreeData(clustering.getTreeData());
         repaint();
     }
 

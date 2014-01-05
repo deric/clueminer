@@ -48,6 +48,14 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
+    public DendroTreeData getTreeData() {
+        if (treeData == null) {
+            constructTree();
+        }
+        return treeData;
+    }
+
+    @Override
     public Matrix getInputData() {
         return inputData;
     }
@@ -92,6 +100,11 @@ public class HClustResult implements HierarchicalResult {
     /**
      * Converts an array containing each row's clustering assignment into an
      * array of {@link HardAssignment} instances.
+     *
+     * @param rowAssignments
+     * @param matrix
+     * @param numClusters
+     * @return
      */
     public static Assignments toAssignments(int[] rowAssignments, Matrix matrix, int numClusters) {
         if (numClusters == -1) {
@@ -270,5 +283,11 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+    }
+
+    private void constructTree() {
+        if (merges == null) {
+            throw new RuntimeException("merges empty!");
+        }
     }
 }

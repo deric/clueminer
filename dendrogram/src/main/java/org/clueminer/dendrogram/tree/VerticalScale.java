@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
  * Rows tree scale
@@ -17,7 +18,7 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
 
     private static final long serialVersionUID = 7372573252024305540L;
 
-    public VerticalScale(VerticalTree tree, DendroPane panel) {
+    public VerticalScale(DendrogramTree tree, DendroPane panel) {
         super(panel);
         this.tree = tree;
     }
@@ -30,9 +31,9 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
         // total tree size minus offset, which is (negative) transition from top
         int yStart = treeScaleSpace;
         // x1, y1, x2, y2
-        g2.drawLine(0, yStart - 5, tree.max_pixels - 1, yStart - 5); //bottom line
-        g2.drawLine(tree.max_pixels - 1, yStart - 5, tree.max_pixels - 1, yStart + scaleTickLength); //max tick
-        g2.drawLine(tree.max_pixels / 2 + 5, yStart - 5, tree.max_pixels / 2 + 5, yStart + scaleTickLength);//mid tick
+        g2.drawLine(0, yStart - 5, tree.getWidth() - 1, yStart - 5); //bottom line
+        g2.drawLine(tree.getWidth() - 1, yStart - 5, tree.getWidth() - 1, yStart + scaleTickLength); //max tick
+        g2.drawLine(tree.getWidth() / 2 + 5, yStart - 5, tree.getWidth() / 2 + 5, yStart + scaleTickLength);//mid tick
         g2.drawLine(0, yStart - 5, 0, yStart + scaleTickLength);//min tick
 
         int space = scaleLabelDistance + scaleTickLength;
@@ -41,25 +42,29 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
         FontMetrics hfm = g2.getFontMetrics();
         g2.rotate(3 * Math.PI / 2.0);
         //min Label
-        textWidth = hfm.stringWidth(tree.getMinHeightDisplay());
+        String label;
+        label = decimalFormat.format(tree.getMinTreeHeight());
+        textWidth = hfm.stringWidth(label);
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMinHeightDisplay(), -(yStart + space + textWidth), tree.max_pixels - 1);
+        g2.drawString(label, -(yStart + space + textWidth), tree.getWidth() - 1);
 
         //mid Label
-        textWidth = hfm.stringWidth(tree.getMidHeightDisplay());
+        label = decimalFormat.format(tree.getMidTreeHeight());
+        textWidth = hfm.stringWidth(label);
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMidHeightDisplay(), -(yStart + space + textWidth), tree.max_pixels / 2 + 9);
+        g2.drawString(label, -(yStart + space + textWidth), tree.getWidth() / 2 + 9);
 
         //max Label
-        textWidth = hfm.stringWidth(tree.getMaxHeightDisplay());
+        label = decimalFormat.format(tree.getMaxTreeHeight());
+        textWidth = hfm.stringWidth(label);
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMaxHeightDisplay(), -(yStart + space + textWidth), 10);
+        g2.drawString(label, -(yStart + space + textWidth), 10);
         g2.setColor(Color.black);
         g2.rotate(Math.PI / 2.0);
         maxScaleDimension = distToScale + space + maxTextWidth;
@@ -84,7 +89,7 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
 
     @Override
     protected void updateSize() {
-        int width = tree.max_pixels;
+        int width = tree.getWidth();
         int height = maxScaleDimension + treeScaleSpace;
         setDimension(width, height);
     }

@@ -3,6 +3,7 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
@@ -79,7 +80,7 @@ public interface HierarchicalResult extends Serializable {
 
     /**
      *
-     * @return return current number of clusters (computed accoring to current
+     * @return return current number of clusters (computed according to current
      *         cutoff)
      */
     public int getNumClusters();
@@ -128,12 +129,25 @@ public interface HierarchicalResult extends Serializable {
 
     /**
      *
+     * @return dendrogram tree structure
+     */
+    public DendroTreeData getTreeData();
+
+    /**
+     *
      * @param idx
      *
      * @return height of dendrogram tree at given node index
+     * @deprecated
      */
     public double treeHeightAt(int idx);
 
+    /**
+     *
+     * @param idx
+     * @return
+     * @deprecated
+     */
     public int treeOrder(int idx);
 
     /**

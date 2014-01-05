@@ -77,7 +77,17 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         addMouseListener(new Listener());
     }
 
-    public void setTreeData(TreeDataImpl treeData) {
+    /**
+     * new implementation
+     *
+     * @param treeData
+     */
+    @Override
+    public void setTreeData(DendroTreeData treeData) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setDTreeData(TreeDataImpl treeData) {
         this.treeData = treeData;
         function = treeData.getFunction();
         // helpers
@@ -115,7 +125,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
         this.useAbsoluteHeight = useAbsoluteHeight;
     }
 
-    protected DendroTreeData getTreeData() {
+    public DendroTreeData getTreeData() {
         return this.treeData;
     }
 
@@ -541,16 +551,31 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
 
     protected abstract void updateTreeSize();
 
+    @Override
+    public double getMinTreeHeight() {
+        return nodeHeightOffset;
+    }
+
+    @Override
+    public double getMidTreeHeight() {
+        return (similarityFactor * (maxHeight - nodeHeightOffset) + nodeHeightOffset) / 2;
+    }
+
+    @Override
+    public double getMaxTreeHeight() {
+        return similarityFactor * (maxHeight - nodeHeightOffset);
+    }
+
     public String getMinHeightDisplay() {
-        return String.valueOf(decimalFormat.format(nodeHeightOffset));
+        return String.valueOf(decimalFormat.format(getMinTreeHeight()));
     }
 
     public String getMidHeightDisplay() {
-        return String.valueOf(decimalFormat.format((similarityFactor * (maxHeight - nodeHeightOffset) + nodeHeightOffset) / 2));
+        return String.valueOf(decimalFormat.format(getMidTreeHeight()));
     }
 
     public String getMaxHeightDisplay() {
-        return String.valueOf(decimalFormat.format(similarityFactor * (maxHeight - nodeHeightOffset)));
+        return String.valueOf(decimalFormat.format(getMaxTreeHeight()));
     }
 
     public void drawWedge(Graphics g, int node, int x1, int x2, int y1, int y2) {

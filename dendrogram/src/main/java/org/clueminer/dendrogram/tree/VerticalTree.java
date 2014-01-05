@@ -34,7 +34,7 @@ public class VerticalTree extends AbstractTree {
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dataset = dataset;
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
-        setTreeData(clustering.getTreeData());
+        setDTreeData(clustering.getTreeData());
         repaint();
     }
 

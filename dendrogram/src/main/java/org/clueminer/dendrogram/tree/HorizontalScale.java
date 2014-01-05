@@ -31,42 +31,42 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
         //verticle line
         // System.out.println("drawing scale at "+distToScale);
         g2.drawLine(0, distToScale,
-                    -(tree.max_pixels - 1), distToScale);
+                    -(tree.getHeight() - 1), distToScale);
         //top tick
         g2.drawLine(0, distToScale,
                     0, distToScale + scaleTickLength);
         //middle tick
-        g2.drawLine(-(tree.max_pixels - 1) / 2, distToScale,
-                    -(tree.max_pixels - 1) / 2, distToScale + scaleTickLength);
+        g2.drawLine(-(tree.getHeight() - 1) / 2, distToScale,
+                    -(tree.getHeight() - 1) / 2, distToScale + scaleTickLength);
         //bottom tick
-        g2.drawLine(-(tree.max_pixels - 1), distToScale,
-                    -(tree.max_pixels - 1), distToScale + scaleTickLength);
+        g2.drawLine(-(tree.getHeight() - 1), distToScale,
+                    -(tree.getHeight() - 1), distToScale + scaleTickLength);
 
         g2.rotate(Math.PI / 2.0);
         int textWidth;
         int maxTextWidth = 0;
         FontMetrics hfm = g2.getFontMetrics();
         //top Label
-        textWidth = hfm.stringWidth(tree.getMaxHeightDisplay());
+        textWidth = hfm.stringWidth(decimalFormat.format(tree.getMaxTreeHeight()));
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMaxHeightDisplay(),
+        g2.drawString(decimalFormat.format(tree.getMaxTreeHeight()),
                       (distToScale + scaleTickLength), 10);
         //mid Label
-        textWidth = hfm.stringWidth(tree.getMidHeightDisplay());
+        textWidth = hfm.stringWidth(decimalFormat.format(tree.getMidTreeHeight()));
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMidHeightDisplay(),//(this.maxHeight -this.minHeight)/2+this.minHeight),
-                      (distToScale + scaleTickLength), (tree.max_pixels - 1) / 2 + 4);
+        g2.drawString(decimalFormat.format(tree.getMidTreeHeight()),//(this.maxHeight -this.minHeight)/2+this.minHeight),
+                      (distToScale + scaleTickLength), (tree.getHeight() - 1) / 2 + 4);
         //bottom Label
-        textWidth = hfm.stringWidth(tree.getMinHeightDisplay());
+        textWidth = hfm.stringWidth(decimalFormat.format(tree.getMinTreeHeight()));
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
-        g2.drawString(tree.getMinHeightDisplay(),//this.minHeight),
-                      (distToScale + scaleTickLength), (tree.max_pixels - 1));
+        g2.drawString(decimalFormat.format(tree.getMinTreeHeight()),//this.minHeight),
+                      (distToScale + scaleTickLength), (tree.getHeight() - 1));
 
         g2.rotate(-Math.PI / 2.0);
         maxScaleDimension = distToScale + scaleTickLength + maxTextWidth;
@@ -91,7 +91,7 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
     @Override
     protected void updateSize() {
         int width = maxScaleDimension + treeScaleSpace;
-        int height = tree.max_pixels;
+        int height = tree.getHeight();
         setDimension(width, height);
     }
 }

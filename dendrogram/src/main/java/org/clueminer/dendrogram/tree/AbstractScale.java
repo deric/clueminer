@@ -3,9 +3,11 @@ package org.clueminer.dendrogram.tree;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
  *
@@ -26,9 +28,10 @@ public abstract class AbstractScale extends JPanel implements DendrogramDataList
     protected BufferedImage bufferedImage;
     protected Graphics2D g2;
     protected Dimension size = new Dimension(5, 5);
-    protected AbstractTree tree;
+    protected DendrogramTree tree;
     protected Font defaultFont = new Font("verdana", Font.PLAIN, 10);
     protected DendroPane panel;
+    protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     protected abstract void drawScale(Graphics2D g2);
 
@@ -78,7 +81,7 @@ public abstract class AbstractScale extends JPanel implements DendrogramDataList
             if (bufferedImage == null) {
                 int max = maxScaleDimension;
                 createBufferedGraphics(); //cached image
-                if(maxScaleDimension != max){
+                if (maxScaleDimension != max) {
                     //repaint if size of text has changed
                     updateSize();
                     createBufferedGraphics();

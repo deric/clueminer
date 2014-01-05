@@ -53,6 +53,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         this.proximity = m;
     }
 
+    @Override
     public TreeDataImpl getTreeData() {
         return treeData;
     }
@@ -241,6 +242,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
         return dataset;
     }
 
+    @Override
     public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
     }
