@@ -86,11 +86,9 @@
         <module>math-plot</module>
         <module>math-io</module>
         <module>clustering-api</module>
-        <module>xcalibour</module>
         <module>fixtures</module>
         <module>dataset-visualization</module>
         <module>dataset-io</module>
-        <module>jzy3d-api</module>
         <module>clustering-impl</module>
         <module>clustering-gui</module>
         <module>export-impl</module>
@@ -116,7 +114,6 @@
         <module>mlearn</module>
         <module>importer-impl</module>
         <module>clustering-evolution</module>
-        <module>fixtures-cdf</module>
     </modules>
     <reporting>
         <plugins>
