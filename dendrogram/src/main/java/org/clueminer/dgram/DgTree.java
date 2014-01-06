@@ -141,8 +141,8 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
                 RenderingHints.VALUE_RENDER_QUALITY);
 
         DendroNode root = treeData.getRoot();
-        System.out.println("tree has " + root.childCnt() + " nodes");
-        System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
+        //System.out.println("tree has " + root.childCnt() + " nodes");
+        //System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
 
         //DendroNode current = treeData.first();
         drawNode(buffGr, root);

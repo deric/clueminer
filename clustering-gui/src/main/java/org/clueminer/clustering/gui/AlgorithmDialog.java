@@ -37,7 +37,6 @@ public class AlgorithmDialog implements ActionListener, PropertyChangeListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        System.out.println(event);
         if (event.getSource() == DialogDescriptor.OK_OPTION) {
             task = RP.create(new ClusteringRunner(analysis, config));
             task.addTaskListener(analysis);

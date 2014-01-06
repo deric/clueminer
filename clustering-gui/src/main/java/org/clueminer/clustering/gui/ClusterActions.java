@@ -278,7 +278,8 @@ public final class ClusterActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            CsvExporter.getDefault().export(clusteringFrame);
+            CsvExporter.getDefault().setAnalysis(clusteringFrame);
+            CsvExporter.getDefault().showDialog();
         }
     }
 
