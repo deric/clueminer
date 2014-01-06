@@ -102,7 +102,12 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public String[] toStringArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String[] result = new String[size()];
+
+        for (int i = 0; i < size(); i++) {
+            result[i] = String.valueOf(get(i));
+        }
+        return result;
     }
 
     @Override
