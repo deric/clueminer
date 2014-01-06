@@ -68,10 +68,10 @@ public class CsvExportRunner implements Runnable {
                         tmp = new String[size];
                         System.arraycopy(line, 0, tmp, 0, line.length);
                         if (dataSize > 0) {
-                            System.arraycopy(data, 0, tmp, line.length + 1, dataSize);
+                            System.arraycopy(data, 0, tmp, line.length, dataSize);
                         }
                         if (preprocessSize > 0) {
-                            System.arraycopy(prepro, 0, tmp, line.length + dataSize + 1, preprocessSize);
+                            System.arraycopy(prepro, 0, tmp, line.length + dataSize, preprocessSize);
                         }
 
                         line = tmp;
