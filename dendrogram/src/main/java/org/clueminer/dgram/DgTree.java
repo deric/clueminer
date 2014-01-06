@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -43,10 +45,13 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
     private Dimension size = new Dimension(0, 0);
     private static final Logger logger = Logger.getLogger(DgTree.class.getName());
     private StdScale scale = new StdScale();
+    private BufferedImage buffImg;
+    private Graphics2D buffGr;
+    private final Insets insets = new Insets(0, 10, 0, 0);
 
     public DgTree(DendroPane panel) {
         this.panel = panel;
-        //setBackground(Color.RED);
+        setBackground(panel.getBackground());
         width = treeHeight;
         Dimension elem = panel.getElementSize();
         elementWidth = elem.width;
@@ -59,12 +64,6 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
         treeData = clustering.getTreeData();
         updateSize();
-        logger.log(Level.INFO, "rendering tree" + treeData);
-
-        DendroNode root = treeData.getRoot();
-        System.out.println("tree has " + root.childCnt() + " nodes");
-        System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
-
         repaint();
     }
 
@@ -91,6 +90,8 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         treeWidth = height;
         size.width = width;
         size.height = height;
+        //invalidate cache
+        buffImg = null;
         setPreferredSize(size);
         setSize(size);
         setMinimumSize(size);
@@ -109,27 +110,34 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("DgTree paintComponent");
+
+        if (buffImg == null) {
+            drawTree();
+        }
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.drawImage(buffImg,
+                insets.left, insets.top,
+                size.width, size.height,
+                null);
+        g2.dispose();
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2 = (Graphics2D) g;
-
-        System.out.println("DgTree paint");
+    public void drawTree() {
+        buffImg = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+        buffGr = buffImg.createGraphics();
 
         if (!hasData()) {
             //no data
-            g.dispose();
+            buffGr.dispose();
             return;
         }
 
-        g2.setColor(treeColor);
+        buffGr.setColor(treeColor);
 
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING,
+        buffGr.setRenderingHint(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
 
         DendroNode root = treeData.getRoot();
@@ -137,7 +145,13 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
 
         //DendroNode current = treeData.first();
-        drawNode(g2, root);
+        drawNode(buffGr, root);
+        buffGr.dispose();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
     }
 
     private void drawNode(Graphics2D g2, DendroNode node) {

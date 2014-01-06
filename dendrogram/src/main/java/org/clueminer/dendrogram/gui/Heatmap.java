@@ -227,7 +227,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         this.setOpaque(true);
         //if we don't have any dendroData, ends here
         if (dendroData == null) {
-            System.out.println("no dendroData");
             return;
         }
 
