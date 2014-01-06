@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -33,8 +34,9 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
     private int treeHeight = 200;
     private int treeWidth = 200;
     private int height;
-    private int elementHeight = 10;
-    private int elementWidth = 10;
+    private int elementHeight;
+    private int halfElem;
+    private int elementWidth;
     private Color treeColor = Color.blue;
     private static final long serialVersionUID = -6201677645559622330L;
     protected EventListenerList treeListeners = new EventListenerList();
@@ -46,8 +48,9 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         this.panel = panel;
         //setBackground(Color.RED);
         width = treeHeight;
-
-        setSize(new Dimension(200, 200));
+        Dimension elem = panel.getElementSize();
+        elementWidth = elem.width;
+        elementHeight = elem.height;
     }
 
     @Override
@@ -83,6 +86,7 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
     @Override
     public void updateSize() {
         height = dendroData.getNumberOfRows() * elementHeight;
+        halfElem = elementHeight / 2;
         //nodes on right, 90 deg rot
         treeWidth = height;
         size.width = width;
@@ -124,16 +128,13 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         g2.setColor(treeColor);
 
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING,
-                            RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         DendroNode root = treeData.getRoot();
         System.out.println("tree has " + root.childCnt() + " nodes");
         System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
-
-        int leavesCnt = 0;
-        int y = elementHeight / 2;
 
         //DendroNode current = treeData.first();
         drawNode(g2, root);
@@ -141,22 +142,30 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
 
     private void drawNode(Graphics2D g2, DendroNode node) {
         int nx;
-        //  int ny = (int) node.getPosition() * elementHeight;
+        int ny = (int) (node.getPosition() * elementHeight + halfElem);
+        int diameter = 4;
+        Ellipse2D.Double circle;
+        nx = treeHeight - (int) scaleHeight(node.getHeight());
         if (node.isLeaf()) {
             //leaves on right side
-            nx = width;
+            //nx = width;
+            circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
+            g2.fill(circle);
+
             return;
         } else {
-            nx = (int) scaleHeight(node.getHeight());
             drawNode(g2, node.getLeft());
             drawNode(g2, node.getRight());
         }
 
-        int lx = (int) scaleHeight(node.getLeft().getHeight());
-        int ly = (int) node.getLeft().getPosition() * elementHeight;
+        circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
+        g2.fill(circle);
 
-        int rx = (int) scaleHeight(node.getRight().getHeight());
-        int ry = (int) node.getRight().getPosition() * elementHeight;
+        int lx = treeHeight - (int) scaleHeight(node.getLeft().getHeight());
+        int ly = (int) (node.getLeft().getPosition() * elementHeight + halfElem);
+
+        int rx = treeHeight - (int) scaleHeight(node.getRight().getHeight());
+        int ry = (int) (node.getRight().getPosition() * elementHeight + halfElem);
         //we're drawing a U shape
         //straight line
         g2.drawLine(nx, ly, nx, ry);

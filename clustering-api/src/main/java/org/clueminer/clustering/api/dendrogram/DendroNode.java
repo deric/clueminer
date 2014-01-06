@@ -80,4 +80,8 @@ public interface DendroNode {
     public double getPosition();
 
     public void setPosition(double value);
+
+    public void setId(int id);
+
+    public int getId();
 }

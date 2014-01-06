@@ -517,8 +517,8 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         if (node.isLeaf()) {
             return node.getPosition();
         }
-        double position = updatePositions(node.getLeft()) + updatePositions(node.getRight()) / 2.0;
 
+        double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
         node.setPosition(position);
         return position;
     }
@@ -537,7 +537,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
             current.setLeft(constructSubTree(getLeft(node), current, level - 1));
             current.setRight(constructSubTree(getRight(node), current, level - 1));
         }
-
+        current.setId(node);
         return current;
     }
 
