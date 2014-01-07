@@ -210,7 +210,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private void addRowsTree(int column, int row) {
         //we call constructor just one
         if (rowsTree == null) {
-            rowsTree = new DgTree(this);
+            rowsTree = new DgRightTree(this);
             dendroViewer.addDendrogramDataListener(rowsTree);
             //listen to cluster selection
             rowsTree.addTreeListener(heatmap);

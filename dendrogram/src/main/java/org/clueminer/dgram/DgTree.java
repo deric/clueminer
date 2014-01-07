@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
@@ -27,27 +26,32 @@ import org.clueminer.std.StdScale;
  *
  * @author Tomas Barton
  */
-public class DgTree extends JPanel implements DendrogramDataListener, DendrogramTree {
+public abstract class DgTree extends JPanel implements DendrogramDataListener, DendrogramTree {
 
     private DendroTreeData treeData;
     private DendrogramMapping dendroData;
-    private DendroPane panel;
+    protected DendroPane panel;
     private int width;
-    private int treeHeight = 200;
-    private int treeWidth = 200;
+    protected int treeHeight = 200;
+    protected int treeWidth = 200;
     private int height;
-    private int elementHeight;
-    private int halfElem;
-    private int elementWidth;
+    protected int elementHeight;
+    protected int halfElem;
+    protected int elementWidth;
     private Color treeColor = Color.blue;
     private static final long serialVersionUID = -6201677645559622330L;
     protected EventListenerList treeListeners = new EventListenerList();
     private Dimension size = new Dimension(0, 0);
     private static final Logger logger = Logger.getLogger(DgTree.class.getName());
-    private StdScale scale = new StdScale();
+    private final StdScale scale = new StdScale();
     private BufferedImage buffImg;
     private Graphics2D buffGr;
     private final Insets insets = new Insets(0, 10, 0, 0);
+    /**
+     * mark nodes in dendrogram with a circle
+     */
+    protected boolean drawNodeCircle = true;
+    private int diameter = 4;
 
     public DgTree(DendroPane panel) {
         this.panel = panel;
@@ -117,9 +121,9 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
 
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(buffImg,
-                insets.left, insets.top,
-                size.width, size.height,
-                null);
+                     insets.left, insets.top,
+                     size.width, size.height,
+                     null);
         g2.dispose();
     }
 
@@ -136,16 +140,16 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         buffGr.setColor(treeColor);
 
         buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+                                RenderingHints.VALUE_ANTIALIAS_ON);
         buffGr.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+                                RenderingHints.VALUE_RENDER_QUALITY);
 
         DendroNode root = treeData.getRoot();
         //System.out.println("tree has " + root.childCnt() + " nodes");
         //System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
 
         //DendroNode current = treeData.first();
-        drawNode(buffGr, root);
+        drawSubTree(buffGr, root);
         buffGr.dispose();
     }
 
@@ -154,44 +158,36 @@ public class DgTree extends JPanel implements DendrogramDataListener, Dendrogram
         super.paint(g);
     }
 
-    private void drawNode(Graphics2D g2, DendroNode node) {
-        int nx;
-        int ny = (int) (node.getPosition() * elementHeight + halfElem);
-        int diameter = 4;
-        Ellipse2D.Double circle;
-        nx = treeHeight - (int) scaleHeight(node.getHeight());
-        if (node.isLeaf()) {
-            //leaves on right side
-            //nx = width;
-            circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
-            g2.fill(circle);
+    protected abstract void drawSubTree(Graphics2D g2, DendroNode node);
 
+    /**
+     * Draw circle marking node in the dendrogram
+     *
+     * @param g2
+     * @param node
+     * @param nx
+     * @param ny
+     */
+    protected void drawNode(Graphics2D g2, DendroNode node, int nx, int ny) {
+        Ellipse2D.Double circle;
+        if (node.isLeaf()) {
+            if (drawNodeCircle) {
+                circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
+                g2.fill(circle);
+            }
+            //nothing else to do
             return;
         } else {
-            drawNode(g2, node.getLeft());
-            drawNode(g2, node.getRight());
+            drawSubTree(g2, node.getLeft());
+            drawSubTree(g2, node.getRight());
         }
-
-        circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
-        g2.fill(circle);
-
-        int lx = treeHeight - (int) scaleHeight(node.getLeft().getHeight());
-        int ly = (int) (node.getLeft().getPosition() * elementHeight + halfElem);
-
-        int rx = treeHeight - (int) scaleHeight(node.getRight().getHeight());
-        int ry = (int) (node.getRight().getPosition() * elementHeight + halfElem);
-        //we're drawing a U shape
-        //straight line
-        g2.drawLine(nx, ly, nx, ry);
-
-        //left node
-        g2.drawLine(nx, ly, lx, ly);
-
-        //right node
-        g2.drawLine(nx, ry, rx, ry);
+        if (drawNodeCircle) {
+            circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
+            g2.fill(circle);
+        }
     }
 
-    private double scaleHeight(double height) {
+    protected double scaleHeight(double height) {
         return scale.scaleToRange(height, 0, treeData.getRoot().getHeight(), 0, treeHeight);
     }
 
