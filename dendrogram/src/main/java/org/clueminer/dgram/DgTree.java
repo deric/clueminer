@@ -245,4 +245,13 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         }
         return 0.0;
     }
+
+    public Color getTreeColor() {
+        return treeColor;
+    }
+
+    public void setTreeColor(Color treeColor) {
+        this.treeColor = treeColor;
+    }
+
 }
