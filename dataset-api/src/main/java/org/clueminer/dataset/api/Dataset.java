@@ -20,7 +20,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Unique identifier of dataset
      *
      * @return usually it is a number, however to make it more universal, we use
-     * string
+     *         string
      */
     public String getId();
 
@@ -213,7 +213,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     /**
      * Set attribute value by its index and position in dataset
      *
-     * @param attrIdx attribute index - starts from 0
+     * @param attrIdx     attribute index - starts from 0
      * @param instanceIdx instance index - starts from 0
      * @param value
      */
@@ -300,7 +300,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Add reference to a dataset which was usually created by transformation of
      * this dataset.
      *
-     * @param key must be unique
+     * @param key     must be unique
      * @param dataset
      */
     public void addChild(String key, Dataset<Instance> dataset);
