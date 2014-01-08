@@ -82,6 +82,7 @@ public class CsvExportRunner implements Runnable {
             } else {
                 throw new RuntimeException("no clustering result. did you run clustering?");
             }
+            writer.close();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
