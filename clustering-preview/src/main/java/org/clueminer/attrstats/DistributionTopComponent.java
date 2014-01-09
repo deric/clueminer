@@ -3,6 +3,8 @@ package org.clueminer.attrstats;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -13,6 +15,8 @@ import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  * Top component which displays something.
@@ -41,12 +45,16 @@ import org.openide.util.Utilities;
 public final class DistributionTopComponent extends TopComponent implements LookupListener {
 
     private DistributionFrame frame;
+    private final InstanceContent content = new InstanceContent();
     private Lookup.Result<Clustering> result = null;
+    private static final Logger logger = Logger.getLogger(DistributionTopComponent.class.getName());
 
     public DistributionTopComponent() {
         initComponents();
+        associateLookup(new AbstractLookup(content));
         setName(Bundle.CTL_DistributionTopComponent());
         setToolTipText(Bundle.HINT_DistributionTopComponent());
+        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         frame = new DistributionFrame();
         add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
@@ -60,16 +68,7 @@ public final class DistributionTopComponent extends TopComponent implements Look
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -102,6 +101,7 @@ public final class DistributionTopComponent extends TopComponent implements Look
     @Override
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
+        logger.log(Level.INFO, "clustering lookup: got {0} clusterings", allClusterings.size());
         for (Clustering c : allClusterings) {
             frame.setClustering(c);
         }
