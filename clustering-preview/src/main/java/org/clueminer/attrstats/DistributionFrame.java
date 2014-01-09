@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.Clustering;
  */
 public class DistributionFrame extends JPanel {
 
-    private Clustering<Cluster> clust;
+    private Clustering<Cluster> clustering;
 
     public DistributionFrame() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -20,14 +20,19 @@ public class DistributionFrame extends JPanel {
     private void redraw() {
         //remove all components
         this.removeAll();
+
+        if (clustering == null) {
+            return;
+        }
+
     }
 
     public Clustering<Cluster> getClustering() {
-        return clust;
+        return clustering;
     }
 
     public void setClustering(Clustering<Cluster> clust) {
-        this.clust = clust;
+        this.clustering = clust;
         redraw();
     }
 

@@ -89,6 +89,15 @@ public class NumericalAttribute extends AbstractAttribute {
         return dataset.size();
     }
 
+    @Override
+    public double[] asDoubleArray() {
+        double[] res = new double[size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = dataset.instance(i).value(getIndex());
+        }
+        return res;
+    }
+
     class NumericalAttributeIterator implements Iterator<Double> {
 
         private int i = 0;

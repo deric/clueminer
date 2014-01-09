@@ -12,7 +12,7 @@ public interface Attribute extends Cloneable, Serializable {
     /**
      * Indicates a missing value for nominal values. For the internal values and
      * numerical values, Double.NaN is used which can be checked via
-     *  {@link Double#isNaN(double)}.
+     * {@link Double#isNaN(double)}.
      */
     public static final String MISSING_NOMINAL_VALUE = "?";
 
@@ -49,7 +49,8 @@ public interface Attribute extends Cloneable, Serializable {
 
     /**
      * Returns an iterator over all statistics objects available for this type
-     * of attribute. Additional statistics can be registered via {@link #registerStatistics(Statistics)}.
+     * of attribute. Additional statistics can be registered via
+     * {@link #registerStatistics(Statistics)}.
      */
     public Iterator<Statistics> getAllStatistics();
 
@@ -78,8 +79,11 @@ public interface Attribute extends Cloneable, Serializable {
 
     /**
      * Returns the nominal mapping between nominal values and internal double
-     * representations. Please note that invoking this method might result in an {@link UnsupportedOperationException}
+     * representations. Please note that invoking this method might result in an
+     * {@link UnsupportedOperationException}
      * for non-nominal attributes.
+     *
+     * @return
      */
     public NominalMapping getMapping();
 
@@ -92,21 +96,29 @@ public interface Attribute extends Cloneable, Serializable {
 
     /**
      * Sets the default value for this attribute.
+     *
+     * @param value
      */
     public void setDefault(double value);
 
     /**
      * Returns the default value for this attribute.
+     *
+     * @return
      */
     public double getDefault();
 
     /**
      * Returns true if the attribute is nominal.
+     *
+     * @return
      */
     public boolean isNominal();
 
     /**
      * Returns true if the attribute is nominal.
+     *
+     * @return
      */
     public boolean isNumerical();
 
@@ -117,6 +129,13 @@ public interface Attribute extends Cloneable, Serializable {
      * @return String | Double | Boolean | etc.
      */
     public Iterator<? extends Object> values();
+
+    /**
+     * If attribute is numerical, it should support this conversion
+     *
+     * @return attribute values as double array
+     */
+    public double[] asDoubleArray();
 
     /**
      * Number of items (e.g. number of rows in dataset)
@@ -147,6 +166,8 @@ public interface Attribute extends Cloneable, Serializable {
 
     /**
      * Clones this attribute.
+     *
+     * @return
      */
     public Object clone();
 

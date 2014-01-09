@@ -172,6 +172,11 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
         return new TimePointAttributeIterator();
     }
 
+    @Override
+    public double[] asDoubleArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     class TimePointAttributeIterator implements Iterator<Double> {
 
         private int i = 0;
