@@ -40,6 +40,8 @@ public class DistPlot extends JPanel {
     private int height = 200;
     private int diameter = 4;
     private int barSize = 100;
+    private double globalMax = Double.NaN;
+    private double globalMin = Double.NaN;
 
     public DistPlot() {
         setDoubleBuffered(false);
@@ -119,6 +121,14 @@ public class DistPlot extends JPanel {
         System.out.println("min = " + min);
         System.out.println("avg = " + avg);
 
+        if (Double.isNaN(globalMax)) {
+            globalMax = max;
+        }
+
+        if (Double.isNaN(globalMin)) {
+            globalMin = min;
+        }
+
         double[] values = attr.asDoubleArray();
         Arrays.sort(values);
         Dump.array(values, "sorted array");
@@ -135,7 +145,7 @@ public class DistPlot extends JPanel {
         x = diameter + 5;
         g2.setColor(Color.blue);
         for (int i = 0; i < values.length; i++) {
-            y = scale(values[i], min, max);
+            y = scale(values[i]);
 
             circle = new Ellipse2D.Double(x - diameter / 2.0, y - diameter / 2.0, diameter, diameter);
             g2.fill(circle);
@@ -143,14 +153,14 @@ public class DistPlot extends JPanel {
 
         int xPlot = 50;
         int tickLength = 10;
-        int q1y = (int) scale(quartile(values, 25), min, max);
-        int q3y = (int) scale(quartile(values, 75), min, max);
+        int q1y = (int) scale(quartile(values, 25));
+        int q3y = (int) scale(quartile(values, 75));
 
         g2.setColor(Color.BLACK);
         g2.drawRect(xPlot, q3y, barSize, (q1y - q3y));
 
         //min tick
-        int yTick = (int) scale(min, min, max);
+        int yTick = (int) scale(min);
         g2.setColor(Color.black);
         int xTick = xPlot + (barSize / 2) - (tickLength / 2);
         g2.drawLine(xTick, yTick, xTick + (tickLength / 2), yTick);
@@ -169,7 +179,7 @@ public class DistPlot extends JPanel {
         g2.setStroke(drawingStroke);
         g2.draw(line);
 
-        yTick = (int) scale(max, min, max);
+        yTick = (int) scale(max);
         line = new Line2D.Double(xTick, yTick, xTick, q3y);
         g2.draw(line);
 
@@ -181,17 +191,17 @@ public class DistPlot extends JPanel {
         g2.drawLine(xTick, yTick, xPlot + tickLength, yTick);
 
         // avg tick
-        yTick = (int) scale(avg, min, max);
+        yTick = (int) scale(avg);
         g2.drawLine(xPlot, yTick, xPlot + barSize, yTick);
 
-        drawMedian(g2, median, xPlot, min, max);
+        drawMedian(g2, median, xPlot);
 
         g2.dispose();
     }
 
-    private void drawMedian(Graphics2D g2, double median, double xPlot, double min, double max) {
+    private void drawMedian(Graphics2D g2, double median, double xPlot) {
         // median tick
-        double yMedian = scale(median, min, max);
+        double yMedian = scale(median);
         g2.setColor(Color.RED);
         Line2D line = new Line2D.Double(xPlot, yMedian, xPlot + barSize, yMedian);
         g2.draw(line);
@@ -210,8 +220,8 @@ public class DistPlot extends JPanel {
      * @param max
      * @return
      */
-    private double scale(double v, double min, double max) {
-        return height - scale.scaleToRange(v, min, max, 0, height);
+    private double scale(double v) {
+        return height - scale.scaleToRange(v, globalMin, globalMax, 0, height);
     }
 
     /**
@@ -235,4 +245,19 @@ public class DistPlot extends JPanel {
         this.dataset = dataset;
     }
 
+    public double getGlobalMax() {
+        return globalMax;
+    }
+
+    public void setGlobalMax(double globalMax) {
+        this.globalMax = globalMax;
+    }
+
+    public double getGlobalMin() {
+        return globalMin;
+    }
+
+    public void setGlobalMin(double globalMin) {
+        this.globalMin = globalMin;
+    }
 }
