@@ -16,7 +16,7 @@ public class NumericalAttribute extends AbstractAttribute {
     private static final long serialVersionUID = 5512480424675307535L;
 
     protected NumericalAttribute(String name) {
-        super(name, BasicAttrType.NUMERICAL);
+        super(name, BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
         registerStatistics(new NumericalStats(this));
     }
 
@@ -96,6 +96,11 @@ public class NumericalAttribute extends AbstractAttribute {
             res[i] = dataset.instance(i).value(getIndex());
         }
         return res;
+    }
+
+    @Override
+    public boolean isMeta() {
+        return role == BasicAttrRole.META;
     }
 
     class NumericalAttributeIterator implements Iterator<Double> {

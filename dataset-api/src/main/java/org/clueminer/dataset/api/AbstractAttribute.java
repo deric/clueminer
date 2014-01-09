@@ -27,29 +27,37 @@ public abstract class AbstractAttribute implements Attribute {
 
     protected Dataset<? extends Instance> dataset;
 
+    protected AttributeRole role;
+
     /**
      * Creates a simple attribute which is not part of a series and does not
      * provide a unit string. This constructor should only be used for
      * attributes which were not generated with help of a generator, i.e. this
      * attribute has no function arguments. Only the last transformation is
      * cloned, the other transformations are cloned by reference.
+     *
+     * @param other
      */
-    protected AbstractAttribute(AbstractAttribute attribute) {
-        this.attributeDescription = attribute.attributeDescription;
+    protected AbstractAttribute(AbstractAttribute other) {
+        this.attributeDescription = other.attributeDescription;
 
         // copy statistics
         this.statistics = new LinkedList<Statistics>();
-        for (Statistics st : attribute.statistics) {
+        for (Statistics st : other.statistics) {
             this.statistics.add((Statistics) st.clone());
         }
+        this.role = other.role;
     }
 
-    protected AbstractAttribute(String name, AttributeType type) {
+    protected AbstractAttribute(String name, AttributeType type, AttributeRole role) {
         this.attributeDescription = new AttributeDescription(name, type, 0.0d);
+        this.role = role;
     }
 
     /**
      * Returns the name of the attribute.
+     *
+     * @return
      */
     @Override
     public String getName() {
@@ -58,6 +66,8 @@ public abstract class AbstractAttribute implements Attribute {
 
     /**
      * Sets the name of the attribute.
+     *
+     * @param v
      */
     @Override
     public void setName(String v) {
@@ -108,8 +118,8 @@ public abstract class AbstractAttribute implements Attribute {
     public void registerStatistics(Statistics statistics) {
         this.statistics.add(statistics);
         IStats[] stats = statistics.provides();
-        for (int i = 0; i < stats.length; i++) {
-            statisticsProviders.put(stats[i], statistics);
+        for (IStats stat : stats) {
+            statisticsProviders.put(stat, statistics);
         }
     }
 
@@ -130,6 +140,14 @@ public abstract class AbstractAttribute implements Attribute {
     @Override
     public double getDefault() {
         return this.attributeDescription.getDefault();
+    }
+
+    public AttributeRole getRole() {
+        return role;
+    }
+
+    public void setRole(AttributeRole role) {
+        this.role = role;
     }
 
     /**

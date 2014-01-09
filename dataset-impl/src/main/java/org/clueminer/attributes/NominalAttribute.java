@@ -13,7 +13,7 @@ public abstract class NominalAttribute extends AbstractAttribute {
     private static final long serialVersionUID = -3830980883541763869L;
 
     protected NominalAttribute(String name, AttributeType type) {
-        super(name, type);
+        super(name, type, BasicAttrRole.INPUT);
         //	registerStatistics(new NominalStatistics());
         //	registerStatistics(new UnknownStatistics());
     }
@@ -35,6 +35,11 @@ public abstract class NominalAttribute extends AbstractAttribute {
     /**
      * Returns a string representation and maps the value to a string if type is
      * nominal. The number of digits is ignored.
+     *
+     * @param value
+     * @param digits
+     * @param quoteNominal
+     * @return
      */
     @Override
     public String asString(double value, int digits, boolean quoteNominal) {

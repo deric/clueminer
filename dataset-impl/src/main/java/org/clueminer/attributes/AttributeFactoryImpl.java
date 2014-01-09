@@ -2,6 +2,7 @@ package org.clueminer.attributes;
 
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.AttributeType;
 
 /**
@@ -19,6 +20,16 @@ public class AttributeFactoryImpl implements AttributeBuilder {
      */
     @Override
     public Attribute create(String name, AttributeType type) {
+        return create(name, type, BasicAttrRole.INPUT);
+    }
+
+    @Override
+    public Attribute create(String name, String type) {
+        return create(name, BasicAttrType.valueOf(type));
+    }
+
+    @Override
+    public Attribute create(String name, AttributeType type, AttributeRole role) {
         switch ((BasicAttrType) type) {
             case NUMERICAL:
             case NUMERIC:
@@ -28,10 +39,5 @@ public class AttributeFactoryImpl implements AttributeBuilder {
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
-    }
-
-    @Override
-    public Attribute create(String name, String type) {
-        return create(name, BasicAttrType.valueOf(type));
     }
 }

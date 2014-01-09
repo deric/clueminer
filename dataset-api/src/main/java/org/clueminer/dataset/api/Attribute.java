@@ -18,11 +18,15 @@ public interface Attribute extends Cloneable, Serializable {
 
     /**
      * Returns the name of the attribute.
+     *
+     * @return
      */
     public String getName();
 
     /**
      * Sets the name of the attribute.
+     *
+     * @param name
      */
     public void setName(String name);
 
@@ -51,11 +55,15 @@ public interface Attribute extends Cloneable, Serializable {
      * Returns an iterator over all statistics objects available for this type
      * of attribute. Additional statistics can be registered via
      * {@link #registerStatistics(Statistics)}.
+     *
+     * @return
      */
     public Iterator<Statistics> getAllStatistics();
 
     /**
      * Registers the attribute statistics.
+     *
+     * @param statistics
      */
     public void registerStatistics(Statistics statistics);
 
@@ -91,6 +99,8 @@ public interface Attribute extends Cloneable, Serializable {
      * Returns the nominal mapping between nominal values and internal double
      * representations. Please note that invoking this method might result in an
      * exception for non-nominal attributes.
+     *
+     * @param nominalMapping
      */
     public void setMapping(NominalMapping nominalMapping);
 
@@ -123,6 +133,13 @@ public interface Attribute extends Cloneable, Serializable {
     public boolean isNumerical();
 
     /**
+     * If true attribute would not be included in input data of an algorithm
+     *
+     * @return
+     */
+    public boolean isMeta();
+
+    /**
      * We should be able to go through all values of an attribute. In
      * spreadsheet we would have Instances in rows and attributes in columns
      *
@@ -147,12 +164,18 @@ public interface Attribute extends Cloneable, Serializable {
     /**
      * Returns a formatted string of the given value according to the attribute
      * type.
+     *
+     * @param value
+     * @param digits
+     * @return
      */
     public String asString(double value, int digits, boolean quoteNominal);
 
     /**
      * Returns true if the given object is an attribute with the same name and
      * table index.
+     *
+     * @param o
      */
     @Override
     public boolean equals(Object o);

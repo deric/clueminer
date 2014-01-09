@@ -34,14 +34,14 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     private long timestamp;
 
     public TimePointAttribute(int index, long tp) {
-        super(String.valueOf(index), BasicAttrType.NUMERICAL);
+        super(String.valueOf(index), BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
         this.index = index;
         this.timestamp = tp;
         registerStatistics(new NumericalStats(this));
     }
 
     public TimePointAttribute(int index, long tp, double position) {
-        super(String.valueOf(index), BasicAttrType.NUMERICAL);
+        super(String.valueOf(index), BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
         this.index = index;
         this.timestamp = tp;
         this.position = position;
@@ -175,6 +175,11 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     @Override
     public double[] asDoubleArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isMeta() {
+        return role == BasicAttrRole.META;
     }
 
     class TimePointAttributeIterator implements Iterator<Double> {

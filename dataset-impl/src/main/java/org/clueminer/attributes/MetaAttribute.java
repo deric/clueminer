@@ -10,20 +10,20 @@ import org.clueminer.stats.NumericalStats;
  *
  * @author Tomas Barton
  */
-public class MetaNumericAttribute extends AbstractAttribute {
+public class MetaAttribute extends AbstractAttribute {
 
-    public MetaNumericAttribute(String name) {
-        super(name, BasicAttrType.NUMERICAL);
+    public MetaAttribute(String name) {
+        super(name, BasicAttrType.NUMERICAL, BasicAttrRole.META);
         registerStatistics(new NumericalStats(this));
     }
 
-    private MetaNumericAttribute(MetaNumericAttribute attr) {
+    private MetaAttribute(MetaAttribute attr) {
         super(attr);
     }
 
     @Override
     public Object clone() {
-        return new MetaNumericAttribute(this);
+        return new MetaAttribute(this);
     }
 
     @Override
@@ -72,6 +72,11 @@ public class MetaNumericAttribute extends AbstractAttribute {
     @Override
     public double[] asDoubleArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isMeta() {
+        return role == BasicAttrRole.META;
     }
 
 }
