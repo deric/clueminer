@@ -4,13 +4,14 @@ import org.clueminer.math.Standardisation;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Sometimes called z-score
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Standardisation.class)
 public class StdScale extends Standardisation {
 
-    private static String name = "Min-Max";
+    private static final String name = "Min-Max";
     private double targetMin = -10;
     private double targetMax = 10;
 
@@ -21,8 +22,11 @@ public class StdScale extends Standardisation {
 
     /**
      * We expect to have parameters in columns, and samples in rows
+     *
      * @param A
-     * @return 
+     * @param m
+     * @param n
+     * @return
      */
     @Override
     public double[][] optimize(double[][] A, int m, int n) {
@@ -55,9 +59,9 @@ public class StdScale extends Standardisation {
         }
         return B;
     }
-    
+
     /**
-     * 
+     *
      * @param value
      * @param fromRangeMin
      * @param fromRangeMax
