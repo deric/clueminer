@@ -2,7 +2,7 @@ package org.clueminer.attributes;
 
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
-import org.clueminer.dataset.api.IAttributeType;
+import org.clueminer.dataset.api.AttributeType;
 
 /**
  *
@@ -18,8 +18,8 @@ public class AttributeFactoryImpl implements AttributeBuilder {
      * @return
      */
     @Override
-    public Attribute create(String name, IAttributeType type) {
-        switch ((AttributeType) type) {
+    public Attribute create(String name, AttributeType type) {
+        switch ((BasicAttrType) type) {
             case NUMERICAL:
             case NUMERIC:
             case INTEGER:
@@ -32,6 +32,6 @@ public class AttributeFactoryImpl implements AttributeBuilder {
 
     @Override
     public Attribute create(String name, String type) {
-        return create(name, AttributeType.valueOf(type));
+        return create(name, BasicAttrType.valueOf(type));
     }
 }

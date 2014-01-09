@@ -16,7 +16,7 @@ public class NumericalAttribute extends AbstractAttribute {
     private static final long serialVersionUID = 5512480424675307535L;
 
     protected NumericalAttribute(String name) {
-        super(name, AttributeType.NUMERICAL);
+        super(name, BasicAttrType.NUMERICAL);
         registerStatistics(new NumericalStats(this));
     }
 

@@ -2,7 +2,7 @@ package org.clueminer.evaluation;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -42,8 +42,8 @@ public class CIndexTest {
     public void testScore() throws IOException, FileNotFoundException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("x", AttributeType.NUMERICAL));
-        data.setAttribute(0, data.attributeBuilder().create("y", AttributeType.NUMERICAL));
+        data.setAttribute(0, data.attributeBuilder().create("x", BasicAttrType.NUMERICAL));
+        data.setAttribute(0, data.attributeBuilder().create("y", BasicAttrType.NUMERICAL));
         ARFFHandler arff = new ARFFHandler();
         assertTrue(arff.load(tf.simpleCluster(), data, 2));
 
@@ -115,10 +115,10 @@ public class CIndexTest {
     public void testIris() throws IOException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("sepal length", AttributeType.NUMERICAL));
-        data.setAttribute(1, data.attributeBuilder().create("sepal width", AttributeType.NUMERICAL));
-        data.setAttribute(2, data.attributeBuilder().create("petal length", AttributeType.NUMERICAL));
-        data.setAttribute(3, data.attributeBuilder().create("petal width", AttributeType.NUMERICAL));
+        data.setAttribute(0, data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL));
+        data.setAttribute(1, data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL));
+        data.setAttribute(2, data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL));
+        data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
 
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
         int evalNum = 9;

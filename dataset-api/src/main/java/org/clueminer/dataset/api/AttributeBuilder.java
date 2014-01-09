@@ -6,7 +6,7 @@ package org.clueminer.dataset.api;
  */
 public interface AttributeBuilder {
 
-    public Attribute create(String name, IAttributeType type);
+    public Attribute create(String name, AttributeType type);
 
     public Attribute create(String name, String type);
 }

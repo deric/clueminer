@@ -24,7 +24,7 @@ public abstract class AbstractAttribute implements Attribute {
      * Mapping of attributes to its providers
      */
     protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
-    
+
     protected Dataset<? extends Instance> dataset;
 
     /**
@@ -44,7 +44,7 @@ public abstract class AbstractAttribute implements Attribute {
         }
     }
 
-    protected AbstractAttribute(String name, IAttributeType type) {
+    protected AbstractAttribute(String name, AttributeType type) {
         this.attributeDescription = new AttributeDescription(name, type, 0.0d);
     }
 
@@ -79,22 +79,25 @@ public abstract class AbstractAttribute implements Attribute {
     public void setIndex(int index) {
         this.attributeDescription.setIndex(index);
     }
-    
+
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset){
+    public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
     }
 
     /**
      * Returns the statistics type of this attribute.
      *
+     * @return
      */
-    public IAttributeType getType() {
+    public AttributeType getType() {
         return this.attributeDescription.getType();
     }
 
     /**
      * Returns the attribute statistics.
+     *
+     * @return
      */
     @Override
     public Iterator<Statistics> getAllStatistics() {
@@ -112,10 +115,10 @@ public abstract class AbstractAttribute implements Attribute {
 
     @Override
     public double statistics(IStats name) {
-        if(statisticsProviders.containsKey(name)){
+        if (statisticsProviders.containsKey(name)) {
             return statisticsProviders.get(name).statistics(name);
         }
-        throw new RuntimeException("statistics "+name+" was not registered");
+        throw new RuntimeException("statistics " + name + " was not registered");
     }
 
     @Override
@@ -138,6 +141,9 @@ public abstract class AbstractAttribute implements Attribute {
     /**
      * Returns true if the given attribute has the same name and the same table
      * index.
+     *
+     * @param o
+     * @return
      */
     @Override
     public boolean equals(Object o) {
@@ -155,6 +161,8 @@ public abstract class AbstractAttribute implements Attribute {
 
     /**
      * Returns a human readable string that describes this attribute.
+     *
+     * @return
      */
     @Override
     public String toString() {

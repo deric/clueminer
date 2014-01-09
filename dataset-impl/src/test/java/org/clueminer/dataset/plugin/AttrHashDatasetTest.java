@@ -2,7 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Instance;
@@ -38,9 +38,9 @@ public class AttrHashDatasetTest {
     public void setUp() {
         dataset = new AttrHashDataset<Instance>(10);
         this.builder = dataset.attributeBuilder();
-        dataset.setAttribute(0, builder.create("first", AttributeType.NUMERICAL));
-        dataset.setAttribute(1, builder.create("second", AttributeType.NUMERICAL));
-        dataset.setAttribute(2, builder.create("third", AttributeType.NUMERICAL));
+        dataset.setAttribute(0, builder.create("first", BasicAttrType.NUMERICAL));
+        dataset.setAttribute(1, builder.create("second", BasicAttrType.NUMERICAL));
+        dataset.setAttribute(2, builder.create("third", BasicAttrType.NUMERICAL));
         //dataset.attributeBuilder().create("class", DataTypes.CLASS_VALUE);
 
         Instance inst = dataset.builder().create(new double[]{0.1, 0.8, 3});
@@ -51,7 +51,6 @@ public class AttrHashDatasetTest {
         dataset.add(inst);
         inst = dataset.builder().create(new double[]{0.1, 4.0, 15});
         dataset.add(inst);
-
 
         dataset.setName("test dataset");
     }
@@ -70,7 +69,7 @@ public class AttrHashDatasetTest {
      */
     @Test
     public void testSetAttribute() {
-        dataset.setAttribute(3, builder.create("foo", AttributeType.NUMERIC));
+        dataset.setAttribute(3, builder.create("foo", BasicAttrType.NUMERIC));
         assertEquals(4, dataset.attributeCount());
     }
 
@@ -80,9 +79,9 @@ public class AttrHashDatasetTest {
     @Test
     public void testSetAttributes() {
         Map<Integer, Attribute> attr = new HashMap<Integer, Attribute>();
-        attr.put(3, builder.create("foo", AttributeType.NUMERIC));
-        attr.put(4, builder.create("bar", AttributeType.NUMERIC));
-        attr.put(5, builder.create("oogh", AttributeType.NUMERIC));
+        attr.put(3, builder.create("foo", BasicAttrType.NUMERIC));
+        attr.put(4, builder.create("bar", BasicAttrType.NUMERIC));
+        attr.put(5, builder.create("oogh", BasicAttrType.NUMERIC));
         assertEquals(3, attr.size());
         dataset.setAttributes(attr);
         assertEquals(6, dataset.attributeCount());
@@ -91,14 +90,13 @@ public class AttrHashDatasetTest {
     @Test
     public void testSetValuesForNewAttributes() {
         Map<Integer, Attribute> attr = new HashMap<Integer, Attribute>();
-        attr.put(3, builder.create("foo", AttributeType.NUMERIC));
-        attr.put(4, builder.create("bar", AttributeType.NUMERIC));
+        attr.put(3, builder.create("foo", BasicAttrType.NUMERIC));
+        attr.put(4, builder.create("bar", BasicAttrType.NUMERIC));
         dataset.setAttributes(attr);
         double value = 456.0;
         dataset.setAttributeValue("foo", 0, value);
         assertEquals(value, dataset.getAttributeValue("foo", 0), delta);
     }
-
 
     /**
      * Test of getAttributeValue method, of class AttrHashDataset.
@@ -111,7 +109,6 @@ public class AttrHashDatasetTest {
         assertEquals(0.1, dataset.getAttributeValue("first", 0), delta);
         assertEquals(3.0, dataset.getAttributeValue("second", 1), delta);
     }
-
 
     /**
      * Test of setAttributeValue method, of class AttrHashDataset.

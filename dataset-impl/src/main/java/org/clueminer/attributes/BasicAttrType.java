@@ -1,12 +1,13 @@
 package org.clueminer.attributes;
 
-import org.clueminer.dataset.api.IAttributeType;
+import org.clueminer.dataset.api.AttributeType;
 
 /**
  *
  * @author Tomas Barton
  */
-public enum AttributeType implements IAttributeType {
+public enum BasicAttrType implements AttributeType {
+
     NUMERICAL,
     NUMERIC,
     REAL,
@@ -16,5 +17,5 @@ public enum AttributeType implements IAttributeType {
     TIME,
     DATE_TIME,
     INTEGER;
-    
+
 }

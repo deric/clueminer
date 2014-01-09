@@ -1,7 +1,7 @@
 package org.clueminer.attributes;
 
 import org.clueminer.dataset.api.AbstractAttribute;
-import org.clueminer.dataset.api.IAttributeType;
+import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.row.Tools;
 
 /**
@@ -12,7 +12,7 @@ public abstract class NominalAttribute extends AbstractAttribute {
 
     private static final long serialVersionUID = -3830980883541763869L;
 
-    protected NominalAttribute(String name, IAttributeType type) {
+    protected NominalAttribute(String name, AttributeType type) {
         super(name, type);
         //	registerStatistics(new NominalStatistics());
         //	registerStatistics(new UnknownStatistics());

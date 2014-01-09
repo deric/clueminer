@@ -2,9 +2,7 @@ package org.clueminer.cluster;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.attributes.AttributeType;
-import org.clueminer.cluster.BaseCluster;
-import org.clueminer.cluster.ClusterList;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -149,7 +147,7 @@ public class FakeClustering {
     public static Dataset<Instance> wine() {
         if (wine == null) {
             wine = new SampleDataset(27);
-            wine.setAttribute(0, wine.attributeBuilder().create("x", AttributeType.INTEGER));
+            wine.setAttribute(0, wine.attributeBuilder().create("x", BasicAttrType.INTEGER));
 
             String klass = "cabernet";
             for (int i = 0; i < 13; i++) {
@@ -176,13 +174,13 @@ public class FakeClustering {
             simpleClustering = new ClusterList(3);
             Cluster a = new BaseCluster(12);
             a.setName("cabernet");
-            a.setAttribute(0, a.attributeBuilder().create("x", AttributeType.INTEGER));
+            a.setAttribute(0, a.attributeBuilder().create("x", BasicAttrType.INTEGER));
             Cluster b = new BaseCluster(9);
             b.setName("syrah");
-            b.setAttribute(0, b.attributeBuilder().create("x", AttributeType.INTEGER));
+            b.setAttribute(0, b.attributeBuilder().create("x", BasicAttrType.INTEGER));
             Cluster c = new BaseCluster(6);
             c.setName("pinot");
-            c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
+            c.setAttribute(0, c.attributeBuilder().create("x", BasicAttrType.INTEGER));
 
             Dataset<Instance> data = wine();
             for (int i = 0; i < 13; i++) {
@@ -216,14 +214,14 @@ public class FakeClustering {
             simpleResponse = new ClusterList(3);
             Cluster a = new BaseCluster(13);
             a.setName("cluster A");
-            a.setAttribute(0, a.attributeBuilder().create("x", AttributeType.INTEGER));
+            a.setAttribute(0, a.attributeBuilder().create("x", BasicAttrType.INTEGER));
             Cluster b = new BaseCluster(9);
             b.setName("cluster B");
-            b.setAttribute(0, b.attributeBuilder().create("x", AttributeType.INTEGER));
+            b.setAttribute(0, b.attributeBuilder().create("x", BasicAttrType.INTEGER));
 
             Cluster c = new BaseCluster(5);
             c.setName("cluster C");
-            c.setAttribute(0, c.attributeBuilder().create("x", AttributeType.INTEGER));
+            c.setAttribute(0, c.attributeBuilder().create("x", BasicAttrType.INTEGER));
 
             Dataset<Instance> data = wine();
             System.out.println("dataset size " + data.size());

@@ -34,14 +34,14 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     private long timestamp;
 
     public TimePointAttribute(int index, long tp) {
-        super(String.valueOf(index), AttributeType.NUMERICAL);
+        super(String.valueOf(index), BasicAttrType.NUMERICAL);
         this.index = index;
         this.timestamp = tp;
         registerStatistics(new NumericalStats(this));
     }
 
     public TimePointAttribute(int index, long tp, double position) {
-        super(String.valueOf(index), AttributeType.NUMERICAL);
+        super(String.valueOf(index), BasicAttrType.NUMERICAL);
         this.index = index;
         this.timestamp = tp;
         this.position = position;

@@ -18,16 +18,16 @@ public class AttributeDescription implements Serializable {
      * Index of this attribute in its Dataset
      */
     private int index;
-    private IAttributeType type;
+    private AttributeType type;
 
-    public AttributeDescription(String name, IAttributeType type, double defaultValue) {
+    public AttributeDescription(String name, AttributeType type, double defaultValue) {
         this.name = name;
         this.index = -1;
         this.type = type;
         this.defaultValue = defaultValue;
     }
 
-    public AttributeDescription(int index, String name, IAttributeType type, double defaultValue) {
+    public AttributeDescription(int index, String name, AttributeType type, double defaultValue) {
         this.name = name;
         this.index = index;
         this.type = type;
@@ -66,7 +66,7 @@ public class AttributeDescription implements Serializable {
         return defaultValue;
     }
 
-    public IAttributeType getType() {
+    public AttributeType getType() {
         return type;
     }
 

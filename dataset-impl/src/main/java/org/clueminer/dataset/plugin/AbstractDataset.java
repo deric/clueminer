@@ -12,6 +12,7 @@ import org.clueminer.events.DatasetListener;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> implements Dataset<E> {
 
@@ -150,9 +151,6 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
 
     @Override
     public boolean hasIndex(int idx) {
-        if (idx < 0 || idx >= size()) {
-            return false;
-        }
-        return true;
+        return idx >= 0 && idx < size();
     }
 }

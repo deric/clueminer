@@ -13,7 +13,7 @@ import org.clueminer.stats.NumericalStats;
 public class MetaNumericAttribute extends AbstractAttribute {
 
     public MetaNumericAttribute(String name) {
-        super(name, AttributeType.NUMERICAL);
+        super(name, BasicAttrType.NUMERICAL);
         registerStatistics(new NumericalStats(this));
     }
 

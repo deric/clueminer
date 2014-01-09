@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -35,8 +35,8 @@ public class DunnIndexTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         dataset = new SampleDataset();
-        dataset.setAttribute(0, dataset.attributeBuilder().create("x", AttributeType.NUMERICAL));
-        dataset.setAttribute(0, dataset.attributeBuilder().create("y", AttributeType.NUMERICAL));
+        dataset.setAttribute(0, dataset.attributeBuilder().create("x", BasicAttrType.NUMERICAL));
+        dataset.setAttribute(0, dataset.attributeBuilder().create("y", BasicAttrType.NUMERICAL));
         ARFFHandler arff = new ARFFHandler();
         assertTrue(arff.load(tf.simpleCluster(), dataset, 2));
     }
@@ -69,7 +69,7 @@ public class DunnIndexTest {
         Dataset<Instance> iris = new SampleDataset();
         arff.load(tf.irisArff(), iris, 4);
         Clustering clusters = km.partition(iris);
-        System.out.println("dunn="+test.score(clusters, iris));
+        System.out.println("dunn=" + test.score(clusters, iris));
 
     }
 

@@ -1,7 +1,7 @@
 package org.clueminer.dataset.plugin;
 
 import java.util.Random;
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
@@ -36,9 +36,9 @@ public class SampleDatasetTest {
     public void setUp() {
         dataset = new SampleDataset(5);
         AttributeBuilder builder = dataset.attributeBuilder();
-        dataset.setAttribute(0, builder.create("first", AttributeType.NUMERICAL));
-        dataset.setAttribute(1, builder.create("second", AttributeType.NUMERICAL));
-        dataset.setAttribute(2, builder.create("third", AttributeType.NUMERICAL));
+        dataset.setAttribute(0, builder.create("first", BasicAttrType.NUMERICAL));
+        dataset.setAttribute(1, builder.create("second", BasicAttrType.NUMERICAL));
+        dataset.setAttribute(2, builder.create("third", BasicAttrType.NUMERICAL));
         //dataset.attributeBuilder().create("class", DataTypes.CLASS_VALUE);
 
         Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});

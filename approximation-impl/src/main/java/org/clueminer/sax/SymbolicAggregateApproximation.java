@@ -6,9 +6,7 @@ import edu.hawaii.jmotif.datatype.Timeseries;
 import edu.hawaii.jmotif.logic.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.logic.sax.alphabet.NormalAlphabet;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -33,8 +31,9 @@ public class SymbolicAggregateApproximation {
     /**
      *
      * @param input
-     * @param PAASize the number of the points used in PAA reduction of the time
-     * series (or the length of the resulting string)
+     * @param PAASize      the number of the points used in PAA reduction of the
+     *                     time
+     *                     series (or the length of the resulting string)
      * @param alphabetSize the alphabet size used
      * @return
      * @throws OperatorException
@@ -45,14 +44,14 @@ public class SymbolicAggregateApproximation {
         if (PAASize > input.attributeCount()) {
             throw new OperatorException("Parameter PAA_size must not be greater than number of regular attributes in input set.");
         }
-            // deliver parameters to output port
+        // deliver parameters to output port
         //   double[][] p = {{alphabetSize}, {PAASize}};
         //   ExampleSet params = ExampleSetFactory.createExampleSet(p);
         //   SAXParametersOutputPort.deliver(params);
 
-        Attribute SAXAttributes[] = {input.attributeBuilder().create("SAX_Value", AttributeType.NOMINAL)};
+        Attribute SAXAttributes[] = {input.attributeBuilder().create("SAX_Value", BasicAttrType.NOMINAL)};
 
-            //    MemoryExampleTable table = new MemoryExampleTable(SAXAttributes);
+        //    MemoryExampleTable table = new MemoryExampleTable(SAXAttributes);
         Map<Integer, Attribute> attributes = input.getAttributes();
 
         for (int i = 0; i < input.size(); i++) {
@@ -80,7 +79,7 @@ public class SymbolicAggregateApproximation {
             }
         }
 
-            // set special attributes to the resulting example set
+        // set special attributes to the resulting example set
         //        List<Attribute> newAttributes = new LinkedList<Attribute>();
         //        Iterator<AttributeRole> itAR = es.getAttributes().specialAttributes();
         //        while (itAR.hasNext()) {
@@ -88,7 +87,7 @@ public class SymbolicAggregateApproximation {
         //            newAttributes.set(attribute);
         //        }
         //        table.addAttributes(newAttributes);
-            // return resulting example set
+        // return resulting example set
         return output;
     }
     /*

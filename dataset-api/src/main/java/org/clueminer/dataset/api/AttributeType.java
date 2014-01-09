@@ -5,4 +5,4 @@ package org.clueminer.dataset.api;
  * 
  * @author Tomas Barton
  */
-public interface IAttributeType { }
+public interface AttributeType { }

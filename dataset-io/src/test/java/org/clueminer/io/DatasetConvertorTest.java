@@ -1,6 +1,6 @@
 package org.clueminer.io;
 
-import org.clueminer.attributes.AttributeType;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
@@ -24,10 +24,10 @@ public class DatasetConvertorTest {
     public static void setUpClass() throws Exception {
         CommonFixture tf = new CommonFixture();
         data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("sepal length", AttributeType.NUMERICAL));
-        data.setAttribute(1, data.attributeBuilder().create("sepal width", AttributeType.NUMERICAL));
-        data.setAttribute(2, data.attributeBuilder().create("petal length", AttributeType.NUMERICAL));
-        data.setAttribute(3, data.attributeBuilder().create("petal width", AttributeType.NUMERICAL));
+        data.setAttribute(0, data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL));
+        data.setAttribute(1, data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL));
+        data.setAttribute(2, data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL));
+        data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
 
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
     }
