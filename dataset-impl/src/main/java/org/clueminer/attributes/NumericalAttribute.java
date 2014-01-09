@@ -2,6 +2,7 @@ package org.clueminer.attributes;
 
 import java.util.Iterator;
 import org.clueminer.dataset.api.AbstractAttribute;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.NominalMapping;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.row.Tools;
@@ -14,6 +15,11 @@ import org.clueminer.stats.NumericalStats;
 public class NumericalAttribute extends AbstractAttribute {
 
     private static final long serialVersionUID = 5512480424675307535L;
+
+    protected NumericalAttribute(String name, AttributeRole role) {
+        super(name, BasicAttrType.NUMERICAL, role);
+        registerStatistics(new NumericalStats(this));
+    }
 
     protected NumericalAttribute(String name) {
         super(name, BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);

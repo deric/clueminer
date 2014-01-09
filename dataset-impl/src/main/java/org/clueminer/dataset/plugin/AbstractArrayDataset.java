@@ -141,7 +141,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     public Attribute[] attributeByRole(AttributeRole role) {
         List<Attribute> list = new LinkedList<Attribute>();
 
-        for (Attribute attr : list) {
+        for (Attribute attr : getAttributes().values()) {
             if (attr.getRole() == role) {
                 list.add(attr);
             }

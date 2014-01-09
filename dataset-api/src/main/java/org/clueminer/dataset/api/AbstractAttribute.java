@@ -142,10 +142,12 @@ public abstract class AbstractAttribute implements Attribute {
         return this.attributeDescription.getDefault();
     }
 
+    @Override
     public AttributeRole getRole() {
         return role;
     }
 
+    @Override
     public void setRole(AttributeRole role) {
         this.role = role;
     }

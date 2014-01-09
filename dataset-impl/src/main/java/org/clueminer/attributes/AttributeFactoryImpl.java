@@ -35,7 +35,7 @@ public class AttributeFactoryImpl implements AttributeBuilder {
             case NUMERIC:
             case INTEGER:
             case REAL: //right now it's handled the very same way
-                return new NumericalAttribute(name);
+                return new NumericalAttribute(name, role);
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }

@@ -196,7 +196,11 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Map<Integer, Attribute> res = new HashMap<Integer, Attribute>();
+        for (int i = 0; i < attributes.length; i++) {
+            res.put(i, attributes[i]);
+        }
+        return res;
     }
 
     @Override

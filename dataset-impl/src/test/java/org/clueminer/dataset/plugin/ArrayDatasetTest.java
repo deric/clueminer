@@ -2,6 +2,8 @@ package org.clueminer.dataset.plugin;
 
 import java.util.Iterator;
 import java.util.Random;
+import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
@@ -20,7 +22,7 @@ import static org.junit.Assert.*;
  */
 public class ArrayDatasetTest {
 
-    private static ArrayDataset<Instance> dataset;
+    private static Dataset<Instance> dataset;
     private static final int dataCapacity = 10;
     private static final int attributesCnt = 2;
     private static Random rand;
@@ -404,4 +406,11 @@ public class ArrayDatasetTest {
         assertEquals(false, dataset.hasIndex(-1));
         assertEquals(false, dataset.hasIndex(99999));
     }
+
+    @Test
+    public void testGetAttributeByRole() {
+        Attribute[] attr = dataset.attributeByRole(BasicAttrRole.INPUT);
+        assertEquals(2, attr.length);
+    }
+
 }
