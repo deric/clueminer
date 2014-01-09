@@ -164,6 +164,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public Attribute[] copyAttributes();
 
     /**
+     * Array of attributes matching given role
+     *
+     * @param role input or meta data
+     * @return
+     */
+    public Attribute[] attributeByRole(AttributeRole role);
+
+    /**
      * Reference to attributes (when we construct clusters we can use reference
      * to original data, however we can not safely modify data)
      *

@@ -2,7 +2,11 @@ package org.clueminer.dataset.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.event.EventListenerList;
+import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -152,5 +156,22 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     @Override
     public boolean hasIndex(int idx) {
         return idx >= 0 && idx < size();
+    }
+
+    @Override
+    public Attribute[] attributeByRole(AttributeRole role) {
+        List<Attribute> list = new LinkedList<Attribute>();
+
+        for (Attribute attr : list) {
+            if (attr.getRole() == role) {
+                list.add(attr);
+            }
+        }
+
+        if (list.size() > 0) {
+            return list.toArray(new Attribute[list.size()]);
+        } else {
+            return new Attribute[0];
+        }
     }
 }

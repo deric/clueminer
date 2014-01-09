@@ -140,6 +140,20 @@ public interface Attribute extends Cloneable, Serializable {
     public boolean isMeta();
 
     /**
+     * Role could be input data (used for computation) or meta data
+     *
+     * @return
+     */
+    public AttributeRole getRole();
+
+    /**
+     * Set role of the attribute
+     *
+     * @param role
+     */
+    public void setRole(AttributeRole role);
+
+    /**
      * We should be able to go through all values of an attribute. In
      * spreadsheet we would have Instances in rows and attributes in columns
      *

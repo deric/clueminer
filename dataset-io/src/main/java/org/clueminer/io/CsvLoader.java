@@ -21,6 +21,7 @@ public class CsvLoader implements DatasetLoader {
     private int classIndex = -1;
     private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
     private ArrayList<Integer> nameAttr = new ArrayList<Integer>();
+    private ArrayList<Integer> metaAttr = new ArrayList<Integer>();
     private Dataset<Instance> dataset;
     private String nameJoinChar = " ";
 
@@ -63,7 +64,7 @@ public class CsvLoader implements DatasetLoader {
         String[] arr;
         StringBuilder name = null;
         int num = 0;
-        int nameApp = 0;
+        int nameApp;
         for (String line : it) {
             arr = line.split(separator);
             if (num == 0 && dataset.attributeCount() == 0) {
@@ -202,6 +203,14 @@ public class CsvLoader implements DatasetLoader {
      */
     public void addNameAttr(int column) {
         nameAttr.add(column);
+    }
+
+    public void addMetaAttr(int column) {
+        metaAttr.add(column);
+    }
+
+    public void setMetaAttr(ArrayList<Integer> metaAttr) {
+        this.metaAttr = metaAttr;
     }
 
     public ArrayList<Integer> getNameAttr() {
