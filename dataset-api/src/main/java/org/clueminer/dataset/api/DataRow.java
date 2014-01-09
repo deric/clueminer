@@ -8,6 +8,7 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
 
     private static final long serialVersionUID = 7076642394603104341L;
     protected Instance ancestor;
+    protected double[] meta;
 
     public DataRow(Object classValue) {
         setClassValue(classValue);
@@ -15,6 +16,10 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
 
     /**
      * Returns the value for the given index.
+     *
+     * @param index
+     * @param defaultValue
+     * @return
      */
     protected abstract double getValue(int index, double defaultValue);
 
@@ -28,8 +33,20 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
      */
     public abstract void trim();
 
+    @Override
+    public double[] getMetaNum() {
+        return meta;
+    }
+
+    @Override
+    public void setMetaNum(double[] meta) {
+        this.meta = meta;
+    }
+
     /**
      * Returns a string representation for this data row.
+     *
+     * @return
      */
     @Override
     public abstract String toString();
@@ -65,7 +82,7 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
      * @return Instance from which was this one derived
      */
     @Override
-    public Instance getAncestor(){
+    public Instance getAncestor() {
         return ancestor;
     }
 
@@ -75,15 +92,15 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
      * @param instance
      */
     @Override
-    public void setAncestor(Instance instance){
+    public void setAncestor(Instance instance) {
         this.ancestor = instance;
     }
-    
+
     @Override
-    public String[] toStringArray(){
+    public String[] toStringArray() {
         String[] res = new String[size()];
         for (int i = 0; i < res.length; i++) {
-            res[i] = String.valueOf(getValue(i, Double.NaN));            
+            res[i] = String.valueOf(getValue(i, Double.NaN));
         }
         return res;
     }

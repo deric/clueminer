@@ -33,4 +33,15 @@ public interface AttributeBuilder {
      * @return
      */
     public Attribute create(String name, String type);
+
+    /**
+     * In order to be independent on specific implementation a lookup by type
+     * and role could be used. Befare of possible runtime exceptions
+     *
+     * @param name
+     * @param type
+     * @param role
+     * @return
+     */
+    public Attribute create(String name, String type, String role);
 }

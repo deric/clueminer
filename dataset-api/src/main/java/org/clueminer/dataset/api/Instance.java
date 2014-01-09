@@ -10,6 +10,7 @@ import org.clueminer.math.Vector;
  * This definition should be as general as possible, however computing distances
  * on nominal attributes is tricky with strongly typed language.
  *
+ * @param <T>
  * @TODO In future it would be good to introduce a special interface for string
  * attributes.
  *
@@ -146,6 +147,19 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @return array of Strings
      */
     public String[] toStringArray();
+
+    /**
+     *
+     * @return numeric meta data
+     */
+    public double[] getMetaNum();
+
+    /**
+     * Numeric meta data
+     *
+     * @param meta
+     */
+    public void setMetaNum(double[] meta);
 
     /**
      * When preprocessing data sometimes we need to display reference to

@@ -24,6 +24,7 @@ public class CsvLoader implements DatasetLoader {
     private ArrayList<Integer> metaAttr = new ArrayList<Integer>();
     private Dataset<Instance> dataset;
     private String nameJoinChar = " ";
+    private String defaultDataType = "NUMERICAL";
 
     @Override
 
@@ -60,7 +61,9 @@ public class CsvLoader implements DatasetLoader {
 
         int skip;
         int skipSize;
+        int metaIndex;
         double[] values;
+        double[] meta = null;
         String[] arr;
         StringBuilder name = null;
         int num = 0;
@@ -77,11 +80,14 @@ public class CsvLoader implements DatasetLoader {
             skipSize = skipIndex.size();
             nameApp = 0;
             skip = 0;
+            metaIndex = 0;
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
             }
             values = new double[arr.length - skipSize];
-
+            if (metaAttr.size() > 0) {
+                meta = new double[metaAttr.size()];
+            }
             String classValue = null;
             for (int i = 0; i < arr.length; i++) {
                 if (i == classIndex) {
@@ -89,15 +95,22 @@ public class CsvLoader implements DatasetLoader {
                     skip++;
                 } else {
                     double val;
-                    if (!skipIndex.contains(i)) {
+                    if (metaAttr.contains(i)) {
+                        try {
+                            val = Double.parseDouble(arr[i]);
+                        } catch (NumberFormatException e) {
+                            val = Double.NaN;
+                        }
+                        meta[metaIndex++] = val;
+                    } else if (skipIndex.contains(i)) {
+                        skip++;
+                    } else {
                         try {
                             val = Double.parseDouble(arr[i]);
                         } catch (NumberFormatException e) {
                             val = Double.NaN;
                         }
                         values[i - skip] = val;
-                    } else {
-                        skip++;
                     }
                 }
                 if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
@@ -108,9 +121,13 @@ public class CsvLoader implements DatasetLoader {
                     }
                 }
             }
+
             inst = builder.create(values, classValue);
             if (!nameAttr.isEmpty()) {
                 inst.setName(name.toString().trim());
+            }
+            if (metaAttr.size() > 0) {
+                inst.setMetaNum(meta);
             }
             dataset.add(inst);
             num++;
@@ -130,7 +147,11 @@ public class CsvLoader implements DatasetLoader {
         for (int i = 0; i < line.length; i++) {
             if (i != classIndex && !skipIndex.contains(i)) {
                 if (!detectTypes) {
-                    dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], "NUMERICAL"));
+                    if (metaAttr.contains(i)) {
+                        dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], defaultDataType, "META"));
+                    } else {
+                        dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], defaultDataType));
+                    }
                 } else {
                     //TODO: try to parse double from string
                     throw new UnsupportedOperationException("not implemented yet");
@@ -233,6 +254,14 @@ public class CsvLoader implements DatasetLoader {
      */
     public void setNameJoinChar(String nameJoinChar) {
         this.nameJoinChar = nameJoinChar;
+    }
+
+    public String getDefaultDataType() {
+        return defaultDataType;
+    }
+
+    public void setDefaultDataType(String defaultDataType) {
+        this.defaultDataType = defaultDataType;
     }
 
 }

@@ -19,6 +19,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     protected int last = 0;
     protected long startTime;
     protected static final Logger logger = Logger.getLogger(AbstractTimeInstance.class.getName());
+    protected double[] meta;
 
     public AbstractTimeInstance() {
     }
@@ -144,5 +145,15 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     @Override
     public void setAncestor(Instance instance) {
         this.ancestor = instance;
+    }
+
+    @Override
+    public double[] getMetaNum() {
+        return meta;
+    }
+
+    @Override
+    public void setMetaNum(double[] meta) {
+        this.meta = meta;
     }
 }

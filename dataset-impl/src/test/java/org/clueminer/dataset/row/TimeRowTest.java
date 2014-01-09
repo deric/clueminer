@@ -275,4 +275,14 @@ public class TimeRowTest {
         subject.setDefaultValue(-1.0);
         assertEquals(-1.0, subject.get(-1), delta);
     }
+
+    @Test
+    public void testMetaData() {
+        double[] meta = new double[]{123.0, 42.0};
+        subject.setMetaNum(meta);
+
+        double[] foo = subject.getMetaNum();
+        assertEquals(meta[0], foo[0], delta);
+        assertEquals(meta[1], foo[1], delta);
+    }
 }

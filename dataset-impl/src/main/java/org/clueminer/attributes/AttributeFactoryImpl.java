@@ -40,4 +40,9 @@ public class AttributeFactoryImpl implements AttributeBuilder {
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
     }
+
+    @Override
+    public Attribute create(String name, String type, String role) {
+        return create(name, BasicAttrType.valueOf(type), BasicAttrRole.valueOf(role));
+    }
 }

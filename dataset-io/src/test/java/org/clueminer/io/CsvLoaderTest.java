@@ -173,4 +173,19 @@ public class CsvLoaderTest {
     public void testSetSkipHeader() {
     }
 
+    @Test
+    public void testMeta() throws IOException {
+        File file = fixture.schoolData();
+        Dataset<Instance> dataset = new ArrayDataset<Instance>(17, 5);
+        subject.setHeader(true);
+        subject.addNameAttr(4);
+        subject.addMetaAttr(3);
+        subject.setSeparator(" ");
+        //run
+        subject.load(file, dataset);
+        assertEquals(17, dataset.size());
+        double[] m = dataset.instance(0).getMetaNum();
+        assertEquals(605.3, m[0], delta);
+    }
+
 }
