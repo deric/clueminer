@@ -50,4 +50,18 @@ public class DgLeftTree extends DgTree {
         updateSize();
     }
 
+    @Override
+    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
+        //nothing to do
+    }
+
+    @Override
+    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
+        if (!hasData()) {
+            return;
+        }
+        elementHeight = height;
+        updateSize();
+    }
+
 }

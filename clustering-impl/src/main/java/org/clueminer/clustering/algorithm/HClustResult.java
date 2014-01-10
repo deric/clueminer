@@ -14,12 +14,15 @@ import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.DTreeLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -37,7 +40,8 @@ public class HClustResult implements HierarchicalResult {
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
     private Dataset<? extends Instance> dataset;
-    private Logger logger = Logger.getLogger(HClustResult.class.getName());
+    private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
+    private DendroNode[] nodes;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -57,6 +61,7 @@ public class HClustResult implements HierarchicalResult {
         if (treeData == null) {
             constructTree();
         }
+        logger.log(Level.INFO, "tree nodes: {0}", treeData.numNodes());
         return treeData;
     }
 
@@ -147,7 +152,11 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int[] getClusters(int terminalsNum) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int[] clusters = new int[getDataset().size()];
+        /**
+         * TODO: fill with assignments
+         */
+        return clusters;
     }
 
     @Override
@@ -197,7 +206,7 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public Dataset<? extends Instance> getDataset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return dataset;
     }
 
     @Override
@@ -215,9 +224,17 @@ public class HClustResult implements HierarchicalResult {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * TODO: this is hardly correct
+     *
+     * @return
+     */
     @Override
     public double getMaxTreeHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (merges != null) {
+            return merges.get(0).similarity();
+        }
+        return 0;
     }
 
     @Override
@@ -295,14 +312,33 @@ public class HClustResult implements HierarchicalResult {
             throw new RuntimeException("merges empty!");
         }
         logger.log(Level.INFO, "constructing tree, merge size:{0}", merges.size());
+        Dump.array(mapping, "mapping");
         treeData = new DynamicTreeData();
 
-        DTreeNode current = null;
+        nodes = new DendroNode[merges.size() + 1];
+
+        DendroNode current = null;
+        DendroNode prev = null;
         for (Merge m : getMerges()) {
             current = new DTreeNode();
-            System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster());
+            //bottom level
+            if (prev == null) {
+                prev = getNode(m.remainingCluster());
+            }
+            current.setLeft(prev);
+            current.setRight(getNode(m.mergedCluster()));
+            prev = current;
+            //System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster() + " similarity = " + m.similarity());
         }
 
         treeData.setRoot(current);
+    }
+
+    private DendroNode getNode(int idx) {
+        if (nodes[idx] == null) {
+            nodes[idx] = new DTreeLeaf();
+            nodes[idx].setId(idx);
+        }
+        return nodes[idx];
     }
 }

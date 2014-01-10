@@ -65,9 +65,22 @@ public class DgBottomTree extends DgTree {
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        HierarchicalResult clustering = dataset.getColsResult();
-        treeData = clustering.getTreeData();
+        if (dendroData.hasColumnsClustering()) {
+            HierarchicalResult clustering = dataset.getColsResult();
+            treeData = clustering.getTreeData();
+            updateSize();
+        }
+    }
+
+    @Override
+    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
+        elementWidth = width;
         updateSize();
+    }
+
+    @Override
+    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
+        //nothing to do
     }
 
 }

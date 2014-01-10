@@ -38,7 +38,7 @@ public abstract class AbstractAnnotation extends JPanel {
     }
 
     protected void createBufferedGraphics() {
-        if (dendroData == null || !visible) {
+        if (dendroData == null || !visible || size.width == 0 || size.height == 0) {
             return;
         }
         bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);

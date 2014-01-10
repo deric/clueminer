@@ -660,8 +660,10 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     }
 
     /**
+     * Each data point forms an individual cluster
      *
      * @param numDataPoints the number of initial data points
+     * @return
      */
     public static Map<Integer, Set<Integer>> generateInitialAssignment(int numDataPoints) {
         Map<Integer, Set<Integer>> clusterAssignment = new HashMap<Integer, Set<Integer>>(numDataPoints);

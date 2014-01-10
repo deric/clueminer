@@ -64,19 +64,10 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     public abstract void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset);
 
     @Override
-    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
-        elementWidth = width;
-        updateSize();
-    }
+    public abstract void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting);
 
     @Override
-    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        if (!hasData()) {
-            return;
-        }
-        elementHeight = height;
-        updateSize();
-    }
+    public abstract void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting);
 
     /**
      * For horizontal tree (left-to-right or right-to-left)
@@ -133,22 +124,22 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         }
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.drawImage(buffImg,
-                     insets.left, insets.top,
-                     size.width, size.height,
-                     null);
+        if (buffGr != null) {
+            g2.drawImage(buffImg,
+                         insets.left, insets.top,
+                         size.width, size.height,
+                         null);
+        }
         g2.dispose();
     }
 
     public void drawTree() {
-        buffImg = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-        buffGr = buffImg.createGraphics();
-
-        if (!hasData()) {
+        if (!hasData() || size.width == 0 || size.height == 0) {
             //no data
-            buffGr.dispose();
             return;
         }
+        buffImg = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+        buffGr = buffImg.createGraphics();
 
         buffGr.setColor(treeColor);
 

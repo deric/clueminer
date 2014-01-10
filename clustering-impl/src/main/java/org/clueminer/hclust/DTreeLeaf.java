@@ -8,6 +8,10 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
  */
 public class DTreeLeaf extends DTreeNode implements DendroNode {
 
+    public DTreeLeaf() {
+
+    }
+
     public DTreeLeaf(DendroNode parent) {
         this.parent = parent;
     }
