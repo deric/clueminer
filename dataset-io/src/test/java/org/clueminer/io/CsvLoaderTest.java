@@ -221,9 +221,9 @@ public class CsvLoaderTest {
         TimePoint tp[] = new TimePointAttribute[last - offset];
         double pos;
         for (String item : firstLine) {
-            if (i >= offset) {
+            if (i > offset) {
                 index = i - offset;
-                pos = index * 100;
+                pos = Double.valueOf(item);
                 tp[index] = new TimePointAttribute(index, index, pos);
             }
             i++;
