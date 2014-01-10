@@ -22,20 +22,22 @@ public class DgRightTree extends DgTree {
 
         drawNode(g2, node, nx, ny);
 
-        int lx = treeHeight - (int) scaleHeight(node.getLeft().getHeight());
-        int ly = (int) (node.getLeft().getPosition() * elementHeight + halfElem);
+        if (!node.isLeaf()) {
+            int lx = treeHeight - (int) scaleHeight(node.getLeft().getHeight());
+            int ly = (int) (node.getLeft().getPosition() * elementHeight + halfElem);
 
-        int rx = treeHeight - (int) scaleHeight(node.getRight().getHeight());
-        int ry = (int) (node.getRight().getPosition() * elementHeight + halfElem);
-        //we're drawing a U shape
-        //straight line
-        g2.drawLine(nx, ly, nx, ry);
+            int rx = treeHeight - (int) scaleHeight(node.getRight().getHeight());
+            int ry = (int) (node.getRight().getPosition() * elementHeight + halfElem);
+            //we're drawing a U shape
+            //straight line
+            g2.drawLine(nx, ly, nx, ry);
 
-        //left node
-        g2.drawLine(nx, ly, lx, ly);
+            //left node
+            g2.drawLine(nx, ly, lx, ly);
 
-        //right node
-        g2.drawLine(nx, ry, rx, ry);
+            //right node
+            g2.drawLine(nx, ry, rx, ry);
+        }
     }
 
 }
