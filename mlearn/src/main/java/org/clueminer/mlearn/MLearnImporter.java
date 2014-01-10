@@ -86,10 +86,10 @@ public class MLearnImporter implements LongTask, Runnable {
         String separator = ",";
         dataset = new TimeseriesDataset<ContinuousInstance>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> skipped = new ArrayList<Integer>();
+        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
         //skipped.add(0); //first one is ID
         for (int i = 1; i < 7; i++) {
-            skipped.add(i);
+            metaAttr.add(i);
         }
         for (int j = 0; j < 7; j++) {
             loader.addNameAttr(j); //meta attributes
@@ -112,7 +112,7 @@ public class MLearnImporter implements LongTask, Runnable {
             i++;
         }
         ((TimeseriesDataset<ContinuousInstance>) dataset).setTimePoints(tp);
-        loader.setSkipIndex(skipped);
+        loader.setMetaAttr(metaAttr);
         loader.setSeparator(separator);
         loader.setClassIndex(0);
         loader.setSkipHeader(true);
