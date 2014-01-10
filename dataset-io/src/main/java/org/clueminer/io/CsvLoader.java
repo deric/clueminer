@@ -102,6 +102,7 @@ public class CsvLoader implements DatasetLoader {
                             val = Double.NaN;
                         }
                         meta[metaIndex++] = val;
+                        skip++;
                     } else if (skipIndex.contains(i)) {
                         skip++;
                     } else {
