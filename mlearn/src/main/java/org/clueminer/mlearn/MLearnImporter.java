@@ -105,8 +105,8 @@ public class MLearnImporter implements LongTask, Runnable {
         logger.log(Level.INFO, "time series attrs: {0}", tp.length);
         double pos;
         for (String item : firstLine) {
-            if (i > offset) {
-                index = i - offset - 1;
+            if (i >= offset) {
+                index = i - offset;
                 pos = Double.valueOf(item);
                 tp[index] = new TimePointAttribute(index, index, pos);
             }
@@ -115,7 +115,7 @@ public class MLearnImporter implements LongTask, Runnable {
         ((TimeseriesDataset<ContinuousInstance>) dataset).setTimePoints(tp);
         loader.setMetaAttr(metaAttr);
         loader.setSeparator(separator);
-        loader.setClassIndex(0);
+        //loader.setClassIndex(0);
         loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);

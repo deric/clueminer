@@ -64,6 +64,9 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public Attribute getAttribute(int i) {
+        if (i < 0 || i >= timePoints.length) {
+            throw new RuntimeException("invalid attribute index, timepoints length is " + timePoints.length);
+        }
         return timePoints[i];
     }
 

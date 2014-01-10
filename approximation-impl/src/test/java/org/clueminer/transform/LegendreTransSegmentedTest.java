@@ -189,42 +189,42 @@ public class LegendreTransSegmentedTest {
         Timeseries<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
         CsvLoader loader = new CsvLoader();
         ArrayList<Integer> metaAttr = new ArrayList<Integer>();
-        //ArrayList<Integer> skipAttr = new ArrayList<Integer>();
-        //skipped.add(0); //first one is ID
-        for (int i = 1; i < 7; i++) {
+        for (int i = 0; i < 7; i++) {
             metaAttr.add(i);
-            //  skipAttr.add(i);
         }
         for (int j = 0; j < 7; j++) {
             loader.addNameAttr(j); //meta attributes
         }
-        loader.setNameJoinChar(", ");
 
         String[] firstLine = CsvLoader.firstLine(file, separator);
         int i = 0;
         int index;
         int last = firstLine.length;
-        int offset = 6;
+        int offset = metaAttr.size();
         TimePoint tp[] = new TimePointAttribute[last - offset];
         double pos;
         for (String item : firstLine) {
-            if (i > offset) {
-                index = i - offset - 1;
+            if (i >= offset) {
+                index = i - offset;
                 pos = Double.valueOf(item);
                 tp[index] = new TimePointAttribute(index, index, pos);
             }
             i++;
         }
+        System.out.println("tp length " + tp.length);
         dataset.setTimePoints(tp);
         loader.setMetaAttr(metaAttr);
-        //loader.setSkipIndex(skipAttr);
         loader.setSeparator(separator);
-        loader.setClassIndex(0);
         loader.setSkipHeader(true);
         Dataset<? extends Instance> d = (Dataset<? extends Instance>) dataset;
         loader.setDataset(d);
         loader.load(file);
 
         Timeseries<ContinuousInstance>[] res = subject.splitIntoSegments(dataset, 3);
+
+        assertEquals(4, res[0].attributeCount());
+        assertEquals(4, res[1].attributeCount());
+        assertEquals(6, res[2].attributeCount());
+
     }
 }

@@ -41,7 +41,7 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     }
 
     public TimePointAttribute(int index, long tp, double position) {
-        super(String.valueOf(index), BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
+        super("timeserie-" + String.valueOf(index), BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
         this.index = index;
         this.timestamp = tp;
         this.position = position;

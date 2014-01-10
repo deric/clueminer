@@ -221,9 +221,9 @@ public class CsvLoaderTest {
         TimePoint tp[] = new TimePointAttribute[last - offset];
         double pos;
         for (String item : firstLine) {
-            if (i > offset) {
-                index = i - offset - 1;
-                pos = Double.valueOf(item);
+            if (i >= offset) {
+                index = i - offset;
+                pos = index * 100;
                 tp[index] = new TimePointAttribute(index, index, pos);
             }
             i++;
@@ -232,7 +232,6 @@ public class CsvLoaderTest {
         loader.setMetaAttr(metaAttr);
         //loader.setSkipIndex(skipAttr);
         loader.setSeparator(separator);
-        loader.setClassIndex(0);
         loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);

@@ -45,6 +45,9 @@ public class TimeRowFactory implements InstanceBuilder<TimeRow> {
 
     @Override
     public TimeRow create(double[] values) {
+        if (values.length != capacity) {
+            throw new RuntimeException("expected " + capacity + " but got " + values.length);
+        }
         TimeRow inst = new TimeRow(Double.class, capacity);
         for (int i = 0; i < values.length; i++) {
             inst.set(i, values[i]);
