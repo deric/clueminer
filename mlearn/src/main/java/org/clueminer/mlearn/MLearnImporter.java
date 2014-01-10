@@ -60,7 +60,7 @@ public class MLearnImporter implements LongTask, Runnable {
         ArrayList<Integer> skipped = new ArrayList<Integer>();
         skipped.add(0); //first one is ID
 
-        String[] firstLine = firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, separator);
         int i = 0;
         int index;
         int last = firstLine.length - 1;
