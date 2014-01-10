@@ -1,13 +1,17 @@
 package org.clueminer.io;
 
 import be.abeel.io.LineIterator;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.utils.DatasetLoader;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -84,7 +88,7 @@ public class CsvLoader implements DatasetLoader {
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
             }
-            values = new double[arr.length - skipSize];
+            values = new double[arr.length - skipSize - metaAttr.size()];
             if (metaAttr.size() > 0) {
                 meta = new double[metaAttr.size()];
             }
@@ -263,6 +267,26 @@ public class CsvLoader implements DatasetLoader {
 
     public void setDefaultDataType(String defaultDataType) {
         this.defaultDataType = defaultDataType;
+    }
+
+    public static String[] firstLine(File file, String separator) {
+        String[] result = null;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            try {
+                String line = br.readLine();
+                result = line.split(separator);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                br.close();
+            }
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return result;
     }
 
 }

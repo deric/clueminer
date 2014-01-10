@@ -1,10 +1,7 @@
 package org.clueminer.mlearn;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,7 +96,7 @@ public class MLearnImporter implements LongTask, Runnable {
         }
         loader.setNameJoinChar(", ");
 
-        String[] firstLine = firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, separator);
         int i = 0;
         int index;
         int last = firstLine.length;
@@ -123,26 +120,6 @@ public class MLearnImporter implements LongTask, Runnable {
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
         loader.load(file);
-    }
-
-    private String[] firstLine(File file, String separator) {
-        String[] result = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            try {
-                String line = br.readLine();
-                result = line.split(separator);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                br.close();
-            }
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return result;
     }
 
     @Override
