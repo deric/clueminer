@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -65,7 +65,7 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
+        HierarchicalResult clustering = dataset.getRowsResult();
         treeData = clustering.getTreeData();
         updateSize();
         repaint();
