@@ -201,8 +201,8 @@ public class CsvLoader implements DatasetLoader {
         return dataset;
     }
 
-    public void setDataset(Dataset<Instance> dataset) {
-        this.dataset = dataset;
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        this.dataset = (Dataset<Instance>) dataset;
     }
 
     /**

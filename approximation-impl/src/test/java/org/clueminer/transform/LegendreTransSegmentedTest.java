@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -15,6 +16,8 @@ import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.dataset.row.TimeRow;
 import org.clueminer.fixtures.TimeseriesFixture;
+import org.clueminer.io.CsvLoader;
+import org.clueminer.types.TimePoint;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -176,5 +179,52 @@ public class LegendreTransSegmentedTest {
         //last one should contain remaining values
         assertEquals(4, res[2].attributeCount());
 
+    }
+
+    @Test
+    public void testRealWorldTs() {
+        String separator = ",";
+        TimeseriesFixture tf = new TimeseriesFixture();
+        File file = tf.ts01();
+        Timeseries<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+        //ArrayList<Integer> skipAttr = new ArrayList<Integer>();
+        //skipped.add(0); //first one is ID
+        for (int i = 1; i < 7; i++) {
+            metaAttr.add(i);
+            //  skipAttr.add(i);
+        }
+        for (int j = 0; j < 7; j++) {
+            loader.addNameAttr(j); //meta attributes
+        }
+        loader.setNameJoinChar(", ");
+
+        String[] firstLine = CsvLoader.firstLine(file, separator);
+        int i = 0;
+        int index;
+        int last = firstLine.length;
+        int offset = 6;
+        TimePoint tp[] = new TimePointAttribute[last - offset];
+        double pos;
+        for (String item : firstLine) {
+            if (i > offset) {
+                index = i - offset - 1;
+                pos = Double.valueOf(item);
+                tp[index] = new TimePointAttribute(index, index, pos);
+            }
+            i++;
+        }
+        dataset.setTimePoints(tp);
+        loader.setMetaAttr(metaAttr);
+        //loader.setSkipIndex(skipAttr);
+        loader.setSeparator(separator);
+        loader.setClassIndex(0);
+        loader.setSkipHeader(true);
+        Dataset<? extends Instance> d = (Dataset<? extends Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+
+        Timeseries<ContinuousInstance>[] res = subject.splitIntoSegments(dataset, 3);
     }
 }
