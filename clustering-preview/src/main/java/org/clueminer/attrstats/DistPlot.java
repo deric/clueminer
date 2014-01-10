@@ -3,6 +3,7 @@ package org.clueminer.attrstats;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -33,8 +34,7 @@ public class DistPlot extends JPanel {
     private final Insets insets = new Insets(10, 10, 10, 10);
     private int width = 200;
     private BufferedImage bufferedImage;
-    private Graphics2D bufferedGraphics;
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private Dataset<? extends Instance> dataset;
     private StdScale scale = new StdScale();
     private int height = 200;
@@ -42,6 +42,8 @@ public class DistPlot extends JPanel {
     private int barSize = 100;
     private double globalMax = Double.NaN;
     private double globalMin = Double.NaN;
+    private String title = "(n/a)";
+    private int attributeIndex = 0;
 
     public DistPlot() {
         setDoubleBuffered(false);
@@ -109,7 +111,7 @@ public class DistPlot extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        Attribute attr = dataset.getAttribute(0);
+        Attribute attr = dataset.getAttribute(attributeIndex);
         Ellipse2D.Double circle;
 
         double max = attr.statistics(AttrNumStats.MAX);
@@ -196,7 +198,17 @@ public class DistPlot extends JPanel {
 
         drawMedian(g2, median, xPlot);
 
+        drawTitle(g2);
+
         g2.dispose();
+    }
+
+    /**
+     * Invalidates caches and starts from scratch
+     */
+    public void redraw() {
+        bufferedImage = null;
+        repaint();
     }
 
     private void drawMedian(Graphics2D g2, double median, double xPlot) {
@@ -210,6 +222,13 @@ public class DistPlot extends JPanel {
         label = decimalFormat.format(median);
         g2.drawString(label, (int) (xPlot + barSize / 2), ((int) yMedian) - 1);
 
+    }
+
+    private void drawTitle(Graphics2D g2) {
+        FontMetrics hfm = g2.getFontMetrics();
+        int textWidth = hfm.stringWidth(title);
+        g2.setColor(Color.BLACK);
+        g2.drawString(title, (int) ((barSize + textWidth) / 2), 20);
     }
 
     /**
@@ -260,4 +279,22 @@ public class DistPlot extends JPanel {
     public void setGlobalMin(double globalMin) {
         this.globalMin = globalMin;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getAttributeIndex() {
+        return attributeIndex;
+    }
+
+    public void setAttributeIndex(int attributeIndex) {
+        this.attributeIndex = attributeIndex;
+        redraw();
+    }
+
 }

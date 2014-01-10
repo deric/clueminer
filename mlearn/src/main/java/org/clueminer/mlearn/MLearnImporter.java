@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
@@ -29,6 +31,7 @@ public class MLearnImporter implements LongTask, Runnable {
     private int workUnits = 0;
     private ProgressHandle ph;
     private Dataset<? extends Instance> dataset;
+    private Logger logger = Logger.getLogger(MLearnImporter.class.getName());
 
     public MLearnImporter(File file) {
         this.file = file;
@@ -99,9 +102,10 @@ public class MLearnImporter implements LongTask, Runnable {
         String[] firstLine = firstLine(file, separator);
         int i = 0;
         int index;
-        int last = firstLine.length - 1;
+        int last = firstLine.length;
         int offset = 6;
         TimePoint tp[] = new TimePointAttribute[last - offset];
+        logger.log(Level.INFO, "time series attrs: {0}", tp.length);
         double pos;
         for (String item : firstLine) {
             if (i > offset) {

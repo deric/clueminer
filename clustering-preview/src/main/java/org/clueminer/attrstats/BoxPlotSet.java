@@ -26,6 +26,7 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
     private Clustering<Cluster> clust;
     private Dimension dimChart;
     private static final Logger logger = Logger.getLogger(BoxPlotSet.class.getName());
+    private int attributeIndex;
 
     public BoxPlotSet() {
         initComponents();
@@ -65,6 +66,7 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
 
                     DistPlot plot = new DistPlot();
                     plot.setDataset(dataset);
+                    plot.setAttributeIndex(attributeIndex);
 
                     if (dimChart == null) {
                         dimChart = new Dimension(this.getWidth(), 100);
@@ -126,5 +128,10 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
 
     public void setParent(JPanel p) {
         this.parent = p;
+    }
+
+    public void setAttributeIndex(int index) {
+        this.attributeIndex = index;
+        repaint();
     }
 }
