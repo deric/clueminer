@@ -35,7 +35,6 @@ import org.clueminer.dendrogram.gui.RowAnnotation;
 import org.clueminer.dendrogram.tree.AbstractScale;
 import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
-import org.clueminer.dendrogram.tree.HorizontalTree;
 import org.clueminer.dendrogram.tree.VerticalScale;
 
 /**
@@ -49,7 +48,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private DendrogramTree rowsTree;
     private AbstractScale rowsScale;
     private CutoffLine cutoff;
-    private HorizontalTree columnsTree;
+    private DendrogramTree columnsTree;
     private AbstractScale columnsScale;
     //component to draw clusters colors and descriptions
     protected HCLColorBar colorBar;
@@ -180,8 +179,8 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         }
         //we call constructor just one
         if (columnsTree == null) {
-            columnsTree = new HorizontalTree(this);
-            columnsTree.setHorizontalOffset(0);
+            columnsTree = new DgBottomTree(this);
+            //columnsTree.setHorizontalOffset(0);
             //@TODO we should remove listener if component is not displayed
             dendroViewer.addDendrogramDataListener(columnsTree);
         }
@@ -194,7 +193,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         c.insets = new java.awt.Insets(15, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
-        add(columnsTree, c);
+        add((Component) columnsTree, c);
 
         if (showScale) {
             if (columnsScale == null) {

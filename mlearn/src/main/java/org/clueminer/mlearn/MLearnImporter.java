@@ -140,7 +140,7 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.setSkipIndex(skip);
         loader.setSeparator(separator);
         //loader.setClassIndex(0);
-        loader.setSkipHeader(false);
+        loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
         loader.load(file);

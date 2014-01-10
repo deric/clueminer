@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
-import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -28,13 +27,13 @@ import org.clueminer.std.StdScale;
  */
 public abstract class DgTree extends JPanel implements DendrogramDataListener, DendrogramTree {
 
-    private DendroTreeData treeData;
-    private DendrogramMapping dendroData;
+    protected DendroTreeData treeData;
+    protected DendrogramMapping dendroData;
     protected DendroPane panel;
-    private int width;
+    protected int width;
     protected int treeHeight = 200;
     protected int treeWidth = 200;
-    private int height;
+    protected int height;
     protected int elementHeight;
     protected int halfElem;
     protected int elementWidth;
@@ -46,7 +45,7 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     private final StdScale scale = new StdScale();
     private BufferedImage buffImg;
     private Graphics2D buffGr;
-    private final Insets insets = new Insets(0, 10, 0, 0);
+    private final Insets insets = new Insets(0, 0, 0, 0);
     /**
      * mark nodes in dendrogram with a circle
      */
@@ -56,20 +55,13 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     public DgTree(DendroPane panel) {
         this.panel = panel;
         setBackground(panel.getBackground());
-        width = treeHeight;
         Dimension elem = panel.getElementSize();
         elementWidth = elem.width;
         elementHeight = elem.height;
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        this.dendroData = dataset;
-        HierarchicalResult clustering = dataset.getRowsResult();
-        treeData = clustering.getTreeData();
-        updateSize();
-        repaint();
-    }
+    public abstract void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset);
 
     @Override
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
@@ -86,19 +78,40 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         updateSize();
     }
 
+    /**
+     * For horizontal tree (left-to-right or right-to-left)
+     */
     @Override
     public void updateSize() {
+        width = treeHeight;
         height = dendroData.getNumberOfRows() * elementHeight;
         halfElem = elementHeight / 2;
         //nodes on right, 90 deg rot
-        treeWidth = height;
+        setSizes(width, height);
+        invalidateCache();
+    }
+
+    /**
+     * Set component size
+     *
+     * @param width
+     * @param height
+     */
+    public void setSizes(int width, int height) {
         size.width = width;
         size.height = height;
-        //invalidate cache
-        buffImg = null;
         setPreferredSize(size);
         setSize(size);
         setMinimumSize(size);
+    }
+
+    /**
+     * We try to avoid complete repainting as much as possible
+     */
+    public void invalidateCache() {
+        //invalidate cache
+        buffImg = null;
+        repaint();
     }
 
     @Override
@@ -187,7 +200,13 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         }
     }
 
-    protected double scaleHeight(double height) {
+    /**
+     * Scales tree distance to pixels (for horizontal e.g. left-to-right tree)
+     *
+     * @param height
+     * @return
+     */
+    protected double scaleDistance(double height) {
         return scale.scaleToRange(height, 0, treeData.getRoot().getHeight(), 0, treeHeight);
     }
 

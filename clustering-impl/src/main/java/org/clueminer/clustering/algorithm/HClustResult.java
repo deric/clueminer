@@ -4,6 +4,8 @@ import com.google.common.primitives.Ints;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Merge;
@@ -35,6 +37,7 @@ public class HClustResult implements HierarchicalResult {
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
     private Dataset<? extends Instance> dataset;
+    private Logger logger = Logger.getLogger(HClustResult.class.getName());
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -291,7 +294,7 @@ public class HClustResult implements HierarchicalResult {
         if (merges == null) {
             throw new RuntimeException("merges empty!");
         }
-
+        logger.log(Level.INFO, "constructing tree, merge size:{0}", merges.size());
         treeData = new DynamicTreeData();
 
         DTreeNode current = null;

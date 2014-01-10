@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
  *
@@ -16,7 +17,7 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
 
     private static final long serialVersionUID = 7372573252024305540L;
 
-    public HorizontalScale(HorizontalTree tree, DendroPane panel) {
+    public HorizontalScale(DendrogramTree tree, DendroPane panel) {
         super(panel);
         this.tree = tree;
     }
