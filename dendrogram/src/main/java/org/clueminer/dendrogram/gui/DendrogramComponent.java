@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.*;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
@@ -37,8 +39,9 @@ public class DendrogramComponent extends ClusterAnalysis {
     private ClusteringToolbar toolbar;
     private ClusteringProperties properities;
     private SettingsPanel panel;
-    private boolean debug = false;
+    private final boolean debug = false;
     private HierarchicalResult finalResult;
+    private static final Logger logger = Logger.getLogger(DendrogramComponent.class.getName());
 
     public DendrogramComponent() {
         //default algorithm
@@ -137,6 +140,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         long start = System.currentTimeMillis();
 
         Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
+        logger.log(Level.INFO, "input matrix size: {0} x {1}", new Object[]{input.rowsCount(), input.columnsCount()});
         if (debug) {
             System.out.println("input matrix");
             input.print(5, 2);

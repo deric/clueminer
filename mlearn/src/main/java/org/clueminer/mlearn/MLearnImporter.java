@@ -2,6 +2,7 @@ package org.clueminer.mlearn;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.longtask.spi.LongTask;
@@ -53,14 +55,14 @@ public class MLearnImporter implements LongTask, Runnable {
         this.ph = ph;
     }
 
-    public void loadTimeseries(File file) throws FileNotFoundException {
-        String separator = "\t";
+    public void loadTimeseries(File file) throws FileNotFoundException, IOException {
+        char separator = '\t';
         dataset = new TimeseriesDataset<ContinuousInstance>(254);
         CsvLoader loader = new CsvLoader();
         ArrayList<Integer> skipped = new ArrayList<Integer>();
         skipped.add(0); //first one is ID
 
-        String[] firstLine = CsvLoader.firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
         int i = 0;
         int index;
         int last = firstLine.length - 1;
@@ -82,8 +84,8 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.load(file);
     }
 
-    public void loadMTimeseries(File file) throws FileNotFoundException {
-        String separator = ",";
+    public void loadMTimeseries(File file) throws FileNotFoundException, IOException {
+        char separator = ',';
         dataset = new TimeseriesDataset<ContinuousInstance>(254);
         CsvLoader loader = new CsvLoader();
         ArrayList<Integer> metaAttr = new ArrayList<Integer>();
@@ -96,11 +98,11 @@ public class MLearnImporter implements LongTask, Runnable {
         }
         loader.setNameJoinChar(", ");
 
-        String[] firstLine = CsvLoader.firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
         int i = 0;
         int index;
         int last = firstLine.length;
-        int offset = 6;
+        int offset = metaAttr.size();
         TimePoint tp[] = new TimePointAttribute[last - offset];
         logger.log(Level.INFO, "time series attrs: {0}", tp.length);
         double pos;
@@ -122,53 +124,77 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.load(file);
     }
 
+    public void loadMPTimeseries(File file) throws FileNotFoundException, IOException {
+        char separator = ',';
+        dataset = new ArrayDataset<Instance>(1000, 22);
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skip = new ArrayList<Integer>();
+        //skipped.add(0); //first one is ID
+        for (int i = 0; i < 7; i++) {
+            skip.add(i);
+            loader.addNameAttr(i); //meta attributes
+        }
+
+        loader.setNameJoinChar(", ");
+
+        loader.setSkipIndex(skip);
+        loader.setSeparator(separator);
+        //loader.setClassIndex(0);
+        loader.setSkipHeader(false);
+        Dataset<Instance> d = (Dataset<Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+    }
+
     @Override
     public void run() {
+
+        ph.start();
         try {
-            ph.start();
             //loadTimeseries(file);
-            loadMTimeseries(file);
-            ph.finish();
-
-            /*     BufferedReader br = null;
-             if (ph == null) {
-             throw new RuntimeException("Progress handle not set");
-             }
-             try {
-             br = new BufferedReader(new FileReader(file));
-             try {
-             ph.start(0);
-             //it would be nice to know number of lines, but we don't unless
-             int numLines = 100;
-             //we would read the whole file
-             String ext = MLearnImporter.getFileExtension(file.getName());
-             if ("arff".equals(ext)) {
-             // @TODO run ARFF analyzer
-             } else {
-             //txt, csv, ...
-             Detector detector = new TxtDetect();
-             DatasetProperties props = detector.detect(br);
-
-             }
-
-             //
-             dataset = new SampleDataset<Instance>(100);
-             FileHandler.loadDataset(file, dataset, ",");
-
-             } catch (IOException ex) {
-             Exceptions.printStackTrace(ex);
-             } finally {
-             br.close();
-             ph.finish();
-             }
-             } catch (FileNotFoundException ex) {
-             Exceptions.printStackTrace(ex);
-             } catch (IOException ex) {
-             Exceptions.printStackTrace(ex);
-             }*/
-        } catch (FileNotFoundException ex) {
+            //loadMTimeseries(file);
+            loadMPTimeseries(file);
+        } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+        ph.finish();
+
+        /*     BufferedReader br = null;
+         if (ph == null) {
+         throw new RuntimeException("Progress handle not set");
+         }
+         try {
+         br = new BufferedReader(new FileReader(file));
+         try {
+         ph.start(0);
+         //it would be nice to know number of lines, but we don't unless
+         int numLines = 100;
+         //we would read the whole file
+         String ext = MLearnImporter.getFileExtension(file.getName());
+         if ("arff".equals(ext)) {
+         // @TODO run ARFF analyzer
+         } else {
+         //txt, csv, ...
+         Detector detector = new TxtDetect();
+         DatasetProperties props = detector.detect(br);
+
+         }
+
+         //
+         dataset = new SampleDataset<Instance>(100);
+         FileHandler.loadDataset(file, dataset, ",");
+
+         } catch (IOException ex) {
+         Exceptions.printStackTrace(ex);
+         } finally {
+         br.close();
+         ph.finish();
+         }
+         } catch (FileNotFoundException ex) {
+         Exceptions.printStackTrace(ex);
+         } catch (IOException ex) {
+         Exceptions.printStackTrace(ex);
+         }*/
     }
 
     public File getFile() {

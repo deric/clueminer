@@ -1,12 +1,15 @@
 package org.clueminer.io;
 
-import be.abeel.io.LineIterator;
+import au.com.bytecode.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -21,7 +24,8 @@ public class CsvLoader implements DatasetLoader {
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;
-    private String separator = ",";
+    private char separator = ',';
+    private char quotechar = '"';
     private int classIndex = -1;
     private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
     private ArrayList<Integer> nameAttr = new ArrayList<Integer>();
@@ -29,12 +33,17 @@ public class CsvLoader implements DatasetLoader {
     private Dataset<Instance> dataset;
     private String nameJoinChar = " ";
     private String defaultDataType = "NUMERICAL";
+    private static final Logger logger = Logger.getLogger(CsvLoader.class.getName());
 
     @Override
-
     public boolean load(File file, Dataset output) throws FileNotFoundException {
         setDataset(output);
-        return load(file);
+        try {
+            return load(file);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
     }
 
     private void checkDataset() {
@@ -48,19 +57,20 @@ public class CsvLoader implements DatasetLoader {
      * @param file input CSV file
      * @return
      */
-    public boolean load(File file) {
-        LineIterator it = new LineIterator(file);
+    public boolean load(File file) throws IOException {
+        CSVReader reader = new CSVReader(new FileReader(file), separator, quotechar);
+        Iterator<String[]> iter = reader.iterator();
         Instance inst;
-        it.setSkipBlanks(true);
-        it.setCommentIdentifier("#");
-        it.setSkipComments(true);
+        /*it.setSkipBlanks(true);
+         it.setCommentIdentifier("#");
+         it.setSkipComments(true);*/
         checkDataset();
         InstanceBuilder builder = dataset.builder();
 
         if (hasHeader && !skipHeader) {
-            parseHeader(it);
+            parseHeader(iter);
         } else if (skipHeader) {
-            it.next(); // just skip it
+            iter.next(); // just skip it
         }
 
         int skip;
@@ -72,8 +82,9 @@ public class CsvLoader implements DatasetLoader {
         StringBuilder name = null;
         int num = 0;
         int nameApp;
-        for (String line : it) {
-            arr = line.split(separator);
+        int outSize;
+        while (iter.hasNext()) {
+            arr = iter.next();
             if (num == 0 && dataset.attributeCount() == 0) {
                 //detect types from first line
                 createAttributes(arr, false);
@@ -88,62 +99,68 @@ public class CsvLoader implements DatasetLoader {
             if (classIndex >= 0) {
                 skipSize++; //smaller array is enough
             }
-            values = new double[arr.length - skipSize - metaAttr.size()];
+            outSize = arr.length - skipSize - metaAttr.size();
+            values = new double[outSize];
             if (metaAttr.size() > 0) {
                 meta = new double[metaAttr.size()];
             }
             String classValue = null;
-            for (int i = 0; i < arr.length; i++) {
-                if (i == classIndex) {
-                    classValue = arr[i];
-                    skip++;
-                } else {
-                    double val;
-                    if (metaAttr.contains(i)) {
-                        try {
-                            val = Double.parseDouble(arr[i]);
-                        } catch (NumberFormatException e) {
-                            val = Double.NaN;
-                        }
-                        meta[metaIndex++] = val;
-                        skip++;
-                    } else if (skipIndex.contains(i)) {
+            if (outSize > 0) {
+                for (int i = 0; i < arr.length; i++) {
+                    if (i == classIndex) {
+                        classValue = arr[i];
                         skip++;
                     } else {
-                        try {
-                            val = Double.parseDouble(arr[i]);
-                        } catch (NumberFormatException e) {
-                            val = Double.NaN;
-                        }
-                        values[i - skip] = val;
-                    }
-                }
-                if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
-                    name.append(arr[i]);
-                    nameApp++;
-                    if (nameAttr.size() != nameApp) {
-                        name.append(nameJoinChar);
-                    }
-                }
-            }
+                        double val;
+                        if (metaAttr.contains(i)) {
+                            try {
+                                val = Double.parseDouble(arr[i]);
+                            } catch (NumberFormatException e) {
+                                val = Double.NaN;
+                            }
+                            meta[metaIndex++] = val;
+                            skip++;
+                        } else if (skipIndex.contains(i)) {
+                            skip++;
+                        } else {
 
-            inst = builder.create(values, classValue);
-            if (!nameAttr.isEmpty()) {
-                inst.setName(name.toString().trim());
+                            if (!arr[i].isEmpty()) {
+                                try {
+                                    val = Double.parseDouble(arr[i]);
+                                } catch (NumberFormatException e) {
+                                    logger.log(Level.WARNING, e.getMessage());
+                                    val = Double.NaN;
+                                }
+                                values[i - skip] = val;
+                            }
+                        }
+                    }
+                    if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
+                        name.append(arr[i]);
+                        nameApp++;
+                        if (nameAttr.size() != nameApp) {
+                            name.append(nameJoinChar);
+                        }
+                    }
+                }
+
+                inst = builder.create(values, classValue);
+                if (!nameAttr.isEmpty()) {
+                    inst.setName(name.toString().trim());
+                }
+                if (metaAttr.size() > 0) {
+                    inst.setMetaNum(meta);
+                }
+                dataset.add(inst);
+                num++;
             }
-            if (metaAttr.size() > 0) {
-                inst.setMetaNum(meta);
-            }
-            dataset.add(inst);
-            num++;
         }
         return true;
     }
 
-    private void parseHeader(LineIterator it) {
+    private void parseHeader(Iterator<String[]> it) throws IOException {
         //we expect first line to be a hasHeader
-        String first = it.next();
-        String[] header = first.split(separator);
+        String[] header = it.next();
         createAttributes(header, false);
     }
 
@@ -173,11 +190,11 @@ public class CsvLoader implements DatasetLoader {
         this.hasHeader = header;
     }
 
-    public String getSeparator() {
+    public char getSeparator() {
         return separator;
     }
 
-    public void setSeparator(String separator) {
+    public void setSeparator(char separator) {
         this.separator = separator;
     }
 
@@ -287,6 +304,14 @@ public class CsvLoader implements DatasetLoader {
             Exceptions.printStackTrace(ex);
         }
         return result;
+    }
+
+    public char getQuotechar() {
+        return quotechar;
+    }
+
+    public void setQuotechar(char quotechar) {
+        this.quotechar = quotechar;
     }
 
 }

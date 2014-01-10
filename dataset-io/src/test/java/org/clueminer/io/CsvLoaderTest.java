@@ -186,7 +186,7 @@ public class CsvLoaderTest {
         subject.setHeader(true);
         subject.addNameAttr(4);
         subject.addMetaAttr(3);
-        subject.setSeparator(" ");
+        subject.setSeparator(' ');
         //run
         subject.load(file, dataset);
         assertEquals(17, dataset.size());
@@ -195,8 +195,8 @@ public class CsvLoaderTest {
     }
 
     @Test
-    public void testSimpleTimeSeries() {
-        String separator = ",";
+    public void testSimpleTimeSeries() throws IOException {
+        char separator = ',';
         TimeseriesFixture tf = new TimeseriesFixture();
         File file = tf.ts01();
         Dataset<? extends Instance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
@@ -213,7 +213,7 @@ public class CsvLoaderTest {
         }
         loader.setNameJoinChar(", ");
 
-        String[] firstLine = CsvLoader.firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
         int i = 0;
         int index;
         int last = firstLine.length;
@@ -235,6 +235,30 @@ public class CsvLoaderTest {
         loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
+        loader.load(file);
+    }
+
+    @Test
+    public void testQuotedCsv() throws IOException {
+        char separator = ',';
+        TimeseriesFixture tf = new TimeseriesFixture();
+        File file = tf.quoted();
+        Dataset<? extends Instance> dataset = new ArrayDataset<Instance>(100, 22);
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skip = new ArrayList<Integer>();
+        //skipped.add(0); //first one is ID
+        for (int i = 0; i < 7; i++) {
+            skip.add(i);
+            loader.addNameAttr(i); //meta attributes
+        }
+
+        loader.setNameJoinChar(", ");
+
+        loader.setSkipIndex(skip);
+        loader.setSeparator(separator);
+        //loader.setClassIndex(0);
+        loader.setSkipHeader(false);
+        loader.setDataset(dataset);
         loader.load(file);
     }
 

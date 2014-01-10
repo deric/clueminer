@@ -289,7 +289,7 @@ public class HCLDialog extends ClusteringDialog {
         String standard = (String) comboStandardisation.getSelectedItem();
         params.setProperty("std", standard);
 
-        params.setProperty("dataset", (String) comboTransform.getSelectedItem() );
+        params.setProperty("dataset", (String) comboTransform.getSelectedItem());
 
         /**
          * 0 for ALC method, 1 for CLC or -1 otherwise
@@ -311,7 +311,6 @@ public class HCLDialog extends ClusteringDialog {
         //Clustering by Samples
         params.setProperty("calculate-rows", String.valueOf(chckRows.isSelected()));
         params.setProperty("calculate-columns", String.valueOf(chckColumns.isSelected()));
-        //data.addParam("calculate-genes", String.valueOf(false));
         params.setProperty("optimize-cols-ordering", String.valueOf(true));
 
         params.setProperty("optimize-sample-ordering", String.valueOf(true));

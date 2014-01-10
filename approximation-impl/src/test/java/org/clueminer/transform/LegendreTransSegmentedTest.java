@@ -182,8 +182,8 @@ public class LegendreTransSegmentedTest {
     }
 
     @Test
-    public void testRealWorldTs() {
-        String separator = ",";
+    public void testRealWorldTs() throws IOException {
+        char separator = ',';
         TimeseriesFixture tf = new TimeseriesFixture();
         File file = tf.ts01();
         Timeseries<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
@@ -196,7 +196,7 @@ public class LegendreTransSegmentedTest {
             loader.addNameAttr(j); //meta attributes
         }
 
-        String[] firstLine = CsvLoader.firstLine(file, separator);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
         int i = 0;
         int index;
         int last = firstLine.length;
