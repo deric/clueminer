@@ -18,7 +18,6 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.hclust.BTreePrinter;
 import org.clueminer.hclust.DTreeLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
@@ -320,6 +319,7 @@ public class HClustResult implements HierarchicalResult {
 
         DendroNode current = null;
         DendroNode prev = null;
+        int pos = 0;
         for (Merge m : getMerges()) {
             current = new DTreeNode();
             //bottom level
@@ -334,8 +334,7 @@ public class HClustResult implements HierarchicalResult {
 
         updatePositions(current);
 
-        BTreePrinter.printNode(prev);
-
+//        BTreePrinter.printNode(prev);
         treeData.setRoot(current);
     }
 
