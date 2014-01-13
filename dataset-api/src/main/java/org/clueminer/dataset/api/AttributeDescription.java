@@ -34,7 +34,7 @@ public class AttributeDescription implements Serializable {
         this.defaultValue = defaultValue;
     }
 
-    private AttributeDescription(AttributeDescription other) {
+    AttributeDescription(AttributeDescription other) {
         this.name = other.name;
         this.type = other.type;
         this.defaultValue = other.defaultValue;

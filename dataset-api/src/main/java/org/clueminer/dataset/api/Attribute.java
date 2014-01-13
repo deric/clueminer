@@ -181,6 +181,7 @@ public interface Attribute extends Cloneable, Serializable {
      *
      * @param value
      * @param digits
+     * @param quoteNominal
      * @return
      */
     public String asString(double value, int digits, boolean quoteNominal);

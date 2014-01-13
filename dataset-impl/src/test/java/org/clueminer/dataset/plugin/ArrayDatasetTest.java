@@ -197,6 +197,23 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testCopyAttributes() {
+        Attribute[] attr = dataset.getAttributes().values().toArray(new Attribute[dataset.attributeCount()]);
+        Attribute[] clone = dataset.copyAttributes();
+        int i = 0;
+        for (Attribute a : attr) {
+            assertEquals(a.getIndex(), clone[i].getIndex());
+            assertEquals(a.getName(), clone[i].getName());
+            assertEquals(a.isNumerical(), clone[i].isNumerical());
+            assertEquals(a.isMeta(), clone[i].isMeta());
+            i++;
+        }
+        //should be deep copy
+        attr[0].setIndex(99);
+        System.out.println("clone idx = " + clone[0].getIndex());
+        /**
+         * TODO fix this
+         */
+        // assertNotSame(attr[0].getIndex(), clone[0].getIndex());
     }
 
     /**

@@ -29,6 +29,8 @@ public abstract class AbstractAttribute implements Attribute {
 
     protected AttributeRole role;
 
+    private int attrIndex;
+
     /**
      * Creates a simple attribute which is not part of a series and does not
      * provide a unit string. This constructor should only be used for
@@ -39,7 +41,7 @@ public abstract class AbstractAttribute implements Attribute {
      * @param other
      */
     protected AbstractAttribute(AbstractAttribute other) {
-        this.attributeDescription = other.attributeDescription;
+        this.attributeDescription = new AttributeDescription(other.getName(), other.getType(), 0.0d);
 
         // copy statistics
         this.statistics = new LinkedList<Statistics>();
@@ -82,12 +84,12 @@ public abstract class AbstractAttribute implements Attribute {
      */
     @Override
     public int getIndex() {
-        return this.attributeDescription.getIndex();
+        return attrIndex;
     }
 
     @Override
     public void setIndex(int index) {
-        this.attributeDescription.setIndex(index);
+        this.attrIndex = index;
     }
 
     @Override

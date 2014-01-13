@@ -205,6 +205,10 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public Attribute[] copyAttributes() {
+        Attribute[] copy = new Attribute[attributeCount()];
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] = (Attribute) getAttribute(i).clone();
+        }
         return attributes.clone();
     }
 
