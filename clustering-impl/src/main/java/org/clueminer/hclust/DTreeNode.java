@@ -130,4 +130,11 @@ public class DTreeNode implements DendroNode {
         return id;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[ ").append("#").append(getId()).append(getPosition()).append(", ").append(level).append(" ]");
+        return sb.toString();
+    }
+
 }

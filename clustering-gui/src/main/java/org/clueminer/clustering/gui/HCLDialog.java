@@ -306,14 +306,14 @@ public class HCLDialog extends ClusteringDialog {
 
         params.setProperty("calculate-experiments", String.valueOf(true));
 
-        params.setProperty("optimize-rows-ordering", String.valueOf(true));
+        params.setProperty("optimize-rows-ordering", String.valueOf(false));
 
         //Clustering by Samples
         params.setProperty("calculate-rows", String.valueOf(chckRows.isSelected()));
         params.setProperty("calculate-columns", String.valueOf(chckColumns.isSelected()));
-        params.setProperty("optimize-cols-ordering", String.valueOf(true));
+        params.setProperty("optimize-cols-ordering", String.valueOf(false));
 
-        params.setProperty("optimize-sample-ordering", String.valueOf(true));
+        params.setProperty("optimize-sample-ordering", String.valueOf(false));
 
         params.setProperty("cutoff", comboCutoff.getSelectedItem().toString());
         params.setProperty("log-scale", String.valueOf(chkBoxLogScale.isSelected()));

@@ -18,6 +18,7 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.BTreePrinter;
 import org.clueminer.hclust.DTreeLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
@@ -331,7 +332,21 @@ public class HClustResult implements HierarchicalResult {
             //System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster() + " similarity = " + m.similarity());
         }
 
+        updatePositions(current);
+
+        BTreePrinter.printNode(prev);
+
         treeData.setRoot(current);
+    }
+
+    private double updatePositions(DendroNode node) {
+        if (node.isLeaf()) {
+            return node.getPosition();
+        }
+
+        double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
+        node.setPosition(position);
+        return position;
     }
 
     private DendroNode getNode(int idx) {
