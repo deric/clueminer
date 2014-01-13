@@ -106,7 +106,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         String title = filename;
         int pos = filename.lastIndexOf('.');
         if (pos > -1) {
-            title = filename.substring(0, pos - 1).trim();
+            title = filename.substring(0, pos).trim();
         }
         return title;
     }

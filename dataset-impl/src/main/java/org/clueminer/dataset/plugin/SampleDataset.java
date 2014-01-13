@@ -1,6 +1,7 @@
 package org.clueminer.dataset.plugin;
 
 import java.util.*;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.dataset.api.Attribute;
@@ -28,6 +29,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     protected InstanceBuilder builder;
     protected AttributeBuilder attributeBuilder;
     protected TreeSet<Object> classes = new TreeSet<Object>();
+    private static final Logger logger = Logger.getLogger(SampleDataset.class.getName());
 
     /**
      * Creates an empty data set with capacity of ten

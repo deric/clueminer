@@ -71,7 +71,7 @@ public class CsvLoaderTest {
     }
 
     /**
-     * Test of setHeader method, of class CsvLoader.
+     * Test of setHasHeader method, of class CsvLoader.
      *
      * @throws java.io.IOException
      */
@@ -80,7 +80,7 @@ public class CsvLoaderTest {
         File file = fixture.irisData();
         Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
         subject.setClassIndex(4);
-        subject.setHeader(false);
+        subject.setHasHeader(false);
         //run
         subject.load(file, dataset);
         assertEquals(4, dataset.attributeCount());
@@ -94,7 +94,7 @@ public class CsvLoaderTest {
         File file = fixture.irisData();
         Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
         subject.setClassIndex(4);
-        subject.setHeader(false);
+        subject.setHasHeader(false);
         subject.addNameAttr(4);
         //run
         subject.load(file, dataset);
@@ -183,7 +183,7 @@ public class CsvLoaderTest {
     public void testMeta() throws IOException {
         File file = fixture.schoolData();
         Dataset<Instance> dataset = new ArrayDataset<Instance>(17, 5);
-        subject.setHeader(true);
+        subject.setHasHeader(true);
         subject.addNameAttr(4);
         subject.addMetaAttr(3);
         subject.setSeparator(' ');

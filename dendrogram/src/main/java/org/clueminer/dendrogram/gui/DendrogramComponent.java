@@ -3,7 +3,9 @@ package org.clueminer.dendrogram.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HCL;
@@ -138,6 +140,10 @@ public class DendrogramComponent extends ClusterAnalysis {
         //AlgorithmFactory factory = framework.getAlgorithmFactory();
         //algorithm.addAlgorithmListener(new Listener());
         long start = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss, dd.MM.yyyy");
+        String dateString = formatter.format(start);
+
+        logger.log(Level.INFO, "starting clustering {0}", dateString);
 
         Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
         logger.log(Level.INFO, "input matrix size: {0} x {1}", new Object[]{input.rowsCount(), input.columnsCount()});
@@ -166,8 +172,8 @@ public class DendrogramComponent extends ClusterAnalysis {
             cprox.print(5, 2);
         }
         long time = System.currentTimeMillis() - start;
-        System.out.println("clustering took " + time + " ms");
-
+        logger.log(Level.INFO, "clustering finished {0}", formatTime(time));
+        finalResult = rowsResult;
 
         /*    double cutoff = rowsResult.findCutoff();
          System.out.println("rows tree cutoff = " + cutoff);
@@ -232,8 +238,16 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         System.out.println(evaluators);
         System.out.println(scores);
-        finalResult = rowsResult;
+        logger.log(Level.INFO, "coefficients finished");
         repaint();
+    }
+
+    public String formatTime(long millis) {
+        return String.format("%d min, %d sec",
+                             TimeUnit.MILLISECONDS.toMinutes(millis),
+                             TimeUnit.MILLISECONDS.toSeconds(millis)
+                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+        );
     }
 
     @Override

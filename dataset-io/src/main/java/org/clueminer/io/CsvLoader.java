@@ -186,7 +186,7 @@ public class CsvLoader implements DatasetLoader {
         return hasHeader;
     }
 
-    public void setHeader(boolean header) {
+    public void setHasHeader(boolean header) {
         this.hasHeader = header;
     }
 
