@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.cluster.BaseCluster;
+import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
@@ -42,6 +46,7 @@ public class HClustResult implements HierarchicalResult {
     private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
     private DendroNode[] nodes;
     private int numNodes = 0;
+    private Clustering clustering = null;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -142,12 +147,72 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public Clustering getClustering() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (clustering == null) {
+            getClustering(dataset);
+        }
+        return clustering;
     }
 
     @Override
-    public Clustering getClustering(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Clustering getClustering(Dataset<? extends Instance> parent) {
+        setDataset(parent);
+
+        Clustering result = new ClusterList(dataset.size());
+        /**
+         * TODO find cutoff
+         */
+
+        /*        //we need number of instances in dataset
+         int[] clusters = treeData.getClusters(parent.size());
+        Dump.array(clusters, "cluster assignments");
+
+        Clustering result = new ClusterList(treeData.getNumberOfClusters());
+        if (treeData.getNumberOfClusters() <= 0) {
+            logger.log(Level.WARNING, "0 clusters according to treeData");
+            return result;
+        }
+        if (clusters.length != parent.size()) {
+            throw new RuntimeException("unexpected size of clustering result " + clusters.length + ", dataset size is " + parent.size());
+        }
+
+        //estimated capacity
+        int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
+        int num, idx;
+        Cluster<Instance> clust;
+        //Dump.array(clusters, "clusters-assignment");
+        //Dump.array(itemsMapping, "items-mapping");
+        for (int i = 0; i < clusters.length; i++) {
+            num = clusters[i] - 1; //numbering starts from 1
+            //if clustering wasn't computed yet, we have to wait...
+            if (num >= 0) {
+                if (!result.hasAt(num)) {
+                    clust = new BaseCluster<Instance>(perCluster);
+                    clust.setName("Cluster " + (num + 1));
+                    clust.setParent(parent);
+
+                    Attribute[] attr = parent.copyAttributes();
+                    for (int j = 0; j < attr.length; j++) {
+                        clust.setAttribute(j, attr[j]);
+                    }
+                    result.put(num, clust);
+                } else {
+                    clust = result.get(num);
+                }
+                idx = itemsMapping[i];
+                //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
+                //logger.log(Level.WARNING, "{0} -> {1}: cluster {2}", new Object[]{i, idx, num});
+                //mapping is tracked in cluster
+                // values in cluster array doesn't need mapping!
+                clust.add(dataset.get(i), idx);
+            }
+        }
+        for (Object c : result) {
+            logger.log(Level.INFO, "{0}", c.toString());
+        }
+        //proximity.printLower(5, 2);
+        // similarity.print(4, 2);
+         */
+        return result;
     }
 
     @Override
