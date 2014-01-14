@@ -387,7 +387,6 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        System.out.println("DendroPanel: dataset changed");
         this.dendroData = dataset;
         rowsTree.fireTreeUpdated();
         columnsTree.fireTreeUpdated();
@@ -407,8 +406,6 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
             width += rowAnnotationBar.getWidth();
         }
         width += columnsScale.getWidth();
-        System.out.println("new requested width= " + width);
-        System.out.println("rows treee " + rowsTree.getWidth() + " size: " + rowsTree.getSize());
         size.width = width;
     }
 
