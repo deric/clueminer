@@ -161,7 +161,7 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public void setCutoff(double cutoff) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.cutoff = cutoff;
     }
 
     @Override
@@ -211,7 +211,10 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int treeLevels() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (treeData != null) {
+            return treeData.treeLevels();
+        }
+        return 0;
     }
 
     @Override
@@ -231,10 +234,11 @@ public class HClustResult implements HierarchicalResult {
      */
     @Override
     public double getMaxTreeHeight() {
-        if (merges != null) {
-            return merges.get(0).similarity();
+        if (treeData == null) {
+            logger.log(Level.INFO, "constructing tree");
+            constructTree();
         }
-        return 0;
+        return treeData.getRoot().getHeight();
     }
 
     @Override
@@ -319,8 +323,11 @@ public class HClustResult implements HierarchicalResult {
 
         DendroNode current = null;
         DendroNode prev = null;
-        int pos = 0;
-        for (Merge m : getMerges()) {
+        //for (Merge m : getMerges()) {
+
+        Merge m;
+        for (int i = merges.size() - 1; i >= 0; i--) {
+            m = merges.get(i);
             current = new DTreeNode();
             //bottom level
             if (prev == null) {
@@ -328,8 +335,9 @@ public class HClustResult implements HierarchicalResult {
             }
             current.setLeft(prev);
             current.setRight(getNode(m.mergedCluster()));
+            current.setHeight(m.similarity());
             prev = current;
-            //System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster() + " similarity = " + m.similarity());
+            //  System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster() + " similarity = " + m.similarity());
         }
         numNodes = 0;
         //number leaves, so that we can compute it's position
@@ -338,6 +346,7 @@ public class HClustResult implements HierarchicalResult {
 
 //        BTreePrinter.printNode(prev);
         treeData.setRoot(current);
+        logger.log(Level.INFO, "max tree height: {0}", current.getHeight());
     }
 
     /**

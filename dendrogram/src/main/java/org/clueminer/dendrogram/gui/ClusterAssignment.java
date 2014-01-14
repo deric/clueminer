@@ -14,7 +14,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.gui.ColorGenerator;
-import org.clueminer.utils.Dump;
 
 /**
  * Color stripe for showing assignments to clusters
@@ -101,9 +100,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
         if (dendroData != null) {
             HierarchicalResult clustering = dendroData.getRowsResult();
-            logger.log(Level.INFO, "number of dataset rows {0}", dendroData.getNumberOfRows());
             int[] clusters = clustering.getClusters(dendroData.getNumberOfRows());
-            Dump.array(clusters, "cluster assignments");
             int i = 0;
             if (clusters.length == 0) {
                 logger.log(Level.INFO, "clusters size is 0!!!");

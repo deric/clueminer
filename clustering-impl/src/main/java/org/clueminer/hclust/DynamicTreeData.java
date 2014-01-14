@@ -17,12 +17,18 @@ public class DynamicTreeData implements DendroTreeData {
 
     @Override
     public int numLeaves() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (root != null) {
+            return root.childCnt();
+        }
+        return 0;
     }
 
     @Override
     public int treeLevels() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (root != null) {
+            return root.level();
+        }
+        return 0;
     }
 
     @Override

@@ -4,7 +4,6 @@ import org.clueminer.math.matrix.JMatrix;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.HierachicalClusteringResult;
-import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -190,7 +189,7 @@ public class HCL implements ClusteringAlgorithm {
                     /// System.out.println(i+";"+j+": dist "+SimilarityMatrix[i][j]);
                 }
                 if (optimizeOrdering) {
-                    SimilarityMatrix[j][i] = SimilarityMatrix[i][j]; //square matrix created from  
+                    SimilarityMatrix[j][i] = SimilarityMatrix[i][j]; //square matrix created from
                     //squareMatrix[j][i] = SimilarityMatrix[i][j]; //triangular Similarity JMatrix
                 }
                 if (SimilarityMatrix[i][j] < Min[i]) {
@@ -277,7 +276,7 @@ public class HCL implements ClusteringAlgorithm {
             i = test_i;
             j = test_j;
 
-            //JCB 
+            //JCB
             //  if(i >= n || j >= n || i < 0 || j < 0)
             //  break;
 
@@ -520,7 +519,7 @@ public class HCL implements ClusteringAlgorithm {
     }
 
     public int NewNode(double[] Height, double h) {
-        // NewNode creates a node (Assigned) and assigns it an integer value >=n.   	 
+        // NewNode creates a node (Assigned) and assigns it an integer value >=n.
         Height[Assigned] = h;
         if (h > TreeHeight) {
             TreeHeight = h; // global
