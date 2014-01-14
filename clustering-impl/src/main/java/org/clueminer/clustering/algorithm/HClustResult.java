@@ -18,7 +18,6 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.hclust.DTreeLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
@@ -350,7 +349,7 @@ public class HClustResult implements HierarchicalResult {
 
     private DendroNode getNode(int idx) {
         if (nodes[idx] == null) {
-            nodes[idx] = new DTreeLeaf();
+            nodes[idx] = new DTreeNode();
             nodes[idx].setId(idx);
         }
         return nodes[idx];

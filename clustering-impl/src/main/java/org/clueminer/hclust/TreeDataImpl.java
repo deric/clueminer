@@ -524,13 +524,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     private DendroNode constructSubTree(int node, DTreeNode parent, int level) {
-        DTreeNode current;
+        DTreeNode current = new DTreeNode(parent);
         if (isLeaf(node)) {
-            current = new DTreeLeaf(parent);
             //first node has 0, leaves has coordinates [0, position]
             current.setPosition(numLeaves++);
         } else {
-            current = new DTreeNode(parent);
             current.setHeight(getHeight(node));
             current.setLevel(level);
             //explore subtree

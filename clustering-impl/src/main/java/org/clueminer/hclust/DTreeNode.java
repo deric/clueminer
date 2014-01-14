@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
  */
 public class DTreeNode implements DendroNode {
 
-    private final boolean leaf = false;
     private boolean root = false;
     protected DendroNode left;
     protected DendroNode right;
@@ -21,6 +20,10 @@ public class DTreeNode implements DendroNode {
     public DTreeNode() {
     }
 
+    public DTreeNode(int id) {
+        this.id = id;
+    }
+
     public DTreeNode(DendroNode parent) {
         this.parent = parent;
     }
@@ -29,9 +32,14 @@ public class DTreeNode implements DendroNode {
         this.root = root;
     }
 
+    /**
+     * Leaf doesn't have any children
+     *
+     * @return
+     */
     @Override
     public boolean isLeaf() {
-        return leaf;
+        return !hasLeft() && !hasRight();
     }
 
     @Override
@@ -71,7 +79,19 @@ public class DTreeNode implements DendroNode {
 
     @Override
     public int level() {
-        return level;
+        if (level == -1) {
+            if (hasLeft() && hasRight()) {
+                return 1 + Math.max(getLeft().level(), getRight().level());
+            } else if (hasLeft() && !hasRight()) {
+                return 1 + getLeft().level();
+            } else if (!hasLeft() && hasRight()) {
+                return 1 + getRight().level();
+            } else {
+                return 0;
+            }
+        } else {
+            return level;
+        }
     }
 
     public void setLevel(int level) {
