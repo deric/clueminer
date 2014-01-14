@@ -54,6 +54,13 @@ public interface DendroNode {
     public int level();
 
     /**
+     * In case that tree construction is finished, we can cache tree levels
+     *
+     * @param level
+     */
+    public void setLevel(int level);
+
+    /**
      * If root node, parent is null
      *
      * @return parent node

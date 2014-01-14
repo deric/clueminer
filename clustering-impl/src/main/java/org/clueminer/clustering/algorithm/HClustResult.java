@@ -41,6 +41,7 @@ public class HClustResult implements HierarchicalResult {
     private Dataset<? extends Instance> dataset;
     private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
     private DendroNode[] nodes;
+    private int numNodes = 0;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -330,11 +331,32 @@ public class HClustResult implements HierarchicalResult {
             prev = current;
             //System.out.println("merge: " + m.mergedCluster() + " remain: " + m.remainingCluster() + " similarity = " + m.similarity());
         }
-
+        numNodes = 0;
+        //number leaves, so that we can compute it's position
+        numberLeaves(current);
         updatePositions(current);
 
 //        BTreePrinter.printNode(prev);
         treeData.setRoot(current);
+    }
+
+    public int numberLeaves(DendroNode node) {
+        int ll = 0;
+        int lr = 0;
+        int level;
+        if (!node.isLeaf()) {
+            if (node.hasLeft()) {
+                ll = numberLeaves(node);
+            }
+            if (node.hasRight()) {
+                lr = numberLeaves(node);
+            }
+        } else {
+            node.setPosition(numNodes++);
+        }
+        level = Math.max(ll, lr);
+        node.setLevel(level);
+        return level;
     }
 
     private double updatePositions(DendroNode node) {
