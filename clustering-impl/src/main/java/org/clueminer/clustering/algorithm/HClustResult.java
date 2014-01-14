@@ -340,16 +340,22 @@ public class HClustResult implements HierarchicalResult {
         treeData.setRoot(current);
     }
 
+    /**
+     * Number leaves from 0 to {numNodes}
+     *
+     * @param node
+     * @return
+     */
     public int numberLeaves(DendroNode node) {
         int ll = 0;
         int lr = 0;
         int level;
         if (!node.isLeaf()) {
             if (node.hasLeft()) {
-                ll = numberLeaves(node);
+                ll = numberLeaves(node.getLeft());
             }
             if (node.hasRight()) {
-                lr = numberLeaves(node);
+                lr = numberLeaves(node.getRight());
             }
         } else {
             node.setPosition(numNodes++);
