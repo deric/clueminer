@@ -123,10 +123,16 @@
                         <publicPackage>jaolho.data.lma.implementations</publicPackage>
                         <publicPackage>org.clueminer.approximation</publicPackage>
                         <publicPackage>org.clueminer.asr</publicPackage>
+                        <publicPackage>org.clueminer.dtw</publicPackage>
+                        <publicPackage>org.clueminer.dtw.run</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
+                        <publicPackage>org.clueminer.lang</publicPackage>
+                        <publicPackage>org.clueminer.matrix</publicPackage>
                         <publicPackage>org.clueminer.sax</publicPackage>
+                        <publicPackage>org.clueminer.timeseries</publicPackage>
                         <publicPackage>org.clueminer.tranform</publicPackage>
                         <publicPackage>org.clueminer.transform</publicPackage>
+                        <publicPackage>org.clueminer.util</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
