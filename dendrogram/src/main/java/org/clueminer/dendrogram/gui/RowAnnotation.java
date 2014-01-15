@@ -33,13 +33,22 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
             Font f;
-            int height = fm.getMaxAscent();
-            // rather empiric constat which seems to improve annotatation position
-            // but should be replaced by real line position computation
-            double offset = (elementSize.height / 2.0) - ((elementSize.height - fm.getAscent()) / 20.0) + (height / 2.0);
+            int ascent = fm.getMaxAscent();
+            int descent = fm.getDescent();
+            /*
+             * Fonts are not scaling lineraly
+            
+             *---------------ascent
+             *
+             * FONT
+             * ----- baseline
+             *
+             * --------------descent
+             *
+             */
+            double offset = (elementSize.height / 2.0) + ((ascent - descent) / 2.0);
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
                 annY = (float) (row * elementSize.height + offset);
-
                 String s = dendroData.getRowsResult().getInstance(row).getName();
                 if (s == null) {
                     s = unknownLabel;
