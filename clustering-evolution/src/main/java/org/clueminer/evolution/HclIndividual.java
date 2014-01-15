@@ -1,27 +1,24 @@
 package org.clueminer.evolution;
 
 import org.clueminer.clustering.api.evolution.Individual;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.clueminer.cluster.HierachicalClusteringResult;
+import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evaluation.hclust.CopheneticCorrelation;
-import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.hclust.NaiveCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
-import org.clueminer.utils.AlgorithmParameters;
 import org.clueminer.utils.Dump;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -32,7 +29,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     private double fitness = 0;
     private static Random rand = new Random();
     private double[] weights;
-    private AlgorithmParameters params;
+    private Preferences params;
     private boolean debug = true;
 
     public HclIndividual(AttrEvolution evolution) {
@@ -46,18 +43,18 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         for (int i = 0; i < weights.length; i++) {
             weights[i] = rand.nextDouble();
         }
-        params = new AlgorithmParameters();
-        params.setProperty("name", "HCL");
+        params = NbPreferences.forModule(HclIndividual.class);
+        params.put("name", "HCL");
         // alg type
-        params.setProperty("alg-type", "cluster");
+        params.put("alg-type", "cluster");
         // output class
-        params.setProperty("output-class", "single-output");
-        params.setProperty("distance-factor", String.valueOf(1));
-        params.setProperty("hcl-distance-absolute", String.valueOf(true));
+        params.put("output-class", "single-output");
+        params.putInt("distance-factor", 1);
+        params.putBoolean("hcl-distance-absolute", true);
 
         String standard = "Min-Max";
-        params.setProperty("std", standard);
-        params.setProperty("fitted-params", String.valueOf(false));
+        params.put("std", standard);
+        params.putBoolean("fitted-params", false);
 
 
         /**
@@ -71,21 +68,21 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
          } else if (radioLinkageSingle.isSelected()) {
          linkage = -1;
          }*/
-        params.setProperty("method-linkage", String.valueOf(linkage));
+        params.putInt("method-linkage", linkage);
 
-        params.setProperty("calculate-experiments", String.valueOf(false));
+        params.putBoolean("calculate-experiments", false);
 
-        params.setProperty("optimize-rows-ordering", String.valueOf(true));
+        params.putBoolean("optimize-rows-ordering", true);
 
         //Clustering by Samples
-        params.setProperty("calculate-rows", String.valueOf(true));
+        params.putBoolean("calculate-rows", true);
         //data.addParam("calculate-genes", String.valueOf(false));
-        params.setProperty("optimize-cols-ordering", String.valueOf(true));
+        params.putBoolean("optimize-cols-ordering", true);
 
-        params.setProperty("optimize-sample-ordering", String.valueOf(true));
+        params.putBoolean("optimize-sample-ordering", true);
 
-        params.setProperty("cutoff", "BIC score");
-        params.setProperty("log-scale", String.valueOf(false));
+        params.put("cutoff", "BIC score");
+        params.putBoolean("log-scale", false);
 
     }
 
@@ -99,14 +96,14 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         long start = System.currentTimeMillis();
 
 
-        Matrix input = Scaler.standartize(evolution.getDataset().arrayCopy(), params.getString("std"), params.getBoolean("log-scale"));
+        Matrix input = Scaler.standartize(evolution.getDataset().arrayCopy(), params.get("std", "None"), params.getBoolean("log-scale", false));
 
         System.out.println("input matrix");
         input.print(5, 2);
 
 
         //   progress.setTitle("Clustering by rows");
-        params.setProperty("calculate-rows", String.valueOf(true));
+        params.putBoolean("calculate-rows", true);
         HierarchicalResult rowsResult = ((AgglomerativeClustering) algorithm).hierarchy(input, evolution.getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
@@ -137,7 +134,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         //   cutoff = columnsResult.findCutoff();
         //   System.out.println("columns tree cutoff = " + cutoff);
 
-        String cutoffAlg = params.getString("cutoff");
+        String cutoffAlg = params.get("cutoff", "NaiveCutoff");
 
        // if (!cutoffAlg.equals("-- naive --")) {
             ClusterEvaluator eval = ClusterEvaluatorFactory.getDefault().getProvider(cutoffAlg);
@@ -150,7 +147,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
 
 
         String linkage = null;
-        switch (params.getInt("method-linkage")) {
+        switch (params.getInt("method-linkage", 1)) {
             case -1:
                 linkage = "single";
                 break;
@@ -170,7 +167,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         scores.append(algorithm.getDistanceFunction().getName()).append("\t");
 
         evaluators.append("Standartization").append("\t");
-        scores.append(params.getString("std")).append("\t");
+        scores.append(params.get("std", "None")).append("\t");
 
         evaluators.append("Linkage").append("\t");
         scores.append(linkage).append("\t");

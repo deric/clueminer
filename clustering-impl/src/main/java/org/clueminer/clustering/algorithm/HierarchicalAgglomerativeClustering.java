@@ -185,12 +185,12 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters params) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -14,7 +14,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.AlgorithmParameters;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
@@ -42,7 +41,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters map) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences map) {
         JMatrix input = new JMatrix(dataset.arrayCopy());
         return hierarchy(input, dataset, map);
     }
@@ -65,7 +64,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters map) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences map) {
         System.out.println(map.toString());
 
         TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);

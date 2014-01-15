@@ -4,7 +4,6 @@ import java.util.prefs.Preferences;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.AlgorithmParameters;
 
 /**
  *
@@ -16,19 +15,19 @@ public interface AgglomerativeClustering extends ClusteringAlgorithm {
      * Run hierarchical clustering on dataset
      *
      * @param dataset
-     * @param params
+     * @param pref
      * @return
      */
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params);
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences pref);
 
     /**
      *
      * @param input
      * @param dataset
-     * @param params
+     * @param pref
      * @return
      */
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters params);
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref);
 
     public HierarchicalResult hierarchy(Matrix matrix, Preferences props);
 

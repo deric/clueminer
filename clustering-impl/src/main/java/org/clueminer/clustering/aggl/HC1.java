@@ -1,6 +1,7 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -22,7 +23,6 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
     private final static String name = "HC1";
 
-
     @Override
     public String getName() {
         return name;
@@ -34,13 +34,17 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref) {
+        HierarchicalResult result = new HClustResult(dataset);
+        AgglParams param = new AgglParams(pref);
+        //AgglClustering.rowSimilarityMatrix(input, distanceMeasure)
+
+        return result;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.clueminer.evaluation.hclust;
 
+import java.util.prefs.Preferences;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.cluster.HierachicalClusteringResult;
 import org.clueminer.clustering.algorithm.HCL;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openide.util.NbPreferences;
 
 /**
  * This test was inspired by example here:
@@ -29,7 +31,7 @@ public class CopheneticCorrelationTest {
 
     private static Dataset<Instance> dataset;
     private static CopheneticCorrelation test;
-    private static AlgorithmParameters params;
+    private static Preferences params;
     private static HierarchicalResult rowsResult;
     private static Matrix input;
 
@@ -85,18 +87,18 @@ public class CopheneticCorrelationTest {
     public void tearDown() throws Exception {
     }
 
-    private static AlgorithmParameters getParams() {
-        AlgorithmParameters p = new AlgorithmParameters();
+    private static Preferences getParams() {
+        Preferences p = NbPreferences.forModule(CopheneticCorrelationTest.class);
         // alg name
-        p.setProperty("name", "HCL");
-        p.setProperty("distance-factor", "1.0");
-        p.setProperty("hcl-distance-absolute", "1.0");
+        p.put("name", "HCL");
+        p.putDouble("distance-factor", 1.0);
+        p.putDouble("hcl-distance-absolute", 1.0);
 
-        p.setProperty("calculate-experiments", String.valueOf(true));
-        p.setProperty("optimize-rows-ordering", String.valueOf(true));
-        p.setProperty("optimize-cols-ordering", String.valueOf(true));
-        p.setProperty("optimize-sample-ordering", String.valueOf(true));
-        p.setProperty("calculate-rows", String.valueOf(true));
+        p.putBoolean("calculate-experiments", true);
+        p.putBoolean("optimize-rows-ordering", true);
+        p.putBoolean("optimize-cols-ordering", true);
+        p.putBoolean("optimize-sample-ordering", true);
+        p.putBoolean("calculate-rows", true);
         return p;
     }
 
@@ -115,7 +117,7 @@ public class CopheneticCorrelationTest {
     public void testSingleLinkage() {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.setProperty("method-linkage", String.valueOf(-1)); //-1=single, 0=complete, 1/2=average
+        params.putInt("method-linkage", -1); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
@@ -133,7 +135,7 @@ public class CopheneticCorrelationTest {
     public void testCompleteLinkage() {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.setProperty("method-linkage", String.valueOf(0)); //-1=single, 0=complete, 1/2=average
+        params.putInt("method-linkage", 0); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
@@ -150,7 +152,7 @@ public class CopheneticCorrelationTest {
     public void testAverageLinkage() {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.setProperty("method-linkage", String.valueOf(1)); //-1=single, 0=complete, 1/2=average
+        params.putInt("method-linkage", 1); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
@@ -169,7 +171,7 @@ public class CopheneticCorrelationTest {
     public void testGetCopheneticMatrix() {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.setProperty("method-linkage", String.valueOf(-1)); //-1=single, 0=complete, 1/2=average
+        params.putInt("method-linkage", -1); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();

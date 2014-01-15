@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.*;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
@@ -131,7 +132,7 @@ public class DendrogramComponent extends ClusterAnalysis {
     }
 
     @Override
-    public void execute(AlgorithmParameters params, Dataset<? extends Instance> data) {
+    public void execute(Preferences params, Dataset<? extends Instance> data) {
         //      Listener listener = new Listener();
         // AlgorithmParameters params = data.getParams();
         // Experiment experiment = data.getExperiment();
@@ -145,7 +146,7 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         logger.log(Level.INFO, "starting clustering {0}", dateString);
 
-        Matrix input = standartize(data, params.getString("std"), params.getBoolean("log-scale"));
+        Matrix input = standartize(data, params.get("std", "None"), params.getBoolean("log-scale", false));
         logger.log(Level.INFO, "input matrix size: {0} x {1}", new Object[]{input.rowsCount(), input.columnsCount()});
         if (debug) {
             System.out.println("input matrix");
@@ -153,11 +154,11 @@ public class DendrogramComponent extends ClusterAnalysis {
         }
 
         //   progress.setTitle("Clustering by rows");
-        params.setProperty("calculate-rows", String.valueOf(true));
+        params.putBoolean("calculate-rows", true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, data, params);
 
         //   progress.setTitle("Clustering by columns");
-        params.setProperty("calculate-rows", String.valueOf(false));
+        params.putBoolean("calculate-rows", false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, data, params);
         // validate(columnsResult);
 
@@ -182,7 +183,7 @@ public class DendrogramComponent extends ClusterAnalysis {
          System.out.println("columns tree cutoff = " + cutoff);*/
         DendrogramData dendroData = new DendrogramData(data, input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);
-        String cutoffAlg = params.getString("cutoff");
+        String cutoffAlg = params.get("cutoff", "Naive");
         Clustering clust;
         if (!cutoffAlg.equals("-- naive --")) {
             ClusterEvaluator eval = ClusterEvaluatorFactory.getDefault().getProvider(cutoffAlg);
@@ -195,7 +196,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         List<ClusterEvaluator> list = ClusterEvaluatorFactory.getDefault().getAll();
 
         String linkage = null;
-        switch (params.getInt("method-linkage")) {
+        switch (params.getInt("method-linkage", 1)) {
             case -1:
                 linkage = "single";
                 break;
@@ -215,7 +216,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         scores.append(algorithm.getDistanceFunction().getName()).append("\t");
 
         evaluators.append("Standartization").append("\t");
-        scores.append(params.getString("std")).append("\t");
+        scores.append(params.get("std", "None")).append("\t");
 
         evaluators.append("Linkage").append("\t");
         scores.append(linkage).append("\t");

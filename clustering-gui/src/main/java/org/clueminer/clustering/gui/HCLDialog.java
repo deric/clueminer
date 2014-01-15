@@ -1,6 +1,7 @@
 package org.clueminer.clustering.gui;
 
 import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
@@ -9,7 +10,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.std.StandardisationFactory;
-import org.clueminer.utils.AlgorithmParameters;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -20,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HCLDialog extends ClusteringDialog {
 
     private static final long serialVersionUID = -5755827346014535345L;
-    private AlgorithmParameters params;
+    private Preferences params;
     private ClusterAnalysis parent;
     private ClusteringAlgorithm algorihm;
 
@@ -271,25 +272,25 @@ public class HCLDialog extends ClusteringDialog {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public AlgorithmParameters getParams() {
-        params = new AlgorithmParameters();
+    public Preferences getParams() {
+        params = NbPreferences.forModule(HCLDialog.class);
         // alg name
-        params.setProperty("name", "HCL");
+        params.put("name", "HCL");
         // alg type
-        params.setProperty("alg-type", "cluster");
+        params.put("alg-type", "cluster");
         // output class
-        params.setProperty("output-class", "single-output");
-        params.setProperty("distance-factor", String.valueOf(spnDistanceFactor.getValue()));
-        params.setProperty("hcl-distance-absolute", String.valueOf(true));
+        params.put("output-class", "single-output");
+        params.putDouble("distance-factor", (Double) spnDistanceFactor.getValue());
+        params.putBoolean("hcl-distance-absolute", true);
 
         DistanceFactory df = DistanceFactory.getDefault();
         AbstractDistance func = df.getProvider((String) comboDistance.getSelectedItem());
         algorihm.setDistanceFunction(func);
 
         String standard = (String) comboStandardisation.getSelectedItem();
-        params.setProperty("std", standard);
+        params.put("std", standard);
 
-        params.setProperty("dataset", (String) comboTransform.getSelectedItem());
+        params.put("dataset", (String) comboTransform.getSelectedItem());
 
         /**
          * 0 for ALC method, 1 for CLC or -1 otherwise
@@ -302,21 +303,21 @@ public class HCLDialog extends ClusteringDialog {
         } else if (radioLinkageSingle.isSelected()) {
             linkage = -1;
         }
-        params.setProperty("method-linkage", String.valueOf(linkage));
+        params.putInt("method-linkage", linkage);
 
-        params.setProperty("calculate-experiments", String.valueOf(true));
+        params.putBoolean("calculate-experiments", true);
 
-        params.setProperty("optimize-rows-ordering", String.valueOf(false));
+        params.putBoolean("optimize-rows-ordering",false);
 
         //Clustering by Samples
-        params.setProperty("calculate-rows", String.valueOf(chckRows.isSelected()));
-        params.setProperty("calculate-columns", String.valueOf(chckColumns.isSelected()));
-        params.setProperty("optimize-cols-ordering", String.valueOf(false));
+        params.putBoolean("calculate-rows", chckRows.isSelected());
+        params.putBoolean("calculate-columns", chckColumns.isSelected());
+        params.putBoolean("optimize-cols-ordering", false);
 
-        params.setProperty("optimize-sample-ordering", String.valueOf(false));
+        params.putBoolean("optimize-sample-ordering", false);
 
-        params.setProperty("cutoff", comboCutoff.getSelectedItem().toString());
-        params.setProperty("log-scale", String.valueOf(chkBoxLogScale.isSelected()));
+        params.put("cutoff", comboCutoff.getSelectedItem().toString());
+        params.putBoolean("log-scale", chkBoxLogScale.isSelected());
 
         //Clustering by Samples
             /*
