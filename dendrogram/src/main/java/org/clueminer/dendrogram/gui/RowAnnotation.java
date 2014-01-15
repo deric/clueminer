@@ -28,14 +28,18 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     protected void render(Graphics2D g) {
         if (rowsOrder != null) {
             g.setColor(Color.black);
-            int annY;
+            float annY;
             g.setFont(defaultFont);
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
             Font f;
-            int height = fm.getHeight();
+            int height = fm.getMaxAscent();
+            // rather empiric constat which seems to improve annotatation position
+            // but should be replaced by real line position computation
+            double offset = (elementSize.height / 2.0) - ((elementSize.height - fm.getAscent()) / 20.0) + (height / 2.0);
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
-                annY = (row + 1) * elementSize.height - elementSize.height / 2 + height / 2;
+                annY = (float) (row * elementSize.height + offset);
+
                 String s = dendroData.getRowsResult().getInstance(row).getName();
                 if (s == null) {
                     s = unknownLabel;
@@ -73,9 +77,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
     }
 
     /**
