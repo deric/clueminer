@@ -7,6 +7,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -55,7 +56,7 @@ public class CIndexTest {
 
         System.out.println("\t CIndex \t AIC \t BIC \t  SSE \t Gamma");
         for (int n = 1; n < 10; n++) {
-            ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
+            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
             Clustering clusters = km.partition(data);
 
             double cindScore = cind.score(clusters, data);
@@ -136,7 +137,7 @@ public class CIndexTest {
 
         System.out.println("CIndex \t AIC \t BIC \t  SSE \t Gamma \t Tau \t G+ \t SumOfAvgPairwise \t MinMaxCut");
         for (int n = 1; n < 10; n++) {
-            ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
+            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
             Clustering clusters = km.partition(data);
 
             double score;

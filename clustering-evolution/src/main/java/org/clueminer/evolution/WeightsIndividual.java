@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -70,16 +71,16 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
      */
     private Clustering<Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
-        Instance copy;        
+        Instance copy;
         for (Instance inst : evolution.getDataset()) {
             copy = data.builder().createCopyOf(inst, data);
 
             for (int i = 0; i < inst.size(); i++) {
                 copy.set(i, inst.value(i) * weights[i]);
-            }            
+            }
             data.add(copy);
         }
-        return algorithm.partition(data);
+        return ((PartitioningClustering) algorithm).partition(data);
     }
 
     @Override

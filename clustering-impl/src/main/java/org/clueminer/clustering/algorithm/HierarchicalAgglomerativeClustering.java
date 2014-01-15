@@ -32,10 +32,10 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.Pairing;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
@@ -57,8 +57,8 @@ import org.clueminer.utils.AlgorithmParameters;
  * which allows this method to be used in place of other clustering algorithms.
  *
  * <p>
- * In addition to clustering, this implementation also exposes the ability
- * to view the iterative bottom-up merge through the {@link
+ * In addition to clustering, this implementation also exposes the ability to
+ * view the iterative bottom-up merge through the {@link
  * buildDendrogram(Matrix,ClusterLinkage,SimType) buildDendogram} methods. These
  * methods return a series of {@link Merge} operations that can be used to
  * construct a <a href="http://en.wikipedia.org/wiki/Dendrogram">dendrogram</a>
@@ -89,8 +89,8 @@ import org.clueminer.utils.AlgorithmParameters;
  * be able to process larger matrices.
  *
  * <p>
- * When using the {@link Clustering#cluster(Matrix,Properties)} interface,
- * this class supports the following properties for controlling the clustering.
+ * When using the {@link Clustering#cluster(Matrix,Properties)} interface, this
+ * class supports the following properties for controlling the clustering.
  *
  * <dl style="margin-left: 1em"> <dt> <i>Property:</i>
  * <code><b>{@value #MIN_CLUSTER_SIMILARITY} </b></code> <br> <i>Default:</i>
@@ -133,7 +133,7 @@ import org.clueminer.utils.AlgorithmParameters;
  * @author David Jurgens
  * @author Tomas Barton
  */
-public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
     private static final String name = "Hierarchical Clustering";
     /**
@@ -185,16 +185,6 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     }
 
     @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -226,10 +216,32 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     }
 
     /**
-     * {@inheritDoc}
+     * Automated clustering (with default parameters - just produce some
+     * clustering)
+     *
+     * @param matrix
+     * @param props
+     * @return
      */
     @Override
-    public HierarchicalResult cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    /**
+     *
+     * @param matrix
+     * @param props
+     * @return
+     */
+    @Override
+    public HierarchicalResult hierarchy(Matrix matrix, Preferences props) {
         parseLinkage(props);
 
         double minSimProp = props.getDouble(MIN_CLUSTER_SIMILARITY, DEFAULT_MIN_CLUSTER_SIMILARITY);
@@ -281,15 +293,15 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * measure for comparison and stopping when the number of clusters is equal
      * to the specified number.
      *
-     * @param m           a matrix whose rows are to be clustered
+     * @param m a matrix whose rows are to be clustered
      * @param numClusters the number of clusters into which the matrix should
-     *                    divided
-     * @param linkage     the method to use for computing the similarity of two
-     *                    clusters
+     * divided
+     * @param linkage the method to use for computing the similarity of two
+     * clusters
      *
      * @return an array where each element corresponds to a row and the value is
-     *         the cluster number to which that row was assigned. Cluster numbers will
-     *         start at 0 and increase.
+     * the cluster number to which that row was assigned. Cluster numbers will
+     * start at 0 and increase.
      */
     public static int[] partitionRows(Matrix m, int numClusters, ClusterLinkage linkage, DistanceMeasure similarityFunction) {
         return cluster(m, -1, linkage, similarityFunction, numClusters).getMapping();
@@ -301,18 +313,17 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * Clusters will be repeatedly merged until the highest cluster similarity
      * is below the threshold.
      *
-     * @param m                          a matrix whose rows are to be clustered
+     * @param m a matrix whose rows are to be clustered
      * @param clusterSimilarityThreshold the threshold to use when deciding
-     *                                   whether two clusters should be merged. If the similarity of the clusters
-     *                                   is below this threshold, they will not be merged and the clustering
-     *                                   process will be stopped.
-     * @param linkage                    the method to use for computing the
-     *                                   similarity of two
-     *                                   clusters
+     * whether two clusters should be merged. If the similarity of the clusters
+     * is below this threshold, they will not be merged and the clustering
+     * process will be stopped.
+     * @param linkage the method to use for computing the similarity of two
+     * clusters
      *
      * @return an array where each element corresponds to a row and the value is
-     *         the cluster number to which that row was assigned. Cluster numbers will
-     *         start at 0 and increase.
+     * the cluster number to which that row was assigned. Cluster numbers will
+     * start at 0 and increase.
      */
     @SuppressWarnings("unchecked")
     public static int[] clusterRows(Matrix m, double clusterSimilarityThreshold, ClusterLinkage linkage, DistanceMeasure similarityFunction) {
@@ -322,27 +333,25 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     /**
      *
      *
-     * @param m                          a matrix whose rows are to be clustered
+     * @param m a matrix whose rows are to be clustered
      * @param clusterSimilarityThreshold the optional parameter for specifying
-     *                                   the minimum inter-cluster similarity to use when deciding whether two
-     *                                   clusters should be merged. If {@code maxNumberOfClusters} is positive,
-     *                                   this value is discarded in order to cluster to a fixed number. Otherwise
-     *                                   all clusters will be merged until the minimum distance is less than this
-     *                                   threshold.
-     * @param linkage                    the method to use for computing the
-     *                                   similarity of two
-     *                                   clusters
+     * the minimum inter-cluster similarity to use when deciding whether two
+     * clusters should be merged. If {@code maxNumberOfClusters} is positive,
+     * this value is discarded in order to cluster to a fixed number. Otherwise
+     * all clusters will be merged until the minimum distance is less than this
+     * threshold.
+     * @param linkage the method to use for computing the similarity of two
+     * clusters
      * @param similarityFunction
-     * @param maxNumberOfClusters        an optional parameter to specify the
-     *                                   maximum
-     *                                   number of clusters to have. If this value is non-positive, clusters will
-     *                                   be merged until the inter-cluster similarity is below the threshold,
-     *                                   otherwise; if the value is positive, clusters are merged until the
-     *                                   desired number of clusters has been reached.
+     * @param maxNumberOfClusters an optional parameter to specify the maximum
+     * number of clusters to have. If this value is non-positive, clusters will
+     * be merged until the inter-cluster similarity is below the threshold,
+     * otherwise; if the value is positive, clusters are merged until the
+     * desired number of clusters has been reached.
      *
      * @return an array where each element corresponds to a row and the value is
-     *         the cluster number to which that row was assigned. Cluster numbers will
-     *         start at 0 and increase.
+     * the cluster number to which that row was assigned. Cluster numbers will
+     * start at 0 and increase.
      */
     public static HierarchicalResult cluster(Matrix m, double clusterSimilarityThreshold,
             ClusterLinkage linkage, DistanceMeasure similarityFunction, int maxNumberOfClusters) {
@@ -408,7 +417,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             }
             System.out.println("clusters: " + assignments.size() + ", max clusters: " + maxNumberOfClusters);
             LOGGER.log(Level.INFO, "clusters: {0}, max clusters: {1}, highest sim: {2}, treshold: {3}",
-                       new Object[]{assignments.size(), maxNumberOfClusters, highestSimilarity, clusterSimilarityThreshold});
+                    new Object[]{assignments.size(), maxNumberOfClusters, highestSimilarity, clusterSimilarityThreshold});
             // If the similarity of the two most similar clusters falls below
             // the threshold, then the final set of clusters has been
             // determined.
@@ -425,7 +434,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             Set<Integer> cluster2 = assignments.get(cluster2index);
 
             LOGGER.log(Level.FINE, "Merged cluster {0} with {1}",
-                       new Object[]{cluster1, cluster2});
+                    new Object[]{cluster1, cluster2});
 
             // Update the cluster assignments, adding in the new cluster and
             // remove all references to the two merged clusters.
@@ -473,8 +482,8 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
             // Update the new most similar to the newly-merged cluster
             clusterSimilarities.put(newClusterId,
-                                    new Pairing(mostSimilarToMerged,
-                                                mostSimilarToMergedId));
+                    new Pairing(mostSimilarToMerged,
+                            mostSimilarToMergedId));
         }
 
         result.setMapping(toAssignArray(assignments, rows));
@@ -627,8 +636,8 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * clusters.
      *
      * @param assignment a mapping from cluster number to the data points (rows)
-     *                   that are contained in it
-     * @param p          the number of initial data points
+     * that are contained in it
+     * @param p the number of initial data points
      *
      * @return the cluster assignment
      */
@@ -747,4 +756,5 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         return similarityMatrix;
 
     }
+
 }

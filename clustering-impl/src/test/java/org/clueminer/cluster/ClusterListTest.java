@@ -7,6 +7,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -28,7 +29,7 @@ import org.openide.util.Exceptions;
 public class ClusterListTest {
 
     private Clustering clusters;
-    private static Dataset<Instance> data;
+    private static Dataset<? extends Instance> data;
 
     public ClusterListTest() {
     }
@@ -51,7 +52,7 @@ public class ClusterListTest {
 
     @Before
     public void setUp() throws IOException {
-        ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
+        PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
         clusters = km.partition(data);
     }
 

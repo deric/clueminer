@@ -35,7 +35,7 @@ public class DendrogramComponent extends ClusterAnalysis {
 
     private static final long serialVersionUID = -5368065138749492905L;
     private DendrogramViewer viewer;
-    private ClusteringAlgorithm algorithm;
+    private AgglomerativeClustering algorithm;
     //original dataset
     private Dataset<? extends Instance> dataset;
     private ClusteringToolbar toolbar;
@@ -294,7 +294,7 @@ public class DendrogramComponent extends ClusterAnalysis {
 
     @Override
     public void setAlgorithm(ClusteringAlgorithm alg) {
-        this.algorithm = alg;
+        this.algorithm = (AgglomerativeClustering) alg;
     }
 
     @Override

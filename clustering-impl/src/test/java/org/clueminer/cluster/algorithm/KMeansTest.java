@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
@@ -60,7 +61,7 @@ public class KMeansTest {
             data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
             FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
-            ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
+            PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
             /*
              * Cluster the data, it will be returned as an array of data sets,
              * with each dataset representing a cluster

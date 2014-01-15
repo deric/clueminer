@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -158,7 +159,7 @@ public class BenchmarkTest {
         double[][] results = new double[evaluators.size()][kmax - kmin];
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
-            ClusteringAlgorithm km = new KMeans(n, 100, new EuclideanDistance());
+            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
             Clustering<Cluster> clusters = km.partition(data);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");

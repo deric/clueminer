@@ -4,31 +4,31 @@ import org.clueminer.math.matrix.JMatrix;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = ClusteringAlgorithm.class)
-public class HCL implements ClusteringAlgorithm {
+@ServiceProvider(service = AgglomerativeClustering.class)
+public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
     private boolean stop = false;
     private int parentless;
     private double TreeHeight;
     private int Assigned;
     private int n;
-    private DistanceMeasure distance;
     private HierachicalClusteringResult result;
 
     public HCL() {
-        distance = new EuclideanDistance();
+        distanceMeasure = new EuclideanDistance();
     }
 
     @Override
@@ -42,37 +42,33 @@ public class HCL implements ClusteringAlgorithm {
     }
 
     @Override
-    public DistanceMeasure getDistanceFunction() {
-        return distance;
-    }
-
-    @Override
-    public void setDistanceFunction(DistanceMeasure fce) {
-        distance = fce;
-    }
-
-    @Override
-    public Clustering partition(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Clustering partition(Dataset<? extends Instance> dataset, AlgorithmParameters map) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, AlgorithmParameters map) {
         JMatrix input = new JMatrix(dataset.arrayCopy());
         return hierarchy(input, dataset, map);
     }
+
+    @Override
+    public HierarchicalResult hierarchy(Matrix matrix, Preferences props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 
     @Override
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, AlgorithmParameters map) {
         System.out.println(map.toString());
 
-        TreeDataImpl treeData = new TreeDataImpl(distance);
+        TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
         result = new HierachicalClusteringResult(dataset);
 
         if (input == null) {
@@ -157,7 +153,7 @@ public class HCL implements ClusteringAlgorithm {
          */
 
         //factor = (float) 1.0;  //factor is used as an optional scaling factor
-        factor = distance.getSimilarityFactor();
+        factor = distanceMeasure.getSimilarityFactor();
         //factor = (float) 1.0;
         for (i = 1; i < n; ++i) {
             /*
@@ -180,11 +176,11 @@ public class HCL implements ClusteringAlgorithm {
 
                 if (calculateRows) {
                     // SimilarityMatrix[i][j] = ExperimentUtil.distance(expMatrix, i, j, function, factor, absolute);//ExpMatrix.GeneDistance(i,j,null);
-                    SimilarityMatrix[i][j] = distance.rows(input, i, j, factor);
+                    SimilarityMatrix[i][j] = distanceMeasure.rows(input, i, j, factor);
                     //ExperimentUtil.geneDistance(expMatrix, null, i, j, function, factor, absolute);//ExpMatrix.GeneDistance(i,j,null);
                     /// System.out.println(i+";"+j+": dist "+SimilarityMatrix[i][j]);
                 } else {
-                    SimilarityMatrix[i][j] = distance.columns(input, i, j, factor);
+                    SimilarityMatrix[i][j] = distanceMeasure.columns(input, i, j, factor);
                     //ExperimentUtil.distance(expMatrix, i, j, function, factor, absolute); //ExpMatrix.ExperimentDistance(i,j);
                     /// System.out.println(i+";"+j+": dist "+SimilarityMatrix[i][j]);
                 }
@@ -875,8 +871,4 @@ public class HCL implements ClusteringAlgorithm {
         }
     }
 
-    @Override
-    public HierarchicalResult cluster(Matrix matrix, Preferences props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

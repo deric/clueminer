@@ -3,6 +3,7 @@ package org.clueminer.clustering.algorithm;
 import java.util.List;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
@@ -27,7 +28,7 @@ import org.openide.util.NbPreferences;
  */
 public class HClustResultTest {
 
-    private static ClusteringAlgorithm algorithm;
+    private static AgglomerativeClustering algorithm;
     private static Dataset<? extends Instance> dataset;
     private static HierarchicalResult rowsResult;
 
@@ -43,7 +44,7 @@ public class HClustResultTest {
         //@TODO: this is too complex, there must be a one-line method for doing this
         Preferences pref = NbPreferences.forModule(HClustResultTest.class);
         Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
-        rowsResult = algorithm.cluster(input, pref);
+        rowsResult = algorithm.hierarchy(input, pref);
         DendrogramBuilder db = new DendrogramBuilder();
         List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), new SingleLinkage(new EuclideanDistance()));
         rowsResult.setMerges(merges);

@@ -3,7 +3,7 @@ package org.clueminer.evaluation.hclust;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.cluster.HierachicalClusteringResult;
 import org.clueminer.clustering.algorithm.HCL;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -113,7 +113,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testSingleLinkage() {
-        ClusteringAlgorithm algorithm = new HCL();
+        AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.setProperty("method-linkage", String.valueOf(-1)); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
@@ -131,7 +131,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testCompleteLinkage() {
-        ClusteringAlgorithm algorithm = new HCL();
+        AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.setProperty("method-linkage", String.valueOf(0)); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
@@ -148,7 +148,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testAverageLinkage() {
-        ClusteringAlgorithm algorithm = new HCL();
+        AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.setProperty("method-linkage", String.valueOf(1)); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);
@@ -167,7 +167,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testGetCopheneticMatrix() {
-        ClusteringAlgorithm algorithm = new HCL();
+        AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.setProperty("method-linkage", String.valueOf(-1)); //-1=single, 0=complete, 1/2=average
         rowsResult = algorithm.hierarchy(input, dataset, params);

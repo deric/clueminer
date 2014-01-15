@@ -10,6 +10,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -41,7 +42,7 @@ public class CountingPairsTest {
         clusters = FakeClustering.iris();
 
         //now try some real clustering
-        ClusteringAlgorithm km = new KMeans(3, 100, new EuclideanDistance());
+        PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> irisDataset = new SampleDataset();
         arff.load(tf.irisArff(), irisDataset, 4);

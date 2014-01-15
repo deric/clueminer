@@ -4,6 +4,8 @@ import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.ClusterEvaluatorFactory;
@@ -105,7 +107,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
 
         //   progress.setTitle("Clustering by rows");
         params.setProperty("calculate-rows", String.valueOf(true));
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, evolution.getDataset(), params);
+        HierarchicalResult rowsResult = ((AgglomerativeClustering) algorithm).hierarchy(input, evolution.getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
 
