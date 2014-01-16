@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.clueminer.algorithm.BinarySearch;
 import org.clueminer.attributes.AttributeFactoryImpl;
@@ -31,6 +32,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     protected InstanceBuilder builder;
     protected AttributeFactoryImpl attributeBuilder;
     protected TreeSet<Object> classes = new TreeSet<Object>();
+    private static Logger logger = Logger.getLogger(TimeseriesDataset.class.getName());
 
     /**
      * Creates dataset with given initial capacity
@@ -177,6 +179,25 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public final void setTimePoints(TimePoint[] tp) {
         timePoints = (TimePointAttribute[]) tp;
+        checkAttributes(timePoints);
+    }
+
+    /**
+     * Check if array contains a null attribute
+     *
+     * @param tps
+     */
+    private void checkAttributes(TimePointAttribute[] tps) {
+        int i = 0;
+        for (TimePointAttribute timep : tps) {
+            i++;
+            if (timep == null) {
+                for (TimePointAttribute tdp : tps) {
+                    System.out.println("time point:" + tdp);
+                }
+                throw new RuntimeException(i + "th is null!!!");
+            }
+        }
     }
 
     @Override

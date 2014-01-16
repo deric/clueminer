@@ -23,7 +23,7 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     /**
      * chart's indexing system starts from 0
      */
-    private int index;
+    private final int index;
     /**
      * position in graph starts from 0.0
      */
@@ -163,7 +163,7 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
         StringBuilder str = new StringBuilder("TimePoint [");
         str.append("index: ").append(index).append(", timestamp: ").append(timestamp);
         str.append(", pos: ").append(position);
-        str.append("] \n");
+        str.append("]");
         return str.toString();
     }
 
