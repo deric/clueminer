@@ -1,6 +1,7 @@
 package org.clueminer.clustering.preview;
 
 import java.awt.Dimension;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -29,6 +30,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private Clustering<Cluster> clust;
     private Dimension dimChart;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
+    private HashMap<Integer, Instance> metaMap;
 
     public PreviewFrameSet() {
         initComponents();
@@ -63,6 +65,8 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
 
             int i = 0;
             int total = 0;
+            Plotter plot = null;
+            Instance metaInst;
             for (Cluster<? extends Instance> d : clust) {
                 //  c.gridy = i++;
                 logger.log(Level.INFO, "{0}", new Object[]{d.toString()});
@@ -77,30 +81,54 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                      */
                     //logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
                     //logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
-                    while (inst.getAncestor() != null) {
-                        inst = inst.getAncestor();
-                    }
+                    if (metaMap == null) {
+                        while (inst.getAncestor() != null) {
+                            inst = inst.getAncestor();
+                        }
 
-                    Plotter plot = inst.getPlotter();
-                    if (dataset.size() > 1) {
-                        for (int k = 1; k < dataset.size(); k++) {
-                            inst = dataset.instance(k);
-                            while (inst.getAncestor() != null) {
-                                inst = inst.getAncestor();
+                        plot = inst.getPlotter();
+                        if (dataset.size() > 1) {
+                            for (int k = 1; k < dataset.size(); k++) {
+                                inst = dataset.instance(k);
+                                while (inst.getAncestor() != null) {
+                                    inst = inst.getAncestor();
+                                }
+                                plot.addInstance(inst);
+                                //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
                             }
-                            plot.addInstance(inst);
-                            //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
+                        }
+                    } else {
+                        logger.log(Level.INFO, "instance 0: {0}", inst.classValue());
+                        int id = Integer.valueOf((String) inst.classValue());
+
+                        if (metaMap.containsKey(id)) {
+                            metaInst = metaMap.get(id);
+                            plot = metaInst.getPlotter();
+                        } else {
+                            logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
+                        }
+
+                        for (int k = 1; k < dataset.size(); k++) {
+                            id = Integer.valueOf((String) dataset.get(k).classValue());
+                            if (metaMap.containsKey(id)) {
+                                metaInst = metaMap.get(id);
+                                plot.addInstance(metaInst);
+                            } else {
+                                logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
+                            }
                         }
                     }
 
                     if (dimChart == null) {
                         dimChart = new Dimension(this.getWidth(), 100);
                     }
-                    plot.setMinimumSize(dimChart);
-                    plot.setPreferredSize(dimChart);
-                    plot.setTitle(d.getName());
-                    plots[i++] = plot;
-                    add((JComponent) plot);
+                    if (plot != null) {
+                        plot.setMinimumSize(dimChart);
+                        plot.setPreferredSize(dimChart);
+                        plot.setTitle(d.getName());
+                        plots[i++] = plot;
+                        add((JComponent) plot);
+                    }
                     total += d.size();
                 }
             }
@@ -141,10 +169,12 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         if (plots != null) {
             Dimension dim = null;
             for (Plotter plot : plots) {
-                dim = new Dimension(plot.getWidth(), height);
-                plot.setPreferredSize(dim);
-                plot.setMinimumSize(dim);
-                plot.revalidate();
+                if (plot != null) {
+                    dim = new Dimension(plot.getWidth(), height);
+                    plot.setPreferredSize(dim);
+                    plot.setMinimumSize(dim);
+                    plot.revalidate();
+                }
             }
             this.dimChart = dim;
             revalidate();
@@ -154,4 +184,13 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     public void setParent(JPanel p) {
         this.parent = p;
     }
+
+    public HashMap<Integer, Instance> getMetaMap() {
+        return metaMap;
+    }
+
+    public void setMetaMap(HashMap<Integer, Instance> metaMap) {
+        this.metaMap = metaMap;
+    }
+
 }
