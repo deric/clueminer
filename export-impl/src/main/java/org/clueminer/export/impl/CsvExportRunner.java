@@ -30,6 +30,7 @@ public class CsvExportRunner implements Runnable {
 
     @Override
     public void run() {
+        boolean quoteStrings = pref.getBoolean("quote_strings", false);
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(file));
             String[] line, tmp;
@@ -41,6 +42,9 @@ public class CsvExportRunner implements Runnable {
                 for (Cluster<? extends Instance> c : clust) {
                     for (Instance inst : c) {
                         line = inst.getName().split(",");
+                        for (int i = 0; i < line.length; i++) {
+                            line[i] = line[i].trim();
+                        }
                         size = line.length + 1;
 
                         int dataSize = 0;
@@ -76,7 +80,7 @@ public class CsvExportRunner implements Runnable {
 
                         line = tmp;
                         line[size - 1] = c.getName();
-                        writer.writeNext(line);
+                        writer.writeNext(line, quoteStrings);
                     }
                 }
             } else {

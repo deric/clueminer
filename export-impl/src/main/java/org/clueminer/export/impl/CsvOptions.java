@@ -8,7 +8,6 @@ import java.util.prefs.Preferences;
  */
 public class CsvOptions extends javax.swing.JPanel {
 
-
     /**
      * Creates new form CsvOptions
      */
@@ -28,12 +27,12 @@ public class CsvOptions extends javax.swing.JPanel {
             preprocessData = true;
         }
         p.putBoolean("preprocess_data", preprocessData);
+        p.putBoolean("quote_strings", chckQuote.isSelected());
 
         p.put("separator", (String) comboSeparator.getSelectedItem());
 
         return p;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +48,7 @@ public class CsvOptions extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         comboSeparator = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
+        chckQuote = new javax.swing.JCheckBox();
 
         chckRaw.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chckRaw, org.openide.util.NbBundle.getMessage(CsvOptions.class, "CsvOptions.chckRaw.text")); // NOI18N
@@ -62,27 +62,27 @@ public class CsvOptions extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(CsvOptions.class, "CsvOptions.jLabel2.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(chckQuote, org.openide.util.NbBundle.getMessage(CsvOptions.class, "CsvOptions.chckQuote.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addGap(3, 3, 3)
-                        .addComponent(comboSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chckPreprocess)
-                            .addComponent(chckRaw))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 100, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addGap(83, 83, 83))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(3, 3, 3)
+                        .addComponent(comboSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chckQuote)
+                    .addComponent(chckPreprocess)
+                    .addComponent(chckRaw))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,16 +94,18 @@ public class CsvOptions extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chckPreprocess)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chckQuote)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(comboSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chckPreprocess;
+    private javax.swing.JCheckBox chckQuote;
     private javax.swing.JCheckBox chckRaw;
     private javax.swing.JComboBox comboSeparator;
     private javax.swing.JLabel jLabel1;
