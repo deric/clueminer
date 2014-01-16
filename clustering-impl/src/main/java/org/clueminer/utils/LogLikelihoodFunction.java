@@ -32,7 +32,7 @@ public class LogLikelihoodFunction {
                 - GammaFunction.logGamma(alpha0)
                 + GammaFunction.logGamma(alpha1) - alpha1 * Math.log(beta1)
                 - 0.5 * Math.log(lambda1);
-        return (loglikelihood);
+        return loglikelihood;
     }
 
     /**
@@ -42,7 +42,7 @@ public class LogLikelihoodFunction {
      * @return
      */
     public double logLikelihood(Dataset cluster) {
-        double instanceLength = cluster.instance(0).size();
+        double instanceLength = cluster.attributeCount();
         this.count = instanceLength * cluster.size();
         sum = 0;
         sum2 = 0;
@@ -60,7 +60,7 @@ public class LogLikelihoodFunction {
                 || loglikelihood == Double.POSITIVE_INFINITY) {
             loglikelihood = 0;
         }
-        return (loglikelihood);
+        return loglikelihood;
     }
 
     /**
@@ -70,7 +70,7 @@ public class LogLikelihoodFunction {
      * @return
      */
     public double logLikelihoodC(Dataset cluster) {
-        double instanceLength = cluster.instance(0).size();
+        double instanceLength = cluster.attributeCount();
         double loglikelihood = 0;
         for (int column = 0; column < instanceLength; column++) {
             double loglike = logLikelihood(cluster);
@@ -92,5 +92,37 @@ public class LogLikelihoodFunction {
             likelihood += logLikelihoodC(clusters.get(i));
         }
         return (likelihood);
+    }
+
+    public double getAlpha0() {
+        return alpha0;
+    }
+
+    public void setAlpha0(double alpha0) {
+        this.alpha0 = alpha0;
+    }
+
+    public double getBeta0() {
+        return beta0;
+    }
+
+    public void setBeta0(double beta0) {
+        this.beta0 = beta0;
+    }
+
+    public double getLambda0() {
+        return lambda0;
+    }
+
+    public void setLambda0(double lambda0) {
+        this.lambda0 = lambda0;
+    }
+
+    public double getMu0() {
+        return mu0;
+    }
+
+    public void setMu0(double mu0) {
+        this.mu0 = mu0;
     }
 }
