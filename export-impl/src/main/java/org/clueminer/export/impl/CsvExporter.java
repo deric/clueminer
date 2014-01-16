@@ -75,8 +75,6 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
             String folder = pref.get(prefKey, null);
             if (folder != null) {
                 defaultFolder = new File(folder);
-            } else {
-                defaultFolder = null;
             }
             if (fileChooser == null) {
                 fileChooser = new JFileChooser();

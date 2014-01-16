@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class CSVIterator implements Iterator<String[]> {
-    private CSVReader reader;
+
+    private final CSVReader reader;
     private String[] nextLine;
 
     public CSVIterator(CSVReader reader) throws IOException {
@@ -12,10 +13,12 @@ public class CSVIterator implements Iterator<String[]> {
         nextLine = reader.readNext();
     }
 
+    @Override
     public boolean hasNext() {
         return nextLine != null;
     }
 
+    @Override
     public String[] next() {
         String[] temp = nextLine;
         try {
@@ -26,7 +29,12 @@ public class CSVIterator implements Iterator<String[]> {
         return temp;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("This is a read only iterator.");
+    }
+
+    public String[] showNext() {
+        return nextLine;
     }
 }

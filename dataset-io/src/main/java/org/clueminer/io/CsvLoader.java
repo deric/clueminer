@@ -56,9 +56,11 @@ public class CsvLoader implements DatasetLoader {
      *
      * @param file input CSV file
      * @return
+     * @throws java.io.IOException
      */
     public boolean load(File file) throws IOException {
         CSVReader reader = new CSVReader(new FileReader(file), separator, quotechar);
+        logger.log(Level.INFO, "loading file {0}", file.getName());
         Iterator<String[]> iter = reader.iterator();
         Instance inst;
         /*it.setSkipBlanks(true);
@@ -68,7 +70,8 @@ public class CsvLoader implements DatasetLoader {
         InstanceBuilder builder = dataset.builder();
 
         if (hasHeader && !skipHeader) {
-            parseHeader(iter);
+            parseHeader(iter.next());
+            //Dump.array(((CSVIterator) iter).showNext(), "next line: ");
         } else if (skipHeader) {
             iter.next(); // just skip it
         }
@@ -88,6 +91,7 @@ public class CsvLoader implements DatasetLoader {
             if (num == 0 && dataset.attributeCount() == 0) {
                 //detect types from first line
                 createAttributes(arr, false);
+                logger.log(Level.WARNING, "automatic attribute detection. line size: {0}", arr.length);
             }
             if (nameAttr.size() > 0) {
                 name = new StringBuilder();
@@ -100,12 +104,12 @@ public class CsvLoader implements DatasetLoader {
                 skipSize++; //smaller array is enough
             }
             outSize = arr.length - skipSize - metaAttr.size();
-            values = new double[outSize];
             if (metaAttr.size() > 0) {
                 meta = new double[metaAttr.size()];
             }
             String classValue = null;
             if (outSize > 0) {
+                values = new double[outSize];
                 for (int i = 0; i < arr.length; i++) {
                     if (i == classIndex) {
                         classValue = arr[i];
@@ -128,7 +132,7 @@ public class CsvLoader implements DatasetLoader {
                                 try {
                                     val = Double.parseDouble(arr[i]);
                                 } catch (NumberFormatException e) {
-                                    logger.log(Level.WARNING, e.getMessage());
+                                    logger.log(Level.WARNING, "Number format exception, attr {0}: {1}", new Object[]{i, e.getMessage()});
                                     val = Double.NaN;
                                 }
                                 values[i - skip] = val;
@@ -143,7 +147,6 @@ public class CsvLoader implements DatasetLoader {
                         }
                     }
                 }
-
                 inst = builder.create(values, classValue);
                 if (!nameAttr.isEmpty()) {
                     inst.setName(name.toString().trim());
@@ -158,9 +161,8 @@ public class CsvLoader implements DatasetLoader {
         return true;
     }
 
-    private void parseHeader(Iterator<String[]> it) throws IOException {
+    private void parseHeader(String[] header) throws IOException {
         //we expect first line to be a hasHeader
-        String[] header = it.next();
         createAttributes(header, false);
     }
 

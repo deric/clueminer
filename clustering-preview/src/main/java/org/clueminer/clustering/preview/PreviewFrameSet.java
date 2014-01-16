@@ -98,7 +98,6 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                             }
                         }
                     } else {
-                        logger.log(Level.INFO, "instance 0: {0}", inst.classValue());
                         int id = Integer.valueOf((String) inst.classValue());
 
                         if (metaMap.containsKey(id)) {
@@ -109,7 +108,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                         }
 
                         for (int k = 1; k < dataset.size(); k++) {
-                            id = Integer.valueOf((String) dataset.get(k).classValue());
+                            id = Integer.valueOf((String) dataset.instance(k).classValue());
                             if (metaMap.containsKey(id)) {
                                 metaInst = metaMap.get(id);
                                 plot.addInstance(metaInst);

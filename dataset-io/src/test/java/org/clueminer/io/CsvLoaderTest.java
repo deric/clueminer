@@ -12,6 +12,7 @@ import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.types.TimePoint;
+import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,6 +103,31 @@ public class CsvLoaderTest {
         assertEquals("Iris-virginica", dataset.instance(149).getName());
     }
 
+    @Test
+    public void testDatasetWithHeader() throws IOException {
+        File file = fixture.legendreCsv();
+        char separator = ',';
+        Dataset<Instance> dataset = new ArrayDataset<Instance>(39, 21);
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skip = new ArrayList<Integer>();
+        //skip.add(0); //first one is ID
+        //loader.addNameAttr(0);
+        for (int i = 1; i < 7; i++) {
+            skip.add(i);
+            loader.addNameAttr(i); //meta attributes
+        }
+        loader.setClassIndex(0);
+        loader.setNameJoinChar(", ");
+
+        loader.setSkipIndex(skip);
+        loader.setSeparator(separator);
+        //loader.setClassIndex(0);
+        loader.setHasHeader(true);
+        Dataset<Instance> d = (Dataset<Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+    }
+
     /**
      * Test of getSeparator method, of class CsvLoader.
      */
@@ -186,6 +212,7 @@ public class CsvLoaderTest {
         subject.setHasHeader(true);
         subject.addNameAttr(4);
         subject.addMetaAttr(3);
+        subject.addMetaAttr(4);
         subject.setSeparator(' ');
         //run
         subject.load(file, dataset);
@@ -203,7 +230,7 @@ public class CsvLoaderTest {
         CsvLoader loader = new CsvLoader();
         ArrayList<Integer> metaAttr = new ArrayList<Integer>();
         //ArrayList<Integer> skipAttr = new ArrayList<Integer>();
-        //skipped.add(0); //first one is ID
+        loader.setClassIndex(0);
         for (int i = 1; i < 7; i++) {
             metaAttr.add(i);
             //  skipAttr.add(i);
@@ -217,11 +244,13 @@ public class CsvLoaderTest {
         int i = 0;
         int index;
         int last = firstLine.length;
-        int offset = 6;
+        int offset = metaAttr.size() + 1;
         TimePoint tp[] = new TimePointAttribute[last - offset];
+        System.out.println("allocated size: " + tp.length);
         double pos;
+        Dump.array(firstLine, "first line");
         for (String item : firstLine) {
-            if (i > offset) {
+            if (i >= offset) {
                 index = i - offset;
                 pos = Double.valueOf(item);
                 tp[index] = new TimePointAttribute(index, index, pos);

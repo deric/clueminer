@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.clueminer.attributes.TimePointAttribute;
@@ -39,12 +38,10 @@ public class MetaLoaderRunner implements Runnable {
     @Override
     public void run() {
         ph.start(0);
-        System.out.println("loading meta data...");
         int i = 0;
         for (File file : files) {
             if (file.exists()) {
                 try {
-                    System.out.println("processing " + file.getAbsolutePath());
                     result[i++] = loadMTimeseries(file);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
@@ -76,8 +73,6 @@ public class MetaLoaderRunner implements Runnable {
         int last = firstLine.length;
         int offset = metaAttr.size() + 1;//class attr
         TimePoint tp[] = new TimePointAttribute[last - offset];
-        logger.log(Level.INFO, "time attrs: {0}", last);
-        logger.log(Level.INFO, "time series attrs: {0}", tp.length);
         double pos;
         int cnt = 0;
         for (String item : firstLine) {

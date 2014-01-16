@@ -6,6 +6,8 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,11 +21,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
-import org.clueminer.utils.Dump;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 
@@ -42,6 +41,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
     private final int minChartHeight = 150;
     private final int maxChartHeight = 650;
     private MetaLoaderDialog loader = new MetaLoaderDialog(this);
+    private Logger logger = Logger.getLogger(ClusterPreviewFrame.class.getName());
 
     public ClusterPreviewFrame() {
         initComponents();
@@ -129,23 +129,21 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
      */
     @Override
     public void taskFinished(Task task) {
-        System.out.println("meta data loading finished");
+        logger.log(Level.INFO, "meta data loading finished");
         Dataset<? extends Instance>[] result = loader.getDatasets();
         HashMap<Integer, Instance> metaMap = new HashMap<Integer, Instance>(3000);
         int id;
-        System.out.println("result " + result);
         if (result != null) {
             for (Dataset<? extends Instance> d : result) {
                 if (d != null) {
-                    Dump.array(((TimeseriesDataset<ContinuousInstance>) d).getTimePointsArray(), "timepoints ");
-                    System.out.println("data po" + ((TimeseriesDataset<ContinuousInstance>) d).getTimePoints().toString());
+                    //Dump.array(((TimeseriesDataset<ContinuousInstance>) d).getTimePointsArray(), "timepoints ");
                     for (Instance inst : d) {
                         //id = Integer.valueOf(inst.getId());
                         id = Integer.valueOf((String) inst.classValue());
                         metaMap.put(id, (Instance) inst);
                     }
                 } else {
-                    System.out.println("dataset d null!!!");
+                    logger.log(Level.WARNING, "dataset d null!!!");
                 }
 
             }
