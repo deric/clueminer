@@ -10,11 +10,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
+import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
 
 /**
@@ -58,18 +61,18 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
     public void showDialog() {
 
         d = new DialogDescriptor(getOptions(), "Export to CSV", true, NotifyDescriptor.OK_CANCEL_OPTION,
-                NotifyDescriptor.OK_CANCEL_OPTION,
-                DialogDescriptor.BOTTOM_ALIGN, null, this);
+                                 NotifyDescriptor.OK_CANCEL_OPTION,
+                                 DialogDescriptor.BOTTOM_ALIGN, null, this);
 
         d.setClosingOptions(new Object[]{});
         d.addPropertyChangeListener(this);
         DialogDisplayer.getDefault().notifyLater(d);
     }
 
-    public void export(Preferences p) {
+    public void export(Preferences pref) {
         if (analysis != null) {
 
-            String folder = p.get(prefKey, null);
+            String folder = pref.get(prefKey, null);
             if (folder != null) {
                 defaultFolder = new File(folder);
             } else {
@@ -99,7 +102,7 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
 
             }
             defaultFolder = fileChooser.getCurrentDirectory();
-            p.put(prefKey, fileChooser.getCurrentDirectory().getAbsolutePath());
+            pref.put(prefKey, fileChooser.getCurrentDirectory().getAbsolutePath());
             if (fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow()) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 String filename = file.getName();
@@ -123,12 +126,21 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
                 }
 
                 if (retval.equals(NotifyDescriptor.YES_OPTION)) {
-                    task = RP.create(new CsvExportRunner(file, analysis, p));
+                    final ProgressHandle ph = ProgressHandleFactory.createHandle("Exporting CSV to " + file.getName());
+                    task = RP.create(new CsvExportRunner(file, analysis, pref, ph));
                     task.addTaskListener(analysis);
+                    task.addTaskListener(new TaskListener() {
+                        @Override
+                        public void taskFinished(org.openide.util.Task task) {
+                            //make sure that we get rid of the ProgressHandle
+                            //when the task is finished
+                            ph.finish();
+                        }
+                    });
                     task.schedule(0);
 
                 } else {
-                    export(p);
+                    export(pref);
                 }
             }
         }

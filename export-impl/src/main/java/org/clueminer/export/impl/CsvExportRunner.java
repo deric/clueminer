@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.dataset.api.Instance;
+import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 
 /**
@@ -21,11 +22,13 @@ public class CsvExportRunner implements Runnable {
     private final File file;
     private final ClusterAnalysis analysis;
     private final Preferences pref;
+    private final ProgressHandle ph;
 
-    public CsvExportRunner(File file, ClusterAnalysis analysis, Preferences pref) {
+    public CsvExportRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
         this.analysis = analysis;
         this.pref = pref;
+        this.ph = ph;
     }
 
     @Override
@@ -39,7 +42,10 @@ public class CsvExportRunner implements Runnable {
             Instance raw;
             HierarchicalResult result = analysis.getResult();
             if (result != null) {
+                //number of items in dataset must be same as number of instances in clusters
+                ph.start(result.getDataset().size());
                 Clustering<Cluster> clust = result.getClustering();
+                int cnt = 0;
                 for (Cluster<? extends Instance> c : clust) {
                     for (Instance inst : c) {
                         line = inst.getName().split(",");
@@ -82,6 +88,7 @@ public class CsvExportRunner implements Runnable {
                         line = tmp;
                         line[size - 1] = c.getName();
                         writer.writeNext(line, quoteStrings);
+                        ph.progress(cnt++);
                     }
                 }
             } else {

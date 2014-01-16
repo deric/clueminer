@@ -80,6 +80,11 @@
             <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
     </dependencies>
 
     <build>
