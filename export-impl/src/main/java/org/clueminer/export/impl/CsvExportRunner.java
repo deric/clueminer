@@ -31,8 +31,9 @@ public class CsvExportRunner implements Runnable {
     @Override
     public void run() {
         boolean quoteStrings = pref.getBoolean("quote_strings", false);
+        char separator = pref.get("separator", ",").charAt(0);
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(file));
+            CSVWriter writer = new CSVWriter(new FileWriter(file), separator);
             String[] line, tmp;
             int size;
             Instance raw;
