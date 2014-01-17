@@ -19,6 +19,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -136,7 +137,9 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
         HashMap<Integer, Instance> metaMap = new HashMap<Integer, Instance>(3000);
         int id;
         double ymin = Double.MAX_VALUE, ymax = Double.MIN_VALUE;
+        double xmax = Double.MIN_VALUE;
         TimeseriesDataset<ContinuousInstance> ts;
+        TimePointAttribute timeAttr;
         if (result != null) {
             for (Dataset<? extends Instance> d : result) {
                 if (d != null) {
@@ -147,6 +150,10 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
 
                     if (ts.getMin() < ymin) {
                         ymin = ts.getMin();
+                    }
+                    timeAttr = (TimePointAttribute) d.getAttribute(d.attributeCount() - 1);
+                    if (timeAttr.getPosition() > xmax) {
+                        xmax = timeAttr.getPosition();
                     }
                     //Dump.array(((TimeseriesDataset<ContinuousInstance>) d).getTimePointsArray(), "timepoints ");
                     for (Instance inst : d) {
@@ -161,6 +168,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
             }
             previewSet.setYmax(ymax);
             previewSet.setYmin(ymin);
+            previewSet.setXmax(xmax);
         }
         previewSet.setMetaMap(metaMap);
     }

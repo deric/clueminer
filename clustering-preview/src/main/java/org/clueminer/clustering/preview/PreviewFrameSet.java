@@ -33,6 +33,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private Clustering<Cluster> clust;
     private Dimension dimChart;
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
+    private double xmax = 50;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
     private HashMap<Integer, Instance> metaMap;
 
@@ -125,6 +126,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                             if (!Double.isNaN(ymax)) {
                                 logger.log(Level.INFO, "grapn bounds: {0}, {1}", new Object[]{ymin, ymax});
                                 plot.setYBounds(ymin, ymax);
+                                plot.setXBounds(0, xmax);
                             }
                         } else {
                             logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
@@ -229,6 +231,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
 
     public void setYmin(double ymin) {
         this.ymin = ymin;
+    }
+
+    public double getXmax() {
+        return xmax;
+    }
+
+    public void setXmax(double xmax) {
+        this.xmax = xmax;
     }
 
 }

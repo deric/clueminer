@@ -332,7 +332,7 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         if (plots.size() == 1) {
             setAutoBounds();
         } else {
-            includeInBounds(newPlot);
+            //includeInBounds(newPlot);
         }
         return plots.size() - 1;
     }
@@ -345,7 +345,8 @@ public abstract class PlotCanvas extends JPanel implements MouseListener, MouseM
         repaint();
     }
 
-    public void changePlotData(int I, double[]... XY) {
+    public void changePlotData(int I, double[]
+        ... XY) {
         getPlot(I).setData(XY);
         repaint();
     }
