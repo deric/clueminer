@@ -86,7 +86,7 @@ public class CsvExportRunner implements Runnable {
                         }
 
                         line = tmp;
-                        line[size - 1] = c.getName();
+                        line[size - 1] = String.valueOf(c.getClusterId());
                         writer.writeNext(line, quoteStrings);
                         ph.progress(cnt++);
                     }
