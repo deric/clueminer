@@ -145,6 +145,7 @@ public class MLearnImporter implements LongTask, Runnable {
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
         loader.load(file);
+        logger.log(Level.INFO, "total dataset size: {0}", dataset.size());
     }
 
     @Override

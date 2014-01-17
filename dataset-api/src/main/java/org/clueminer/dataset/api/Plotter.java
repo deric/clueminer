@@ -50,4 +50,18 @@ public interface Plotter extends Serializable {
      * @param title
      */
     public void setTitle(String title);
+
+    /**
+     *
+     * @param min
+     * @param max
+     */
+    public void setXBounds(double min, double max);
+
+    /**
+     *
+     * @param min
+     * @param max
+     */
+    public void setYBounds(double min, double max);
 }

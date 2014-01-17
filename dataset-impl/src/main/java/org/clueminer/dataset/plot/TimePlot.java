@@ -39,4 +39,14 @@ public class TimePlot extends Plot2DPanel implements Plotter {
         label.setFont(new Font("serif", Font.BOLD, 20));
         this.addPlotable(label);
     }
+
+    @Override
+    public void setXBounds(double min, double max) {
+        this.setFixedBounds(0, min, max);
+    }
+
+    @Override
+    public void setYBounds(double min, double max) {
+        this.setFixedBounds(1, min, max);
+    }
 }

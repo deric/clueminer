@@ -12,8 +12,11 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterPreviewer;
+import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -29,6 +32,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private Plotter[] plots;
     private Clustering<Cluster> clust;
     private Dimension dimChart;
+    private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
     private HashMap<Integer, Instance> metaMap;
 
@@ -67,6 +71,21 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
             int total = 0;
             Plotter plot = null;
             Instance metaInst;
+
+            if (clust.size() > 0) {
+                Dataset<? extends Instance> cluster = clust.get(0);
+                while (cluster.hasParent()) {
+                    cluster = cluster.getParent();
+                }
+                logger.log(Level.INFO, "parent dataset {0}", cluster.getClass().getName());
+                if (cluster instanceof TimeseriesDataset) {
+                    TimeseriesDataset<ContinuousInstance> ts = (TimeseriesDataset<ContinuousInstance>) cluster;
+                    ymax = ts.getMax();
+                    ymin = ts.getMin();
+                    logger.log(Level.INFO, "graph bounds [ {0}, {1} ]", new Object[]{ymin, ymax});
+                }
+            }
+
             for (Cluster<? extends Instance> d : clust) {
                 //  c.gridy = i++;
                 logger.log(Level.INFO, "{0}", new Object[]{d.toString()});
@@ -103,6 +122,10 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                         if (metaMap.containsKey(id)) {
                             metaInst = metaMap.get(id);
                             plot = metaInst.getPlotter();
+                            if (!Double.isNaN(ymax)) {
+                                logger.log(Level.INFO, "grapn bounds: {0}, {1}", new Object[]{ymin, ymax});
+                                plot.setYBounds(ymin, ymax);
+                            }
                         } else {
                             logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
                         }
@@ -190,6 +213,22 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
 
     public void setMetaMap(HashMap<Integer, Instance> metaMap) {
         this.metaMap = metaMap;
+    }
+
+    public double getYmax() {
+        return ymax;
+    }
+
+    public void setYmax(double ymax) {
+        this.ymax = ymax;
+    }
+
+    public double getYmin() {
+        return ymin;
+    }
+
+    public void setYmin(double ymin) {
+        this.ymin = ymin;
     }
 
 }

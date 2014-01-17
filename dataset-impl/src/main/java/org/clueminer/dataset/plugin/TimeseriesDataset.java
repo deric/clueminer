@@ -292,7 +292,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     /**
-     * Minimum value in the dataset
+     * Minimum Y value in the dataset
      *
      * @return
      */
@@ -305,7 +305,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     /**
-     * Maximum value in the dataset
+     * Maximum Y value in the dataset
      *
      * @return
      */

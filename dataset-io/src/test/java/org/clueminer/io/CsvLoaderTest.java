@@ -112,10 +112,11 @@ public class CsvLoaderTest {
         ArrayList<Integer> skip = new ArrayList<Integer>();
         //skip.add(0); //first one is ID
         //loader.addNameAttr(0);
-        for (int i = 1; i < 7; i++) {
-            skip.add(i);
+        for (int i = 0; i < 7; i++) {
             loader.addNameAttr(i); //meta attributes
+            skip.add(i + 1);
         }
+
         loader.setClassIndex(0);
         loader.setNameJoinChar(", ");
 

@@ -71,7 +71,7 @@ public class CsvLoader implements DatasetLoader {
 
         if (hasHeader && !skipHeader) {
             parseHeader(iter.next());
-            //Dump.array(((CSVIterator) iter).showNext(), "next line: ");
+            ///Dump.array(((CSVIterator) iter).showNext(), "next line: ");
         } else if (skipHeader) {
             iter.next(); // just skip it
         }
@@ -132,7 +132,7 @@ public class CsvLoader implements DatasetLoader {
                                 try {
                                     val = Double.parseDouble(arr[i]);
                                 } catch (NumberFormatException e) {
-                                    logger.log(Level.WARNING, "Number format exception, attr {0}: {1}", new Object[]{i, e.getMessage()});
+                                    logger.log(Level.WARNING, "Number format exception, line {0}, attr {1}: {2}", new Object[]{num, i, e.getMessage()});
                                     val = Double.NaN;
                                 }
                                 values[i - skip] = val;
