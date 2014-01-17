@@ -142,6 +142,7 @@ public class HierachicalClusteringResult implements HierarchicalResult {
                 if (!result.hasAt(num)) {
                     clust = new BaseCluster<Instance>(perCluster);
                     clust.setName("cluster" + (num + 1));
+                    clust.setClusterId(num);
                     clust.setParent(parent);
 
                     Attribute[] attr = parent.copyAttributes();

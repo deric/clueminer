@@ -80,7 +80,7 @@ public class KMeans implements PartitioningClustering {
      * current system time. For the distance we use the Euclidean n-space
      * distance.
      *
-     * @param clusters - the number of clusters
+     * @param clusters   - the number of clusters
      * @param iterations - the number of iterations
      */
     public KMeans(int clusters, int iterations) {
@@ -92,10 +92,10 @@ public class KMeans implements PartitioningClustering {
      * iterations. Also the Random Generator for the clusterer is given as
      * parameter.
      *
-     * @param clusters - the number of clusters
+     * @param clusters   - the number of clusters
      * @param iterations - the number of iterations
      *
-     * @param dm - the distance measure to use
+     * @param dm         - the distance measure to use
      */
     public KMeans(int clusters, int iterations, DistanceMeasure dm) {
         this.numberOfClusters = clusters;
@@ -118,7 +118,6 @@ public class KMeans implements PartitioningClustering {
     public void setDistanceFunction(DistanceMeasure dm) {
         this.dm = dm;
     }
-
 
     @Override
     public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
@@ -235,6 +234,7 @@ public class KMeans implements PartitioningClustering {
         for (int i = 0; i < centroids.length; i++) {
             cluster = new BaseCluster(data.size());
             cluster.setName("cluster " + (i + 1));
+            cluster.setClusterId(i);
             //we have to copy attributes settings
             cluster.setAttributes(data.getAttributes());
             output.put(cluster);
@@ -254,6 +254,5 @@ public class KMeans implements PartitioningClustering {
         }
         return output;
     }
-
 
 }
