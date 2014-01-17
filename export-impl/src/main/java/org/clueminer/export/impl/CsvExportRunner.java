@@ -23,6 +23,7 @@ public class CsvExportRunner implements Runnable {
     private final ClusterAnalysis analysis;
     private final Preferences pref;
     private final ProgressHandle ph;
+    private boolean includeClass = true;
 
     public CsvExportRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
@@ -52,7 +53,12 @@ public class CsvExportRunner implements Runnable {
                         for (int i = 0; i < line.length; i++) {
                             line[i] = line[i].trim();
                         }
+                        //+name
                         size = line.length + 1;
+                        //class attr
+                        if (includeClass) {
+                            size += 1;
+                        }
 
                         int dataSize = 0;
                         String[] data = null;
@@ -77,7 +83,13 @@ public class CsvExportRunner implements Runnable {
 
                         //append cluster label
                         tmp = new String[size];
-                        System.arraycopy(line, 0, tmp, 0, line.length);
+                        int offsetClass = 0;
+                        if (includeClass) {
+                            offsetClass = 1;
+                            //prepend class value
+                            tmp[0] = (String) inst.classValue();
+                        }
+                        System.arraycopy(line, 0, tmp, offsetClass, line.length);
                         if (dataSize > 0) {
                             System.arraycopy(data, 0, tmp, line.length, dataSize);
                         }
