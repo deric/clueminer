@@ -176,6 +176,19 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testSetAttribute() {
+        dataset.setAttribute(0, dataset.attributeBuilder().create("b1", "NUMERIC"));
+        assertEquals("b1", dataset.getAttribute(0).getName());
+        assertEquals(2, dataset.attributeCount());
+    }
+
+    @Test
+    public void testSetAttributeReallocation() {
+        Dataset<? extends Instance> test = new ArrayDataset<Instance>(5, 2);
+        int attrNewCnt = 10;
+        for (int i = 0; i < attrNewCnt; i++) {
+            test.setAttribute(i, dataset.attributeBuilder().create("attr" + i, "NUMERIC"));
+        }
+        assertEquals(attrNewCnt, test.attributeCount());
     }
 
     @Test

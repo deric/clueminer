@@ -184,10 +184,23 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public void setAttribute(int i, Attribute attr) {
         attr.setIndex(i);
+        ensureAttrSize(i);
         if (attributes[i] == null) {
             attrCnt++;
         }
         attributes[i] = attr;
+    }
+
+    public final void ensureAttrSize(int reqAttrSize) {
+        if (reqAttrSize >= attributes.length) {
+            int capacity = (int) (reqAttrSize * 1.618); //golden ratio :)
+            if (capacity == attributeCount()) {
+                capacity = 3 * reqAttrSize; // for small numbers due to int rounding we wouldn't increase the size
+            }
+            Attribute[] tmp = new Attribute[capacity];
+            System.arraycopy(attributes, 0, tmp, 0, attrCnt);
+            attributes = tmp;
+        }
     }
 
     /**
