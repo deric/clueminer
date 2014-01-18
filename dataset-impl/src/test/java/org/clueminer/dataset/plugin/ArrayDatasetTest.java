@@ -1,6 +1,8 @@
 package org.clueminer.dataset.plugin;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
@@ -276,6 +278,14 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testSetAttributes() {
+        Map<Integer, Attribute> map = new HashMap();
+        map.put(0, dataset.attributeBuilder().create("attr0", "NUMERIC"));
+        map.put(1, dataset.attributeBuilder().create("attr1", "NUMERIC"));
+        map.put(2, dataset.attributeBuilder().create("attr2", "NUMERIC"));
+
+        Dataset<? extends Instance> test = new ArrayDataset<Instance>(5, 2);
+        test.setAttributes(map);
+        assertEquals(3, test.attributeCount());
     }
 
     /**
@@ -332,6 +342,13 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testContains() {
+        Instance inst = new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()});
+        dataset.add(inst);
+        assertEquals(true, dataset.contains(inst));
+
+        //new instance which was not added to dataset
+        inst = new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()});
+        assertEquals(false, dataset.contains(inst));
     }
 
     /**
