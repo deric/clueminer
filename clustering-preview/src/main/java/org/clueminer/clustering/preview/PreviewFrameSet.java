@@ -149,7 +149,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                     if (plot != null) {
                         plot.setMinimumSize(dimChart);
                         plot.setPreferredSize(dimChart);
-                        plot.setTitle(d.getName());
+                        plot.setTitle(d.getName() + " (" + d.size() + ")");
                         plots[i++] = plot;
                         add((JComponent) plot);
                     }

@@ -25,7 +25,7 @@ public class TimePlot extends Plot2DPanel implements Plotter {
     public void addInstance(Instance instance) {
         ContinuousInstance inst = (ContinuousInstance) instance;
         Timeseries dataset = inst.getParent();
-        this.addLinePlot(instance.getName(), dataset.getTimePointsArray(), instance.arrayCopy());
+        this.addLinePlot(instance.getName(), instance.getColor(), dataset.getTimePointsArray(), instance.arrayCopy());
     }
 
     @Override

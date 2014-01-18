@@ -1,15 +1,20 @@
 package org.clueminer.clustering.preview;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.PaletteGenerator;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.types.TimePoint;
@@ -22,10 +27,10 @@ import org.openide.util.Exceptions;
  */
 public class MetaLoaderRunner implements Runnable {
 
-    private final File[] files;
-    private final Preferences pref;
-    private final ProgressHandle ph;
-    private final Dataset<? extends Instance>[] result;
+    private File[] files = null;
+    private Preferences pref;
+    private ProgressHandle ph;
+    private Dataset<? extends Instance>[] result;
     private final static Logger logger = Logger.getLogger(MetaLoaderRunner.class.getName());
 
     public MetaLoaderRunner(File[] files, Preferences pref, ProgressHandle ph, Dataset<? extends Instance>[] result) {
@@ -35,6 +40,10 @@ public class MetaLoaderRunner implements Runnable {
         this.result = result;
     }
 
+    public MetaLoaderRunner() {
+
+    }
+
     @Override
     public void run() {
         ph.start(0);
@@ -42,7 +51,9 @@ public class MetaLoaderRunner implements Runnable {
         for (File file : files) {
             if (file.exists()) {
                 try {
-                    result[i++] = loadMTimeseries(file);
+                    result[i] = loadMTimeseries(file);
+                    assignColours(result[i]);
+                    i++;
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -52,7 +63,7 @@ public class MetaLoaderRunner implements Runnable {
         }
     }
 
-    private Dataset<? extends Instance> loadMTimeseries(File file) throws FileNotFoundException, IOException {
+    protected Dataset<? extends Instance> loadMTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
         Dataset<? extends Instance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
         CsvLoader loader = new CsvLoader();
@@ -92,6 +103,26 @@ public class MetaLoaderRunner implements Runnable {
         loader.setDataset(d);
         loader.load(file);
         return dataset;
+    }
+
+    protected Map<Integer, Color> assignColours(Dataset<? extends Instance> data) {
+        Map<Integer, Color> colors = new HashMap<Integer, Color>();
+        double[] meta;
+        int pk;
+        Color col;
+        ColorGenerator gen = new PaletteGenerator();
+        for (Instance inst : data) {
+            meta = inst.getMetaNum();
+            pk = (int) meta[1]; //we can safely cast to integer
+            if (colors.containsKey(pk)) {
+                col = colors.get(pk);
+            } else {
+                col = gen.next();
+                colors.put(pk, col);
+            }
+            inst.setColor(col);
+        }
+        return colors;
     }
 
     public Dataset<? extends Instance>[] getResult() {

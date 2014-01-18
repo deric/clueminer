@@ -126,7 +126,7 @@ public class MLearnImporter implements LongTask, Runnable {
 
     public void loadMPTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
-        dataset = new ArrayDataset<Instance>(1000, 24);
+
         CsvLoader loader = new CsvLoader();
         ArrayList<Integer> skip = new ArrayList<Integer>();
         //skip.add(0); //first one is ID
@@ -144,6 +144,9 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.setSeparator(separator);
         //loader.setClassIndex(0);
         loader.setHasHeader(true);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
+        dataset = new ArrayDataset<Instance>(1000, firstLine.length - skip.size());
+
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
         loader.load(file);
