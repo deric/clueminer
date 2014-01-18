@@ -147,6 +147,7 @@ public class ClusterListTest {
         subject.put(2, new BaseCluster(5));
         assertEquals(true, subject.hasAt(2));
         assertEquals(1, subject.size());
+        assertEquals(false, subject.hasAt(99));
 
     }
 

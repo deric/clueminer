@@ -39,7 +39,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public boolean hasAt(int index) {
-        return index >= 0 && data[index] != null;
+        return index >= 0 && index < data.length && data[index] != null;
     }
 
     @Override

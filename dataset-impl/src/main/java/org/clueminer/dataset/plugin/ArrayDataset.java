@@ -80,9 +80,17 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return (E) data[index];
     }
 
+    /**
+     * We have to check data.length because we can have empty instances:
+     *
+     * [ null, null, null, Instance(3) ] -- size() == 1
+     *
+     * @param idx
+     * @return
+     */
     @Override
     public boolean hasIndex(int idx) {
-        return idx >= 0 && data[idx] != null;
+        return idx >= 0 && idx < data.length && data[idx] != null;
     }
 
     @Override
@@ -208,13 +216,15 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     /**
+     * Array might have free allocated space for new attributes, so copy
+     * just {attrCnt} attributes
      *
      * @return reference to attribute map
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
         Map<Integer, Attribute> res = new HashMap<Integer, Attribute>();
-        for (int i = 0; i < attributes.length; i++) {
+        for (int i = 0; i < attrCnt; i++) {
             res.put(i, attributes[i]);
         }
         return res;
