@@ -153,4 +153,12 @@ public class LegendreTransformation implements DataTransform {
         logger.log(Level.INFO, "input size: {0} attrs {1}", new Object[]{input.size(), input.attributeCount()});
         return new AttrHashDataset<Instance>(input.size());
     }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
 }

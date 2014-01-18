@@ -23,6 +23,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
 
     private static String name = "Legendre segmented";
     private static final Logger logger = Logger.getLogger(LegendreTransSegmented.class.getName());
+    private int numSegments = 2;
 
     public LegendreTransSegmented() {
         //nothing to do
@@ -47,11 +48,11 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
     @Override
     public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
         // last two params: number of segments and degree of polynomials
-        int n = 3;
-        int workunits = n * dataset.size();
+
+        int workunits = numSegments * dataset.size();
         logger.log(Level.INFO, "work units = {0}", workunits);
         ph.start(workunits);
-        analyze(dataset, output, ph, n, 7);
+        analyze(dataset, output, ph, numSegments, degree);
         ph.finish();
     }
 
@@ -148,5 +149,13 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             offset += inc;
         }
         return res;
+    }
+
+    public int getNumSegments() {
+        return numSegments;
+    }
+
+    public void setNumSegments(int numSegments) {
+        this.numSegments = numSegments;
     }
 }
