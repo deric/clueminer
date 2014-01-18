@@ -5,14 +5,14 @@ import java.awt.Color;
 import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.plugin.ArrayDataset;
 
 /**
  *
  * @author Tomas Barton
  * @param <E>
  */
-public class BaseCluster<E extends Instance> extends SampleDataset<E> implements Cluster<E>, Set<E> {
+public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements Cluster<E>, Set<E> {
 
     private static final long serialVersionUID = -6931127664256794410L;
     private int clusterId;
@@ -21,7 +21,7 @@ public class BaseCluster<E extends Instance> extends SampleDataset<E> implements
     private final Set<Integer> mapping = Sets.newHashSet();
 
     public BaseCluster(int capacity) {
-        super(capacity);
+        super(capacity, 5);
     }
 
     /**
