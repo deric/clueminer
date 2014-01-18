@@ -25,27 +25,27 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         data = new Cluster[capacity];
     }
 
-    public final void ensureCapacity(int capacity) {
-        if (capacity > size()) {
+    public final void ensureCapacity(int id) {
+        int capacity = (int) (n * 1.618); //golden ratio :)
+        if (capacity == size()) {
+            capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
+        }
+        if (capacity > data.length) {
             Cluster[] tmp = new Cluster[capacity];
-            System.arraycopy(data, 0, tmp, 0, n);
+            System.arraycopy(data, 0, tmp, 0, data.length);
             data = tmp;
         }
     }
 
     @Override
     public boolean hasAt(int index) {
-        return index >= 0 && index <= size() && data[index] != null;
+        return index >= 0 && data[index] != null;
     }
 
     @Override
     public boolean add(Cluster<E> e) {
-        if ((n + 1) >= getCapacity()) {
-            int capacity = (int) (n * 1.618); //golden ratio :)
-            if (capacity == size()) {
-                capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
-            }
-            ensureCapacity(capacity);
+        if (n >= getCapacity()) {
+            ensureCapacity(n);
         }
         data[n++] = e;
         return true;
@@ -71,7 +71,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public void put(int index, Cluster x) {
         if (index >= getCapacity()) {
-            ensureCapacity((int) (size() * 1.618));
+            ensureCapacity(index);
         }
         if (data[index] == null) {
             n++;

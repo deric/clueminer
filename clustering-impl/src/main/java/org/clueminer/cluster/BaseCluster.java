@@ -24,6 +24,10 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         super(capacity, 5);
     }
 
+    public BaseCluster(int capacity, int attrSize) {
+        super(capacity, attrSize);
+    }
+
     /**
      *
      * @param inst

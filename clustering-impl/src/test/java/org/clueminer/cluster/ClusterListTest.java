@@ -6,7 +6,6 @@ import java.util.Iterator;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -115,6 +114,40 @@ public class ClusterListTest {
         assertEquals(2, subject.size());
         subject.put(0, new BaseCluster(1));
         assertEquals(3, subject.size());
+    }
+
+    @Test
+    public void testPut_cluster() {
+        ClusterList subject = new ClusterList(2);
+        assertEquals(0, subject.size());
+
+        //add first cluster at pos 1
+        subject.put(1, new BaseCluster(1));
+        assertEquals(true, subject.hasAt(1));
+        assertEquals(1, subject.size());
+
+        //add second at 0
+        subject.put(0, new BaseCluster(5));
+        assertEquals(true, subject.hasAt(0));
+        assertEquals(2, subject.size());
+
+        //add third at 2
+        subject.put(2, new BaseCluster(5));
+        assertEquals(true, subject.hasAt(2));
+        assertEquals(3, subject.size());
+        System.out.println("capacity: " + subject.getCapacity());
+    }
+
+    @Test
+    public void testPut_int_cluster() {
+        ClusterList subject = new ClusterList(3);
+        assertEquals(0, subject.size());
+        System.out.println("capacity: " + subject.getCapacity());
+        //add third at 2
+        subject.put(2, new BaseCluster(5));
+        assertEquals(true, subject.hasAt(2));
+        assertEquals(1, subject.size());
+
     }
 
     /**

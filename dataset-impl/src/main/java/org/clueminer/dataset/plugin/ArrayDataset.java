@@ -17,6 +17,7 @@ import org.math.plot.Plot2DPanel;
  * @param <E>
  *
  * - contains(Object o) ~ O(n)
+ * - can allocate Instance at any position
  *
  *
  * @author Tomas Barton
@@ -81,7 +82,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public boolean hasIndex(int idx) {
-        return idx >= 0 && idx < size();
+        return idx >= 0 && data[idx] != null;
     }
 
     @Override
@@ -405,7 +406,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public Object[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return data;
     }
 
     @Override
