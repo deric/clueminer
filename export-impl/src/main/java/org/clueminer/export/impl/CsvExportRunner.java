@@ -23,7 +23,7 @@ public class CsvExportRunner implements Runnable {
     private final ClusterAnalysis analysis;
     private final Preferences pref;
     private final ProgressHandle ph;
-    private boolean includeClass = true;
+    private boolean includeClass = false;
 
     public CsvExportRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
@@ -110,6 +110,14 @@ public class CsvExportRunner implements Runnable {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    public boolean isIncludeClass() {
+        return includeClass;
+    }
+
+    public void setIncludeClass(boolean includeClass) {
+        this.includeClass = includeClass;
     }
 
 }
