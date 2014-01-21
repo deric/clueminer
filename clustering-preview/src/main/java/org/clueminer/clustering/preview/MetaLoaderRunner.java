@@ -14,7 +14,7 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.PaletteGenerator;
+import org.clueminer.colors.PaletteGenerator;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.types.TimePoint;
@@ -110,7 +110,7 @@ public class MetaLoaderRunner implements Runnable {
         double[] meta;
         int pk;
         Color col;
-        ColorGenerator gen = new PaletteGenerator();
+        ColorGenerator gen = (ColorGenerator) new PaletteGenerator();
         for (Instance inst : data) {
             meta = inst.getMetaNum();
             pk = (int) meta[1]; //we can safely cast to integer

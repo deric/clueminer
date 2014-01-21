@@ -1,4 +1,4 @@
-package org.clueminer.wellmap;
+package org.clueminer.colors;
 
 import java.awt.Color;
 import java.awt.GradientPaint;

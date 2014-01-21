@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import org.clueminer.algorithm.BinarySearch;
 import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.colors.PaletteGenerator;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;

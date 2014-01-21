@@ -1,4 +1,4 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.colors;
 
 import java.awt.Color;
 import java.util.Random;

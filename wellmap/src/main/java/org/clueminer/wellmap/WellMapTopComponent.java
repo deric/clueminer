@@ -1,5 +1,6 @@
 package org.clueminer.wellmap;
 
+import org.clueminer.colors.ColorScheme;
 import com.google.common.collect.MinMaxPriorityQueue;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
