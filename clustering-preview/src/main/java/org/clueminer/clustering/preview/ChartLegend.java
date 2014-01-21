@@ -12,8 +12,10 @@ import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.swing.JPanel;
 
 /**
@@ -37,6 +39,7 @@ public class ChartLegend extends JPanel {
     private int tickWidth = 20;
     private int spaceBetweenTickAndText = 20;
     private int maxComponentWidth = 100;
+    private List<Integer> sortedKeys;
 
     public ChartLegend() {
         setBackground(Color.WHITE);
@@ -125,13 +128,13 @@ public class ChartLegend extends JPanel {
         double lineY;
         int textStart = insets.left + tickWidth + spaceBetweenTickAndText;
 
-        for (Entry<Integer, Color> row : colors.entrySet()) {
+        for (Integer row : sortedKeys) {
             annY = i * lineHeight + offset;
             lineY = i * lineHeight + (lineHeight / 2.0) + 1.0;
-            g2d.setColor(row.getValue());
+            g2d.setColor(colors.get(row));
             g2d.draw(new Line2D.Double(insets.left, lineY, insets.left + tickWidth, lineY));
 
-            s = String.valueOf(row.getKey());
+            s = String.valueOf(row);
 
             int w = (int) (g2d.getFont().getStringBounds(s, frc).getWidth());
             checkMax(w);
@@ -153,6 +156,9 @@ public class ChartLegend extends JPanel {
     }
 
     public void setColors(Map<Integer, Color> colors) {
+        sortedKeys = new ArrayList<Integer>(colors.keySet());
+        Collections.sort(sortedKeys);
+
         this.colors = colors;
         updateChart();
     }
