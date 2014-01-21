@@ -40,7 +40,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private double xmax = 0.0;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
     private HashMap<Integer, Instance> metaMap;
-    private Map<Integer, Color>[] metaColors;
+    private Map<Integer, Color> metaColors;
     private ChartLegend legend;
 
     public PreviewFrameSet() {
@@ -163,12 +163,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
             logger.log(Level.INFO, "total num of instances: {0}", total);
         }
         if (metaColors != null) {
-            System.out.println("adding legend");
             if (legend == null) {
                 legend = new ChartLegend();
             }
             add(legend);
             legend.setColors(metaColors);
+            legend.setMaxWidth(this.getWidth());
+            legend.updateChart();
+            revalidate();
             System.out.println("legend size: " + legend.getSize());
         }
 
@@ -266,11 +268,11 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         this.xmax = xmax;
     }
 
-    public Map<Integer, Color>[] getMetaColors() {
+    public Map<Integer, Color> getMetaColors() {
         return metaColors;
     }
 
-    public void setMetaColors(Map<Integer, Color>[] metaColors) {
+    public void setMetaColors(Map<Integer, Color> metaColors) {
         this.metaColors = metaColors;
     }
 

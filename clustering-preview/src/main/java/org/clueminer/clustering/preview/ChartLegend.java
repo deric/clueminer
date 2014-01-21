@@ -23,29 +23,35 @@ import javax.swing.JPanel;
  */
 public class ChartLegend extends JPanel {
 
-    private Map<Integer, Color>[] colors;
+    private Map<Integer, Color> colors;
     private BufferedImage buffImg;
     private Graphics2D g2d;
     private Dimension size = new Dimension(0, 0);
     private final Insets insets = new Insets(0, 50, 0, 0);
     private int lineHeight = 15;
-    private int fontSize = 10;
+    private int fontSize = 12;
     private Font defaultFont = new Font("verdana", Font.PLAIN, fontSize);
     private int width;
     private int height;
     private int maxWidth = 50;
     private int tickWidth = 20;
     private int spaceBetweenTickAndText = 20;
+    private int maxComponentWidth = 100;
 
     public ChartLegend() {
-
+        setBackground(Color.WHITE);
     }
 
     public void updateChart() {
         if (!hasData()) {
             return;
         }
-        width = insets.left + tickWidth + spaceBetweenTickAndText + maxWidth + insets.right;
+        int w = insets.left + tickWidth + spaceBetweenTickAndText + maxWidth + insets.right;
+        if (w > maxComponentWidth) {
+            width = w;
+        } else {
+            width = maxComponentWidth;
+        }
         height = insets.top + numLines() * lineHeight + insets.bottom;
         //nodes on right, 90 deg rot
         setSizes(width, height);
@@ -53,14 +59,10 @@ public class ChartLegend extends JPanel {
     }
 
     private int numLines() {
-        int num = 0;
         if (!hasData()) {
             return 0;
         }
-        for (Map<Integer, Color> set : colors) {
-            num += set.size();
-        }
-        return num;
+        return colors.size();
     }
 
     @Override
@@ -122,21 +124,20 @@ public class ChartLegend extends JPanel {
         double offset = (lineHeight / 2.0) + ((ascent - descent) / 2.0);
         double lineY;
         int textStart = insets.left + tickWidth + spaceBetweenTickAndText;
-        for (Map<Integer, Color> set : colors) {
-            for (Entry<Integer, Color> row : set.entrySet()) {
-                annY = i * lineHeight + offset;
-                lineY = i * lineHeight + (lineHeight / 2.0) + 1.0;
-                g2d.setColor(row.getValue());
-                g2d.draw(new Line2D.Double(insets.left, lineY, insets.left + tickWidth, lineY));
 
-                s = String.valueOf(row.getKey());
+        for (Entry<Integer, Color> row : colors.entrySet()) {
+            annY = i * lineHeight + offset;
+            lineY = i * lineHeight + (lineHeight / 2.0) + 1.0;
+            g2d.setColor(row.getValue());
+            g2d.draw(new Line2D.Double(insets.left, lineY, insets.left + tickWidth, lineY));
 
-                int w = (int) (g2d.getFont().getStringBounds(s, frc).getWidth());
-                checkMax(w);
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(s, textStart, (float) annY);
-                i++;
-            }
+            s = String.valueOf(row.getKey());
+
+            int w = (int) (g2d.getFont().getStringBounds(s, frc).getWidth());
+            checkMax(w);
+            g2d.setColor(Color.BLACK);
+            g2d.drawString(s, textStart, (float) annY);
+            i++;
         }
     }
 
@@ -147,11 +148,11 @@ public class ChartLegend extends JPanel {
         }
     }
 
-    public Map<Integer, Color>[] getColors() {
+    public Map<Integer, Color> getColors() {
         return colors;
     }
 
-    public void setColors(Map<Integer, Color>[] colors) {
+    public void setColors(Map<Integer, Color> colors) {
         this.colors = colors;
         updateChart();
     }
@@ -163,6 +164,10 @@ public class ChartLegend extends JPanel {
         //invalidate cache
         buffImg = null;
         repaint();
+    }
+
+    public void setMaxWidth(int width) {
+        this.maxComponentWidth = width;
     }
 
 }

@@ -32,7 +32,7 @@ public class MetaLoaderDialog implements ActionListener {
     private RequestProcessor.Task task;
     private Dataset<? extends Instance>[] datasets;
     private TaskListener parent;
-    private Map<Integer, Color>[] metaColors;
+    private Map<Integer, Color> metaColors;
 
     public MetaLoaderDialog(TaskListener l) {
         parent = l;
@@ -110,7 +110,7 @@ public class MetaLoaderDialog implements ActionListener {
         return datasets;
     }
 
-    public Map<Integer, Color>[] getColors() {
+    public Map<Integer, Color> getColors() {
         return metaColors;
     }
 }

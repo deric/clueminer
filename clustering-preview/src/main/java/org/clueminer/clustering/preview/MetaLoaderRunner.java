@@ -32,7 +32,7 @@ public class MetaLoaderRunner implements Runnable {
     private ProgressHandle ph;
     private Dataset<? extends Instance>[] result;
     private final static Logger logger = Logger.getLogger(MetaLoaderRunner.class.getName());
-    private Map<Integer, Color>[] scheme;
+    private final Map<Integer, Color> colors = new HashMap<Integer, Color>();
 
     public MetaLoaderRunner(File[] files, Preferences pref, ProgressHandle ph, Dataset<? extends Instance>[] result) {
         this.files = files;
@@ -49,12 +49,11 @@ public class MetaLoaderRunner implements Runnable {
     public void run() {
         ph.start(0);
         int i = 0;
-        scheme = new Map[files.length];
         for (File file : files) {
             if (file.exists()) {
                 try {
                     result[i] = loadMTimeseries(file);
-                    scheme[i] = assignColours(result[i]);
+                    assignColours(result[i]);
                     i++;
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
@@ -108,7 +107,6 @@ public class MetaLoaderRunner implements Runnable {
     }
 
     protected Map<Integer, Color> assignColours(Dataset<? extends Instance> data) {
-        Map<Integer, Color> colors = new HashMap<Integer, Color>();
         double[] meta;
         int pk;
         Color col;
@@ -131,8 +129,8 @@ public class MetaLoaderRunner implements Runnable {
         return result;
     }
 
-    public Map<Integer, Color>[] getColors() {
-        return scheme;
+    public Map<Integer, Color> getColors() {
+        return colors;
     }
 
 }
