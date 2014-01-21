@@ -171,6 +171,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
             previewSet.setXmax(xmax);
         }
         previewSet.setMetaMap(metaMap);
+        previewSet.setMetaColors(loader.getColors());
     }
 
 }

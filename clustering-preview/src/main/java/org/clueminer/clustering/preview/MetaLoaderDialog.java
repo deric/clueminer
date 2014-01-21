@@ -1,8 +1,10 @@
 package org.clueminer.clustering.preview;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Map;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -30,6 +32,7 @@ public class MetaLoaderDialog implements ActionListener {
     private RequestProcessor.Task task;
     private Dataset<? extends Instance>[] datasets;
     private TaskListener parent;
+    private Map<Integer, Color>[] metaColors;
 
     public MetaLoaderDialog(TaskListener l) {
         parent = l;
@@ -91,8 +94,10 @@ public class MetaLoaderDialog implements ActionListener {
                         //when the task is finished
                         ph.finish();
                         System.out.println("task finished");
+                        metaColors = runner.getColors();
                         datasets = runner.getResult();
                         parent.taskFinished(task);
+
                     }
                 });
                 task.schedule(0);
@@ -105,4 +110,7 @@ public class MetaLoaderDialog implements ActionListener {
         return datasets;
     }
 
+    public Map<Integer, Color>[] getColors() {
+        return metaColors;
+    }
 }

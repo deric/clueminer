@@ -1,7 +1,9 @@
 package org.clueminer.clustering.preview;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -38,6 +40,8 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private double xmax = 0.0;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
     private HashMap<Integer, Instance> metaMap;
+    private Map<Integer, Color>[] metaColors;
+    private ChartLegend legend;
 
     public PreviewFrameSet() {
         initComponents();
@@ -158,6 +162,16 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
             }
             logger.log(Level.INFO, "total num of instances: {0}", total);
         }
+        if (metaColors != null) {
+            System.out.println("adding legend");
+            if (legend == null) {
+                legend = new ChartLegend();
+            }
+            add(legend);
+            legend.setColors(metaColors);
+            System.out.println("legend size: " + legend.getSize());
+        }
+
     }
 
     private void checkXmax(Plotter plot, Instance metaInst) {
@@ -250,6 +264,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
 
     public void setXmax(double xmax) {
         this.xmax = xmax;
+    }
+
+    public Map<Integer, Color>[] getMetaColors() {
+        return metaColors;
+    }
+
+    public void setMetaColors(Map<Integer, Color>[] metaColors) {
+        this.metaColors = metaColors;
     }
 
 }

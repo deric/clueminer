@@ -27,13 +27,13 @@ public class ChartLegend extends JPanel {
     private BufferedImage buffImg;
     private Graphics2D g2d;
     private Dimension size = new Dimension(0, 0);
-    private final Insets insets = new Insets(0, 0, 0, 0);
+    private final Insets insets = new Insets(0, 50, 0, 0);
     private int lineHeight = 15;
     private int fontSize = 10;
     private Font defaultFont = new Font("verdana", Font.PLAIN, fontSize);
     private int width;
     private int height;
-    private int maxWidth;
+    private int maxWidth = 50;
     private int tickWidth = 20;
     private int spaceBetweenTickAndText = 20;
 
