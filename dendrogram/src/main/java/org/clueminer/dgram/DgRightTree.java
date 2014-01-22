@@ -1,6 +1,8 @@
 package org.clueminer.dgram;
 
 import java.awt.Graphics2D;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -14,8 +16,11 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
  */
 public class DgRightTree extends DgTree {
 
+    private static final Border border = BorderFactory.createEmptyBorder(0, 10, 0, 0);
+
     public DgRightTree(DendroPane panel) {
         super(panel);
+        setBorder(border);
     }
 
     @Override
