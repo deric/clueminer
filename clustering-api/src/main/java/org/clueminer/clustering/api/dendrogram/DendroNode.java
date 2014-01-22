@@ -1,5 +1,7 @@
 package org.clueminer.clustering.api.dendrogram;
 
+import org.clueminer.dataset.api.Instance;
+
 /**
  *
  * @author Tomas Barton
@@ -91,4 +93,13 @@ public interface DendroNode {
     public void setId(int id);
 
     public int getId();
+
+    /**
+     * Corresponding instance from the dataset (valid only if node is a leaf)
+     *
+     * @return Instance
+     */
+    public Instance getInstance();
+
+    public void setInstance(Instance instance);
 }

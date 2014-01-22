@@ -3,7 +3,7 @@ package org.clueminer.clustering.algorithm;
 import org.clueminer.math.matrix.JMatrix;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -24,7 +24,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     private double TreeHeight;
     private int Assigned;
     private int n;
-    private HierachicalClusteringResult result;
+    private HCLResult result;
 
     public HCL() {
         distanceMeasure = new EuclideanDistance();
@@ -68,7 +68,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         System.out.println(map.toString());
 
         TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
-        result = new HierachicalClusteringResult(dataset);
+        result = new HCLResult(dataset);
 
         if (input == null) {
             throw new RuntimeException("Input data is absent.");

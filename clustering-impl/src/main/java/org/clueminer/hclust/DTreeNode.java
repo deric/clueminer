@@ -1,6 +1,7 @@
 package org.clueminer.hclust;
 
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -16,6 +17,7 @@ public class DTreeNode implements DendroNode {
     private double position;
     private int level = -1;
     private int id;
+    private Instance instance;
 
     public DTreeNode() {
     }
@@ -70,11 +72,17 @@ public class DTreeNode implements DendroNode {
     @Override
     public void setLeft(DendroNode left) {
         this.left = left;
+        if (left != null) {
+            left.setParent(this);
+        }
     }
 
     @Override
     public void setRight(DendroNode right) {
         this.right = right;
+        if (right != null) {
+            right.setParent(this);
+        }
     }
 
     @Override
@@ -94,6 +102,7 @@ public class DTreeNode implements DendroNode {
         }
     }
 
+    @Override
     public void setLevel(int level) {
         this.level = level;
     }
@@ -148,6 +157,16 @@ public class DTreeNode implements DendroNode {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public Instance getInstance() {
+        return instance;
+    }
+
+    @Override
+    public void setInstance(Instance instance) {
+        this.instance = instance;
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.clueminer.evaluation.hclust;
 
 import java.util.prefs.Preferences;
 import org.clueminer.math.matrix.JMatrix;
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -175,7 +175,7 @@ public class CopheneticCorrelationTest {
         rowsResult = algorithm.hierarchy(input, dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
-        HierachicalClusteringResult r = (HierachicalClusteringResult) rowsResult;
+        HCLResult r = (HCLResult) rowsResult;
         double[][] copheneticMatrix = test.getCopheneticMatrix(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
         //symetrical matrix
         assertEquals(copheneticMatrix[1][2], copheneticMatrix[2][1], precision);

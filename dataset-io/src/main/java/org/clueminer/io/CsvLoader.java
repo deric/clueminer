@@ -242,7 +242,8 @@ public class CsvLoader implements DatasetLoader {
     }
 
     /**
-     * Value from column(s) will used as the name
+     * Value from column(s) will used as the name. We use C array numbering,
+     * first attribute is marked as 0
      *
      * @param column column
      */

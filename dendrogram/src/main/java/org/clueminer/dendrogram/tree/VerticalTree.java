@@ -2,7 +2,7 @@ package org.clueminer.dendrogram.tree;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -33,7 +33,7 @@ public class VerticalTree extends AbstractTree {
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dataset = dataset;
-        HierachicalClusteringResult clustering = (HierachicalClusteringResult) dataset.getRowsResult();
+        HCLResult clustering = (HCLResult) dataset.getRowsResult();
         setDTreeData(clustering.getTreeData());
         repaint();
     }

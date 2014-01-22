@@ -196,7 +196,7 @@ public class Dump {
         format.setMaximumFractionDigits(d);
         format.setMinimumFractionDigits(d);
         format.setGroupingUsed(false);
-        printMatrix(new PrintWriter(System.out, true), format, A, A.length, A[0].length, 6);
+        printMatrix(new PrintWriter(System.out, true), format, A, A.length, A[0].length, d + 5);
     }
 
     public static void matrix(double[][] A, String name, int d) {
@@ -206,7 +206,7 @@ public class Dump {
         format.setMaximumFractionDigits(d);
         format.setMinimumFractionDigits(d);
         format.setGroupingUsed(false);
-        printMatrix(new PrintWriter(System.out, true), format, A, A.length, A[0].length, 6);
+        printMatrix(new PrintWriter(System.out, true), format, A, A.length, A[0].length, d + 5);
     }
 
     public static void matrix(int[][] A, String name, int d) {
@@ -219,7 +219,7 @@ public class Dump {
         printMatrix(new PrintWriter(System.out, true), format, A, A.length, A[0].length, 6);
     }
 
-    // Little method for helping in output formating  
+    // Little method for helping in output formating
     public static String getSpaces(int n) {
 
         StringBuilder sb = new StringBuilder(n);

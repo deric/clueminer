@@ -1,6 +1,6 @@
 package org.clueminer.evaluation.hclust;
 
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.hclust.TreeDataImpl;
@@ -27,7 +27,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
     @Override
     public double score(HierarchicalResult result) {
         Matrix proximity = result.getProximityMatrix();
-        HierachicalClusteringResult r = (HierachicalClusteringResult) result; 
+        HCLResult r = (HCLResult) result; 
         double[][] copheneticMatrix = getCopheneticMatrix(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
         return copheneticCoefficient(proximity.getArray(), copheneticMatrix);
     }

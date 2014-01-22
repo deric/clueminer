@@ -20,7 +20,7 @@ import org.clueminer.math.Matrix;
  *
  * @author Tomas Barton
  */
-public class HierachicalClusteringResult implements HierarchicalResult {
+public class HCLResult implements HierarchicalResult {
 
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;
@@ -31,13 +31,13 @@ public class HierachicalClusteringResult implements HierarchicalResult {
     private int[] itemsMapping;
     private Matrix inputData;
     private Clustering clustering = null;
-    private static final Logger logger = Logger.getLogger(HierachicalClusteringResult.class.getName());
+    private static final Logger logger = Logger.getLogger(HCLResult.class.getName());
     /**
      * original dataset
      */
     private Dataset<? extends Instance> dataset;
 
-    public HierachicalClusteringResult(Dataset<? extends Instance> dataset) {
+    public HCLResult(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
     }
 

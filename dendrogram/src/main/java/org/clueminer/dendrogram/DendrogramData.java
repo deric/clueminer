@@ -1,6 +1,6 @@
 package org.clueminer.dendrogram;
 
-import org.clueminer.cluster.HierachicalClusteringResult;
+import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -39,7 +39,7 @@ public class DendrogramData implements DendrogramMapping {
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
         this.instances = dataset;
         this.setMatrix(matrix);
-        this.rowsResult = (HierachicalClusteringResult) rowResult;
+        this.rowsResult = (HCLResult) rowResult;
     }
 
     public boolean isEmpty() {
@@ -167,7 +167,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public void setRowsResult(HierarchicalResult rowsResult) {
-        this.rowsResult = (HierachicalClusteringResult) rowsResult;
+        this.rowsResult = (HCLResult) rowsResult;
     }
 
     @Override
@@ -176,7 +176,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public void setColsResult(HierarchicalResult colsResult) {
-        this.colsResult = (HierachicalClusteringResult) colsResult;
+        this.colsResult = (HCLResult) colsResult;
     }
 
     @Override

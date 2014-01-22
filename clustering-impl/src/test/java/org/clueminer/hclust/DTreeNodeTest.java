@@ -27,11 +27,9 @@ public class DTreeNodeTest {
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
                 current.setLeft(new DTreeNode(i));
-                current.getLeft().setParent(current);
                 current = current.getLeft();
             } else {
                 current.setRight(new DTreeNode(i));
-                current.getRight().setParent(current);
                 current = current.getRight();
             }
         }
