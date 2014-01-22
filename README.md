@@ -33,6 +33,15 @@ In `application/src/main/resources/clueminer.conf` adjust Java options:
 
     default_options="--branding clueminer -J-Xms24m -J-Xmx2048m"
 
+Note: increasing heap size `J-Xmx` to values bigger than is your actual physical RAM will
+cause serious preformance issues!
+
+On Unix systems you can find out your memory size with this command:
+
+```bash
+echo $(( $(awk '/MemTotal/{print $2}' /proc/meminfo) >> 10 ))m
+```
+
 
 ## OpenGL support
 
