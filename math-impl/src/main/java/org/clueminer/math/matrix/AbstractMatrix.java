@@ -289,28 +289,65 @@ public abstract class AbstractMatrix implements Matrix {
 
     public void printUpper(PrintWriter output, NumberFormat format, int width) {
         output.println();  // start on new line.
+        //header
+        String s;
+        int padding;
+        for (int i = 0; i < rowsCount(); i++) {
+            s = String.valueOf(i); // format the number
+            padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+        }
+        output.println();
+        for (int i = 0; i < width * columnsCount(); i++) {
+            output.print('-');
+        }
+        output.println();
         for (int i = 0; i < rowsCount(); i++) {
             // diagonal should be zero
+            //fill space before actual matrix
+            for (int k = 0; k < (width * i); k++) {
+                output.print(' ');
+            }
             for (int j = i; j < columnsCount(); j++) {
-                String s = format.format(get(i, j)); // format the number
-                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                s = format.format(get(i, j)); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
                 for (int k = 0; k < padding; k++) {
                     output.print(' ');
                 }
                 output.print(s);
             }
+            //print row label
+            s = String.valueOf(i);
+            //padding = Math.max(1, width - s.length() - 1);
+            output.print(" |");
+            /*    for (int k = 0; k < padding; k++) {                output.print(' ');
+             }*/
+            output.print(s);
             output.println();
         }
         output.println();   // end with blank line.
     }
 
     public void printLower(PrintWriter output, NumberFormat format, int width) {
+        String s;
+        int padding;
         output.println();  // start on new line.
         for (int i = 0; i < rowsCount(); i++) {
+            //print row label
+            s = String.valueOf(i);
+            padding = Math.max(1, width - s.length() - 1);
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+            output.print(" |");
             // diagonal should be zero
-            for (int j = 0; j < i; j++) {
-                String s = format.format(get(i, j)); // format the number
-                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int j = 0; j <= i; j++) {
+                s = format.format(get(i, j)); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
                 for (int k = 0; k < padding; k++) {
                     output.print(' ');
                 }
@@ -318,7 +355,23 @@ public abstract class AbstractMatrix implements Matrix {
             }
             output.println();
         }
-        output.println();   // end with blank line.
+        //footer
+        for (int i = 0; i < width * (columnsCount() + 1); i++) {
+            output.print('-');
+        }
+        output.println();
+        for (int k = 0; k < width; k++) {
+            output.print(' ');
+        }
+        for (int i = 0; i < rowsCount(); i++) {
+            s = String.valueOf(i); // format the number
+            padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+        }
+        output.println();
     }
 
     /**

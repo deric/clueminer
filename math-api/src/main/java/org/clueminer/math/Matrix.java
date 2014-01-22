@@ -6,7 +6,7 @@ import java.text.NumberFormat;
 
 /**
  * Interface for matrix computation inspired by the JAMA matrix
- * 
+ *
  * @author Tomas Barton
  */
 public interface Matrix extends Serializable {
@@ -90,16 +90,16 @@ public interface Matrix extends Serializable {
      * @exception ArrayIndexOutOfBoundsException
      */
     public double get(int i, int j);
-    
+
     /**
-     * 
+     *
      * @param i
      * @return vector referencing Matrix row
      */
     public MatrixVector getRowVector(int i);
-    
+
     /**
-     * 
+     *
      * @param j
      * @return vector referencing Matrix column
      */
@@ -432,16 +432,16 @@ public interface Matrix extends Serializable {
     /**
      * Print upper matrix without numbers on diagonal
      *
-     * @param w
-     * @param d
+     * @param w column width
+     * @param d number of decimal digits
      */
     public void printUpper(int w, int d);
 
     /**
      * Print lower matrix without numbers on diagonal
      *
-     * @param w
-     * @param d
+     * @param w column width
+     * @param d number of decimal digits
      */
     public void printLower(int w, int d);
 
