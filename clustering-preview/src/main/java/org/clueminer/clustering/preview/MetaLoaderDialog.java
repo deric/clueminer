@@ -40,7 +40,7 @@ public class MetaLoaderDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Preferences pref = NbPreferences.root().node("/clueminer/cluster-preview");
+        Preferences pref = NbPreferences.root().node("/org/clueminer/cluster-preview");
         displayFileChooser(pref);
     }
 
