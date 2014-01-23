@@ -22,12 +22,11 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
 
     private static final long serialVersionUID = -852898753773273748L;
     private static String name = "Complete Linkage";
-    
-    public CompleteLinkage(){
+
+    public CompleteLinkage() {
         super(new EuclideanDistance());
     }
-            
-    
+
     public CompleteLinkage(DistanceMeasure dm) {
         super(dm);
     }
@@ -44,7 +43,7 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd) {
-        double lowestSimilarity = 1;
+        double lowestSimilarity = Double.MAX_VALUE;
         for (int i : cluster) {
             for (int j : toAdd) {
                 double s = similarityMatrix.get(i, j);

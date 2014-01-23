@@ -133,6 +133,8 @@ public interface HierarchicalResult extends Serializable {
      */
     public DendroTreeData getTreeData();
 
+    public void setTreeData(DendroTreeData treeData);
+
     /**
      *
      * @param idx

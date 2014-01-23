@@ -2,7 +2,7 @@ package org.clueminer.evaluation.hclust;
 
 import java.util.prefs.Preferences;
 import org.clueminer.math.matrix.JMatrix;
-import org.clueminer.cluster.HCLResult;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;

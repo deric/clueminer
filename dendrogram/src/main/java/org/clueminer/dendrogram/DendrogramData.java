@@ -1,6 +1,6 @@
 package org.clueminer.dendrogram;
 
-import org.clueminer.cluster.HCLResult;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;

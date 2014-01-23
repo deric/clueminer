@@ -1,7 +1,7 @@
 package org.clueminer.clustering.aggl;
 
 import java.io.IOException;
-import org.clueminer.cluster.HCLResult;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

@@ -1,15 +1,18 @@
-package org.clueminer.cluster;
+package org.clueminer.clustering.algorithm;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.cluster.BaseCluster;
+import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.NaiveCutoff;
@@ -58,6 +61,12 @@ public class HCLResult implements HierarchicalResult {
 
     public void setTreeData(TreeDataImpl tree) {
         this.treeData = tree;
+        createDefaultMapping();
+    }
+
+    @Override
+    public void setTreeData(DendroTreeData treeData) {
+        this.treeData = (TreeDataImpl) treeData;
         createDefaultMapping();
     }
 

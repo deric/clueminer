@@ -1,6 +1,6 @@
 package org.clueminer.evaluation.hclust;
 
-import org.clueminer.cluster.HCLResult;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.hclust.TreeDataImpl;

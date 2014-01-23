@@ -15,11 +15,12 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
+import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -64,15 +65,15 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         //each instance will form a cluster
         Map<Integer, Set<Integer>> assignments = initialAssignment(dataset.size());
 
-        int i = 0;
         Element curr;
         HashSet<Integer> blacklist = new HashSet<Integer>();
-        DendroNode node;
+        DendroNode node = null;
         Set<Integer> left, right;
 
         int nodeId = dataset.size();
-        do {
+        while (!pq.isEmpty()) {
             curr = pq.poll();
+            //System.out.println("current: " + curr);
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = new DTreeNode(nodeId++);
                 node.setLeft(nodes[curr.getRow()]);
@@ -89,16 +90,16 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //merge together and add as a new cluster
                 left.addAll(right);
                 updateDistances(nodeId, left, similarityMatrix, assignments, pq);
-                i++;
             }
-        } while (i < dataset.size());
+        }
+
+        DendroTreeData treeData = new DynamicTreeData();
+        treeData.setRoot(node);
+        result.setTreeData(treeData);
 
         similarityMatrix.printLower(5, 2);
 
         System.out.println("queue size: " + pq.size());
-        System.out.println(pq.poll());
-
-        System.out.println("largest n = " + Math.sqrt(Integer.MAX_VALUE));
 
         return result;
     }
@@ -107,7 +108,7 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
-            distance = linkage.similarity(similarityMatrix, mergedCluster, cluster.getValue());
+            distance = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
         }

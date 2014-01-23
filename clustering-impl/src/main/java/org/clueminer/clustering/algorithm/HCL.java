@@ -3,7 +3,6 @@ package org.clueminer.clustering.algorithm;
 import org.clueminer.math.matrix.JMatrix;
 import java.util.Arrays;
 import java.util.prefs.Preferences;
-import org.clueminer.cluster.HCLResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;

@@ -2,7 +2,7 @@ package org.clueminer.dendrogram.tree;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import org.clueminer.cluster.HCLResult;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
