@@ -10,6 +10,7 @@ import org.clueminer.utils.DatasetWriter;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class FluorescenceDataset<E extends FluorescenceInstance> extends TimeseriesDataset<E> implements Timeseries<E>, Dataset<E>, HtsPlate<E> {
 
@@ -24,7 +25,7 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
     public FluorescenceDataset(int rows, int cols) {
         super(rows * cols);
         this.rows = rows;
-        this.cols = cols;        
+        this.cols = cols;
     }
 
     @Override
@@ -46,11 +47,11 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
     public void setColumnsCount(int cols) {
         this.cols = cols;
     }
-    
+
     @Override
     public FluorescenceDataset duplicate() {
         FluorescenceDataset copy = new FluorescenceDataset(this.rows, this.cols);
-        copy.setName(this.getName());        
+        copy.setName(this.getName());
         copy.timePoints = this.timePoints;
         return copy;
     }
@@ -69,7 +70,7 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
             writer.writeNext(inst.toArray());
         }
     }
-    
+
     public void setAttributes(TimePointAttribute[] tp){
         this.timePoints = tp;
     }

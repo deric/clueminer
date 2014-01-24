@@ -117,14 +117,14 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 DendrogramTopComponent tc = new DendrogramTopComponent();
                 HtsPlate<HtsInstance> plate = importer.getDataset();
 
-                Normalization norm = new QuadruplicateNormalization();
-                HtsPlate<HtsInstance> normalized = (HtsPlate<HtsInstance>) plate.duplicate();
+                /*   Normalization norm = new QuadruplicateNormalization();
+                 HtsPlate<HtsInstance> normalized = (HtsPlate<HtsInstance>) plate.duplicate();
                 norm.normalize(plate, normalized);
 
-                saveDataset(plate, "import", false);
-                saveDataset(normalized, "norm", true);
-
-                tc.setDataset(normalized);
+                /*                saveDataset(plate, "import", false);
+                 saveDataset(normalized, "norm", true);
+*/
+                tc.setDataset(plate);
                 //tc.setDataset(plate);
                 tc.setProject(project);
                 tc.setDisplayName(plate.getName());

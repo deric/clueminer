@@ -2,8 +2,10 @@ package org.clueminer.hts.fluorescence;
 
 import java.awt.Color;
 import java.awt.Font;
+import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Timeseries;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.plotObjects.BaseLabel;
 
@@ -21,7 +23,9 @@ public class FluorescencePlot extends Plot2DPanel implements Plotter {
 
     @Override
     public void addInstance(Instance instance) {
-        this.addLinePlot(instance.getName(), instance.arrayCopy());
+        ContinuousInstance inst = (ContinuousInstance) instance;
+        Timeseries dataset = inst.getParent();
+        this.addLinePlot(instance.getName(), instance.getColor(), dataset.getTimePointsArray(), instance.arrayCopy());
     }
 
     @Override
@@ -32,7 +36,7 @@ public class FluorescencePlot extends Plot2DPanel implements Plotter {
     @Override
     public void setTitle(String title) {
         BaseLabel label = new BaseLabel(title, Color.BLACK, 0.5, 1.1);
-        label.setFont(new Font("Courier", Font.BOLD, 20));
+        label.setFont(new Font("serif", Font.BOLD, 20));
         this.addPlotable(label);
     }
 

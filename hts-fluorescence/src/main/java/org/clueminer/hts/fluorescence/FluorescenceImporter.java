@@ -56,7 +56,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         try {
             br = new BufferedReader(new FileReader(file));
             try {
-                parseVersion(br);                
+                parseVersion(br);
                 parseData(parseAttributes(br), br);
 
             } catch (IOException ex) {
@@ -117,7 +117,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
         return name;
     }
 
-    private void parseData(String current, BufferedReader br) throws IOException {        
+    private void parseData(String current, BufferedReader br) throws IOException {
         if (!current.equals("@data")) {
             throw new RuntimeException("Unexpected line: " + current);
         }
@@ -174,7 +174,7 @@ public class FluorescenceImporter implements LongTask, Runnable {
             if (m.matches()) {
                 if (!m.group(1).equals("name")) {
                     time = Integer.valueOf(m.group(1));
-                    timePoints[i] = new TimePointAttribute(i++, time);
+                    timePoints[i] = new TimePointAttribute(i++, time, time);
                 }
             }
         } while (m.matches());
