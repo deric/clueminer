@@ -11,10 +11,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
@@ -122,7 +118,8 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 HtsPlate<HtsInstance> plate = importer.getDataset();
 
                 Normalization norm = new QuadruplicateNormalization();
-                HtsPlate<HtsInstance> normalized = norm.normalize(plate);
+                HtsPlate<HtsInstance> normalized = (HtsPlate<HtsInstance>) plate.duplicate();
+                norm.normalize(plate, normalized);
 
                 saveDataset(plate, "import", false);
                 saveDataset(normalized, "norm", true);
@@ -208,5 +205,5 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }  
+    }
 }

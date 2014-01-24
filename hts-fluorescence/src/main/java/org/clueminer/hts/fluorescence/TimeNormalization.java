@@ -2,19 +2,24 @@ package org.clueminer.hts.fluorescence;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
+import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-public class TimeNormalization extends Normalization {
+@ServiceProvider(service = DataTransform.class)
+public class TimeNormalization extends Normalization implements DataTransform {
 
-    private static String name = "Tom's normalization";
+    private static final String name = "Tom's normalization";
     private static final Logger logger = Logger.getLogger(TimeNormalization.class.getName());
 
     @Override
@@ -23,7 +28,7 @@ public class TimeNormalization extends Normalization {
     }
 
     @Override
-    public HtsPlate<HtsInstance> normalize(HtsPlate<HtsInstance> plate) {
+    public void normalize(HtsPlate<HtsInstance> plate, HtsPlate<HtsInstance> normalized) {
         //Dataset normalized = plate.duplicate();
         //columns are numbered from 0
         int colCnt = plate.getColumnsCount();
@@ -33,7 +38,6 @@ public class TimeNormalization extends Normalization {
         double avg;
         double sum, posCtrl;
         Instance control1, control2;
-        HtsPlate<HtsInstance> normalized = (HtsPlate) plate.duplicate();
         // time point for positive control
         int positiveTimepoint = 9;
         for (int i = 0; i < plate.getRowsCount() - 3; i += 4) {
@@ -98,6 +102,17 @@ public class TimeNormalization extends Normalization {
                 }
             }
         }
-        return normalized;
     }
+
+    @Override
+    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+        //try to cast dataset
+        normalize((HtsPlate<HtsInstance>) dataset, (HtsPlate<HtsInstance>) output);
+    }
+
+    @Override
+    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
+        return input.duplicate();
+    }
+
 }

@@ -11,7 +11,13 @@ public abstract class Normalization {
 
     public abstract String getName();
 
-    public abstract HtsPlate<HtsInstance> normalize(HtsPlate<HtsInstance> plate);
+    /**
+     * Output dataset is passed as a reference
+     *
+     * @param plate
+     * @param normalized
+     */
+    public abstract void normalize(HtsPlate<HtsInstance> plate, HtsPlate<HtsInstance> normalized);
 
     /**
      *
