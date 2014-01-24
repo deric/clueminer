@@ -1,8 +1,11 @@
 package org.clueminer.clustering.gui;
 
+import java.util.Enumeration;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.ClusterEvaluatorFactory;
@@ -40,9 +43,9 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private void setDefaults() {
+        initTransform();
         comboDistance.setSelectedItem("Euclidean");
         comboStandardisation.setSelectedItem("Min-Max");
-        comboTransform.setSelectedItem("-- no transformation --");
     }
 
     private String[] initDistance() {
@@ -79,16 +82,14 @@ public class HCLDialog extends ClusteringDialog {
         return res;
     }
 
-    private String[] initTransform() {
+    private void initTransform() {
         DataTransformFactory df = DataTransformFactory.getDefault();
         List<String> list = df.getProviders();
-        list.add("-- no transformation --");
-        String[] res = new String[list.size()];
-        int i = 0;
+        DefaultListModel lm = (DefaultListModel) lstAvailTrans.getModel();
+
         for (String s : list) {
-            res[i++] = s;
+            lm.addElement(s);
         }
-        return res;
     }
 
     /**
@@ -118,9 +119,15 @@ public class HCLDialog extends ClusteringDialog {
         chckRows = new javax.swing.JCheckBox();
         chckColumns = new javax.swing.JCheckBox();
         lbTransform = new javax.swing.JLabel();
-        comboTransform = new javax.swing.JComboBox();
         chckRowOrder = new javax.swing.JCheckBox();
         chckColumnsOrder = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstAvailTrans = new JList(new DefaultListModel());
+        btnAddTrans = new javax.swing.JButton();
+        btnRemoveTrans = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lstApplyTrans = new JList(new DefaultListModel());
+        jLabel1 = new javax.swing.JLabel();
 
         lbStandard.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.lbStandard.text_1")); // NOI18N
 
@@ -160,11 +167,32 @@ public class HCLDialog extends ClusteringDialog {
 
         lbTransform.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.lbTransform.text_1")); // NOI18N
 
-        comboTransform.setModel(new DefaultComboBoxModel(initTransform()));
-
         chckRowOrder.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chckRowOrder.text")); // NOI18N
 
         chckColumnsOrder.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.chckColumnsOrder.text")); // NOI18N
+
+        lstAvailTrans.setModel(new DefaultListModel());
+        lstAvailTrans.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(lstAvailTrans);
+
+        btnAddTrans.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.btnAddTrans.text")); // NOI18N
+        btnAddTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddTransActionPerformed(evt);
+            }
+        });
+
+        btnRemoveTrans.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.btnRemoveTrans.text")); // NOI18N
+        btnRemoveTrans.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveTransActionPerformed(evt);
+            }
+        });
+
+        lstApplyTrans.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane2.setViewportView(lstApplyTrans);
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(HCLDialog.class, "HCLDialog.jLabel1.text_1")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -173,69 +201,107 @@ public class HCLDialog extends ClusteringDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chckRows)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbStandard)
-                            .addComponent(lbDistanceFunction)
-                            .addComponent(lbDistanceFactor))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbLinkage)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(radioLinkageComplete)
-                            .addComponent(radioLinkageSingle)
-                            .addComponent(radioLinkageAverage)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(radioLinkageComplete)
+                                    .addComponent(radioLinkageSingle))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(lbDistanceFunction)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(lbStandard)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(chckRows)
+                                                    .addComponent(chckRowOrder)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(lbDistanceFactor)
+                                                        .addGap(31, 31, 31)
+                                                        .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                        .addGap(54, 54, 54))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(radioLinkageAverage)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chckColumns)
+                                    .addComponent(chckColumnsOrder)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(btnAddTrans)
+                                                    .addComponent(btnRemoveTrans)))
+                                            .addComponent(lbTransform)
+                                            .addComponent(chkBoxLogScale))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                                .addContainerGap(28, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbCutoffMethod)
                         .addGap(42, 42, 42)
-                        .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbTransform)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(chckRowOrder))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(chkBoxLogScale)
-                    .addComponent(chckColumns)
-                    .addComponent(chckColumnsOrder))
-                .addGap(73, 73, 73))
+                        .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(44, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbTransform)
-                    .addComponent(comboTransform, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkBoxLogScale))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chkBoxLogScale)
                     .addComponent(lbStandard)
                     .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbDistanceFunction)
-                    .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbDistanceFactor)
-                    .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbLinkage)
-                    .addComponent(radioLinkageSingle))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioLinkageComplete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radioLinkageAverage)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(btnAddTrans)
+                                .addGap(10, 10, 10)
+                                .addComponent(btnRemoveTrans))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lbDistanceFunction)
+                                    .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lbDistanceFactor)
+                                    .addComponent(spnDistanceFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbLinkage)
+                            .addComponent(radioLinkageSingle))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioLinkageComplete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioLinkageAverage))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(4, 4, 4)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lbTransform)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbCutoffMethod)
                     .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -251,7 +317,37 @@ public class HCLDialog extends ClusteringDialog {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddTransActionPerformed
+        DefaultListModel lmFrom = (DefaultListModel) lstAvailTrans.getModel();
+        DefaultListModel lmTo = (DefaultListModel) lstApplyTrans.getModel();
+
+        if (lmFrom.size() > 0) {
+            int index = lstAvailTrans.getSelectedIndex();
+            if (index > -1) {
+                Object item = lstAvailTrans.getSelectedValue();
+                lmFrom.removeElementAt(lstAvailTrans.getSelectedIndex());
+                lmTo.addElement(item);
+            }
+        }
+    }//GEN-LAST:event_btnAddTransActionPerformed
+
+    private void btnRemoveTransActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveTransActionPerformed
+        DefaultListModel lmFrom = (DefaultListModel) lstAvailTrans.getModel();
+        DefaultListModel lmTo = (DefaultListModel) lstApplyTrans.getModel();
+
+        if (lmTo.size() > 0) {
+            int index = lstApplyTrans.getSelectedIndex();
+            if (index > -1) {
+                Object item = lstApplyTrans.getSelectedValue();
+                lmTo.removeElementAt(lstApplyTrans.getSelectedIndex());
+                lmFrom.addElement(item);
+            }
+        }
+    }//GEN-LAST:event_btnRemoveTransActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddTrans;
+    private javax.swing.JButton btnRemoveTrans;
     private javax.swing.JCheckBox chckColumns;
     private javax.swing.JCheckBox chckColumnsOrder;
     private javax.swing.JCheckBox chckRowOrder;
@@ -260,8 +356,10 @@ public class HCLDialog extends ClusteringDialog {
     private javax.swing.JComboBox comboCutoff;
     private javax.swing.JComboBox comboDistance;
     private javax.swing.JComboBox comboStandardisation;
-    private javax.swing.JComboBox comboTransform;
     private javax.swing.ButtonGroup inputGroup;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbCutoffMethod;
     private javax.swing.JLabel lbDistanceFactor;
     private javax.swing.JLabel lbDistanceFunction;
@@ -269,6 +367,8 @@ public class HCLDialog extends ClusteringDialog {
     private javax.swing.JLabel lbStandard;
     private javax.swing.JLabel lbTransform;
     private javax.swing.ButtonGroup linkageGroup;
+    private javax.swing.JList lstApplyTrans;
+    private javax.swing.JList lstAvailTrans;
     private javax.swing.JRadioButton radioLinkageAverage;
     private javax.swing.JRadioButton radioLinkageComplete;
     private javax.swing.JRadioButton radioLinkageSingle;
@@ -294,7 +394,19 @@ public class HCLDialog extends ClusteringDialog {
         String standard = (String) comboStandardisation.getSelectedItem();
         params.put("std", standard);
 
-        params.put("dataset", (String) comboTransform.getSelectedItem());
+
+        DefaultListModel lmTo = (DefaultListModel) lstApplyTrans.getModel();
+
+        Enumeration iter = lmTo.elements();
+        int i = 0;
+        StringBuilder trans = new StringBuilder();
+        while (iter.hasMoreElements()) {
+            if (i > 0) {
+                trans.append(",");
+            }
+            trans.append(iter.nextElement());
+        }
+        params.put("transformations", trans.toString());
 
         /**
          * 0 for ALC method, 1 for CLC or -1 otherwise
