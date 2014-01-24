@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -85,7 +86,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                 while (cluster.hasParent()) {
                     cluster = cluster.getParent();
                 }
-                if (cluster instanceof TimeseriesDataset) {
+                if (cluster instanceof Timeseries) {
                     ts = (TimeseriesDataset<ContinuousInstance>) cluster;
                     ymax = ts.getMax();
                     ymin = ts.getMin();
@@ -124,13 +125,14 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                                 //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
                             }
                         }
+                        checkBounds(plot, inst);
                     } else {
                         int id = Integer.valueOf((String) inst.classValue());
 
                         if (metaMap.containsKey(id)) {
                             metaInst = metaMap.get(id);
                             plot = metaInst.getPlotter();
-                            checkXmax(plot, metaInst);
+                            checkBounds(plot, metaInst);
                         } else {
                             logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
                         }
@@ -140,7 +142,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                             if (metaMap.containsKey(id)) {
                                 metaInst = metaMap.get(id);
                                 plot.addInstance(metaInst);
-                                checkXmax(plot, metaInst);
+                                checkBounds(plot, metaInst);
                             } else {
                                 logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
                             }
@@ -176,14 +178,21 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
 
     }
 
-    private void checkXmax(Plotter plot, Instance metaInst) {
-        TimeseriesDataset<ContinuousInstance> ts = (TimeseriesDataset<ContinuousInstance>) ((AbstractTimeInstance) metaInst).getParent();
-        double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
-        if (pos > xmax) {
-            xmax = pos;
-            plot.setXBounds(0, xmax);
-        }
-        if (!Double.isNaN(ymax)) {
+    private void checkBounds(Plotter plot, Instance metaInst) {
+        if (metaInst instanceof ContinuousInstance) {
+            ContinuousInstance tsInst = (ContinuousInstance) metaInst;
+            TimeseriesDataset<ContinuousInstance> ts = (TimeseriesDataset<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
+            double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
+            if (pos > xmax) {
+                xmax = pos;
+                plot.setXBounds(0, xmax);
+            }
+            if (tsInst.getMin() < ymin) {
+                ymin = tsInst.getMin();
+            }
+            if (ts.getMax() > ymax) {
+                ymax = ts.getMax();
+            }
             plot.setYBounds(ymin, ymax);
         }
     }

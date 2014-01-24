@@ -33,7 +33,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     protected InstanceBuilder builder;
     protected AttributeFactoryImpl attributeBuilder;
     protected TreeSet<Object> classes = new TreeSet<Object>();
-    private static Logger logger = Logger.getLogger(TimeseriesDataset.class.getName());
+    private static final Logger logger = Logger.getLogger(TimeseriesDataset.class.getName());
 
     /**
      * Creates dataset with given initial capacity
@@ -258,6 +258,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             if (val > max) {
                 max = val;
             }
+            val = elem.getMin();
             if (val < min) {
                 min = val;
             }
