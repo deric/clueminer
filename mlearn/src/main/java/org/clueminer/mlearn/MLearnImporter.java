@@ -153,6 +153,45 @@ public class MLearnImporter implements LongTask, Runnable {
         logger.log(Level.INFO, "total dataset size: {0}", dataset.size());
     }
 
+    public void loadDTimeseries(File file) throws FileNotFoundException, IOException {
+        char separator = ',';
+
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skip = new ArrayList<Integer>();
+
+        loader.setSeparator(separator);
+        loader.setHasHeader(true);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
+        int namePos = firstLine.length - 1;
+        loader.addNameAttr(namePos);
+        skip.add(namePos);
+        loader.setSkipIndex(skip);
+        loader.setSkipHeader(true);
+        dataset = new TimeseriesDataset<ContinuousInstance>(1536);
+
+        int i = 0;
+        int index;
+        int last = firstLine.length - 1;
+        TimePoint tp[] = new TimePointAttribute[last];
+        logger.log(Level.INFO, "time series attrs: {0}", tp.length);
+        double pos;
+        for (String item : firstLine) {
+            if (i < last) {
+                index = i;
+                pos = Double.valueOf(item.substring(1)); //indexes start with "t"
+                tp[index] = new TimePointAttribute(index, index, pos);
+            }
+            i++;
+        }
+        ((TimeseriesDataset<ContinuousInstance>) dataset).setTimePoints(tp);
+
+        Dataset<Instance> d = (Dataset<Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+        logger.log(Level.INFO, "total dataset size: {0}", dataset.size());
+        logger.log(Level.INFO, "number of attributes: {0}", dataset.attributeCount());
+    }
+
     @Override
     public void run() {
 
@@ -160,7 +199,8 @@ public class MLearnImporter implements LongTask, Runnable {
         try {
             //loadTimeseries(file);
             //loadMTimeseries(file);
-            loadMPTimeseries(file);
+            //loadMPTimeseries(file);
+            loadDTimeseries(file);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

@@ -6,6 +6,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.MLearnFixture;
+import org.clueminer.fixtures.TimeseriesFixture;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -102,6 +103,17 @@ public class MLearnImporterTest {
         assertEquals(0.135, inst.value(0), delta);
         inst = dataset.instance(799);
         assertEquals(0.162, inst.value(0), delta);
+    }
+
+    @Test
+    public void testLoadingDFiles() throws IOException {
+        TimeseriesFixture tf = new TimeseriesFixture();
+        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        File file = tf.ap01();
+        subject = new MLearnImporter(file, ph);
+        subject.loadDTimeseries(file);
+        assertEquals(1536, subject.getDataset().size());
+        assertEquals(15, subject.getDataset().attributeCount());
     }
 
     /**
