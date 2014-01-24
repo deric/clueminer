@@ -405,6 +405,7 @@ public class HCLDialog extends ClusteringDialog {
                 trans.append(",");
             }
             trans.append(iter.nextElement());
+            i++;
         }
         params.put("transformations", trans.toString());
 

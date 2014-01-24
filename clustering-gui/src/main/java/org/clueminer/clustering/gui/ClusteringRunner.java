@@ -23,7 +23,6 @@ public class ClusteringRunner implements Runnable {
     private ClusteringDialog config = null;
     private ClusterAnalysis analysis;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
-    private static final String rawData = "-- no transformation --";
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
     private static final Logger logger = Logger.getLogger(ClusteringRunner.class.getName());
@@ -38,10 +37,12 @@ public class ClusteringRunner implements Runnable {
         Dataset<? extends Instance> dataset;
         Preferences params = config.getParams();
 
-
-        String datasetTransform = params.get("dataset", "-- no transformation --");
-        logger.log(Level.INFO, "using trasformation: {0}", datasetTransform);
-
+        String datasetTransform = params.get("transformations", "");
+        String[] trans = null;
+        logger.log(Level.INFO, "using trasformations: {0}", datasetTransform);
+        if (datasetTransform.length() > 0) {
+            trans = datasetTransform.split(",");
+        }
 
         if (!analysis.hasDataset()) {
             throw new RuntimeException("missing dataset!");
@@ -54,49 +55,48 @@ public class ClusteringRunner implements Runnable {
         if (data.isEmpty() || data.attributeCount() == 0) {
             throw new RuntimeException("dataset is empty!");
         }
+        if (trans != null) {
+            for (String transformation : trans) {
+                //make sure we don't have old data
+                transform = null;
+                //check if there's preloaded dataset available
+                transform = data.getChild(transformation);
+                if (transform == null) {
+                    preprocessingFinished = false;
+                    //run analysis and wait
+                    final Object lock = new Object();
 
-        if (!datasetTransform.equals(rawData)) {
-            //make sure we don't have old data
-            transform = null;
-            //check if there's preloaded dataset available
-            transform = data.getChild(datasetTransform);
-            if (transform == null) {
-                System.out.println("missing child ");
-                //run analysis and wait
-                final Object lock = new Object();
+                    runPreprocessing(lock, data, transformation);
 
-                runPreprocessing(lock, data, datasetTransform);
+                    synchronized (lock) {
+                        while (!preprocessingFinished) {
+                            try {
+                                lock.wait();
+                            } catch (InterruptedException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                    }
+                }
+                //System.out.println("trasformed dataset " + transform.getClass().toString() + " name: " + transform.getName() + ", size = " + transform.size());
 
-                synchronized (lock) {
-                    while (!preprocessingFinished) {
+                //wait until real data are loaded
+                if ((transform instanceof Dataset) && transform.isEmpty()) {
+                    System.out.println("waiting for data");
+                    while ((transform = data.getChild(datasetTransform)) == null) {
                         try {
-                            lock.wait();
+                            Thread.sleep(500);
                         } catch (InterruptedException ex) {
                             Exceptions.printStackTrace(ex);
                         }
                     }
                 }
+                data = transform;
             }
-            System.out.println("trasformed dataset " + transform.getClass().toString() + " name: " + transform.getName() + ", size = " + transform.size());
-
-            //wait until real data are loaded
-            if ((transform instanceof Dataset) && transform.isEmpty()) {
-                System.out.println("waiting for data");
-                while ((transform = data.getChild(datasetTransform)) == null) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            }
-
             dataset = transform;
         } else {
             dataset = data;
         }
-
-
         analysis.execute(params, dataset);
     }
 
