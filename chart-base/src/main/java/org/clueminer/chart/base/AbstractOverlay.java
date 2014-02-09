@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Overlay;
+import org.clueminer.chart.api.PropertyListener;
 import org.clueminer.chart.api.Range;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
@@ -21,8 +22,6 @@ import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.events.LogEvent;
 import org.clueminer.events.LogListener;
-import org.clueminer.gui.AbstractPropertiesNode;
-import org.clueminer.gui.AbstractPropertyListener;
 import org.clueminer.xml.XMLUtil;
 import org.clueminer.xml.XMLUtil.XMLTemplate;
 import org.openide.nodes.AbstractNode;
@@ -64,7 +63,8 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
         return dataset;
     }
 
-    public void setDataset(Timeseries<? extends ContinuousInstance>  d) {
+    @Override
+    public void setDataset(Timeseries<? extends ContinuousInstance> d) {
         dataset = d;
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     @Override
     public void saveToTemplate(Document document, Element element) {
         AbstractPropertiesNode node = (AbstractPropertiesNode) getNode();
-        AbstractPropertyListener listener = node.getAbstractPropertyListener();
+        PropertyListener listener = node.getPropertyListener();
         Field[] fields = listener.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -178,7 +178,7 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     @Override
     public void loadFromTemplate(Element element) {
         AbstractPropertiesNode node = (AbstractPropertiesNode) getNode();
-        AbstractPropertyListener listener = node.getAbstractPropertyListener();
+        PropertyListener listener = node.getPropertyListener();
         Field[] fields = listener.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {

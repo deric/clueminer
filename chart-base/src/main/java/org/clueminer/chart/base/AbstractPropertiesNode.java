@@ -1,4 +1,4 @@
-package org.clueminer.gui;
+package org.clueminer.chart.base;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,6 +8,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
+import org.clueminer.chart.api.PropertyListener;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -28,20 +29,20 @@ public abstract class AbstractPropertiesNode extends AbstractNode implements Pro
         setDisplayName(name);
     }
 
-    public AbstractPropertiesNode(String name, AbstractPropertyListener listener) {
+    public AbstractPropertiesNode(String name, PropertyListener listener) {
         super(Children.LEAF, Lookups.singleton(listener));
         setDisplayName(name);
         listener.addPropertyChangeListener((PropertyChangeListener) this);
     }
 
-    public AbstractPropertyListener getAbstractPropertyListener() {
-        return getLookup().lookup(AbstractPropertyListener.class);
+    public PropertyListener getPropertyListener() {
+        return getLookup().lookup(PropertyListener.class);
     }
 
     public Sheet.Set[] getSets() {
         return new Sheet.Set[]{
-                    getPropertiesSet()
-                };
+            getPropertiesSet()
+        };
     }
 
     protected Sheet.Set getPropertiesSet() {
@@ -66,18 +67,15 @@ public abstract class AbstractPropertiesNode extends AbstractNode implements Pro
             String getMethod, String setMethod,
             final Object defaultValue) throws NoSuchMethodException {
         @SuppressWarnings(value = "unchecked")
-        PropertySupport.Reflection reflection = new PropertySupport.Reflection(getLookup().lookup(clazz), property, getMethod, setMethod)
-          {
+        PropertySupport.Reflection reflection = new PropertySupport.Reflection(getLookup().lookup(clazz), property, getMethod, setMethod) {
 
-            public 
-            @Override
+            public @Override
             void restoreDefaultValue()
                     throws IllegalAccessException, InvocationTargetException {
                 super.setValue(defaultValue);
             }
 
-            public 
-            @Override
+            public @Override
             boolean supportsDefaultValue() {
                 return true;
             }

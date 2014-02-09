@@ -4,7 +4,7 @@ package org.clueminer.chart.api;
  *
  * @author Tomas Barton
  */
-public interface IChartSplitPanel {
+public interface Tracker {
     
     public void setIndex(int i);
     

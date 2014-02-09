@@ -29,7 +29,7 @@ public abstract class ChartConfig extends JPanel {
 
     public abstract void deselectAll();
 
-    public abstract IChartSplitPanel getSplitPanel();
+    public abstract Tracker getSplitPanel();
 
     public abstract JPopupMenu getMenu();
 

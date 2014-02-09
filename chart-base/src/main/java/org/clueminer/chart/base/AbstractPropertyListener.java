@@ -1,4 +1,4 @@
-package org.clueminer.gui;
+package org.clueminer.chart.base;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,6 +12,7 @@ import java.util.List;
  * @author Tomas Barton
  */
 public abstract class AbstractPropertyListener implements Serializable {
+
     private static final long serialVersionUID = 5564974589758816040L;
 
     private List<PropertyChangeListener> listeners = Collections.synchronizedList(new LinkedList<PropertyChangeListener>());
@@ -24,10 +25,10 @@ public abstract class AbstractPropertyListener implements Serializable {
         listeners.remove(pcl);
     }
 
-    private void fire(String propertyName, Object old, Object nue) {
+    public void fire(String propertyName, Object old, Object nue) {
         PropertyChangeListener[] pcls = listeners.toArray(new PropertyChangeListener[0]);
-        for (int i = 0; i < pcls.length; i++) {
-            pcls[i].propertyChange(new PropertyChangeEvent(this, propertyName, old, nue));
+        for (PropertyChangeListener pcl : pcls) {
+            pcl.propertyChange(new PropertyChangeEvent(this, propertyName, old, nue));
         }
     }
 }

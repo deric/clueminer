@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
 import javax.swing.event.EventListenerList;
+import org.clueminer.chart.api.AxisProperties;
 import org.clueminer.chart.api.ChartProperties;
 import org.clueminer.events.LogEvent;
 import org.clueminer.events.LogListener;
-import org.clueminer.gui.AbstractPropertyListener;
 import org.clueminer.gui.StrokeGenerator;
 import org.clueminer.xml.XMLUtil;
 import org.clueminer.xml.XMLUtil.XMLTemplate;
@@ -72,6 +72,8 @@ public class ChartPropertiesImpl extends AbstractPropertyListener implements XML
     private boolean toolbarVisibility = TOOLBAR_VISIBILITY;
     private boolean toolbarSmallIcons = TOOLBAR_SMALL_ICONS;
     private boolean toolbarShowLabels = TOOLBAR_SHOW_LABELS;
+    private AxisProperties xAxis;
+    private AxisProperties yAxis;
 
     public ChartPropertiesImpl() {
     }
@@ -398,5 +400,25 @@ public class ChartPropertiesImpl extends AbstractPropertyListener implements XML
         backgroundColor = XMLUtil.getColorProperty(element, "backgroundColor");
         font = XMLUtil.getFontProperty(element, "font");
         fontColor = XMLUtil.getColorProperty(element, "fontColor");
+    }
+
+    @Override
+    public AxisProperties getXAxis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AxisProperties getYAxis() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Color getColor() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setColor(Color color) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
