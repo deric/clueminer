@@ -114,7 +114,8 @@
         <module>mlearn</module>
         <module>importer-impl</module>
         <module>clustering-evolution</module>
-    </modules>
+    <module>timechart</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>
