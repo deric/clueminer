@@ -13,7 +13,6 @@ import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.*;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterAnalysis;
-import org.clueminer.clustering.gui.ClusteringProperties;
 import org.clueminer.clustering.gui.ClusteringToolbar;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -22,7 +21,6 @@ import org.clueminer.evaluation.hclust.CopheneticCorrelation;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
-import org.clueminer.utils.AlgorithmParameters;
 import org.clueminer.utils.Exportable;
 import org.openide.util.Task;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,7 +38,6 @@ public class DendrogramComponent extends ClusterAnalysis {
     //original dataset
     private Dataset<? extends Instance> dataset;
     private ClusteringToolbar toolbar;
-    private ClusteringProperties properities;
     private SettingsPanel panel;
     private final boolean debug = false;
     private HierarchicalResult finalResult;
@@ -75,7 +72,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         setLayout(gbl);
         GridBagConstraints c = new GridBagConstraints();
 
-        properities = new ClusteringProperties();
         toolbar = new ClusteringToolbar(this);
         viewer = new DendrogramViewer();
         panel = new SettingsPanel(viewer);
@@ -281,11 +277,6 @@ public class DendrogramComponent extends ClusterAnalysis {
     @Override
     public void zoomOut() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ClusteringProperties getClusteringProperties() {
-        return properities;
     }
 
     @Override

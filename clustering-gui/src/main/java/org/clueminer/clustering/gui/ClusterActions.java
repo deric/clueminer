@@ -382,7 +382,6 @@ public final class ClusterActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            clusteringFrame.getClusteringProperties().toggleShowLabels();
             clusteringToolbar.toggleLabels();
         }
     }

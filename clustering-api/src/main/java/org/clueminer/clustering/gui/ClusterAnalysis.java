@@ -66,8 +66,6 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
 
     public abstract Exportable getMainPanel();
 
-    public abstract ClusteringProperties getClusteringProperties();
-
     public abstract void addRowsTreeListener(TreeListener listener);
 
     /**

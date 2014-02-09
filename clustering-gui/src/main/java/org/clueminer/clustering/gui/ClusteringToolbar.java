@@ -25,6 +25,8 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
     private ToolbarButton printBtn;
     private ToolbarButton propertiesBtn;
     private ToolbarButton clusterExportBtn;
+    private boolean showLabels = false;
+    private boolean smallIcons = false;
 
     public ClusteringToolbar(ClusterAnalysis frame) {
         super("ClusteringToolbar", JToolBar.HORIZONTAL);
@@ -48,7 +50,8 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
     }
 
     public void toggleLabels() {
-        boolean show = parent.getClusteringProperties().getToolbarShowLabels();
+        showLabels = !showLabels;
+        boolean show = showLabels;
         clusterBtn.toggleLabel(show);
         exportBtn.toggleLabel(show);
         clusterExportBtn.toggleLabel(show);
@@ -57,7 +60,8 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
     }
 
     public void toggleIcons() {
-        boolean small = parent.getClusteringProperties().getToolbarSmallIcons();
+        smallIcons = !smallIcons;
+        boolean small = smallIcons;
         clusterBtn.toggleIcon(small);
         exportBtn.toggleIcon(small);
         clusterExportBtn.toggleIcon(small);
@@ -72,12 +76,12 @@ public class ClusteringToolbar extends JToolBar implements Serializable {
         popup.add(item = new JCheckBoxMenuItem(
                 ClusterActions.toggleToolbarSmallIcons(parent, this)));
         item.setMargin(new Insets(0, 0, 0, 0));
-        item.setState(parent.getClusteringProperties().getToolbarSmallIcons());
+        item.setState(smallIcons);
 
         popup.add(item = new JCheckBoxMenuItem(
                 ClusterActions.toggleToolbarShowLabels(parent, this)));
         item.setMargin(new Insets(0, 0, 0, 0));
-        item.setState(!parent.getClusteringProperties().getToolbarShowLabels());
+        item.setState(showLabels);
 
         return popup;
     }
