@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.EventListenerList;
 import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.base.ChartPropertiesImpl;
+import org.clueminer.chart.line.Line;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
@@ -79,15 +80,6 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
         return chartData;
     }
 
-    public void setChartData(ChartData cd) {
-        this.chartData = (ChartDataImpl) cd;
-        previewPanel.revalidate();
-        previewPanel.repaint();
-        cd.addDatasetListener(this);
-        setDataset(cd.getVisible());
-        System.out.println("preview panel size: " + previewPanel.getSize());
-    }
-
     @Override
     public ChartProperties getChartProperties() {
         return chartProperties;
@@ -99,15 +91,17 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
     }
 
     public void setDataset(Timeseries dataset) {
-        this.dataset = dataset;
-
+        chartData = new ChartDataImpl(dataset);
+        chartData.setChart(new Line());
+        chartData.addDatasetListener(this);
         chartData.clearVisible();
         //System.out.println("cluster selected: " + cluster.toString());
         visible = new TimeseriesDataset(dataset.size());
         visible.setTimePoints(dataset.getTimePoints());
 
         chartData.setVisible(dataset);
-        previewPanel.repaint();
+        System.out.println("visible data: " + dataset.size());
+        previewPanel.revalidate();
     }
     private transient EventListenerList chartListeners;
 
