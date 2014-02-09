@@ -115,6 +115,8 @@
         <module>importer-impl</module>
         <module>clustering-evolution</module>
     <module>timechart</module>
+    <module>chart-api</module>
+    <module>chart-base</module>
   </modules>
     <reporting>
         <plugins>

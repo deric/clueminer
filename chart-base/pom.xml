@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>timechart</artifactId>
+    <artifactId>chart-base</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>timechart</name>
+    <name>chart-base</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,17 +52,17 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>chart-base</artifactId>
+            <artifactId>gui-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-explorer</artifactId>
-            <version>RELEASE74</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
+            <artifactId>org-openide-nodes</artifactId>
             <version>RELEASE74</version>
         </dependency>
     </dependencies>
@@ -76,7 +76,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.timechart</publicPackage>
+                        <publicPackage>org.clueminer.chart.base</publicPackage>
+                        <publicPackage>org.clueminer.chart.line</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
