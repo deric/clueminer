@@ -185,18 +185,20 @@ public class AnnotationPanel extends JPanel
                     chartFrame.deselectAll();
                     if (!isAnnotation(e.getX(), e.getY())) {
                         if (!getCursor().equals(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR))) {
-                            if (chartFrame.getChartProperties().getMarkerVisibility()) {
-                                Rectangle rect = getBounds();
-                                rect.grow(-2, -2);
+                            if (chartFrame.hasData()) {
+                                if (chartFrame.getChartProperties().getMarkerVisibility()) {
+                                    Rectangle rect = getBounds();
+                                    rect.grow(-2, -2);
 
-                                int i = chartFrame.getChartData().getIndex(e.getPoint(), rect);
-                                if (i != -1) {
-                                    chartFrame.getSplitPanel().setIndex(i);
-                                    chartFrame.getSplitPanel().labelText();
-                                    chartFrame.getSplitPanel().repaint();
+                                    int i = chartFrame.getChartData().getIndex(e.getPoint(), rect);
+                                    if (i != -1) {
+                                        chartFrame.getSplitPanel().setIndex(i);
+                                        chartFrame.getSplitPanel().labelText();
+                                        chartFrame.getSplitPanel().repaint();
+                                    }
+                                } else {
+                                    chartFrame.getSplitPanel().setIndex(-1);
                                 }
-                            } else {
-                                chartFrame.getSplitPanel().setIndex(-1);
                             }
                         }
                     } else {

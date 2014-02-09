@@ -14,17 +14,18 @@ import org.clueminer.timeseries.chart.SelectionEvent;
 import org.clueminer.timeseries.chart.SelectionListener;
 
 /**
- * Inspired by @link http://stackoverflow.com/questions/1115359/how-to-draw-a-rectangle-on-a-java-applet-using-mouse-drag-event-and-make-it-stay
- * 
+ * Inspired by @link
+ * http://stackoverflow.com/questions/1115359/how-to-draw-a-rectangle-on-a-java-applet-using-mouse-drag-event-and-make-it-stay
+ *
  * @author Tomas Barton
  */
 public class RectangleSelection extends JPanel implements MouseListener, MouseMotionListener {
 
     final static float dash1[] = {10.0f};
     final static BasicStroke dashed = new BasicStroke(1.0f,
-            BasicStroke.CAP_BUTT,
-            BasicStroke.JOIN_MITER,
-            10.0f, dash1, 0.0f);
+                                                      BasicStroke.CAP_BUTT,
+                                                      BasicStroke.JOIN_MITER,
+                                                      10.0f, dash1, 0.0f);
     private static final long serialVersionUID = 1L;
     int x1, x2, y1 = 0, y2;
     int x, y, w, h;
@@ -38,30 +39,32 @@ public class RectangleSelection extends JPanel implements MouseListener, MouseMo
         setVisible(true);
         this.chartFrame = chartFrame;
     }
-    
-    public ChartData getChartData(){
+
+    public ChartData getChartData() {
         return chartFrame.getChartData();
     }
-    
+
     /**
      * Clears painted rectangle, if any
      */
-    public void reset(){
+    public void reset() {
         this.isNewRect = true;
         repaint();
     }
 
     /**
-     * handle event when mouse released immediately after press 
-     * @param event 
+     * handle event when mouse released immediately after press
+     *
+     * @param event
      */
     @Override
     public void mouseClicked(final MouseEvent event) {
     }
 
     /**
-     * handle event when mouse pressed 
-     * @param event 
+     * handle event when mouse pressed
+     *
+     * @param event
      */
     @Override
     public void mousePressed(final MouseEvent event) {
@@ -90,8 +93,9 @@ public class RectangleSelection extends JPanel implements MouseListener, MouseMo
     }
 
     /**
-     * handle event when user drags mouse with button pressed 
-     * @param event 
+     * handle event when user drags mouse with button pressed
+     *
+     * @param event
      */
     @Override
     public void mouseDragged(final MouseEvent event) {
@@ -123,9 +127,9 @@ public class RectangleSelection extends JPanel implements MouseListener, MouseMo
             g2.setStroke(dashed);
             g2.setColor(Color.GRAY);
             g2.drawRect(this.x, 0, this.w, this.h);
-            
+
             int start = chartFrame.getChartData().findIndex(x, chartFrame.getBounds());
-            int end = chartFrame.getChartData().findIndex(x+w, chartFrame.getBounds());
+            int end = chartFrame.getChartData().findIndex(x + w, chartFrame.getBounds());
             SelectionEvent evt = new SelectionEvent(this, start, end);
             fireAreaSelected(evt);
         }
@@ -146,15 +150,14 @@ public class RectangleSelection extends JPanel implements MouseListener, MouseMo
         }
         selectionListeners.remove(SelectionListener.class, listener);
     }
-    
-    
+
     public boolean fireAreaSelected(SelectionEvent evt) {
         SelectionListener[] listeners;
 
         if (selectionListeners != null) {
             listeners = selectionListeners.getListeners(SelectionListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].areaSelected(evt);
+            for (SelectionListener listener : listeners) {
+                listener.areaSelected(evt);
             }
         }
         return true;

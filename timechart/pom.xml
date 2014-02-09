@@ -141,7 +141,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>org.clueminer.chart</publicPackage>
+                        <publicPackage>org.clueminer.dialogs</publicPackage>
+                        <publicPackage>org.clueminer.factory</publicPackage>
                         <publicPackage>org.clueminer.timechart</publicPackage>
+                        <publicPackage>org.clueminer.timeseries</publicPackage>
+                        <publicPackage>org.clueminer.timeseries.chart</publicPackage>
+                        <publicPackage>org.clueminer.timeseries.utils</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -425,6 +425,17 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
         resetRenderedData();
     }
 
+    @Override
+    public boolean hasData() {
+        if (chartData != null) {
+            if (chartData.getVisible() != null) {
+                return chartData.getVisible().size() > 0;
+            }
+            return false;
+        }
+        return false;
+    }
+
     private class ChartFrameComponentListener implements ComponentListener {
 
         @Override

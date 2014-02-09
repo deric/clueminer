@@ -76,6 +76,8 @@ public class ChartPropertiesImpl extends AbstractPropertyListener implements XML
     private AxisProperties yAxis;
 
     public ChartPropertiesImpl() {
+        xAxis = new AxisPropertiesImpl();
+        yAxis = new AxisPropertiesImpl();
     }
 
     public double getAxisTick() {
@@ -404,12 +406,12 @@ public class ChartPropertiesImpl extends AbstractPropertyListener implements XML
 
     @Override
     public AxisProperties getXAxis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return xAxis;
     }
 
     @Override
     public AxisProperties getYAxis() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return yAxis;
     }
 
     @Override

@@ -106,7 +106,7 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
         visible = new TimeseriesDataset(dataset.size());
         visible.setTimePoints(dataset.getTimePoints());
 
-        chartData.setVisible(visible);
+        chartData.setVisible(dataset);
         previewPanel.repaint();
     }
     private transient EventListenerList chartListeners;
@@ -212,5 +212,16 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
     @Override
     public void setYBounds(double min, double max) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasData() {
+        if (chartData != null) {
+            if (chartData.getVisible() != null) {
+                return chartData.getVisible().size() > 0;
+            }
+            return false;
+        }
+        return false;
     }
 }

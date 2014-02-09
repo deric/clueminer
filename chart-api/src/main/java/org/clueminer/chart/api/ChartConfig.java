@@ -18,6 +18,8 @@ public abstract class ChartConfig extends JPanel {
 
     public abstract JComponent getChartPanel();
 
+    public abstract boolean hasData();
+
     public abstract void addChartListener(ChartListener listener);
 
     /**
