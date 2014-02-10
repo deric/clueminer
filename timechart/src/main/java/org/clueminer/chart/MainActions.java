@@ -125,9 +125,9 @@ public final class MainActions {
             putValue(SHORT_DESCRIPTION,
                     NbBundle.getMessage(MainActions.class, "TOOL_" + name));
             if (flag) {
-                putValue(SMALL_ICON, ImageUtilities.loadImage("org/clueminer/timeseries/resources/" + name + "16.png"));
+                putValue(SMALL_ICON, ImageUtilities.loadImage("org/clueminer/chart/" + name + "16.png", true));
                 putValue(LONG_DESCRIPTION, name);
-                putValue(LARGE_ICON_KEY, ImageUtilities.loadImage("org/clueminer/timeseries/resources/" + name + "24.png"));
+                putValue(LARGE_ICON_KEY, ImageUtilities.loadImage("org/clueminer/chart/" + name + "24.png", true));
             }
         }
     }
@@ -551,7 +551,7 @@ public final class MainActions {
         JMenuItem menuItem;
 
         JMenu menu = new JMenu(NbBundle.getMessage(MainActions.class, "ACT_Charts"));
-        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/timeseries/resources/chart16.png", false));
+        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/chart/chart16.png", true));
 
         ChartData chartData = chartFrame.getChartData();
         String current = chartData.getChart().getName();
@@ -566,9 +566,8 @@ public final class MainActions {
 
     public static JMenu generateAnnotationsMenu(ChartFrame chartFrame) {
         JMenuItem menuItem;
-
         JMenu menu = new JMenu(NbBundle.getMessage(MainActions.class, "ACT_Annotations"));
-        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/timeseries/resources/line16.png", false));
+        menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/chart/line16.png", true));
 
         for (String annotation : AnnotationFactory.getDefault().getAnnotations()) {
             menu.add(menuItem = new JMenuItem(
