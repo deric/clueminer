@@ -199,6 +199,12 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         visible = new TimeseriesDataset<ContinuousInstance>(1);
     }
 
+    @Override
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        clearVisible();
+        setVisible((Timeseries<? extends ContinuousInstance>) dataset);
+    }
+
     public final void setVisible(Timeseries<? extends ContinuousInstance> dataset) {
         if (visible == null || visible.isEmpty()) {
             visible = (TimeseriesDataset<? super ContinuousInstance>) dataset;
@@ -872,4 +878,5 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     public Dataset<? extends Instance> getDataset() {
         return visible;
     }
+
 }

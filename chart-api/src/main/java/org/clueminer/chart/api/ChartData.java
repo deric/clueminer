@@ -21,7 +21,18 @@ public interface ChartData {
 
     public void setName(String name);
 
+    /**
+     * Visible dataset
+     *
+     * @return
+     */
     public Dataset<? extends Instance> getDataset();
+
+    /**
+     *
+     * @param dataset data to display
+     */
+    public void setDataset(Dataset<? extends Instance> dataset);
 
     public Timeseries<? extends ContinuousInstance> getVisible();
 
