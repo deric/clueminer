@@ -436,7 +436,7 @@ public class ArrayDatasetTest {
     public void testHasParent() {
         assertEquals(false, dataset.hasParent());
 
-        Dataset<Instance> dupl = dataset.duplicate();
+        Dataset<? extends Instance> dupl = dataset.duplicate();
         dataset.setParent(dupl);
         assertEquals(true, dataset.hasParent());
     }
