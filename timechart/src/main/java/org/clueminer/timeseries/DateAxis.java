@@ -5,17 +5,19 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Line2D;
 import javax.swing.JPanel;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.chart.api.AxisProperties;
 import org.clueminer.chart.api.ChartConfig;
-import org.clueminer.chart.api.ChartProperties;
 import org.clueminer.chart.api.ChartData;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 
 public class DateAxis extends JPanel {
 
-    private static int mSecInHour = 3600000;
+    private static final int mSecInHour = 3600000;
     private static final long serialVersionUID = -6590135689925740058L;
-    private ChartConfig config;
-    private AxisProperties axConf;
+    private final ChartConfig config;
+    private final AxisProperties axConf;
 
     public DateAxis(ChartConfig frame, AxisProperties prop) {
         config = frame;
@@ -40,7 +42,6 @@ public class DateAxis extends JPanel {
         g2.setPaintMode();
 
         ChartData cd = config.getChartData();
-        ChartProperties cp = config.getChartProperties();
         if (!cd.isVisibleNull() && !cd.getVisible().isEmpty()) {
             Rectangle bounds = config.getChartPanel().getBounds();
             bounds.grow(-2, -2);
@@ -60,8 +61,10 @@ public class DateAxis extends JPanel {
             long hourInMs = 60 * 60 * 1000;
 
             double chartWidth = bounds.getWidth();
-            int start = cd.getStart();
-            long startTime = cd.getTimeAt(start);
+
+            Dataset<? extends Instance> dataset = cd.getDataset();
+
+            long startTime = ((TimePointAttribute) dataset.getAttribute(0)).getTimestamp();
 
             int h = (int) (startTime / mSecInHour);
             long current = h * hourInMs;

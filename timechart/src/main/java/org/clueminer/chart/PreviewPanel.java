@@ -99,7 +99,6 @@ public class PreviewPanel extends JLayeredPane implements Serializable {
         if (config.getChartData() != null) {
             config.getChartData().calculateRange(config, null);
             config.getChartData().getChart().paint(g2, config);
-            config.getChartData().updateLastX(getBounds());
             super.paint(g);
         }
 

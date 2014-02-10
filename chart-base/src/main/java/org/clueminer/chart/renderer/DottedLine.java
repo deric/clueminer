@@ -56,13 +56,11 @@ public class DottedLine extends Chart {
         rect.grow(-2, -2);
         Range range = cf.getRange();
         double value;
-        double chartWidth = rect.getWidth();
         double x;
-        int i, j;
+        int i = 0;
         int itemCnt = cd.getTimePointsCnt();
         //long start = System.currentTimeMillis();
         if (!cd.isVisibleNull()) {
-            i = cd.getStart();
             cd.setMax(Double.MIN_VALUE);
             cd.setMin(Double.MAX_VALUE);
             AffineTransform at = new AffineTransform();
@@ -70,11 +68,9 @@ public class DottedLine extends Chart {
             for (Instance sample : cd.getVisible()) {
                 Point2D.Double prev = null, current;
                 g.setPaint(sample.getColor());
-                x = 0;
-                i = cd.getStart();
                 createBufferedImage(sample.getColor());
                 g.setColor(sample.getColor());
-                while (x < chartWidth && i < itemCnt) {
+                while (i < itemCnt) {
                     x = cd.getX(i, rect);
                     value = sample.value(i);
                     cd.checkMax(value);
@@ -92,8 +88,6 @@ public class DottedLine extends Chart {
                     i++; // instance id
                 }
             }
-            //last displayed point
-            cd.setFinish(i, rect);
         }
         // long end = System.currentTimeMillis();
         // System.out.println("chart rendered in " + (end - start) + "ms");

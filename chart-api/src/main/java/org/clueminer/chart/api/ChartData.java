@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.List;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.events.DatasetListener;
 
@@ -19,6 +21,8 @@ public interface ChartData {
 
     public void setName(String name);
 
+    public Dataset<? extends Instance> getDataset();
+
     public Timeseries<? extends ContinuousInstance> getVisible();
 
     /**
@@ -29,7 +33,7 @@ public interface ChartData {
     public Chart getChart();
 
     public void setChart(Chart chart);
-    
+
     public boolean isChartNull();
 
     public boolean isVisibleNull();
@@ -42,12 +46,6 @@ public interface ChartData {
 
     public int getTimePointsCnt();
 
-    /**
-     * Index of first point
-     *
-     * @return
-     */
-    public int getStart();
 
     public void setMin(double min);
 
@@ -61,18 +59,6 @@ public interface ChartData {
 
     public void setFinish(int index, Rectangle rect);
 
-    /**
-     *
-     * @param index
-     * @param x
-     * @deprecated we should buffer all charts
-     */
-    public void setFinish(int index, double x);
-
-    /**
-     * @deprecated @param bounds
-     */
-    public void updateLastX(Rectangle bounds);
 
     public double getXFromTime(long time, Rectangle bounds);
 
@@ -103,8 +89,8 @@ public interface ChartData {
      * @return
      */
     public int findIndex(double x, Rectangle rect);
-    
+
     public int getIndex(Point p, Rectangle rect);
-    
+
     public Insets getDataInsets();
 }

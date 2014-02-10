@@ -7,6 +7,7 @@ import org.clueminer.chart.api.Range;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -37,45 +38,37 @@ public class Line extends Chart {
         Range range = cf.getRange();
         //System.out.println("rectangle "+rect);
         //System.out.println("range "+range);
-        cd.updateLastX(rect);
-        double x = 0, y, value, yPrev, xPrev;
+        double x, y, value, yPrev, xPrev;
+        int i;
         if (!cd.isVisibleNull()) {
             //long start = System.currentTimeMillis();
             cd.setMin(Double.MAX_VALUE);
             cd.setMax(Double.MIN_VALUE);
-            double chartWidth = rect.getWidth();
-            int i = 0;
+
             int itemCnt = cd.getTimePointsCnt();
             //  System.out.println("items in dataset "+itemCnt);
             //  g.drawString("items in dataset "+itemCnt, 20, 20);
             //  System.out.println("canvas size "+g.getClipBounds());
-            for (Instance sample : cd.getVisible()) {
-                if (!sample.isEmpty()) {
-                    //   System.out.println("rendering sample "+sample.getName());
-                    yPrev = 0;
-                    xPrev = Double.NaN;
-                    g.setPaint(sample.getColor());
-                    i = cd.getStart();
-                    x = 0;
-                    while (x < chartWidth && i < itemCnt) {
-                        value = sample.value(i);
-                        cd.checkMax(value);
-                        cd.checkMin(value);
-                        x = cd.getX(i, rect);
-                        ///  System.out.println("lx  "+x+ " i= "+i);
-
-                        y = cd.getY(value, rect, range);
-                        if (xPrev != Double.NaN) {
-                            g.draw(new Line2D.Double(x, y, xPrev, yPrev));
-                        }
-                        // System.out.println("x= "+x+ " y= "+y);
-                        xPrev = x;
-                        yPrev = y;
-                        i++;
+            Dataset<? extends Instance> dataset = cd.getDataset();
+            for (Instance inst : dataset) {
+                yPrev = 0;
+                i = 0;
+                xPrev = Double.NaN;
+                g.setPaint(inst.getColor());
+                while (i < itemCnt) {
+                    value = inst.value(i);
+                    cd.checkMax(value);
+                    cd.checkMin(value);
+                    x = cd.getX(i, rect);
+                    y = cd.getY(value, rect, range);
+                    if (xPrev != Double.NaN) {
+                        g.draw(new Line2D.Double(x, y, xPrev, yPrev));
                     }
+                    xPrev = x;
+                    yPrev = y;
+                    i++;
                 }
             }
-            cd.setFinish(i, x); //last rendered point
             //long end = System.currentTimeMillis();
             //System.out.println("line chart rendered in " + (end - start) + "ms last index " + i);
         }

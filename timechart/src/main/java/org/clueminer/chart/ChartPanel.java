@@ -156,7 +156,6 @@ public class ChartPanel extends JLayeredPane implements Serializable {
         if (!chartFrame.getChartData().isChartNull()) {
             chartFrame.getChartData().getChart().paint(g2, chartFrame);
         }
-        chartFrame.getChartData().updateLastX(getBounds());
         if (!overlays.isEmpty()) {
             Rectangle bounds = getBounds();
             bounds.grow(-2, -2);

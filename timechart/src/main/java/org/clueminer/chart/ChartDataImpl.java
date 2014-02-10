@@ -15,15 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.EventListenerList;
 import org.clueminer.algorithm.BinarySearch;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.math.Interpolator;
+import org.clueminer.std.StdScale;
 import org.clueminer.timeseries.chart.NormalizationEvent;
 import org.clueminer.timeseries.chart.NormalizationListener;
 import org.clueminer.types.TimePoint;
@@ -68,7 +69,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
 
     public ChartDataImpl(Timeseries<? extends ContinuousInstance> dataset) {
         setVisible(dataset);
-        timePointsUpdated();
+        updateTimePoints();
     }
 
     @Override
@@ -85,10 +86,24 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return visible.size();
     }
 
-    public final void timePointsUpdated() {
+    public final void updateTimePoints() {
         cntTimePoints = visible.attributeCount();
         // first point is considered to be 0
-        setLastTimePoint(getTimeAt(cntTimePoints - 1));
+        TimePoint tp = (TimePoint) visible.getAttribute(cntTimePoints - 1);
+        if (tp.getTimestamp() == 0) {
+            throw new RuntimeException("time is not set");
+        }
+        StdScale scale = new StdScale();
+
+        TimePointAttribute[] tps = visible.getTimePoints();
+        double pos;
+        double begin = tps[0].getTimestamp();
+        double end = tps[tps.length - 1].getTimestamp();
+        for (TimePointAttribute attr : tps) {
+            // scale to interval <0, 1>
+            pos = scale.scaleToRange(attr.getTimestamp(), begin, end, 0.0, 1.0);
+            attr.setPosition(pos);
+        }
     }
 
     public double getPositionAt(int index) {
@@ -113,33 +128,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
          * double fin = finishX - startX; setFinish(findAbsoluteIndex(fin,
          * rect), rect);
          */
-    }
-
-    /**
-     * index of first time point
-     *
-     * @return
-     */
-    @Override
-    public int getStart() {
-        return start;
-    }
-
-    public double getFinishX() {
-        return finishX;
-    }
-
-    @Override
-    public void setFinish(int index, double x) {
-        if (index >= cntTimePoints) {
-            this.finish = cntTimePoints - 1;
-            finishX = lastX;
-            displayedLastPoint = true;
-        } else {
-            this.finish = index;
-            finishX = x;
-            displayedLastPoint = false;
-        }
     }
 
     @Override
@@ -174,6 +162,21 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return cntTimePoints - 1;
     }
 
+    public TimePointAttribute getLastTimePoint() {
+        if (visible == null) {
+            return null;
+        }
+        return (TimePointAttribute) visible.getAttribute(cntTimePoints - 1);
+    }
+
+    public TimePointAttribute getFirstTimePoint() {
+        if (visible == null) {
+            return null;
+        }
+        return (TimePointAttribute) visible.getAttribute(0);
+    }
+
+
     public boolean isSampleSetNull() {
         if (visible == null) {
             return true;
@@ -197,7 +200,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     public final void setVisible(Timeseries<? extends ContinuousInstance> dataset) {
-        if (visible.isEmpty()) {
+        if (visible == null || visible.isEmpty()) {
             visible = (TimeseriesDataset<? super ContinuousInstance>) dataset;
             setMax(visible.getMax());
             setMin(visible.getMin());
@@ -210,6 +213,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
                 setVisible(item);
             }
         }
+        updateTimePoints();
     }
 
     public TimePoint getTimePoint(int idx) {
@@ -229,15 +233,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return getTimeAt(0);
     }
 
-    /**
-     * Set last value on X axis without scrollbar move @de
-     *
-     * @param bounds
-     */
-    @Override
-    public void updateLastX(Rectangle bounds) {
-        lastX = absoluteX(lastTimePoint, bounds, zoom);
-    }
 
     /**
      * Maximum value on X axis
@@ -278,18 +273,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         fireDatasetCropped(new DatasetEvent(this, (Dataset) visible));
     }
 
-    /**
-     * Time from start experiment in seconds
-     *
-     * @param tp
-     */
-    public void setLastTimePoint(long tp) {
-        lastTimePoint = tp;
-    }
-
-    public long getLastTimePoint() {
-        return lastTimePoint;
-    }
 
     public void setVisibleRange(Range r) {
         visibleRange = r;
@@ -739,8 +722,8 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DatasetListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].datasetCropped(evt);
+            for (DatasetListener listener : listeners) {
+                listener.datasetCropped(evt);
             }
         }
         return true;
@@ -751,22 +734,22 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DatasetListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].datasetChanged(evt);
+            for (DatasetListener listener : listeners) {
+                listener.datasetChanged(evt);
             }
         }
 
         if (indicatorsDatasetListeners != null) {
             listeners = indicatorsDatasetListeners.getListeners(DatasetListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].datasetChanged(evt);
+            for (DatasetListener listener : listeners) {
+                listener.datasetChanged(evt);
             }
         }
 
         if (overlaysDatasetListeners != null) {
             listeners = overlaysDatasetListeners.getListeners(DatasetListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].datasetChanged(evt);
+            for (DatasetListener listener : listeners) {
+                listener.datasetChanged(evt);
             }
         }
         return true;
@@ -870,11 +853,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
             return false;
         }
         ChartDataImpl that = (ChartDataImpl) obj;
-
-        if (!visible.equals(that.getVisible())) {
-            return false;
-        }
-        return true;
+        return visible.equals(that.getVisible());
     }
 
     @Override
@@ -887,5 +866,10 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     @Override
     public Insets getDataInsets() {
         return dataOffset;
+    }
+
+    @Override
+    public Dataset<? extends Instance> getDataset() {
+        return visible;
     }
 }

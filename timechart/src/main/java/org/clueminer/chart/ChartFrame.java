@@ -118,11 +118,11 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
             double startX = e.getValue() * chartData.getLastX() / barMax;
             int startIndex = chartData.findAbsoluteIndex(startX, getBounds(), 0, chartData.getLast());
 
-            if (chartData.getStart() != startIndex) {
+            //if (chartData.getStart() != startIndex) {
                 updateHorizontalScrollBar();
                 chartData.setStart(startIndex, getBounds());
                 repaint();
-            }
+            // }
         }
     }
 
@@ -136,24 +136,21 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
             if (e.getWheelRotation() > 0) {
                 //forward
 
-                if (hypoStart < maxStart) {
-                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), chartData.getStart(), chartData.getLast());
+                /*if (hypoStart < maxStart) {                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), chartData.getStart(), chartData.getLast());
                 } else {
                     startIndex = chartData.findAbsoluteIndex(maxStart, getBounds(), chartData.getStart(), chartData.getLast());
-                }
+                }*/
             } else {
                 //backwards
-                if (hypoStart > 0) {
-                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), 0, getChartData().getStart());
+                /*if (hypoStart > 0) {                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), 0, getChartData().getStart());
                 } else {
                     startIndex = 0;
-                }
+                }*/
             }
-            if (getChartData().getStart() != startIndex) {
-                chartData.setStart(startIndex, getBounds());
+            /*   if (getChartData().getStart() != startIndex) {                chartData.setStart(startIndex, getBounds());
                 updateHorizontalScrollBar();
                 repaint();
-            }
+            }*/
         }
     }
 

@@ -130,6 +130,12 @@
             <artifactId>org-openide-windows</artifactId>
             <version>RELEASE74</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
