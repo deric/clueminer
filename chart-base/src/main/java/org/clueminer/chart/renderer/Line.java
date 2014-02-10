@@ -1,7 +1,6 @@
-package org.clueminer.chart.line;
+package org.clueminer.chart.renderer;
 
 import org.clueminer.chart.api.ChartConfig;
-import org.clueminer.chart.api.ChartProperties;
 import org.clueminer.chart.api.Chart;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
@@ -33,7 +32,6 @@ public class Line extends Chart {
     public void paint(Graphics2D g, ChartConfig cf) {
         ChartData cd = cf.getChartData();
         //System.out.println("chart data size= " + cd.getTimePointsCnt());
-        ChartProperties cp = cf.getChartProperties();
         Rectangle rect = cf.getChartPanel().getBounds();
         rect.grow(-2, -2);
         Range range = cf.getRange();

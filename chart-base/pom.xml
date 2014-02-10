@@ -83,6 +83,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.chart.base</publicPackage>
                         <publicPackage>org.clueminer.chart.line</publicPackage>
+                        <publicPackage>org.clueminer.chart.renderer</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

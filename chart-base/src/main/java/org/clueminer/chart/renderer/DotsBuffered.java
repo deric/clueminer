@@ -1,4 +1,4 @@
-package org.clueminer.chart.line;
+package org.clueminer.chart.renderer;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

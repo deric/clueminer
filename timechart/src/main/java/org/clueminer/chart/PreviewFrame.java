@@ -13,7 +13,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.EventListenerList;
 import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.base.ChartPropertiesImpl;
-import org.clueminer.chart.line.Line;
+import org.clueminer.chart.renderer.Line;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;

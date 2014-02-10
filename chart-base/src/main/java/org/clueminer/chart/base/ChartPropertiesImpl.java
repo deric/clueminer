@@ -76,7 +76,7 @@ public class ChartPropertiesImpl extends AbstractPropertyListener implements XML
     private AxisProperties yAxis;
 
     public ChartPropertiesImpl() {
-        xAxis = new AxisPropertiesImpl();
+        xAxis = new DateAxisProperties();
         yAxis = new AxisPropertiesImpl();
     }
 

@@ -12,13 +12,13 @@ import org.clueminer.gui.StrokeGenerator;
  */
 public class AxisPropertiesImpl implements AxisProperties {
 
-    private double majorTick = 6;
-    private double padding = 5;
-    private boolean logarithmic = false;
-    private Color color = new Color(0x2e3436);
-    private Font font = new Font("Dialog", Font.PLAIN, 12);
-    private int strokeIndex = 0;
-    private Color fontColor = new Color(0x2e3436);
+    protected double majorTick = 6;
+    protected double padding = 5;
+    protected boolean logarithmic = false;
+    protected Color color = new Color(0x2e3436);
+    protected Font font = new Font("Dialog", Font.PLAIN, 12);
+    protected int strokeIndex = 0;
+    protected Color fontColor = new Color(0x2e3436);
 
     @Override
     public int getStrokeIndex() {

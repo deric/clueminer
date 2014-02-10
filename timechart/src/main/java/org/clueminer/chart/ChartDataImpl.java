@@ -42,7 +42,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     public static Insets dataOffset = new Insets(2, 20, 60, 55);
     private Chart chart = null;
     private TimeseriesDataset<? super ContinuousInstance> visible = new TimeseriesDataset<ContinuousInstance>(100);
-    private Dataset<Instance> approx;
     private Range visibleRange = null;
     private List<Overlay> savedOverlays = new ArrayList<Overlay>();
     private List<Integer> annotationsCount = new ArrayList<Integer>();
@@ -59,7 +58,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     private double finishX = 100;
     //last value on axis
     private double lastX = 0;
-    private double zoom = 1;
+    private double zoom = 1.0;
     private int cntTimePoints = 0;
     private String name = "untitled";
     private boolean displayedLastPoint = false;
@@ -277,16 +276,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         visible.crop(begin, end, ph);
         cntTimePoints = visible.attributeCount();
         fireDatasetCropped(new DatasetEvent(this, (Dataset) visible));
-    }
-
-    public void analyse() {
-        //dataset for output parameters
-        this.approx = new AttrHashDataset<Instance>(visible.size());
-        //@TODO call method from parent component
-     /*   ProgressHandle ph = ProgressHandleFactory.createHandle("Analysing dataset");
-         //set items to do
-         final RequestProcessor.Task task = RP.create(new AnalyzeRunner(visible, approx, ph));
-         task.schedule(0);*/
     }
 
     /**

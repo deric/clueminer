@@ -420,8 +420,6 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
 
     @Override
     public void datasetCropped(DatasetEvent evt) {
-        System.out.println("dataset cropped");
-        chartData.analyse();
         resetRenderedData();
     }
 

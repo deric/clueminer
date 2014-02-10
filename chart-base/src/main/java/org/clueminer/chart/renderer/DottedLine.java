@@ -1,4 +1,4 @@
-package org.clueminer.chart.line;
+package org.clueminer.chart.renderer;
 
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartProperties;
