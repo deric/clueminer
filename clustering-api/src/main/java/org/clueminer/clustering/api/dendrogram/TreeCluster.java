@@ -1,7 +1,6 @@
 package org.clueminer.clustering.api.dendrogram;
 
 import java.awt.Color;
-import org.clueminer.gui.ColorGenerator;
 
 public class TreeCluster {
 
@@ -15,19 +14,23 @@ public class TreeCluster {
     /**
      * Constructs a cluster with specified root,
      * firstRow and lastRow indices.
+     *
+     * @param root
+     * @param firstElem
+     * @param lastElem
+     * @param color
      */
-    public TreeCluster(int root, int firstElem, int lastElem) {
+    public TreeCluster(int root, int firstElem, int lastElem, Color color) {
         this.root = root;
         this.firstElem = firstElem;
         this.lastElem = lastElem;
         this.size = (lastElem - firstElem) + 1;
-        color = ColorGenerator.getRandomColor();
+        this.color = color;
     }
 
     public void setFinalSize() {
         this.size = (this.lastElem - this.firstElem) + 1;
     }
-
 
     public void setRoot(int r) {
         this.root = r;

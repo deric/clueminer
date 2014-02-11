@@ -675,7 +675,8 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
             return;
         }
         deselect(selected);
-        TreeCluster cluster = new TreeCluster(findNode(x, y), Integer.MAX_VALUE, Integer.MIN_VALUE);
+
+        TreeCluster cluster = new TreeCluster(findNode(x, y), Integer.MAX_VALUE, Integer.MIN_VALUE, Color.GREEN);
         selectNode(cluster, cluster.root);
         fireClusterSelected(this, cluster);
         repaint();
