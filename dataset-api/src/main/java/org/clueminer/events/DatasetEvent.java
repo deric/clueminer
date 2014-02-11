@@ -11,14 +11,14 @@ import org.clueminer.dataset.api.Instance;
 public class DatasetEvent extends EventObject {
 
     private static final long serialVersionUID = -8727159443381190534L;
-    public Dataset<Instance> dataset;
+    public Dataset<? extends Instance> dataset;
 
-    public DatasetEvent(Object source, Dataset<Instance> data) {
+    public DatasetEvent(Object source, Dataset<? extends Instance> data) {
         super(source);
         this.dataset = data;
     }
 
-    public Dataset<Instance> getDataset() {
+    public Dataset<? extends Instance> getDataset() {
         return dataset;
     }
 }
