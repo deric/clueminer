@@ -136,6 +136,11 @@
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>approximation-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -148,6 +153,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.chart</publicPackage>
+                        <publicPackage>org.clueminer.chart.overlay</publicPackage>
                         <publicPackage>org.clueminer.dialogs</publicPackage>
                         <publicPackage>org.clueminer.factory</publicPackage>
                         <publicPackage>org.clueminer.timechart</publicPackage>

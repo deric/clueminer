@@ -16,8 +16,8 @@ import org.clueminer.chart.api.Overlay;
 import org.clueminer.chart.api.PropertyListener;
 import org.clueminer.chart.api.Range;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.events.LogEvent;
@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 public abstract class AbstractOverlay implements Serializable, DatasetListener, Overlay, LogListener, XMLTemplate {
 
     private static final long serialVersionUID = 2709569808433244828L;
-    protected Timeseries<? extends ContinuousInstance> dataset;
+    protected Dataset<? extends Instance> dataset;
     protected LinkedHashMap<String, ContinuousInstance> instances;
     private boolean logarithmic = false;
 
@@ -59,13 +59,13 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     }
 
     @Override
-    public Timeseries<? extends ContinuousInstance> getDataset() {
+    public Dataset<? extends Instance> getDataset() {
         return dataset;
     }
 
     @Override
-    public void setDataset(Timeseries<? extends ContinuousInstance> d) {
-        dataset = d;
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        this.dataset = dataset;
     }
 
     public void addDataset(String key, ContinuousInstance value) {
@@ -87,7 +87,7 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     public abstract String getLabel();
 
     @Override
-    public abstract AbstractOverlay newInstance();
+    public abstract Overlay newInstance();
 
     @Override
     public abstract LinkedHashMap getHTML(ChartConfig cf, int i);
@@ -136,7 +136,7 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     public void datasetChanged(DatasetEvent evt) {
         synchronized (this) {
             ChartData cd = (ChartData) evt.getSource();
-            setDataset(cd.getVisible());
+            setDataset(cd.getDataset());
             calculate();
         }
     }

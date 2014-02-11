@@ -1,25 +1,25 @@
 package org.clueminer.chart.overlay;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.LinkedHashMap;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.Overlay;
+import org.clueminer.chart.base.AbstractOverlay;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.events.DatasetEvent;
-import org.clueminer.events.LogEvent;
 import org.clueminer.types.TimePoint;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Element;
 
 /**
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Overlay.class)
-public class SlopeOverlay implements Overlay {
+public class SlopeOverlay extends AbstractOverlay implements Overlay {
 
     private static final String name = "Slope";
     private Timeseries<? extends ContinuousInstance> dataset;
@@ -77,12 +77,27 @@ public class SlopeOverlay implements Overlay {
     }
 
     @Override
-    public boolean isLogarithmic() {
+    public AbstractOverlay newInstance() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setLogarithmic(boolean b) {
+    public Color[] getColors() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[] getValues(ChartConfig cf) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[] getValues(ChartConfig cf, int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean getMarkerVisibility() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -92,43 +107,18 @@ public class SlopeOverlay implements Overlay {
     }
 
     @Override
-    public Overlay newInstance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setDataset(Timeseries<? extends ContinuousInstance> d) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void loadFromTemplate(Element element) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void fire(LogEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void datasetChanged(DatasetEvent evt) {
-        //
-    }
-
-    @Override
     public void datasetOpened(DatasetEvent evt) {
-        //
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void datasetClosed(DatasetEvent evt) {
-        //
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void datasetCropped(DatasetEvent evt) {
-        //
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
