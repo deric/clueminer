@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import org.clueminer.chart.api.Annotation;
 import org.clueminer.chart.base.ChartPropertiesImpl;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
@@ -119,9 +120,9 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
             int startIndex = chartData.findAbsoluteIndex(startX, getBounds(), 0, chartData.getLast());
 
             //if (chartData.getStart() != startIndex) {
-                updateHorizontalScrollBar();
-                chartData.setStart(startIndex, getBounds());
-                repaint();
+            updateHorizontalScrollBar();
+            chartData.setStart(startIndex, getBounds());
+            repaint();
             // }
         }
     }
@@ -137,20 +138,20 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
                 //forward
 
                 /*if (hypoStart < maxStart) {                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), chartData.getStart(), chartData.getLast());
-                } else {
-                    startIndex = chartData.findAbsoluteIndex(maxStart, getBounds(), chartData.getStart(), chartData.getLast());
-                }*/
+                 } else {
+                 startIndex = chartData.findAbsoluteIndex(maxStart, getBounds(), chartData.getStart(), chartData.getLast());
+                 }*/
             } else {
                 //backwards
                 /*if (hypoStart > 0) {                    startIndex = chartData.findAbsoluteIndex(hypoStart, getBounds(), 0, getChartData().getStart());
-                } else {
-                    startIndex = 0;
-                }*/
+                 } else {
+                 startIndex = 0;
+                 }*/
             }
             /*   if (getChartData().getStart() != startIndex) {                chartData.setStart(startIndex, getBounds());
-                updateHorizontalScrollBar();
-                repaint();
-            }*/
+             updateHorizontalScrollBar();
+             repaint();
+             }*/
         }
     }
 
@@ -265,7 +266,7 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
         return false;
     }
 
-    public Annotation getCurrentAnnotation() {
+    public AnnotationImpl getCurrentAnnotation() {
         if (getSplitPanel().getChartPanel().getAnnotationPanel().hasCurrent()) {
             return getSplitPanel().getChartPanel().getAnnotationPanel().getCurrent();
         }
@@ -286,8 +287,8 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
         return list;
     }
 
-    public List<Annotation> getAnnotations() {
-        List<Annotation> list = new ArrayList<Annotation>();
+    public List<AnnotationImpl> getAnnotations() {
+        List<AnnotationImpl> list = new ArrayList<AnnotationImpl>();
         list.addAll(getSplitPanel().getChartPanel().getAnnotationPanel().getAnnotationsList());
         return list;
     }

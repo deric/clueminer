@@ -55,6 +55,11 @@
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,6 +72,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.chart.api</publicPackage>
+                        <publicPackage>org.clueminer.chart.factory</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

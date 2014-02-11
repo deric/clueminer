@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import org.clueminer.chart.api.Annotation;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.dialogs.AnnotationProperties;
-import org.clueminer.factory.AnnotationFactory;
 import org.clueminer.chart.api.Range;
+import org.clueminer.chart.factory.AnnotationFactory;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.timeseries.chart.NormalizationEvent;
@@ -32,13 +33,13 @@ public class AnnotationPanel extends JPanel
     private static final long serialVersionUID = 125387474053489733L;
     private int state;
     private ChartConfig chartFrame;
-    private List<Annotation> annotations;
-    private Annotation current = null;
+    private List<AnnotationImpl> annotations;
+    private AnnotationImpl current = null;
 
     public AnnotationPanel(ChartConfig frame) {
         state = NONE;
         chartFrame = frame;
-        annotations = new ArrayList<Annotation>();
+        annotations = new ArrayList<AnnotationImpl>();
         setOpaque(false);
 
         addMouseListener((MouseListener) this);
@@ -73,7 +74,7 @@ public class AnnotationPanel extends JPanel
 
         g2.setPaint(chartFrame.getChartProperties().getXAxis().getColor());
 
-        for (Annotation a : annotations) {
+        for (AnnotationImpl a : annotations) {
             a.paint(g2);
         }
     }
@@ -83,23 +84,25 @@ public class AnnotationPanel extends JPanel
     }
 
     public void setAnnotationsList(List<Annotation> list) {
+        AnnotationImpl impl;
         for (Annotation a : list) {
-            a.setChartConfig(chartFrame);
-            a.setAnnotationPanel(this);
-            annotations.add(a);
+            impl = (AnnotationImpl) a;
+            impl.setChartConfig(chartFrame);
+            impl.setAnnotationPanel(this);
+            annotations.add(impl);
         }
         repaint();
     }
 
-    public List<Annotation> getAnnotationsList() {
+    public List<AnnotationImpl> getAnnotationsList() {
         return annotations;
     }
 
-    public Annotation[] getAnnotations() {
-        return annotations.toArray(new Annotation[annotations.size()]);
+    public AnnotationImpl[] getAnnotations() {
+        return annotations.toArray(new AnnotationImpl[annotations.size()]);
     }
 
-    public void addAnnotation(Annotation a) {
+    public void addAnnotation(AnnotationImpl a) {
         annotations.add(a);
     }
 
@@ -111,16 +114,16 @@ public class AnnotationPanel extends JPanel
         return current == null;
     }
 
-    public Annotation getCurrent() {
+    public AnnotationImpl getCurrent() {
         return current;
     }
 
-    public void setCurrent(Annotation a) {
+    public void setCurrent(AnnotationImpl a) {
         current = a;
     }
 
     public void deselectAll() {
-        for (Annotation annotation : annotations) {
+        for (AnnotationImpl annotation : annotations) {
             annotation.setSelected(false);
         }
         current = null;
@@ -147,7 +150,7 @@ public class AnnotationPanel extends JPanel
     }
 
     private boolean isAnnotation(int x, int y) {
-        for (Annotation a : annotations) {
+        for (AnnotationImpl a : annotations) {
             boolean b = a.pointIntersects(x, y);
             if (b) {
                 current = a;
@@ -176,7 +179,7 @@ public class AnnotationPanel extends JPanel
                 getParent().requestFocus();
             }
 
-            if (AnnotationFactory.getDefault().hasNew()) {
+            if (AnnotationFactory.getInstance().hasDefault()) {
                 setState(NEWANNOTATION);
             }
 
@@ -219,7 +222,8 @@ public class AnnotationPanel extends JPanel
                     break;
                 case NEWANNOTATION:
                     chartFrame.deselectAll();
-                    Annotation a = AnnotationFactory.getDefault().getNewAnnotation(chartFrame);
+                    AnnotationImpl a = (AnnotationImpl) AnnotationFactory.getInstance().getDefault();
+
                     a.setAnnotationPanel(this);
                     setCurrent(a);
                     if (!isCurrentNull()) {

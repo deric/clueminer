@@ -2,13 +2,14 @@ package org.clueminer.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import org.clueminer.chart.api.Overlay;
-import org.clueminer.factory.OverlayFactory;
 import org.clueminer.chart.ChartDataImpl;
 import org.clueminer.chart.ChartFrame;
+import org.clueminer.chart.factory.OverlayFactory;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
 import org.openide.windows.WindowManager;
@@ -27,8 +28,11 @@ public class Overlays extends javax.swing.JDialog {
 
     /**
      * Creates new form Overlays
+     *
+     * @param parent
+     * @param modal
      */
-    public Overlays(java.awt.Frame parent, boolean modal) {
+    public Overlays(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         parent.setIconImage(WindowManager.getDefault().getMainWindow().getIconImage());
@@ -43,9 +47,8 @@ public class Overlays extends javax.swing.JDialog {
         btnRemove.setEnabled(false);
 
         selected = new ArrayList<Overlay>();
-        unselected = new ArrayList<Overlay>();
+        unselected = OverlayFactory.getInstance().getAll();
 
-        unselected = OverlayFactory.getDefault().getOverlaysList();
         selected = parent.getSplitPanel().getChartPanel().getOverlays();
         initial = selected;
 

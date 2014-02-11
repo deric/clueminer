@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.event.EventListenerList;
 import org.clueminer.algorithm.BinarySearch;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.chart.api.Annotation;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -176,7 +177,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return (TimePointAttribute) visible.getAttribute(0);
     }
 
-
     public boolean isSampleSetNull() {
         if (visible == null) {
             return true;
@@ -239,7 +239,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return getTimeAt(0);
     }
 
-
     /**
      * Maximum value on X axis
      *
@@ -278,7 +277,6 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         cntTimePoints = visible.attributeCount();
         fireDatasetCropped(new DatasetEvent(this, (Dataset) visible));
     }
-
 
     public void setVisibleRange(Range r) {
         visibleRange = r;
@@ -785,7 +783,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         annotationsCount.clear();
     }
 
-    public void setAnnotations(List<Annotation> list) {
+    public void setAnnotationotation(ArrayList<Annotation> list) {
         annotations = list;
     }
 

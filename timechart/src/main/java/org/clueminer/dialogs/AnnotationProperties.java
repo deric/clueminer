@@ -1,6 +1,6 @@
 package org.clueminer.dialogs;
 
-import org.clueminer.chart.Annotation;
+import org.clueminer.chart.AnnotationImpl;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
 import org.openide.windows.WindowManager;
@@ -14,7 +14,7 @@ public class AnnotationProperties extends javax.swing.JDialog {
     private static final long serialVersionUID = -2616566201539845048L;
 
     /**
-     * Creates new form AnnotationProperties
+     * Creates new form AnnotationImplProperties
      */
     public AnnotationProperties(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -22,7 +22,7 @@ public class AnnotationProperties extends javax.swing.JDialog {
         parent.setIconImage(WindowManager.getDefault().getMainWindow().getIconImage());
     }
 
-    public void initializeForm(Annotation annotation) {
+    public void initializeForm(AnnotationImpl annotation) {
         PropertySheet prop = new PropertySheet();
         prop.setNodes(new Node[]{annotation.getNode()});
         setContentPane(prop);

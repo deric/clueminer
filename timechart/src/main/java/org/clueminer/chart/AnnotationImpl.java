@@ -10,10 +10,11 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.BitSet;
-import org.clueminer.factory.AnnotationFactory;
+import org.clueminer.chart.api.Annotation;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
+import org.clueminer.chart.factory.AnnotationFactory;
 import org.clueminer.timeseries.utils.CoordCalc;
 import org.openide.nodes.AbstractNode;
 
@@ -21,7 +22,7 @@ import org.openide.nodes.AbstractNode;
  *
  * @author viorel.gheba
  */
-public abstract class Annotation implements Serializable, MouseListener, MouseMotionListener {
+public abstract class AnnotationImpl implements Annotation, Serializable, MouseListener, MouseMotionListener {
 
     public static final int NO = 0;
     public static final int YES = 1;
@@ -58,24 +59,25 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
     protected transient ChartConfig config;
     protected transient AnnotationPanel annotationPanel;
 
-    public Annotation() {
+    public AnnotationImpl() {
         active = false;
         selected = false;
         actionSet = new BitSet(9);
     }
 
-    public Annotation(ChartConfig frame) {
+    public AnnotationImpl(ChartConfig frame) {
         config = frame;
         active = false;
         selected = false;
         actionSet = new BitSet(9);
     }
 
+    @Override
     public String getName() {
         return getClass().getName();
     }
 
-    public abstract Annotation newInstance(ChartConfig frame);
+    public abstract AnnotationImpl newInstance(ChartConfig frame);
 
     public ChartConfig getChartFrame() {
         return config;
@@ -205,7 +207,6 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
         Rectangle rect = config.getChartPanel().getBounds();
         rect.grow(-2, -2);
 
-
         int count = cd.getTimePointsCnt();
         int negCount = count - (count - cd.getFinish());
         int posCount = count - negCount;
@@ -251,14 +252,13 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
         ChartData cd = config.getChartData();
         int count = cd.getTimePointsCnt();
 
-            for (int i = 0; i < count; i++) {
-                /* if (t == cd.getSamples().getTimeAt(i))
-                {
-                idx = new Integer(i);
-                break;
-                }**/
-            }
-       
+        for (int i = 0; i < count; i++) {
+            /* if (t == cd.getSamples().getTimeAt(i))
+             {
+             idx = new Integer(i);
+             break;
+             }**/
+        }
 
         if (idx == null) {
             //    long min = cd.getSamples().getTimeAt(0);
@@ -272,8 +272,6 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
 
         return idx;
     }
-
- 
 
     protected double getYFromValue(double v) {
         Rectangle rect = config.getChartPanel().getBounds();
@@ -345,25 +343,24 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
 
     protected long getPrev(long t) {
         int i = getTimeIndex(t);
-        return (long) 0;//chartFrame.getChartData().getSamples().getTimeAt(i - 1); 
+        return (long) 0;//chartFrame.getChartData().getSamples().getTimeAt(i - 1);
     }
 
     protected void setArea(long t1, double v1, long t2, double v2) {
         setP1(t2, v1);
         setP2(t2, v2);
     }
-    
-    public double getXFromTime(int tp){
+
+    public double getXFromTime(int tp) {
         return config.getChartData().getX(tp, config.getBounds());
     }
 
-    public double getXFromTime(long t){
+    public double getXFromTime(long t) {
         return config.getChartData().getXFromTime(t, config.getBounds());
     }
-    
-    
-    public long getTimeFromX(double x){
-         return config.getChartData().getTimeFromX(x, config.getBounds());
+
+    public long getTimeFromX(double x) {
+        return config.getChartData().getTimeFromX(x, config.getBounds());
     }
 
     protected Rectangle getArea() {
@@ -864,10 +861,10 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Annotation)) {
+        if (!(obj instanceof AnnotationImpl)) {
             return false;
         }
-        Annotation that = (Annotation) obj;
+        AnnotationImpl that = (AnnotationImpl) obj;
         if (!getClass().getName().equals(that.getClass().getName())) {
             return false;
         }
@@ -902,7 +899,7 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
 
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            Annotation current = getAnnotationPanel().getCurrent();
+            AnnotationImpl current = getAnnotationPanel().getCurrent();
             getAnnotationPanel().deselectAll();
             int x = e.getX(), y = e.getY();
             if (current != null && current.isInBounds(x, y)) {
@@ -939,7 +936,7 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Annotation current = getAnnotationPanel().getCurrent();
+        AnnotationImpl current = getAnnotationPanel().getCurrent();
         if (current != null) {
             int x = e.getX(), y = e.getY();
             if (current.isInBounds(x, y)) {
@@ -953,12 +950,12 @@ public abstract class Annotation implements Serializable, MouseListener, MouseMo
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Annotation current = getAnnotationPanel().getCurrent();
+        AnnotationImpl current = getAnnotationPanel().getCurrent();
         if (current != null && current.isNew()) {
             current.setNew(false);
         }
 
-        AnnotationFactory.getDefault().clearNewAnnotation();
+        AnnotationFactory.getInstance().setDefault(null);
         getAnnotationPanel().setState(AnnotationPanel.NONE);
         getAnnotationPanel().repaint();
     }

@@ -393,7 +393,7 @@ public class ChartPanel extends JLayeredPane implements Serializable {
 
     private AbstractAction overlaySettings(final Overlay overlay) {
 
-        return new AbstractAction("Overlay Settings", ImageUtilities.loadImageIcon("org/clueminer/timeseries/resources/settings16.png", false)) {
+        return new AbstractAction("Overlay Settings", ImageUtilities.loadImageIcon("org/clueminer/chart/settings16.png", false)) {
             private static final long serialVersionUID = 8711948053140429014L;
 
             @Override
@@ -404,7 +404,7 @@ public class ChartPanel extends JLayeredPane implements Serializable {
     }
 
     private AbstractAction removeAction(final Overlay overlay) {
-        return new AbstractAction("Remove Indicator", ImageUtilities.loadImageIcon("org/clueminer/timeseries/resources/remove.png", false)) {
+        return new AbstractAction("Remove Indicator", ImageUtilities.loadImageIcon("org/clueminer/chart/remove.png", false)) {
             private static final long serialVersionUID = 8711948053140429014L;
 
             @Override

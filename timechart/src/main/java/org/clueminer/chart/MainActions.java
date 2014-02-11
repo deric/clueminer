@@ -3,14 +3,15 @@ package org.clueminer.chart;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import org.clueminer.chart.api.Annotation;
 
 import org.clueminer.chart.api.Chart;
 import org.clueminer.chart.api.ChartData;
+import org.clueminer.chart.factory.AnnotationFactory;
+import org.clueminer.chart.factory.ChartFactory;
 import org.clueminer.dialogs.AnnotationProperties;
 import org.clueminer.dialogs.Overlays;
 import org.clueminer.dialogs.SettingsPanel;
-import org.clueminer.factory.AnnotationFactory;
-import org.clueminer.factory.ChartFactory;
 import org.clueminer.factory.TemplateFactory;
 import org.clueminer.export.impl.ImageExporter;
 import org.netbeans.api.print.PrintManager;
@@ -96,7 +97,7 @@ public final class MainActions {
         return RemoveAllAnnotations.getAction(chartFrame);
     }
 
-    public static Action annotationProperties(ChartFrame chartFrame, Annotation annotation) {
+    public static Action annotationProperties(ChartFrame chartFrame, AnnotationImpl annotation) {
         return AnnotationProps.getAction(chartFrame, annotation);
     }
 
@@ -121,9 +122,9 @@ public final class MainActions {
 
         public MainAction(String name, boolean flag) {
             putValue(NAME,
-                    NbBundle.getMessage(MainActions.class, "ACT_" + name));
+                     NbBundle.getMessage(MainActions.class, "ACT_" + name));
             putValue(SHORT_DESCRIPTION,
-                    NbBundle.getMessage(MainActions.class, "TOOL_" + name));
+                     NbBundle.getMessage(MainActions.class, "TOOL_" + name));
             if (flag) {
                 putValue(SMALL_ICON, ImageUtilities.loadImage("org/clueminer/chart/" + name + "16.png", true));
                 putValue(LONG_DESCRIPTION, name);
@@ -215,7 +216,7 @@ public final class MainActions {
             JPopupMenu popupMenu = new JPopupMenu();
 
             JMenuItem item;
-            for (String chart : ChartFactory.getDefault().getCharts()) {
+            for (String chart : ChartFactory.getInstance().getProviders()) {
                 popupMenu.add(item = new JMenuItem(
                         MainActions.changeChart(chartFrame, chart, chart.equals(current))));
                 item.setMargin(new Insets(0, 0, 0, 0));
@@ -245,7 +246,7 @@ public final class MainActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Chart chart = ChartFactory.getDefault().getChart(chartName);
+            Chart chart = ChartFactory.getInstance().getProvider(chartName);
             chartFrame.getChartData().setChart(chart);
             chartFrame.validate();
             chartFrame.repaint();
@@ -297,7 +298,7 @@ public final class MainActions {
 
             JMenuItem item;
 
-            for (String annotation : AnnotationFactory.getDefault().getAnnotations()) {
+            for (String annotation : AnnotationFactory.getInstance().getProviders()) {
                 popup.add(item = new JMenuItem(
                         MainActions.addAnnotation(annotation)));
                 item.setMargin(new Insets(0, 0, 0, 0));
@@ -310,7 +311,7 @@ public final class MainActions {
             item.setMargin(new Insets(0, 0, 0, 0));
 
             if (chartFrame.hasCurrentAnnotation()) {
-                Annotation current = chartFrame.getCurrentAnnotation();
+                AnnotationImpl current = chartFrame.getCurrentAnnotation();
                 if (current.isSelected()) {
                     popup.addSeparator();
                     popup.add(item = new JMenuItem(
@@ -341,8 +342,8 @@ public final class MainActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Annotation annotation = AnnotationFactory.getDefault().getAnnotation(annotationName);
-            AnnotationFactory.getDefault().setNewAnnotation(annotation);
+            Annotation annotation = AnnotationFactory.getInstance().getProvider(annotationName);
+            AnnotationFactory.getInstance().setDefault(annotation);
         }
     }
 
@@ -370,13 +371,13 @@ public final class MainActions {
 
         private static final long serialVersionUID = -5903365476818541598L;
         private ChartFrame chartFrame;
-        private Annotation annotation;
+        private AnnotationImpl annotation;
 
-        public static Action getAction(ChartFrame chartFrame, Annotation annotation) {
+        public static Action getAction(ChartFrame chartFrame, AnnotationImpl annotation) {
             return new AnnotationProps(chartFrame, annotation);
         }
 
-        private AnnotationProps(ChartFrame chartFrame, Annotation annotation) {
+        private AnnotationProps(ChartFrame chartFrame, AnnotationImpl annotation) {
             super("AnnotationsProperties", false);
             this.chartFrame = chartFrame;
             this.annotation = annotation;
@@ -556,7 +557,7 @@ public final class MainActions {
         ChartData chartData = chartFrame.getChartData();
         String current = chartData.getChart().getName();
 
-        for (String chart : ChartFactory.getDefault().getCharts()) {
+        for (String chart : ChartFactory.getInstance().getProviders()) {
             menu.add(menuItem = new JMenuItem(MainActions.changeChart(chartFrame, chart, current.equals(chart))));
             menuItem.setMargin(new Insets(0, 0, 0, 0));
         }
@@ -569,7 +570,7 @@ public final class MainActions {
         JMenu menu = new JMenu(NbBundle.getMessage(MainActions.class, "ACT_Annotations"));
         menu.setIcon(ImageUtilities.loadImageIcon("org/clueminer/chart/line16.png", true));
 
-        for (String annotation : AnnotationFactory.getDefault().getAnnotations()) {
+        for (String annotation : AnnotationFactory.getInstance().getProviders()) {
             menu.add(menuItem = new JMenuItem(
                     MainActions.addAnnotation(annotation)));
             menuItem.setMargin(new Insets(0, 0, 0, 0));
@@ -582,7 +583,7 @@ public final class MainActions {
         menuItem.setMargin(new Insets(0, 0, 0, 0));
 
         if (chartFrame.hasCurrentAnnotation()) {
-            Annotation current = chartFrame.getCurrentAnnotation();
+            AnnotationImpl current = chartFrame.getCurrentAnnotation();
             if (current.isSelected()) {
                 menu.addSeparator();
                 menu.add(menuItem = new JMenuItem(
@@ -654,9 +655,9 @@ public final class MainActions {
             InputLine descriptor = new DialogDescriptor.InputLine(
                     "Template Name:", "Save to Template");
             descriptor.setOptions(new Object[]{
-                        DialogDescriptor.OK_OPTION,
-                        DialogDescriptor.CANCEL_OPTION
-                    });
+                DialogDescriptor.OK_OPTION,
+                DialogDescriptor.CANCEL_OPTION
+            });
             Object ret = DialogDisplayer.getDefault().notify(descriptor);
             if (ret.equals(DialogDescriptor.OK_OPTION)) {
                 String name = descriptor.getInputText();
