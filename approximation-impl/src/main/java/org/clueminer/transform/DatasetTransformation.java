@@ -87,7 +87,7 @@ public class DatasetTransformation implements DataTransform {
         ContinuousInstance item;
 
         int j = 0;
-        ApproximatorFactory am = ApproximatorFactory.getDefault();
+        ApproximatorFactory am = ApproximatorFactory.getInstance();
         //create attribute for each parameter
         List<Approximator> approx = new ArrayList<Approximator>();
         //for(Approximator ap : am.getAll()){
@@ -145,7 +145,7 @@ public class DatasetTransformation implements DataTransform {
      * @param eol
      */
     public void approximationRMSE(Timeseries<ContinuousInstance> dataset, Dataset<Instance> params, TimePoint[] timePoints, String filename, String separator, String eol) {
-        ApproximatorFactory am = ApproximatorFactory.getDefault();
+        ApproximatorFactory am = ApproximatorFactory.getInstance();
         double rmse;
         HashMap<String, Double> coeff;
         double diff;
@@ -201,7 +201,7 @@ public class DatasetTransformation implements DataTransform {
         int i, j, pos;
         int m = params.length, n = params[0].length;
         double value;
-        ApproximatorFactory am = ApproximatorFactory.getDefault();
+        ApproximatorFactory am = ApproximatorFactory.getInstance();
         List<String> paramNames = am.getParamNames();
         try {
             System.out.println("writing to " + filename);

@@ -1,5 +1,6 @@
 package org.clueminer.std;
 
+import org.clueminer.math.StandardisationFactory;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Standardisation;
@@ -11,7 +12,7 @@ import org.clueminer.math.Standardisation;
 public class Scaler {
 
     public static Matrix standartize(double[][] datasetArray, String method, boolean logScale) {
-        StandardisationFactory sf = StandardisationFactory.getDefault();
+        StandardisationFactory sf = StandardisationFactory.getInstance();
         Standardisation std = sf.getProvider(method);
 
         if (std == null) {

@@ -74,7 +74,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     private String[] initEvolution() {
-        EvolutionFactory ef = EvolutionFactory.getDefault();
+        EvolutionFactory ef = EvolutionFactory.getInstance();
         List<String> list = ef.getProviders();
         System.out.println("evolution providers: "+list.size());
         String[] res = new String[list.size()];
@@ -156,7 +156,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         if (dataset != null) {
             //start evolution
             String evolution = (String) comboEvolution.getSelectedItem();
-            EvolutionFactory ef = EvolutionFactory.getDefault();
+            EvolutionFactory ef = EvolutionFactory.getInstance();
             Evolution alg = ef.getProvider(evolution);
             alg.setDataset(dataset);
             alg.setGenerations(sliderGenerations.getValue());

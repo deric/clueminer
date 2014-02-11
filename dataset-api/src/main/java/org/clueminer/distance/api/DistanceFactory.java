@@ -13,7 +13,7 @@ public class DistanceFactory extends ServiceFactory<AbstractDistance> {
 
     private static DistanceFactory instance;
 
-    public static DistanceFactory getDefault() {
+    public static DistanceFactory getInstance() {
         if (instance == null) {
             instance = new DistanceFactory();
         }

@@ -16,7 +16,7 @@ public class EvaluatorComboBox extends AbstractListModel<String> implements Comb
     private String selection = null;
     
     public EvaluatorComboBox(){
-        List<String> list = ClusterEvaluatorFactory.getDefault().getProviders();
+        List<String> list = ClusterEvaluatorFactory.getInstance().getProviders();
         providers = list.toArray(new String[list.size()]);
     }
 

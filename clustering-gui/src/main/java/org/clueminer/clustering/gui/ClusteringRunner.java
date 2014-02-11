@@ -102,7 +102,7 @@ public class ClusteringRunner implements Runnable {
 
     private void runPreprocessing(final Object lock, final Dataset<? extends Instance> data, String datasetTransform) {
 
-        DataTransformFactory df = DataTransformFactory.getDefault();
+        DataTransformFactory df = DataTransformFactory.getInstance();
         final DataTransform trans = df.getProvider(datasetTransform);
         final Dataset<? extends Instance> output = trans.createDefaultOutput(data);
 

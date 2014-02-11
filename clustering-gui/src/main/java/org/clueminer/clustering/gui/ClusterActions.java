@@ -197,7 +197,7 @@ public final class ClusterActions {
             JPopupMenu popupMenu = new JPopupMenu();
 
             JMenuItem item;
-            for (String algorithm : ClusteringDialogFactory.getDefault().getProviders()) {
+            for (String algorithm : ClusteringDialogFactory.getInstance().getProviders()) {
                 popupMenu.add(item = new JMenuItem(
                         ClusterActions.changeAlgorithm(clusteringFrame, algorithm, algorithm.equals(current))));
                 item.setMargin(new Insets(0, 0, 0, 0));
@@ -229,7 +229,7 @@ public final class ClusterActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringDialog config = ClusteringDialogFactory.getDefault().getProvider(algorithmName);
+            ClusteringDialog config = ClusteringDialogFactory.getInstance().getProvider(algorithmName);
             algorithmDialog.showDialog(clusteringFrame, config);
         }
     }
@@ -394,7 +394,7 @@ public final class ClusterActions {
 
         String current = clusteringFrame.getAlgorithm().getName();
 
-        for (String alg : ClusteringDialogFactory.getDefault().getProviders()) {
+        for (String alg : ClusteringDialogFactory.getInstance().getProviders()) {
             menu.add(menuItem = new JMenuItem(ClusterActions.changeAlgorithm(clusteringFrame, alg, current.equals(alg))));
             menuItem.setMargin(new Insets(0, 0, 0, 0));
         }
@@ -406,7 +406,7 @@ public final class ClusterActions {
         JMenu menu = new JMenu(NbBundle.getMessage(ClusterActions.class, "ACT_SelectTemplate"));
         /*
          * for (Object template :
-         * TemplateFactory.getDefault().getTemplateNames()) { if
+         * TemplateFactory.getInstance().getTemplateNames()) { if
          * ((clusteringFrame.getTemplate() == null) ||
          * (!template.equals(clusteringFrame.getTemplate().getName()))) {
          * menu.add(new JMenuItem(ChangeTemplate.getAction(clusteringFrame,
@@ -442,7 +442,7 @@ public final class ClusterActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //   clusteringFrame.setTemplate(TemplateFactory.getDefault().getTemplate(template));
+            //   clusteringFrame.setTemplate(TemplateFactory.getInstance().getTemplate(template));
         }
     }
 
@@ -472,16 +472,16 @@ public final class ClusterActions {
             if (ret.equals(DialogDescriptor.OK_OPTION)) {
                 String name = descriptor.getInputText();
                 /*
-                 * if (!TemplateFactory.getDefault().templateExists(name)) {
-                 * TemplateFactory.getDefault().saveToTemplate(name,
+                 * if (!TemplateFactory.getInstance().templateExists(name)) {
+                 * TemplateFactory.getInstance().saveToTemplate(name,
                  * clusteringFrame); } else { Confirmation confirmation = new
                  * DialogDescriptor.Confirmation( "<html>This template already
                  * exists!<br>Do you want to overwrite this template?</html>",
                  * "Overwrite"); Object obj =
-                 * DialogDisplayer.getDefault().notify(confirmation); if
+                 * DialogDisplayer.getInstance().notify(confirmation); if
                  * (obj.equals(DialogDescriptor.OK_OPTION)) {
-                 * TemplateFactory.getDefault().removeTemplate(name);
-                 * TemplateFactory.getDefault().saveToTemplate(name,
+                 * TemplateFactory.getInstance().removeTemplate(name);
+                 * TemplateFactory.getInstance().saveToTemplate(name,
                  * clusteringFrame); } }
                  */
             }

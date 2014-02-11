@@ -50,12 +50,12 @@ public class AgglParams {
 
     public DistanceMeasure getDistanceMeasure() {
         String simFuncProp = pref.get(DISTANCE_FUNCTION, DEFAULT_DISTANCE_FUNCTION);
-        return DistanceFactory.getDefault().getProvider(simFuncProp);
+        return DistanceFactory.getInstance().getProvider(simFuncProp);
     }
 
     public ClusterLinkage getLinkage() {
         String linkageProp = pref.get(LINKAGE, DEFAULT_LINKAGE);
-        ClusterLinkage linkage = LinkageFactory.getDefault().getProvider(linkageProp);
+        ClusterLinkage linkage = LinkageFactory.getInstance().getProvider(linkageProp);
         linkage.setDistanceMeasure(distance);
         return linkage;
     }

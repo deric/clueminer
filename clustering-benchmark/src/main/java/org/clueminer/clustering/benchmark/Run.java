@@ -150,7 +150,7 @@ public class Run {
         }
         // DatasetFixture.allDatasets();
 
-        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
+        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
 
         String name;

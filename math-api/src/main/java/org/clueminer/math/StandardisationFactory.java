@@ -1,6 +1,5 @@
-package org.clueminer.std;
+package org.clueminer.math;
 
-import org.clueminer.math.Standardisation;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import org.clueminer.utils.ServiceFactory;
@@ -14,7 +13,7 @@ public class StandardisationFactory extends ServiceFactory<Standardisation> {
 
     private static StandardisationFactory instance;
 
-    public static StandardisationFactory getDefault() {
+    public static StandardisationFactory getInstance() {
         if (instance == null) {
             instance = new StandardisationFactory();
         }

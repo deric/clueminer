@@ -12,7 +12,7 @@ import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.std.StandardisationFactory;
+import org.clueminer.math.StandardisationFactory;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -49,7 +49,7 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private String[] initDistance() {
-        DistanceFactory df = DistanceFactory.getDefault();
+        DistanceFactory df = DistanceFactory.getInstance();
         List<String> list = df.getProviders();
         String[] res = new String[list.size()];
         int i = 0;
@@ -60,7 +60,7 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private String[] initStandardisation() {
-        StandardisationFactory sf = StandardisationFactory.getDefault();
+        StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> list = sf.getProviders();
         String[] res = new String[list.size()];
         int i = 0;
@@ -71,7 +71,7 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private String[] initCutoff() {
-        ClusterEvaluatorFactory ef = ClusterEvaluatorFactory.getDefault();
+        ClusterEvaluatorFactory ef = ClusterEvaluatorFactory.getInstance();
         List<String> list = ef.getProviders();
         list.add("-- naive --");
         String[] res = new String[list.size()];
@@ -83,7 +83,7 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private void initTransform() {
-        DataTransformFactory df = DataTransformFactory.getDefault();
+        DataTransformFactory df = DataTransformFactory.getInstance();
         List<String> list = df.getProviders();
         DefaultListModel lm = (DefaultListModel) lstAvailTrans.getModel();
 
@@ -387,7 +387,7 @@ public class HCLDialog extends ClusteringDialog {
         params.putInt("distance-factor", (Integer) spnDistanceFactor.getValue());
         params.putBoolean("hcl-distance-absolute", true);
 
-        DistanceFactory df = DistanceFactory.getDefault();
+        DistanceFactory df = DistanceFactory.getInstance();
         AbstractDistance func = df.getProvider((String) comboDistance.getSelectedItem());
         algorihm.setDistanceFunction(func);
 

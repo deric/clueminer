@@ -14,7 +14,7 @@ public class FileImporterFactory extends ServiceFactory<FileImporter> {
 
     private static FileImporterFactory instance;
 
-    public static FileImporterFactory getDefault() {
+    public static FileImporterFactory getInstance() {
         if (instance == null) {
             instance = new FileImporterFactory();
         }

@@ -14,7 +14,7 @@ public class ClusterEvaluatorFactory extends ServiceFactory<ClusterEvaluator> {
     
     private static ClusterEvaluatorFactory instance;
 
-    public static ClusterEvaluatorFactory getDefault() {
+    public static ClusterEvaluatorFactory getInstance() {
         if (instance == null) {
             instance = new ClusterEvaluatorFactory();
         }

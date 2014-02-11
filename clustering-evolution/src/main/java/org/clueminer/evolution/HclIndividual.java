@@ -89,7 +89,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     @Override
     public void countFitness() {
 
-        DistanceFactory df = DistanceFactory.getDefault();
+        DistanceFactory df = DistanceFactory.getInstance();
         AbstractDistance func = df.getProvider("Euclidean");
         algorithm.setDistanceFunction(func);
 
@@ -137,7 +137,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         String cutoffAlg = params.get("cutoff", "NaiveCutoff");
 
        // if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = ClusterEvaluatorFactory.getDefault().getProvider(cutoffAlg);
+            ClusterEvaluator eval = ClusterEvaluatorFactory.getInstance().getProvider(cutoffAlg);
             NaiveCutoff strategy = new NaiveCutoff();
             rowsResult.findCutoff(strategy);
        // }// else we use a naive approach

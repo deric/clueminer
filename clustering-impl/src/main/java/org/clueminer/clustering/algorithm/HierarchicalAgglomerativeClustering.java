@@ -207,10 +207,10 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
     private void parseLinkage(Preferences props) {
         String simFuncProp = props.get(DISTANCE_FUNCTION, DEFAULT_DISTANCE_FUNCTION);
-        setDistanceFunction(DistanceFactory.getDefault().getProvider(simFuncProp));
+        setDistanceFunction(DistanceFactory.getInstance().getProvider(simFuncProp));
 
         String linkageProp = props.get(CLUSTER_LINKAGE, DEFAULT_CLUSTER_LINKAGE);
-        setLinkage(LinkageFactory.getDefault().getProvider(linkageProp));
+        setLinkage(LinkageFactory.getInstance().getProvider(linkageProp));
         getLinkage().setDistanceMeasure(distanceMeasure);
     }
 

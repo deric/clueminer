@@ -14,7 +14,7 @@ public class ClusteringDialogFactory extends ServiceFactory<ClusteringDialog> {
     
     private static ClusteringDialogFactory instance;
 
-    public static ClusteringDialogFactory getDefault() {
+    public static ClusteringDialogFactory getInstance() {
         if (instance == null) {
             instance = new ClusteringDialogFactory();
         }

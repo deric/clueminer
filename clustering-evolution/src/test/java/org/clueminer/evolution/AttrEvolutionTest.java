@@ -147,7 +147,7 @@ public class AttrEvolutionTest {
 
     @Test
     public void testVariousMeasuresAndDatasets() {
-        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getDefault();
+        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
         //just to make the test fast

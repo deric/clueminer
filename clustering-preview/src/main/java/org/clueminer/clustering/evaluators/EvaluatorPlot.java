@@ -73,7 +73,7 @@ public class EvaluatorPlot extends JPanel {
     }
     
     public void setEvaluator(String eval){
-        evaluator = ClusterEvaluatorFactory.getDefault().getProvider(eval);
+        evaluator = ClusterEvaluatorFactory.getInstance().getProvider(eval);
         System.out.println("evaluator is "+evaluator.getName());
         clusteringChanged();
     }   

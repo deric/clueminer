@@ -13,7 +13,7 @@ public class DataTransformFactory extends ServiceFactory<DataTransform> {
 
     private static DataTransformFactory instance;    
 
-    public static DataTransformFactory getDefault() {
+    public static DataTransformFactory getInstance() {
         if (instance == null) {
             instance = new DataTransformFactory();
         }

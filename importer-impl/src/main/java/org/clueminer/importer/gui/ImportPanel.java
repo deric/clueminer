@@ -56,7 +56,7 @@ public class ImportPanel extends JPanel {
         c.gridx = 0;
         add(new JLabel("Importer: "), c);
         c.gridx = 1;
-        comboImporter = new JComboBox(FileImporterFactory.getDefault().getProviders().toArray());
+        comboImporter = new JComboBox(FileImporterFactory.getInstance().getProviders().toArray());
         add(comboImporter, c);
 
         //lines

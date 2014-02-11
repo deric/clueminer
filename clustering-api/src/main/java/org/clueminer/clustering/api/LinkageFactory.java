@@ -13,7 +13,7 @@ public class LinkageFactory extends ServiceFactory<ClusterLinkage> {
 
     private static LinkageFactory instance;
 
-    public static LinkageFactory getDefault() {
+    public static LinkageFactory getInstance() {
         if (instance == null) {
             instance = new LinkageFactory();
         }

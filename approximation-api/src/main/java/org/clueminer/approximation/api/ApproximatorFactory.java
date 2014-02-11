@@ -13,7 +13,7 @@ public class ApproximatorFactory extends ServiceFactory<Approximator> {
     private static ApproximatorFactory instance;
     private static List<String> paramNames = null;
 
-    public static ApproximatorFactory getDefault() {
+    public static ApproximatorFactory getInstance() {
         if (instance == null) {
             instance = new ApproximatorFactory();
         }

@@ -13,7 +13,7 @@ public class ClusteringFactory extends ServiceFactory<ClusteringAlgorithm> {
 
     private static ClusteringFactory instance;
 
-    public static ClusteringFactory getDefault() {
+    public static ClusteringFactory getInstance() {
         if (instance == null) {
             instance = new ClusteringFactory();
         }
