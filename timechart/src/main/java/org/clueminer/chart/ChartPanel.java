@@ -112,7 +112,7 @@ public class ChartPanel extends JLayeredPane implements Serializable {
         add(overlayToolboxes);
         add(annotationPanel);
         add(sampleInfo);
-        doLayout();
+        validate();
     }
 
     public void setChartFrame(ChartFrame frame) {
@@ -156,6 +156,7 @@ public class ChartPanel extends JLayeredPane implements Serializable {
         if (!chartFrame.getChartData().isChartNull()) {
             chartFrame.getChartData().getChart().paint(g2, chartFrame);
         }
+        System.out.println("overlays cnt: " + overlays.size());
         if (!overlays.isEmpty()) {
             Rectangle bounds = getBounds();
             bounds.grow(-2, -2);

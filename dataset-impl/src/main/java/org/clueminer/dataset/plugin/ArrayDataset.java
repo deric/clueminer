@@ -77,7 +77,14 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public E instance(int index) {
-        return (E) data[index];
+        if (hasIndex(index)) {
+            return get(index);
+        } else if (index == size()) {
+            E inst = (E) builder().create(this.attributeCount());
+            add(inst);
+            return inst;
+        }
+        throw new ArrayIndexOutOfBoundsException("can't get instance at position: " + index);
     }
 
     /**

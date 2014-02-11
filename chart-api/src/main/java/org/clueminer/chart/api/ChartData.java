@@ -57,19 +57,21 @@ public interface ChartData {
 
     public int getTimePointsCnt();
 
+    public void setMinY(double min);
 
-    public void setMin(double min);
-
-    public void setMax(double max);
+    public void setMaxY(double max);
 
     public void checkMax(double value);
 
     public void checkMin(double value);
 
+    public double getMinY();
+
+    public double getMaxY();
+
     public int getFinish();
 
     public void setFinish(int index, Rectangle rect);
-
 
     public double getXFromTime(long time, Rectangle bounds);
 

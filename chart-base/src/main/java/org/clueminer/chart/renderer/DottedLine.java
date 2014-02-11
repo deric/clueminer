@@ -61,8 +61,8 @@ public class DottedLine extends Chart {
         int itemCnt = cd.getTimePointsCnt();
         //long start = System.currentTimeMillis();
         if (!cd.isVisibleNull()) {
-            cd.setMax(Double.MIN_VALUE);
-            cd.setMin(Double.MAX_VALUE);
+            cd.setMaxY(Double.MIN_VALUE);
+            cd.setMinY(Double.MAX_VALUE);
             AffineTransform at = new AffineTransform();
             at.scale(1, 1);
             for (Instance sample : cd.getVisible()) {

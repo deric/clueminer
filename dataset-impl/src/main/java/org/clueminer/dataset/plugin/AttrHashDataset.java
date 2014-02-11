@@ -65,6 +65,7 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
         if (attrNames.containsKey(attributeName)) {
             int index = attrNames.get(attributeName).intValue();
+            //instance method should create new instace (row) if does not exist
             instance(instanceIdx).set(index, value);
         } else {
             throw new RuntimeException("attribute " + attributeName + " not found");

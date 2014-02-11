@@ -42,8 +42,8 @@ public class Line extends Chart {
         int i;
         if (!cd.isVisibleNull()) {
             //long start = System.currentTimeMillis();
-            cd.setMin(Double.MAX_VALUE);
-            cd.setMax(Double.MIN_VALUE);
+            cd.setMinY(Double.MAX_VALUE);
+            cd.setMaxY(Double.MIN_VALUE);
 
             int itemCnt = cd.getTimePointsCnt();
             //  System.out.println("items in dataset "+itemCnt);

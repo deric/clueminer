@@ -88,6 +88,13 @@ public class ArrayDatasetTest {
         Instance inst = dataset.get(0);
         assertNotNull(inst);
         assertEquals(attributesCnt, inst.size());
+
+        int size = dataset.size();
+        // get Instance from position bigger than dataset
+        // => should create new one (and increase dataset size)
+        inst = dataset.instance(size);
+        assertEquals(size + 1, dataset.size());
+        assertNotNull(inst);
     }
 
     @Test

@@ -21,6 +21,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.events.DatasetEvent;
+import org.clueminer.utils.Dump;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -32,10 +33,10 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExponentialOverlay extends AbstractOverlay implements Overlay {
 
     private static final long serialVersionUID = 157348685817993889L;
-    private final OverlayProperties properties;
-    private Dataset<? extends Instance> approxData;
-    private final Approximator approximator;
-    private double[] xAxis;
+    protected OverlayProperties properties;
+    protected Dataset<? extends Instance> approxData;
+    protected Approximator approximator;
+    protected double[] xAxis;
 
     public ExponentialOverlay() {
         super();
@@ -71,6 +72,7 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
     @Override
     public void paint(Graphics2D g, ChartConfig cf, Rectangle bounds) {
         Color color = properties.getColor();
+        properties.setStrokeIndex(3);
         Stroke stroke = properties.getStroke();
 
         if (dataset != null && !dataset.isEmpty()) {
@@ -83,12 +85,14 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
             }
             Point2D.Double point = null;
 
-            int itemCnt = dataset.attributeCount();
             double x, pos = 0;
             double inc = 0.01;
             double[] params;
-            //params[0] =
 
+            System.out.println("bounds: " + bounds);
+            System.out.println("range: " + range);
+            System.out.println("min Y: " + cf.getChartData().getMinY());
+            System.out.println("max Y: " + cf.getChartData().getMaxY());
             for (int i = 0; i < dataset.size(); i++) {
 
                 if (approxData.hasIndex(i)) {
@@ -96,14 +100,14 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
                 } else {
                     params = computeParams(i);
                 }
+                Dump.array(params, "params");
 
-                int j = 0;
-                while (j < itemCnt) {
+                while (pos <= 1.0) {
                     x = cf.getChartData().getXFromRatio(pos, bounds);
                     // double appY = a * Math.exp((-t*pos))+c;
                     double appY = approximator.getFunctionValue(pos, params);
                     double y = cf.getChartData().getY(appY, bounds, range);
-                    System.out.println("pos= " + pos + ", x= " + x + " y= " + y + " aspY= " + appY);
+                    System.out.println("pos= " + pos + ", [ " + x + ", " + y + "] = " + appY);
 
                     Point2D.Double p = new Point2D.Double(x, y);
                     if (point != null) {
@@ -111,7 +115,6 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
                     }
                     point = p;
                     pos += inc;
-                    j++;
                 }
             }
             g.setStroke(old);
@@ -119,7 +122,7 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
         g.dispose();
     }
 
-    private double[] computeParams(int i) {
+    protected double[] computeParams(int i) {
         ContinuousInstance input = (ContinuousInstance) dataset.get(i);
         HashMap<String, Double> coefficients = new HashMap<String, Double>();
         approximator.estimate(xAxis, input, coefficients);
@@ -132,12 +135,12 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
         return coef;
     }
 
-    private double[] fetchParams(int idx) {
+    protected double[] fetchParams(int idx) {
         double[] params = new double[3];
 
-        params[0] = dataset.getAttributeValue("exp-a", idx);
-        params[1] = dataset.getAttributeValue("exp-t", idx);
-        params[2] = dataset.getAttributeValue("exp-c", idx);
+        params[0] = approxData.getAttributeValue("exp-a", idx);
+        params[1] = approxData.getAttributeValue("exp-t", idx);
+        params[2] = approxData.getAttributeValue("exp-c", idx);
         return params;
     }
 
@@ -171,11 +174,21 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
     }
 
     @Override
-    public void datasetOpened(DatasetEvent evt) {
+    public void datasetChanged(DatasetEvent evt) {
+        super.datasetChanged(evt);
         //TODO: deal with different types of datasets
         TimeseriesDataset<? extends Instance> ts = (TimeseriesDataset<? extends Instance>) dataset;
         xAxis = ts.getTimePointsArray();
         approxData = new AttrHashDataset<Instance>(dataset.size());
+        int i = 0;
+        for (String attr : approximator.getParamNames()) {
+            approxData.setAttribute(i++, approxData.attributeBuilder().create(attr, "NUMERIC"));
+        }
+    }
+
+    @Override
+    public void datasetOpened(DatasetEvent evt) {
+
     }
 
     @Override

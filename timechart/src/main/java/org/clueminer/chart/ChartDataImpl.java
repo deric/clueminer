@@ -64,6 +64,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     private int cntTimePoints = 0;
     private String name = "untitled";
     private boolean displayedLastPoint = false;
+    private boolean autoAdjustYRange = true;
 
     public ChartDataImpl() {
     }
@@ -190,8 +191,10 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     private void setVisible(ContinuousInstance item) {
-        checkMax(item.getMax());
-        checkMin(item.getMin());
+        if (autoAdjustYRange) {
+            checkMax(item.getMax());
+            checkMin(item.getMin());
+        }
         visible.add(item);
     }
 
@@ -203,13 +206,16 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     public void setDataset(Dataset<? extends Instance> dataset) {
         clearVisible();
         setVisible((Timeseries<? extends ContinuousInstance>) dataset);
+        fireDatasetChanged(new DatasetEvent(this, dataset));
     }
 
     public final void setVisible(Timeseries<? extends ContinuousInstance> dataset) {
         if (visible == null || visible.isEmpty()) {
             visible = (TimeseriesDataset<? super ContinuousInstance>) dataset;
-            setMax(visible.getMax());
-            setMin(visible.getMin());
+            if (autoAdjustYRange) {
+                setMaxY(visible.getMax());
+                setMinY(visible.getMin());
+            }
         } else {
             if (visible.equals(dataset)) {
                 return; //data are already in set (it would be endless loop)
@@ -297,12 +303,12 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     @Override
-    public void setMin(double min) {
+    public void setMinY(double min) {
         this.minY = min;
     }
 
     @Override
-    public void setMax(double max) {
+    public void setMaxY(double max) {
         this.maxY = max;
     }
 
@@ -372,10 +378,12 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return list;
     }
 
+    @Override
     public double getMinY() {
         return minY;
     }
 
+    @Override
     public double getMaxY() {
         return maxY;
     }
@@ -875,6 +883,14 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     @Override
     public Dataset<? extends Instance> getDataset() {
         return visible;
+    }
+
+    public boolean isAutoAdjustYRange() {
+        return autoAdjustYRange;
+    }
+
+    public void setAutoAdjustYRange(boolean autoAdjustYRange) {
+        this.autoAdjustYRange = autoAdjustYRange;
     }
 
 }
