@@ -13,13 +13,18 @@ import org.clueminer.dataset.api.Instance;
  * @author Tomas Barton
  * @param <E>
  */
-public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implements Dataset<E> {
+public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = -240111429000747905L;
     protected HashMap<String, Integer> attrNames = new HashMap<String, Integer>();
 
     public AttrHashDataset(int capacity) {
-        super(capacity);
+        //some default number of attributes
+        super(capacity, 4);
+    }
+
+    public AttrHashDataset(int capacity, int attrCnt) {
+        super(capacity, attrCnt);
     }
 
     /**
@@ -30,8 +35,7 @@ public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implem
      */
     @Override
     public void setAttribute(int i, Attribute attr) {
-        attr.setIndex(i);
-        attributes.put(i, attr);
+        super.setAttribute(i, attr);
         attrNames.put(attr.getName(), i);
     }
 
@@ -70,14 +74,18 @@ public class AttrHashDataset<E extends Instance> extends SampleDataset<E> implem
     @Override
     public Attribute getAttribute(String attributeName) {
         int idx = attrNames.get(attributeName);
-        return attributes.get(idx);
+        return attributes[idx];
     }
 
     @Override
     public Dataset<E> duplicate() {
         AttrHashDataset<E> copy = new AttrHashDataset<E>(this.size());
         copy.attrNames = this.attrNames;
-        copy.setAttributes(attributes);
+        Map<Integer, Attribute> attrs = new HashMap<Integer, Attribute>(this.attributeCount());
+        for (int i = 0; i < this.attributeCount(); i++) {
+            attrs.put(i, (Attribute) attributes[i].clone());
+        }
+        copy.setAttributes(attrs);
         return copy;
     }
 }
