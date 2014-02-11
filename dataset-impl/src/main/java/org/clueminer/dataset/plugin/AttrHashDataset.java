@@ -54,8 +54,8 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
      */
     @Override
     public double getAttributeValue(String attributeName, int instanceIdx) {
-        int index = attrNames.get(attributeName).intValue();
-        if (index > -1) {
+        if (attrNames.containsKey(attributeName)) {
+            int index = attrNames.get(attributeName).intValue();
             return getAttributeValue(index, instanceIdx);
         }
         throw new RuntimeException("attribute " + attributeName + " not found");
@@ -63,8 +63,8 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
 
     @Override
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
-        int index = attrNames.get(attributeName).intValue();
-        if (index > -1) {
+        if (attrNames.containsKey(attributeName)) {
+            int index = attrNames.get(attributeName).intValue();
             instance(instanceIdx).set(index, value);
         } else {
             throw new RuntimeException("attribute " + attributeName + " not found");
