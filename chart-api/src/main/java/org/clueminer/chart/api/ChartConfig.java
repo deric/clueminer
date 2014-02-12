@@ -1,41 +1,53 @@
 package org.clueminer.chart.api;
 
+import java.awt.MenuContainer;
+import java.awt.Rectangle;
+import java.awt.image.ImageObserver;
+import java.io.Serializable;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class ChartConfig extends JPanel {
+public interface ChartConfig extends ImageObserver, MenuContainer,Serializable {
 
-    private static final long serialVersionUID = -5267569701344658390L;
+    public ChartData getChartData();
 
-    public abstract ChartData getChartData();
+    public void setDataset(Dataset<? extends Instance> dataset);
 
-    public abstract ChartProperties getChartProperties();
+    public ChartProperties getChartProperties();
 
-    public abstract JComponent getChartPanel();
+    public JComponent getChartPanel();
 
-    public abstract boolean hasData();
+    public boolean hasData();
 
-    public abstract void addChartListener(ChartListener listener);
+    public void addChartListener(ChartListener listener);
 
     /**
      * Visible range
      *
      * @return
      */
-    public abstract Range getRange();
+    public Range getRange();
 
-    public abstract void deselectAll();
+    public void deselectAll();
 
-    public abstract Tracker getSplitPanel();
+    public Tracker getSplitPanel();
 
-    public abstract JPopupMenu getMenu();
+    public JPopupMenu getMenu();
 
-    public abstract void zoomIn();
+    public void zoomIn();
 
-    public abstract void zoomOut();
+    public void zoomOut();
+
+    public void repaint();
+
+    public void revalidate();
+
+    public Rectangle getBounds();
+
 }

@@ -18,6 +18,8 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import org.clueminer.chart.api.Annotation;
 import org.clueminer.chart.base.ChartPropertiesImpl;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.openide.nodes.AbstractNode;
@@ -26,7 +28,7 @@ import org.openide.nodes.AbstractNode;
  *
  * @author Tomas Barton
  */
-public class ChartFrame extends ChartConfig implements AdjustmentListener, MouseWheelListener, DatasetListener, Serializable {
+public class ChartFrame extends JPanel implements ChartConfig, AdjustmentListener, MouseWheelListener, DatasetListener, Serializable {
 
     public static final Logger LOG = Logger.getLogger(ChartFrame.class.getName());
     private static final long serialVersionUID = -232088291747540420L;
@@ -218,6 +220,10 @@ public class ChartFrame extends ChartConfig implements AdjustmentListener, Mouse
     @Override
     public ChartData getChartData() {
         return chartData;
+    }
+
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        getChartData().setDataset(dataset);
     }
 
     @Override

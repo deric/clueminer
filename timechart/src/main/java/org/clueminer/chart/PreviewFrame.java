@@ -9,11 +9,14 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.io.Serializable;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.EventListenerList;
 import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.base.ChartPropertiesImpl;
 import org.clueminer.chart.renderer.Line;
+import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
@@ -27,7 +30,7 @@ import org.clueminer.events.DatasetListener;
  *
  * @author Tomas Barton
  */
-public class PreviewFrame extends ChartConfig implements DatasetListener, Serializable, Plotter {
+public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener, Serializable, Plotter {
 
     private static final long serialVersionUID = 6847417134740120657L;
     private ChartDataImpl chartData = null;
@@ -90,19 +93,6 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
         return previewPanel;
     }
 
-    public void setDataset(Timeseries dataset) {
-        chartData = new ChartDataImpl(dataset);
-        chartData.setChart(new Line());
-        chartData.addDatasetListener(this);
-        chartData.clearVisible();
-        //System.out.println("cluster selected: " + cluster.toString());
-        visible = new TimeseriesDataset(dataset.size());
-        visible.setTimePoints(dataset.getTimePoints());
-
-        chartData.setVisible(dataset);
-        System.out.println("visible data: " + dataset.size());
-        previewPanel.revalidate();
-    }
     private transient EventListenerList chartListeners;
 
     private EventListenerList listenerList() {
@@ -217,5 +207,21 @@ public class PreviewFrame extends ChartConfig implements DatasetListener, Serial
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        Timeseries<? extends ContinuousInstance> ts = (Timeseries<? extends ContinuousInstance>) dataset;
+        chartData = new ChartDataImpl(ts);
+        chartData.setChart(new Line());
+        chartData.addDatasetListener(this);
+        chartData.clearVisible();
+        //System.out.println("cluster selected: " + cluster.toString());
+        visible = new TimeseriesDataset(dataset.size());
+        visible.setTimePoints(ts.getTimePoints());
+
+        chartData.setVisible(ts);
+        System.out.println("visible data: " + dataset.size());
+        previewPanel.revalidate();
     }
 }

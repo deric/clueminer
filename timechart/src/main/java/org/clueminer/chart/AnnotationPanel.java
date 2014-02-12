@@ -244,7 +244,7 @@ public class AnnotationPanel extends JPanel
             if (!isCurrentNull()) {
                 AnnotationProperties dialog = new AnnotationProperties(new JFrame(), true);
                 dialog.initializeForm(getCurrent());
-                dialog.setLocationRelativeTo(chartFrame);
+                dialog.setLocationRelativeTo((Component) chartFrame);
                 dialog.setVisible(true);
             }
         }
