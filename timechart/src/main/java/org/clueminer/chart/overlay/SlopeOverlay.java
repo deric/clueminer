@@ -3,9 +3,14 @@ package org.clueminer.chart.overlay;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import org.clueminer.chart.api.ChartConfig;
+import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Overlay;
+import org.clueminer.chart.api.Range;
 import org.clueminer.chart.base.AbstractOverlay;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
@@ -22,7 +27,9 @@ import org.openide.util.lookup.ServiceProvider;
 public class SlopeOverlay extends AbstractOverlay implements Overlay {
 
     private static final String name = "Slope";
-    private Timeseries<? extends ContinuousInstance> dataset;
+    protected OverlayProperties properties;
+    private int dotWidth = 4;
+    private int dotHeight = 4;
 
     public SlopeOverlay() {
 
@@ -38,28 +45,73 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
         return "slope";
     }
 
-    @Override
-    public Timeseries<? extends ContinuousInstance> getDataset() {
-        return dataset;
+    private BufferedImage createDot(Color color) {
+        BufferedImage bufferedImage = new BufferedImage(dotWidth, dotHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D buff = bufferedImage.createGraphics();
+        Ellipse2D.Double ellipse = new Ellipse2D.Double(0, 0, dotWidth, dotHeight);
+        buff.setPaint(color);
+        buff.draw(ellipse);
+        buff.fill(ellipse);
+        buff.dispose();
+        return bufferedImage;
     }
 
     @Override
     public void paint(Graphics2D g, ChartConfig cf, Rectangle bounds) {
         double x1, x2, y1, y2, d;
-        TimePoint[] tp = dataset.getTimePoints();
-        for (ContinuousInstance inst : dataset) {
-            x1 = tp[0].getPosition();
-            y1 = inst.value(0);
-            for (int i = 1; i < inst.size(); i++) {
-                x2 = tp[i].getPosition();
-                y2 = inst.value(i);
-                d = (y2 - y1) / (x2 - x1);
-                System.out.println(i + ": " + d);
-                //move to next point
-                x1 = x2;
-                y1 = y2;
+        BufferedImage minDot = createDot(Color.RED);
+        BufferedImage maxDot = createDot(Color.GREEN);
+        if (dataset != null) {
+            Timeseries<? extends ContinuousInstance> ts = (Timeseries<? extends ContinuousInstance>) dataset;
+            TimePoint[] tp = ts.getTimePoints();
+            double min, max;
+            int minIdx = 0, maxIdx = 0;
+            for (ContinuousInstance inst : ts) {
+                min = Double.MAX_VALUE;
+                max = Double.MIN_VALUE;
+                x1 = tp[0].getPosition();
+                y1 = inst.value(0);
+                for (int i = 1; i < inst.size(); i++) {
+                    x2 = tp[i].getPosition();
+                    y2 = inst.value(i);
+                    d = (y2 - y1) / (x2 - x1);
+                    if (d < min) {
+                        min = d;
+                        minIdx = i;
+                    }
+                    if (d > max) {
+                        max = d;
+                        maxIdx = i;
+                    }
+                    System.out.println(i + ": " + d);
+                    //move to next point
+                    x1 = x2;
+                    y1 = y2;
+                }
+                //paint min and max
+                drawDot(g, cf, minIdx, inst.value(minIdx), minDot);
+                drawDot(g, cf, maxIdx, inst.value(maxIdx), maxDot);
             }
         }
+    }
+
+    private void drawDot(Graphics2D g, ChartConfig cf, int i, double value, BufferedImage img) {
+        AffineTransform at = new AffineTransform();
+        at.scale(1, 1);
+
+        ChartData cd = cf.getChartData();
+        //ChartProperties cp = cf.getChartProperties();
+        Rectangle rect = cf.getChartPanel().getBounds();
+        rect.grow(-2, -2);
+        Range range = cf.getRange();
+        double x = cd.getX(i, rect);
+        double y = cd.getY(value, rect, range);
+
+        //filling shapes seems to be very expensive operation
+        //this is probably the fastest way how to draw
+        at.setToIdentity();
+        at.translate(x - 2, y - 2);
+        g.drawImage(img, at, null);
     }
 
     @Override
@@ -73,12 +125,12 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
 
     @Override
     public void calculate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
     @Override
     public AbstractOverlay newInstance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new SlopeOverlay();
     }
 
     @Override
@@ -103,22 +155,28 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
 
     @Override
     public AbstractNode getNode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new OverlayNode(properties);
+    }
+
+    @Override
+    public void datasetChanged(DatasetEvent evt) {
+        super.datasetChanged(evt);
+
     }
 
     @Override
     public void datasetOpened(DatasetEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
     @Override
     public void datasetClosed(DatasetEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
     @Override
     public void datasetCropped(DatasetEvent evt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
 }
