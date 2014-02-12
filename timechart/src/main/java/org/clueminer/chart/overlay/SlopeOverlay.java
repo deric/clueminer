@@ -88,7 +88,7 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
                     y1 = y2;
                 }
                 //paint min and max
-                drawDot(g, cf, minIdx, inst.value(minIdx), minDot);
+                //drawDot(g, cf, minIdx, inst.value(minIdx), minDot);
                 drawDot(g, cf, maxIdx, inst.value(maxIdx), maxDot);
             }
         }

@@ -161,8 +161,8 @@ public class GrowOverlay extends AbstractOverlay implements Overlay {
         double b = y2 - y1;
 //        System.out.println("b = " + b);
         double beta = Math.atan((b / a));
-        System.out.println("beta = " + beta);
-        System.out.println("[" + x1 + ", " + y1 + "] [" + x2 + ", " + y2 + "]");
+     //   System.out.println("beta = " + beta);
+        //   System.out.println("[" + x1 + ", " + y1 + "] [" + x2 + ", " + y2 + "]");
 
         double f = 0.5;
         double p1 = a * f;
