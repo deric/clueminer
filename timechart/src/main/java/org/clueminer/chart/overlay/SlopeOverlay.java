@@ -26,10 +26,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Overlay.class)
 public class SlopeOverlay extends AbstractOverlay implements Overlay {
 
-    private static final String name = "Slope";
+    private static final String name = "slope";
     protected OverlayProperties properties;
-    private int dotWidth = 4;
-    private int dotHeight = 4;
+    private int dotWidth = 6;
+    private int dotHeight = 6;
 
     public SlopeOverlay() {
 
@@ -60,7 +60,7 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
     public void paint(Graphics2D g, ChartConfig cf, Rectangle bounds) {
         double x1, x2, y1, y2, d;
         BufferedImage minDot = createDot(Color.RED);
-        BufferedImage maxDot = createDot(Color.GREEN);
+        BufferedImage maxDot = createDot(Color.BLUE);
         if (dataset != null) {
             Timeseries<? extends ContinuousInstance> ts = (Timeseries<? extends ContinuousInstance>) dataset;
             TimePoint[] tp = ts.getTimePoints();
@@ -83,7 +83,6 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
                         max = d;
                         maxIdx = i;
                     }
-                    System.out.println(i + ": " + d);
                     //move to next point
                     x1 = x2;
                     y1 = y2;

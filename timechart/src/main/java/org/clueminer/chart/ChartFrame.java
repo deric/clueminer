@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import org.clueminer.chart.api.Annotation;
+import org.clueminer.chart.api.Overlay;
 import org.clueminer.chart.base.ChartPropertiesImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -222,6 +223,7 @@ public class ChartFrame extends JPanel implements ChartConfig, AdjustmentListene
         return chartData;
     }
 
+    @Override
     public void setDataset(Dataset<? extends Instance> dataset) {
         getChartData().setDataset(dataset);
     }
@@ -436,6 +438,13 @@ public class ChartFrame extends JPanel implements ChartConfig, AdjustmentListene
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void addOverlay(Overlay overlay) {
+        List<Overlay> overlays = getSplitPanel().getChartPanel().getOverlays();
+        overlays.add(overlay);
+        getSplitPanel().getChartPanel().setOverlays(overlays);
     }
 
     private class ChartFrameComponentListener implements ComponentListener {

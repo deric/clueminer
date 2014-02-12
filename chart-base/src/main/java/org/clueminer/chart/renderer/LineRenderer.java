@@ -42,8 +42,6 @@ public class LineRenderer extends Chart {
         int i;
         if (!cd.isVisibleNull()) {
             //long start = System.currentTimeMillis();
-            cd.setMinY(-1);
-            cd.setMaxY(2);
 
             int itemCnt = cd.getTimePointsCnt();
             //  System.out.println("items in dataset "+itemCnt);
@@ -57,8 +55,10 @@ public class LineRenderer extends Chart {
                 g.setPaint(inst.getColor());
                 while (i < itemCnt) {
                     value = inst.value(i);
-                    /* cd.checkMax(value);
-                     cd.checkMin(value);*/
+                    if (cd.isAutoAdjustedYRange()) {
+                        cd.checkMax(value);
+                        cd.checkMin(value);
+                    }
                     x = cd.getX(i, rect);
                     y = cd.getY(value, rect, range);
                     if (xPrev != Double.NaN) {

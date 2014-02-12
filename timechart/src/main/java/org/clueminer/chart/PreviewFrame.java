@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.EventListenerList;
+import org.clueminer.chart.api.Overlay;
 import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.base.ChartPropertiesImpl;
 import org.clueminer.chart.renderer.Line;
@@ -223,5 +224,10 @@ public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener
         chartData.setVisible(ts);
         System.out.println("visible data: " + dataset.size());
         previewPanel.revalidate();
+    }
+
+    @Override
+    public void addOverlay(Overlay overlay) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -64,7 +64,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     private int cntTimePoints = 0;
     private String name = "untitled";
     private boolean displayedLastPoint = false;
-    private boolean autoAdjustYRange = true;
+    private boolean autoAdjustedYRange = true;
 
     public ChartDataImpl() {
     }
@@ -191,7 +191,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     private void setVisible(ContinuousInstance item) {
-        if (autoAdjustYRange) {
+        if (autoAdjustedYRange) {
             checkMax(item.getMax());
             checkMin(item.getMin());
         }
@@ -212,7 +212,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     public final void setVisible(Timeseries<? extends ContinuousInstance> dataset) {
         if (visible == null || visible.isEmpty()) {
             visible = (TimeseriesDataset<? super ContinuousInstance>) dataset;
-            if (autoAdjustYRange) {
+            if (autoAdjustedYRange) {
                 setMaxY(visible.getMax());
                 setMinY(visible.getMin());
             }
@@ -885,12 +885,12 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
         return visible;
     }
 
-    public boolean isAutoAdjustYRange() {
-        return autoAdjustYRange;
+    public boolean isAutoAdjustedYRange() {
+        return autoAdjustedYRange;
     }
 
-    public void setAutoAdjustYRange(boolean autoAdjustYRange) {
-        this.autoAdjustYRange = autoAdjustYRange;
+    public void setAutoAdjustedYRange(boolean autoAdjustYRange) {
+        this.autoAdjustedYRange = autoAdjustYRange;
     }
 
 }

@@ -50,4 +50,6 @@ public interface ChartConfig extends ImageObserver, MenuContainer,Serializable {
 
     public Rectangle getBounds();
 
+    public void addOverlay(Overlay overlay);
+
 }

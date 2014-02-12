@@ -106,4 +106,13 @@ public interface ChartData {
     public int getIndex(Point p, Rectangle rect);
 
     public Insets getDataInsets();
+
+    public boolean isAutoAdjustedYRange();
+
+    /**
+     * When true displayed area will be auto adjusted to given data
+     *
+     * @param autoAdjustYRange
+     */
+    public void setAutoAdjustedYRange(boolean autoAdjustYRange);
 }
