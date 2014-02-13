@@ -60,7 +60,7 @@ public class LegendreTransformation implements DataTransform {
      * @param dataset
      * @return array of numbers representing X axis
      */
-    private double[] scaleTimePoints(Timeseries<ContinuousInstance> dataset) {
+    protected double[] scaleTimePoints(Timeseries<ContinuousInstance> dataset) {
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
         double[] xAxis = new double[timePoints.length];
