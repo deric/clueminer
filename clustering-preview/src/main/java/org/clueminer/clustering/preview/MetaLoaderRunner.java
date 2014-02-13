@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.colors.PaletteGenerator;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.colors.UniqueColors;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.types.TimePoint;
@@ -33,6 +33,7 @@ public class MetaLoaderRunner implements Runnable {
     private Dataset<? extends Instance>[] result;
     private final static Logger logger = Logger.getLogger(MetaLoaderRunner.class.getName());
     private final Map<Integer, Color> colors = new HashMap<Integer, Color>();
+    private Color[] baseColors = {Color.red, Color.green, Color.blue, Color.MAGENTA, Color.DARK_GRAY, Color.pink, Color.CYAN};
 
     public MetaLoaderRunner(File[] files, Preferences pref, ProgressHandle ph, Dataset<? extends Instance>[] result) {
         this.files = files;
@@ -111,14 +112,15 @@ public class MetaLoaderRunner implements Runnable {
         int pk;
         Color col;
         //ColorGenerator gen = (ColorGenerator) new PaletteGenerator();
-        ColorGenerator gen = new UniqueColors();
+        ColorGenerator gen = new PaletteGenerator();
+        int i = 0;
         for (Instance inst : data) {
             meta = inst.getMetaNum();
             pk = (int) meta[1]; //we can safely cast to integer
             if (colors.containsKey(pk)) {
                 col = colors.get(pk);
             } else {
-                col = gen.next();
+                col = gen.next(baseColors[(i++) % baseColors.length]);
                 colors.put(pk, col);
             }
             inst.setColor(col);

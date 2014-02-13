@@ -84,6 +84,13 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.load(file);
     }
 
+    /**
+     * Timeseries dataset
+     *
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void loadMTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
         dataset = new TimeseriesDataset<ContinuousInstance>(254);
@@ -126,6 +133,13 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.load(file);
     }
 
+    /**
+     * Preprocessed dataset possibly containing multiple datasets
+     *
+     * @param file
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void loadMPTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
 
@@ -200,8 +214,8 @@ public class MLearnImporter implements LongTask, Runnable {
         ph.start();
         try {
             //loadTimeseries(file);
-            loadMTimeseries(file);
-            //loadMPTimeseries(file);
+            //loadMTimeseries(file);
+            loadMPTimeseries(file);
             //loadDTimeseries(file);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
