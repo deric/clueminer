@@ -1,5 +1,9 @@
 package org.clueminer.dataset.api;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +24,14 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     protected long startTime;
     protected static final Logger logger = Logger.getLogger(AbstractTimeInstance.class.getName());
     protected double[] meta;
+    /**
+     * Contains all attribute statistics calculation algorithms.
+     */
+    protected List<Statistics> statistics = new LinkedList<Statistics>();
+    /**
+     * Mapping of attributes to its providers
+     */
+    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
 
     public AbstractTimeInstance() {
     }
@@ -155,5 +167,35 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     @Override
     public void setMetaNum(double[] meta) {
         this.meta = meta;
+    }
+
+    @Override
+    public Iterator<Statistics> getAllStatistics() {
+        return statistics.iterator();
+    }
+
+    @Override
+    public void registerStatistics(Statistics statistics) {
+        this.statistics.add(statistics);
+        IStats[] stats = statistics.provides();
+        for (IStats stat : stats) {
+            statisticsProviders.put(stat, statistics);
+        }
+    }
+
+    @Override
+    public double statistics(IStats name) {
+        if (statisticsProviders.containsKey(name)) {
+            return statisticsProviders.get(name).statistics(name);
+        }
+        throw new RuntimeException("statistics " + name + " was not registered");
+    }
+
+    @Override
+    public void updateStatistics(Object value) {
+        double val = (Double) value;
+        for (Statistics s : statistics) {
+            s.valueAdded(val);
+        }
     }
 }

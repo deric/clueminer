@@ -1,8 +1,14 @@
 package org.clueminer.hts.fluorescence;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.hts.api.HtsInstance;
@@ -20,6 +26,14 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     private Timeseries<? extends ContinuousInstance> parent;
     private int min = Integer.MAX_VALUE;
     private int max = Integer.MIN_VALUE;
+    /**
+     * Contains all attribute statistics calculation algorithms.
+     */
+    protected List<Statistics> statistics = new LinkedList<Statistics>();
+    /**
+     * Mapping of attributes to its providers
+     */
+    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
 
     public FluorescenceInstance(int size) {
         super(size);
@@ -163,6 +177,7 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
         }
         return res;
     }
+
     /**
      * not supported yet
      *
@@ -176,5 +191,35 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     @Override
     public String getSmiles() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<Statistics> getAllStatistics() {
+        return statistics.iterator();
+    }
+
+    @Override
+    public void registerStatistics(Statistics statistics) {
+        this.statistics.add(statistics);
+        IStats[] stats = statistics.provides();
+        for (IStats stat : stats) {
+            statisticsProviders.put(stat, statistics);
+        }
+    }
+
+    @Override
+    public double statistics(IStats name) {
+        if (statisticsProviders.containsKey(name)) {
+            return statisticsProviders.get(name).statistics(name);
+        }
+        throw new RuntimeException("statistics " + name + " was not registered");
+    }
+
+    @Override
+    public void updateStatistics(Object value) {
+        double val = (Double) value;
+        for (Statistics s : statistics) {
+            s.valueAdded(val);
+        }
     }
 }

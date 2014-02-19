@@ -18,6 +18,7 @@ import org.clueminer.types.TimePoint;
  * instance. e.g. in stock market you have typically opening, closing value etc.
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> implements Instance<E>, ContinuousInstance<E>, Iterable<E> {
 
@@ -53,7 +54,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     @Override
     public int put(double value) {
         if (last >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (last * 1.5));
         }
@@ -64,7 +65,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     public int put(DataItem value) {
         if (last >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (last * 1.5));
         }
@@ -106,7 +107,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     @Override
     public void set(int index, double value) {
         if (index >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (index * 1.5));
         }
@@ -145,7 +146,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     public void crop(int begin, int size) {
         DataItem[] dataNew = new DataItem[size];
         last = 0;
-        //from array, start pos, target, position in copy, length 
+        //from array, start pos, target, position in copy, length
         System.arraycopy(data, begin, dataNew, 0, size);
         data = dataNew;
         last = size;

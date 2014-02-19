@@ -65,6 +65,7 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
             Timeseries<? extends ContinuousInstance> ts = (Timeseries<? extends ContinuousInstance>) dataset;
             TimePoint[] tp = ts.getTimePoints();
             double min, max;
+            double mx, mi;
             int minIdx = 0, maxIdx = 0;
             for (ContinuousInstance inst : ts) {
                 min = Double.MAX_VALUE;
@@ -88,6 +89,8 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
                     y1 = y2;
                 }
                 //paint min and max
+
+                System.out.println("");
                 //drawDot(g, cf, minIdx, inst.value(minIdx), minDot);
                 drawDot(g, cf, maxIdx, inst.value(maxIdx), maxDot);
             }

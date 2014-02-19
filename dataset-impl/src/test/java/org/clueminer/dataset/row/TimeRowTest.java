@@ -285,4 +285,15 @@ public class TimeRowTest {
         assertEquals(meta[0], foo[0], delta);
         assertEquals(meta[1], foo[1], delta);
     }
+
+    @Test
+    public void testMin() {
+        assertEquals(1.0, subject.getMin(), delta);
+    }
+
+    @Test
+    public void testMax() {
+        assertEquals(5.0, subject.getMax(), delta);
+    }
+
 }
