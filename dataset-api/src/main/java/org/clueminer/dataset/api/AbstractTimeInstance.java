@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E> {
 
     private static final long serialVersionUID = 7144673261130372477L;
-    protected double max = Double.MIN_VALUE;
-    protected double min = Double.MAX_VALUE;
     protected Timeseries<? extends ContinuousInstance> parent;
     protected Instance ancestor;
     //real count
@@ -41,12 +39,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     }
 
     protected void checkMinMax(double val) {
-        if (val > this.max) {
-            this.max = val;
-        }
-        if (val < min) {
-            min = val;
-        }
+        updateStatistics(val);
     }
 
     @Override
@@ -73,14 +66,11 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     public abstract E item(int index);
 
     public void resetMinMax() {
-
-        this.min = Double.MAX_VALUE;
-        this.max = Double.MIN_VALUE;
         E dc;
+        resetStatistics();
         for (int i = 0; i < size(); i++) {
             dc = item(i);
             if (dc != null) {
-                checkMinMax(dc.doubleValue());
                 updateStatistics(dc.doubleValue());
             } else {
                 logger.log(Level.INFO, "data-item at pos = {0} is null, instance size = {1}", new Object[]{i, size()});
@@ -111,22 +101,6 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
             res[i] = this.value(i);
         }
         return res;
-    }
-
-    @Override
-    public double getMax() {
-        if (max == Double.MIN_VALUE && !isEmpty()) {
-            resetMinMax();
-        }
-        return max;
-    }
-
-    @Override
-    public double getMin() {
-        if (min == Double.MAX_VALUE && !isEmpty()) {
-            resetMinMax();
-        }
-        return min;
     }
 
     @Override
@@ -196,6 +170,13 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     public void updateStatistics(double value) {
         for (Statistics s : statistics) {
             s.valueAdded(value);
+        }
+    }
+
+    @Override
+    public void resetStatistics() {
+        for (Statistics s : statistics) {
+            s.reset();
         }
     }
 }

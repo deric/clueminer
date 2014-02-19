@@ -11,6 +11,8 @@ import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
+import org.clueminer.stats.AttrNumStats;
+import org.clueminer.stats.NumericalStats;
 import org.clueminer.types.TimePoint;
 
 /**
@@ -44,6 +46,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
      */
     public TimeInstance(int capacity) {
         data = new DataItem[capacity];
+        registerStatistics(new NumericalStats(this));
     }
 
     @Override
@@ -160,8 +163,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
      */
     @Override
     public void normalize(int idx) {
-        this.min = Double.MAX_VALUE;
-        this.max = Double.MIN_VALUE;
+        resetStatistics();
         double normPoint = value(idx);
         DataItem dc;
         for (int i = 0; i < size(); i++) {
@@ -268,6 +270,21 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     @Override
     public Vector add(Vector other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getMax() {
+        return statistics(AttrNumStats.MAX);
+    }
+
+    @Override
+    public double getMin() {
+        return statistics(AttrNumStats.MIN);
+    }
+
+    @Override
+    public Iterator<? extends Object> values() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -78,4 +78,10 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
      */
     public void updateStatistics(double value);
 
+    /**
+     * Reset all registered statistics
+     *
+     */
+    public void resetStatistics();
+
 }

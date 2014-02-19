@@ -12,6 +12,7 @@ import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
+import org.clueminer.stats.AttrNumStats;
 import org.clueminer.stats.NumericalStats;
 
 /**
@@ -31,6 +32,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     public TimeRow(Class<E> klass, int capacity) {
         data = (E[]) Array.newInstance(klass, capacity);
         registerStatistics(new NumericalStats(this));
+        resetMinMax();
     }
 
     @Override
@@ -45,6 +47,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public int put(double value) {
+        updateStatistics(value);
         Number v = value;
         data[last++] = (E) v;
         return last;
@@ -77,6 +80,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             //increase current number of values
             last = index + 1;
         }
+        updateStatistics(value);
     }
 
     @Override
@@ -221,6 +225,16 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public Iterator<? extends Object> values() {
         return new InstanceValueIterator();
+    }
+
+    @Override
+    public double getMax() {
+        return statistics(AttrNumStats.MAX);
+    }
+
+    @Override
+    public double getMin() {
+        return statistics(AttrNumStats.MIN);
     }
 
     class InstanceValueIterator<E extends Number> implements Iterator<E> {
