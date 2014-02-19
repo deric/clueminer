@@ -1,7 +1,7 @@
 package org.clueminer.stats;
 
 import java.util.Iterator;
-import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Statistics;
 
@@ -21,15 +21,15 @@ public class NumericalStats implements Statistics {
     private double avg = Double.NaN;
     private double stddev = Double.NaN;
     private double absdev = Double.NaN;
-    private Attribute attribute;
+    private final DataVector data;
 
-    public NumericalStats(Attribute attribute) {
-        this.attribute = attribute;
+    public NumericalStats(DataVector attribute) {
+        this.data = attribute;
     }
 
     @Override
     public Object clone() {
-        return new NumericalStats(this.attribute);
+        return new NumericalStats(this.data);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class NumericalStats implements Statistics {
 
     private void resetMin() {
         minimum = Double.POSITIVE_INFINITY;
-        Iterator<? extends Object> it = attribute.values();
+        Iterator<? extends Object> it = data.values();
         double value;
         while (it.hasNext()) {
             value = (Double) it.next();
@@ -136,7 +136,7 @@ public class NumericalStats implements Statistics {
 
     private void resetMax() {
         maximum = Double.NEGATIVE_INFINITY;
-        Iterator<? extends Object> it = attribute.values();
+        Iterator<? extends Object> it = data.values();
         double value;
         while (it.hasNext()) {
             value = (Double) it.next();
@@ -182,13 +182,13 @@ public class NumericalStats implements Statistics {
      */
     private double absDev() {
         double mean = statistics(AttrNumStats.AVG);
-        Iterator<? extends Object> it = attribute.values();
+        Iterator<? extends Object> it = data.values();
         double value;
         double asum = 0.0;
         while (it.hasNext()) {
             value = (Double) it.next();
             asum += Math.abs(value - mean);
         }
-        return Math.sqrt(asum / attribute.size());
+        return Math.sqrt(asum / data.size());
     }
 }

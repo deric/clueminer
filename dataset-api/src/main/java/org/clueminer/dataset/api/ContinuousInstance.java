@@ -76,6 +76,6 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
      *
      * @param value
      */
-    public void updateStatistics(Object value);
+    public void updateStatistics(double value);
 
 }

@@ -7,7 +7,7 @@ import java.util.Iterator;
  *
  * @author Tomas Barton
  */
-public interface Attribute extends Cloneable, Serializable {
+public interface Attribute extends Cloneable, Serializable, DataVector {
 
     /**
      * Indicates a missing value for nominal values. For the internal values and

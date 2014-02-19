@@ -81,6 +81,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
             dc = item(i);
             if (dc != null) {
                 checkMinMax(dc.doubleValue());
+                updateStatistics(dc.doubleValue());
             } else {
                 logger.log(Level.INFO, "data-item at pos = {0} is null, instance size = {1}", new Object[]{i, size()});
                 System.out.println(toString());
@@ -192,10 +193,9 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     }
 
     @Override
-    public void updateStatistics(Object value) {
-        double val = (Double) value;
+    public void updateStatistics(double value) {
         for (Statistics s : statistics) {
-            s.valueAdded(val);
+            s.valueAdded(value);
         }
     }
 }

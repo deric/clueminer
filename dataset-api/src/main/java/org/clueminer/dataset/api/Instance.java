@@ -16,7 +16,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public interface Instance<T extends Number> extends Cloneable, Serializable, Vector<T> {
+public interface Instance<T extends Number> extends Cloneable, Serializable, Vector<T>, DataVector {
 
     public String getId();
 

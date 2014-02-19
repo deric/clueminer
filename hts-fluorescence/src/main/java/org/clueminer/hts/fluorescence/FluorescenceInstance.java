@@ -216,10 +216,9 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     }
 
     @Override
-    public void updateStatistics(Object value) {
-        double val = (Double) value;
+    public void updateStatistics(double value) {
         for (Statistics s : statistics) {
-            s.valueAdded(val);
+            s.valueAdded(value);
         }
     }
 }

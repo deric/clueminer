@@ -12,6 +12,7 @@ import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
+import org.clueminer.stats.NumericalStats;
 
 /**
  *
@@ -29,6 +30,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     public TimeRow(Class<E> klass, int capacity) {
         data = (E[]) Array.newInstance(klass, capacity);
+        registerStatistics(new NumericalStats(this));
     }
 
     @Override
@@ -214,6 +216,11 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public ContinuousInstance copy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<? extends Object> values() {
+        return new InstanceValueIterator();
     }
 
     class InstanceValueIterator<E extends Number> implements Iterator<E> {
