@@ -1,5 +1,6 @@
 package org.clueminer.dataset.api;
 
+import java.util.Iterator;
 import org.clueminer.math.Interpolator;
 
 /**
@@ -42,4 +43,39 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
     public void setParent(Timeseries<? extends ContinuousInstance> parent);
 
     public Timeseries<? extends ContinuousInstance> getParent();
+
+    /**
+     * Returns an iterator over all statistics objects available for this type
+     * of instance. Additional statistics can be registered via
+     * {@link #registerStatistics(Statistics)}.
+     *
+     * @return
+     */
+    public Iterator<Statistics> getAllStatistics();
+
+    /**
+     * Registers the instance statistics.
+     *
+     * @param statistics
+     */
+    public void registerStatistics(Statistics statistics);
+
+    /**
+     * Return value of precomputed statistics, which should be on changes in
+     * dataset updated
+     *
+     * @param name
+     * @return
+     */
+    public double statistics(IStats name);
+
+    /**
+     * Triggered when a new value is added to the instance. The type of a value
+     * should be determined by the Attribute itself
+     *
+     *
+     * @param value
+     */
+    public void updateStatistics(Object value);
+
 }
