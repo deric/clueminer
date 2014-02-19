@@ -237,6 +237,10 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return statistics(AttrNumStats.MIN);
     }
 
+    public double getStdDev() {
+        return statistics(AttrNumStats.STD_DEV);
+    }
+
     class InstanceValueIterator<E extends Number> implements Iterator<E> {
 
         private int index = 0;

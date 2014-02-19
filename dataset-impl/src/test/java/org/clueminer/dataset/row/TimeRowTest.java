@@ -296,4 +296,16 @@ public class TimeRowTest {
         assertEquals(5.0, subject.getMax(), delta);
     }
 
+    @Test
+    public void testStdDev() {
+        subject = new TimeRow(Double.class, 15);
+        subject.put(1.0);
+        subject.put(2.0);
+        subject.put(3.0);
+        subject.put(4.0);
+        subject.put(5.0);
+
+        assertEquals(1.5811388300841898, subject.getStdDev(), delta);
+    }
+
 }

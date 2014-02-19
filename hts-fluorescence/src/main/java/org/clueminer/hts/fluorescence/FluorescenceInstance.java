@@ -221,4 +221,16 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
             s.valueAdded(value);
         }
     }
+
+    @Override
+    public Iterator<? extends Object> values() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void resetStatistics() {
+        for (Statistics s : statistics) {
+            s.reset();
+        }
+    }
 }
