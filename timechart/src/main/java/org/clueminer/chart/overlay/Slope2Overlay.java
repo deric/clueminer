@@ -69,7 +69,7 @@ public class Slope2Overlay extends AbstractOverlay implements Overlay {
             TimePoint[] tp = ts.getTimePoints();
             double min, max;
             int minIdx = 0, maxIdx = 0;
-            int window = 3;
+            int window = 5;
             int j;
             for (ContinuousInstance inst : ts) {
                 min = Double.MAX_VALUE;
@@ -93,13 +93,13 @@ public class Slope2Overlay extends AbstractOverlay implements Overlay {
                     if (d < min) {
                         min = d;
                         //index should be even
-                        minIdx = i + window / 2;
+                        minIdx = i; //+ window / 2;
                     }
                     if (d > max) {
                         max = d;
                         maxIdx = i + window / 2;
                     }
-                    System.out.println("d " + i + " = " + d);
+                    //System.out.println("d " + i + " = " + d);
                 }
                 //paint min and max
 

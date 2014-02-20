@@ -95,7 +95,11 @@ public class SlopeOverlay extends AbstractOverlay implements Overlay {
                 }
                 //paint min and max
 
-                //System.out.println("std dev = " + inst.getStdDev());
+                System.out.println("std dev = " + inst.getStdDev() + " min " + inst.value(minIdx) + " max " + inst.value(maxIdx));
+                if (Math.abs(inst.value(maxIdx) - inst.value(minIdx)) < inst.getStdDev()) {
+                    minIdx = 0;
+                    maxIdx = 0;
+                }
                 drawStdDev(g, cf, inst.value(minIdx) + inst.getStdDev(), inst);
                 drawDot(g, cf, minIdx, inst.value(minIdx), minDot);
                 drawDot(g, cf, maxIdx, inst.value(maxIdx), maxDot);
