@@ -27,6 +27,8 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
 
     /**
      * Creates a new data row backed by an primitive array.
+     *
+     * @param data
      */
     public FloatArrayDataRow(float[] data) {
         super(null);
@@ -60,6 +62,8 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
 
     /**
      * Returns the desired data for the given index.
+     *
+     * @return
      */
     @Override
     protected double getValue(int index, double defaultValue) {
@@ -68,7 +72,6 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         }
         return value(index);
     }
-    
 
     @Override
     public Float getValue(int index) {
@@ -139,6 +142,8 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
     /**
      * Creates a new array of the given size if necessary and copies the data
      * into the new array.
+     *
+     * @param numberOfColumns
      */
     @Override
     public void setCapacity(int numberOfColumns) {

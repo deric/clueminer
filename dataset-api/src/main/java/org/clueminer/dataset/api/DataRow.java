@@ -1,8 +1,11 @@
 package org.clueminer.dataset.api;
 
+import java.util.Iterator;
+
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
 public abstract class DataRow<T extends Number> extends AbstractInstance<T> implements Instance<T> {
 
@@ -54,6 +57,9 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
     /**
      * Returns the value stored at the given {@link Attribute}'s index. Returns
      * Double.NaN if the given attribute is null.
+     *
+     * @param attribute
+     * @return
      */
     public double getValue(Attribute attribute) {
         if (attribute == null) {
@@ -94,6 +100,33 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
     @Override
     public void setAncestor(Instance instance) {
         this.ancestor = instance;
+    }
+
+    @Override
+    public Iterator<? extends Object> values() {
+        return new InstanceValueIterator();
+    }
+
+    private class InstanceValueIterator implements Iterator<Double> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public Double next() {
+            index++;
+            return value(index - 1);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
+
+        }
     }
 
     @Override

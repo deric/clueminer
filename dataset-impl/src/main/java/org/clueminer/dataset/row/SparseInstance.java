@@ -91,7 +91,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
      * map previously contained a mapping for the key, the old value is
      * replaced.
      *
-     * @param key key with which the specified value is to be associated
+     * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with <tt>key</tt>, or <tt>null</tt>
      * if there was no mapping for <tt>key</tt>. (A <tt>null</tt> return can
@@ -296,7 +296,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         return set;
     }
 
-    public Collection<Double> values() {
+    public Collection<Double> valuesCollection() {
         return data.values();
     }
 
@@ -351,7 +351,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
 
     class SparseInstanceIterator implements Iterator<Double> {
 
-        private Iterator<Integer> it;
+        private final Iterator<Integer> it;
 
         public SparseInstanceIterator() {
             it = data.keySet().iterator();
