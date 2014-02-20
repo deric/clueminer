@@ -237,6 +237,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return statistics(AttrNumStats.MIN);
     }
 
+    @Override
     public double getStdDev() {
         return statistics(AttrNumStats.STD_DEV);
     }
