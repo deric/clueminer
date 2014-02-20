@@ -287,4 +287,9 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     public Iterator<? extends Object> values() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public double getStdDev() {
+        return statistics(AttrNumStats.STD_DEV);
+    }
 }

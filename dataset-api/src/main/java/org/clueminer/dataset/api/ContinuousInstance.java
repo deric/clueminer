@@ -20,6 +20,8 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
 
     public double getMax();
 
+    public double getStdDev();
+
     public void crop(int begin, int size);
 
     /**

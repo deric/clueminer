@@ -13,6 +13,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.math.Interpolator;
+import org.clueminer.stats.AttrNumStats;
 
 /**
  *
@@ -232,5 +233,10 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
         for (Statistics s : statistics) {
             s.reset();
         }
+    }
+
+    @Override
+    public double getStdDev() {
+        return statistics(AttrNumStats.STD_DEV);
     }
 }
