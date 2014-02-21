@@ -16,7 +16,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CurveApproximator extends Approximator {
 
     private static final String name = "curve-approx";
-    private final String[] names = {"grow-start", "grow-period", "grow-angle", "dx-pos", "dx-y"};
+    private final String[] names = {"grow-start", "grow-period", "grow-angle", "dx-pos", "dx-y", "win-min", "winx-min", "win-max", "winx-max"};
     private Map<Integer, GrowingPeriod> subsequence;
     private int subSeq;
     private double delta = -0.05;
@@ -89,6 +89,9 @@ public class CurveApproximator extends Approximator {
                 maxId = entry.getKey();
             }
         }
+
+        robustDetection(xAxis, instance, coefficients);
+
         if (maxId > -1) {
             GrowingPeriod grow = subsequence.get(maxId);
             coefficients.put("grow-start", grow.x1);
@@ -105,6 +108,49 @@ public class CurveApproximator extends Approximator {
         double a = a2 - a1;
         double b = b2 - b1;
         return Math.atan((b / a));
+    }
+
+    private void robustDetection(double[] xAxis, ContinuousInstance instance, HashMap<String, Double> coefficients) {
+        double x1, x2, y1, y2, d, ay1, ay2;
+        double min, max;
+        int minIdx = 0, maxIdx;
+        int window = 5;
+        int j;
+
+        min = Double.MAX_VALUE;
+        max = Double.MIN_VALUE;
+        for (int i = 0; i < (instance.size() - 2 * window); i++) {
+            j = 0;
+            y1 = 0;
+            y2 = 0;
+            while (j < window) {
+                //if(inst.)
+                y1 += instance.value(i + j);
+                y2 += instance.value(i + j + window);
+                j++;
+            }
+            ay1 = y1 / (double) window;
+            ay2 = y2 / (double) window;
+
+            x1 = (xAxis[i] - xAxis[i + window - 1]);
+            x2 = (xAxis[i + window] - xAxis[i + 2 * window - 1]);
+            d = (ay2 - ay1) / (x2 - x1);
+            if (d < min) {
+                min = d;
+                //index should be even
+                minIdx = i; //+ window / 2;
+            }
+            if (d > max) {
+                max = d;
+                maxIdx = i + window / 2;
+            }
+            //System.out.println("d " + i + " = " + d);
+        }
+        //paint min and max
+        coefficients.put("win-min", instance.value(minIdx));
+        coefficients.put("winx-min", xAxis[minIdx]);
+        coefficients.put("win-max", instance.value(minIdx));
+        coefficients.put("winx-max", xAxis[minIdx]);
     }
 
     private void addSubSequence(Instance inst, int startId, int endId, Map<Integer, GrowingPeriod> map) {
