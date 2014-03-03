@@ -52,9 +52,8 @@ public class GrowOverlay extends AbstractOverlay implements Overlay {
     }
 
     /**
-     * create an AffineTransform
-     * and a triangle centered on (0,0) and pointing downward
-     * somewhere outside Swing's paint loop
+     * create an AffineTransform and a triangle centered on (0,0) and pointing
+     * downward somewhere outside Swing's paint loop
      */
     private void initComponents() {
         arrowHead = new Polygon();
@@ -149,20 +148,17 @@ public class GrowOverlay extends AbstractOverlay implements Overlay {
         ChartData cd = cf.getChartData();
         //ChartProperties cp = cf.getChartProperties();
         Rectangle rect = cf.getChartPanel().getBounds();
-        rect.grow(-2, -2);
+        //rect.grow(-2, -2);
         Range range = cf.getRange();
         double x1 = cd.getXFromRatio(a1, rect);
         double x2 = cd.getXFromRatio(a2, rect);
         double y1 = cd.getY(b1, rect, range);
         double y2 = cd.getY(b2, rect, range);
-
         double a = x2 - x1;
-        // System.out.println("a = " + a);
         double b = y2 - y1;
-//        System.out.println("b = " + b);
         double beta = Math.atan((b / a));
-        //   System.out.println("beta = " + beta);
-        //   System.out.println("[" + x1 + ", " + y1 + "] [" + x2 + ", " + y2 + "]");
+        //System.out.println("[" + x1 + ", " + y1 + "] [" + x2 + ", " + y2 + "]");
+        //System.out.println("grow: a = " + a + ", b = " + b + " tan= " + Math.atan((b / a)) + ", arg = " + (b / a));
 
         double f = 0.5;
         double p1 = a * f;

@@ -6,6 +6,8 @@ import java.util.Map;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.std.StdScale;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -21,6 +23,9 @@ public class CurveApproximator extends Approximator {
     private int subSeq;
     private double delta = -0.05;
     private double[] xAxis;
+    private double ymin = Double.NaN;
+    private double ymax = Double.NaN;
+    private StdScale sc = new StdScale();
 
     @Override
     public String getName() {
@@ -90,6 +95,15 @@ public class CurveApproximator extends Approximator {
             }
         }
 
+        if (Double.isNaN(ymin)) {
+            Timeseries ts = instance.getParent();
+            if (ts == null) {
+                throw new RuntimeException("parent dataset is not set");
+            }
+            ymin = ts.getMin();
+            ymax = ts.getMax();
+        }
+
         robustDetection(xAxis, instance, coefficients);
 
         if (maxId > -1) {
@@ -105,8 +119,13 @@ public class CurveApproximator extends Approximator {
     }
 
     private double growAngle(double a1, double a2, double b1, double b2) {
+        //standartize y values, so that we can compare angels
+        double y1 = sc.scaleToRange(b1, ymin, ymax, 0.0, 1.0);
+        double y2 = sc.scaleToRange(b2, ymin, ymax, 0.0, 1.0);
         double a = a2 - a1;
-        double b = b2 - b1;
+        double b = y2 - y1;
+        //System.out.println("curve: [" + a1 + ", " + y1 + "] [" + a2 + ", " + y2 + "]");
+        //System.out.println("curve: a = " + a + ", b = " + b + " tan= " + Math.atan((b / a)) + ", arg = " + (b / a));
         return Math.atan((b / a));
     }
 
@@ -175,6 +194,22 @@ public class CurveApproximator extends Approximator {
     @Override
     public int getNumCoefficients() {
         return names.length;
+    }
+
+    public double getYmin() {
+        return ymin;
+    }
+
+    public void setYmin(double ymin) {
+        this.ymin = ymin;
+    }
+
+    public double getYmax() {
+        return ymax;
+    }
+
+    public void setYmax(double ymax) {
+        this.ymax = ymax;
     }
 
     private class GrowingPeriod {
