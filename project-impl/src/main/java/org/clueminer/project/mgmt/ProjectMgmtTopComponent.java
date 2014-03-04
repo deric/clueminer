@@ -1,14 +1,18 @@
 package org.clueminer.project.mgmt;
 
 import java.awt.BorderLayout;
+import java.util.Collection;
+import org.clueminer.project.api.Project;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -37,6 +41,7 @@ import org.openide.util.NbBundle.Messages;
 public final class ProjectMgmtTopComponent extends TopComponent implements LookupListener {
 
     private final BeanTreeView treeView;
+    private Lookup.Result<Project> result = null;
 
     public ProjectMgmtTopComponent() {
         initComponents();
@@ -73,7 +78,9 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Looku
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Project.class);
+        result.addLookupListener(this);
+        resultChanged(new LookupEvent(result));
     }
 
     @Override
@@ -95,6 +102,7 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Looku
 
     @Override
     public void resultChanged(LookupEvent le) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Collection<? extends Project> allProjects = result.allInstances();
+
     }
 }
