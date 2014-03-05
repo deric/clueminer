@@ -6,8 +6,10 @@ import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
+import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -93,11 +95,61 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
         result = Utilities.actionsGlobalContext().lookupResult(Project.class);
         result.addLookupListener(this);
         resultChanged(new LookupEvent(result));
+
+
+        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+
+        Workspace workspace = pc.getCurrentWorkspace();
+        if (workspace != null) {
+            System.out.println("got result (project)");
+            Project p = workspace.getLookup().lookup(Project.class);
+            if (p != null) {
+                System.out.println("got project! = " + p.getName());
+            }
+        }
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            @Override
+            public void initialize(Workspace workspace) {
+                //add preview class to lookup
+
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+                Collection<? extends Project> lp = workspace.getLookup().lookupAll(Project.class);
+                System.out.println("got project lookup " + lp.size());
+
+                System.out.println("projects (" + pc.getProjects().size() + "): " + pc.getProjects().toString());
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+
+            }
+
+            @Override
+            public void disable() {
+
+            }
+
+            @Override
+            public void projectActivated(Project project) {
+                System.out.println("project activated: " + project.getName());
+            }
+        });
+
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        result.removeLookupListener(this);
+        result = null;
     }
 
     void writeProperties(java.util.Properties p) {
