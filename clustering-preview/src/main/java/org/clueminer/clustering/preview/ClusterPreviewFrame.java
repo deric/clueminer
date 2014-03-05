@@ -2,6 +2,8 @@ package org.clueminer.clustering.preview;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,13 +36,14 @@ import org.openide.util.TaskListener;
  *
  * @author Tomas Barton
  */
-public class ClusterPreviewFrame extends JPanel implements Serializable, AdjustmentListener, ChangeListener, TaskListener {
+public class ClusterPreviewFrame extends JPanel implements Serializable, ActionListener, AdjustmentListener, ChangeListener, TaskListener {
 
     private static final long serialVersionUID = -8719504995316248781L;
     private JScrollPane scroller;
     private PreviewFrameSet previewSet;
     private JSlider chartSizeSlider;
     private JToolBar toolbar;
+    private JCheckBox chckScale;
     private JButton btnChooseMeta;
     private final int minChartHeight = 150;
     private final int maxChartHeight = 650;
@@ -72,6 +76,10 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
         toolbar.add(chartSizeSlider);
         toolbar.setAlignmentX(Component.LEFT_ALIGNMENT);
         toolbar.add(btnChooseMeta);
+        chckScale = new JCheckBox("use global scale");
+        chckScale.setSelected(true);
+        toolbar.add(chckScale);
+        chckScale.addActionListener(this);
 
         scroller = new JScrollPane(previewSet);
         scroller.getViewport().setDoubleBuffered(true);
@@ -172,6 +180,12 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, Adjustm
         }
         previewSet.setMetaMap(metaMap);
         previewSet.setMetaColors(loader.getColors());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        logger.log(Level.INFO, "global scale {0}", chckScale.isSelected());
+        previewSet.setGlobalScale(chckScale.isSelected());
     }
 
 }

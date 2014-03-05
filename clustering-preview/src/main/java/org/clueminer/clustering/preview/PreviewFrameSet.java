@@ -20,7 +20,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,6 +36,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private Clustering<Cluster> clust;
     private Dimension dimChart;
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
+    private boolean useGlobalScale = true;
     private double xmax = 0.0;
     private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
     private HashMap<Integer, Instance> metaMap;
@@ -178,7 +178,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     }
 
     private void checkBounds(Plotter plot, Instance metaInst) {
-        if (metaInst instanceof ContinuousInstance) {
+        if (useGlobalScale && metaInst instanceof ContinuousInstance) {
             ContinuousInstance tsInst = (ContinuousInstance) metaInst;
             Timeseries<ContinuousInstance> ts = (Timeseries<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
             double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
@@ -284,4 +284,10 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         this.metaColors = metaColors;
     }
 
+    public void setGlobalScale(boolean b) {
+        if (useGlobalScale != b) {
+            this.useGlobalScale = b;
+            repaint();
+        }
+    }
 }
