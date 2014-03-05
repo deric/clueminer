@@ -96,7 +96,6 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
         result.addLookupListener(this);
         resultChanged(new LookupEvent(result));
 
-
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
         Workspace workspace = pc.getCurrentWorkspace();
@@ -121,6 +120,7 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
                 System.out.println("got project lookup " + lp.size());
 
                 System.out.println("projects (" + pc.getProjects().size() + "): " + pc.getProjects().toString());
+                updateProjects(pc.getProjects());
             }
 
             @Override
@@ -164,9 +164,16 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
         // TODO read your settings according to their version
     }
 
+    private void updateProjects(Collection<? extends Project> allProjects) {
+        if (allProjects.size() > 0) {
+            root = new ProjectsNode(allProjects);
+        }
+        mgr.setRootContext(root);
+    }
+
     @Override
     public void resultChanged(LookupEvent le) {
-        logger.log(Level.INFO, "project lookup "+le.toString());
+        logger.log(Level.INFO, "project lookup " + le.toString());
         Collection<? extends Project> allProjects = result.allInstances();
         if (allProjects.size() > 0) {
             if (root == null) {

@@ -178,21 +178,25 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     }
 
     private void checkBounds(Plotter plot, Instance metaInst) {
-        if (useGlobalScale && metaInst instanceof ContinuousInstance) {
+        if (metaInst instanceof ContinuousInstance) {
             ContinuousInstance tsInst = (ContinuousInstance) metaInst;
             Timeseries<ContinuousInstance> ts = (Timeseries<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
-            double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
-            if (pos > xmax) {
+               double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
+             if (pos > xmax) {
                 xmax = pos;
                 plot.setXBounds(0, xmax);
             }
-            if (tsInst.getMin() < ymin) {
-                ymin = tsInst.getMin();
+            logger.log(Level.INFO, "x max is {0}", xmax);
+            logger.log(Level.INFO, "x max time is {0}", ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getTimestamp());
+            if (useGlobalScale) {
+                if (tsInst.getMin() < ymin) {
+                    ymin = tsInst.getMin();
+                }
+                if (ts.getMax() > ymax) {
+                    ymax = ts.getMax();
+                }
+                plot.setYBounds(ymin, ymax);
             }
-            if (ts.getMax() > ymax) {
-                ymax = ts.getMax();
-            }
-            plot.setYBounds(ymin, ymax);
         }
     }
 

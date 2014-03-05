@@ -8,6 +8,7 @@ import org.netbeans.api.progress.ProgressHandle;
  * Dataset for representing time series
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public interface Timeseries<E extends ContinuousInstance> extends Dataset<E> {
 
@@ -16,9 +17,11 @@ public interface Timeseries<E extends ContinuousInstance> extends Dataset<E> {
     public double interpolate(int index, double x, Interpolator interpolator);
 
     public TimePoint[] getTimePoints();
-    
+
     public double[] getTimePointsArray();
-    
+
+    public double[] getTimestampsArray();
+
     public void setTimePoints(TimePoint[] tp);
 
     /**

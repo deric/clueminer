@@ -480,4 +480,9 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         copy.timePoints = this.timePoints;
         return copy;
     }
+
+    @Override
+    public double[] getTimestampsArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

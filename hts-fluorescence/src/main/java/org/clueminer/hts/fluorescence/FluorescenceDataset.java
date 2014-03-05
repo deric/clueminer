@@ -74,4 +74,9 @@ public class FluorescenceDataset<E extends FluorescenceInstance> extends Timeser
     public void setAttributes(TimePointAttribute[] tp){
         this.timePoints = tp;
     }
+
+    @Override
+    public double[] getTimestampsArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
