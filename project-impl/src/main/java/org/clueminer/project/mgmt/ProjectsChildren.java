@@ -11,9 +11,9 @@ import org.openide.nodes.Node;
  */
 public class ProjectsChildren extends Children.Keys<Project> {
 
-    private Collection<Project> projects;
+    private final Collection<? extends Project> projects;
 
-    public ProjectsChildren(Collection<Project> projects) {
+    public ProjectsChildren(Collection<? extends Project> projects) {
         this.projects = projects;
 
         setKeys(projects);

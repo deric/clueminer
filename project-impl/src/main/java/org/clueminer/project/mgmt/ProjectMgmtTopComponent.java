@@ -1,11 +1,18 @@
 package org.clueminer.project.mgmt;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.awt.BorderLayout;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.api.Project;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -38,15 +45,20 @@ import org.openide.util.Utilities;
     "CTL_ProjectMgmtTopComponent=ProjectMgmt Window",
     "HINT_ProjectMgmtTopComponent=This is a ProjectMgmt window"
 })
-public final class ProjectMgmtTopComponent extends TopComponent implements LookupListener {
+public final class ProjectMgmtTopComponent extends TopComponent implements ExplorerManager.Provider, LookupListener {
 
     private final BeanTreeView treeView;
     private Lookup.Result<Project> result = null;
+    private final ExplorerManager mgr = new ExplorerManager();
+    private ProjectsNode root;
+    private static final Logger logger = Logger.getLogger(ProjectMgmtTopComponent.class.getName());
 
     public ProjectMgmtTopComponent() {
         initComponents();
         setName(Bundle.CTL_ProjectMgmtTopComponent());
         setToolTipText(Bundle.HINT_ProjectMgmtTopComponent());
+
+        associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
 
         setLayout(new BorderLayout());
         this.treeView = new BeanTreeView();
@@ -102,7 +114,22 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Looku
 
     @Override
     public void resultChanged(LookupEvent le) {
+        logger.log(Level.INFO, "project lookup "+le.toString());
         Collection<? extends Project> allProjects = result.allInstances();
+        if (allProjects.size() > 0) {
+            if (root == null) {
+                root = new ProjectsNode(allProjects);
+            } else {
+                Iterable<? extends Project> prj = Iterables.concat(root.getProjects(), allProjects);
+                Collection<? extends Project> collection = Lists.newArrayList(prj);
+                root = new ProjectsNode(collection);
+            }
+            mgr.setRootContext(root);
+        }
+    }
 
+    @Override
+    public ExplorerManager getExplorerManager() {
+        return mgr;
     }
 }
