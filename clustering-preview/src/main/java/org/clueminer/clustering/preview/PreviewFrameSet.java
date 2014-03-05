@@ -15,7 +15,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterPreviewer;
-import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -71,7 +70,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         logger.log(Level.INFO, "got {0} clusters", clusterNum);
 
         Instance inst;
-        TimeseriesDataset<ContinuousInstance> ts;
+        Timeseries<ContinuousInstance> ts;
 
         if (clusterNum > 0) {
             plots = new Plotter[clusterNum];
@@ -87,7 +86,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
                     cluster = cluster.getParent();
                 }
                 if (cluster instanceof Timeseries) {
-                    ts = (TimeseriesDataset<ContinuousInstance>) cluster;
+                    ts = (Timeseries<ContinuousInstance>) cluster;
                     ymax = ts.getMax();
                     ymin = ts.getMin();
                 }
@@ -181,7 +180,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     private void checkBounds(Plotter plot, Instance metaInst) {
         if (metaInst instanceof ContinuousInstance) {
             ContinuousInstance tsInst = (ContinuousInstance) metaInst;
-            TimeseriesDataset<ContinuousInstance> ts = (TimeseriesDataset<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
+            Timeseries<ContinuousInstance> ts = (Timeseries<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
             double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
             if (pos > xmax) {
                 xmax = pos;
