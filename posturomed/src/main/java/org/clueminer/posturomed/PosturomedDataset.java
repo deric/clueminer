@@ -172,4 +172,9 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
     public double getMax() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public double[] getTimestampsArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
