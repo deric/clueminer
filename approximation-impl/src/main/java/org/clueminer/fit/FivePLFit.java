@@ -1,4 +1,4 @@
-package org.clueminer.approximation;
+package org.clueminer.fit;
 
 import jaolho.data.lma.LMAFunction;
 

@@ -131,6 +131,7 @@
                         <publicPackage>org.clueminer.dtw</publicPackage>
                         <publicPackage>org.clueminer.dtw.run</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
+                        <publicPackage>org.clueminer.fit</publicPackage>
                         <publicPackage>org.clueminer.lang</publicPackage>
                         <publicPackage>org.clueminer.matrix</publicPackage>
                         <publicPackage>org.clueminer.sax</publicPackage>

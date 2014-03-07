@@ -1,5 +1,6 @@
 package org.clueminer.approximation;
 
+import org.clueminer.fit.ExponentialFit;
 import jaolho.data.lma.LMA;
 import jaolho.data.lma.LMAFunction;
 import java.util.HashMap;
