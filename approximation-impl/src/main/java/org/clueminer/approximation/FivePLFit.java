@@ -12,11 +12,6 @@ import jaolho.data.lma.LMAFunction;
 public class FivePLFit extends LMAFunction {
 
     /**
-     * Number of exponentials to fit.
-     */
-    private final int numParam = 5;
-
-    /**
      * Constructs a function with the given number of summed exponentials.
      */
     public FivePLFit() {
@@ -28,7 +23,20 @@ public class FivePLFit extends LMAFunction {
     }
 
     @Override
-    public double getPartialDerivate(double x, double[] a, int parameterIndex) {
-        return 1e-20;
+    public double getPartialDerivate(double x, double[] p, int parameterIndex) {
+        switch (parameterIndex) {
+            case 0: // a
+                return Math.pow(Math.pow(x / p[2], p[1]) + 1, -p[4]);
+            case 1: // b
+                return p[4] * (-(p[0] - p[3])) * Math.pow(x / p[2], p[1]) * Math.log(x / p[2]) * Math.pow((Math.pow(x / p[2], p[1]) + 1), -p[4] - 1);
+            case 2: // c
+                return (p[1] * p[4] * (p[0] - p[3]) * Math.pow(x / p[2], p[1]) * Math.pow((Math.pow(x / p[2], p[1]) + 1), -p[4] - 1)) / p[2];
+            case 3: // d
+                return 1 - (Math.pow((Math.pow(x / p[2], p[1]) + 1), -p[4]));
+            case 4: // g
+                return (-(p[0] - p[3])) * Math.pow((Math.pow(x / p[2], p[1]) + 1), -p[4]) * Math.log(Math.pow(x / p[2], p[1]) + 1);
+            default:
+                throw new RuntimeException("unknown parameter");
+        }
     }
 }
