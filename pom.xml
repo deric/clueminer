@@ -6,6 +6,25 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>clueminer-parent</name>
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL)</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:deric/clueminer.git</connection>
+        <developerConnection>scm:git:git@github.com:deric/clueminer.git</developerConnection>
+        <url>https://github.com/deric/clueminer</url>
+    </scm>
+    <inceptionYear>2011</inceptionYear>
+    <developers>
+        <developer>
+            <id>deric</id>
+            <name>Tomas Barton</name>
+            <email>barton.tomas@gmail.com</email>
+        </developer>
+    </developers>
 
     <repositories>
         <!--
@@ -59,6 +78,70 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadoc</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+               <!--
+                    Sign the project artifacts with GnuPG.
+
+                    Will be executed during deploy phase, not install.
+                    Maven Central requires all artifacts to be signed.
+                -->
+                <plugin>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.4</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--
+                    Deploy artifacts to remote Maven repository.
+
+                    This is explicitly defined here to enforce execution order *after* source, javadoc
+                    and gpg plugins, thus sources and javadoc are always packaged, signed and deployed
+                    to Maven repository when performing deploy.
+                -->
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.1</version>
+                    <executions>
+                        <execution>
+                            <id>deploy</id>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -114,10 +197,10 @@
         <module>mlearn</module>
         <module>importer-impl</module>
         <module>clustering-evolution</module>
-    <module>timechart</module>
-    <module>chart-api</module>
-    <module>chart-base</module>
-  </modules>
+        <module>timechart</module>
+        <module>chart-api</module>
+        <module>chart-base</module>
+    </modules>
     <reporting>
         <plugins>
             <plugin>
