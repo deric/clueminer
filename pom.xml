@@ -200,7 +200,8 @@
         <module>timechart</module>
         <module>chart-api</module>
         <module>chart-base</module>
-    </modules>
+    <module>curve</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>
