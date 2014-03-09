@@ -8,7 +8,14 @@ import org.clueminer.math.Numeric;
  *
  * @author Tomas Barton
  */
-public class LinearInterpolator extends Interpolator {
+public class LinearInterpolator implements Interpolator {
+
+    private static final String name = "linear";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public double getValue(Numeric[] axisX, Numeric[] axisY, double x, int l, int u) {

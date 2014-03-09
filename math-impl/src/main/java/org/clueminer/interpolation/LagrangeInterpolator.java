@@ -8,7 +8,14 @@ import org.clueminer.math.Numeric;
  * @link http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html
  * @author Tomas Barton
  */
-public class LagrangeInterpolator extends Interpolator {
+public class LagrangeInterpolator implements Interpolator {
+
+    private static final String name = "Lagrange";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public double getValue(Numeric[] x, Numeric[] y, double z, int lower, int upper) {

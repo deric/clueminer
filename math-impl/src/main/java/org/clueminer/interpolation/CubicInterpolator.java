@@ -9,7 +9,14 @@ import org.clueminer.math.Numeric;
  *
  * @author Tomas Barton
  */
-public class CubicInterpolator extends Interpolator {
+public class CubicInterpolator implements Interpolator {
+
+    private static final String name = "cubic";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     public static double getValue(double[] p, double x) {
         return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3]
@@ -46,7 +53,7 @@ public class CubicInterpolator extends Interpolator {
         } else if (lower + 2 == axisY.length) {
             p1 = axisY[lower].getValue();
             p2 = axisY[lower + 1].getValue();
-            p3 = axisY[lower + 1].getValue(); //we don't have higher index           
+            p3 = axisY[lower + 1].getValue(); //we don't have higher index
         } else {
             p1 = axisY[lower].getValue();
             p2 = axisY[lower + 1].getValue();
@@ -74,7 +81,7 @@ public class CubicInterpolator extends Interpolator {
         } else if (lower + 2 == axisY.length) {
             p1 = axisY[lower];
             p2 = axisY[lower + 1];
-            p3 = axisY[lower + 1]; //we don't have higher index           
+            p3 = axisY[lower + 1]; //we don't have higher index
         } else {
             p1 = axisY[lower];
             p2 = axisY[lower + 1];
@@ -102,7 +109,7 @@ public class CubicInterpolator extends Interpolator {
         } else if (lower + 2 == y.size()) {
             p1 = y.get(lower).doubleValue();
             p2 = y.get(lower + 1).doubleValue();
-            p3 = y.get(lower + 1).doubleValue(); //we don't have higher index           
+            p3 = y.get(lower + 1).doubleValue(); //we don't have higher index
         } else {
             p1 = y.get(lower).doubleValue();
             p2 = y.get(lower + 1).doubleValue();
