@@ -3,11 +3,13 @@ package org.clueminer.interpolation;
 import java.util.List;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Numeric;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * @link http://mathworld.wolfram.com/LagrangeInterpolatingPolynomial.html
  * @author Tomas Barton
  */
+@ServiceProvider(service = Interpolator.class)
 public class LagrangeInterpolator implements Interpolator {
 
     private static final String name = "Lagrange";

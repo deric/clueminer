@@ -1,9 +1,13 @@
 package org.clueminer.interpolation;
 
+import org.clueminer.math.Interpolator;
+import org.openide.util.lookup.ServiceProvider;
+
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = Interpolator.class)
 public class BicubicInterpolator extends CubicInterpolator {
 
     private double[] arr = new double[4];
