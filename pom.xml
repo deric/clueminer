@@ -200,8 +200,11 @@
         <module>timechart</module>
         <module>chart-api</module>
         <module>chart-base</module>
-    <module>curve</module>
-  </modules>
+        <module>curve</module>
+        <module>jcool-core</module>
+        <module>jcool-solver</module>
+        <module>jcool-benchmark</module>
+    </modules>
     <reporting>
         <plugins>
             <plugin>

@@ -1,12 +1,12 @@
 package org.clueminer.fit;
 
-import cz.cvut.felk.cig.jcool.core.StopCondition;
-import cz.cvut.felk.cig.jcool.solver.OptimizationResults;
-import cz.cvut.felk.cig.jcool.solver.Solver;
-import cz.cvut.felk.cig.jcool.solver.SolverFactory;
-import cz.cvut.felk.cig.jcool.solver.Statistics;
-import cz.cvut.felk.cig.jcool.solver.demo.TestFunction;
-import cz.cvut.felk.cig.jcool.solver.demo.TestMethod;
+import cz.cvut.fit.jcool.core.StopCondition;
+import cz.cvut.fit.jcool.solver.OptimizationResults;
+import cz.cvut.fit.jcool.solver.Solver;
+import cz.cvut.fit.jcool.solver.SolverFactory;
+import cz.cvut.fit.jcool.solver.Statistics;
+import cz.cvut.fit.jcool.solver.demo.TestFunction;
+import cz.cvut.fit.jcool.solver.demo.TestMethod;
 
 /**
  *

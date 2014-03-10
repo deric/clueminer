@@ -1,13 +1,13 @@
 package org.clueminer.approximation;
 
-import cz.cvut.felk.cig.jcool.benchmark.method.gradient.lm.LevenbergMarquardtMethod;
-import cz.cvut.felk.cig.jcool.core.Function;
-import cz.cvut.felk.cig.jcool.core.Point;
-import cz.cvut.felk.cig.jcool.core.StopCondition;
-import cz.cvut.felk.cig.jcool.solver.OptimizationResults;
-import cz.cvut.felk.cig.jcool.solver.Solver;
-import cz.cvut.felk.cig.jcool.solver.SolverFactory;
-import cz.cvut.felk.cig.jcool.solver.Statistics;
+import cz.cvut.fit.jcool.benchmark.method.gradient.lm.LevenbergMarquardtMethod;
+import cz.cvut.fit.jcool.core.Function;
+import cz.cvut.fit.jcool.core.Point;
+import cz.cvut.fit.jcool.core.StopCondition;
+import cz.cvut.fit.jcool.solver.OptimizationResults;
+import cz.cvut.fit.jcool.solver.Solver;
+import cz.cvut.fit.jcool.solver.SolverFactory;
+import cz.cvut.fit.jcool.solver.Statistics;
 import java.util.HashMap;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.dataset.api.ContinuousInstance;

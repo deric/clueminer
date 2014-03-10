@@ -1,3 +1,12 @@
 [submodule "fixtures"]
 	path = fixtures
 	url = https://github.com/deric/clueminer-fixtures.git
+[submodule "jcool-core"]
+	path = jcool-core
+	url = https://github.com/cvut/jcool-core.git
+[submodule "jcool-solver"]
+	path = jcool-solver
+	url = https://github.com/cvut/jcool-solver.git
+[submodule "jcool-benchmark"]
+	path = jcool-benchmark
+	url = https://github.com/cvut/jcool-benchmark.git
