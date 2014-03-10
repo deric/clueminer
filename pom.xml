@@ -204,6 +204,7 @@
         <module>jcool-core</module>
         <module>jcool-solver</module>
         <module>jcool-benchmark</module>
+        <module>ytoh-configurations</module>
     </modules>
     <reporting>
         <plugins>

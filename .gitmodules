@@ -10,3 +10,6 @@
 [submodule "jcool-benchmark"]
 	path = jcool-benchmark
 	url = https://github.com/cvut/jcool-benchmark.git
+[submodule "ytoh-configurations"]
+	path = ytoh-configurations
+	url = https://github.com/deric/ytoh-configurations.git
