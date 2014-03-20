@@ -208,6 +208,27 @@ public class MLearnImporter implements LongTask, Runnable {
         logger.log(Level.INFO, "number of attributes: {0}", dataset.attributeCount());
     }
 
+    public void loadStuFoun(File file) throws FileNotFoundException, IOException {
+        char separator = ',';
+
+        CsvLoader loader = new CsvLoader();
+        ArrayList<Integer> skip = new ArrayList<Integer>();
+        //skip.add(0); //first one is ID
+        loader.addNameAttr(0);
+        loader.setClassIndex(0);
+
+        loader.setSkipIndex(skip);
+        loader.setSeparator(separator);
+        loader.setHasHeader(true);
+        String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
+        dataset = new ArrayDataset<Instance>(1000, firstLine.length - skip.size());
+
+        Dataset<Instance> d = (Dataset<Instance>) dataset;
+        loader.setDataset(d);
+        loader.load(file);
+        logger.log(Level.INFO, "total dataset size: {0}", dataset.size());
+    }
+
     @Override
     public void run() {
 
@@ -215,8 +236,9 @@ public class MLearnImporter implements LongTask, Runnable {
         try {
             //loadTimeseries(file);
             //loadMTimeseries(file);
-            loadMPTimeseries(file);
+            //loadMPTimeseries(file);
             //loadDTimeseries(file);
+            loadStuFoun(file);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

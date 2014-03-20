@@ -2,6 +2,7 @@ package org.clueminer.importer.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -12,17 +13,21 @@ import javax.swing.SwingUtilities;
  * @author deric
  */
 public class Gui extends JFrame {
+
     private ImportPanel importPanel;
+    private ImportToolbar toolbar;
+    private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
 
     public Gui() throws IOException {
         initComponents();
 
         File dir = new File(getClass().getProtectionDomain().getCodeSource().
-                getLocation().getFile() + "/../../../../_data");
-        String path = dir.getCanonicalPath() + "/" + "csv/Data_Milka_20131211_101069.csv";
+                getLocation().getFile() + "/../../../../../_data");
+        String path = dir.getCanonicalPath() + "/" + "csv/Data_Milka_20131219_100260.csv";
         System.out.println("path: " + path);
         File file = new File(path);
-        System.out.println("file exists? " + (new File(path)).exists());
+        System.out.println("file exists? " + file.exists());
+        System.out.println("file " + file.getAbsolutePath());
         importPanel.setFile(file);
 
     }
@@ -53,15 +58,19 @@ public class Gui extends JFrame {
     private void initComponents() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        c.weighty = 0.1;
+        c.fill = GridBagConstraints.NONE;
         c.gridx = 0;
         c.gridy = 0;
-        c.gridx = 0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = WEST_INSETS;
 
+        toolbar = new ImportToolbar();
+        add(toolbar, c);
+        c.gridy = 1;
+        c.fill = GridBagConstraints.NONE;
+        c.weighty = 0.9;
         importPanel = new ImportPanel();
         this.getContentPane().add(importPanel, c);
         this.pack();
