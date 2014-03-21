@@ -30,7 +30,7 @@ public class MLearnImporter implements LongTask, Runnable {
     private int workUnits = 0;
     private ProgressHandle ph;
     private Dataset<? extends Instance> dataset;
-    private Logger logger = Logger.getLogger(MLearnImporter.class.getName());
+    private static final Logger logger = Logger.getLogger(MLearnImporter.class.getName());
 
     public MLearnImporter(File file) {
         this.file = file;

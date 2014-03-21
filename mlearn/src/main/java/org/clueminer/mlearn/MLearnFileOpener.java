@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import org.clueminer.dendrogram.DendrogramTopComponent;
+import org.clueminer.importer.ImportController;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectImpl;
@@ -36,6 +37,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     private static Project project;
     private MLearnImporter importer;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
+    private final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
 
     public MLearnFileOpener() {
         //MIME type detection
@@ -78,6 +80,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
+
                 importer = new MLearnImporter(f);
                 openDataFile(importer);
                 return true;

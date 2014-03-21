@@ -2,6 +2,8 @@ package org.clueminer.branding.actions;
 
 import org.clueminer.openfile.OpenFileImpl;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -14,26 +16,30 @@ import org.openide.util.NbBundle;
  */
 public final class OpenFile {
 
+    private static final Logger logger = Logger.getLogger(OpenFile.class.getName());
+
     /** do not instantiate */
-    private OpenFile() {}
+    private OpenFile() {
+    }
 
     /**
      * Open a file (object) at the beginning.
      * @param fileObject the file to open
-     * @param line 
+     * @param line
      * @return error message or null on success
      * @usecase  API
      */
     public static String open(FileObject fileObject) {
+
         for (OpenFileImpl impl : Lookup.getDefault().lookupAll(OpenFileImpl.class)) {
-            System.out.println("trying opening with "+impl.getClass().toString());
+            logger.log(Level.INFO, "trying opening with {0}", impl.getClass().toString());
             if (impl.open(fileObject)) {
                 return null;
             }
         }
         return NbBundle.getMessage(OpenFile.class, "MSG_FileIsNotPlainFile", fileObject);
     }
-    
+
     /**
      * Opens a file.
      *
@@ -46,7 +52,7 @@ public final class OpenFile {
         if (msg != null) {
             return msg;
         }
-                              
+
         FileObject fileObject;
         fileObject = FileUtil.toFileObject(FileUtil.normalizeFile(file));
         if (fileObject != null) {
@@ -54,7 +60,7 @@ public final class OpenFile {
         }
         return NbBundle.getMessage(OpenFile.class, "MSG_FileDoesNotExist", file);
     }
-    
+
     /**
      * Checks whether the specified file exists.
      * If the file doesn't exists, displays a message.
