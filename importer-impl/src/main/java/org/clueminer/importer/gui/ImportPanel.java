@@ -1,5 +1,6 @@
 package org.clueminer.importer.gui;
 
+import org.clueminer.importer.impl.CsvImporter;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;

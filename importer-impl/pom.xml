@@ -60,6 +60,21 @@
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.1</version>
+        </dependency>
     </dependencies>
 
     <build>

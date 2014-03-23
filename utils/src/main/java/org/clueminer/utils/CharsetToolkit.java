@@ -5,16 +5,20 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 
 /**
- * <p>Utility class to guess the encoding of a given text file.</p>
+ * <p>
+ * Utility class to guess the encoding of a given text file.</p>
  *
- * <p>Unicode files encoded in UTF-16 (low or big endian) or UTF-8 files with a
+ * <p>
+ * Unicode files encoded in UTF-16 (low or big endian) or UTF-8 files with a
  * Byte Order Marker are correctly discovered. For UTF-8 files with no BOM, if
  * the buffer is wide enough, the charset should also be discovered.</p>
  *
- * <p>A byte buffer of 4KB is usually sufficient to be able to guess the
+ * <p>
+ * A byte buffer of 4KB is usually sufficient to be able to guess the
  * encoding.</p>
  *
- * <p>Usage:</p>
+ * <p>
+ * Usage:</p>
  * <pre>
  * // guess the encoding
  * Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
@@ -47,7 +51,8 @@ public class CharsetToolkit {
      * Constructor of the
      * <code>CharsetToolkit</code> utility class.
      *
-     * @param file of which we want to know the encoding.
+     * @param stream of which we want to know the encoding.
+     * @throws java.io.IOException
      */
     public CharsetToolkit(InputStream stream) throws IOException {
         this.defaultCharset = getDefaultSystemCharset();
@@ -76,8 +81,8 @@ public class CharsetToolkit {
      * <code>Charset</code>.
      *
      * @param defaultCharset the default <code>Charset</code> to be returned
-     * by <code>guessEncoding()</code> if an 8-bit <code>Charset</code> is
-     * encountered.
+     *                       by <code>guessEncoding()</code> if an 8-bit <code>Charset</code> is
+     *                       encountered.
      */
     public void setDefaultCharset(Charset defaultCharset) {
         if (defaultCharset != null) {
@@ -118,23 +123,28 @@ public class CharsetToolkit {
 
     /**
      * Retrieves the default Charset
+     *
+     * @return
      */
     public Charset getDefaultCharset() {
         return defaultCharset;
     }
 
     /**
-     * <p>Guess the encoding of the provided buffer.</p> If Byte Order Markers
+     * <p>
+     * Guess the encoding of the provided buffer.</p> If Byte Order Markers
      * are encountered at the beginning of the buffer, we immidiately return the
      * charset implied by this BOM. Otherwise, the file would not be a human
      * readable text file.</p>
      *
-     * <p>If there is no BOM, this method tries to discern whether the file is
+     * <p>
+     * If there is no BOM, this method tries to discern whether the file is
      * UTF-8 or not. If it is not UTF-8, we assume the encoding is the default
      * system encoding (of course, it might be any 8-bit charset, but usually,
      * an 8-bit charset is the default one).</p>
      *
-     * <p>It is possible to discern UTF-8 thanks to the pattern of characters
+     * <p>
+     * It is possible to discern UTF-8 thanks to the pattern of characters
      * with a multi-byte sequence.</p>
      * <pre>
      * UCS-4 range (hex.)        UTF-8 octet sequence (binary)
@@ -144,7 +154,9 @@ public class CharsetToolkit {
      * 0001 0000-001F FFFF       11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
      * 0020 0000-03FF FFFF       111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
      * 0400 0000-7FFF FFFF       1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
-     * </pre> <p>With UTF-8, 0xFE and 0xFF never appear.</p>
+     * </pre>
+     * <p>
+     * With UTF-8, 0xFE and 0xFF never appear.</p>
      *
      * @return the Charset recognized.
      */
@@ -170,7 +182,6 @@ public class CharsetToolkit {
         boolean validU8Char = true;
 
         // TODO the buffer is not read up to the end, but up to length - 6
-
         int length = buffer.length;
         int i = 0;
         while (i < length - 6) {
@@ -382,7 +393,6 @@ public class CharsetToolkit {
      * <code>guessEncoding()</code>.
      *
      * @return a <code>BufferedReader</code>
-     * @throws FileNotFoundException if the file is not found.
      */
     public BufferedReader getReader() {
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(input, getCharset()));

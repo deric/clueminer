@@ -68,6 +68,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
      *
      * @param f
      * @return boolean
+     * @throws java.io.FileNotFoundException
      */
     protected boolean isFileSupported(File f) throws FileNotFoundException, IOException {
         Collection mimeTypes = detectMIME(f);

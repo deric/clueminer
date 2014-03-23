@@ -1,4 +1,4 @@
-package org.clueminer.importer.gui;
+package org.clueminer.importer.impl;
 
 import java.io.File;
 import java.io.Reader;
@@ -6,6 +6,9 @@ import java.util.Collection;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.types.ContainerLoader;
+import org.clueminer.types.FileType;
+import org.openide.filesystems.FileObject;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -71,5 +74,15 @@ public class CsvImporter implements FileImporter {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public FileType[] getFileTypes() {
+        FileType ft = new FileType(".csv", NbBundle.getMessage(getClass(), "fileType_CSV_Name"));
+        return new FileType[]{ft};
+    }
+
+    @Override
+    public boolean isMatchingImporter(FileObject fileObject) {
+        return fileObject.getExt().equalsIgnoreCase("csv");
+    }
 
 }
