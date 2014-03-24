@@ -205,7 +205,8 @@
         <module>jcool-solver</module>
         <module>jcool-benchmark</module>
         <module>ytoh-configurations</module>
-    </modules>
+    <module>validation</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>

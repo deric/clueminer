@@ -64,4 +64,13 @@ public interface Container {
      * Close the current loading and clean content before unloading.
      */
     public void closeLoader();
+
+    /**
+     * This method must be called after the loading is complete and before
+     * unloading. Its aim is to verify data consistency as a whole.
+     *
+     * @return <code>true</code> if container data is * * * consistent,
+     * <code>false</code> otherwise
+     */
+    public boolean verify();
 }
