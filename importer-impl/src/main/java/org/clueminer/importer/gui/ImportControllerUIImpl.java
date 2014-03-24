@@ -11,6 +11,7 @@ import javax.swing.event.ChangeListener;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
 import org.clueminer.longtask.LongTaskErrorHandler;
+import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.project.api.MostRecentFiles;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.spi.ImporterUI;
@@ -65,16 +66,6 @@ public class ImportControllerUIImpl implements ImportControllerUI {
                 String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
                 ui.setup(importer);
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
-                        }
-                    });
-                }
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
@@ -93,7 +84,7 @@ public class ImportControllerUIImpl implements ImportControllerUI {
             fileObject = getArchivedFile(fileObject);
             final String containerSource = fileObject.getNameExt();
             final InputStream stream = fileObject.getInputStream();
-            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
+            String taskName = NbBundle.getMessage(ImportControllerUIImpl.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
                 @Override
                 public void run() {
@@ -132,7 +123,7 @@ public class ImportControllerUIImpl implements ImportControllerUI {
 
     @Override
     public ImportController getImportController() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return controller;
     }
 
 }

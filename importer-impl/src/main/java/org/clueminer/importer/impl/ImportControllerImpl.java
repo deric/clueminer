@@ -5,10 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.clueminer.types.FileType;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
+import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.spi.DatabaseImporter;
@@ -27,33 +30,81 @@ import org.openide.util.Lookup;
  */
 public class ImportControllerImpl implements ImportController {
 
+    private final FileImporter[] fileImporters;
+    private final ImporterUI[] uis;
+
+    public ImportControllerImpl() {
+        fileImporters = Lookup.getDefault().lookupAll(FileImporter.class).toArray(new FileImporter[0]);
+
+        //Get UIS
+        uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
+    }
+
     @Override
     public Container importFile(File file) throws FileNotFoundException {
         FileObject fileObject = FileUtil.toFileObject(file);
-        fileObject = getArchivedFile(fileObject);   //Unzip and return content file
-        FileImporter importer = getMatchingImporter(fileObject);
-        if (fileObject != null && importer != null) {
-
-            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                try {
-                    fileObject.delete();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+        if (fileObject != null) {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            FileImporter importer = getMatchingImporter(fileObject);
+            if (fileObject != null && importer != null) {
+                Container c = importFile(fileObject.getInputStream(), importer);
+                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                    try {
+                        fileObject.delete();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 }
+                return c;
             }
-            return importer;
         }
         return null;
     }
 
     @Override
     public Container importFile(File file, FileImporter importer) throws FileNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileObject fileObject = FileUtil.toFileObject(file);
+        if (fileObject != null) {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            if (fileObject != null) {
+                Container c = importFile(fileObject.getInputStream(), importer);
+                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                    try {
+                        fileObject.delete();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+                return c;
+            }
+        }
+        return null;
     }
 
     @Override
     public Container importFile(Reader reader, FileImporter importer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Create Container
+        final Container container = Lookup.getDefault().lookup(Container.class);
+
+        //Report
+        Report report = new Report();
+        container.setReport(report);
+
+        importer.setReader(reader);
+
+        try {
+            if (importer.execute(container.getLoader())) {
+                if (importer.getReport() != null) {
+                    report.append(importer.getReport());
+                }
+                return container;
+            }
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        return null;
     }
 
     @Override
@@ -68,12 +119,29 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public FileImporter getFileImporter(File file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileObject fileObject = FileUtil.toFileObject(file);
+        fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+        FileImporter fi = getMatchingImporter(fileObject);
+        if (fileObject != null && fi != null) {
+            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                try {
+                    fileObject.delete();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            return fi;
+        }
+        return null;
     }
 
     @Override
     public FileImporter getFileImporter(String importerName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileImporter builder = getMatchingImporter(importerName);
+        if (builder != null) {
+            return builder;
+        }
+        return null;
     }
 
     @Override
@@ -87,22 +155,42 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public void process(Container container, Processor processor, Workspace workspace) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        container.closeLoader();
+        //processor.setContainer(container.getUnloader());
+        processor.setWorkspace(workspace);
+        processor.process();
     }
 
     @Override
     public FileType[] getFileTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<FileType> list = new ArrayList<FileType>();
+        for (FileImporter im : fileImporters) {
+            list.addAll(Arrays.asList(im.getFileTypes()));
+        }
+        return list.toArray(new FileType[0]);
     }
 
     @Override
     public boolean isFileSupported(File file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FileObject fileObject = FileUtil.toFileObject(file);
+        for (FileImporter im : fileImporters) {
+            if (im.isMatchingImporter(fileObject)) {
+                return true;
+            }
+        }
+        return fileObject.getExt().equalsIgnoreCase("zip")
+                || fileObject.getExt().equalsIgnoreCase("gz")
+                || fileObject.getExt().equalsIgnoreCase("bz2");
     }
 
     @Override
     public ImporterUI getUI(Importer importer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (ImporterUI ui : uis) {
+            if (ui.isUIForImporter(importer)) {
+                return ui;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -175,6 +263,19 @@ public class ImportControllerImpl implements ImportController {
         for (FileImporter im : fileImporters) {
             if (im.isMatchingImporter(fileObject)) {
                 return im;
+            }
+        }
+        return null;
+    }
+
+    private FileImporter getMatchingImporter(String extension) {
+        for (FileImporter im : fileImporters) {
+            for (FileType ft : im.getFileTypes()) {
+                for (String ext : ft.getExtensions()) {
+                    if (ext.equalsIgnoreCase(extension)) {
+                        return im;
+                    }
+                }
             }
         }
         return null;
