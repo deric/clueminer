@@ -8,9 +8,9 @@ import org.clueminer.dataset.api.Instance;
  */
 public interface ContainerLoader {
 
-    public void setDataset(Dataset<Instance> dataset);
+    public void setDataset(Dataset<? extends Instance> dataset);
 
-    public Dataset<Instance> getDataset();
+    public Dataset<? extends Instance> getDataset();
 
     /**
      * Text representation of source
@@ -18,8 +18,8 @@ public interface ContainerLoader {
      * @return
      */
     public String getSource();
-    
+
     /* public void addInstance(Instance instance);
-    
+
      public void addAttribute(Attribute attr);*/
 }
