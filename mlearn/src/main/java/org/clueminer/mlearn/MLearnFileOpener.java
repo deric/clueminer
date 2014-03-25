@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.importer.ImportController;
+import org.clueminer.importer.ImportControllerUI;
+import org.clueminer.importer.gui.ImportControllerUIImpl;
+import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectImpl;
@@ -32,10 +35,12 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     private static Project project;
     private MLearnImporter importer;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
-    private final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
+    private final ImportController controller;
+    private final ImportControllerUI controllerUI;
 
     public MLearnFileOpener() {
-
+        controller = new ImportControllerImpl();
+        controllerUI = new ImportControllerUIImpl(controller);
     }
 
 
@@ -56,9 +61,14 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
+                //FileImporter im = controller.getFileImporter(f);
 
-                importer = new MLearnImporter(f);
-                openDataFile(importer);
+                //  controller.importFile(f);
+                controllerUI.importFile(fileObject);
+
+                //ImporterUI ui = controller.getUI(im);
+                //importer = new MLearnImporter(f);
+                //openDataFile(importer);
                 return true;
             }
         } catch (FileNotFoundException ex) {

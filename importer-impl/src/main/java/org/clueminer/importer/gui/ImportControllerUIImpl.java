@@ -52,8 +52,8 @@ public class ImportControllerUIImpl implements ImportControllerUI {
     private final LongTaskErrorHandler errorHandler;
     private final LongTaskExecutor executor;
 
-    public ImportControllerUIImpl() {
-        controller = Lookup.getDefault().lookup(ImportController.class);
+    public ImportControllerUIImpl(ImportController controller) {
+        this.controller = controller;
         errorHandler = new LongTaskErrorHandler() {
             @Override
             public void fatalError(Throwable t) {
@@ -115,7 +115,7 @@ public class ImportControllerUIImpl implements ImportControllerUI {
             fileObject = getArchivedFile(fileObject);
             final String containerSource = fileObject.getNameExt();
             final InputStream stream = fileObject.getInputStream();
-            String taskName = NbBundle.getMessage(ImportControllerUIImpl.class, "DesktopImportControllerUI.taskName", containerSource);
+            String taskName = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
                 @Override
                 public void run() {

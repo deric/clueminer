@@ -59,6 +59,8 @@ public class ReportPanel extends javax.swing.JPanel {
      * Creates new form ReportPanel
      */
     public ReportPanel() {
+        fillingThreads = new ThreadGroup("Report Panel Issues");
+
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override

@@ -57,6 +57,10 @@ public class ImportControllerImpl implements ImportController {
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileImporter importer = getMatchingImporter(fileObject);
+            if (importer == null) {
+                //try to find importer by MIME type
+                importer = getMatchingImporter(detectMIME(file));
+            }
             if (fileObject != null && importer != null) {
                 Container c = importFile(fileObject.getInputStream(), importer);
                 if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {

@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import java.util.Collection;
+import java.util.Iterator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.importer.Issue;
@@ -22,6 +24,7 @@ import org.openide.util.NbBundle;
  *
  * @author Tomas Barton
  */
+@org.openide.util.lookup.ServiceProvider(service = Container.class)
 public class ImportContainerImpl implements Container, ContainerLoader, ContainerUnloader {
 
     private String source;
@@ -84,12 +87,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public void closeLoader() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO: check integrity
     }
 
     @Override
     public boolean verify() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        /**
+         * TODO: check each instance types etc.
+         */
+        return true;
     }
 
     @Override
@@ -109,7 +115,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public Iterable<InstanceDraft> getInstances() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new NullFilterIterable<InstanceDraft>(instanceList);
     }
 
     @Override
@@ -120,6 +126,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public Iterable<AttributeDraft> getAttributes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public InstanceDraft getInstance(String id) {
+        checkId(id);
+
+        int index = instanceMap.getInt(id);
+        if (index == NULL_INDEX) {
+            return null;
+        }
+        return instanceList.get(index);
     }
 
     private void checkId(String id) {
@@ -144,4 +160,48 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return attributeColumns.containsKey(key);
     }
 
+    private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
+
+        private final Collection<T> collection;
+
+        public NullFilterIterable(Collection elementCollection) {
+            this.collection = elementCollection;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return new NullFilterIterator<T>(collection);
+        }
+    }
+
+    private static class NullFilterIterator<T extends InstanceDraft> implements Iterator<T> {
+
+        private T pointer;
+        private final Iterator<T> itr;
+
+        public NullFilterIterator(Collection<T> elementCollection) {
+            this.itr = elementCollection.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (itr.hasNext()) {
+                pointer = itr.next();
+                if (pointer != null) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public T next() {
+            return pointer;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
+    }
 }
