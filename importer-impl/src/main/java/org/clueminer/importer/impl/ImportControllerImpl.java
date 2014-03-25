@@ -1,12 +1,17 @@
 package org.clueminer.importer.impl;
 
+import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.types.FileType;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
@@ -30,14 +35,20 @@ import org.openide.util.Lookup;
  */
 public class ImportControllerImpl implements ImportController {
 
-    private final FileImporter[] fileImporters;
+    private final List<FileImporter> fileImporters;
     private final ImporterUI[] uis;
+    private final MimeUtil2 mimeUtil = new MimeUtil2();
 
     public ImportControllerImpl() {
-        fileImporters = Lookup.getDefault().lookupAll(FileImporter.class).toArray(new FileImporter[0]);
+        fileImporters = FileImporterFactory.getInstance().getAll();
 
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
+
+        //MIME type detection
+        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
+        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
     }
 
     @Override
@@ -121,7 +132,12 @@ public class ImportControllerImpl implements ImportController {
     public FileImporter getFileImporter(File file) {
         FileObject fileObject = FileUtil.toFileObject(file);
         fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+        //try to get importer by an extension
         FileImporter fi = getMatchingImporter(fileObject);
+        if (fi == null) {
+            //try to find importer by MIME type
+            fi = getMatchingImporter(detectMIME(file));
+        }
         if (fileObject != null && fi != null) {
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                 try {
@@ -181,6 +197,17 @@ public class ImportControllerImpl implements ImportController {
         return fileObject.getExt().equalsIgnoreCase("zip")
                 || fileObject.getExt().equalsIgnoreCase("gz")
                 || fileObject.getExt().equalsIgnoreCase("bz2");
+    }
+
+    @Override
+    public boolean isAccepting(File file) {
+        Collection mimeTypes = detectMIME(file);
+        for (FileImporter im : fileImporters) {
+            if (im.isAccepting(mimeTypes)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -268,6 +295,18 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    protected FileImporter getMatchingImporter(Collection mimeTypes) {
+        if (mimeTypes == null || mimeTypes.isEmpty()) {
+            return null;
+        }
+        for (FileImporter im : fileImporters) {
+            if (im.isAccepting(mimeTypes)) {
+                return im;
+            }
+        }
+        return null;
+    }
+
     private FileImporter getMatchingImporter(String extension) {
         for (FileImporter im : fileImporters) {
             for (FileType ft : im.getFileTypes()) {
@@ -279,6 +318,22 @@ public class ImportControllerImpl implements ImportController {
             }
         }
         return null;
+    }
+
+    protected Collection detectMIME(File file) {
+        Collection mimeTypes = null;
+        try {
+            byte[] data;
+            InputStream in = new FileInputStream(file);
+            int bytes = 1024;
+            data = new byte[bytes];
+            in.read(data, 0, bytes);
+            in.close();
+            mimeTypes = mimeUtil.getMimeTypes(data);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return mimeTypes;
     }
 
 }

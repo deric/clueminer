@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Collection;
 import org.clueminer.types.FileType;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
@@ -34,12 +35,26 @@ public interface ImportController {
     public FileImporter getFileImporter(String importerName);
 
     public void process(Container container);
-    
+
     public void process(Container container, Processor processor, Workspace workspace);
 
     public FileType[] getFileTypes();
 
+    /**
+     * Checks support by extension
+     *
+     * @param file
+     * @return
+     */
     public boolean isFileSupported(File file);
+
+    /**
+     * Checks if importers support given MIME type
+     *
+     * @param file
+     * @return true when MIME type is supported by at least one importer
+     */
+    public boolean isAccepting(File file);
 
     public ImporterUI getUI(Importer importer);
 

@@ -1,12 +1,8 @@
 package org.clueminer.mlearn;
 
-import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
 import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.importer.ImportController;
 import org.clueminer.openfile.OpenFileImpl;
@@ -33,34 +29,15 @@ import org.openide.windows.WindowManager;
 @org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
 public class MLearnFileOpener implements OpenFileImpl, TaskListener {
 
-    private final MimeUtil2 mimeUtil = new MimeUtil2();
     private static Project project;
     private MLearnImporter importer;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
 
     public MLearnFileOpener() {
-        //MIME type detection
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
+
     }
 
-    protected Collection detectMIME(File file) {
-        Collection mimeTypes = null;
-        try {
-            byte[] data;
-            InputStream in = new FileInputStream(file);
-            int bytes = 1024;
-            data = new byte[bytes];
-            in.read(data, 0, bytes);
-            in.close();
-            mimeTypes = mimeUtil.getMimeTypes(data);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return mimeTypes;
-    }
 
     /**
      * Return true is file seems to be in format which is supported by this
@@ -71,9 +48,7 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
      * @throws java.io.FileNotFoundException
      */
     protected boolean isFileSupported(File f) throws FileNotFoundException, IOException {
-        Collection mimeTypes = detectMIME(f);
-        String mime = mimeTypes.toString();
-        return mime.contains("text") || mime.contains("octet-stream");
+        return controller.isFileSupported(f);
     }
 
     @Override

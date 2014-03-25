@@ -138,6 +138,8 @@ public class Progress {
 
     /**
      * Returns the current task's display name, or an empty string.
+     * @param progressTicket
+     * @return
      */
     public static String getDisplayName(ProgressTicket progressTicket) {
         if (progressTicket != null) {
