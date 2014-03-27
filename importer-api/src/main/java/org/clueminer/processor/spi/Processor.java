@@ -1,11 +1,13 @@
 package org.clueminer.processor.spi;
 
-import org.clueminer.types.ContainerLoader;
+import org.clueminer.io.importer.api.ContainerUnloader;
 import org.clueminer.project.api.Workspace;
 
 /**
  * Interface that define the way data are <b>unloaded</b> from container and
- * append to the workspace. <p> The purpose of processors is to unload data from
+ * append to the workspace.
+ * <p>
+ * The purpose of processors is to unload data from
  * the import container and push it to the workspace, with various strategy. For
  * instance a processor could either create a new workspace or append data to
  * the current workspace, managing doubles.
@@ -28,7 +30,7 @@ public interface Processor {
      *
      * @param container the container where data are
      */
-    public void setContainer(ContainerLoader container);
+    public void setContainer(ContainerUnloader container);
 
     /**
      * Sets the destination workspace for the data in the container. If no

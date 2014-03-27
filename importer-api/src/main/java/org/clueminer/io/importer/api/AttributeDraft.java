@@ -30,4 +30,8 @@ public interface AttributeDraft {
 
     public void setDefaultValue(Object value);
 
+    public int getIndex();
+
+    public void setIndex(int index);
+
 }

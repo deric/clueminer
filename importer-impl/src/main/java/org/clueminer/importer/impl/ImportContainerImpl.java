@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.Collection;
 import java.util.Iterator;
+import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.importer.Issue;
@@ -33,14 +34,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final ObjectList<InstanceDraft> instanceList;
     private final ObjectList<AttributeDraft> attributeList;
     private Dataset<? extends Instance> dataset;
-    private final Object2ObjectMap<String, AttributeDraft> attributeColumns;
+    private final Object2ObjectMap<String, AttributeDraft> attributeMap;
     private Report report;
     private final Object2IntMap<String> instanceMap;
+    private AttributeBuilder attributeBuilder;
 
     public ImportContainerImpl() {
         instanceList = new ObjectArrayList<InstanceDraft>();
         attributeList = new ObjectArrayList<AttributeDraft>();
-        attributeColumns = new Object2ObjectOpenHashMap<String, AttributeDraft>();
+        attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
         instanceMap = new Object2IntOpenHashMap<String>();
         instanceMap.defaultReturnValue(NULL_INDEX);
     }
@@ -73,6 +75,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         int index = instanceList.size();
         instanceList.add(instance);
         instanceMap.put(instance.getId(), index);
+    }
+
+    public AttributeDraft getAttribute(String key, Class typeClass) {
+        AttributeDraft attr = attributeMap.get(key);
+
+        if (!attr.getType().equals(typeClass)) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Attribute_Type_Mismatch", key, attr.getClass()), Level.SEVERE));
+
+        }
+        return attr;
     }
 
     @Override
@@ -157,7 +169,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     public boolean hasAttribute(String key) {
-        return attributeColumns.containsKey(key);
+        return attributeMap.containsKey(key);
+    }
+
+    @Override
+    public AttributeBuilder getAttributeBuilder() {
+        return attributeBuilder;
+    }
+
+    @Override
+    public void setAttributeBuilder(AttributeBuilder builder) {
+        this.attributeBuilder = builder;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

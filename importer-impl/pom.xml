@@ -143,6 +143,11 @@
             <artifactId>fastutil</artifactId>
             <version>6.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -156,6 +161,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.importer.gui</publicPackage>
                         <publicPackage>org.clueminer.importer.impl</publicPackage>
+                        <publicPackage>org.clueminer.processor</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

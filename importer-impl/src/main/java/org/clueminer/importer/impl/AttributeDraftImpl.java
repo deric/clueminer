@@ -8,6 +8,7 @@ import org.clueminer.io.importer.api.AttributeDraft;
  */
 public class AttributeDraftImpl implements AttributeDraft {
 
+    private int index;
     private String name;
     private boolean meta;
     private boolean unique;
@@ -81,6 +82,16 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public void setDefaultValue(Object value) {
         this.defaultValue = value;
+    }
+
+    @Override
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
     }
 
 }

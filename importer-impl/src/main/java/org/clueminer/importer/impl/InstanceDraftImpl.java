@@ -1,5 +1,6 @@
 package org.clueminer.importer.impl;
 
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 
 /**
@@ -11,6 +12,13 @@ public class InstanceDraftImpl implements InstanceDraft {
     private String id;
     private String label;
     private Object type;
+    private Object[] values;
+    private ImportContainerImpl container;
+
+    public InstanceDraftImpl(ImportContainerImpl parent) {
+        this.values = new Object[0];
+        this.container = parent;
+    }
 
     public String getLabel() {
         return label;
@@ -32,7 +40,7 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return values.length;
     }
 
     @Override
@@ -43,6 +51,32 @@ public class InstanceDraftImpl implements InstanceDraft {
     @Override
     public Object getType() {
         return type;
+    }
+
+    @Override
+    public Object getValue(String key) {
+        return null;
+    }
+
+    @Override
+    public void setValue(String key, Object value) {
+        AttributeDraft attr = container.getAttribute(key, value.getClass());
+        setValue(attr.getIndex(), value);
+    }
+
+    @Override
+    public void setValue(int index, Object value) {
+        if (index >= values.length) {
+            Object[] newArray = new Object[index + 1];
+            System.arraycopy(values, 0, newArray, 0, values.length);
+            values = newArray;
+        }
+        values[index] = value;
+    }
+
+    @Override
+    public Object getValue(int i) {
+        return values[i];
     }
 
 }

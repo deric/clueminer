@@ -16,4 +16,24 @@ public interface InstanceDraft {
 
     public Object getType();
 
+    /**
+     * Value for attribute specified by the key
+     *
+     * @param key attribute identification
+     * @return
+     */
+    public Object getValue(String key);
+
+    /**
+     * Value of ith attribute
+     *
+     * @param i th attribute
+     * @return
+     */
+    public Object getValue(int i);
+
+    public void setValue(String key, Object value);
+
+    public void setValue(int index, Object value);
+
 }
