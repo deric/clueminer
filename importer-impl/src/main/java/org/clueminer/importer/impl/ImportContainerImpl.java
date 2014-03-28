@@ -63,6 +63,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public ContainerUnloader getUnloader() {
+        return this;
+    }
+
+    @Override
     public void addInstance(InstanceDraft instance) {
         checkInstanceDraft(instance);
 
@@ -137,7 +142,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public Iterable<AttributeDraft> getAttributes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attributeMap.values();
     }
 
     public InstanceDraft getInstance(String id) {

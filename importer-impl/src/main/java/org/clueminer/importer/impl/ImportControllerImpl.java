@@ -176,7 +176,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public void process(Container container, Processor processor, Workspace workspace) {
         container.closeLoader();
-        //processor.setContainer(container.getUnloader());
+        processor.setContainer(container.getUnloader());
         processor.setWorkspace(workspace);
         processor.process();
     }

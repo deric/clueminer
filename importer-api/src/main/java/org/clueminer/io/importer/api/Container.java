@@ -7,7 +7,9 @@ import org.clueminer.types.ContainerLoader;
  * role is to host all data collected by importers during import process. After
  * pushing data in the container, its content can be analyzed to verify its
  * validity and then be processed by <b>processors</b>. Thus containers are
- * <b>loaded</b> by importers and <b>unloaded</b> by processors. <p> See
+ * <b>loaded</b> by importers and <b>unloaded</b> by processors.
+ * <p>
+ * See
  * {@link ContainerLoader} for how to push data and attributes in the
  * container and see {@link  ContainerUnloader} for how to retrieve data in the
  * container.
@@ -28,7 +30,7 @@ public interface Container {
      * If exists, returns the source of the data.
      *
      * @return the source of the data, or <code>null</code> if source is not
-     * defined.
+     *         defined.
      */
     public String getSource();
 
@@ -40,6 +42,11 @@ public interface Container {
      */
     public ContainerLoader getLoader();
 
+    /**
+     *
+     * @return data unloader
+     */
+    public ContainerUnloader getUnloader();
 
     /**
      * Set a report this container can use to report issues detected when
@@ -47,7 +54,7 @@ public interface Container {
      * import process. Only one report can be associated to a container.
      *
      * @param report set <code>report</code> as the default report for this
-     * container
+     *               container
      * @throws NullPointerException if <code>report</code> is <code>null</code>
      */
     public void setReport(Report report);
@@ -56,7 +63,7 @@ public interface Container {
      * Returns the report associated to this container, if exists.
      *
      * @return the report set for this container or <code>null</code> if no
-     * report is defined
+     *         report is defined
      */
     public Report getReport();
 
@@ -70,7 +77,7 @@ public interface Container {
      * unloading. Its aim is to verify data consistency as a whole.
      *
      * @return <code>true</code> if container data is * * * consistent,
-     * <code>false</code> otherwise
+     *         <code>false</code> otherwise
      */
     public boolean verify();
 }
