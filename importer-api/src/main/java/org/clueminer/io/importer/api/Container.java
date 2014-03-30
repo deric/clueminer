@@ -1,5 +1,6 @@
 package org.clueminer.io.importer.api;
 
+import java.io.File;
 import org.clueminer.types.ContainerLoader;
 
 /**
@@ -33,6 +34,13 @@ public interface Container {
      *         defined.
      */
     public String getSource();
+
+    /**
+     * Sets source as a File
+     *
+     * @param source
+     */
+    public void setFile(File source);
 
     /**
      * Get containers loading interface. The <b>loader</b> is used by modules

@@ -3,13 +3,18 @@ package org.clueminer.importer.gui;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
@@ -18,11 +23,13 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import org.clueminer.gui.BusyUtils;
+import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorUI;
+import org.clueminer.spi.FileImporter;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
 import org.netbeans.swing.outline.OutlineModel;
@@ -54,6 +61,7 @@ public class ReportPanel extends javax.swing.JPanel {
     //UI
     private ButtonGroup processorGroup = new ButtonGroup();
     private Outline issuesOutline;
+    protected LinkedHashMap<String, FileImporter> providers;
 
     /**
      * Creates new form ReportPanel
@@ -69,6 +77,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     initComponents();
                     tab1ScrollPane.setViewportView(issuesOutline);
                     initIcons();
+                    initImporters();
                     initProcessors();
                     initProcessorsUI();
                 }
@@ -78,7 +87,6 @@ public class ReportPanel extends javax.swing.JPanel {
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
-
 
     }
 
@@ -135,6 +143,29 @@ public class ReportPanel extends javax.swing.JPanel {
         }
     }
 
+    public String[] getImporterProviders() {
+        Collection<? extends FileImporter> list = FileImporterFactory.getInstance().getAll();
+        String[] res = new String[list.size()];
+        providers = new LinkedHashMap<String, FileImporter>();
+        int i = 0;
+        for (FileImporter importer : list) {
+            providers.put(importer.getName(), importer);
+            res[i++] = importer.getName();
+        }
+        return res;
+    }
+
+    private void initImporters() {
+        cbImporter.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //importer selected
+                System.out.println("current importer: " + cbImporter.getSelectedItem());
+            }
+        });
+    }
+
     private void fillReport(final Report report) {
         Thread thread = new Thread(fillingThreads, new Runnable() {
             @Override
@@ -169,9 +200,11 @@ public class ReportPanel extends javax.swing.JPanel {
             public void run() {
                 //Source
                 String source = container.getSource();
-                String[] label = source.split("\\.");
-                if (label.length > 2 && label[label.length - 2].matches("\\d+")) { //case of temp file
-                    source = source.replaceFirst("." + label[label.length - 2], "");
+                if (source != null) {
+                    String[] label = source.split("\\.");
+                    if (label.length > 2 && label[label.length - 2].matches("\\d+")) { //case of temp file
+                        source = source.replaceFirst("." + label[label.length - 2], "");
+                    }
                 }
 
                 sourceLabel.setText(source);
@@ -229,8 +262,6 @@ public class ReportPanel extends javax.swing.JPanel {
         return null;
     }
 
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -248,6 +279,8 @@ public class ReportPanel extends javax.swing.JPanel {
         sourceLabel = new javax.swing.JLabel();
         statsPanel = new javax.swing.JPanel();
         processorPanel = new javax.swing.JPanel();
+        lbImport = new javax.swing.JLabel();
+        cbImporter = new JComboBox(getImporterProviders());
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
@@ -281,6 +314,8 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        org.openide.awt.Mnemonics.setLocalizedText(lbImport, org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.lbImport.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -290,14 +325,20 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbSource)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sourceLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lbSource)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sourceLabel))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lbImport)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbImporter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -311,15 +352,20 @@ public class ReportPanel extends javax.swing.JPanel {
                             .addComponent(lbSource)
                             .addComponent(sourceLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbImport)
+                            .addComponent(cbImporter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)
+                        .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cbImporter;
+    private javax.swing.JLabel lbImport;
     private javax.swing.JLabel lbSource;
     private javax.swing.JPanel processorPanel;
     private javax.swing.JEditorPane reportEditor;
@@ -355,10 +401,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         @Override
         public boolean isLeaf(Object node) {
-            if (node instanceof Issue) {
-                return true;
-            }
-            return false;
+            return node instanceof Issue;
         }
 
         @Override

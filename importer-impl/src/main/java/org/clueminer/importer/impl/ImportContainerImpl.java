@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.dataset.api.AttributeBuilder;
@@ -29,6 +30,7 @@ import org.openide.util.NbBundle;
 public class ImportContainerImpl implements Container, ContainerLoader, ContainerUnloader {
 
     private String source;
+    private File file;
     protected static final int NULL_INDEX = -1;
 
     private final ObjectList<InstanceDraft> instanceList;
@@ -38,6 +40,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private Report report;
     private final Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
+    private int linesCnt;
 
     public ImportContainerImpl() {
         instanceList = new ObjectArrayList<InstanceDraft>();
@@ -185,6 +188,27 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public void setAttributeBuilder(AttributeBuilder builder) {
         this.attributeBuilder = builder;
+    }
+
+    @Override
+    public File getFile() {
+        return file;
+    }
+
+    @Override
+    public void setFile(File file) {
+        this.file = file;
+        setSource(file.getAbsolutePath());
+    }
+
+    @Override
+    public void setNumberOfLines(int count) {
+        this.linesCnt = count;
+    }
+
+    @Override
+    public int getNumberOfLines() {
+        return linesCnt;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

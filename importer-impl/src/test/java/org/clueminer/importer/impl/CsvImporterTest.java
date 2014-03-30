@@ -94,13 +94,11 @@ public class CsvImporterTest {
      */
     @Test
     public void testExecute() throws IOException {
-        subject.setFile(fixtures.irisData());
         ContainerLoader container = new ImportContainerImpl();
-        /**
-         * *
-         * @TODO check parsed files
-         */
-        //subject.execute(container);
+        container.setFile(fixtures.irisData());
+
+        subject.execute(container);
+        assertEquals(150, container.getNumberOfLines());
     }
 
     /**

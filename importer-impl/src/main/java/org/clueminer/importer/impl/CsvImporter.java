@@ -1,15 +1,16 @@
 package org.clueminer.importer.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.dataset.api.Instance;
+import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
@@ -18,6 +19,7 @@ import org.clueminer.types.FileType;
 import org.clueminer.utils.progress.Progress;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -48,6 +50,7 @@ public class CsvImporter implements FileImporter, LongTask {
     private boolean inField = false;
     //white space in front of a quote in a field is ignored
     private boolean ignoreLeadingWhiteSpace = false;
+    private int prevColCnt = -1;
 
     public CsvImporter() {
         separator = ',';
@@ -92,8 +95,17 @@ public class CsvImporter implements FileImporter, LongTask {
     public boolean execute(ContainerLoader loader) {
         this.container = loader;
         this.report = new Report();
-        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
+        LineNumberReader lineReader;
+        this.file = container.getFile();
         try {
+            if (reader != null) {
+                lineReader = ImportUtils.getTextReader(reader);
+            } else if (file != null) {
+                lineReader = getReader(file);
+            } else {
+                throw new RuntimeException("importer wasn't provided with any readable source");
+            }
+
             importData(lineReader);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -136,12 +148,9 @@ public class CsvImporter implements FileImporter, LongTask {
     protected void importData(LineNumberReader reader) throws IOException {
         Progress.start(progressTicket);        //Progress
 
-        logger.log(Level.INFO, "loading file {0}", file.getName());
-        Instance inst;
         /*it.setSkipBlanks(true);
          it.setCommentIdentifier("#");
          it.setSkipComments(true);*/
-
         int count = 0;
         for (; reader.ready();) {
             String line = reader.readLine();
@@ -150,6 +159,7 @@ public class CsvImporter implements FileImporter, LongTask {
                 count++;
             }
         }
+        container.setNumberOfLines(count);
 
         //   Progress.switchToDeterminate(progressTicket, lines.size());
         //if we know number of lines
@@ -157,8 +167,12 @@ public class CsvImporter implements FileImporter, LongTask {
     }
 
     protected void lineRead(int num, String line) throws IOException {
-
         String[] columns = parseLine(line);
+        if (prevColCnt != columns.length && prevColCnt > -1) {
+            report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class, "CsvImporter_error_differentLineLength", num), Issue.Level.WARNING));
+        } else {
+            prevColCnt = columns.length;
+        }
 
         if (hasHeader && !skipHeader) {
             // parseHeader(iter.next());
@@ -344,6 +358,22 @@ public class CsvImporter implements FileImporter, LongTask {
 
     public void setIgnoreLeadingWhiteSpace(boolean ignoreLeadingWhiteSpace) {
         this.ignoreLeadingWhiteSpace = ignoreLeadingWhiteSpace;
+    }
+
+    /**
+     * Conversion to FileObject might fail, so we have a backup BufferedReader
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    private LineNumberReader getReader(File file) throws IOException {
+        FileObject fileObject = FileUtil.toFileObject(file);
+        if (fileObject == null) {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            return new LineNumberReader(br);
+        }
+        return ImportUtils.getTextReader(fileObject);
     }
 
 }
