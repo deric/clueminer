@@ -14,7 +14,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.utils.DatasetLoader;
-import org.clueminer.utils.Dump;
 import org.openide.util.Exceptions;
 
 /**

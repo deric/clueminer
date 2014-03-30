@@ -1,13 +1,15 @@
 package org.clueminer.importer.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
@@ -26,7 +28,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FileImporter.class)
 public class CsvImporter implements FileImporter, LongTask {
 
-    private String separator;
+    private boolean hasHeader = true;
+    private boolean skipHeader = false;
+    private char separator = ',';
+    private char quotechar = '"';
     private static final String name = "CSV";
     private File file;
     private Reader reader;
@@ -34,9 +39,18 @@ public class CsvImporter implements FileImporter, LongTask {
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
+    private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
+    private static final int INITIAL_READ_SIZE = 128;
+    private String pending;
+    private boolean ignoreQuotations = true;
+    private boolean strictQuotes = false;
+    private char escape;
+    private boolean inField = false;
+    //white space in front of a quote in a field is ignored
+    private boolean ignoreLeadingWhiteSpace = false;
 
     public CsvImporter() {
-        separator = ",";
+        separator = ',';
     }
 
     @Override
@@ -44,11 +58,11 @@ public class CsvImporter implements FileImporter, LongTask {
         return name;
     }
 
-    public String getSeparator() {
+    public char getSeparator() {
         return separator;
     }
 
-    public void setSeparator(String separator) {
+    public void setSeparator(char separator) {
         this.separator = separator;
     }
 
@@ -119,46 +133,152 @@ public class CsvImporter implements FileImporter, LongTask {
         this.progressTicket = progressTicket;
     }
 
-    private void importData(LineNumberReader reader) throws Exception {
+    protected void importData(LineNumberReader reader) throws IOException {
         Progress.start(progressTicket);        //Progress
 
-        List<String> lines = new ArrayList<String>();
+        logger.log(Level.INFO, "loading file {0}", file.getName());
+        Instance inst;
+        /*it.setSkipBlanks(true);
+         it.setCommentIdentifier("#");
+         it.setSkipComments(true);*/
+
+        int count = 0;
         for (; reader.ready();) {
             String line = reader.readLine();
             if (line != null && !line.isEmpty()) {
-                lines.add(line);
-            }
-        }
-
-        Progress.switchToDeterminate(progressTicket, lines.size());
-
-        //Magix regex
-        Pattern pattern = Pattern.compile("(?<=(?:,|;|\\s|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|;|\"\\s|\"$)|(?<=(?:,|;|\\s|^)')(.*?)(?=(?<=(?:[^\\\\]))',|;|'\\s|'$)|(?<=(?:,|;|\\s|^))(?=[^'\"])(.*?)(?=(?:,|;|\\s|$))|(?<=,|;)($)");
-
-        Matcher m;
-        for (String line : lines) {
-            if (cancel) {
-                return;
-            }
-            m = pattern.matcher(line);
-            int count = 0;
-            while (m.find()) {
-                int start = m.start();
-                int end = m.end();
-                if (start != end) {
-                    String data = line.substring(start, end);
-                    data = data.trim();
-                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                        addInstance(data);
-                    }
-                }
+                lineRead(count, line);
                 count++;
             }
-            Progress.progress(progressTicket);      //Progress
         }
+
+        //   Progress.switchToDeterminate(progressTicket, lines.size());
+        //if we know number of lines
+        //    Progress.progress(progressTicket);      //Progress
+    }
+
+    protected void lineRead(int num, String line) throws IOException {
+
+        String[] columns = parseLine(line);
+
+        if (hasHeader && !skipHeader) {
+            // parseHeader(iter.next());
+            ///Dump.array(((CSVIterator) iter).showNext(), "next line: ");
+        } else if (skipHeader) {
+            //    iter.next(); // just skip it
+        }
+
     }
 
     private void addInstance(String data) {
         //container.
+    }
+
+    /**
+     * @return true if something was left over from last call(s)
+     */
+    public boolean isPending() {
+        return pending != null;
+    }
+
+    protected String[] parseLine(String line) throws IOException {
+        List<String> tokensOnThisLine = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder(INITIAL_READ_SIZE);
+        boolean inQuotes = false;
+        if (pending != null) {
+            sb.append(pending);
+            pending = null;
+            inQuotes = !this.ignoreQuotations;//true;
+        }
+        for (int i = 0; i < line.length(); i++) {
+
+            char c = line.charAt(i);
+            if (c == this.escape) {
+                if (isNextCharacterEscapable(line, (inQuotes && !ignoreQuotations) || inField, i)) {
+                    sb.append(line.charAt(i + 1));
+                    i++;
+                }
+            } else if (c == quotechar) {
+                if (isNextCharacterEscapedQuote(line, (inQuotes && !ignoreQuotations) || inField, i)) {
+                    sb.append(line.charAt(i + 1));
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                    // the tricky case of an embedded quote in the middle: a,bc"d"ef,g
+                    if (!strictQuotes) {
+                        if (i > 2 //not on the beginning of the line
+                                && line.charAt(i - 1) != this.separator //not at the beginning of an escape sequence
+                                && line.length() > (i + 1)
+                                && line.charAt(i + 1) != this.separator //not at the	end of an escape sequence
+                                ) {
+
+                            if (ignoreLeadingWhiteSpace && sb.length() > 0 && isAllWhiteSpace(sb)) {
+                                sb = new StringBuilder(INITIAL_READ_SIZE);  //discard white space leading up to quote
+                            } else {
+                                sb.append(c);
+                            }
+                        }
+                    }
+                }
+                inField = !inField;
+            } else if (c == separator && !(inQuotes && !ignoreQuotations)) {
+                tokensOnThisLine.add(sb.toString());
+                sb = new StringBuilder(INITIAL_READ_SIZE); // start work on next token
+                inField = false;
+            } else {
+                if (!strictQuotes || (inQuotes && !ignoreQuotations)) {
+                    sb.append(c);
+                    inField = true;
+                }
+            }
+        }
+        tokensOnThisLine.add(sb.toString());
+
+        return tokensOnThisLine.toArray(new String[tokensOnThisLine.size()]);
+    }
+
+    /**
+     * precondition: the current character is a quote or an escape
+     *
+     * @param nextLine the current line
+     * @param inQuotes true if the current context is quoted
+     * @param i        current index in line
+     * @return true if the following character is a quote
+     */
+    private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
+        return inQuotes // we are in quotes, therefore there can be escaped quotes in here.
+                && nextLine.length() > (i + 1) // there is indeed another character to check.
+                && nextLine.charAt(i + 1) == quotechar;
+    }
+
+    /**
+     * precondition: the current character is an escape
+     *
+     * @param nextLine the current line
+     * @param inQuotes true if the current context is quoted
+     * @param i        current index in line
+     * @return true if the following character is a quote
+     */
+    protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
+        return inQuotes // we are in quotes, therefore there can be escaped quotes in here.
+                && nextLine.length() > (i + 1) // there is indeed another character to check.
+                && (nextLine.charAt(i + 1) == quotechar || nextLine.charAt(i + 1) == this.escape);
+    }
+
+    /**
+     * precondition: sb.length() > 0
+     *
+     * @param sb A sequence of characters to examine
+     * @return true if every character in the sequence is whitespace
+     */
+    protected boolean isAllWhiteSpace(CharSequence sb) {
+        boolean result = true;
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+
+            if (!Character.isWhitespace(c)) {
+                return false;
+            }
+        }
+        return result;
     }
 }

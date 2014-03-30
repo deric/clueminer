@@ -5,6 +5,7 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.types.ContainerLoader;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class CsvImporterTest {
     @Test
     public void testGetSeparator() {
         //default separator should be comma
-        assertEquals(",", subject.getSeparator());
+        assertEquals(',', subject.getSeparator());
     }
 
     /**
@@ -50,8 +51,8 @@ public class CsvImporterTest {
      */
     @Test
     public void testSetSeparator() {
-        subject.setSeparator(";");
-        assertEquals(";", subject.getSeparator());
+        subject.setSeparator(';');
+        assertEquals(';', subject.getSeparator());
     }
 
     /**
@@ -141,6 +142,36 @@ public class CsvImporterTest {
      */
     @Test
     public void testSetProgressTicket() {
+    }
+
+    @Test
+    public void testParseLine() throws Exception {
+        String nextItem[] = subject.parseLine("This, is, a, test.");
+        assertEquals(4, nextItem.length);
+        assertEquals("This", nextItem[0]);
+        assertEquals(" is", nextItem[1]);
+        assertEquals(" a", nextItem[2]);
+        assertEquals(" test.", nextItem[3]);
+    }
+
+    @Test
+    public void parseSimpleString() throws IOException {
+        String[] nextLine = subject.parseLine("a,b,c");
+        assertEquals(3, nextLine.length);
+        assertEquals("a", nextLine[0]);
+        assertEquals("b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertFalse(subject.isPending());
+    }
+
+    @Test
+    public void parseSimpleQuotedString() throws IOException {
+        String[] nextLine = subject.parseLine("\"a\",\"b\",\"c\"");
+        assertEquals(3, nextLine.length);
+        assertEquals("a", nextLine[0]);
+        assertEquals("b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertFalse(subject.isPending());
     }
 
 }
