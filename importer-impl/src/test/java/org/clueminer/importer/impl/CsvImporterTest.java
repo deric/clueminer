@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class CsvImporterTest {
 
-    private final CsvImporter subject = new CsvImporter();
+    private CsvImporter subject;
     private static final CommonFixture fixtures = new CommonFixture();
 
     public CsvImporterTest() {
@@ -23,6 +23,7 @@ public class CsvImporterTest {
 
     @Before
     public void setUp() {
+        subject = new CsvImporter();
     }
 
     @After
@@ -174,4 +175,104 @@ public class CsvImporterTest {
         assertFalse(subject.isPending());
     }
 
+    @Test
+    public void parseSimpleQuotedStringWithSpaces() throws IOException {
+        subject.setStrictQuotes(true);
+        subject.setIgnoreLeadingWhiteSpace(true);
+
+        String[] nextLine = subject.parseLine(" \"a\" , \"b\" , \"c\" ");
+        assertEquals(3, nextLine.length);
+        assertEquals("a", nextLine[0]);
+        assertEquals("b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertFalse(subject.isPending());
+    }
+
+    /**
+     * Tests quotes in the middle of an element.
+     *
+     * @throws IOException if bad things happen
+     */
+    @Test
+    public void testParsedLineWithInternalQuota() throws IOException {
+        String[] nextLine = subject.parseLine("a,123\"4\"567,c");
+        assertEquals(3, nextLine.length);
+        assertEquals("123\"4\"567", nextLine[1]);
+    }
+
+    @Test
+    public void parseQuotedStringWithCommas() throws IOException {
+        String[] nextLine = subject.parseLine("a,\"b,b,b\",c");
+        assertEquals("a", nextLine[0]);
+        assertEquals("b,b,b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertEquals(3, nextLine.length);
+    }
+
+    @Test
+    public void parseQuotedStringWithDefinedSeperator() throws IOException {
+        subject.setSeparator(':');
+
+        String[] nextLine = subject.parseLine("a:\"b:b:b\":c");
+        assertEquals("a", nextLine[0]);
+        assertEquals("b:b:b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertEquals(3, nextLine.length);
+    }
+
+    @Test
+    public void parseQuotedStringWithDefinedSeperatorAndQuote() throws IOException {
+        subject.setSeparator(':');
+        subject.setQuotechar('\'');
+
+        String[] nextLine = subject.parseLine("a:'b:b:b':c");
+        assertEquals("a", nextLine[0]);
+        assertEquals("b:b:b", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+        assertEquals(3, nextLine.length);
+    }
+
+    @Test
+    public void parseEmptyElements() throws IOException {
+        String[] nextLine = subject.parseLine(",,");
+        assertEquals(3, nextLine.length);
+        assertEquals("", nextLine[0]);
+        assertEquals("", nextLine[1]);
+        assertEquals("", nextLine[2]);
+    }
+
+    @Test
+    public void parseMultiLinedQuoted() throws IOException {
+        String[] nextLine = subject.parseLine("a,\"PO Box 123,\nKippax,ACT. 2615.\nAustralia\",d.\n");
+        assertEquals(3, nextLine.length);
+        assertEquals("a", nextLine[0]);
+        assertEquals("PO Box 123,\nKippax,ACT. 2615.\nAustralia", nextLine[1]);
+        assertEquals("d.\n", nextLine[2]);
+    }
+
+    @Test
+    public void testADoubleQuoteAsDataElement() throws IOException {
+        String[] nextLine = subject.parseLine("a,\"\"\"\",c");// a,"""",c
+
+        assertEquals(3, nextLine.length);
+        assertEquals("a", nextLine[0]);
+        assertEquals(1, nextLine[1].length());
+        assertEquals("\"", nextLine[1]);
+        assertEquals("c", nextLine[2]);
+    }
+
+    @Test
+    public void testEscapedDoubleQuoteAsDataElement() throws IOException {
+        subject.setStrictQuotes(true);
+        //subject.setIgnoreQuotations(true);
+        String[] nextLine = subject.parseLine("\"test\",\"this,test,is,good\",\"\\\"test\\\"\",\"\\\"quote\\\"\""); // "test","this,test,is,good","\"test\",\"quote\""
+
+        assertEquals(4, nextLine.length);
+
+        assertEquals("test", nextLine[0]);
+        assertEquals("this,test,is,good", nextLine[1]);
+        // assertEquals("\"test\"", nextLine[2]);
+        //assertEquals("\"quote\"", nextLine[3]);
+
+    }
 }

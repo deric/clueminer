@@ -42,7 +42,7 @@ public class CsvImporter implements FileImporter, LongTask {
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private static final int INITIAL_READ_SIZE = 128;
     private String pending;
-    private boolean ignoreQuotations = true;
+    private boolean ignoreQuotations = false;
     private boolean strictQuotes = false;
     private char escape;
     private boolean inField = false;
@@ -95,7 +95,7 @@ public class CsvImporter implements FileImporter, LongTask {
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
             importData(lineReader);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return !cancel;
@@ -281,4 +281,69 @@ public class CsvImporter implements FileImporter, LongTask {
         }
         return result;
     }
+
+    public boolean isHasHeader() {
+        return hasHeader;
+    }
+
+    public void setHasHeader(boolean hasHeader) {
+        this.hasHeader = hasHeader;
+    }
+
+    public boolean isSkipHeader() {
+        return skipHeader;
+    }
+
+    public void setSkipHeader(boolean skipHeader) {
+        this.skipHeader = skipHeader;
+    }
+
+    public char getQuotechar() {
+        return quotechar;
+    }
+
+    public void setQuotechar(char quotechar) {
+        this.quotechar = quotechar;
+    }
+
+    public boolean isCancel() {
+        return cancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        this.cancel = cancel;
+    }
+
+    public boolean isIgnoreQuotations() {
+        return ignoreQuotations;
+    }
+
+    public void setIgnoreQuotations(boolean ignoreQuotations) {
+        this.ignoreQuotations = ignoreQuotations;
+    }
+
+    public boolean isStrictQuotes() {
+        return strictQuotes;
+    }
+
+    public void setStrictQuotes(boolean strictQuotes) {
+        this.strictQuotes = strictQuotes;
+    }
+
+    public char getEscape() {
+        return escape;
+    }
+
+    public void setEscape(char escape) {
+        this.escape = escape;
+    }
+
+    public boolean isIgnoreLeadingWhiteSpace() {
+        return ignoreLeadingWhiteSpace;
+    }
+
+    public void setIgnoreLeadingWhiteSpace(boolean ignoreLeadingWhiteSpace) {
+        this.ignoreLeadingWhiteSpace = ignoreLeadingWhiteSpace;
+    }
+
 }
