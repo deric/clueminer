@@ -5,6 +5,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * ContainerLoader pre-loads data as a preview before final import is executed
  *
  * @author Tomas Barton
  */
@@ -38,6 +39,31 @@ public interface ContainerLoader {
      * @return
      */
     public int getNumberOfLines();
+
+    /**
+     *
+     * @param attrCnt
+     */
+    public void setNumberOfAttributes(int attrCnt);
+
+    /**
+     *
+     * @return number of detected attributes
+     */
+    public int getNumberAttributes();
+
+    /**
+     * Default type for all numeric attributes
+     *
+     * @return
+     */
+    public Object getDefaultNumericType();
+
+    /**
+     *
+     * @param type
+     */
+    public void setDefaultNumericType(Object type);
 
     /* public void addInstance(Instance instance);
 

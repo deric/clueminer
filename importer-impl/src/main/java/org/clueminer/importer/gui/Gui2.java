@@ -3,10 +3,14 @@ package org.clueminer.importer.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import javax.swing.JFrame;
-import org.clueminer.importer.impl.ImportContainerImpl;
+import org.clueminer.importer.impl.CsvImporter;
+import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
 
@@ -26,15 +30,16 @@ public class Gui2 extends JFrame {
         File dir = new File(getClass().getProtectionDomain().getCodeSource().
                 getLocation().getFile() + "/../../../../../_data");
         String path = dir.getCanonicalPath() + "/" + "csv/Data_Milka_20131219_100260.csv";
-        System.out.println("path: " + path);
         File file = new File(path);
         System.out.println("file exists? " + file.exists());
         System.out.println("file " + file.getAbsolutePath());
 
         //importPanel.setFile(file);
-        Container container = new ImportContainerImpl();
-        container.setFile(file);
-        container.setReport(new Report());
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        LineNumberReader reader = new LineNumberReader(br);
+
+        ImportControllerImpl controller = new ImportControllerImpl();
+        Container container = controller.importFile(reader, new CsvImporter());
         Report report = container.getReport();
         reportPanel.setData(report, container);
     }

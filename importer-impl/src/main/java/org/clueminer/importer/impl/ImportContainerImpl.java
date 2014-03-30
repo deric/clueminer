@@ -41,6 +41,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
+    private int attrCnt;
+    private Object defaultNumericType = Double.class;
 
     public ImportContainerImpl() {
         instanceList = new ObjectArrayList<InstanceDraft>();
@@ -209,6 +211,26 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public int getNumberOfLines() {
         return linesCnt;
+    }
+
+    @Override
+    public void setNumberOfAttributes(int attrCnt) {
+        this.attrCnt = attrCnt;
+    }
+
+    @Override
+    public int getNumberAttributes() {
+        return attrCnt;
+    }
+
+    @Override
+    public Object getDefaultNumericType() {
+        return defaultNumericType;
+    }
+
+    @Override
+    public void setDefaultNumericType(Object type) {
+        defaultNumericType = type;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

@@ -171,7 +171,10 @@ public class CsvImporter implements FileImporter, LongTask {
         if (prevColCnt != columns.length && prevColCnt > -1) {
             report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class, "CsvImporter_error_differentLineLength", num), Issue.Level.WARNING));
         } else {
-            prevColCnt = columns.length;
+            if (prevColCnt != columns.length) {
+                prevColCnt = columns.length;
+                container.setNumberOfAttributes(prevColCnt);
+            }
         }
 
         if (hasHeader && !skipHeader) {
