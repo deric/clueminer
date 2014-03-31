@@ -27,7 +27,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     public final void ensureCapacity(int id) {
         int capacity = (int) (n * 1.618); //golden ratio :)
-        if (capacity == size()) {
+        if (capacity <= size()) {
             capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
         }
         if (capacity > data.length) {

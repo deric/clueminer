@@ -138,7 +138,7 @@ public class AssigmentsImpl implements Assignments {
             clusters.add(new HashSet<Integer>());
         }
         for (int i = 0; i < assignments.length; ++i) {
-            for (int k : assignments[i].assignments()) {
+            for (int k : assignments[i].membership()) {
                 clusters.get(k).add(i);
             }
         }
@@ -167,9 +167,9 @@ public class AssigmentsImpl implements Assignments {
         // increase the size of the cluster.
         int row = 0;
         for (Assignment assignment : assignments) {
-            if (assignment.length() != 0) {
-                counts[assignment.assignments()[0]]++;
-                DoubleVector centroid = centroids[assignment.assignments()[0]];
+            if (assignment.size() != 0) {
+                counts[assignment.membership()[0]]++;
+                DoubleVector centroid = centroids[assignment.membership()[0]];
                 centroid.add(matrix.getRowVector(row));
             }
             row++;
@@ -217,9 +217,9 @@ public class AssigmentsImpl implements Assignments {
         // increase the size of the cluster.
         int row = 0;
         for (Assignment assignment : assignments) {
-            if (assignment.length() != 0 && assignment.assignments()[0] != -1) {
-                counts[assignment.assignments()[0]]++;
-                SparseDoubleVector centroid = centroids[assignment.assignments()[0]];
+            if (assignment.size() != 0 && assignment.membership()[0] != -1) {
+                counts[assignment.membership()[0]]++;
+                SparseDoubleVector centroid = centroids[assignment.membership()[0]];
                 centroid.add(sm.getRowVector(row));
             }
             row++;
