@@ -35,11 +35,7 @@ public class ArrayDatasetTest {
 
     @BeforeClass
     public static void setUpClass() {
-        dataset = new ArrayDataset<Instance>(dataCapacity, attributesCnt);
-        dataset.builder().create(new double[]{1, 2});
-        dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
-        dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
-        rand = new Random();
+
     }
 
     @AfterClass
@@ -48,6 +44,11 @@ public class ArrayDatasetTest {
 
     @Before
     public void setUp() {
+        dataset = new ArrayDataset<Instance>(dataCapacity, attributesCnt);
+        dataset.builder().create(new double[]{1, 2});
+        dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
+        dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
+        rand = new Random();
         //before each testing method we add an instance to the dataset
         dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
     }
@@ -465,6 +466,17 @@ public class ArrayDatasetTest {
     public void testGetAttributeByRole() {
         Attribute[] attr = dataset.attributeByRole(BasicAttrRole.INPUT);
         assertEquals(2, attr.length);
+    }
+
+    @Test
+    public void testZeroCapacity() {
+        dataset = new ArrayDataset<Instance>(0, attributesCnt);
+        dataset.builder().create(new double[]{1, 2});
+        dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
+        dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
+        rand = new Random();
+        //before each testing method we add an instance to the dataset
+        dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
     }
 
 }

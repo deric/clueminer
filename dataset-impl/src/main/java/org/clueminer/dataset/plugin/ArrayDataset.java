@@ -16,8 +16,7 @@ import org.math.plot.Plot2DPanel;
  *
  * @param <E>
  *
- * - contains(Object o) ~ O(n)
- * - can allocate Instance at any position
+ * - contains(Object o) ~ O(n) - can allocate Instance at any position
  *
  *
  * @author Tomas Barton
@@ -49,13 +48,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public boolean add(Instance i) {
-        if ((n + 1) >= getCapacity()) {
-            int capacity = (int) (n * 1.618); //golden ratio :)
-            if (capacity == size()) {
-                capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
-            }
-            ensureCapacity(capacity);
-        }
+        ensureCapacity(n);
+
         data[n++] = i;
         return true;
     }
@@ -223,8 +217,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     /**
-     * Array might have free allocated space for new attributes, so copy
-     * just {attrCnt} attributes
+     * Array might have free allocated space for new attributes, so copy just
+     * {attrCnt} attributes
      *
      * @return reference to attribute map
      */
@@ -372,8 +366,13 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public void ensureCapacity(int capacity) {
-        if (capacity > size()) {
+    public void ensureCapacity(int req) {
+        if (req >= getCapacity()) {
+            int capacity = (int) (n * 1.618); //golden ratio :)
+            if (capacity <= req) {
+                capacity = req + 1; // for small numbers due to int rounding we wouldn't increase the size
+            }
+
             Instance[] tmp = new Instance[capacity];
             System.arraycopy(data, 0, tmp, 0, n);
             data = tmp;
@@ -381,9 +380,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     /**
-     * Returns <tt>true</tt> if this list contains the specified element.
-     * More formally, returns <tt>true</tt> if and only if this list contains
-     * at least one element <tt>e</tt> such that
+     * Returns <tt>true</tt> if this list contains the specified element. More
+     * formally, returns <tt>true</tt> if and only if this list contains at
+     * least one element <tt>e</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
      *
      * @param o element whose presence in this list is to be tested
@@ -395,9 +394,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     /**
-     * Returns the index of the first occurrence of the specified element
-     * in this list, or -1 if this list does not contain the element.
-     * More formally, returns the lowest index <tt>i</tt> such that
+     * Returns the index of the first occurrence of the specified element in
+     * this list, or -1 if this list does not contain the element. More
+     * formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
      *
