@@ -2,7 +2,7 @@ package org.clueminer.math;
 
 /**
  * An generalized interface for vectors. This interface allows implementations
- * to implement the vector with any kind of underlying data type.
+ * to implement the vector with any kind of underlying numerical data type.
  *
  * @author Tomas Barton
  * @param <T>
@@ -12,6 +12,7 @@ public interface Vector<T extends Number> {
     /**
      * Returns {@code true} if the object is a {@link Vector} of the same size
      * and whose corresponding indices have equivalent values.
+     *
      * @param o
      * @return
      */
@@ -40,6 +41,7 @@ public interface Vector<T extends Number> {
     /**
      * Returns the hash code as the sum of the vectors elements, normalized to
      * an {@code int}.
+     *
      * @return
      */
     @Override
@@ -54,9 +56,18 @@ public interface Vector<T extends Number> {
 
     /**
      * Returns the magnitude of this vector
+     *
      * @return
      */
     public double magnitude();
+
+    /**
+     * Computes dot product of this and another vector
+     *
+     * @param v the other vector
+     * @return the dot product of this vector and another
+     */
+    public double dot(Vector v);
 
     /**
      * Set the value in the vector (optional operation).

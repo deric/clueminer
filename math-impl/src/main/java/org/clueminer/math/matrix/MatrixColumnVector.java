@@ -3,12 +3,13 @@ package org.clueminer.math.matrix;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
 import org.clueminer.math.Vector;
+import org.clueminer.math.impl.AbstractDoubleVector;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MatrixColumnVector implements MatrixVector {
+public class MatrixColumnVector extends AbstractDoubleVector implements MatrixVector {
 
     private Matrix matrix;
     private int column;
@@ -59,22 +60,17 @@ public class MatrixColumnVector implements MatrixVector {
     }
 
     @Override
-    public double magnitude() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void set(int index, Number value) {
         matrix.set(index, column, value.doubleValue());
     }
 
     @Override
-    public Vector<Double> add(Vector<Double> other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Matrix getMatrix() {
+        return matrix;
     }
 
     @Override
-    public Matrix getMatrix() {
-        return matrix;
+    public Vector<Double> add(Vector<Double> other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -1,6 +1,7 @@
 package org.clueminer.math.impl;
 
 import org.clueminer.math.DoubleVector;
+import org.clueminer.math.Vector;
 
 /**
  * An abstract base class that provides default implementations of common
@@ -70,6 +71,22 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
             m += d * d;
         }
         return Math.sqrt(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double dot(Vector v) {
+        if (this.size() != v.size()) {
+            throw new ArithmeticException("Vectors must have the same length" + this.size() + " != " + v.size());
+        }
+        double dot = 0.0;
+        for (int i = 0; i < this.size(); i++) {
+            dot += this.get(i) * v.get(i);
+        }
+
+        return dot;
     }
 
     /**

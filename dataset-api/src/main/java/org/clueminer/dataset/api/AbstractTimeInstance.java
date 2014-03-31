@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.math.Vector;
 
 /**
  *
@@ -101,6 +102,36 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
             res[i] = this.value(i);
         }
         return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double magnitude() {
+        double m = 0;
+        int length = size();
+        for (int i = 0; i < length; ++i) {
+            double d = get(i);
+            m += d * d;
+        }
+        return Math.sqrt(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double dot(Vector v) {
+        if (this.size() != v.size()) {
+            throw new ArithmeticException("Vectors must have the same length" + this.size() + " != " + v.size());
+        }
+        double dot = 0.0;
+        for (int i = 0; i < this.size(); i++) {
+            dot += this.get(i) * v.get(i);
+        }
+
+        return dot;
     }
 
     @Override

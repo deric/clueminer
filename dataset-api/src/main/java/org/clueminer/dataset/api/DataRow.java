@@ -1,6 +1,7 @@
 package org.clueminer.dataset.api;
 
 import java.util.Iterator;
+import org.clueminer.math.Vector;
 
 /**
  *
@@ -28,6 +29,9 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
 
     /**
      * Sets the given data for the given index.
+     * @param index
+     * @param value
+     * @param defaultValue
      */
     protected abstract void setValue(int index, double value, double defaultValue);
 
@@ -74,11 +78,28 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
     }
 
     /**
-     * Sets the value of the {@link Attribute} to
-     * <code>value</code>.
+     * Sets the value of the {@link Attribute} to <code>value</code>.
+     * @param attribute
+     * @param value
      */
     public void setValue(Attribute attribute, double value) {
         set(attribute.getIndex(), value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double dot(Vector v) {
+        if (this.size() != v.size()) {
+            throw new ArithmeticException("Vectors must have the same length" + this.size() + " != " + v.size());
+        }
+        double dot = 0.0;
+        for (int i = 0; i < this.size(); i++) {
+            dot += this.get(i) * v.get(i);
+        }
+
+        return dot;
     }
 
     /**

@@ -3,13 +3,14 @@ package org.clueminer.math.matrix;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
 import org.clueminer.math.Vector;
+import org.clueminer.math.impl.AbstractDoubleVector;
 
 /**
  * A proxy to matrix row
  *
  * @author Tomas Barton
  */
-public class MatrixRowVector implements MatrixVector {
+public class MatrixRowVector extends AbstractDoubleVector implements MatrixVector {
 
     private Matrix matrix;
     private int row;
@@ -57,11 +58,6 @@ public class MatrixRowVector implements MatrixVector {
     @Override
     public int size() {
         return matrix.columnsCount();
-    }
-
-    @Override
-    public double magnitude() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
