@@ -29,6 +29,7 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
 
     /**
      * Sets the given data for the given index.
+     *
      * @param index
      * @param value
      * @param defaultValue
@@ -79,6 +80,7 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
 
     /**
      * Sets the value of the {@link Attribute} to <code>value</code>.
+     *
      * @param attribute
      * @param value
      */
@@ -100,6 +102,16 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
         }
 
         return dot;
+    }
+
+    @Override
+    public double pNorm(double p) {
+        double norm = 0;
+        for (int i = 0; i < size(); i++) {
+            norm += Math.pow(Math.abs(get(i)), p);
+        }
+
+        return Math.pow(norm, 1.0 / p);
     }
 
     /**

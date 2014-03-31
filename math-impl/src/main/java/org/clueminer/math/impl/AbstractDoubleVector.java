@@ -89,6 +89,16 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
         return dot;
     }
 
+    @Override
+    public double pNorm(double p) {
+        double norm = 0;
+        for (int i = 0; i < size(); i++) {
+            norm += Math.pow(Math.abs(get(i)), p);
+        }
+
+        return Math.pow(norm, 1.0 / p);
+    }
+
     /**
      * Throws an {@link UnsupportedOperationException} if called (vector is
      * unmodifiable).

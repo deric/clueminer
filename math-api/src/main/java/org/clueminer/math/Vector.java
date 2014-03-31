@@ -70,6 +70,14 @@ public interface Vector<T extends Number> {
     public double dot(Vector v);
 
     /**
+     * Return p-Norm
+     *
+     * @param p
+     * @return
+     */
+    public double pNorm(double p);
+
+    /**
      * Set the value in the vector (optional operation).
      *
      * @param index index to set.

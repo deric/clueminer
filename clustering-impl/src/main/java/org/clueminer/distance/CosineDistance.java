@@ -113,8 +113,24 @@ public class CosineDistance extends SymmetricDistance {
     @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
-        double sumTop = 0;
-        double sumOne = 0;
+
+        /*
+         * a dot b / (2Norm(a) * 2Norm(b)) will return a value in the range -1 to 1
+         * -1 means they are completly opposite
+         * 1 means they are exactly the same
+         *
+         * by returning the result a 1 - val, we mak it so the value returns is in the range 2 to 0.
+         * 2 (1 - -1 = 2) means they are completly opposite
+         * 0 ( 1 -1) means they are completly the same
+         */
+        double denom = x.pNorm(2) * y.pNorm(2);
+        if (denom == 0) {
+            return 2.0;
+        }
+        return 1 - x.dot(y) / denom;
+
+        /*   double sumTop = 0;
+         double sumOne = 0;
         double sumTwo = 0;
         for (int i = 0; i < x.size(); i++) {
             sumTop += x.get(i) * y.get(i);
@@ -122,7 +138,7 @@ public class CosineDistance extends SymmetricDistance {
             sumTwo += y.get(i) * y.get(i);
         }
         double cosSim = sumTop / (Math.sqrt(sumOne) * Math.sqrt(sumTwo));
-        return (1 - cosSim);
+        return (1 - cosSim);*/
     }
 
     @Override

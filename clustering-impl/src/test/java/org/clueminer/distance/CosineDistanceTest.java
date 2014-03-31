@@ -1,5 +1,6 @@
 package org.clueminer.distance;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Vector;
 import org.junit.After;
@@ -65,6 +66,27 @@ public class CosineDistanceTest {
 
     @Test
     public void testMeasure_Vector_Vector() {
+    }
+
+    @Test
+    public void testSimpleDistance() {
+        double[] data = {1, 1, 1};
+        double[] data2 = {0, 2, 4};
+        Instance a = new DoubleArrayDataRow(data);
+        Instance b = new DoubleArrayDataRow(data2);
+
+        assertEquals(0, subject.measure(a, a), delta);
+        assertTrue(subject.measure(a, b) > 0);
+    }
+
+    @Test
+    public void testSimpleDistance2() {
+        double[] x = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+        double[] y = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1};
+        Instance a = new DoubleArrayDataRow(x);
+        Instance b = new DoubleArrayDataRow(y);
+
+        assertEquals(0.6666666666666666, subject.measure(a, b), delta);
     }
 
     @Test
