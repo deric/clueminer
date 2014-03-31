@@ -142,9 +142,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.cluster</publicPackage>
                         <publicPackage>org.clueminer.cluster.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.clustering</publicPackage>
-                        <publicPackage>org.clueminer.clustering.aggl</publicPackage>
-                        <publicPackage>org.clueminer.clustering.algorithm</publicPackage>
+                        <publicPackage>org.clueminer.clustering.*</publicPackage>
                         <publicPackage>org.clueminer.distance</publicPackage>
                         <publicPackage>org.clueminer.evaluation</publicPackage>
                         <publicPackage>org.clueminer.evaluation.external</publicPackage>

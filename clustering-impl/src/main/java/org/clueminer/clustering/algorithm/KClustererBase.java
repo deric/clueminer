@@ -7,12 +7,25 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.DistanceMeasure;
 
 /**
  *
  * @author Tomas Barton
  */
 public abstract class KClustererBase implements PartitioningClustering {
+
+    protected DistanceMeasure distance;
+
+    @Override
+    public DistanceMeasure getDistanceFunction() {
+        return distance;
+    }
+
+    @Override
+    public void setDistanceFunction(DistanceMeasure dm) {
+        this.distance = dm;
+    }
 
     /**
      * Convenient helper method. A list of lists to represent a cluster may be
