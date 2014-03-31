@@ -25,15 +25,17 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         data = new Cluster[capacity];
     }
 
-    public final void ensureCapacity(int id) {
-        int capacity = (int) (n * 1.618); //golden ratio :)
-        if (capacity <= size()) {
-            capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
-        }
-        if (capacity > data.length) {
-            Cluster[] tmp = new Cluster[capacity];
-            System.arraycopy(data, 0, tmp, 0, data.length);
-            data = tmp;
+    public final void ensureCapacity(int requested) {
+        if (requested >= getCapacity()) {
+            int capacity = (int) (requested * 1.618); //golden ratio :)
+            if (capacity <= size()) {
+                capacity = n * 3; // for small numbers due to int rounding we wouldn't increase the size
+            }
+            if (capacity > data.length) {
+                Cluster[] tmp = new Cluster[capacity];
+                System.arraycopy(data, 0, tmp, 0, data.length);
+                data = tmp;
+            }
         }
     }
 
@@ -44,18 +46,14 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public boolean add(Cluster<E> e) {
-        if (n >= getCapacity()) {
-            ensureCapacity(n);
-        }
+        ensureCapacity(n);
+
         data[n++] = e;
         return true;
     }
 
     public int getCapacity() {
-        if (data != null) {
-            return data.length;
-        }
-        return 0;
+        return data.length;
     }
 
     @Override
@@ -70,9 +68,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public void put(int index, Cluster x) {
-        if (index >= getCapacity()) {
-            ensureCapacity(index);
-        }
+        ensureCapacity(index);
+
         if (data[index] == null) {
             n++;
         }
@@ -138,9 +135,9 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     /**
-     * Returns ID of assigned cluster, if ID not found it could be caused
-     * by using methods which didn't supply original mapping (or it's really
-     * not present)
+     * Returns ID of assigned cluster, if ID not found it could be caused by
+     * using methods which didn't supply original mapping (or it's really not
+     * present)
      *
      * @param instanceId
      * @return original instance ID
@@ -213,6 +210,37 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Create new cluster and inserts it at given position
+     *
+     * @param clusterId
+     * @return
+     */
+    @Override
+    public Cluster<? extends Instance> createCluster(int clusterId) {
+        int attrSize = 5; //some default value
+        if (!isEmpty()) {
+            attrSize = data[0].attributeCount();
+        }
+        Cluster<? extends Instance> c = new BaseCluster(attrSize);
+        c.setClusterId(clusterId);
+        put(clusterId, c);
+        return c;
+    }
+
+    @Override
+    public Cluster<? extends Instance> createCluster() {
+        int attrSize = 5; //some default value
+        if (!isEmpty()) {
+            attrSize = data[0].attributeCount();
+        }
+        Cluster<? extends Instance> c = new BaseCluster(attrSize);
+        int clusterId = size();
+        c.setClusterId(clusterId);
+        put(clusterId, c);
+        return c;
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

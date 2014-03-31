@@ -1,5 +1,7 @@
 package org.clueminer.clustering.api;
 
+import java.io.Serializable;
+
 /**
  * A cluster assignment to a data point
  *
@@ -7,7 +9,7 @@ package org.clueminer.clustering.api;
  *
  * @author Tomas Barton
  */
-public interface Assignment {
+public interface Assignment extends Serializable {
 
     /**
      * Returns the cluster id's that a specific data point (at certain index)

@@ -322,4 +322,19 @@ public class ClusterListTest {
     public void testClear() {
     }
 
+    @Test
+    public void testCreateCluster_int() {
+        int size = clusters.size();
+        Cluster c = clusters.createCluster(size + 1);
+        assertEquals(size + 1, c.getClusterId());
+        assertEquals(size + 1, clusters.size());
+    }
+
+    @Test
+    public void testCreateCluster_0args() {
+        int size = clusters.size();
+        Cluster c = clusters.createCluster();
+        assertEquals(size, c.getClusterId());
+    }
+
 }

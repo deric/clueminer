@@ -36,7 +36,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     public void put(Cluster<? extends Instance> d);
 
     /**
-     * Inserts Dataset at i-th position
+     * Inserts Cluster at i-th position
      *
      * @param index
      * @param d
@@ -78,7 +78,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Iterator over all instances in clustering regardless assignment to a
      * cluster
      *
-     * @return instances iterator 
+     * @return instances iterator
      */
     public Iterator<Instance> instancesIterator();
 
@@ -88,9 +88,9 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return centroid for all clusters
      */
     public Instance getCentroid();
-    
+
     /**
-     * 
+     *
      * @return sizes of all clusters
      */
     public Integer[] clusterSizes();
@@ -102,4 +102,20 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return
      */
     public int assignedCluster(int instanceId);
+
+    /**
+     * Create new cluster with given ID
+     *
+     * @param clusterId
+     * @return newly created cluster
+     */
+    public Cluster<? extends Instance> createCluster(int clusterId);
+
+    /**
+     * Create cluster with new ID (starting from 0)
+     *
+     * @return
+     */
+    public Cluster<? extends Instance> createCluster();
+
 }
