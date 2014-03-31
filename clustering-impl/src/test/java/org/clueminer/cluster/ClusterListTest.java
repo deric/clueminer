@@ -27,7 +27,7 @@ import org.openide.util.Exceptions;
  */
 public class ClusterListTest {
 
-    private Clustering clusters;
+    private Clustering<Cluster> clusters;
     private static Dataset<? extends Instance> data;
 
     public ClusterListTest() {
@@ -246,6 +246,26 @@ public class ClusterListTest {
      */
     @Test
     public void testIterator() {
+        clusters = new ClusterList(10);
+        //create 6 empty clusters
+        for (int i = 0; i < 6; i++) {
+            clusters.createCluster(i + 1);
+        }
+        assertEquals(6, clusters.size());
+
+        int i = 0;
+        for (Cluster c : clusters) {
+            i++;
+        }
+        assertEquals(6, i);
+
+        Iterator<Cluster> iter = clusters.iterator();
+        i = 0;
+        while (iter.hasNext()) {
+            iter.next();
+            i++;
+        }
+        assertEquals(6, i);
     }
 
     /**

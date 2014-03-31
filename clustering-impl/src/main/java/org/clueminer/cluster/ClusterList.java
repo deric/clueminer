@@ -61,6 +61,24 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         return get(i).getName();
     }
 
+    /**
+     * Numbers of clusters do now always start from 0, this method should return
+     * first non-empty cluster
+     *
+     * @return first non-empty cluster, return null if no such cluster exists
+     */
+    public Cluster<E> first() {
+        if (!isEmpty()) {
+
+            for (Cluster c : data) {
+                if (c != null) {
+                    return c;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void put(Cluster<? extends Instance> d) {
         this.add((Cluster) d);
@@ -93,8 +111,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public int instancesCount() {
         int cnt = 0;
-        for (Cluster c : this) {
-            cnt += c.size();
+        for (Cluster c : data) {
+            if (c != null) {
+                cnt += c.size();
+            }
         }
         return cnt;
     }
@@ -222,9 +242,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     public Cluster<? extends Instance> createCluster(int clusterId) {
         int attrSize = 5; //some default value
         if (!isEmpty()) {
-            attrSize = data[0].attributeCount();
+            //take number of attributes from first cluster
+            attrSize = first().attributeCount();
         }
-        Cluster<? extends Instance> c = new BaseCluster(attrSize);
+        Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         c.setClusterId(clusterId);
         put(clusterId, c);
         return c;
@@ -236,7 +257,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         if (!isEmpty()) {
             attrSize = data[0].attributeCount();
         }
-        Cluster<? extends Instance> c = new BaseCluster(attrSize);
+        Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         int clusterId = size();
         c.setClusterId(clusterId);
         put(clusterId, c);
@@ -254,8 +275,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
         @Override
         public Cluster<E> next() {
-            index++;
-            return get(index - 1);
+            return get(index++);
         }
 
         @Override

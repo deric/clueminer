@@ -23,7 +23,7 @@ import org.junit.Test;
 public class SilhouetteTest {
 
     private static Silhouette test = new Silhouette();
-    private static Dataset<Instance> dataset;
+    private static Dataset<? extends Instance> dataset;
     private static Clustering clustering;
     private static Clustering clusters;
     private static AlgorithmParameters params;

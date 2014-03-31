@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class CalinskiHarabaszTest {
 
     private static Clustering clusters;
-    private static Dataset<Instance> dataset;
+    private static Dataset<? extends Instance> dataset;
     private static CalinskiHarabasz test;
 
     public CalinskiHarabaszTest() {

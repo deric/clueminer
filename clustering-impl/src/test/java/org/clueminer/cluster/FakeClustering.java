@@ -56,7 +56,7 @@ public class FakeClustering {
         return irisClusters;
     }
 
-    public static Dataset<Instance> irisDataset() {
+    public static Dataset<? extends Instance> irisDataset() {
         if (irisData == null) {
             CommonFixture tf = new CommonFixture();
             irisData = new SampleDataset();
