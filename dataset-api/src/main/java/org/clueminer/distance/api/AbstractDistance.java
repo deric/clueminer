@@ -85,7 +85,7 @@ public abstract class AbstractDistance implements DistanceMeasure {
 
     protected void checkInput(Vector<Double> x, Vector<Double> y) {
         if (x.size() != y.size()) {
-            throw new IllegalArgumentException("Both instances should contain the same number of values! x size: " + x.size() + " != y size: " + y.size());
+            throw new ArithmeticException("Both instances should contain the same number of values! x size: " + x.size() + " != y size: " + y.size());
         }
     }
 }

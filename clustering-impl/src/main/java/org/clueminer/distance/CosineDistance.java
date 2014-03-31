@@ -8,7 +8,9 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Cosine distance express angle between two vectors. Normally it ranges from -1
- * to 1 but we shift it to [0, 2]
+ * to 1 but we shift it to [0, 2]. Where 0 means two vectors are the same, and 2
+ * means they are completely different.
+ *
  *
  * <math>\text{similarity} = \cos(\theta) = {A \cdot B \over \|A\| \|B\|} =
  * \frac{ \sum\limits_{i=1}^{n}{A_i \times B_i} }{
@@ -22,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractDistance.class)
 public class CosineDistance extends SymmetricDistance {
 
-    private static String name = "Cosine";
+    private static final String name = "Cosine";
     private static float similarityFactor = 1.0f;
     /**
      * should be minNodeHeight - when computing tree heights, the distances must
@@ -40,8 +42,8 @@ public class CosineDistance extends SymmetricDistance {
      * Calculate distance between 2 columns in given matrix
      *
      * @param matrix
-     * @param col1
-     * @param col2
+     * @param e1
+     * @param e2
      * @return
      */
     @Override
@@ -135,11 +137,21 @@ public class CosineDistance extends SymmetricDistance {
 
     @Override
     public double getMinValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0.0;
     }
 
     @Override
     public double getMaxValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 2.0;
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        return true;
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        return true;
     }
 }

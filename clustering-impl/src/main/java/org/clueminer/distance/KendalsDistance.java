@@ -12,7 +12,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractDistance.class)
 public class KendalsDistance extends AbstractDistance {
 
-    private static String name = "Kendals Tau";
+    private static final String name = "Kendals Tau";
     private static float similarityFactor = -1.0f;
     private static int offset = -1; //should be minNodeHeight
     private static final long serialVersionUID = 4874965236165548677L;
@@ -167,6 +167,16 @@ public class KendalsDistance extends AbstractDistance {
 
     @Override
     public boolean isSymmetric() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isIndiscernible() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

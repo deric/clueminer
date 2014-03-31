@@ -42,12 +42,12 @@ public class MinkowskiDistance extends SymmetricDistance {
 
     @Override
     public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
-        if (x.size() != y.size() || x.size() != weights.length) {
-            throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size() + ", weights size: " + weights.length);
-        }
+        checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += Math.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
+            if ((!Double.isNaN(x.get(i))) && (!Double.isNaN(y.get(i)))) {
+                sum += Math.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
+            }
         }
 
         return Math.pow(sum, 1 / power);
@@ -71,5 +71,15 @@ public class MinkowskiDistance extends SymmetricDistance {
     @Override
     public double columns(Matrix a, int i, int j) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        return true;
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        return true;
     }
 }

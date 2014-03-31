@@ -13,7 +13,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AbstractDistance.class)
 public class CanberraDistance extends SymmetricDistance {
 
-    private static String name = "Canberra";
+    private static final String name = "Canberra";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
     private static final long serialVersionUID = 1585719949710328924L;
@@ -88,5 +88,15 @@ public class CanberraDistance extends SymmetricDistance {
     @Override
     public double getMaxValue() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

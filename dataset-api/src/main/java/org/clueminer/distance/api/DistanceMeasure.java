@@ -74,8 +74,7 @@ public interface DistanceMeasure extends Serializable {
     public double getMaxValue();
 
     /**
-     * @deprecated
-     * @param a
+     * @deprecated @param a
      * @param b
      * @param i
      * @param j
@@ -84,8 +83,7 @@ public interface DistanceMeasure extends Serializable {
     public double rows(Matrix a, Matrix b, int i, int j);
 
     /**
-     * @deprecated
-     * @param a
+     * @deprecated @param a
      * @param i
      * @param j
      * @return
@@ -93,8 +91,7 @@ public interface DistanceMeasure extends Serializable {
     public double columns(Matrix a, int i, int j);
 
     /**
-     * @deprecated
-     * @param matrix
+     * @deprecated @param matrix
      * @param e1
      * @param e2
      * @param factor
@@ -103,8 +100,7 @@ public interface DistanceMeasure extends Serializable {
     public double rows(Matrix matrix, int e1, int e2, float factor);
 
     /**
-     * @deprecated
-     * @param matrix
+     * @deprecated @param matrix
      * @param e1
      * @param e2
      * @return
@@ -112,8 +108,7 @@ public interface DistanceMeasure extends Serializable {
     public double rows(Matrix matrix, int e1, int e2);
 
     /**
-     * @deprecated
-     * @param A
+     * @deprecated @param A
      * @param B
      * @param e1
      * @param e2
@@ -123,8 +118,7 @@ public interface DistanceMeasure extends Serializable {
     public double rows(Matrix A, Matrix B, int e1, int e2, float factor);
 
     /**
-     * @deprecated
-     * @param matrix
+     * @deprecated @param matrix
      * @param e1
      * @param e2
      * @param factor
@@ -139,9 +133,33 @@ public interface DistanceMeasure extends Serializable {
     public float getSimilarityFactor();
 
     /**
-     * Returns true if {@code sim(A,B) == sim(B,A)} is true for any {@code A},
-     * {@code B}.
+     * Returns true if {@code d(x,y) == d(y,x)} is true for any {@code x},
+     * {@code y}.
+     *
+     * d(x, y) = d(y, x)
+      *
      * @return true if this distance metric is symmetric, false if it is not
      */
     public boolean isSymmetric();
+
+    /**
+     * Returns true if this distance metric obeys the rule that, for any x, y,
+     * and z &isin; S <br>
+     * d(x, z) &le; d(x, y) + d(y, z)
+     *
+     * d(x, z) ≤ d(x, y) + d(y, z) - triangle inequality
+     *
+     * @return true if this distance metric supports the triangle inequality,
+     * false if it does not.
+     */
+    public boolean isSubadditive();
+
+    /**
+     * Returns true if this distance metric obeys the rule that, for any x and y
+     * &isin; S <br>
+     * d(x, y) = 0 if and only if x = y
+     *
+     * @return true if this distance metric is indiscernible, false otherwise.
+     */
+    public boolean isIndiscernible();
 }

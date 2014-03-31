@@ -13,7 +13,7 @@ import org.clueminer.math.Vector;
 public class BrayCurtisDistance extends SymmetricDistance {
 
     private static final long serialVersionUID = -9160673893231083803L;
-    private static String name = "Bray-Curtis";
+    private static final String name = "Bray-Curtis";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
 
@@ -104,5 +104,15 @@ public class BrayCurtisDistance extends SymmetricDistance {
     @Override
     public double getMaxValue() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

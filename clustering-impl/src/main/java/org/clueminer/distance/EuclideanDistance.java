@@ -71,9 +71,7 @@ public class EuclideanDistance extends MinkowskiDistance {
 
     @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
-        if (x.size() != y.size()) {
-            throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size());
-        }
+        checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             //should be faster
@@ -85,9 +83,7 @@ public class EuclideanDistance extends MinkowskiDistance {
 
     @Override
     public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
-        if (x.size() != y.size() || x.size() != weights.length) {
-            throw new IllegalArgumentException("x size: " + x.size() + " != y size: " + y.size() + ", weights size: " + weights.length);
-        }
+        checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);

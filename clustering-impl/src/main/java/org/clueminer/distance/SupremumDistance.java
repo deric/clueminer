@@ -7,14 +7,16 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Returns greatest difference between two points, sometimes called Chebyshev
- * distance
+ * distance.
  *
+ * Chebyshev Distance is the L<sub>&#8734;</sub> norm.
+  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = AbstractDistance.class)
 public class SupremumDistance extends AbstractDistance {
 
-    private static String name = "Supremum";
+    private static final String name = "Supremum (Chebyshev)";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
     private static final long serialVersionUID = 5537883377318684946L;
@@ -64,6 +66,7 @@ public class SupremumDistance extends AbstractDistance {
 
     @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
+        checkInput(x, y);
         int k = x.size();
         double max = 0.0;
         double diff;
@@ -100,16 +103,26 @@ public class SupremumDistance extends AbstractDistance {
 
     @Override
     public double getMinValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0.0;
     }
 
     @Override
     public double getMaxValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Double.POSITIVE_INFINITY;
     }
 
     @Override
     public boolean isSymmetric() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
+    }
+
+    @Override
+    public boolean isSubadditive() {
+        return true;
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        return true;
     }
 }

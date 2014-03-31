@@ -1,9 +1,8 @@
 package org.clueminer.distance;
 
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.distance.api.SymmetricDistance;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -16,12 +15,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = AbstractDistance.class)
-public class ManhattanDistance extends SymmetricDistance {
+public class ManhattanDistance extends MinkowskiDistance implements DistanceMeasure {
 
-    private static String name = "Manhattan";
+    private static final String name = "Manhattan";
     private static float similarityFactor = 1.0f;
     private static int offset = 0;
     private static final long serialVersionUID = 3287053682318427095L;
+
+    public ManhattanDistance() {
+        super(1.0);
+    }
 
     @Override
     public String getName() {
@@ -53,24 +56,6 @@ public class ManhattanDistance extends SymmetricDistance {
     }
 
     @Override
-    public double measure(Vector<Double> x, Vector<Double> y) {
-        int j;
-        double sum = 0.0;
-        int n = x.size();
-        for (j = 0; j < n; j++) {
-            if ((!Double.isNaN(x.get(j))) && (!Double.isNaN(y.get(j)))) {
-                sum += Math.abs(x.get(j) - y.get(j));
-            }
-        }
-        return sum;
-    }
-
-    @Override
-    public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public float getSimilarityFactor() {
         return similarityFactor;
     }
@@ -94,4 +79,5 @@ public class ManhattanDistance extends SymmetricDistance {
     public double getMaxValue() {
         return Double.MAX_VALUE;
     }
+
 }

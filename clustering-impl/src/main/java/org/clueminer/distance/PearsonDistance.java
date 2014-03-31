@@ -294,4 +294,14 @@ public class PearsonDistance extends SymmetricDistance {
     public double getMaxValue() {
         return 2.;
     }
+
+    @Override
+    public boolean isSubadditive() {
+        return false;
+    }
+
+    @Override
+    public boolean isIndiscernible() {
+        return true;
+    }
 }
