@@ -2,6 +2,7 @@ package org.clueminer.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import java.util.Arrays;
 import org.clueminer.clustering.api.Assignment;
 
 /**
@@ -28,8 +29,14 @@ public class HardAssignment implements Assignment {
         assignments = new int[0];
     }
 
+    /**
+     * Initial cluster id is -1
+     *
+     * @param capacity
+     */
     public HardAssignment(int capacity) {
         assignments = new int[capacity];
+        Arrays.fill(assignments, -1);
     }
 
     /**

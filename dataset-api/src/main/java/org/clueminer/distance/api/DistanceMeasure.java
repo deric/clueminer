@@ -15,8 +15,8 @@ public interface DistanceMeasure extends Serializable {
     /**
      * Calculates the distance between two instances.
      *
-     * @param i the first instance
-     * @param j the second instance
+     * @param x the first instance
+     * @param y the second instance
      * @return the distance between the two instances
      */
     public double measure(Vector<Double> x, Vector<Double> y);
@@ -58,7 +58,8 @@ public interface DistanceMeasure extends Serializable {
      *
      *
      *
-     * @return minimum possible value of the distance metric
+     * @return minimum possible value of the distance metric, if is possible to
+     * determine it (otherwise Double.NaN)
      */
     public double getMinValue();
 
@@ -71,23 +72,23 @@ public interface DistanceMeasure extends Serializable {
      * @return maximum possible value of the distance metric
      */
     public double getMaxValue();
-    
+
     /**
-     * @deprecated 
+     * @deprecated
      * @param a
      * @param b
      * @param i
      * @param j
-     * @return 
+     * @return
      */
     public double rows(Matrix a, Matrix b, int i, int j);
-    
+
     /**
      * @deprecated
      * @param a
      * @param i
      * @param j
-     * @return 
+     * @return
      */
     public double columns(Matrix a, int i, int j);
 
@@ -97,16 +98,16 @@ public interface DistanceMeasure extends Serializable {
      * @param e1
      * @param e2
      * @param factor
-     * @return 
+     * @return
      */
     public double rows(Matrix matrix, int e1, int e2, float factor);
-    
+
     /**
      * @deprecated
      * @param matrix
      * @param e1
      * @param e2
-     * @return 
+     * @return
      */
     public double rows(Matrix matrix, int e1, int e2);
 
@@ -117,17 +118,17 @@ public interface DistanceMeasure extends Serializable {
      * @param e1
      * @param e2
      * @param factor
-     * @return 
+     * @return
      */
     public double rows(Matrix A, Matrix B, int e1, int e2, float factor);
-    
+
     /**
      * @deprecated
      * @param matrix
      * @param e1
      * @param e2
      * @param factor
-     * @return 
+     * @return
      */
     public double columns(Matrix matrix, int e1, int e2, float factor);
 
@@ -140,6 +141,7 @@ public interface DistanceMeasure extends Serializable {
     /**
      * Returns true if {@code sim(A,B) == sim(B,A)} is true for any {@code A},
      * {@code B}.
+     * @return true if this distance metric is symmetric, false if it is not
      */
     public boolean isSymmetric();
 }

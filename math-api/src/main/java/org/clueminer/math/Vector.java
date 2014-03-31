@@ -5,12 +5,15 @@ package org.clueminer.math;
  * to implement the vector with any kind of underlying data type.
  *
  * @author Tomas Barton
+ * @param <T>
  */
 public interface Vector<T extends Number> {
 
     /**
      * Returns {@code true} if the object is a {@link Vector} of the same size
      * and whose corresponding indices have equivalent values.
+     * @param o
+     * @return
      */
     @Override
     public boolean equals(Object o);
@@ -37,6 +40,7 @@ public interface Vector<T extends Number> {
     /**
      * Returns the hash code as the sum of the vectors elements, normalized to
      * an {@code int}.
+     * @return
      */
     @Override
     public int hashCode();
@@ -50,6 +54,7 @@ public interface Vector<T extends Number> {
 
     /**
      * Returns the magnitude of this vector
+     * @return
      */
     public double magnitude();
 
