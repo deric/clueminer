@@ -2,6 +2,7 @@ package org.clueminer.importer.gui;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +30,7 @@ import org.clueminer.gui.BusyUtils;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.Issue;
+import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
@@ -70,13 +72,15 @@ public class ReportPanel extends javax.swing.JPanel {
     private final ImportController controller;
     private FileImporter fileImporter;
     private ImporterUI importerUI;
+    private GridBagConstraints gbc;
 
     /**
      * Creates new form ReportPanel
      */
     public ReportPanel() {
         fillingThreads = new ThreadGroup("Report Panel Issues");
-        controller = Lookup.getDefault().lookup(ImportController.class);
+        //controller = Lookup.getDefault().lookup(ImportController.class);
+        controller = new ImportControllerImpl();
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
@@ -164,6 +168,11 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void initImporters() {
+
+        importerPanel.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 20, 0, 20);
+
         cbImporter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,16 +195,23 @@ public class ReportPanel extends javax.swing.JPanel {
     private void fileImporterChanged(FileImporter importer) {
         if (importerUI != null) {
             importerUI.unsetup(false);
-            scImporterPane.removeAll();
+            importerPanel.removeAll();
         }
         fileImporter = importer;
         if (controller != null) {
             importerUI = controller.getUI(importer);
+            System.out.println("importer UI: " + importerUI);
             if (importerUI != null) {
                 JPanel panel = importerUI.getPanel();
                 importerUI.setup(importer);
-                scImporterPane.add(panel);
-                repaint();
+                //importerPanel = panel;
+                //repaint();
+
+                importerPanel.add(panel, gbc);
+                importerPanel.validate();
+                importerPanel.revalidate();
+                importerPanel.repaint();
+
                 //importerUI.unsetup(true);
             }
         } else {
@@ -323,7 +339,7 @@ public class ReportPanel extends javax.swing.JPanel {
         processorPanel = new javax.swing.JPanel();
         lbImport = new javax.swing.JLabel();
         cbImporter = new JComboBox(getImporterProviders());
-        scImporterPane = new javax.swing.JScrollPane();
+        importerPanel = new javax.swing.JPanel();
 
         tabbedPane.addTab(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"), tab1ScrollPane); // NOI18N
 
@@ -388,29 +404,42 @@ public class ReportPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lbImport, org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.lbImport.text")); // NOI18N
 
+        javax.swing.GroupLayout importerPanelLayout = new javax.swing.GroupLayout(importerPanel);
+        importerPanel.setLayout(importerPanelLayout);
+        importerPanelLayout.setHorizontalGroup(
+            importerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        importerPanelLayout.setVerticalGroup(
+            importerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(scImporterPane, javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lbSource)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(sourceLabel))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lbImport)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(cbImporter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(lbSource)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sourceLabel))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(lbImport)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbImporter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(importerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,9 +456,9 @@ public class ReportPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(scImporterPane, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(importerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(99, 99, 99))
         );
@@ -437,6 +466,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbImporter;
+    private javax.swing.JPanel importerPanel;
     private javax.swing.JLabel lbAttr;
     private javax.swing.JLabel lbAttributes;
     private javax.swing.JLabel lbImport;
@@ -445,7 +475,6 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lbSource;
     private javax.swing.JPanel processorPanel;
     private javax.swing.JEditorPane reportEditor;
-    private javax.swing.JScrollPane scImporterPane;
     private javax.swing.JLabel sourceLabel;
     private javax.swing.JPanel statsPanel;
     private javax.swing.JScrollPane tab1ScrollPane;
