@@ -2,7 +2,6 @@ package org.clueminer.clustering.seed;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import java.util.Random;
 import org.clueminer.clustering.api.SeedSelection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -11,18 +10,13 @@ import org.clueminer.dataset.api.Instance;
  *
  * @author Tomas Barton
  */
-public class RandomMedoidsSelection implements SeedSelection {
+public class RandomMedoidsSelection extends AbstractSelection implements SeedSelection {
 
     private static final String name = "random selection";
-    private Random rand = new Random();
 
     @Override
     public String getName() {
         return name;
-    }
-
-    public void setRandom(Random rand) {
-        this.rand = rand;
     }
 
     /**
