@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import java.awt.Color;
 import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 
@@ -26,6 +27,12 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
 
     public BaseCluster(int capacity, int attrSize) {
         super(capacity, attrSize);
+    }
+
+    public BaseCluster(Dataset<? extends Instance> dataset) {
+        //some guess about future cluster size
+        super((int) Math.sqrt(dataset.size()), dataset.attributeCount());
+        setAttributes(dataset.getAttributes());
     }
 
     /**

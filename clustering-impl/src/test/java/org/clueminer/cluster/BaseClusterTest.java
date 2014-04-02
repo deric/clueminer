@@ -74,6 +74,12 @@ public class BaseClusterTest {
         return irisData;
     }
 
+    @Test
+    public void testConstructor_1arg() {
+        BaseCluster subject = new BaseCluster(irisData);
+        assertEquals(4, subject.attributeCount());
+    }
+
     /**
      * Test of add method, of class BaseCluster.
      */
