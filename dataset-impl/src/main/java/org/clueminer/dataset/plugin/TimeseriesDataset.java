@@ -290,7 +290,11 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             up = idx + 1;
         }
 
-        return interpolator.getValue(getTimePointsArray(), curr.arrayCopy(), x, low, up);
+        if (!interpolator.hasData()) {
+            interpolator.setX(timePoints);
+            interpolator.setY(curr.arrayCopy());
+        }
+        return interpolator.value(x, low, up);
     }
 
     /**

@@ -199,7 +199,11 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
             //exact match
             return data[idx].getValue();
         }
-        return interpolator.getValue(timePoints, data, x, low, up);
+        if (!interpolator.hasData()) {
+            interpolator.setX(timePoints);
+            interpolator.setY(data);
+        }
+        return interpolator.value(x, low, up);
     }
 
     @Override

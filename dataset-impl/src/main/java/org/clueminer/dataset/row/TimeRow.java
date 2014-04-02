@@ -189,9 +189,6 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public double valueAt(double x, Interpolator interpolator) {
-        if (timePoints == null) {
-            throw new RuntimeException("missing timepoints. can't interpolate.");
-        }
         int idx = InterpolationSearch.search(timePoints, x);
         int low, up;
         if (timePoints[idx].getValue() > x) {
@@ -204,7 +201,11 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             //exact match
             return item(idx).doubleValue();
         }
-        return interpolator.getValue(timePoints, data, x, low, up);
+        if (!interpolator.hasData()) {
+            interpolator.setX(timePoints);
+            interpolator.setY((Numeric[]) data);
+        }
+        return interpolator.value(x, low, up);
         //return whatever(timePoints);
     }
 
