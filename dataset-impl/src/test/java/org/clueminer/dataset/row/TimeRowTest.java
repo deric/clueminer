@@ -1,6 +1,7 @@
 package org.clueminer.dataset.row;
 
 import java.util.Iterator;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 public class TimeRowTest {
 
     private static TimeRow subject;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public TimeRowTest() {
     }
@@ -70,6 +71,16 @@ public class TimeRowTest {
         assertEquals(size + 1, subject.size());
     }
 
+    @Test
+    public void testCapacityOverflow() {
+        int size = 5;
+        Random rand = new Random();
+        subject = new TimeRow(Double.class, size);
+        for (int i = 0; i < 2 * size; i++) {
+            subject.put(rand.nextDouble());
+        }
+    }
+
     /**
      * Test of remove method, of class TimeRow.
      */
@@ -82,6 +93,7 @@ public class TimeRowTest {
      */
     @Test
     public void testValue() {
+        assertEquals(1.0, subject.value(0), delta);
     }
 
     /**
@@ -114,6 +126,7 @@ public class TimeRowTest {
      */
     @Test
     public void testGetCapacity() {
+        assertEquals(15, subject.getCapacity());
     }
 
     /**

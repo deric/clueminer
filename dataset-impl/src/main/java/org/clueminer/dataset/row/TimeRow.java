@@ -22,15 +22,17 @@ import org.clueminer.stats.NumericalStats;
  */
 public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implements Instance<E>, ContinuousInstance<E>, Iterable<E> {
 
-    private static final long serialVersionUID = 6410706965541438907L;
+    private static final long serialVersionUID = 6410706965541438908L;
     private Interpolator interpolator = new LinearInterpolator();
     private E[] data;
     protected TimePointAttribute[] timePoints;
     private Iterator<E> it;
+    private final Class<E> klass;
     private double defaultValue = Double.NaN;
 
     public TimeRow(Class<E> klass, int capacity) {
         data = (E[]) Array.newInstance(klass, capacity);
+        this.klass = klass;
         registerStatistics(new NumericalStats(this));
         resetMinMax();
     }
@@ -49,6 +51,13 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     public int put(double value) {
         updateStatistics(value);
         Number v = value;
+        if (last >= getCapacity()) {
+            int req = (int) (last * 1.618);
+            if (req <= last) {
+                req = last + 1;
+            }
+            setCapacity(req);
+        }
         data[last++] = (E) v;
         return last;
     }
@@ -85,13 +94,17 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public void setCapacity(int capacity) {
-        //data.ensureCapacity(capacity);
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (data.length >= capacity) {
+            return;
+        }
+        E[] newData = (E[]) Array.newInstance(klass, capacity);
+        System.arraycopy(data, 0, newData, 0, data.length);
+        data = newData;
     }
 
     @Override
     public int getCapacity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return data.length;
     }
 
     @Override
@@ -186,6 +199,9 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public double valueAt(double x, Interpolator interpolator) {
+        if (timePoints == null) {
+            throw new RuntimeException("missing timepoints. can't interpolate.");
+        }
         int idx = InterpolationSearch.search(timePoints, x);
         int low, up;
         if (timePoints[idx].getValue() > x) {
