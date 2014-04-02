@@ -150,7 +150,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     }
 
     @Override
-    public final void setParent(Timeseries<? extends ContinuousInstance> parent) {
+    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
         this.parent = parent;
     }
 

@@ -7,10 +7,12 @@ import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plot.TimePlot;
 import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
+import org.clueminer.math.Numeric;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.stats.NumericalStats;
@@ -108,18 +110,6 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     }
 
     @Override
-    public String toString(String separator) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < last; i++) {
-            if (i > 0) {
-                sb.append(separator);
-            }
-            sb.append(String.format("%.2f", item(i)));
-        }
-        return sb.toString();
-    }
-
-    @Override
     public String[] toStringArray() {
         String[] result = new String[size()];
 
@@ -214,8 +204,18 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
             //exact match
             return item(idx).doubleValue();
         }
-        //  return interpolator.getValue(timePoints, data, x, low, up);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return interpolator.getValue(timePoints, data, x, low, up);
+        //return whatever(timePoints);
+    }
+
+    public double whatever(Numeric[] d) {
+        return 0.0;
+    }
+
+    @Override
+    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
+        super.setParent(parent);
+        this.timePoints = (TimePointAttribute[]) parent.getTimePoints();
     }
 
     @Override
@@ -253,28 +253,6 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return statistics(AttrNumStats.STD_DEV);
     }
 
-    class InstanceValueIterator<E extends Number> implements Iterator<E> {
-
-        private int index = 0;
-
-        @Override
-        public boolean hasNext() {
-            return index < size();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
-
-        }
-
-        @Override
-        public E next() {
-            index++;
-            return (E) getValue(index - 1);
-        }
-    }
-
     @Override
     public Iterator<E> iterator() {
         if (it == null) {
@@ -301,5 +279,39 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     @Override
     public String toString() {
         return "TimeRow[" + size() + "] " + toString(",");
+    }
+
+    @Override
+    public String toString(String separator) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < last; i++) {
+            if (i > 0) {
+                sb.append(separator);
+            }
+            sb.append(String.format("%.2f", item(i)));
+        }
+        return sb.toString();
+    }
+
+    class InstanceValueIterator<E extends Number> implements Iterator<E> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
+
+        }
+
+        @Override
+        public E next() {
+            index++;
+            return (E) getValue(index - 1);
+        }
     }
 }

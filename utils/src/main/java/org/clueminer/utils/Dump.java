@@ -56,8 +56,8 @@ public class Dump {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append(" [ ");
         if (a != null) {
-            for (int i = 0; i < a.length; i++) {
-                sb.append(a[i]).append(" ");
+            for (String a1 : a) {
+                sb.append(a1).append(" ");
             }
         }
         sb.append(" ]");

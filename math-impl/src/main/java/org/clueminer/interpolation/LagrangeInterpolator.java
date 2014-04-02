@@ -1,8 +1,6 @@
 package org.clueminer.interpolation;
 
-import java.util.List;
 import org.clueminer.math.Interpolator;
-import org.clueminer.math.Numeric;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -10,7 +8,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Interpolator.class)
-public class LagrangeInterpolator implements Interpolator {
+public class LagrangeInterpolator extends AbstractInterpolator implements Interpolator {
 
     private static final String name = "Lagrange";
 
@@ -19,54 +17,21 @@ public class LagrangeInterpolator implements Interpolator {
         return name;
     }
 
-    @Override
-    public double getValue(Numeric[] x, Numeric[] y, double z, int lower, int upper) {
-        int n = x.length;
-        double sum = 0, om = 1, w;
-        for (int i = 0; i < n; i++) {
-            om *= (z - x[i].getValue());
-            w = 1.0;
-            for (int j = 0; j < n; j++) {
-                if (i != j) {
-                    w *= (x[i].getValue() - x[j].getValue());
-                }
-            }
-            sum += y[i].getValue() / (w * (z - x[i].getValue()));
-        }
-        return sum * om;
-    }
 
     @Override
-    public double getValue(double[] x, double[] y, double z, int lower, int upper) {
-        int n = x.length;
+    public double value(double x, int lower, int upper) {
+        int n = axisX.size();
         double wnz = 0, om = 1, w;
         for (int i = 0; i < n; i++) {
-            om *= (z - x[i]);
+            om *= (x - axisX.get(i));
             w = 1.0;
             for (int j = 0; j < n; j++) {
                 if (i != j) {
-                    w *= (x[i] - x[j]);
+                    w *= (axisX.get(i) - axisX.get(j));
                 }
             }
-            wnz += y[i] / (w * (z - x[i]));
+            wnz += axisY.get(i) / (w * (x - axisX.get(i)));
         }
         return wnz * om;
-    }
-
-    @Override
-    public double getValue(Numeric[] x, List<? extends Number> y, double z, int lower, int upper) {
-        int n = x.length;
-        double sum = 0, om = 1, w;
-        for (int i = 0; i < n; i++) {
-            om *= (z - x[i].getValue());
-            w = 1.0;
-            for (int j = 0; j < n; j++) {
-                if (i != j) {
-                    w *= (x[i].getValue() - x[j].getValue());
-                }
-            }
-            sum += y.get(i).doubleValue() / (w * (z - x[i].getValue()));
-        }
-        return sum * om;
     }
 }

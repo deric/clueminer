@@ -10,7 +10,7 @@ import org.junit.*;
 public class LagrangeInterpolatorTest {
 
  private static LagrangeInterpolator test;
-    
+
     public LagrangeInterpolatorTest() {
     }
 
@@ -22,11 +22,11 @@ public class LagrangeInterpolatorTest {
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -45,11 +45,13 @@ public class LagrangeInterpolatorTest {
         }
         long start, end;
         start = System.nanoTime();
-        assertEquals(12.18, test.getValue(x, y, 2.5, 0, 0), 0.2);
+        test.setX(x);
+        test.setY(y);
+        assertEquals(12.18, test.value(2.5, 0, 0), 0.2);
         end = System.nanoTime();
         System.out.println("exp(2.5): time= "+(end - start)+" ns");
         start = System.nanoTime();
-        assertEquals(1468864.2, test.getValue(x, y, 14.2, 0, 0), 100);
+        assertEquals(1468864.2, test.value(14.2, 0, 0), 100);
         end = System.nanoTime();
         System.out.println("exp(14.2): time= "+(end - start)+" ns");
     }

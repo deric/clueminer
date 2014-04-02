@@ -114,26 +114,20 @@ public class TimeRowTest {
         assertEquals(prev, subject.get(index), delta);
     }
 
-    /**
-     * Test of setCapacity method, of class TimeRow.
-     */
     @Test
     public void testSetCapacity() {
+        subject.setCapacity(20);
+        assertEquals(20, subject.getCapacity());
     }
 
-    /**
-     * Test of getCapacity method, of class TimeRow.
-     */
     @Test
     public void testGetCapacity() {
         assertEquals(15, subject.getCapacity());
     }
 
-    /**
-     * Test of toString method, of class TimeRow.
-     */
     @Test
     public void testToString() {
+        assertNotNull(subject.toString());
     }
 
     /**

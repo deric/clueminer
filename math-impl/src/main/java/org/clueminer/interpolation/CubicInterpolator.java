@@ -1,15 +1,13 @@
 package org.clueminer.interpolation;
 
-import java.util.List;
 import org.clueminer.math.Interpolator;
-import org.clueminer.math.Numeric;
 
 /**
  * @link http://www.paulinternet.nl/?page=bicubic
  *
  * @author Tomas Barton
  */
-public class CubicInterpolator implements Interpolator {
+public class CubicInterpolator extends AbstractInterpolator implements Interpolator {
 
     private static final String name = "cubic";
 
@@ -26,97 +24,40 @@ public class CubicInterpolator implements Interpolator {
     /**
      * There must be existing 2 values above lower...
      *
-     * @param axisX
-     * @param axisY
      * @param x
      * @param lower
      * @param upper
      * @return
      */
     @Override
-    public double getValue(Numeric[] axisX, Numeric[] axisY, double x, int lower, int upper) {
+    public double value(double x, int lower, int upper) {
         /*if (upper >= axisY.length) {
          upper = axisY.length - 1;
          }*/
         double p0, p1, p2, p3;
         if (lower == 0) {
-            p0 = axisY[lower].getValue();
+            p0 = axisY.get(lower);
         } else {
-            p0 = axisY[lower - 1].getValue();
+            p0 = axisY.get(lower - 1);
         }
         //System.out.println("diff= " + (axisY.length - lower) + " x= " + x + " axisY= " + axisY.length + " lower= " + lower);
-        if ((lower + 1) == axisY.length) {
-            p0 = axisY[lower - 4].getValue();
-            p1 = axisY[lower - 3].getValue();
-            p2 = axisY[lower - 2].getValue();
-            p3 = axisY[lower - 1].getValue();
-        } else if (lower + 2 == axisY.length) {
-            p1 = axisY[lower].getValue();
-            p2 = axisY[lower + 1].getValue();
-            p3 = axisY[lower + 1].getValue(); //we don't have higher index
+        if ((lower + 1) == axisY.size()) {
+            p0 = axisY.get(lower - 4);
+            p1 = axisY.get(lower - 3);
+            p2 = axisY.get(lower - 2);
+            p3 = axisY.get(lower - 1);
+        } else if (lower + 2 == axisY.size()) {
+            p1 = axisY.get(lower);
+            p2 = axisY.get(lower + 1);
+            p3 = axisY.get(lower + 1); //we don't have higher index
         } else {
-            p1 = axisY[lower].getValue();
-            p2 = axisY[lower + 1].getValue();
-            p3 = axisY[lower + 2].getValue();
+            p1 = axisY.get(lower);
+            p2 = axisY.get(lower + 1);
+            p3 = axisY.get(lower + 2);
         }
 
         return p1 + 0.5 * x * (p2 - p0 + x * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3
                 + x * (3.0 * (p1 - p2) + p3 - p0)));
     }
 
-    @Override
-    public double getValue(double[] axisX, double[] axisY, double x, int lower, int upper) {
-        double p0, p1, p2, p3;
-        if (lower == 0) {
-            p0 = axisY[lower];
-        } else {
-            p0 = axisY[lower - 1];
-        }
-        //System.out.println("diff= " + (axisY.length - lower) + " x= " + x + " axisY= " + axisY.length + " lower= " + lower);
-        if ((lower + 1) == axisY.length) {
-            p0 = axisY[lower - 4];
-            p1 = axisY[lower - 3];
-            p2 = axisY[lower - 2];
-            p3 = axisY[lower - 1];
-        } else if (lower + 2 == axisY.length) {
-            p1 = axisY[lower];
-            p2 = axisY[lower + 1];
-            p3 = axisY[lower + 1]; //we don't have higher index
-        } else {
-            p1 = axisY[lower];
-            p2 = axisY[lower + 1];
-            p3 = axisY[lower + 2];
-        }
-
-        return p1 + 0.5 * x * (p2 - p0 + x * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3
-                + x * (3.0 * (p1 - p2) + p3 - p0)));
-    }
-
-    @Override
-    public double getValue(Numeric[] x, List<? extends Number> y, double z, int lower, int upper) {
-        double p0, p1, p2, p3;
-        if (lower == 0) {
-            p0 = y.get(lower).doubleValue();
-        } else {
-            p0 = y.get(lower - 1).doubleValue();
-        }
-        //System.out.println("diff= " + (axisY.length - lower) + " x= " + x + " axisY= " + axisY.length + " lower= " + lower);
-        if ((lower + 1) == y.size()) {
-            p0 = y.get(lower - 4).doubleValue();
-            p1 = y.get(lower - 3).doubleValue();
-            p2 = y.get(lower - 2).doubleValue();
-            p3 = y.get(lower - 1).doubleValue();
-        } else if (lower + 2 == y.size()) {
-            p1 = y.get(lower).doubleValue();
-            p2 = y.get(lower + 1).doubleValue();
-            p3 = y.get(lower + 1).doubleValue(); //we don't have higher index
-        } else {
-            p1 = y.get(lower).doubleValue();
-            p2 = y.get(lower + 1).doubleValue();
-            p3 = y.get(lower + 2).doubleValue();
-        }
-
-        return p1 + 0.5 * z * (p2 - p0 + z * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3
-                + z * (3.0 * (p1 - p2) + p3 - p0)));
-    }
 }

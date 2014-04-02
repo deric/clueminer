@@ -1,6 +1,8 @@
 package org.clueminer.interpolation;
 
 import org.clueminer.math.Numeric;
+import org.clueminer.math.impl.MathUtil;
+import org.clueminer.utils.Dump;
 
 /**
  * Does not look for exact match but only closes value to toFind
@@ -10,6 +12,9 @@ import org.clueminer.math.Numeric;
 public class InterpolationSearch {
 
     public static int search(Numeric[] sortedArray, double toFind) {
+        System.out.println("searching for: " + toFind);
+        System.out.println("num array: " + sortedArray);
+        Dump.array(MathUtil.toDouble(sortedArray), "array");
         return search(sortedArray, 0, sortedArray.length - 1, toFind);
     }
 
