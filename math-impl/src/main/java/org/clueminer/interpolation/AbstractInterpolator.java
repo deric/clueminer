@@ -45,6 +45,16 @@ public abstract class AbstractInterpolator implements Interpolator {
     }
 
     @Override
+    public void setX(Number[] x) {
+        axisX = new NumberBox(x);
+    }
+
+    @Override
+    public void setY(Number[] y) {
+        axisY = new NumberBox(y);
+    }
+
+    @Override
     public void setX(NumericBox x) {
         axisX = x;
     }

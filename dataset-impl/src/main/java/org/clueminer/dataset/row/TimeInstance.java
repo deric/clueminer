@@ -201,7 +201,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
         }
         if (!interpolator.hasData()) {
             interpolator.setX(timePoints);
-            interpolator.setY(data);
+            interpolator.setY((Number[]) data);
         }
         return interpolator.value(x, low, up);
     }

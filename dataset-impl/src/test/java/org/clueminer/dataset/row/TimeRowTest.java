@@ -2,6 +2,11 @@ package org.clueminer.dataset.row;
 
 import java.util.Iterator;
 import java.util.Random;
+import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.types.TimePoint;
+import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -193,6 +198,35 @@ public class TimeRowTest {
      */
     @Test
     public void testValueAt_double_Interpolator() {
+        //linear data
+        int size = 7;
+
+        TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(5);
+        ContinuousInstance inst = new TimeRow(Double.class, 7);
+        TimePoint tp[] = new TimePointAttribute[size];
+        for (int i = 0; i < tp.length; i++) {
+            tp[i] = new TimePointAttribute(i, i + 100, Math.pow(i, 2));
+            inst.put(i);
+        }
+        System.out.print("val: ");
+        dataset.setTimePoints(tp);
+        for (int i = 0; i < tp.length; i++) {
+            if (i > 0) {
+                System.out.print(" " + tp[i].getPosition());
+            } else {
+                System.out.print(tp[i].getPosition());
+            }
+        }
+        System.out.println("");
+
+        Dump.array(inst.arrayCopy(), "ts");
+
+        dataset.add(inst);
+        double value;
+
+        for (int i = 0; i < 30; i++) {
+            System.out.println(i + " = " + inst.valueAt(i));
+        }
     }
 
     /**

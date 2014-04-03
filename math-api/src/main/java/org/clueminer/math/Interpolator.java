@@ -17,7 +17,7 @@ public interface Interpolator {
     String getName();
 
     /**
-     * X coordinates
+     * X coordinates as double array
      *
      * @param x
      */
@@ -47,6 +47,18 @@ public interface Interpolator {
      * @param x
      */
     void setX(Numeric[] x);
+
+    /**
+     *
+     * @param x
+     */
+    void setX(Number[] x);
+
+    /**
+     *
+     * @param y
+     */
+    void setY(Number[] y);
 
     /**
      *
@@ -91,8 +103,8 @@ public interface Interpolator {
      * Return interpolated value of Y for given X restricted by neighbor's
      * bounds
      *
-     * @param x point on X (time) axis for which we're trying to find out Y
-     * value
+     * @param x     point on X (time) axis for which we're trying to find out Y
+     *              value
      * @param lower neighbor on left
      * @param upper neighbor on right
      * @return

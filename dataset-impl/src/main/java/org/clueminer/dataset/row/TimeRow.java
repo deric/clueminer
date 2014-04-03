@@ -12,7 +12,6 @@ import org.clueminer.dataset.plot.TimePlot;
 import org.clueminer.interpolation.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
-import org.clueminer.math.Numeric;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.stats.NumericalStats;
@@ -203,14 +202,9 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         }
         if (!interpolator.hasData()) {
             interpolator.setX(timePoints);
-            interpolator.setY((Numeric[]) data);
+            interpolator.setY((Number[]) data);
         }
         return interpolator.value(x, low, up);
-        //return whatever(timePoints);
-    }
-
-    public double whatever(Numeric[] d) {
-        return 0.0;
     }
 
     @Override
