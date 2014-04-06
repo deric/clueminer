@@ -36,6 +36,11 @@ public class ServiceFactory<T> {
         return list;
     }
 
+    public String[] getProvidersArray() {
+        List<String> list = getProviders();
+        return list.toArray(new String[list.size()]);
+    }
+
     public List<String> removeProvider(String current) {
         List<String> list = new ArrayList<String>(providers.keySet());
         list.remove(current);
