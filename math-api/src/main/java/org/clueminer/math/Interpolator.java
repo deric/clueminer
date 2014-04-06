@@ -1,5 +1,6 @@
 package org.clueminer.math;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 
 /**
@@ -101,7 +102,7 @@ public interface Interpolator {
 
     /**
      * Return interpolated value of Y for given X restricted by neighbor's
-     * bounds
+     * bounds (for faster computation)
      *
      * @param x     point on X (time) axis for which we're trying to find out Y
      *              value
@@ -110,6 +111,14 @@ public interface Interpolator {
      * @return
      */
     double value(double x, int lower, int upper);
+
+    /**
+     * Generate points for whole curve (the result could be smoother)
+     *
+     * @param steps number of points between each two data points
+     * @return
+     */
+    Point2D.Double[] curvePoints(int steps);
 
     /**
      * Called when data on X axis has changed

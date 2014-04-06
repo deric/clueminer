@@ -72,24 +72,22 @@ public class NatCubic extends AbstractInterpolator implements Interpolator {
     }
 
     /**
-     * not used right now, we could pre-generate set of interpolated points
+     * Pre-generate set of interpolated points
      *
-     * @param xpoints
-     * @param ypoints
-     * @param numPts
-     * @param steps
+     * @param steps number of points between two points
      * @return
      */
-    public Point2D.Double[] curvePoints(double[] xpoints, double[] ypoints, int numPts, int steps) {
+    @Override
+    public Point2D.Double[] curvePoints(int steps) {
         Point2D.Double[] curve;
-        if (numPts >= 2) {
-
+        double u;
+        if (hasData()) {
             curve = new Point2D.Double[X.length * steps + 1];
             curve[0] = new Point2D.Double(X[0].eval(0), Y[0].eval(0));
             int k = 1;
             for (int i = 0; i < X.length; i++) {
                 for (int j = 1; j <= steps; j++) {
-                    double u = j / (double) steps;
+                    u = j / (double) steps;
                     curve[k++] = new Point2D.Double(X[i].eval(u), Y[i].eval(u));
                 }
             }

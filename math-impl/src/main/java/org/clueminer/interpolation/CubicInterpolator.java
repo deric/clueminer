@@ -1,5 +1,6 @@
 package org.clueminer.interpolation;
 
+import java.awt.geom.Point2D;
 import org.clueminer.math.Interpolator;
 
 /**
@@ -68,6 +69,11 @@ public class CubicInterpolator extends AbstractInterpolator implements Interpola
     @Override
     public void changedY() {
 
+    }
+
+    @Override
+    public Point2D.Double[] curvePoints(int steps) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
