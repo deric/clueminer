@@ -60,4 +60,14 @@ public class CubicInterpolator extends AbstractInterpolator implements Interpola
                 + x * (3.0 * (p1 - p2) + p3 - p0)));
     }
 
+    @Override
+    public void changedX() {
+
+    }
+
+    @Override
+    public void changedY() {
+
+    }
+
 }

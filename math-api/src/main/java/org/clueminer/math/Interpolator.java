@@ -111,4 +111,14 @@ public interface Interpolator {
      */
     double value(double x, int lower, int upper);
 
+    /**
+     * Called when data on X axis has changed
+     */
+    void changedX();
+
+    /**
+     * Called when data on X axis has changed
+     */
+    void changedY();
+
 }

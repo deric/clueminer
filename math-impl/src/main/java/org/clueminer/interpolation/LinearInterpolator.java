@@ -34,4 +34,14 @@ public class LinearInterpolator extends AbstractInterpolator implements Interpol
         return res;
     }
 
+    @Override
+    public void changedX() {
+
+    }
+
+    @Override
+    public void changedY() {
+
+    }
+
 }

@@ -17,51 +17,61 @@ public abstract class AbstractInterpolator implements Interpolator {
     @Override
     public void setX(double[] x) {
         axisX = new DoubleBox(x);
+        changedX();
     }
 
     @Override
     public void setY(double[] y) {
         axisY = new DoubleBox(y);
+        changedY();
     }
 
     @Override
     public void setX(List x) {
         axisX = new ListBox(x);
+        changedX();
     }
 
     @Override
     public void setY(List y) {
         axisY = new ListBox(y);
+        changedY();
     }
 
     @Override
     public void setX(Numeric[] x) {
         axisX = new NumBox(x);
+        changedX();
     }
 
     @Override
     public void setY(Numeric[] y) {
         axisY = new NumBox(y);
+        changedY();
     }
 
     @Override
     public void setX(Number[] x) {
         axisX = new NumberBox(x);
+        changedX();
     }
 
     @Override
     public void setY(Number[] y) {
         axisY = new NumberBox(y);
+        changedY();
     }
 
     @Override
     public void setX(NumericBox x) {
         axisX = x;
+        changedX();
     }
 
     @Override
     public void setY(NumericBox y) {
         axisY = y;
+        changedY();
     }
 
     @Override

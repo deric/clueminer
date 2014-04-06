@@ -17,7 +17,15 @@ public class LagrangeInterpolator extends AbstractInterpolator implements Interp
         return name;
     }
 
-
+    /**
+     * @TODO estimations at the beginning and at the end of data are very
+     * inaccurate
+     *
+     * @param x
+     * @param lower
+     * @param upper
+     * @return
+     */
     @Override
     public double value(double x, int lower, int upper) {
         int n = axisX.size();
@@ -33,5 +41,15 @@ public class LagrangeInterpolator extends AbstractInterpolator implements Interp
             wnz += axisY.get(i) / (w * (x - axisX.get(i)));
         }
         return wnz * om;
+    }
+
+    @Override
+    public void changedX() {
+
+    }
+
+    @Override
+    public void changedY() {
+
     }
 }
