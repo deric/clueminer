@@ -1,8 +1,11 @@
 package org.clueminer.chart.overlay;
 
+import java.lang.reflect.InvocationTargetException;
 import org.openide.ErrorManager;
 import org.openide.nodes.Children;
+import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -45,9 +48,25 @@ public class InterpolateNode extends OverlayNode {
         if (overlay != null) {
             try {
                 Property interp = new InterpolatorPropertyEditor(this, overlay);
+                //Property inc = new PropertySupport.Reflection(overlay, Integer.class, "getSteps", "setSteps");
+                Property inc = new PropertySupport.ReadWrite<Integer>("steps", Integer.class, "steps between points", "steps") {
 
+                    @Override
+                    public Integer getValue() throws IllegalAccessException, InvocationTargetException {
+                        return overlay.getSteps();
+                    }
+
+                    @Override
+                    public void setValue(Integer val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+                        overlay.setSteps(val);
+                    }
+                };
+
+                //inc.setName("steps between points");
                 set.put(interp);
+                set.put(inc);
             } catch (NoSuchMethodException ex) {
+                Exceptions.printStackTrace(ex);
                 ErrorManager.getDefault();
             }
         }

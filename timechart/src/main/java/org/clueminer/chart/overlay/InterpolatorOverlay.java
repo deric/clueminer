@@ -17,6 +17,7 @@ import org.clueminer.events.DatasetEvent;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.InterpolatorFactory;
+import org.clueminer.types.TimePoint;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -31,6 +32,8 @@ public class InterpolatorOverlay extends AbstractOverlay {
 
     private final OverlayProperties properties;
     private Interpolator interpolator;
+    private double increment = 0.1;
+    private int steps = 5;
 
     public InterpolatorOverlay() {
         super();
@@ -79,30 +82,41 @@ public class InterpolatorOverlay extends AbstractOverlay {
             }
             Point2D.Double point = null;
             double chartWidth = bounds.getWidth();
-
-            int itemCnt = cf.getChartData().getTimePointsCnt();
-            double x = 0, pos = 0;
-            double inc = 0.1;
+            double x = 0, pos;
             interpolator.setX(visible.getTimePoints());
+            if (steps > 0) {
+                increment = 1.0 / steps;
+            }
+            int j;
+            TimePoint[] ts = visible.getTimePoints();
+            double appY;
+            double y;
+            double next = 0.0;
+            int k = 0;
             for (int i = 0; i < visible.size(); i++) {
-                int j = 0;
                 ContinuousInstance instance = visible.instance(i);
                 interpolator.setY(instance.arrayCopy());
-                while (x < chartWidth && j < itemCnt) {
-                    x = cf.getChartData().getXFromRatio(pos, bounds);
-
-                    double appY = instance.valueAt(pos, interpolator);
-                    double y = cf.getChartData().getY(appY, bounds, range);
-                    //System.out.println("pos= " + pos + ", x= " + x + " y= " + y + " aspY= " + appY);
-                    if (!Double.isNaN(y)) {
-                        Point2D.Double p = new Point2D.Double(x, y);
-                        if (point != null) {
-                            g.draw(new Line2D.Double(point, p));
-                        }
-                        point = p;
+                while (x < chartWidth && k < ts.length) {
+                    pos = ts[k++].getPosition();
+                    if (k < ts.length) {
+                        next = ts[k].getPosition();
                     }
-                    pos += inc;
-                    j++;
+                    j = 0;
+                    while (j < steps && pos <= next) {
+                        x = cf.getChartData().getXFromRatio(pos, bounds);
+                        appY = instance.valueAt(pos, interpolator);
+                        y = cf.getChartData().getY(appY, bounds, range);
+                        //System.out.println("pos= " + pos + ", x= " + x + " y= " + y + " aspY= " + appY);
+                        if (!Double.isNaN(y)) {
+                            Point2D.Double p = new Point2D.Double(x, y);
+                            if (point != null) {
+                                g.draw(new Line2D.Double(point, p));
+                            }
+                            point = p;
+                        }
+                        pos += increment;
+                        j++;
+                    }
                 }
             }
             g.setStroke(old);
@@ -178,6 +192,22 @@ public class InterpolatorOverlay extends AbstractOverlay {
                 this.interpolator = interp;
             }
         }
+    }
+
+    public double getIncrement() {
+        return increment;
+    }
+
+    public void setIncrement(double increment) {
+        this.increment = increment;
+    }
+
+    public int getSteps() {
+        return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
     }
 
 }
