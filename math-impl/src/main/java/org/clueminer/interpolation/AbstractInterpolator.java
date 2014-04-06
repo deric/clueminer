@@ -1,5 +1,6 @@
 package org.clueminer.interpolation;
 
+import java.awt.geom.Point2D;
 import java.util.List;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Numeric;
@@ -81,7 +82,9 @@ public abstract class AbstractInterpolator implements Interpolator {
                 throw new RuntimeException("axis X and Y must have same size! "
                         + "x: " + axisX.size() + ", y: " + axisY.size());
             }
-            return true;
+            if (axisX.size() >= 2) {
+                return true;
+            }
         }
         return false;
     }
@@ -93,6 +96,33 @@ public abstract class AbstractInterpolator implements Interpolator {
         }
 
         return value(x, 0, axisX.size());
+    }
+
+    /**
+     * Pre-generate set of interpolated points
+     *
+     * @param steps number of points between two points
+     * @return
+     */
+    @Override
+    public Point2D.Double[] curvePoints(int steps) {
+        Point2D.Double[] curve;
+        double u;
+        int i = 0;
+        double pos, last;
+        if (hasData()) {
+            curve = new Point2D.Double[axisX.size() * steps + 1];
+            pos = axisX.get(0);
+            last = axisX.get(axisX.size() - 1);
+            double inc = (last - pos) / (double) (axisX.size() * steps + 1);
+            while (pos <= last && i < curve.length) {
+                curve[i++] = new Point2D.Double(pos, value(pos));
+                pos += inc;
+            }
+        } else {
+            return new Point2D.Double[0];
+        }
+        return curve;
     }
 
     @Override

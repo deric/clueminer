@@ -35,6 +35,11 @@ public class InterpolatorOverlay extends AbstractOverlay {
     private double increment = 0.1;
     private int steps = 5;
 
+    /**
+     * pre-compute points for whole curve
+     */
+    private boolean useGlobalCache = false;
+
     public InterpolatorOverlay() {
         super();
         properties = new OverlayProperties();
@@ -73,53 +78,87 @@ public class InterpolatorOverlay extends AbstractOverlay {
 
         Timeseries<ContinuousInstance> visible = (Timeseries<ContinuousInstance>) cf.getChartData().getVisible();
         if (visible != null) {
-            Range range = cf.getRange();
 
             Stroke old = g.getStroke();
             g.setPaint(color);
             if (stroke != null) {
                 g.setStroke(stroke);
             }
-            Point2D.Double point = null;
-            double chartWidth = bounds.getWidth();
-            double x = 0, pos;
+
             interpolator.setX(visible.getTimePoints());
-            if (steps > 0) {
-                increment = 1.0 / steps;
+            if (useGlobalCache) {
+                globalInterpolate(g, cf, bounds, visible);
+            } else {
+                localInterpolate(g, cf, bounds, visible);
             }
-            int j;
-            TimePoint[] ts = visible.getTimePoints();
-            double appY;
-            double y;
-            double next = 0.0;
-            int k = 0;
-            for (int i = 0; i < visible.size(); i++) {
-                ContinuousInstance instance = visible.instance(i);
-                interpolator.setY(instance.arrayCopy());
-                while (x < chartWidth && k < ts.length) {
-                    pos = ts[k++].getPosition();
-                    if (k < ts.length) {
-                        next = ts[k].getPosition();
+
+            g.setStroke(old);
+        }
+    }
+
+    private void globalInterpolate(Graphics2D g, ChartConfig cf, Rectangle bounds, Timeseries<ContinuousInstance> visible) {
+        double x, y;
+        Point2D.Double r = null;
+        Range range = cf.getRange();
+        for (int i = 0; i < visible.size(); i++) {
+            ContinuousInstance instance = visible.instance(i);
+            interpolator.setY(instance.arrayCopy());
+            Point2D.Double[] points = interpolator.curvePoints(steps);
+
+            for (Point2D.Double p : points) {
+                x = cf.getChartData().getXFromRatio(p.x, bounds);
+                y = cf.getChartData().getY(p.y, bounds, range);
+                if (!Double.isNaN(y)) {
+                    Point2D.Double q = new Point2D.Double(x, y);
+                    if (r != null) {
+                        g.draw(new Line2D.Double(r, q));
                     }
-                    j = 0;
-                    while (j < steps && pos <= next) {
-                        x = cf.getChartData().getXFromRatio(pos, bounds);
-                        appY = instance.valueAt(pos, interpolator);
-                        y = cf.getChartData().getY(appY, bounds, range);
-                        //System.out.println("pos= " + pos + ", x= " + x + " y= " + y + " aspY= " + appY);
-                        if (!Double.isNaN(y)) {
-                            Point2D.Double p = new Point2D.Double(x, y);
-                            if (point != null) {
-                                g.draw(new Line2D.Double(point, p));
-                            }
-                            point = p;
-                        }
-                        pos += increment;
-                        j++;
-                    }
+                    r = q;
                 }
             }
-            g.setStroke(old);
+        }
+
+    }
+
+    private void localInterpolate(Graphics2D g, ChartConfig cf, Rectangle bounds, Timeseries<ContinuousInstance> visible) {
+        Range range = cf.getRange();
+        if (steps > 0) {
+            increment = 1.0 / steps;
+        }
+        Point2D.Double point = null;
+        double chartWidth = bounds.getWidth();
+        double x = 0, pos;
+        int j;
+        TimePoint[] ts = visible.getTimePoints();
+        double appY;
+        double y;
+        double next = 0.0;
+        int k = 0;
+        for (int i = 0; i < visible.size(); i++) {
+            ContinuousInstance instance = visible.instance(i);
+            interpolator.setY(instance.arrayCopy());
+            while (x < chartWidth && k < ts.length) {
+                pos = ts[k++].getPosition();
+                if (k < ts.length) {
+                    next = ts[k].getPosition();
+                }
+                j = 0;
+                while (j < steps && pos <= next) {
+                    x = cf.getChartData().getXFromRatio(pos, bounds);
+                    appY = instance.valueAt(pos, interpolator);
+                    y = cf.getChartData().getY(appY, bounds, range);
+                    //System.out.println("pos= " + pos + ", x= " + x + " y= " + y + " aspY= " + appY);
+                    if (!Double.isNaN(y)) {
+                        Point2D.Double p = new Point2D.Double(x, y);
+                        if (point != null) {
+                            g.draw(new Line2D.Double(point, p));
+                        }
+                        point = p;
+                    }
+                    pos += increment;
+                    j++;
+                }
+            }
         }
     }
 
@@ -184,7 +223,6 @@ public class InterpolatorOverlay extends AbstractOverlay {
     }
 
     public void setInterpolatorName(String name) {
-        System.out.println("setting interpolatror " + name);
         if (!name.equals(getInterpolatorName())) {
             Interpolator interp = InterpolatorFactory.getInstance().getProvider(name);
 
@@ -208,6 +246,14 @@ public class InterpolatorOverlay extends AbstractOverlay {
 
     public void setSteps(int steps) {
         this.steps = steps;
+    }
+
+    public boolean isGlobalCache() {
+        return useGlobalCache;
+    }
+
+    public void setGlobalCache(boolean globalCache) {
+        this.useGlobalCache = globalCache;
     }
 
 }
