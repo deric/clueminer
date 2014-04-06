@@ -267,11 +267,7 @@ public class ChartFrame extends JPanel implements ChartConfig, AdjustmentListene
     }
 
     public boolean hasCurrentAnnotation() {
-        if (getSplitPanel().getChartPanel().getAnnotationPanel().hasCurrent()) {
-            return true;
-        }
-
-        return false;
+        return getSplitPanel().getChartPanel().getAnnotationPanel().hasCurrent();
     }
 
     public AnnotationImpl getCurrentAnnotation() {
@@ -400,7 +396,6 @@ public class ChartFrame extends JPanel implements ChartConfig, AdjustmentListene
 
     @Override
     public void datasetChanged(DatasetEvent evt) {
-        System.out.println("dataset changed ");
         repaint();
     }
 

@@ -84,4 +84,9 @@ public abstract class AbstractInterpolator implements Interpolator {
 
         return value(x, 0, axisX.size());
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
