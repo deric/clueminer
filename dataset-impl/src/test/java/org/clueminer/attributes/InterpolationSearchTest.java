@@ -1,6 +1,6 @@
 package org.clueminer.attributes;
 
-import org.clueminer.interpolation.InterpolationSearch;
+import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.math.Numeric;
 import static org.junit.Assert.assertEquals;
 import org.junit.*;
