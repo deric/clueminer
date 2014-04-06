@@ -1,6 +1,6 @@
 package org.clueminer.approximation;
 
-import cz.cvut.fit.jcool.benchmark.method.gradient.lm.LevenbergMarquardtMethod;
+import cz.cvut.fit.jcool.benchmark.method.gradient.qn.QuasiNewtonMethod;
 import cz.cvut.fit.jcool.core.Function;
 import cz.cvut.fit.jcool.core.Point;
 import cz.cvut.fit.jcool.core.StopCondition;
@@ -11,7 +11,7 @@ import cz.cvut.fit.jcool.solver.Statistics;
 import java.util.HashMap;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.interpolation.LinearInterpolator;
+import org.clueminer.interpolation.NatCubic;
 import org.clueminer.math.Interpolator;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -35,7 +35,7 @@ public class JCoolApprox extends Approximator {
     private class DataFunction implements Function {
 
         private final ContinuousInstance inst;
-        private Interpolator inter = new LinearInterpolator();
+        private Interpolator inter = new NatCubic();
 
         DataFunction(ContinuousInstance instance) {
             this.inst = instance;
@@ -43,7 +43,7 @@ public class JCoolApprox extends Approximator {
 
         @Override
         public double valueAt(Point point) {
-            System.out.println("point: " + point.toString());
+            //System.out.println("point: " + point.toString());
             return inst.valueAt(point.toArray()[0], inter);
         }
 
@@ -64,7 +64,8 @@ public class JCoolApprox extends Approximator {
         try {
             // the test method randomly calls valueAt, gradientAt and hessianAt
             // methods on the test function
-            LevenbergMarquardtMethod method = new LevenbergMarquardtMethod();
+            //OptimizationMethod method = new LevenbergMarquardtMethod();
+            QuasiNewtonMethod method = new QuasiNewtonMethod();
             method.setMin(xAxis[0]);
             method.setMax(xAxis[xAxis.length - 1]);
             solver.init(f, method);
@@ -77,7 +78,7 @@ public class JCoolApprox extends Approximator {
             OptimizationResults r = solver.getResults();
 
             // present the results to the world
-            System.out.println(r.getSolution());
+            System.out.println("solution = " + r.getSolution().getValue());
 
             for (StopCondition condition : r.getMetConditions()) {
                 System.out.println("stopped on condition: " + condition.getClass());
