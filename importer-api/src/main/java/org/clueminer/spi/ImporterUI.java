@@ -13,6 +13,8 @@ import javax.swing.JPanel;
  * <pre>@ServiceProvider(service=ImporterUI.class)</pre>
  *
  * @author Mathieu Bastian
+ * @author Tomas Barton
+ *
  * @see Importer
  */
 public interface ImporterUI {
@@ -23,14 +25,14 @@ public interface ImporterUI {
      *
      * @param importer  the importer that settings is to be set
      */
-    public void setup(Importer importer);
+    void setup(Importer importer);
 
     /**
      * Returns the importer settings panel.
      *
      * @return a settings panel, or <code>null</code>
      */
-    public JPanel getPanel();
+    JPanel getPanel();
 
     /**
      * Notify UI the settings panel has been closed and that new values can be
@@ -39,13 +41,13 @@ public interface ImporterUI {
      * @param update    <code>true</code> if user clicked OK or <code>false</code>
      *                  if CANCEL.
      */
-    public void unsetup(boolean update);
+    void unsetup(boolean update);
 
     /**
      * Returns the importer display name
      * @return          the importer display name
      */
-    public String getDisplayName();
+    String getDisplayName();
 
     /**
      * Returns <code>true</code> if this UI belongs to the given importer.
@@ -54,5 +56,19 @@ public interface ImporterUI {
      * @return          <code>true</code> if the UI is matching with <code>importer</code>,
      *                  <code>false</code> otherwise.
      */
-    public boolean isUIForImporter(Importer importer);
+    boolean isUIForImporter(Importer importer);
+
+    /**
+     * Adds import listener
+     *
+     * @param listener
+     */
+    void addListener(ImportListener listener);
+
+    /**
+     * Removes import listener
+     *
+     * @param listener
+     */
+    void removeListener(ImportListener listener);
 }
