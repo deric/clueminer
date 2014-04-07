@@ -277,7 +277,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
                 sourceLabel.setText(source);
                 lbNumLines.setText(String.valueOf(container.getLoader().getNumberOfLines()));
-                lbAttr.setText(String.valueOf(container.getLoader().getNumberAttributes()));
+                lbAttr.setText(String.valueOf(container.getLoader().getAttributeCount()));
             }
         });
     }

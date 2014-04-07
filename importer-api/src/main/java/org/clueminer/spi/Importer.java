@@ -1,7 +1,6 @@
 package org.clueminer.spi;
 
-import org.clueminer.io.importer.api.ContainerUnloader;
-import org.clueminer.types.ContainerLoader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 
 /**
@@ -10,7 +9,6 @@ import org.clueminer.io.importer.api.Report;
  * Importers are built from {@link ImporterBuilder} services and can be configured
  * by {@link ImporterUI} classes.
  *
- * @author Mathieu Bastian
  * @see ImportController
  */
 public interface Importer {
@@ -41,7 +39,7 @@ public interface Importer {
      *
      * @return
      */
-    ContainerUnloader getUnloader();
+    ContainerLoader getLoader();
 
     /**
      * Returns the import report, filled with logs and potential issues.

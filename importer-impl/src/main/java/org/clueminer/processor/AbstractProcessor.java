@@ -1,6 +1,6 @@
 package org.clueminer.processor;
 
-import org.clueminer.io.importer.api.ContainerUnloader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.Workspace;
 
@@ -11,7 +11,7 @@ import org.clueminer.project.api.Workspace;
 public abstract class AbstractProcessor implements Processor {
 
     protected Workspace workspace;
-    protected ContainerUnloader container;
+    protected ContainerLoader container;
 
     @Override
     public void setWorkspace(Workspace workspace) {
@@ -19,7 +19,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
     @Override
-    public void setContainer(ContainerUnloader container) {
+    public void setContainer(ContainerLoader container) {
         this.container = container;
     }
 

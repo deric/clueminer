@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.importer.Issue;
-import org.clueminer.io.importer.api.ContainerUnloader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
-import org.clueminer.types.ContainerLoader;
 import org.clueminer.types.FileType;
 import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
@@ -135,7 +134,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         } else {
             if (prevColCnt != columns.length) {
                 prevColCnt = columns.length;
-                container.setNumberOfAttributes(prevColCnt);
+                container.setAttributeCount(prevColCnt);
             }
         }
 
@@ -342,7 +341,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     @Override
-    public ContainerUnloader getUnloader() {
-        return (ContainerUnloader) container;
+    public ContainerLoader getLoader() {
+        return (ContainerLoader) container;
     }
 }

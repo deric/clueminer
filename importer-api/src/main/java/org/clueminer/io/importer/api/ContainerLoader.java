@@ -1,0 +1,89 @@
+package org.clueminer.io.importer.api;
+
+import java.io.File;
+import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+
+/**
+ * ContainerUnloader is responsible for transforming pre-loaded data into real
+ * data-structure
+ *
+ * @author Tomas Barton
+ */
+public interface ContainerLoader {
+
+    int getInstanceCount();
+
+    Iterable<InstanceDraft> getInstances();
+
+    /**
+     * Return number of detected attributes in parsed file
+     *
+     * @return
+     */
+    int getAttributeCount();
+
+    /**
+     * Sets number of detected attributes in parsed file
+     *
+     * @param cnt number of attributes
+     */
+    void setAttributeCount(int cnt);
+
+    /**
+     *
+     * @return attribute drafts
+     */
+    Iterable<AttributeDraft> getAttributes();
+
+    void addInstance(InstanceDraft instance);
+
+    /**
+     * Text representation of source
+     *
+     * @return
+     */
+    String getSource();
+
+    AttributeBuilder getAttributeBuilder();
+
+    void setAttributeBuilder(AttributeBuilder builder);
+
+    void setDataset(Dataset<? extends Instance> dataset);
+
+    Dataset<? extends Instance> getDataset();
+
+    void setFile(File file);
+
+    File getFile();
+
+    /**
+     * Number of lines with data
+     *
+     * @param count
+     */
+    void setNumberOfLines(int count);
+
+    /**
+     * Return number of readable lines in file
+     *
+     * @return
+     */
+    int getNumberOfLines();
+
+    /**
+     * Default type for all numeric attributes
+     *
+     * @return
+     */
+    Object getDefaultNumericType();
+
+    /**
+     * Sets default type for all numeric attributes
+     *
+     * @param type
+     */
+    void setDefaultNumericType(Object type);
+
+}

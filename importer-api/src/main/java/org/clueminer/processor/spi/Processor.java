@@ -1,6 +1,6 @@
 package org.clueminer.processor.spi;
 
-import org.clueminer.io.importer.api.ContainerUnloader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.project.api.Workspace;
 
 /**
@@ -30,7 +30,7 @@ public interface Processor {
      *
      * @param container the container where data are
      */
-    public void setContainer(ContainerUnloader container);
+    public void setContainer(ContainerLoader container);
 
     /**
      * Sets the destination workspace for the data in the container. If no

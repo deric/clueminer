@@ -16,10 +16,9 @@ import org.clueminer.importer.Issue;
 import org.clueminer.importer.Issue.Level;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerUnloader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
-import org.clueminer.types.ContainerLoader;
 import org.openide.util.NbBundle;
 
 /**
@@ -27,7 +26,7 @@ import org.openide.util.NbBundle;
  * @author Tomas Barton
  */
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
-public class ImportContainerImpl implements Container, ContainerLoader, ContainerUnloader {
+public class ImportContainerImpl implements Container, ContainerLoader {
 
     private String source;
     private File file;
@@ -64,11 +63,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
     @Override
     public ContainerLoader getLoader() {
-        return this;
-    }
-
-    @Override
-    public ContainerUnloader getUnloader() {
         return this;
     }
 
@@ -214,16 +208,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
-    public void setNumberOfAttributes(int attrCnt) {
-        this.attrCnt = attrCnt;
-    }
-
-    @Override
-    public int getNumberAttributes() {
-        return attrCnt;
-    }
-
-    @Override
     public Object getDefaultNumericType() {
         return defaultNumericType;
     }
@@ -231,6 +215,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public void setDefaultNumericType(Object type) {
         defaultNumericType = type;
+    }
+
+    @Override
+    public void setAttributeCount(int cnt) {
+        this.attrCnt = cnt;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

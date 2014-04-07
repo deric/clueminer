@@ -6,7 +6,7 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.clueminer.importer.impl.AttributeDraftImpl;
 import org.clueminer.io.importer.api.AttributeDraft;
-import org.clueminer.io.importer.api.ContainerUnloader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.processor.ui.AttributeProp;
 import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
@@ -36,7 +36,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         this.importerUI = importerUI;
         System.out.println("imporer changed: " + importer.getClass().getName());
-        ContainerUnloader loader = importer.getUnloader();
+        ContainerLoader loader = importer.getLoader();
         if (loader != null) {
             Iterable<AttributeDraft> attrs = loader.getAttributes();
             System.out.println("detected " + loader.getAttributeCount() + " attributes");

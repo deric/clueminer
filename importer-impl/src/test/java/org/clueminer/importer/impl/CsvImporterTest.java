@@ -2,7 +2,7 @@ package org.clueminer.importer.impl;
 
 import java.io.IOException;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.types.ContainerLoader;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
