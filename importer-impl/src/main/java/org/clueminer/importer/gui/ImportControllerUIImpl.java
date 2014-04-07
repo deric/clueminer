@@ -2,12 +2,14 @@ package org.clueminer.importer.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -81,31 +83,33 @@ public class ImportControllerUIImpl implements ImportControllerUI {
             MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
             mostRecentFiles.addFile(fileObject.getPath());
 
-            ImporterUI ui = controller.getUI(importer);
-            if (ui != null) {
-                String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
-                JPanel panel = ui.getPanel();
-                ui.setup(importer);
+            //this should be delegated to importer dialog
+/*
+             ImporterUI ui = controller.getUI(importer);
+             if (ui != null) {
+             String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
+             JPanel panel = ui.getPanel();
+             ui.setup(importer);
 
-                final DialogDescriptor dd = new DialogDescriptor(panel, title);
-                if (panel instanceof ValidationPanel) {
-                    ValidationPanel vp = (ValidationPanel) panel;
-                    vp.addChangeListener(new ChangeListener() {
-                        @Override
-                        public void stateChanged(ChangeEvent e) {
-                            dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                        }
-                    });
-                }
+             final DialogDescriptor dd = new DialogDescriptor(panel, title);
+             if (panel instanceof ValidationPanel) {
+             ValidationPanel vp = (ValidationPanel) panel;
+             vp.addChangeListener(new ChangeListener() {
+             @Override
+             public void stateChanged(ChangeEvent e) {
+             dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
+             }
+             });
+             }
 
-                Object result = DialogDisplayer.getDefault().notify(dd);
-                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-                    ui.unsetup(false);
-                    return;
-                }
-                ui.unsetup(true);
-            }
-
+             Object result = DialogDisplayer.getDefault().notify(dd);
+             if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+             ui.unsetup(false);
+             return;
+             }
+             ui.unsetup(true);
+             }
+             */
             LongTask task = null;
             if (importer instanceof LongTask) {
                 task = (LongTask) importer;
@@ -137,7 +141,9 @@ public class ImportControllerUIImpl implements ImportControllerUI {
                     Exceptions.printStackTrace(ex);
                 }
             }
-        } catch (Exception ex) {
+        } catch (MissingResourceException ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        } catch (FileNotFoundException ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
     }
@@ -254,7 +260,7 @@ public class ImportControllerUIImpl implements ImportControllerUI {
                     String fileExt1 = splittedFileName[splittedFileName.length - 1];
                     String fileExt2 = splittedFileName[splittedFileName.length - 2];
 
-                    File tempFile = null;
+                    File tempFile;
                     if (fileExt1.equalsIgnoreCase("tar")) {
                         String fname = fileObject.getName().replaceAll("\\.tar$", "");
                         fname = fname.replace(fileExt2, "");
