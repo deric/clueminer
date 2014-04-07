@@ -108,21 +108,6 @@
             <artifactId>guava</artifactId>
             <version>16.0.1</version>
         </dependency>
-        <dependency>
-            <groupId>cz.cvut.fit.jcool</groupId>
-            <artifactId>jcool-core</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cvut.fit.jcool</groupId>
-            <artifactId>jcool-solver</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cvut.fit.jcool</groupId>
-            <artifactId>jcool-benchmark</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>
