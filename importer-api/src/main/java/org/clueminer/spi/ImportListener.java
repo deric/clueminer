@@ -12,7 +12,8 @@ public interface ImportListener extends EventListener {
      * Called when importer or some of its parameters were changed
      *
      * @param importer
+     * @param importerUI
      */
-    void importerChanged(Importer importer);
+    void importerChanged(Importer importer, ImporterUI importerUI);
 
 }

@@ -13,32 +13,25 @@ import org.openide.filesystems.FileObject;
 public interface FileImporter extends Importer {
 
     /**
-     * Should be unique importer ID
-     *
-     * @return importer identification
-     */
-    public String getName();
-
-    /**
      * Sets the reader where characters can be retrieved.
      *
      * @param reader the reader on data
      */
-    public void setReader(Reader reader);
+    void setReader(Reader reader);
 
     /**
      * Return File which is supposed to be processed
      *
      * @return File
      */
-    public File getFile();
+    File getFile();
 
     /**
      * Sets File to process
      *
      * @param file
      */
-    public void setFile(File file);
+    void setFile(File file);
 
     /**
      * Return true if importer supports given MIME type
@@ -46,14 +39,14 @@ public interface FileImporter extends Importer {
      * @param mimeTypes Collection of String, String[] and MimeType objects
      * @return
      */
-    public boolean isAccepting(Collection mimeTypes);
+    boolean isAccepting(Collection mimeTypes);
 
     /**
      * Get default file types this importer can deal with.
      *
      * @return an array of file types this importer can read
      */
-    public FileType[] getFileTypes();
+    FileType[] getFileTypes();
 
     /**
      * Returns <code>true</code> if this importer can import
@@ -71,5 +64,10 @@ public interface FileImporter extends Importer {
      *         <code>fileObject</code> or <code>false</code>
      *         otherwise
      */
-    public boolean isMatchingImporter(FileObject fileObject);
+    boolean isMatchingImporter(FileObject fileObject);
+
+    /**
+     * Reload import (with new importer settings)
+     */
+    void reload();
 }

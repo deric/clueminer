@@ -5,11 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.ContainerUnloader;
 import org.clueminer.io.importer.api.Report;
@@ -18,7 +16,6 @@ import org.clueminer.spi.FileImporter;
 import org.clueminer.types.ContainerLoader;
 import org.clueminer.types.FileType;
 import org.clueminer.utils.progress.Progress;
-import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
@@ -29,20 +26,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = FileImporter.class)
-public class CsvImporter implements FileImporter, LongTask {
+public class CsvImporter extends AbstractImporter implements FileImporter, LongTask {
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;
     private char separator = ',';
     private char quotechar = '"';
     private static final String name = "CSV";
-    private File file;
-    private Reader reader;
-    private ContainerLoader container;
-    private Report report;
-    private ProgressTicket progressTicket;
     private boolean cancel = false;
-    private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private static final int INITIAL_READ_SIZE = 128;
     private String pending;
     private boolean ignoreQuotations = false;
@@ -68,21 +59,6 @@ public class CsvImporter implements FileImporter, LongTask {
 
     public void setSeparator(char separator) {
         this.separator = separator;
-    }
-
-    @Override
-    public void setReader(Reader reader) {
-        this.reader = reader;
-    }
-
-    @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
-    public void setFile(File file) {
-        this.file = file;
     }
 
     @Override
@@ -115,16 +91,6 @@ public class CsvImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public ContainerLoader getContainer() {
-        return container;
-    }
-
-    @Override
-    public Report getReport() {
-        return report;
-    }
-
-    @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".csv", NbBundle.getMessage(getClass(), "fileType_CSV_Name"));
         return new FileType[]{ft};
@@ -139,11 +105,6 @@ public class CsvImporter implements FileImporter, LongTask {
     public boolean cancel() {
         cancel = true;
         return true;
-    }
-
-    @Override
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progressTicket = progressTicket;
     }
 
     protected void importData(LineNumberReader reader) throws IOException {
@@ -384,5 +345,4 @@ public class CsvImporter implements FileImporter, LongTask {
     public ContainerUnloader getUnloader() {
         return (ContainerUnloader) container;
     }
-
 }

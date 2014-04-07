@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
 import org.clueminer.io.importer.api.Container;
@@ -32,7 +33,6 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.ProjectControllerUI;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.spi.FileImporter;
-import org.clueminer.spi.ImporterUI;
 import org.netbeans.validation.api.ui.swing.ValidationPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -222,7 +222,7 @@ public class ImportControllerUIImpl implements ImportControllerUI {
                 StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.status.importSuccess", source));
             }
         } else {
-            System.err.println("Bad container");
+            NotifyUtil.error("Error", "Bad container", false);
         }
     }
 

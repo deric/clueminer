@@ -10,6 +10,7 @@ import org.clueminer.io.importer.api.ContainerUnloader;
 import org.clueminer.processor.ui.AttributeProp;
 import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
+import org.clueminer.spi.ImporterUI;
 
 /**
  *
@@ -21,6 +22,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     private int numAttributes = 0;
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
     private AttributeDraft[] attributes;
+    private ImporterUI importerUI;
 
     public ColumnsPreview() {
         initComponents();
@@ -31,7 +33,8 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     }
 
     @Override
-    public void importerChanged(Importer importer) {
+    public void importerChanged(Importer importer, ImporterUI importerUI) {
+        this.importerUI = importerUI;
         System.out.println("imporer changed: " + importer.getClass().getName());
         ContainerUnloader loader = importer.getUnloader();
         if (loader != null) {
@@ -69,7 +72,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = WEST_INSETS;
 
-        JPanel column = new AttributeProp(atrd);
+        JPanel column = new AttributeProp(atrd, importerUI);
         add(column, c);
         this.validate();
         this.revalidate();

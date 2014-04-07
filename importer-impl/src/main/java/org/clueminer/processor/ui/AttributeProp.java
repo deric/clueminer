@@ -1,6 +1,7 @@
 package org.clueminer.processor.ui;
 
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.spi.ImporterUI;
 
 /**
  *
@@ -10,12 +11,14 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
+    private ImporterUI importerUI;
 
     /**
      * Creates new form AttributeProp
      */
-    public AttributeProp(AttributeDraft atrd) {
+    public AttributeProp(AttributeDraft atrd, ImporterUI importerUI) {
         this.attr = atrd;
+        this.importerUI = importerUI;
         initComponents();
         tfName.setText(attr.getName());
         cbRole.setSelectedItem(attr.getRole());
@@ -120,18 +123,22 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
         attr.setName(tfName.getName());
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
         attr.setType(cbType.getSelectedItem());
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbTypeActionPerformed
 
     private void cbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRoleActionPerformed
         attr.setRole((String) cbRole.getSelectedItem());
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbRoleActionPerformed
 
     private void chckImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckImportActionPerformed
         attr.setSkipped(chckImport.isSelected());
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_chckImportActionPerformed
 
 

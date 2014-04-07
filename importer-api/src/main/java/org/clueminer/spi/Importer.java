@@ -16,8 +16,9 @@ import org.clueminer.io.importer.api.Report;
 public interface Importer {
 
     /**
+     * Should be unique importer ID
      *
-     * @return name of the importer
+     * @return importer identification
      */
     String getName();
 
