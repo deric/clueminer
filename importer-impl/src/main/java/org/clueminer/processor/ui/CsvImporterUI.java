@@ -103,7 +103,7 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
                         .addComponent(lbNumType)
                         .addGap(3, 3, 3)
                         .addComponent(cbDefaultType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,7 +150,8 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
         importListeners.remove(ImportListener.class, listener);
     }
 
-    private void fireImporterChanged(){
+    @Override
+    public void fireImporterChanged(){
         for (ImportListener im : importListeners.getListeners(ImportListener.class)) {
             im.importerChanged(importer);
         }

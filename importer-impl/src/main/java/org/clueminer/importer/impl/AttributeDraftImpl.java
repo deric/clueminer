@@ -15,6 +15,8 @@ public class AttributeDraftImpl implements AttributeDraft {
     private boolean numerical;
     private Object type;
     private Object defaultValue;
+    private String role;
+    private boolean skipped;
 
     public AttributeDraftImpl() {
 
@@ -92,6 +94,26 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
+    }
+
+    @Override
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public boolean isSkipped() {
+        return skipped;
+    }
+
+    @Override
+    public void setSkipped(boolean b) {
+        this.skipped = b;
     }
 
 }

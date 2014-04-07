@@ -6,32 +6,49 @@ package org.clueminer.io.importer.api;
  */
 public interface AttributeDraft {
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public Object getType();
+    Object getType();
 
-    public void setType(Object t);
+    void setType(Object t);
 
-    public boolean isMeta();
+    boolean isMeta();
 
-    public void setMeta(boolean b);
+    void setMeta(boolean b);
 
-    public boolean isNumerical();
+    boolean isNumerical();
 
-    public void setNumerical(boolean b);
+    void setNumerical(boolean b);
 
-    public boolean isUnique();
+    boolean isUnique();
 
-    public void setUnique(boolean b);
+    void setUnique(boolean b);
 
-    public Object getDefaultValue();
+    Object getDefaultValue();
 
-    public void setDefaultValue(Object value);
+    void setDefaultValue(Object value);
 
-    public int getIndex();
+    int getIndex();
 
-    public void setIndex(int index);
+    void setIndex(int index);
+
+    /**
+     * Role of the attribute input/meta/id etc.
+     *
+     * @return
+     */
+    String getRole();
+
+    void setRole(String role);
+
+    /**
+     *
+     * @return true when attribute shouldn't be imported
+     */
+    boolean isSkipped();
+
+    void setSkipped(boolean b);
 
 }

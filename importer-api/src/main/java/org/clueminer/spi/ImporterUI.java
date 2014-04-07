@@ -71,4 +71,9 @@ public interface ImporterUI {
      * @param listener
      */
     void removeListener(ImportListener listener);
+
+    /**
+     * Notify about changes
+     */
+    void fireImporterChanged();
 }

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import org.clueminer.importer.Issue;
+import org.clueminer.io.importer.api.ContainerUnloader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
@@ -377,6 +378,11 @@ public class CsvImporter implements FileImporter, LongTask {
             return new LineNumberReader(br);
         }
         return ImportUtils.getTextReader(fileObject);
+    }
+
+    @Override
+    public ContainerUnloader getUnloader() {
+        return (ContainerUnloader) container;
     }
 
 }
