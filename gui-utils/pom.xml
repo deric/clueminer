@@ -71,6 +71,16 @@
             <artifactId>swingx</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -83,6 +93,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.colors</publicPackage>
                         <publicPackage>org.clueminer.gui</publicPackage>
+                        <publicPackage>org.clueminer.gui.msg</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
