@@ -88,6 +88,9 @@
           <ResourceString bundle="org/clueminer/processor/ui/Bundle.properties" key="CsvImporterUI.chckHeader.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chckHeaderActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="chckQuotation">
       <Properties>
@@ -95,6 +98,9 @@
           <ResourceString bundle="org/clueminer/processor/ui/Bundle.properties" key="CsvImporterUI.chckQuotation.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chckQuotationActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lbNumType">
       <Properties>

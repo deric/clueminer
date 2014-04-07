@@ -79,8 +79,18 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(chckHeader, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckHeader.text")); // NOI18N
+        chckHeader.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckHeaderActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(chckQuotation, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckQuotation.text")); // NOI18N
+        chckQuotation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckQuotationActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(lbNumType, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.lbNumType.text")); // NOI18N
 
@@ -130,6 +140,16 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
         importer.setSeparator(separator);
         fireImporterChanged();
     }//GEN-LAST:event_comboSeparatorActionPerformed
+
+    private void chckHeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckHeaderActionPerformed
+        importer.setHasHeader(chckHeader.isSelected());
+        fireImporterChanged();
+    }//GEN-LAST:event_chckHeaderActionPerformed
+
+    private void chckQuotationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckQuotationActionPerformed
+        importer.setIgnoreQuotations(chckQuotation.isSelected());
+        fireImporterChanged();
+    }//GEN-LAST:event_chckQuotationActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbDefaultType;

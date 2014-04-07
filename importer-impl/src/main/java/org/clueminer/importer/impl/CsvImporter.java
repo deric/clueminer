@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.importer.Issue;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
@@ -37,11 +38,17 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private String pending;
     private boolean ignoreQuotations = false;
     private boolean strictQuotes = false;
+    /**
+     * header is typically on first line, unless we have some comments before
+     * header - true when header was parser
+     */
+    private boolean parsedHeader = false;
     private char escape;
     private boolean inField = false;
     //white space in front of a quote in a field is ignored
     private boolean ignoreLeadingWhiteSpace = false;
     private int prevColCnt = -1;
+    private AttributeDraft[] attrs;
 
     public CsvImporter() {
         separator = ',';
@@ -107,7 +114,15 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     protected void importData(LineNumberReader reader) throws IOException {
-        Progress.start(progressTicket);        //Progress
+        //if it's not the first time we are trying to load the file,
+        //number of lines will be known
+        int numLines = container.getNumberOfLines();
+        if (numLines > 0) {
+            //if we know number of lines
+            Progress.switchToDeterminate(progressTicket, numLines);
+        } else {
+            Progress.start(progressTicket);
+        }
 
         /*it.setSkipBlanks(true);
          it.setCommentIdentifier("#");
@@ -121,10 +136,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
         }
         container.setNumberOfLines(count);
-
-        //   Progress.switchToDeterminate(progressTicket, lines.size());
-        //if we know number of lines
-        //    Progress.progress(progressTicket);      //Progress
     }
 
     protected void lineRead(int num, String line) throws IOException {
@@ -138,13 +149,25 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
         }
 
-        if (hasHeader && !skipHeader) {
-            // parseHeader(iter.next());
-            ///Dump.array(((CSVIterator) iter).showNext(), "next line: ");
+        if (hasHeader && !skipHeader && !parsedHeader) {
+            parseHeader(columns);
+            parsedHeader = true;
         } else if (skipHeader) {
             //    iter.next(); // just skip it
-        }
+        } else {
 
+        }
+    }
+
+    private void parseHeader(String[] columns) {
+        attrs = new AttributeDraft[columns.length];
+        int i = 0;
+        for (String attrName : columns) {
+            if (!container.hasAttribute(attrName)) {
+                attrs[i] = container.createAttribute(i, attrName);
+            }
+            i++;
+        }
     }
 
     private void addInstance(String data) {
@@ -219,7 +242,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -233,7 +256,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {

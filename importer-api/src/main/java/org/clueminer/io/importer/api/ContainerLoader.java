@@ -32,6 +32,23 @@ public interface ContainerLoader {
     void setAttributeCount(int cnt);
 
     /**
+     * Create attribute draft with given name
+     *
+     * @param index - position in future dataset
+     * @param name - unique name
+     * @return
+     */
+    AttributeDraft createAttribute(int index, String name);
+
+    /**
+     * Check whether attribute with given name already exists
+     *
+     * @param key
+     * @return
+     */
+    boolean hasAttribute(String key);
+
+    /**
      *
      * @return attribute drafts
      */

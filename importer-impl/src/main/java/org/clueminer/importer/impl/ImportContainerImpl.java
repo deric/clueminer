@@ -134,14 +134,33 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         return new NullFilterIterable<InstanceDraft>(instanceList);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getAttributeCount() {
         return attributeList.size();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<AttributeDraft> getAttributes() {
         return attributeMap.values();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AttributeDraft createAttribute(int index, String name) {
+        AttributeDraft attr = new AttributeDraftImpl(name);
+        attr.setIndex(index);
+        attr.setType(defaultNumericType);
+        attributeMap.put(name, attr);
+        attributeList.add(index, attr);
+        return attr;
     }
 
     public InstanceDraft getInstance(String id) {
@@ -172,6 +191,10 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean hasAttribute(String key) {
         return attributeMap.containsKey(key);
     }
