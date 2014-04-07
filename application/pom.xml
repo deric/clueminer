@@ -240,16 +240,6 @@
             <version>1.5.6</version>
         </dependency>
         <dependency>
-            <groupId>cz.cvut.fit.jcool</groupId>
-            <artifactId>jcool-benchmark</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>cz.cvut.fit.jcool</groupId>
-            <artifactId>jcool-core</artifactId>
-            <version>1.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
