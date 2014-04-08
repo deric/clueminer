@@ -118,4 +118,19 @@ public interface ContainerLoader {
      */
     AttributeDraft getAttribute(String key, Class typeClass);
 
+    /**
+     * Set type of data which could be used for optimization of inner data
+     * structure representation
+     *
+     * @param dataType
+     */
+    void setDataType(String dataType);
+
+    /**
+     * Data type is usually either discrete or continuous
+     *
+     * @return type of data
+     */
+    String getDataType();
+
 }

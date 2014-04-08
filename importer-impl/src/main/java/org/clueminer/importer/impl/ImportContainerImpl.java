@@ -43,6 +43,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     private int linesCnt;
     private int attrCnt;
     private Object defaultNumericType = Double.class;
+    private String dataType = "discrete";
 
     public ImportContainerImpl() {
         report = new Report();
@@ -247,6 +248,16 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public void setAttributeCount(int cnt) {
         this.attrCnt = cnt;
+    }
+
+    @Override
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    @Override
+    public String getDataType() {
+        return dataType;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
