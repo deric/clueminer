@@ -11,7 +11,7 @@ public interface AttributeParser {
      *
      * @return
      */
-    String getTypeName();
+    String getName();
 
     /**
      * Try to parse given Object (possibly String)
