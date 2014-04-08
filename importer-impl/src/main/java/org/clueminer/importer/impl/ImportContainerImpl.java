@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -160,6 +161,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         AttributeDraft attr = new AttributeDraftImpl(name);
         attr.setIndex(index);
         attr.setType(defaultNumericType);
+        attr.setRole(BasicAttrRole.INPUT);
         attributeMap.put(name, attr);
         attributeList.add(index, attr);
         return attr;

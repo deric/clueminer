@@ -23,8 +23,6 @@ public class AttributeProp extends javax.swing.JPanel {
         this.importerUI = importerUI;
         initComponents();
         tfName.setText(attr.getName());
-        cbRole.setSelectedItem(attr.getRole());
-        cbType.setSelectedItem(attr.getType());
     }
 
     /**
@@ -130,18 +128,16 @@ public class AttributeProp extends javax.swing.JPanel {
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
-        attr.setType(cbType.getSelectedItem());
+        Object item = cbType.getSelectedItem();
+        attr.setType(item);
+
         //importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbTypeActionPerformed
 
     private void cbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRoleActionPerformed
         String strRole = (String) cbRole.getSelectedItem();
-        if (strRole != null) {
-            AttributeRole role = BasicAttrRole.valueOf(strRole);
-            attr.setRole(role);
-        } else {
-
-        }
+        AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
+        attr.setRole(role);
         //importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbRoleActionPerformed
 

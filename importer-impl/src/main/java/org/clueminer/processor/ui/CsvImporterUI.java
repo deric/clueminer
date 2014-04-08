@@ -78,6 +78,7 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
             }
         });
 
+        chckHeader.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chckHeader, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckHeader.text")); // NOI18N
         chckHeader.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
