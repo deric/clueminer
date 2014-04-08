@@ -25,7 +25,7 @@ public class ServiceFactory<T> {
     }
 
     public T getProvider(String key) {
-        if (!providers.containsKey(key)) {
+        if (!hasProvider(key)) {
             throw new RuntimeException("provider " + key + " was not found");
         }
         return providers.get(key);
@@ -79,6 +79,10 @@ public class ServiceFactory<T> {
 
     public boolean hasDefault() {
         return (defaultProvider != null);
+    }
+
+    public boolean hasProvider(String key) {
+        return providers.containsKey(key);
     }
 
     @Override
