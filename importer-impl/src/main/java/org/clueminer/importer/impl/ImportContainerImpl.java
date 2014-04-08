@@ -250,14 +250,33 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         this.attrCnt = cnt;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setDataType(String dataType) {
         this.dataType = dataType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDataType() {
         return dataType;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean hasPrimaryKey() {
+        for (AttributeDraft attr : attributeList) {
+            if (attr.getRole() == BasicAttrRole.ID) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

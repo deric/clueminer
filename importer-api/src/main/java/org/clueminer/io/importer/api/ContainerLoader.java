@@ -49,6 +49,13 @@ public interface ContainerLoader {
     boolean hasAttribute(String key);
 
     /**
+     * Basically we check for unique ID column
+     *
+     * @return true when any of attributes could be a primary key
+     */
+    boolean hasPrimaryKey();
+
+    /**
      *
      * @return attribute drafts
      */

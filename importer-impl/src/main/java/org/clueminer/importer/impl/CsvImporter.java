@@ -8,6 +8,7 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -51,6 +52,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private boolean ignoreLeadingWhiteSpace = false;
     private int prevColCnt = -1;
     private AttributeDraft[] attributes;
+    private int numInstances;
 
     public CsvImporter() {
         separator = ',';
@@ -116,6 +118,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     protected void importData(LineNumberReader reader) throws IOException {
+        numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
         int numLines = container.getNumberOfLines();
@@ -179,14 +182,21 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         int i = 0;
         for (String value : columns) {
 
+            if (attributes[i].getRole() == BasicAttrRole.ID) {
+                draft.setId(value);
+            }
+
            // switch (attributes[i].getRole()) {
 
             //}
             draft.setValue(i, value);
             i++;
         }
+        if (!container.hasPrimaryKey()) {
+            draft.setId(String.valueOf(numInstances));
+        }
         container.addInstance(draft, num);
-
+        numInstances++;
     }
 
     /**
