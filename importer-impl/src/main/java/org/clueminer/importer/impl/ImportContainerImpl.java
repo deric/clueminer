@@ -44,6 +44,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     private Object defaultNumericType = Double.class;
 
     public ImportContainerImpl() {
+        report = new Report();
         instanceList = new ObjectArrayList<InstanceDraft>();
         attributeList = new ObjectArrayList<AttributeDraft>();
         attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
@@ -67,11 +68,11 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     }
 
     @Override
-    public void addInstance(InstanceDraft instance) {
+    public void addInstance(InstanceDraft instance, int row) {
         checkInstanceDraft(instance);
 
         if (instanceMap.containsKey(instance.getId())) {
-            String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_instanceExist", instance.getId());
+            String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_instanceExist", instance.getId(), row);
             report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
@@ -81,6 +82,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         instanceMap.put(instance.getId(), index);
     }
 
+    @Override
     public AttributeDraft getAttribute(String key, Class typeClass) {
         AttributeDraft attr = attributeMap.get(key);
 

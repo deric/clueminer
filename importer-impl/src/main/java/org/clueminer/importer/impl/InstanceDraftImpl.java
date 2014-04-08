@@ -1,6 +1,7 @@
 package org.clueminer.importer.impl;
 
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 
 /**
@@ -13,10 +14,15 @@ public class InstanceDraftImpl implements InstanceDraft {
     private String label;
     private Object type;
     private Object[] values;
-    private ImportContainerImpl container;
+    private final ContainerLoader container;
 
-    public InstanceDraftImpl(ImportContainerImpl parent) {
+    public InstanceDraftImpl(ContainerLoader parent) {
         this.values = new Object[0];
+        this.container = parent;
+    }
+
+    public InstanceDraftImpl(ContainerLoader parent, int size) {
+        this.values = new Object[size];
         this.container = parent;
     }
 

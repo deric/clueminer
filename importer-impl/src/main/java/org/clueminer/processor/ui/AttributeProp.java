@@ -1,5 +1,7 @@
 package org.clueminer.processor.ui;
 
+import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.spi.ImporterUI;
 
@@ -62,7 +64,7 @@ public class AttributeProp extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(AttributeProp.class, "AttributeProp.jLabel3.text")); // NOI18N
 
-        cbRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "input", "meta", "id" }));
+        cbRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "input", "meta", "label", "class", "id" }));
         cbRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbRoleActionPerformed(evt);
@@ -123,22 +125,29 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
         attr.setName(tfName.getName());
-        importerUI.fireImporterChanged();
+        //TODO: call reload
+        //importerUI.fireImporterChanged();
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
         attr.setType(cbType.getSelectedItem());
-        importerUI.fireImporterChanged();
+        //importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbTypeActionPerformed
 
     private void cbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRoleActionPerformed
-        attr.setRole((String) cbRole.getSelectedItem());
-        importerUI.fireImporterChanged();
+        String strRole = (String) cbRole.getSelectedItem();
+        if (strRole != null) {
+            AttributeRole role = BasicAttrRole.valueOf(strRole);
+            attr.setRole(role);
+        } else {
+
+        }
+        //importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbRoleActionPerformed
 
     private void chckImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckImportActionPerformed
         attr.setSkipped(chckImport.isSelected());
-        importerUI.fireImporterChanged();
+        //importerUI.fireImporterChanged();
     }//GEN-LAST:event_chckImportActionPerformed
 
 

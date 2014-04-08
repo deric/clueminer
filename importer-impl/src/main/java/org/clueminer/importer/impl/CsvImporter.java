@@ -11,10 +11,12 @@ import java.util.List;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.types.FileType;
+import org.clueminer.utils.Dump;
 import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -48,7 +50,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     //white space in front of a quote in a field is ignored
     private boolean ignoreLeadingWhiteSpace = false;
     private int prevColCnt = -1;
-    private AttributeDraft[] attrs;
+    private AttributeDraft[] attributes;
 
     public CsvImporter() {
         separator = ',';
@@ -149,29 +151,42 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
         }
 
+
         if (hasHeader && !skipHeader && !parsedHeader) {
             parseHeader(columns);
             parsedHeader = true;
         } else if (skipHeader) {
             //    iter.next(); // just skip it
         } else {
-
+            //Dump.array(columns, "line " + num);
+            addInstance(num, columns);
         }
     }
 
     private void parseHeader(String[] columns) {
-        attrs = new AttributeDraft[columns.length];
+        attributes = new AttributeDraft[columns.length];
         int i = 0;
         for (String attrName : columns) {
             if (!container.hasAttribute(attrName)) {
-                attrs[i] = container.createAttribute(i, attrName);
+                attributes[i] = container.createAttribute(i, attrName);
             }
             i++;
         }
     }
 
-    private void addInstance(String data) {
-        //container.
+    private void addInstance(int num, String[] columns) {
+        InstanceDraft draft = new InstanceDraftImpl(container, attributes.length);
+        int i = 0;
+        for (String value : columns) {
+
+           // switch (attributes[i].getRole()) {
+
+            //}
+            draft.setValue(i, value);
+            i++;
+        }
+        container.addInstance(draft, num);
+
     }
 
     /**

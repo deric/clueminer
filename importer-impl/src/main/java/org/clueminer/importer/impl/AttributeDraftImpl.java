@@ -1,6 +1,9 @@
 package org.clueminer.importer.impl;
 
+import org.clueminer.dataset.api.AttributeRole;
+import org.clueminer.importer.parser.DoubleParser;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.AttributeParser;
 
 /**
  *
@@ -15,7 +18,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     private boolean numerical;
     private Object type;
     private Object defaultValue;
-    private String role;
+    private AttributeRole role;
     private boolean skipped;
 
     public AttributeDraftImpl() {
@@ -97,12 +100,12 @@ public class AttributeDraftImpl implements AttributeDraft {
     }
 
     @Override
-    public String getRole() {
+    public AttributeRole getRole() {
         return role;
     }
 
     @Override
-    public void setRole(String role) {
+    public void setRole(AttributeRole role) {
         this.role = role;
     }
 
@@ -114,6 +117,15 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public void setSkipped(boolean b) {
         this.skipped = b;
+    }
+
+    @Override
+    public AttributeParser getParser() {
+        if (type instanceof Double) {
+            return DoubleParser.getInstance();
+        }
+        throw new RuntimeException("attribute type " + type.getClass().getName()
+                + " is not supproted yet");
     }
 
 }

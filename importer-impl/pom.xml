@@ -148,6 +148,12 @@
             <artifactId>dataset-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode.zohhak</groupId>
+            <artifactId>zohhak</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
