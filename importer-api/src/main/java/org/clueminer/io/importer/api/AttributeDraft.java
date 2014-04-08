@@ -1,5 +1,7 @@
 package org.clueminer.io.importer.api;
 
+import org.clueminer.dataset.api.AttributeRole;
+
 /**
  *
  * @author Tomas Barton
@@ -39,9 +41,9 @@ public interface AttributeDraft {
      *
      * @return
      */
-    String getRole();
+    AttributeRole getRole();
 
-    void setRole(String role);
+    void setRole(AttributeRole role);
 
     /**
      *
@@ -50,5 +52,7 @@ public interface AttributeDraft {
     boolean isSkipped();
 
     void setSkipped(boolean b);
+
+    AttributeParser getParser();
 
 }

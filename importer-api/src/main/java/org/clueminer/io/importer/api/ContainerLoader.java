@@ -54,7 +54,13 @@ public interface ContainerLoader {
      */
     Iterable<AttributeDraft> getAttributes();
 
-    void addInstance(InstanceDraft instance);
+    /**
+     * Adds new Instance draft
+     *
+     * @param instance
+     * @param row number of row (or other hint like PK)
+     */
+    void addInstance(InstanceDraft instance, int row);
 
     /**
      * Text representation of source
@@ -102,5 +108,14 @@ public interface ContainerLoader {
      * @param type
      */
     void setDefaultNumericType(Object type);
+
+    /**
+     * Fetches attribute by a key
+     *
+     * @param key
+     * @param typeClass
+     * @return
+     */
+    AttributeDraft getAttribute(String key, Class typeClass);
 
 }
