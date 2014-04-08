@@ -9,5 +9,8 @@ import org.clueminer.dataset.api.AttributeRole;
 public enum BasicAttrRole implements AttributeRole {
 
     INPUT, //input data
-    META;  //meta-data
+    META, //meta-data
+    LABEL,
+    CLASS,
+    ID;
 }
