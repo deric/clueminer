@@ -279,6 +279,16 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         return false;
     }
 
+    @Override
+    public AttributeDraft getAttribute(int index) {
+        return attributeList.get(index);
+    }
+
+    @Override
+    public InstanceDraft getInstance(int index) {
+        return instanceList.get(index);
+    }
+
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
 
         private final Collection<T> collection;

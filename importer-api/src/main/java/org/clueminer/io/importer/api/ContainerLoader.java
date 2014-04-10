@@ -18,6 +18,14 @@ public interface ContainerLoader {
     Iterable<InstanceDraft> getInstances();
 
     /**
+     * Return instance by index
+     *
+     * @param index
+     * @return
+     */
+    InstanceDraft getInstance(int index);
+
+    /**
      * Return number of detected attributes in parsed file
      *
      * @return
@@ -35,10 +43,18 @@ public interface ContainerLoader {
      * Create attribute draft with given name
      *
      * @param index - position in future dataset
-     * @param name - unique name
+     * @param name  - unique name
      * @return
      */
     AttributeDraft createAttribute(int index, String name);
+
+    /**
+     * Return attribute at given index
+     *
+     * @param index
+     * @return
+     */
+    AttributeDraft getAttribute(int index);
 
     /**
      * Check whether attribute with given name already exists
@@ -65,7 +81,7 @@ public interface ContainerLoader {
      * Adds new Instance draft
      *
      * @param instance
-     * @param row number of row (or other hint like PK)
+     * @param row      number of row (or other hint like PK)
      */
     void addInstance(InstanceDraft instance, int row);
 

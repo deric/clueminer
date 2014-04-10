@@ -14,16 +14,13 @@ import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
-import org.clueminer.io.importer.api.ParsingError;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.types.FileType;
-import org.clueminer.utils.Dump;
 import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -189,13 +186,13 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 draft.setId(value);
             } else if (role == BasicAttrRole.INPUT) {
                 /* try {                      attributes[i].getParser().parse(value);
-                } catch (ParsingError ex) {
-                    report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                            "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
-                }*/
+                 } catch (ParsingError ex) {
+                 report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
+                 "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                 }*/
             }
 
-           // switch (attributes[i].getRole()) {
+            // switch (attributes[i].getRole()) {
             //}
             draft.setValue(i, value);
             i++;
@@ -275,7 +272,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -289,7 +286,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
@@ -396,8 +393,4 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         return ImportUtils.getTextReader(fileObject);
     }
 
-    @Override
-    public ContainerLoader getLoader() {
-        return (ContainerLoader) container;
-    }
 }
