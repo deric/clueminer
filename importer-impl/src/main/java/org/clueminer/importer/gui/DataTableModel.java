@@ -40,7 +40,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
             if (rowIndex < container.getInstanceCount()) {
                 InstanceDraft draft = container.getInstance(rowIndex);
                 if (rowIndex < draft.size()) {
-                    return draft.getValue(rowIndex);
+                    return draft.getValue(columnIndex);
                 }
             }
         }
