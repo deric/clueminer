@@ -60,8 +60,8 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         this.container = container;
         System.out.println("got new container: " + container);
         System.out.println("attr: " + container.getAttributeCount() + " lines: " + container.getInstanceCount());
-        updateData();
         updateAttributes();
+        updateData();
     }
 
     @Override
@@ -73,6 +73,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
     private void updateData() {
         if (container != null) {
             int j = 0;
+            int prevCnt = getRowCount();
             for (InstanceDraft draft : container.getInstances()) {
                 for (int i = 0; i < draft.size(); i++) {
                     setValueAt(draft.getValue(i), j, i);
@@ -80,8 +81,11 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                 j++;
             }
             if (j > 0) {
-                fireTableStructureChanged();
-                fireTableRowsInserted(0, j);
+                if (prevCnt > 0) {
+                    fireTableRowsUpdated(0, prevCnt);
+                    fireTableRowsInserted(prevCnt, j);
+                }
+                fireTableDataChanged();
             }
         }
     }
@@ -91,20 +95,29 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         setContainer(container);
     }
 
+    /**
+     * Updates table header
+     */
     private void updateAttributes() {
         if (container != null && table != null) {
             JTableHeader th = table.getTableHeader();
             TableColumnModel tcm = th.getColumnModel();
             TableColumn tc;
             int index;
+            int numAdded = 0;
             for (AttributeDraft attr : container.getAttributes()) {
                 index = attr.getIndex();
                 if (index < tcm.getColumnCount()) {
                     tc = tcm.getColumn(attr.getIndex());
-                    tc.setHeaderValue(attr.getName());
                 } else {
-                    throw new RuntimeException("requested column does not exist " + index);
+                    tc = new TableColumn(index);
+                    tcm.addColumn(tc);
+                    numAdded++;
                 }
+                tc.setHeaderValue(attr.getName());
+            }
+            if (numAdded > 0) {
+                fireTableStructureChanged();
             }
             th.repaint();
         }
