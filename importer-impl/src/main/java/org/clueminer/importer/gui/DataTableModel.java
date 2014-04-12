@@ -1,6 +1,7 @@
 package org.clueminer.importer.gui;
 
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
@@ -57,12 +58,17 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         return container;
     }
 
-    public void setContainer(ContainerLoader container) {
-        this.container = container;
-        updateAttributes();
-        updateData();
-        fireTableStructureChanged();
-        table.repaint();
+    public void setContainer(final ContainerLoader loader) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                container = loader;
+                updateAttributes();
+                updateData();
+                fireTableStructureChanged();
+                table.repaint();
+            }
+        });
     }
 
     @Override
