@@ -62,6 +62,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         updateAttributes();
         updateData();
         fireTableStructureChanged();
+        table.repaint();
     }
 
     @Override
@@ -109,8 +110,6 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                 tc.setHeaderValue(attr.getName());
                 System.out.println("setting header: " + attr.getName());
             }
-            th.validate();
-            th.revalidate();
             th.repaint();
         }
     }
