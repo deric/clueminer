@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.EventListenerList;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -11,6 +12,7 @@ import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.LongTaskErrorHandler;
 import org.clueminer.longtask.LongTaskExecutor;
 import org.clueminer.longtask.spi.LongTask;
+import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
@@ -31,6 +33,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     private static final Logger logger = Logger.getLogger(AbstractImporter.class.getName());
     private final LongTaskErrorHandler errorHandler;
     private final LongTaskExecutor executor;
+    protected final transient EventListenerList importListeners = new EventListenerList();
 
     public AbstractImporter() {
         errorHandler = new LongTaskErrorHandler() {
@@ -108,4 +111,19 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
         }
     }
 
+    @Override
+    public void addAnalysisListener(AnalysisListener listener) {
+        importListeners.add(AnalysisListener.class, listener);
+    }
+
+    @Override
+    public void removeListener(AnalysisListener listener) {
+        importListeners.remove(AnalysisListener.class, listener);
+    }
+
+    protected void fireAnalysisFinished() {
+        for (AnalysisListener im : importListeners.getListeners(AnalysisListener.class)) {
+            im.analysisFinished(container);
+        }
+    }
 }

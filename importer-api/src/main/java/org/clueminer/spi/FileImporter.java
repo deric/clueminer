@@ -70,4 +70,19 @@ public interface FileImporter extends Importer {
      * Reload import (with new importer settings)
      */
     void reload();
+
+    /**
+     * Add listener to events invoked by importer (pre-loading data finished
+     * etc.)
+     *
+     * @param listener
+     */
+    void addAnalysisListener(AnalysisListener listener);
+
+    /**
+     * Remove listener
+     *
+     * @param listener
+     */
+    void removeListener(AnalysisListener listener);
 }

@@ -76,7 +76,8 @@ public class ReportPanel extends javax.swing.JPanel {
     private ImporterUI importerUI;
     private GridBagConstraints gbc;
     private ColumnsPreview colPreviewPane;
-    private DataTable dataTableModel;
+    private DataTableModel dataTableModel;
+    private static final Logger logger = Logger.getLogger(Report.class.getName());
 
     /**
      * Creates new form ReportPanel
@@ -173,7 +174,8 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     private void initImporters() {
-        dataTableModel = new DataTable();
+        dataTableModel = new DataTableModel();
+        dataTable.setModel(dataTableModel);
         importerPanel.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 20, 0, 20);
@@ -216,7 +218,12 @@ public class ReportPanel extends javax.swing.JPanel {
             importerUI.removeListener(colPreviewPane);
             importerPanel.removeAll();
         }
+        if (fileImporter != null) {
+            fileImporter.removeListener(dataTableModel);
+        }
         fileImporter = importer;
+        fileImporter.addAnalysisListener(dataTableModel);
+        logger.log(Level.INFO, "new file importer: {0}", fileImporter.getName());
         if (controller != null) {
             importerUI = controller.getUI(importer);
             System.out.println("importer UI: " + importerUI);
@@ -232,9 +239,8 @@ public class ReportPanel extends javax.swing.JPanel {
                 importerPanel.repaint();
             }
         } else {
-            Logger.getLogger(ReportPanel.class.getName()).log(Level.SEVERE, "no controller found");
+            logger.log(Level.SEVERE, "no controller found");
         }
-        dataTableModel.setContainer(fileImporter.getContainer());
         dataTableModel.fireTableDataChanged();
     }
 
@@ -462,7 +468,7 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGap(0, 84, Short.MAX_VALUE)
         );
 
-        dataTable.setModel(new DataTable());
+        dataTable.setModel(new DataTableModel());
         jScrollPane2.setViewportView(dataTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

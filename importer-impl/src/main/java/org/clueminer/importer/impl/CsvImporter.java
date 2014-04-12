@@ -94,6 +94,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
 
             importData(lineReader);
+            fireAnalysisFinished();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

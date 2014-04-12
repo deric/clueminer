@@ -4,16 +4,17 @@ import javax.swing.table.AbstractTableModel;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
+import org.clueminer.spi.AnalysisListener;
 
 /**
  *
  * @author Tomas Barton
  */
-public class DataTable extends AbstractTableModel {
+public class DataTableModel extends AbstractTableModel implements AnalysisListener {
 
     private ContainerLoader container;
 
-    public DataTable() {
+    public DataTableModel() {
 
     }
 
@@ -36,7 +37,12 @@ public class DataTable extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (container != null) {
-            return container.getInstance(rowIndex).getValue(rowIndex);
+            if (rowIndex < container.getInstanceCount()) {
+                InstanceDraft draft = container.getInstance(rowIndex);
+                if (rowIndex < draft.size()) {
+                    return draft.getValue(rowIndex);
+                }
+            }
         }
         return null;
     }
@@ -47,6 +53,8 @@ public class DataTable extends AbstractTableModel {
 
     public void setContainer(ContainerLoader container) {
         this.container = container;
+        System.out.println("got new container: " + container);
+        System.out.println("attr: " + container.getAttributeCount() + " lines: " + container.getInstanceCount());
         updateData();
     }
 
@@ -65,7 +73,13 @@ public class DataTable extends AbstractTableModel {
                 }
                 j++;
             }
+            fireTableStructureChanged();
         }
+    }
+
+    @Override
+    public void analysisFinished(ContainerLoader container) {
+        setContainer(container);
     }
 
 }
