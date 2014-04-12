@@ -290,7 +290,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
                 }
 
                 sourceLabel.setText(source);
-                lbNumLines.setText(String.valueOf(container.getLoader().getNumberOfLines()));
+                lbNumLines.setText(String.valueOf(container.getLoader().getInstanceCount()));
                 lbAttr.setText(String.valueOf(container.getLoader().getAttributeCount()));
             }
         });

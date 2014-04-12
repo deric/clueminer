@@ -225,6 +225,11 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         setSource(file.getAbsolutePath());
     }
 
+    /**
+     * remove this? we have number of instances
+     *
+     * @param count
+     */
     @Override
     public void setNumberOfLines(int count) {
         this.linesCnt = count;
