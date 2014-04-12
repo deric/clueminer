@@ -1,6 +1,7 @@
 package org.clueminer.importer.gui;
 
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -44,7 +45,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         if (container != null) {
             if (rowIndex < container.getInstanceCount()) {
                 InstanceDraft draft = container.getInstance(rowIndex);
-                if (rowIndex < draft.size()) {
+                if (columnIndex < draft.size()) {
                     return draft.getValue(columnIndex);
                 }
             }
@@ -58,10 +59,9 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
 
     public void setContainer(ContainerLoader container) {
         this.container = container;
-        System.out.println("got new container: " + container);
-        System.out.println("attr: " + container.getAttributeCount() + " lines: " + container.getInstanceCount());
         updateAttributes();
         updateData();
+        fireTableStructureChanged();
     }
 
     @Override
@@ -73,20 +73,14 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
     private void updateData() {
         if (container != null) {
             int j = 0;
-            int prevCnt = getRowCount();
             for (InstanceDraft draft : container.getInstances()) {
                 for (int i = 0; i < draft.size(); i++) {
                     setValueAt(draft.getValue(i), j, i);
                 }
+                fireTableChanged(new TableModelEvent(this, j));
                 j++;
             }
-            if (j > 0) {
-                if (prevCnt > 0) {
-                    fireTableRowsUpdated(0, prevCnt);
-                    fireTableRowsInserted(prevCnt, j);
-                }
-                fireTableDataChanged();
-            }
+            fireTableDataChanged();
         }
     }
 
@@ -104,7 +98,6 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
             TableColumnModel tcm = th.getColumnModel();
             TableColumn tc;
             int index;
-            int numAdded = 0;
             for (AttributeDraft attr : container.getAttributes()) {
                 index = attr.getIndex();
                 if (index < tcm.getColumnCount()) {
@@ -112,12 +105,9 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                 } else {
                     tc = new TableColumn(index);
                     tcm.addColumn(tc);
-                    numAdded++;
                 }
                 tc.setHeaderValue(attr.getName());
-            }
-            if (numAdded > 0) {
-                fireTableStructureChanged();
+                System.out.println("setting header: " + attr.getName());
             }
             th.repaint();
         }
