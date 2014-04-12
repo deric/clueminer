@@ -1,6 +1,10 @@
 package org.clueminer.importer.gui;
 
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -13,6 +17,7 @@ import org.clueminer.spi.AnalysisListener;
 public class DataTableModel extends AbstractTableModel implements AnalysisListener {
 
     private ContainerLoader container;
+    private JTable table;
 
     public DataTableModel() {
 
@@ -56,6 +61,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
         System.out.println("got new container: " + container);
         System.out.println("attr: " + container.getAttributeCount() + " lines: " + container.getInstanceCount());
         updateData();
+        updateAttributes();
     }
 
     @Override
@@ -73,13 +79,44 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                 }
                 j++;
             }
-            fireTableStructureChanged();
+            if (j > 0) {
+                fireTableStructureChanged();
+                fireTableRowsInserted(0, j);
+            }
         }
     }
 
     @Override
     public void analysisFinished(ContainerLoader container) {
         setContainer(container);
+    }
+
+    private void updateAttributes() {
+        if (container != null && table != null) {
+            JTableHeader th = table.getTableHeader();
+            TableColumnModel tcm = th.getColumnModel();
+            TableColumn tc;
+            int index;
+            for (AttributeDraft attr : container.getAttributes()) {
+                index = attr.getIndex();
+                if (index < tcm.getColumnCount()) {
+                    tc = tcm.getColumn(attr.getIndex());
+                    tc.setHeaderValue(attr.getName());
+                } else {
+                    throw new RuntimeException("requested column does not exist " + index);
+                }
+            }
+            th.repaint();
+        }
+    }
+
+    /**
+     * We need reference to JTable in order to work with table header
+     *
+     * @param table
+     */
+    public void setTable(JTable table) {
+        this.table = table;
     }
 
 }

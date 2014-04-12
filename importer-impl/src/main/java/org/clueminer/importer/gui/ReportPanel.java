@@ -36,6 +36,7 @@ import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorUI;
+import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.spi.ImporterUI;
 import org.netbeans.swing.outline.DefaultOutlineModel;
@@ -52,7 +53,7 @@ import org.openide.util.NbPreferences;
  *
  * @author deric
  */
-public class ReportPanel extends javax.swing.JPanel {
+public class ReportPanel extends javax.swing.JPanel implements AnalysisListener {
 
     private static final long serialVersionUID = 1692175812146977202L;
     //Preferences
@@ -175,6 +176,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     private void initImporters() {
         dataTableModel = new DataTableModel();
+        dataTableModel.setTable(dataTable);
         dataTable.setModel(dataTableModel);
         importerPanel.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -220,9 +222,11 @@ public class ReportPanel extends javax.swing.JPanel {
         }
         if (fileImporter != null) {
             fileImporter.removeListener(dataTableModel);
+            fileImporter.removeListener(this);
         }
         fileImporter = importer;
         fileImporter.addAnalysisListener(dataTableModel);
+        fileImporter.addAnalysisListener(this);
         logger.log(Level.INFO, "new file importer: {0}", fileImporter.getName());
         if (controller != null) {
             importerUI = controller.getUI(importer);
@@ -566,6 +570,11 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane tab2ScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void analysisFinished(ContainerLoader container) {
+        fillStats((Container) container);
+    }
 
     private class IssueTreeModel implements TreeModel {
 
