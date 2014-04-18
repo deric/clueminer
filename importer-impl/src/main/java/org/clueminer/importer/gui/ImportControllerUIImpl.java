@@ -2,42 +2,26 @@ package org.clueminer.importer.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
-import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.Report;
+import org.clueminer.importer.ImportTask;
+import org.clueminer.importer.impl.ImportTaskImpl;
 import org.clueminer.longtask.LongTaskErrorHandler;
 import org.clueminer.longtask.LongTaskExecutor;
-import org.clueminer.longtask.spi.LongTask;
-import org.clueminer.processor.spi.Processor;
-import org.clueminer.processor.spi.ProcessorUI;
 import org.clueminer.project.api.MostRecentFiles;
-import org.clueminer.project.api.ProjectController;
-import org.clueminer.project.api.ProjectControllerUI;
-import org.clueminer.project.api.Workspace;
 import org.clueminer.spi.FileImporter;
-import org.netbeans.validation.api.ui.swing.ValidationPanel;
-import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -70,173 +54,26 @@ public class ImportControllerUIImpl implements ImportControllerUI {
     }
 
     @Override
-    public void importFile(FileObject fileObject) {
+    public ImportTask importFile(FileObject fileObject) {
         try {
             final FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "ImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
-                return;
+                return null;
             }
 
             //MRU
             MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
             mostRecentFiles.addFile(fileObject.getPath());
 
-            //this should be delegated to importer dialog
-/*
-             ImporterUI ui = controller.getUI(importer);
-             if (ui != null) {
-             String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
-             JPanel panel = ui.getPanel();
-             ui.setup(importer);
-
-             final DialogDescriptor dd = new DialogDescriptor(panel, title);
-             if (panel instanceof ValidationPanel) {
-             ValidationPanel vp = (ValidationPanel) panel;
-             vp.addChangeListener(new ChangeListener() {
-             @Override
-             public void stateChanged(ChangeEvent e) {
-             dd.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-             }
-             });
-             }
-
-             Object result = DialogDisplayer.getDefault().notify(dd);
-             if (!result.equals(NotifyDescriptor.OK_OPTION)) {
-             ui.unsetup(false);
-             return;
-             }
-             ui.unsetup(true);
-             }
-             */
-            LongTask task = null;
-            if (importer instanceof LongTask) {
-                task = (LongTask) importer;
-            }
-
             //Execute task
             fileObject = getArchivedFile(fileObject);
-            final String containerSource = fileObject.getNameExt();
-            final InputStream stream = fileObject.getInputStream();
-            String taskName = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUI.taskName", containerSource);
-            executor.execute(task, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Container container = controller.importFile(stream, importer);
-                        if (container != null) {
-                            container.setSource(containerSource);
-                            finishImport(container);
-                        }
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            }, taskName, errorHandler);
-            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                try {
-                    fileObject.delete();
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
+            return new ImportTaskImpl(importer, fileObject, controller);
         } catch (MissingResourceException ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
         }
-    }
-
-    private void finishImport(Container container) {
-        if (container.verify()) {
-            Report report = container.getReport();
-
-            //Report panel
-            ReportPanel reportPanel = new ReportPanel();
-            reportPanel.setData(report, container);
-            DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ImportControllerUIImpl.class, "ReportPanel.title"));
-            if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                reportPanel.destroy();
-                return;
-            }
-            reportPanel.destroy();
-            final Processor processor = reportPanel.getProcessor();
-
-            //Project
-            Workspace workspace = null;
-            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
-            if (pc.getCurrentProject() == null) {
-                pcui.newProject();
-                workspace = pc.getCurrentWorkspace();
-            }
-
-            //Process
-            final ProcessorUI pui = getProcessorUI(processor);
-            final ValidResult validResult = new ValidResult();
-            if (pui != null) {
-
-                try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        @Override
-                        public void run() {
-                            String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.processor.ui.dialog.title");
-                            JPanel panel = pui.getPanel();
-                            pui.setup(processor);
-                            final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
-                            if (panel instanceof ValidationPanel) {
-                                ValidationPanel vp = (ValidationPanel) panel;
-                                vp.addChangeListener(new ChangeListener() {
-                                    @Override
-                                    public void stateChanged(ChangeEvent e) {
-                                        dd2.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-                                    }
-                                });
-                                dd2.setValid(!vp.isFatalProblem());
-                            }
-                            Object result = DialogDisplayer.getDefault().notify(dd2);
-                            if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-                                validResult.setResult(false);
-                            } else {
-                                pui.unsetup(); //true
-                                validResult.setResult(true);
-                            }
-                        }
-                    });
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
-                } catch (InvocationTargetException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-
-            }
-            if (validResult.isResult()) {
-                controller.process(container, processor, workspace);
-
-                //StatusLine notify
-                String source = container.getSource();
-                if (source.isEmpty()) {
-                    source = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.status.importSuccess.default");
-                }
-                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.status.importSuccess", source));
-            }
-        } else {
-            NotifyUtil.error("Error", "Bad container", false);
-        }
-    }
-
-    private static class ValidResult {
-
-        private boolean result = true;
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-
-        public boolean isResult() {
-            return result;
-        }
+        return null;
     }
 
     private FileObject getArchivedFile(FileObject fileObject) {
@@ -294,27 +131,18 @@ public class ImportControllerUIImpl implements ImportControllerUI {
     }
 
     @Override
-    public void importStream(InputStream stream, String importerName) {
+    public ImportTask importStream(InputStream stream, String importerName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void importFile(Reader reader, String importerName) {
+    public ImportTask importFile(Reader reader, String importerName) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public ImportController getImportController() {
         return controller;
-    }
-
-    private ProcessorUI getProcessorUI(Processor processor) {
-        for (ProcessorUI pui : Lookup.getDefault().lookupAll(ProcessorUI.class)) {
-            if (pui.isUIFoProcessor(processor)) {
-                return pui;
-            }
-        }
-        return null;
     }
 
     /**

@@ -3,11 +3,15 @@ package org.clueminer.mlearn;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
+import org.clueminer.importer.ImportTask;
 import org.clueminer.importer.gui.ImportControllerUIImpl;
 import org.clueminer.importer.impl.ImportControllerImpl;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectImpl;
@@ -33,16 +37,16 @@ import org.openide.windows.WindowManager;
 public class MLearnFileOpener implements OpenFileImpl, TaskListener {
 
     private static Project project;
-    private MLearnImporter importer;
+    private ImportTask importTask;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ImportController controller;
     private final ImportControllerUI controllerUI;
+    private static final Logger logger = Logger.getLogger(MLearnFileOpener.class.getName());
 
     public MLearnFileOpener() {
         controller = new ImportControllerImpl();
         controllerUI = new ImportControllerUIImpl(controller);
     }
-
 
     /**
      * Return true is file seems to be in format which is supported by this
@@ -61,10 +65,14 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
-                //FileImporter im = controller.getFileImporter(f);
-
-                //  controller.importFile(f);
-                controllerUI.importFile(fileObject);
+                importTask = controllerUI.importFile(fileObject);
+                if (importTask != null) {
+                    final RequestProcessor.Task task = RP.create(importTask);
+                    task.addTaskListener(this);
+                    task.schedule(0);
+                } else {
+                    logger.log(Level.SEVERE, "failed to create an import task");
+                }
 
                 //ImporterUI ui = controller.getUI(im);
                 //importer = new MLearnImporter(f);
@@ -105,26 +113,29 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                project.add(importer.getDataset());
-                String filename = importer.getFile().getName();
-                importer.getDataset().setName(filename);
+                ContainerLoader container = importTask.getContainer();
+                if (container != null) {
+                    ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    project.add(container.getDataset());
+                    String filename = importTask.getContainer().getSource();
+                    container.getDataset().setName(filename);
 
-                DendrogramTopComponent tc = new DendrogramTopComponent();
+                    DendrogramTopComponent tc = new DendrogramTopComponent();
 
-                tc.setDataset(importer.getDataset());
-                //tc.setProject(project);
-                tc.setDisplayName(getTitle(filename));
-                tc.open();
-                tc.requestActive();
+                    tc.setDataset(container.getDataset());
+                    //tc.setProject(project);
+                    tc.setDisplayName(getTitle(filename));
+                    tc.open();
+                    tc.requestActive();
 
-                pc.openProject(project);
-                Workspace workspace = pc.getCurrentWorkspace();
-                if (workspace != null) {
-                    workspace.add(importer.getDataset());  //add plate to project's lookup
+                    pc.openProject(project);
+                    Workspace workspace = pc.getCurrentWorkspace();
+                    if (workspace != null) {
+                        workspace.add(container.getDataset());  //add plate to project's lookup
+                    }
+                    //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
+                    //     preprocess.start();
                 }
-                //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
-                //     preprocess.start();
             }
         });
 

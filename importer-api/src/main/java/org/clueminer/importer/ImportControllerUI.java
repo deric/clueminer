@@ -10,11 +10,11 @@ import org.openide.filesystems.FileObject;
  */
 public interface ImportControllerUI {
 
-    public void importFile(FileObject fileObject);
+    public ImportTask importFile(FileObject fileObject);
 
-    public void importStream(InputStream stream, String importerName);
+    public ImportTask importStream(InputStream stream, String importerName);
 
-    public void importFile(Reader reader, String importerName);
+    public ImportTask importFile(Reader reader, String importerName);
 
     public ImportController getImportController();
 }
