@@ -58,7 +58,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         //create real instances
         int i = 0;
         for (InstanceDraft instd : container.getInstances()) {
-            inst = dataset.builder().create();
+            //TODO allocate only numerical attributes
+            inst = dataset.builder().create(dataset.attributeCount());
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 //right now we support only double attributes
                 try {
