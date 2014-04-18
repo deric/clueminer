@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
@@ -14,19 +16,17 @@ import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
-import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.Workspace;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
+import org.clueminer.spi.ImportListener;
+import org.clueminer.spi.Importer;
+import org.clueminer.spi.ImporterUI;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Task;
-import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
 
 /**
@@ -34,7 +34,7 @@ import org.openide.windows.WindowManager;
  * @author Tomas Barton
  */
 @org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
-public class MLearnFileOpener implements OpenFileImpl, TaskListener {
+public class MLearnFileOpener implements OpenFileImpl, ImportListener {
 
     private static Project project;
     private ImportTask importTask;
@@ -57,18 +57,21 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
      * @throws java.io.FileNotFoundException
      */
     protected boolean isFileSupported(File f) throws FileNotFoundException, IOException {
-        return controller.isFileSupported(f);
+        return controller.isFileSupported(f) || controller.isAccepting(f);
     }
 
     @Override
     public boolean open(FileObject fileObject) {
+        //ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+        //importer.setProgressHandle(ph);
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
                 importTask = controllerUI.importFile(fileObject);
+                importTask.addListener(this);
                 if (importTask != null) {
                     final RequestProcessor.Task task = RP.create(importTask);
-                    task.addTaskListener(this);
+                    //task.addTaskListener(this);
                     task.schedule(0);
                 } else {
                     logger.log(Level.SEVERE, "failed to create an import task");
@@ -109,46 +112,48 @@ public class MLearnFileOpener implements OpenFileImpl, TaskListener {
     }
 
     @Override
-    public void taskFinished(Task task) {
+    public void importerChanged(Importer importer, ImporterUI importerUI) {
+        //
+    }
+
+    @Override
+    public void dataLoaded() {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
                 ContainerLoader container = importTask.getContainer();
                 if (container != null) {
                     ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                    project.add(container.getDataset());
-                    String filename = importTask.getContainer().getSource();
-                    container.getDataset().setName(filename);
+                    Dataset<? extends Instance> dataset = container.getDataset();
+                    if (dataset == null) {
+                        logger.log(Level.SEVERE, "loading dataset failed");
+                    } else {
+                        System.out.println("dataset size:" + dataset.size());
+                        Workspace workspace = pc.getCurrentWorkspace();
+                        if (workspace != null) {
+                            workspace.add(dataset);  //add plate to project's lookup
+                        }
 
-                    DendrogramTopComponent tc = new DendrogramTopComponent();
+                        project = pc.getCurrentProject();
+                        String filename = importTask.getContainer().getSource();
+                        dataset.setName(filename);
+                        project.getLookup().lookup(ProjectInformationImpl.class).setFile(new File(filename));
+                        project.add(dataset);
+                        pc.openProject(project);
 
-                    tc.setDataset(container.getDataset());
-                    //tc.setProject(project);
-                    tc.setDisplayName(getTitle(filename));
-                    tc.open();
-                    tc.requestActive();
+                        DendrogramTopComponent tc = new DendrogramTopComponent();
 
-                    pc.openProject(project);
-                    Workspace workspace = pc.getCurrentWorkspace();
-                    if (workspace != null) {
-                        workspace.add(container.getDataset());  //add plate to project's lookup
+                        tc.setDataset(container.getDataset());
+                        //tc.setProject(project);
+                        tc.setDisplayName(getTitle(filename));
+                        tc.open();
+                        tc.requestActive();
+
+                        //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
+                        //     preprocess.start();
                     }
-                    //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
-                    //     preprocess.start();
                 }
             }
         });
-
-    }
-
-    protected void openDataFile(MLearnImporter importer) {
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
-        importer.setProgressHandle(ph);
-        //Project instance
-        project = new ProjectImpl();
-        project.getLookup().lookup(ProjectInformationImpl.class).setFile(importer.getFile());
-        final RequestProcessor.Task task = RP.create(importer);
-        task.addTaskListener(this);
-        task.schedule(0);
     }
 }

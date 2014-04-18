@@ -62,7 +62,7 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
     private static final long serialVersionUID = -7289618311057427489L;
     private static DendrogramTopComponent instance;
     private static final String PREFERRED_ID = "DendrogramTopComponent";
-    private DendrogramComponent dendrogram;
+    private final DendrogramComponent dendrogram;
     private Project project;
     private Lookup.Result<Dataset> result = null;
     private final InstanceContent content = new InstanceContent();
@@ -97,17 +97,17 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
 
             @Override
             public void unselect(Workspace workspace) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                logger.log(Level.FINE, "dendrogra unselected");
             }
 
             @Override
             public void close(Workspace workspace) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                logger.log(Level.FINE, "dendrogra closed");
             }
 
             @Override
             public void disable() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                logger.log(Level.FINE, "dendrogra disabled");
             }
 
             @Override

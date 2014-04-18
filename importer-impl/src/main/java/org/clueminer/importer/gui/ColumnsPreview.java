@@ -79,4 +79,9 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         this.repaint();
     }
 
+    @Override
+    public void dataLoaded() {
+        //
+    }
+
 }

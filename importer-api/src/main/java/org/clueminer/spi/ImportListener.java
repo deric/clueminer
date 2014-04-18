@@ -16,4 +16,6 @@ public interface ImportListener extends EventListener {
      */
     void importerChanged(Importer importer, ImporterUI importerUI);
 
+    void dataLoaded();
+
 }

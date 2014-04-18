@@ -20,6 +20,8 @@ import org.clueminer.spi.FileImporter;
  */
 public class ImportToolbar extends JPanel implements ActionListener {
 
+    private static final long serialVersionUID = 239526173161101672L;
+
     private JToolBar toolbar;
     private JComboBox comboSpline;
     private JButton btnClear;

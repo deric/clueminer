@@ -8,12 +8,15 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
+import org.clueminer.io.importer.api.ParsingError;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
@@ -53,6 +56,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private int prevColCnt = -1;
     private AttributeDraft[] attributes;
     private int numInstances;
+    private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
 
     public CsvImporter() {
         separator = ',';
@@ -181,21 +185,23 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         InstanceDraft draft = new InstanceDraftImpl(container, attributes.length);
         int i = 0;
         AttributeRole role;
+        Object castedVal;
         for (String value : columns) {
             role = attributes[i].getRole();
             if (role == BasicAttrRole.ID) {
                 draft.setId(value);
             } else if (role == BasicAttrRole.INPUT) {
-                /* try {                      attributes[i].getParser().parse(value);
-                 } catch (ParsingError ex) {
-                 report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                 "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
-                 }*/
+                try {
+                    castedVal = attributes[i].getParser().parse(value);
+                    draft.setValue(i, castedVal);
+                } catch (ParsingError ex) {
+                    report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
+                            "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                }
+            } else {
+                logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
+                draft.setValue(i, value);
             }
-
-            // switch (attributes[i].getRole()) {
-            //}
-            draft.setValue(i, value);
             i++;
         }
         if (!container.hasPrimaryKey()) {
@@ -273,7 +279,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -287,7 +293,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {

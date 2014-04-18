@@ -1,6 +1,9 @@
 package org.clueminer.importer.impl;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.dataset.api.AttributeRole;
+import org.clueminer.importer.parser.DoubleParser;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.AttributeParser;
 import org.clueminer.io.importer.api.AttributeParserFactory;
@@ -124,13 +127,15 @@ public class AttributeDraftImpl implements AttributeDraft {
         AttributeParserFactory factory = AttributeParserFactory.getInstance();
         String typeName = type.toString();
         String parserName = typeName.substring(typeName.lastIndexOf('.') + 1) + "Parser";
-        System.out.println("looking for parser: " + parserName);
+        //System.out.println("looking for parser: " + parserName);
         if (factory.hasProvider(parserName)) {
             return factory.getProvider(parserName);
         }
-
-        throw new RuntimeException("attribute type " + typeName
-                + " is not supproted yet. parser: '" + parserName + "' was not found");
+        /*  Logger.getLogger(AttributeDraftImpl.class.getName()).log(Level.SEVERE,                "attribute type {0} is not supproted yet. parser: ''{1}'' was not found",
+                new Object[]{typeName, parserName});*/
+        return new DoubleParser();
+        /*throw new RuntimeException("attribute type " + typeName
+         + " is not supproted yet. parser: '" + parserName + "' was not found");*/
     }
 
 }
