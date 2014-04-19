@@ -8,7 +8,6 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
@@ -196,10 +195,10 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                     draft.setValue(i, castedVal);
                 } catch (ParsingError ex) {
                     report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                            "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                                                                  "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                 }
             } else {
-                logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
+                //logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
                 draft.setValue(i, value);
             }
             i++;
@@ -279,7 +278,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -293,7 +292,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {

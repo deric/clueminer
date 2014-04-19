@@ -2,6 +2,7 @@ package org.clueminer.processor;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeType;
@@ -57,18 +58,27 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Instance<? extends Double> inst;
         //create real instances
         int i = 0;
+        Attribute attr;
         for (InstanceDraft instd : container.getInstances()) {
             //TODO allocate only numerical attributes
             inst = dataset.builder().create(dataset.attributeCount());
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 //right now we support only double attributes
                 try {
-                    if (dataset.getAttribute(j).isNumerical()) {
-                        System.out.println("val: " + instd.getValue(j) + " class: " + instd.getValue(j).getClass().getName());
-                        inst.set(j, (Double) instd.getValue(j));
-                    } else {
-                        logger.log(Level.FINE, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
+                    attr = dataset.getAttribute(j);
+                    if (attr.getRole().equals(BasicAttrRole.INPUT)) {
+                        if (dataset.getAttribute(j).isNumerical()) {
+                            System.out.println("val: " + instd.getValue(j) + " class: " + instd.getValue(j).getClass().getName());
+                            inst.set(j, (Double) instd.getValue(j));
+                        } else {
+                            logger.log(Level.FINE, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
+                        }
+                    } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
+                        inst.setClassValue(instd.getValue(j));
+                    } else if (attr.getRole().equals(BasicAttrRole.ID)) {
+                        inst.setId((String) instd.getValue(j));
                     }
+
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getValue(j), e.toString()});
                 }

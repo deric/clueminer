@@ -124,28 +124,27 @@ public class AttributeProp extends javax.swing.JPanel {
     private void tfNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNameActionPerformed
         attr.setName(tfName.getName());
         //TODO: call reload
-        //importerUI.fireImporterChanged();
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_tfNameActionPerformed
 
     private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
         Object item = cbType.getSelectedItem();
         attr.setType(item);
 
-        //importerUI.fireImporterChanged();
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbTypeActionPerformed
 
     private void cbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRoleActionPerformed
         String strRole = (String) cbRole.getSelectedItem();
         AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
         attr.setRole(role);
-        //importerUI.fireImporterChanged();
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_cbRoleActionPerformed
 
     private void chckImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckImportActionPerformed
         attr.setSkipped(chckImport.isSelected());
-        //importerUI.fireImporterChanged();
+        importerUI.fireImporterChanged();
     }//GEN-LAST:event_chckImportActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbRole;
