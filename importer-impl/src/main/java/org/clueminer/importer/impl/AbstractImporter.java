@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.LongTaskErrorHandler;
 import org.clueminer.longtask.LongTaskExecutor;
@@ -27,7 +26,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
 
     protected File file;
     protected Reader reader;
-    protected ContainerLoader container;
+    protected Container container;
     protected Report report;
     protected ProgressTicket progressTicket;
     private static final Logger logger = Logger.getLogger(AbstractImporter.class.getName());
@@ -65,7 +64,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public ContainerLoader getContainer() {
+    public Container getContainer() {
         return container;
     }
 

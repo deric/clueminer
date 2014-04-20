@@ -36,7 +36,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         this.importerUI = importerUI;
         System.out.println("imporer changed: " + importer.getClass().getName());
-        ContainerLoader loader = importer.getContainer();
+        ContainerLoader loader = importer.getContainer().getLoader();
         if (loader != null) {
             Iterable<AttributeDraft> attrs = loader.getAttributes();
             System.out.println("detected " + loader.getAttributeCount() + " attributes");

@@ -1,6 +1,6 @@
 package org.clueminer.spi;
 
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
 
 /**
@@ -29,7 +29,7 @@ public interface Importer {
      * @return <code>true</code> if the import is successful or
      *         <code>false</code> if it has been canceled
      */
-    boolean execute(ContainerLoader loader);
+    boolean execute(Container loader);
 
     /**
      * Returns the import container. The container is the import "result", all
@@ -37,7 +37,7 @@ public interface Importer {
      *
      * @return the import container
      */
-    ContainerLoader getContainer();
+    Container getContainer();
 
     /**
      * Returns the import report, filled with logs and potential issues.

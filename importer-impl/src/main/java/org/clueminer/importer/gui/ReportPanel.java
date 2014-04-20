@@ -572,13 +572,13 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void analysisFinished(ContainerLoader container) {
-        fillStats((Container) container);
+    public void analysisFinished(Container container) {
+        setData(container.getReport(), container);
     }
 
     private class IssueTreeModel implements TreeModel {
 
-        private List<Issue> issues;
+        private final List<Issue> issues;
 
         public IssueTreeModel(List<Issue> issues) {
             this.issues = issues;

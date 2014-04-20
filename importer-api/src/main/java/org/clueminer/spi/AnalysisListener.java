@@ -1,7 +1,7 @@
 package org.clueminer.spi;
 
 import java.util.EventListener;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 
 /**
  *
@@ -14,5 +14,5 @@ public interface AnalysisListener extends EventListener {
      *
      * @param container
      */
-    void analysisFinished(ContainerLoader container);
+    void analysisFinished(Container container);
 }

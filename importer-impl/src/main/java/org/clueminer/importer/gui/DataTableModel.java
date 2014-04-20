@@ -8,6 +8,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.spi.AnalysisListener;
@@ -92,8 +93,8 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
     }
 
     @Override
-    public void analysisFinished(ContainerLoader container) {
-        setContainer(container);
+    public void analysisFinished(Container container) {
+        setContainer(container.getLoader());
     }
 
     /**

@@ -2,7 +2,7 @@ package org.clueminer.importer.impl;
 
 import java.io.IOException;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -94,11 +94,11 @@ public class CsvImporterTest {
      */
     @Test
     public void testExecute() throws IOException {
-        ContainerLoader container = new ImportContainerImpl();
+        Container container = new ImportContainerImpl();
         container.setFile(fixtures.irisData());
 
         subject.execute(container);
-        assertEquals(150, container.getNumberOfLines());
+        assertEquals(150, container.getLoader().getNumberOfLines());
     }
 
     /**

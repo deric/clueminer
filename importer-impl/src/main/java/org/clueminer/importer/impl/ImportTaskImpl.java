@@ -1,7 +1,5 @@
 package org.clueminer.importer.impl;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +49,7 @@ public class ImportTaskImpl implements ImportTask {
 
     @Override
     public ContainerLoader getContainer() {
-        return importer.getContainer();
+        return importer.getContainer().getLoader();
     }
 
     @Override

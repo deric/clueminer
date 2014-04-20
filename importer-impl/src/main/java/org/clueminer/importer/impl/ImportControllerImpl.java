@@ -110,7 +110,7 @@ public class ImportControllerImpl implements ImportController {
         importer.setReader(reader);
 
         try {
-            if (importer.execute(container.getLoader())) {
+            if (importer.execute(container)) {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());
                 }

@@ -13,6 +13,7 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.ParsingError;
@@ -56,6 +57,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private AttributeDraft[] attributes;
     private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
+    private ContainerLoader loader;
 
     public CsvImporter() {
         separator = ',';
@@ -82,11 +84,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     @Override
-    public boolean execute(ContainerLoader loader) {
-        this.container = loader;
+    public boolean execute(Container container) {
+        this.container = container;
+        this.loader = container.getLoader();
         this.report = new Report();
         LineNumberReader lineReader;
-        this.file = container.getFile();
+        this.file = container.getLoader().getFile();
         try {
             if (reader != null) {
                 lineReader = ImportUtils.getTextReader(reader);
@@ -125,7 +128,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
-        int numLines = container.getNumberOfLines();
+        int numLines = loader.getNumberOfLines();
         if (numLines > 0) {
             //if we know number of lines
             Progress.switchToDeterminate(progressTicket, numLines);
@@ -144,7 +147,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 count++;
             }
         }
-        container.setNumberOfLines(count);
+        loader.setNumberOfLines(count);
     }
 
     protected void lineRead(int num, String line) throws IOException {
@@ -154,7 +157,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         } else {
             if (prevColCnt != columns.length) {
                 prevColCnt = columns.length;
-                container.setAttributeCount(prevColCnt);
+                loader.setAttributeCount(prevColCnt);
             }
         }
 
@@ -173,15 +176,15 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         attributes = new AttributeDraft[columns.length];
         int i = 0;
         for (String attrName : columns) {
-            if (!container.hasAttribute(attrName)) {
-                attributes[i] = container.createAttribute(i, attrName);
+            if (!loader.hasAttribute(attrName)) {
+                attributes[i] = loader.createAttribute(i, attrName);
             }
             i++;
         }
     }
 
     private void addInstance(int num, String[] columns) {
-        InstanceDraft draft = new InstanceDraftImpl(container, attributes.length);
+        InstanceDraft draft = new InstanceDraftImpl(loader, attributes.length);
         int i = 0;
         AttributeRole role;
         Object castedVal;
@@ -203,10 +206,10 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
             i++;
         }
-        if (!container.hasPrimaryKey()) {
+        if (!loader.hasPrimaryKey()) {
             draft.setId(String.valueOf(numInstances));
         }
-        container.addInstance(draft, num);
+        loader.addInstance(draft, num);
         numInstances++;
     }
 
