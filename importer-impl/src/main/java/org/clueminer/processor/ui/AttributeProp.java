@@ -13,7 +13,7 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
-    private ImporterUI importerUI;
+    private final ImporterUI importerUI;
 
     /**
      * Creates new form AttributeProp
@@ -53,7 +53,7 @@ public class AttributeProp extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(AttributeProp.class, "AttributeProp.jLabel2.text")); // NOI18N
 
-        cbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "double", "int", "float", "long" }));
+        cbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "double", "int", "float", "long", "string" }));
         cbType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTypeActionPerformed(evt);

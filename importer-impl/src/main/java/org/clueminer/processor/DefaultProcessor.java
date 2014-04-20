@@ -51,8 +51,11 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         //set attributes
         for (AttributeDraft attrd : container.getAttributes()) {
-            Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
-            dataset.setAttribute(attrd.getIndex(), attr);
+            //create just input attributes
+            if (attrd.getRole().equals(BasicAttrRole.INPUT)) {
+                Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
+                dataset.setAttribute(attrd.getIndex(), attr);
+            }
         }
 
         Instance<? extends Double> inst;
@@ -68,7 +71,6 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                     attr = dataset.getAttribute(j);
                     if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                         if (dataset.getAttribute(j).isNumerical()) {
-                            System.out.println("val: " + instd.getValue(j) + " class: " + instd.getValue(j).getClass().getName());
                             inst.set(j, (Double) instd.getValue(j));
                         } else {
                             logger.log(Level.FINE, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});

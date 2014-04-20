@@ -6,6 +6,7 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.clueminer.importer.impl.AttributeDraftImpl;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.processor.ui.AttributeProp;
 import org.clueminer.spi.ImportListener;
@@ -36,26 +37,30 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         this.importerUI = importerUI;
         System.out.println("imporer changed: " + importer.getClass().getName());
-        ContainerLoader loader = importer.getContainer().getLoader();
-        if (loader != null) {
-            Iterable<AttributeDraft> attrs = loader.getAttributes();
-            System.out.println("detected " + loader.getAttributeCount() + " attributes");
-            if (numAttributes != loader.getAttributeCount()) {
-                numAttributes = loader.getAttributeCount();
-                this.removeAll();
-                int i = 0;
-                attributes = new AttributeDraft[numAttributes];
-                for (AttributeDraft atrd : attrs) {
-                    generateAttribute(i++, atrd);
-                }
-            }
-        } else {
-            //NotifyUtil.error("Error", "missing loader", false);
-            numAttributes = 5;
-            attributes = new AttributeDraft[numAttributes];
-            for (int i = 0; i < numAttributes; i++) {
-                generateAttribute(i, new AttributeDraftImpl("attr " + i));
+        Container container = importer.getContainer();
 
+        if (container != null) {
+            ContainerLoader loader = container.getLoader();
+            if (loader != null) {
+                Iterable<AttributeDraft> attrs = loader.getAttributes();
+                System.out.println("detected " + loader.getAttributeCount() + " attributes");
+                if (numAttributes != loader.getAttributeCount()) {
+                    numAttributes = loader.getAttributeCount();
+                    this.removeAll();
+                    int i = 0;
+                    attributes = new AttributeDraft[numAttributes];
+                    for (AttributeDraft atrd : attrs) {
+                        generateAttribute(i++, atrd);
+                    }
+                }
+            } else {
+                //NotifyUtil.error("Error", "missing loader", false);
+                numAttributes = 5;
+                attributes = new AttributeDraft[numAttributes];
+                for (int i = 0; i < numAttributes; i++) {
+                    generateAttribute(i, new AttributeDraftImpl("attr " + i));
+
+                }
             }
         }
     }
