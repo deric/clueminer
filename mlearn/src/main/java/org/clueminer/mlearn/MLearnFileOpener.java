@@ -41,6 +41,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ImportController controller;
     private final ImportControllerUI controllerUI;
+    private FileObject currentFileObj;
     private static final Logger logger = Logger.getLogger(MLearnFileOpener.class.getName());
 
     public MLearnFileOpener() {
@@ -67,6 +68,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
+                currentFileObj = fileObject;
                 importTask = controllerUI.importFile(fileObject);
                 importTask.addListener(this);
                 if (importTask != null) {
@@ -113,7 +115,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
 
     @Override
     public void importerChanged(Importer importer, ImporterUI importerUI) {
-        //
+        //not used
     }
 
     @Override

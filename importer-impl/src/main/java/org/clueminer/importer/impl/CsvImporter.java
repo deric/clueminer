@@ -202,6 +202,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 }
             } else {
                 //logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
+                System.out.println("setting " + i + ": " + value);
                 draft.setValue(i, value);
             }
             i++;

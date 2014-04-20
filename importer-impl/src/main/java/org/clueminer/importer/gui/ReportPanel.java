@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -30,7 +32,6 @@ import org.clueminer.gui.BusyUtils;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.Issue;
-import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
@@ -38,6 +39,8 @@ import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorUI;
 import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
+import org.clueminer.spi.ImportListener;
+import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
@@ -53,7 +56,7 @@ import org.openide.util.NbPreferences;
  *
  * @author deric
  */
-public class ReportPanel extends javax.swing.JPanel implements AnalysisListener {
+public class ReportPanel extends javax.swing.JPanel implements AnalysisListener, ImportListener {
 
     private static final long serialVersionUID = 1692175812146977202L;
     //Preferences
@@ -79,14 +82,15 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
     private ColumnsPreview colPreviewPane;
     private DataTableModel dataTableModel;
     private static final Logger logger = Logger.getLogger(Report.class.getName());
+    private File currentFile;
 
     /**
      * Creates new form ReportPanel
      */
     public ReportPanel() {
         fillingThreads = new ThreadGroup("Report Panel Issues");
-        //controller = Lookup.getDefault().lookup(ImportController.class);
-        controller = new ImportControllerImpl();
+        controller = Lookup.getDefault().lookup(ImportController.class);
+        //controller = new ImportControllerImpl();
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
@@ -118,7 +122,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
 
     public void setData(Report report, Container container) {
         this.container = container;
-
+        currentFile = container.getLoader().getFile();
         report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
         fillReport(report);
@@ -235,6 +239,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
                 JPanel panel = importerUI.getPanel();
                 importerUI.setup(importer);
                 importerUI.addListener(colPreviewPane);
+                importerUI.addListener(this);
                 importerUI.fireImporterChanged();
 
                 importerPanel.add(panel, gbc);
@@ -574,6 +579,35 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener 
     @Override
     public void analysisFinished(Container container) {
         setData(container.getReport(), container);
+    }
+
+    @Override
+    public void importerChanged(final Importer importer, ImporterUI importerUI) {
+        logger.log(Level.INFO, "importer changed");
+        if (currentFile != null) {
+            Thread thread = new Thread(fillingThreads, new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        logger.log(Level.INFO, "imporing file..");
+                        Container cont = controller.importFile(currentFile, (FileImporter) importer);
+                        if (cont != null) {
+                            cont.setSource(currentFile.getAbsolutePath());
+                        }
+                    } catch (FileNotFoundException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            });
+        } else {
+            logger.log(Level.INFO, "current file is null");
+        }
+    }
+
+    @Override
+    public void dataLoaded() {
+        logger.log(Level.INFO, "data loaded");
     }
 
     private class IssueTreeModel implements TreeModel {

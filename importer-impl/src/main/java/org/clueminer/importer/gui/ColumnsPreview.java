@@ -47,10 +47,9 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                 if (numAttributes != loader.getAttributeCount()) {
                     numAttributes = loader.getAttributeCount();
                     this.removeAll();
-                    int i = 0;
                     attributes = new AttributeDraft[numAttributes];
                     for (AttributeDraft atrd : attrs) {
-                        generateAttribute(i++, atrd);
+                        generateAttribute(atrd.getIndex(), atrd);
                     }
                 }
             } else {
