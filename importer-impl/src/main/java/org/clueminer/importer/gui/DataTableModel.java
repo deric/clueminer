@@ -115,7 +115,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                System.out.println("setting header: " + attr.getName());
+                System.out.println("setting header: " + attr.getName() + " type: " + attr.getType().toString());
             }
             th.repaint();
         }

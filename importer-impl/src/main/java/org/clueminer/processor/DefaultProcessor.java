@@ -78,8 +78,10 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                     } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
                         inst.setClassValue(instd.getValue(j));
                         inst.setId((String) instd.getValue(j));
+                        inst.setName((String) instd.getValue(j));
                     } else if (attr.getRole().equals(BasicAttrRole.ID)) {
                         inst.setId((String) instd.getValue(j));
+                        inst.setName((String) instd.getValue(j));
                     }
 
                 } catch (Exception e) {

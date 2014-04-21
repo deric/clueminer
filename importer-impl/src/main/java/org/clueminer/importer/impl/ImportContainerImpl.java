@@ -20,6 +20,8 @@ import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 
 /**
@@ -30,7 +32,7 @@ import org.openide.util.NbBundle;
 public class ImportContainerImpl implements Container, ContainerLoader {
 
     private String source;
-    private File file;
+    private FileObject file;
     protected static final int NULL_INDEX = -1;
 
     private final ObjectList<InstanceDraft> instanceList;
@@ -215,14 +217,19 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     }
 
     @Override
-    public File getFile() {
+    public FileObject getFile() {
         return file;
     }
 
     @Override
-    public void setFile(File file) {
+    public void setFile(FileObject file) {
         this.file = file;
-        setSource(file.getAbsolutePath());
+        setSource(file.getPath());
+    }
+
+    @Override
+    public void setFile(File source) {
+        file = FileUtil.toFileObject(source);
     }
 
     /**

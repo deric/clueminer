@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -47,6 +46,7 @@ import org.netbeans.swing.outline.Outline;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -72,7 +72,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     //Container
     private Container container;
     //UI
-    private ButtonGroup processorGroup = new ButtonGroup();
+    private final ButtonGroup processorGroup = new ButtonGroup();
     private Outline issuesOutline;
     protected LinkedHashMap<String, FileImporter> providers;
     private final ImportController controller;
@@ -81,8 +81,8 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     private GridBagConstraints gbc;
     private ColumnsPreview colPreviewPane;
     private DataTableModel dataTableModel;
-    private static final Logger logger = Logger.getLogger(Report.class.getName());
-    private File currentFile;
+    private static final Logger logger = Logger.getLogger(ReportPanel.class.getName());
+    private FileObject currentFile;
 
     /**
      * Creates new form ReportPanel
@@ -122,7 +122,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     public void setData(Report report, Container container) {
         this.container = container;
-        currentFile = container.getLoader().getFile();
+        //currentReader = container.getLoader().getLineReader();
         report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
         fillReport(report);
@@ -222,6 +222,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         if (importerUI != null) {
             importerUI.unsetup(false);
             importerUI.removeListener(colPreviewPane);
+            importerUI.removeListener(this);
             importerPanel.removeAll();
         }
         if (fileImporter != null) {
@@ -348,6 +349,10 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             }
         }
         return null;
+    }
+
+    public void setCurrentFile(FileObject currentFile) {
+        this.currentFile = currentFile;
     }
 
     /**
@@ -584,22 +589,26 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     @Override
     public void importerChanged(final Importer importer, ImporterUI importerUI) {
         logger.log(Level.INFO, "importer changed");
+        logger.log(Level.INFO, "source: {0}", importer.getContainer().getSource());
+        logger.log(Level.INFO, "current f: {0}", currentFile);
+        logger.log(Level.INFO, "file: {0}", importer.getContainer().getFile());
+        logger.log(Level.INFO, "f. loader: {0}", importer.getContainer().getLoader().getFile());
+        final FileImporter fi = (FileImporter) importer;
+        //currentReader = fi.getLineReader();
         if (currentFile != null) {
             Thread thread = new Thread(fillingThreads, new Runnable() {
                 @Override
                 public void run() {
-
                     try {
-                        logger.log(Level.INFO, "imporing file..");
-                        Container cont = controller.importFile(currentFile, (FileImporter) importer);
-                        if (cont != null) {
-                            cont.setSource(currentFile.getAbsolutePath());
-                        }
+                        logger.log(Level.INFO, "importing file..");
+                        Container cont = controller.importFile(currentFile.getInputStream(), fi);
+                        setData(cont.getReport(), cont);
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
                     }
                 }
             });
+            thread.start();
         } else {
             logger.log(Level.INFO, "current file is null");
         }

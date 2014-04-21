@@ -1,9 +1,9 @@
 package org.clueminer.io.importer.api;
 
-import java.io.File;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.filesystems.FileObject;
 
 /**
  * ContainerUnloader is responsible for transforming pre-loaded data into real
@@ -100,9 +100,9 @@ public interface ContainerLoader {
 
     Dataset<? extends Instance> getDataset();
 
-    void setFile(File file);
+    void setFile(FileObject file);
 
-    File getFile();
+    FileObject getFile();
 
     /**
      * Number of lines with data

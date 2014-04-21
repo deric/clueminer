@@ -1,6 +1,7 @@
 package org.clueminer.spi;
 
 import java.io.File;
+import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.Collection;
 import org.clueminer.types.FileType;
@@ -24,13 +25,15 @@ public interface FileImporter extends Importer {
      *
      * @return File
      */
-    File getFile();
+    FileObject getFile();
 
     /**
      * Sets File to process
      *
      * @param file
      */
+    void setFile(FileObject file);
+
     void setFile(File file);
 
     /**
@@ -85,4 +88,16 @@ public interface FileImporter extends Importer {
      * @param listener
      */
     void removeListener(AnalysisListener listener);
+
+    /**
+     *
+     * @return
+     */
+    LineNumberReader getLineReader();
+
+    /**
+     *
+     * @param lineReader
+     */
+    void setLineReader(LineNumberReader lineReader);
 }

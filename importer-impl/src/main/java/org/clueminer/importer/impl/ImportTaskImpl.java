@@ -90,6 +90,7 @@ public class ImportTaskImpl implements ImportTask {
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
+            reportPanel.setCurrentFile(fileObject);
             reportPanel.setData(report, container);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ImportControllerUIImpl.class, "ReportPanel.title"));
             if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {

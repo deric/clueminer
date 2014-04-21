@@ -1,6 +1,7 @@
 package org.clueminer.io.importer.api;
 
 import java.io.File;
+import org.openide.filesystems.FileObject;
 
 /**
  * A container is created each time data are imported by <b>importers</b>. Its
@@ -28,7 +29,7 @@ public interface Container {
      * If exists, returns the source of the data.
      *
      * @return the source of the data, or <code>null</code> if source is not
-     * defined.
+     *         defined.
      */
     String getSource();
 
@@ -38,6 +39,8 @@ public interface Container {
      * @param source
      */
     void setFile(File source);
+
+    FileObject getFile();
 
     /**
      * Get containers loading interface. The <b>loader</b> is used by modules
@@ -53,7 +56,7 @@ public interface Container {
      * import process. Only one report can be associated to a container.
      *
      * @param report set <code>report</code> as the default report for this
-     * container
+     *               container
      * @throws NullPointerException if <code>report</code> is <code>null</code>
      */
     void setReport(Report report);
@@ -62,7 +65,7 @@ public interface Container {
      * Returns the report associated to this container, if exists.
      *
      * @return the report set for this container or <code>null</code> if no
-     * report is defined
+     *         report is defined
      */
     Report getReport();
 
@@ -76,7 +79,7 @@ public interface Container {
      * unloading. Its aim is to verify data consistency as a whole.
      *
      * @return <code>true</code> if container data is * * * consistent,
-     * <code>false</code> otherwise
+     *         <code>false</code> otherwise
      */
     boolean verify();
 }

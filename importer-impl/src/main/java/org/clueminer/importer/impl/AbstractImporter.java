@@ -14,6 +14,8 @@ import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.utils.progress.ProgressTicket;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -24,7 +26,7 @@ import org.openide.util.NbBundle;
  */
 public abstract class AbstractImporter implements FileImporter, LongTask {
 
-    protected File file;
+    protected FileObject file;
     protected Reader reader;
     protected Container container;
     protected Report report;
@@ -49,13 +51,18 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public File getFile() {
+    public FileObject getFile() {
         return file;
     }
 
     @Override
-    public void setFile(File file) {
+    public void setFile(FileObject file) {
         this.file = file;
+    }
+
+    @Override
+    public void setFile(File file) {
+        this.file = FileUtil.toFileObject(file);
     }
 
     @Override
@@ -97,7 +104,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
                         logger.log(Level.INFO, "reloading file");
                         Container container = controller.importFile(reader, importer);
                         if (container != null && file != null) {
-                            container.setSource(file.getAbsolutePath());
+                            container.setSource(file.getPath());
                         }
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);

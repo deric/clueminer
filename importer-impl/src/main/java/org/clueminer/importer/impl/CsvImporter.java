@@ -8,6 +8,7 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
@@ -58,6 +59,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader loader;
+    private LineNumberReader lineReader;
 
     public CsvImporter() {
         separator = ',';
@@ -88,17 +90,21 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         this.container = container;
         this.loader = container.getLoader();
         this.report = new Report();
-        LineNumberReader lineReader;
-        this.file = container.getLoader().getFile();
+        this.file = container.getFile();
+
+        System.out.println("file: " + file);
+        System.out.println("loader: " + loader.getSource());
+
         try {
             if (reader != null) {
                 lineReader = ImportUtils.getTextReader(reader);
             } else if (file != null) {
-                lineReader = getReader(file);
+                lineReader = ImportUtils.getTextReader(file);
             } else {
                 throw new RuntimeException("importer wasn't provided with any readable source");
             }
 
+            logger.log(Level.INFO, "parsing CSV: {0}", container.getSource());
             importData(lineReader);
             fireAnalysisFinished();
         } catch (IOException e) {
@@ -140,8 +146,10 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
          it.setCommentIdentifier("#");
          it.setSkipComments(true);*/
         int count = 0;
+        logger.log(Level.INFO, "reader ready? {0}", reader.ready());
         for (; reader.ready();) {
             String line = reader.readLine();
+            logger.log(Level.INFO, "line: {0}:{1}", new Object[]{count, line});
             if (line != null && !line.isEmpty()) {
                 lineRead(count, line);
                 count++;
@@ -178,7 +186,11 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         for (String attrName : columns) {
             if (!loader.hasAttribute(attrName)) {
                 attributes[i] = loader.createAttribute(i, attrName);
+                logger.log(Level.INFO, "created missing attr: {0}", attrName);
             }
+            /**
+             * TODO check if attributes are already defined
+             */
             i++;
         }
     }
@@ -210,6 +222,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         if (!loader.hasPrimaryKey()) {
             draft.setId(String.valueOf(numInstances));
         }
+        logger.log(Level.INFO, "draft {0}: {1}", new Object[]{num, draft.toString()});
         loader.addInstance(draft, num);
         numInstances++;
     }
@@ -401,6 +414,14 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             return new LineNumberReader(br);
         }
         return ImportUtils.getTextReader(fileObject);
+    }
+
+    public LineNumberReader getLineReader() {
+        return lineReader;
+    }
+
+    public void setLineReader(LineNumberReader lineReader) {
+        this.lineReader = lineReader;
     }
 
 }
