@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
-import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -25,6 +24,7 @@ import org.clueminer.types.FileType;
 import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -55,7 +55,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     //white space in front of a quote in a field is ignored
     private boolean ignoreLeadingWhiteSpace = false;
     private int prevColCnt = -1;
-    private AttributeDraft[] attributes;
     private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader loader;
@@ -91,6 +90,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         this.loader = container.getLoader();
         this.report = new Report();
         this.file = container.getFile();
+        parsedHeader = false;
 
         System.out.println("file: " + file);
         System.out.println("loader: " + loader.getSource());
@@ -146,6 +146,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
          it.setCommentIdentifier("#");
          it.setSkipComments(true);*/
         int count = 0;
+
         logger.log(Level.INFO, "reader ready? {0}", reader.ready());
         for (; reader.ready();) {
             String line = reader.readLine();
@@ -165,15 +166,14 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         } else {
             if (prevColCnt != columns.length) {
                 prevColCnt = columns.length;
-                loader.setAttributeCount(prevColCnt);
             }
         }
-
         if (hasHeader && !skipHeader && !parsedHeader) {
             parseHeader(columns);
             parsedHeader = true;
         } else if (skipHeader) {
-            //    iter.next(); // just skip it
+            logger.log(Level.INFO, "skipping: {0}", line);
+            // just skip it
         } else {
             //Dump.array(columns, "line " + num);
             addInstance(num, columns);
@@ -181,11 +181,10 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     private void parseHeader(String[] columns) {
-        attributes = new AttributeDraft[columns.length];
         int i = 0;
         for (String attrName : columns) {
             if (!loader.hasAttribute(attrName)) {
-                attributes[i] = loader.createAttribute(i, attrName);
+                loader.createAttribute(i, attrName);
                 logger.log(Level.INFO, "created missing attr: {0}", attrName);
             }
             /**
@@ -196,26 +195,31 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     private void addInstance(int num, String[] columns) {
-        InstanceDraft draft = new InstanceDraftImpl(loader, attributes.length);
+        InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
         int i = 0;
         AttributeRole role;
         Object castedVal;
         for (String value : columns) {
-            role = attributes[i].getRole();
-            if (role == BasicAttrRole.ID) {
-                draft.setId(value);
-            } else if (role == BasicAttrRole.INPUT) {
-                try {
-                    castedVal = attributes[i].getParser().parse(value);
-                    draft.setValue(i, castedVal);
-                } catch (ParsingError ex) {
-                    report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                                                  "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+            try {
+                role = loader.getAttribute(i).getRole();
+                if (role == BasicAttrRole.ID) {
+                    draft.setId(value);
+                } else if (role == BasicAttrRole.INPUT) {
+                    try {
+                        castedVal = loader.getAttribute(i).getParser().parse(value);
+                        draft.setValue(i, castedVal);
+                    } catch (ParsingError ex) {
+                        report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
+                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                    }
+                } else {
+                    //logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
+                    System.out.println("setting " + i + ": " + value);
+                    draft.setValue(i, value);
                 }
-            } else {
-                //logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
-                System.out.println("setting " + i + ": " + value);
-                draft.setValue(i, value);
+            } catch (Exception e) {
+                report.logIssue(new Issue("Invalid type (" + num + "): " + e.toString(), Issue.Level.WARNING));
+                Exceptions.printStackTrace(e);
             }
             i++;
         }
@@ -416,10 +420,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         return ImportUtils.getTextReader(fileObject);
     }
 
+    @Override
     public LineNumberReader getLineReader() {
         return lineReader;
     }
 
+    @Override
     public void setLineReader(LineNumberReader lineReader) {
         this.lineReader = lineReader;
     }

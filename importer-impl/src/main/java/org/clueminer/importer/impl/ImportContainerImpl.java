@@ -35,15 +35,14 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     private FileObject file;
     protected static final int NULL_INDEX = -1;
 
-    private final ObjectList<InstanceDraft> instanceList;
+    private ObjectList<InstanceDraft> instanceList;
     private final ObjectList<AttributeDraft> attributeList;
     private Dataset<? extends Instance> dataset;
     private final Object2ObjectMap<String, AttributeDraft> attributeMap;
     private Report report;
-    private final Object2IntMap<String> instanceMap;
+    private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
-    private int attrCnt;
     private Object defaultNumericType = Double.class;
     private String dataType = "discrete";
 
@@ -257,11 +256,6 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         defaultNumericType = type;
     }
 
-    @Override
-    public void setAttributeCount(int cnt) {
-        this.attrCnt = cnt;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -299,6 +293,20 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public InstanceDraft getInstance(int index) {
         return instanceList.get(index);
+    }
+
+    /**
+     * After reset we can start clean import with new settings
+     */
+    @Override
+    public void reset() {
+        report = new Report();
+        instanceList = new ObjectArrayList<InstanceDraft>();
+        //we keep attributes from previous iteration
+        //attributeList = new ObjectArrayList<AttributeDraft>();
+        //attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
+        instanceMap = new Object2IntOpenHashMap<String>();
+        instanceMap.defaultReturnValue(NULL_INDEX);
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

@@ -33,13 +33,6 @@ public interface ContainerLoader {
     int getAttributeCount();
 
     /**
-     * Sets number of detected attributes in parsed file
-     *
-     * @param cnt number of attributes
-     */
-    void setAttributeCount(int cnt);
-
-    /**
      * Create attribute draft with given name
      *
      * @param index - position in future dataset
@@ -155,5 +148,10 @@ public interface ContainerLoader {
      * @return type of data
      */
     String getDataType();
+
+    /**
+     * Should clear already pre-loaded instances
+     */
+    void reset();
 
 }

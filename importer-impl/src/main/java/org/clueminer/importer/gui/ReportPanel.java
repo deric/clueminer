@@ -588,19 +588,15 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void importerChanged(final Importer importer, ImporterUI importerUI) {
-        logger.log(Level.INFO, "importer changed");
-        logger.log(Level.INFO, "source: {0}", importer.getContainer().getSource());
-        logger.log(Level.INFO, "current f: {0}", currentFile);
-        logger.log(Level.INFO, "file: {0}", importer.getContainer().getFile());
-        logger.log(Level.INFO, "f. loader: {0}", importer.getContainer().getLoader().getFile());
+        final ContainerLoader loader = importer.getContainer().getLoader();
         final FileImporter fi = (FileImporter) importer;
-        //currentReader = fi.getLineReader();
         if (currentFile != null) {
             Thread thread = new Thread(fillingThreads, new Runnable() {
                 @Override
                 public void run() {
                     try {
                         logger.log(Level.INFO, "importing file..");
+                        loader.reset();
                         Container cont = controller.importFile(currentFile.getInputStream(), fi);
                         setData(cont.getReport(), cont);
                     } catch (FileNotFoundException ex) {
