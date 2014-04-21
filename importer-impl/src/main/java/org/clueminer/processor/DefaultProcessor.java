@@ -13,6 +13,7 @@ import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.ProjectController;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,19 +62,24 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Instance<? extends Double> inst;
         //create real instances
         int i = 0;
-        Attribute attr;
+        AttributeDraft attr;
         for (InstanceDraft instd : container.getInstances()) {
             //TODO allocate only numerical attributes
             inst = dataset.builder().create(dataset.attributeCount());
-            for (int j = 0; j < dataset.attributeCount(); j++) {
+            /**
+             * attribute count in container might differ some attributes
+             * (class/label/id) are treated specially
+             *
+             */
+            for (int j = 0; j < container.getAttributeCount(); j++) {
                 //right now we support only double attributes
                 try {
-                    attr = dataset.getAttribute(j);
+                    attr = container.getAttribute(j);
                     if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                         if (dataset.getAttribute(j).isNumerical()) {
                             inst.set(j, (Double) instd.getValue(j));
                         } else {
-                            logger.log(Level.FINE, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
+                            logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
                         }
                     } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
                         inst.setClassValue(instd.getValue(j));
@@ -86,9 +92,11 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getValue(j), e.toString()});
+                    Exceptions.printStackTrace(e);
                 }
-
-                inst.setId(instd.getId());
+                if (instd.getId() != null) {
+                    inst.setId(instd.getId());
+                }
                 //dataset.setAttributeValue(i, j, (Double) instd.getValue(i));
             }
             dataset.add(inst);

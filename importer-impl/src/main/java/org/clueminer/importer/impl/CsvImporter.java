@@ -92,9 +92,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         this.file = container.getFile();
         parsedHeader = false;
 
-        System.out.println("file: " + file);
-        System.out.println("loader: " + loader.getSource());
-
         try {
             if (reader != null) {
                 lineReader = ImportUtils.getTextReader(reader);
@@ -213,8 +210,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                                                                       "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                     }
                 } else {
-                    //logger.log(Level.SEVERE, "role = {0} is not yet supported", role.toString());
-                    System.out.println("setting " + i + ": " + value);
                     draft.setValue(i, value);
                 }
             } catch (Exception e) {
@@ -226,7 +221,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         if (!loader.hasPrimaryKey()) {
             draft.setId(String.valueOf(numInstances));
         }
-        logger.log(Level.INFO, "draft {0}: {1}", new Object[]{num, draft.toString()});
         loader.addInstance(draft, num);
         numInstances++;
     }
