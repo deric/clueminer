@@ -202,7 +202,8 @@
         <module>chart-base</module>
         <module>curve</module>
         <module>validation</module>
-    </modules>
+    <module>scatter</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>
