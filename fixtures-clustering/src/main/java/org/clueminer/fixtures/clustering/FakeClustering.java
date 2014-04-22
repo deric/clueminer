@@ -7,6 +7,8 @@ import org.clueminer.cluster.BaseCluster;
 import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.colors.RandomColorsGenerator;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -31,19 +33,23 @@ public class FakeClustering {
     public static Clustering iris() {
         if (irisClusters == null) {
             irisDataset();
+            ColorGenerator cg = new RandomColorsGenerator();
             /**
              * fictive clustering, create iris cluster based on class labels
              * (the dataset is sorted)
              */
             irisClusters = new ClusterList(3);
             Cluster a = new BaseCluster(50);
+            a.setColor(cg.next());
             a.setName("cluster 1");
             a.setAttributes(irisData.getAttributes());
             Cluster b = new BaseCluster(50);
             b.setName("cluster 2");
             b.setAttributes(irisData.getAttributes());
+            b.setColor(cg.next());
             Cluster c = new BaseCluster(50);
             c.setName("cluster 3");
+            c.setColor(cg.next());
             c.setAttributes(irisData.getAttributes());
             for (int i = 0; i < 50; i++) {
                 a.add(irisData.instance(i));
