@@ -5,6 +5,7 @@ import java.util.Random;
 import org.clueminer.dataset.api.ColorGenerator;
 
 /**
+ * A pseudo random generator
  *
  * @author Tomas Barton
  */

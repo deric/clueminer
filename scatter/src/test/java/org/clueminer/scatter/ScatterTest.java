@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.scatter.ScatterPlot;
 
 /**
  *
