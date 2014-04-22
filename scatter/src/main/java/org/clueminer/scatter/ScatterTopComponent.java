@@ -1,10 +1,20 @@
 package org.clueminer.scatter;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays scatterplot.
@@ -30,13 +40,18 @@ import org.openide.util.NbBundle.Messages;
     "CTL_ScatterTopComponent=Scatter Window",
     "HINT_ScatterTopComponent=This is a Scatter window"
 })
-public final class ScatterTopComponent extends TopComponent {
+public final class ScatterTopComponent extends TopComponent implements LookupListener {
+
+    private Lookup.Result<Clustering> result = null;
+    private ScatterPlot frame;
+    private static final Logger logger = Logger.getLogger(ScatterTopComponent.class.getName());
 
     public ScatterTopComponent() {
         initComponents();
         setName(Bundle.CTL_ScatterTopComponent());
         setToolTipText(Bundle.HINT_ScatterTopComponent());
-
+        frame = new ScatterPlot();
+        add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**
@@ -48,23 +63,16 @@ public final class ScatterTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        result.addLookupListener(this);
+        resultChanged(new LookupEvent(result));
     }
 
     @Override
@@ -82,5 +90,15 @@ public final class ScatterTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends Clustering> allClusterings = result.allInstances();
+        logger.log(Level.INFO, "clustering lookup: got {0} clusterings", allClusterings.size());
+        for (Clustering c : allClusterings) {
+            System.out.println("clustring size" + c.size());
+            frame.setClustering(c);
+        }
     }
 }
