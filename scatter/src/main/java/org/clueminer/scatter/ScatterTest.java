@@ -49,6 +49,7 @@ public class ScatterTest extends JPanel {
     }
 
     private void initComponents() {
+        setSize(500, 500);
         setLayout(new BorderLayout());
         plot = new ScatterPlot();
         Clustering clusters = FakeClustering.iris();

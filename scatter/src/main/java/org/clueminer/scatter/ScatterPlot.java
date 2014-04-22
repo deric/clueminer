@@ -1,78 +1,63 @@
 package org.clueminer.scatter;
 
+import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.Insets2D;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.util.Random;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 
 public class ScatterPlot extends JPanel {
 
-    /**
-     * Version id for serialization.
-     */
     private static final long serialVersionUID = -412699430625953887L;
 
-    private static final int SAMPLE_COUNT = 100000;
-    /**
-     * Instance to generate random data values.
-     */
-    private static final Random random = new Random();
+    private final Shape shape = new Ellipse2D.Double(-3, -3, 6, 6);
 
     public ScatterPlot() {
-        setPreferredSize(new Dimension(800, 600));
-        // Generate 100,000 data points
-        DataTable data = new DataTable(Double.class, Double.class);
-        for (int i = 0; i <= SAMPLE_COUNT; i++) {
-            data.add(random.nextGaussian() * 2.0, random.nextGaussian() * 2.0);
-        }
+        initComponents();
+    }
 
-        // Create a new xy-plot
-        XYPlot plot = new XYPlot(data);
-
-        // Format plot
-        plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-        plot.getTitle().setText("scatter");
-
-        // Format points
-        plot.getPointRenderer(data).setColor(Color.RED);
-
-        // Add plot to Swing component
-        add(new InteractivePanel(plot), BorderLayout.CENTER);
+    private void initComponents() {
+        setLayout(new BorderLayout());
+        setSize(new Dimension(800, 600));
     }
 
     public void setClustering(Clustering<Cluster> clustering) {
-        /*   removeAll();
+        removeAll();
 
-         // Create a new xy-plot
-         XYPlot plot = new XYPlot();
+        // Create a new xy-plot
+        XYPlot plot = new XYPlot();
 
-         for (Cluster<Instance> clust : clustering) {
-         DataTable data = new DataTable(Double.class, Double.class);
-         for (Instance inst : clust) {
-         data.add(inst.value(2), inst.value(1));
-         System.out.println(String.format("point " + inst.value(2) + ", " + inst.value(1)));
-         }
+        for (Cluster<Instance> clust : clustering) {
+            DataTable data = new DataTable(Double.class, Double.class);
+            for (Instance inst : clust) {
+                data.add(inst.value(0), inst.value(1));
+            }
 
-         //DataSeries ds = new DataSeries(clust.getName(), data);
-         plot.add(data);
-         plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-         // Format points
-         plot.getPointRenderer(data).setColor(clust.getColor());
-         }
+            DataSeries ds = new DataSeries(clust.getName(), data);
+            plot.add(ds);
+            plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
 
-         // Format plot
-         plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-         plot.getTitle().setText("Scatterplot of clustering");
+            PointRenderer pointRenderer = plot.getPointRenderer(ds);
+            pointRenderer.setColor(clust.getColor());
+            pointRenderer.setShape(shape);
+        }
 
-         // Add plot to Swing component
-         add(new InteractivePanel(plot), BorderLayout.CENTER);*/
+        // Format plot
+        plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
+        plot.getTitle().setText("Scatterplot of clustering");
+        plot.setLegendVisible(true);
+
+        // Add plot to Swing component
+        add(new InteractivePanel(plot), BorderLayout.CENTER);
     }
 
 }
