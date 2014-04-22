@@ -1,7 +1,7 @@
 package org.clueminer.evaluation.external;
 
 import com.google.common.collect.Table;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class AdjustedRandTest {
 
     private static AdjustedRand test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public AdjustedRandTest() {
     }
@@ -80,7 +80,7 @@ public class AdjustedRandTest {
         start = System.currentTimeMillis();
         score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
         end = System.currentTimeMillis();
-        
+
         assertEquals(0.13473684210526315, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");

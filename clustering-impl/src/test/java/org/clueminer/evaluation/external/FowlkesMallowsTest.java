@@ -2,7 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -66,7 +66,7 @@ public class FowlkesMallowsTest {
         long start = System.currentTimeMillis();
         score = test.score(irisWrong, FakeClustering.irisDataset());
         long end = System.currentTimeMillis();
-   //     assertEquals(1565, score, 1.0);
+        //     assertEquals(1565, score, 1.0);
         System.out.println("fm index = " + score);
         System.out.println("measuring Fowlkes-Mallows took " + (end - start) + " ms");
     }
@@ -100,7 +100,6 @@ public class FowlkesMallowsTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-
         assertEquals(0.6688096636728896, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");

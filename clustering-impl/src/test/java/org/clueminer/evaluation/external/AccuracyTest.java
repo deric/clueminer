@@ -1,6 +1,6 @@
 package org.clueminer.evaluation.external;
 
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,9 +13,9 @@ import static org.junit.Assert.*;
  * @author tombart
  */
 public class AccuracyTest {
-    
+
     private static Accuracy test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public AccuracyTest() {
     }
@@ -64,7 +64,7 @@ public class AccuracyTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        //Cabernet = 0.7407	
+        //Cabernet = 0.7407
         //Syrah = 0.7037
         //Pinot = 0.8889
         assertEquals(0.77777777777, score, delta);

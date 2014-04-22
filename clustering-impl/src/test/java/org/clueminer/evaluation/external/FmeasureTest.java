@@ -1,6 +1,6 @@
 package org.clueminer.evaluation.external;
 
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class FmeasureTest {
 
     private static Fmeasure test;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public FmeasureTest() {
     }
@@ -71,7 +71,7 @@ public class FmeasureTest {
         end = System.currentTimeMillis();
 
         //each cluster should have this scores:
-        //Cabernet = 0.7200	
+        //Cabernet = 0.7200
         //Syrah = 0.5555
         //Pinot = 0.7272
         assertEquals(0.6676094276094275, score, delta);

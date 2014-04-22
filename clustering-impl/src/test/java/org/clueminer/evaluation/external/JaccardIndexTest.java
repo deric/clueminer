@@ -2,7 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 public class JaccardIndexTest {
 
     private static Clustering clusters;
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
     private static Clustering iris;
     private static JaccardIndex test;
     private static final double delta = 1e-9;

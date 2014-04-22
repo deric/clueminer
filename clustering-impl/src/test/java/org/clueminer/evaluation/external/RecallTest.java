@@ -2,7 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,7 +89,9 @@ public class RecallTest {
 
     /**
      * Test of score method, of class Recall.
-     * @see http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/PrecisionRecallEvaluation.html
+     *
+     * @see
+     * http://alias-i.com/lingpipe/docs/api/com/aliasi/classify/PrecisionRecallEvaluation.html
      */
     @Test
     public void testScore_Clustering_Clustering() {

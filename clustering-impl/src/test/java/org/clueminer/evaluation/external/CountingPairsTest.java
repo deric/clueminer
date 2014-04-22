@@ -5,11 +5,10 @@ import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -125,7 +124,7 @@ public class CountingPairsTest {
 
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-            System.out.println("wrong table: "+res);
+            System.out.println("wrong table: " + res);
         }
 
         //assertNotNull(matching.get("Iris-versicolor"));

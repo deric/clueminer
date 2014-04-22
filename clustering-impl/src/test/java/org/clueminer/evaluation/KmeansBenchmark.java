@@ -14,7 +14,6 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -46,7 +45,7 @@ public class KmeansBenchmark {
     private static CommonFixture tf;
     private Map<String, String> classColors = new HashMap<String, String>();
     private int colorNum = 0;
-    private static String gnuplotExtension = ".gpt";
+    private static final String gnuplotExtension = ".gpt";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -276,12 +275,12 @@ public class KmeansBenchmark {
 
     /**
      *
-     * @param data the dataset
+     * @param data  the dataset
      * @param kmin
      * @param kmax
      * @param kreal - known k for dataset
-     * @param x - attribute on axis x (start from 1)
-     * @param y - attribute on axis y (start from 1)
+     * @param x     - attribute on axis x (start from 1)
+     * @param y     - attribute on axis y (start from 1)
      * @throws IOException
      * @throws Exception
      */

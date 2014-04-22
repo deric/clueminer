@@ -2,7 +2,7 @@ package org.clueminer.evaluation.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.CommonFixture;
 import org.junit.After;
@@ -116,8 +116,6 @@ public class PrecisionTest {
         assertEquals(0.5333333333333333, score, delta);
         System.out.println(test.getName() + " = " + score);
         System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
-
-
 
         start = System.currentTimeMillis();
         score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
