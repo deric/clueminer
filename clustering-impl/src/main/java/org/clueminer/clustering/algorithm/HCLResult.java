@@ -13,6 +13,8 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.colors.ColorBrewer;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.NaiveCutoff;
@@ -136,6 +138,7 @@ public class HCLResult implements HierarchicalResult {
         int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
         int num, idx;
         Cluster<Instance> clust;
+        ColorGenerator cg = new ColorBrewer();
         //Dump.array(clusters, "clusters-assignment");
         //Dump.array(itemsMapping, "items-mapping");
         for (int i = 0; i < clusters.length; i++) {
@@ -144,6 +147,7 @@ public class HCLResult implements HierarchicalResult {
             if (num >= 0) {
                 if (!result.hasAt(num)) {
                     clust = new BaseCluster<Instance>(perCluster);
+                    clust.setColor(cg.next());
                     clust.setName("cluster " + (num + 1));
                     clust.setClusterId(num);
                     clust.setParent(parent);
