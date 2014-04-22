@@ -1,6 +1,6 @@
 package org.clueminer.clustering.algorithm;
 
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;

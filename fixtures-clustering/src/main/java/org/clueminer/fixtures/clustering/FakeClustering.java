@@ -1,8 +1,10 @@
-package org.clueminer.cluster;
+package org.clueminer.fixtures.clustering;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.cluster.BaseCluster;
+import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;

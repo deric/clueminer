@@ -203,6 +203,7 @@
         <module>curve</module>
         <module>validation</module>
     <module>scatter</module>
+    <module>fixtures-clustering</module>
   </modules>
     <reporting>
         <plugins>

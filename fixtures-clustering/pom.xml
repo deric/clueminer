@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>clustering-impl</artifactId>
+    <artifactId>fixtures-clustering</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
-    <name>clustering-impl</name>
+    <name>fixtures-clustering</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,17 +42,17 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>math-api</artifactId>
+            <artifactId>clustering-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>math-impl</artifactId>
+            <artifactId>clustering-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-impl</artifactId>
+            <artifactId>fixtures</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -62,47 +62,8 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>clustering-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gnuplot</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>fixtures</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -111,36 +72,8 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-benchmark</artifactId>
+            <artifactId>dataset-impl</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-progress</artifactId>
-            <version>RELEASE74</version>
-        </dependency>
-        <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>6.5.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.specs2</groupId>
-            <artifactId>specs2_2.10</artifactId>
-            <version>2.3.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>fixtures-clustering</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -149,27 +82,17 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <version>3.11</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.cluster</publicPackage>
-                        <publicPackage>org.clueminer.cluster.algorithm</publicPackage>
-                        <publicPackage>org.clueminer.clustering.*</publicPackage>
-                        <publicPackage>org.clueminer.distance</publicPackage>
-                        <publicPackage>org.clueminer.evaluation</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.external</publicPackage>
-                        <publicPackage>org.clueminer.evaluation.hclust</publicPackage>
-                        <publicPackage>org.clueminer.evolution</publicPackage>
-                        <publicPackage>org.clueminer.exec</publicPackage>
-                        <publicPackage>org.clueminer.hclust</publicPackage>
-                        <publicPackage>org.clueminer.hclust.linkage</publicPackage>
-                        <publicPackage>org.clueminer.utils</publicPackage>
+                        <publicPackage>org.clueminer.fixtures.clustering</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
 
             <plugin>
-                <!-- NetBeans 6.9+ requires JDK 6 -->
+                <!-- NetBeans 6.9+ requires JDK 6, starting NetBeans 7.4 source 1.7 will be required   -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>

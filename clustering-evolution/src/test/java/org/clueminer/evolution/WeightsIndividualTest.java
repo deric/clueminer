@@ -4,9 +4,9 @@ import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.evaluation.external.JaccardIndex;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,33 +19,33 @@ import static org.junit.Assert.*;
  * @author deric
  */
 public class WeightsIndividualTest {
-    
+
     private Evolution evolution;
     private WeightsIndividual one;
     private Individual two;
     private static double delta = 1e-9;
-    
+
     public WeightsIndividualTest() {
-        Dataset<Instance> dataset = FakeClustering.irisDataset();
+        Dataset dataset = FakeClustering.irisDataset();
         evolution = new AttrEvolution(dataset, 5);
         evolution.setEvaluator(new JaccardIndex());
         evolution.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
         one = new WeightsIndividual(evolution);
         two = new WeightsIndividual(evolution);
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -117,7 +117,7 @@ public class WeightsIndividualTest {
     @Test
     public void testToString() {
     }
-    
+
     @Test
     public void testCompare() {
         Individual<WeightsIndividual> other = one.deepCopy();

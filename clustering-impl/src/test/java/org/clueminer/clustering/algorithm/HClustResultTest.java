@@ -2,9 +2,8 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.List;
 import java.util.prefs.Preferences;
-import org.clueminer.cluster.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.clustering.api.AgglomerativeClustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.dataset.api.Dataset;
