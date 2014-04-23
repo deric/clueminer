@@ -13,11 +13,11 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
  */
 public class ColorSchemeImpl implements ColorScheme {
 
-    private BufferedImage posColorImage = createGradientImage(Color.black, Color.green);
-    private BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
+    private final BufferedImage posColorImage = createGradientImage(Color.black, Color.green);
+    private final BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private DendroPane panel;
+    private final DendroPane panel;
 
     public ColorSchemeImpl(DendroPane p) {
         panel = p;
@@ -40,6 +40,7 @@ public class ColorSchemeImpl implements ColorScheme {
         return image;
     }
 
+    @Override
     public Color getColor(double value) {
         if (Double.isNaN(value)) {
             return missingColor;

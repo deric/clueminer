@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -37,6 +38,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private Font font = new Font("verdana", Font.BOLD, 12);
     private int lineHeight;
     private final int labelOffset = 5;
+    private Clustering<Cluster> flatClust;
 
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
@@ -86,9 +88,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         Graphics2D g2d = (Graphics2D) g;
         //places color bar to canvas
         g2d.drawImage(bufferedImage,
-                      insets.left, insets.top,
-                      size.width, size.height,
-                      null);
+                insets.left, insets.top,
+                size.width, size.height,
+                null);
         g2d.dispose();
     }
 
@@ -100,6 +102,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
         if (dendroData != null) {
             HierarchicalResult clustering = dendroData.getRowsResult();
+            flatClust = dendroData.getRowsClustering();
             int[] clusters = clustering.getClusters(dendroData.getNumberOfRows());
             int i = 0;
             if (clusters.length == 0) {
@@ -116,31 +119,38 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             while (i < clusters.length) {
                 mapped = clustering.getMappedIndex(i);
                 if (clusters[mapped] != currClust) {
-                    drawCluster(buffGr, x, start, i, currClust, false);
+                    drawCluster(buffGr, x, start, i, currClust);
                     start = i; //index if new cluster start
                     currClust = clusters[clustering.getMappedIndex(i)];
                 }
                 i++;
             }
             //close unfinished cluster
-            drawCluster(buffGr, x, start, i, currClust, true);
+            drawCluster(buffGr, x, start, i, currClust);
         }
         buffGr.dispose(); //finished drawing
     }
 
-    private void drawCluster(Graphics2D g, int x, int start, int end, int clusterNum, boolean isLast) {
+    private void drawCluster(Graphics2D g, int x, int start, int end, int clusterNum) {
         int y = start * elemHeight();
+        Color color;
+        if (flatClust.hasAt(clusterNum - 1)) {
+            color = flatClust.get(clusterNum - 1).getColor();
+        } else {
+            color = Color.GRAY;
+        }
+
         int y2 = (end - start) * elemHeight();
         FontRenderContext frc = g.getFontRenderContext();
         if (y == 0) {
-            g.setColor(ColorGenerator.getRandomColor());
+            g.setColor(color);
             g.fillRect(x + 1, y + 1, stripeWidth - 2, y2 - 2);
             g.setColor(Color.black);
             if (this.drawBorders) {
                 g.drawRect(x, y, stripeWidth - 1, y2 - 1);
             }
         } else {
-            g.setColor(ColorGenerator.getRandomColor());
+            g.setColor(color);
             g.fillRect(x + 1, y - 1, stripeWidth - 2, y2);
             g.setColor(Color.black);
             if (this.drawBorders) {
