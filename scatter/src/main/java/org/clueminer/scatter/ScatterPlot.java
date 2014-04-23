@@ -44,7 +44,6 @@ public class ScatterPlot extends JPanel {
 
             DataSeries ds = new DataSeries(clust.getName(), data);
             plot.add(ds);
-            plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
 
             PointRenderer pointRenderer = plot.getPointRenderer(ds);
             pointRenderer.setColor(clust.getColor());
