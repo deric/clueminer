@@ -31,6 +31,7 @@ import org.clueminer.gui.BusyUtils;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.Issue;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
@@ -613,6 +614,15 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     @Override
     public void dataLoaded() {
         logger.log(Level.INFO, "data loaded");
+    }
+
+    @Override
+    public void attributeChanged(AttributeDraft attr, Object property) {
+        if(colPreviewPane != null){
+            //update GUI
+            logger.log(Level.INFO, "attr {0} changed prop ={1}", new Object[]{attr.getName(), property});
+            colPreviewPane.attributeChanged(attr);
+        }
     }
 
     private class IssueTreeModel implements TreeModel {

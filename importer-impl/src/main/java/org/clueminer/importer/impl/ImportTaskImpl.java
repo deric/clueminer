@@ -90,6 +90,7 @@ public class ImportTaskImpl implements ImportTask {
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
+            //addListener(reportPanel);
             reportPanel.setCurrentFile(fileObject);
             reportPanel.setData(report, container);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ImportControllerUIImpl.class, "ReportPanel.title"));
@@ -101,7 +102,6 @@ public class ImportTaskImpl implements ImportTask {
 
             if (dd.getValue() == DialogDescriptor.OK_OPTION) {
                 //ok button was pressed
-                logger.log(Level.INFO, "OOOK");
                 final Processor processor = reportPanel.getProcessor();
 
                 //Project
@@ -120,56 +120,6 @@ public class ImportTaskImpl implements ImportTask {
                 //cancel button was pressed
             }
 
-            /*  //Process
-             final ProcessorUI pui = getProcessorUI(processor);
-             final ValidResult validResult = new ValidResult();
-             if (pui != null) {
-
-             try {
-             SwingUtilities.invokeAndWait(new Runnable() {
-             @Override
-             public void run() {
-             String title = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.processor.ui.dialog.title");
-             JPanel panel = pui.getPanel();
-             pui.setup(processor);
-             final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
-             if (panel instanceof ValidationPanel) {
-             ValidationPanel vp = (ValidationPanel) panel;
-             vp.addChangeListener(new ChangeListener() {
-             @Override
-             public void stateChanged(ChangeEvent e) {
-             dd2.setValid(!((ValidationPanel) e.getSource()).isFatalProblem());
-             }
-             });
-             dd2.setValid(!vp.isFatalProblem());
-             }
-             Object result = DialogDisplayer.getDefault().notify(dd2);
-             if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-             validResult.setResult(false);
-             } else {
-             pui.unsetup(); //true
-             validResult.setResult(true);
-             }
-             }
-             });
-             } catch (InterruptedException ex) {
-             Exceptions.printStackTrace(ex);
-             } catch (InvocationTargetException ex) {
-             Exceptions.printStackTrace(ex);
-             }
-
-             }
-             if (validResult.isResult()) {
-
-             controller.process(container, processor, workspace);
-             fireDataLoaded();
-             //StatusLine notify
-             String source = container.getSource();
-             if (source.isEmpty()) {
-             source = NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.status.importSuccess.default");
-             }
-             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ImportControllerUIImpl.class, "ImportControllerUIImpl.status.importSuccess", source));
-             }*/
         } else {
             NotifyUtil.error("Error", "Bad container", false);
         }
@@ -197,19 +147,6 @@ public class ImportTaskImpl implements ImportTask {
     public void fireDataLoaded() {
         for (ImportListener im : importListeners.getListeners(ImportListener.class)) {
             im.dataLoaded();
-        }
-    }
-
-    private static class ValidResult {
-
-        private boolean result = true;
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-
-        public boolean isResult() {
-            return result;
         }
     }
 }

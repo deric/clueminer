@@ -19,6 +19,8 @@ import org.clueminer.spi.AnalysisListener;
  */
 public class DataTableModel extends AbstractTableModel implements AnalysisListener {
 
+    private static final long serialVersionUID = 8958158241016938460L;
+
     private ContainerLoader container;
     private JTable table;
 
@@ -128,6 +130,21 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
      */
     public void setTable(JTable table) {
         this.table = table;
+    }
+
+    @Override
+    public void attributeChanged(AttributeDraft attr, Object property) {
+        JTableHeader th = table.getTableHeader();
+        TableColumnModel tcm = th.getColumnModel();
+        TableColumn tc;
+        int index = attr.getIndex();
+        if (index < tcm.getColumnCount()) {
+            tc = tcm.getColumn(attr.getIndex());
+        } else {
+            tc = new TableColumn(index);
+            tcm.addColumn(tc);
+        }
+        tc.setHeaderValue(attr.getName());
     }
 
 }

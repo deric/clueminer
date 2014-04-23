@@ -4,7 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import org.clueminer.importer.impl.AttributeDraftImpl;
+import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -23,6 +23,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     private int numAttributes = 0;
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
     private AttributeDraft[] attributes;
+    private AttributeProp[] attrPanels;
     private ImporterUI importerUI;
 
     public ColumnsPreview() {
@@ -47,18 +48,13 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                     numAttributes = loader.getAttributeCount();
                     this.removeAll();
                     attributes = new AttributeDraft[numAttributes];
+                    attrPanels = new AttributeProp[numAttributes];
                     for (AttributeDraft atrd : attrs) {
                         generateAttribute(atrd.getIndex(), atrd);
                     }
                 }
             } else {
-                //NotifyUtil.error("Error", "missing loader", false);
-                numAttributes = 5;
-                attributes = new AttributeDraft[numAttributes];
-                for (int i = 0; i < numAttributes; i++) {
-                    generateAttribute(i, new AttributeDraftImpl("attr " + i));
-
-                }
+                NotifyUtil.error("Error", "missing loader", false);
             }
         }
     }
@@ -75,7 +71,8 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = WEST_INSETS;
 
-        JPanel column = new AttributeProp(atrd, importerUI);
+        AttributeProp column = new AttributeProp(atrd, importerUI);
+        attrPanels[num] = column;
         add(column, c);
         this.validate();
         this.revalidate();
@@ -85,6 +82,16 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     @Override
     public void dataLoaded() {
         //
+    }
+
+    public void attributeChanged(AttributeDraft attr) {
+        System.out.println("updating attribute " + attr.getName() + " idx " + attr.getIndex());
+        int idx = attr.getIndex();
+        if (idx < attrPanels.length) {
+            attrPanels[idx].setAttrName(attr.getName());
+            attrPanels[idx].setType(attr.getType().toString().toLowerCase());
+            attrPanels[idx].setRole(attr.getRole().toString().toLowerCase());
+        }
     }
 
 }

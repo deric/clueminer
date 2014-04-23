@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -193,7 +194,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         }
     }
 
-
     /**
      * Detects line containing information about type of an attribute
      *
@@ -206,6 +206,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         final Matcher matcher = patternType.matcher(column);
         if (matcher.find()) {
             String type = matcher.group(1).toLowerCase();
+            AttributeDraft attr;
             Object res;
             if (type.equals("double")) {
                 res = Double.class;
@@ -218,8 +219,13 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             } else {
                 res = String.class;
             }
-            loader.getAttribute(attrIndex).setType(res);
-            //TODO: notify GUI etc...
+            attr = loader.getAttribute(attrIndex);
+            // TODO: type has value "java.lang.Double" but we're passing "double"
+            if (!attr.getType().equals(res)) {
+                logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getType()});
+                attr.setType(res);
+                fireAttributeChanged(loader.getAttribute(attrIndex), "type");
+            }
             return true;
         }
         return false;

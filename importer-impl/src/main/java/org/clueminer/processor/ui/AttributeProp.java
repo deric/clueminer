@@ -1,5 +1,6 @@
 package org.clueminer.processor.ui;
 
+import java.awt.event.ItemEvent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.io.importer.api.AttributeDraft;
@@ -22,7 +23,21 @@ public class AttributeProp extends javax.swing.JPanel {
         this.attr = atrd;
         this.importerUI = importerUI;
         initComponents();
+        cbType.setSelectedItem(atrd.getType().toString());
+        cbRole.setSelectedItem(atrd.getRole().toString());
         tfName.setText(attr.getName());
+    }
+
+    public void setAttrName(String name) {
+        tfName.setText(name);
+    }
+
+    public void setType(String type) {
+        cbType.setSelectedItem(type);
+    }
+
+    public void setRole(String role) {
+        cbRole.setSelectedItem(role);
     }
 
     /**
@@ -54,18 +69,18 @@ public class AttributeProp extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(AttributeProp.class, "AttributeProp.jLabel2.text")); // NOI18N
 
         cbType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "double", "int", "float", "long", "string" }));
-        cbType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTypeActionPerformed(evt);
+        cbType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbTypeItemStateChanged(evt);
             }
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(AttributeProp.class, "AttributeProp.jLabel3.text")); // NOI18N
 
         cbRole.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "input", "meta", "label", "class", "id" }));
-        cbRole.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbRoleActionPerformed(evt);
+        cbRole.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbRoleItemStateChanged(evt);
             }
         });
 
@@ -127,24 +142,31 @@ public class AttributeProp extends javax.swing.JPanel {
         importerUI.fireImporterChanged();
     }//GEN-LAST:event_tfNameActionPerformed
 
-    private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
-        Object item = cbType.getSelectedItem();
-        attr.setType(item);
-
-        importerUI.fireImporterChanged();
-    }//GEN-LAST:event_cbTypeActionPerformed
-
-    private void cbRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRoleActionPerformed
-        String strRole = (String) cbRole.getSelectedItem();
-        AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
-        attr.setRole(role);
-        importerUI.fireImporterChanged();
-    }//GEN-LAST:event_cbRoleActionPerformed
-
     private void chckImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckImportActionPerformed
         attr.setSkipped(chckImport.isSelected());
         importerUI.fireImporterChanged();
     }//GEN-LAST:event_chckImportActionPerformed
+
+    private void cbTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbTypeItemStateChanged
+        System.out.println("type change: " + evt.toString());
+
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            Object item = cbType.getSelectedItem();
+            attr.setType(item);
+
+            importerUI.fireImporterChanged();
+        }
+
+    }//GEN-LAST:event_cbTypeItemStateChanged
+
+    private void cbRoleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbRoleItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            String strRole = (String) cbRole.getSelectedItem();
+            AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
+            attr.setRole(role);
+            importerUI.fireImporterChanged();
+        }
+    }//GEN-LAST:event_cbRoleItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbRole;

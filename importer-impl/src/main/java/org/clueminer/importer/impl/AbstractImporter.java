@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.importer.ImportController;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.LongTaskErrorHandler;
@@ -97,6 +98,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
 
             final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
             String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");
+            if (!executor.isRunning()) {
             executor.execute(task, new Runnable() {
                 @Override
                 public void run() {
@@ -110,7 +112,11 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, taskName, errorHandler);
+                }, taskName, errorHandler);
+            } else {
+                logger.log(Level.INFO, "executor is still running");
+            }
+
 
         } else {
             logger.log(Level.WARNING, "file reader is null");
@@ -130,6 +136,12 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     protected void fireAnalysisFinished() {
         for (AnalysisListener im : importListeners.getListeners(AnalysisListener.class)) {
             im.analysisFinished(container);
+        }
+    }
+
+    protected void fireAttributeChanged(AttributeDraft attribute, Object property) {
+        for (AnalysisListener im : importListeners.getListeners(AnalysisListener.class)) {
+            im.attributeChanged(attribute, property);
         }
     }
 }
