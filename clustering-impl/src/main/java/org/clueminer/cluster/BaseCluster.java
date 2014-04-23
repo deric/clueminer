@@ -100,7 +100,13 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
 
     @Override
     public int countMutualElements(Cluster c) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        int mutual = 0;
+        for (Instance inst : this) {
+            if (c.contains(inst)) {
+                mutual++;
+            }
+        }
+        return mutual;
     }
 
     @Override

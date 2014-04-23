@@ -129,6 +129,10 @@ public class BaseClusterTest {
      */
     @Test
     public void testGetCentroid() {
+        Cluster a = irisClusters.get(0);
+        Instance centroid = a.getCentroid();
+        //artificial instance, should not be included in original data
+        assertEquals(false, a.contains(centroid));
     }
 
     /**
@@ -136,6 +140,10 @@ public class BaseClusterTest {
      */
     @Test
     public void testCountMutualElements() {
+        Cluster a = irisClusters.get(0);
+        Cluster b = irisClusters.get(1);
+        assertEquals(0, a.countMutualElements(b));
+        assertEquals(50, a.countMutualElements(a));
     }
 
     /**
