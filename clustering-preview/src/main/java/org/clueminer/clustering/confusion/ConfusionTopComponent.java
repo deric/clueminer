@@ -1,5 +1,7 @@
 package org.clueminer.clustering.confusion;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -33,11 +35,14 @@ import org.openide.util.NbBundle.Messages;
 public final class ConfusionTopComponent extends TopComponent {
     private static final long serialVersionUID = -812734476374687722L;
 
+    private final ConfusionTable table;
+
     public ConfusionTopComponent() {
         initComponents();
         setName(Bundle.CTL_ConfusionTopComponent());
         setToolTipText(Bundle.HINT_ConfusionTopComponent());
-
+        table = new ConfusionTable();
+        add(table, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**

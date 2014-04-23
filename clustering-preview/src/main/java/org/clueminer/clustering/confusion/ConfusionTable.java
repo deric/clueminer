@@ -20,7 +20,11 @@ public class ConfusionTable extends JPanel {
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-
+        for (Cluster x : a) {
+            for (Cluster y : b) {
+                System.out.println("a-" + x.getName() + "-vs" + "-b" + y.getName() + ": " + x.countMutualElements(y));
+            }
+        }
     }
 
 }
