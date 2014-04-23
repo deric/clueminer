@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
@@ -59,6 +61,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader loader;
     private LineNumberReader lineReader;
+    private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
         separator = ',';
@@ -147,7 +150,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         logger.log(Level.INFO, "reader ready? {0}", reader.ready());
         for (; reader.ready();) {
             String line = reader.readLine();
-            logger.log(Level.INFO, "line: {0}:{1}", new Object[]{count, line});
             if (line != null && !line.isEmpty()) {
                 lineRead(count, line);
                 count++;
@@ -172,9 +174,55 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             logger.log(Level.INFO, "skipping: {0}", line);
             // just skip it
         } else {
-            //Dump.array(columns, "line " + num);
+            /**
+             * Second line sometimes contains extra attributes specification,
+             * like type, role etc.
+             */
+            if (num == 1) {
+                int i = 0;
+                boolean matched = true;
+                for (String column : columns) {
+                    matched &= parseType(column, i++);
+                }
+                //if all columns contain resonable value, we skip the line
+                if (matched) {
+                    return;
+                }
+            }
             addInstance(num, columns);
         }
+    }
+
+
+    /**
+     * Detects line containing information about type of an attribute
+     *
+     * @param column
+     * @param attrIndex
+     * @return
+     */
+    protected boolean parseType(String column, int attrIndex) {
+
+        final Matcher matcher = patternType.matcher(column);
+        if (matcher.find()) {
+            String type = matcher.group(1).toLowerCase();
+            Object res;
+            if (type.equals("double")) {
+                res = Double.class;
+            } else if (type.equals("float")) {
+                res = Float.class;
+            } else if (type.equals("int") || type.equals("integer")) {
+                res = Integer.class;
+            } else if (type.equals("long")) {
+                res = Long.class;
+            } else {
+                res = String.class;
+            }
+            loader.getAttribute(attrIndex).setType(res);
+            //TODO: notify GUI etc...
+            return true;
+        }
+        return false;
     }
 
     private void parseHeader(String[] columns) {
@@ -207,7 +255,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                         draft.setValue(i, castedVal);
                     } catch (ParsingError ex) {
                         report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                                "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                     }
                 } else {
                     draft.setValue(i, value);
@@ -293,7 +341,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -307,7 +355,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
@@ -422,6 +470,14 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     @Override
     public void setLineReader(LineNumberReader lineReader) {
         this.lineReader = lineReader;
+    }
+
+    protected ContainerLoader getLoader() {
+        return loader;
+    }
+
+    protected void setLoader(ContainerLoader loader) {
+        this.loader = loader;
     }
 
 }

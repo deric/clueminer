@@ -4,9 +4,11 @@ import java.io.IOException;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.Container;
 import org.junit.After;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -21,9 +23,18 @@ public class CsvImporterTest {
     public CsvImporterTest() {
     }
 
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
     @Before
     public void setUp() {
         subject = new CsvImporter();
+        subject.setLoader(new ImportContainerImpl());
     }
 
     @After
@@ -272,5 +283,103 @@ public class CsvImporterTest {
         // assertEquals("\"test\"", nextLine[2]);
         //assertEquals("\"quote\"", nextLine[3]);
 
+    }
+
+    @Test
+    public void testImportData() throws Exception {
+    }
+
+    @Test
+    public void testLineRead() throws Exception {
+    }
+
+    @Test
+    public void testParseType() {
+        subject.getLoader().createAttribute(0, "test");
+        subject.parseType("Double", 0);
+    }
+
+    @Test
+    public void testIsPending() {
+    }
+
+    @Test
+    public void testIsNextCharacterEscapable() {
+    }
+
+    @Test
+    public void testIsAllWhiteSpace() {
+    }
+
+    @Test
+    public void testIsHasHeader() {
+    }
+
+    @Test
+    public void testSetHasHeader() {
+    }
+
+    @Test
+    public void testIsSkipHeader() {
+    }
+
+    @Test
+    public void testSetSkipHeader() {
+    }
+
+    @Test
+    public void testGetQuotechar() {
+    }
+
+    @Test
+    public void testSetQuotechar() {
+    }
+
+    @Test
+    public void testIsCancel() {
+    }
+
+    @Test
+    public void testSetCancel() {
+    }
+
+    @Test
+    public void testIsIgnoreQuotations() {
+    }
+
+    @Test
+    public void testSetIgnoreQuotations() {
+    }
+
+    @Test
+    public void testIsStrictQuotes() {
+    }
+
+    @Test
+    public void testSetStrictQuotes() {
+    }
+
+    @Test
+    public void testGetEscape() {
+    }
+
+    @Test
+    public void testSetEscape() {
+    }
+
+    @Test
+    public void testIsIgnoreLeadingWhiteSpace() {
+    }
+
+    @Test
+    public void testSetIgnoreLeadingWhiteSpace() {
+    }
+
+    @Test
+    public void testGetLineReader() {
+    }
+
+    @Test
+    public void testSetLineReader() {
     }
 }
