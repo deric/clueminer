@@ -23,7 +23,7 @@ public class AttributeProp extends javax.swing.JPanel {
         this.attr = atrd;
         this.importerUI = importerUI;
         initComponents();
-        setType(atrd.getType().toString());
+        setType(atrd.getType());
         setRole(atrd.getRole().toString());
         setName(attr.getName());
     }
@@ -33,9 +33,8 @@ public class AttributeProp extends javax.swing.JPanel {
         tfName.setText(name);
     }
 
-    public final void setType(String type) {
-        System.out.println("trying to change type to: " + type);
-        cbType.setSelectedItem(type);
+    public final void setType(Class<?> type) {
+        cbType.setSelectedItem(classToString(type));
     }
 
     public final void setRole(String role) {
@@ -154,8 +153,8 @@ public class AttributeProp extends javax.swing.JPanel {
         System.out.println("type change: " + evt.toString());
 
         if (evt.getStateChange() == ItemEvent.SELECTED) {
-            Object item = cbType.getSelectedItem();
-            attr.setType(item);
+            String item = (String) cbType.getSelectedItem();
+            attr.setType(stringToClass(item));
 
             importerUI.fireImporterChanged();
         }
@@ -170,6 +169,37 @@ public class AttributeProp extends javax.swing.JPanel {
             importerUI.fireImporterChanged();
         }
     }//GEN-LAST:event_cbRoleItemStateChanged
+
+    protected Class<?> stringToClass(String type) {
+        if (type.equals("double")) {
+            return Double.class;
+        } else if (type.equals("float")) {
+            return Float.class;
+        } else if (type.equals("int") || type.equals("integer")) {
+            return Integer.class;
+        } else if (type.equals("long")) {
+            return Long.class;
+        } else if (type.equals("string")) {
+            return String.class;
+        }
+        throw new RuntimeException("type '" + type + "' is not supported");
+    }
+
+    protected String classToString(Class<?> type) {
+        if (type == Double.class) {
+            return "double";
+        } else if (type.equals(Integer.class)) {
+            return "int";
+        } else if (type.equals(Float.class)) {
+            return "float";
+        } else if (type.equals(Long.class)) {
+            return "long";
+        } else if (type.equals(String.class)) {
+            return "string";
+        }
+        throw new RuntimeException("type '" + type + "' is not supported");
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbRole;

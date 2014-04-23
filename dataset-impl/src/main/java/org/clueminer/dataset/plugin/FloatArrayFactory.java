@@ -23,7 +23,6 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
     private char decimalPointCharacter = '.';
 
     /**
-     * @param type
      * @param decimalPointCharacter the letter for decimal points, usually '.'
      */
     public FloatArrayFactory(char decimalPointCharacter) {
@@ -53,6 +52,7 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
 
     /**
      * Creates a new DataRow with the given initial capacity.
+     * @param size
      */
     @Override
     public FloatArrayDataRow create(int size) {
@@ -77,6 +77,9 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
      * parsed using
      * <code>Double.parseDouble(String)</code> .
      *
+     * @param strings
+     * @param attributes
+     * @return
      * @see FileDataRowReader
      */
     @Override

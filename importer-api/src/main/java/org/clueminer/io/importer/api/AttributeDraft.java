@@ -12,9 +12,9 @@ public interface AttributeDraft {
 
     void setName(String name);
 
-    Object getType();
+    Class<?> getType();
 
-    void setType(Object t);
+    void setType(Class<?> t);
 
     boolean isMeta();
 

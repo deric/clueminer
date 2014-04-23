@@ -43,7 +43,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
-    private Object defaultNumericType = Double.class;
+    private Class<?> defaultNumericType = Double.class;
     private String dataType = "discrete";
 
     public ImportContainerImpl() {
@@ -252,7 +252,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     }
 
     @Override
-    public void setDefaultNumericType(Object type) {
+    public void setDefaultNumericType(Class<?> type) {
         defaultNumericType = type;
     }
 

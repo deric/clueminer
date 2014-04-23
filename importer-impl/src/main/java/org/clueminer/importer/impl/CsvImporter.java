@@ -207,7 +207,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         if (matcher.find()) {
             String type = matcher.group(1).toLowerCase();
             AttributeDraft attr;
-            Object res;
+            Class<?> res;
             if (type.equals("double")) {
                 res = Double.class;
             } else if (type.equals("float")) {

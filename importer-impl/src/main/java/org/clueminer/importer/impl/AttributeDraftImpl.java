@@ -17,7 +17,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     private boolean meta;
     private boolean unique;
     private boolean numerical;
-    private Object type;
+    private Class<?> type;
     private Object defaultValue;
     private AttributeRole role;
     private boolean skipped;
@@ -31,12 +31,12 @@ public class AttributeDraftImpl implements AttributeDraft {
     }
 
     @Override
-    public void setType(Object t) {
+    public void setType(Class<?> t) {
         this.type = t;
     }
 
     @Override
-    public Object getType() {
+    public Class<?> getType() {
         return type;
     }
 

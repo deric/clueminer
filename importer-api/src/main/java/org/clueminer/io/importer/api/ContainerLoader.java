@@ -123,7 +123,7 @@ public interface ContainerLoader {
      *
      * @param type
      */
-    void setDefaultNumericType(Object type);
+    void setDefaultNumericType(Class<?> type);
 
     /**
      * Fetches attribute by a key
