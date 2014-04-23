@@ -1,7 +1,5 @@
 package org.clueminer.processor.ui;
 
-import java.awt.AWTEvent;
-import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
@@ -29,7 +27,7 @@ public class AttributeProp extends javax.swing.JPanel {
         initComponents();
         setType(atrd.getType());
         setRole(atrd.getRole().toString());
-        setName(attr.getName());
+        //setName(attr.getName());
     }
 
     public final void setAttrName(String name) {
@@ -158,7 +156,8 @@ public class AttributeProp extends javax.swing.JPanel {
     private void cbTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbTypeItemStateChanged
         System.out.println("type change: " + evt.toString());
         /**
-         * Sometimes current event might help to determine if it was triggered by an user
+         * Sometimes current event might help to determine if it was triggered
+         * by an user
          */
         //AWTEvent curr = EventQueue.getCurrentEvent();
 
@@ -214,7 +213,6 @@ public class AttributeProp extends javax.swing.JPanel {
         }
         throw new RuntimeException("type '" + type + "' is not supported");
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbRole;

@@ -13,8 +13,6 @@ public class ConfDemo extends JFrame {
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
     private ConfusionTable confTable;
 
-
-
     public ConfDemo() throws IOException {
         initComponents();
 
@@ -50,7 +48,7 @@ public class ConfDemo extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1.0;
         c.weighty = 1.0;
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.NORTHWEST;
