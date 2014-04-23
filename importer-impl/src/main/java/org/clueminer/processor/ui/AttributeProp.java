@@ -1,5 +1,7 @@
 package org.clueminer.processor.ui;
 
+import java.awt.AWTEvent;
+import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
@@ -15,6 +17,8 @@ public class AttributeProp extends javax.swing.JPanel {
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
     private final ImporterUI importerUI;
+    private boolean changingRole = false;
+    private boolean changingType = false;
 
     /**
      * Creates new form AttributeProp
@@ -34,6 +38,8 @@ public class AttributeProp extends javax.swing.JPanel {
     }
 
     public final void setType(Class<?> type) {
+        //event invoked by app (not user)
+        changingType = true;
         cbType.setSelectedItem(classToString(type));
     }
 
@@ -151,12 +157,21 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private void cbTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbTypeItemStateChanged
         System.out.println("type change: " + evt.toString());
+        /**
+         * Sometimes current event might help to determine if it was triggered by an user
+         */
+        //AWTEvent curr = EventQueue.getCurrentEvent();
 
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             String item = (String) cbType.getSelectedItem();
             attr.setType(stringToClass(item));
-
-            importerUI.fireImporterChanged();
+            if (changingType) {
+                //do not trigger extra event
+                changingType = false;
+            } else {
+                System.out.println("fireing type changed");
+                importerUI.fireImporterChanged();
+            }
         }
 
     }//GEN-LAST:event_cbTypeItemStateChanged
