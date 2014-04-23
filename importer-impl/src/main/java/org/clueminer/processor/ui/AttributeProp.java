@@ -23,20 +23,23 @@ public class AttributeProp extends javax.swing.JPanel {
         this.attr = atrd;
         this.importerUI = importerUI;
         initComponents();
-        cbType.setSelectedItem(atrd.getType().toString());
-        cbRole.setSelectedItem(atrd.getRole().toString());
-        tfName.setText(attr.getName());
+        setType(atrd.getType().toString());
+        setRole(atrd.getRole().toString());
+        setName(attr.getName());
     }
 
-    public void setAttrName(String name) {
+    public final void setAttrName(String name) {
+        System.out.println("trying to change name to: " + name);
         tfName.setText(name);
     }
 
-    public void setType(String type) {
+    public final void setType(String type) {
+        System.out.println("trying to change type to: " + type);
         cbType.setSelectedItem(type);
     }
 
-    public void setRole(String role) {
+    public final void setRole(String role) {
+        System.out.println("trying to change role to: " + role);
         cbRole.setSelectedItem(role);
     }
 
