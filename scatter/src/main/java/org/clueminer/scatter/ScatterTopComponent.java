@@ -41,9 +41,10 @@ import org.openide.util.Utilities;
     "HINT_ScatterTopComponent=This is a Scatter window"
 })
 public final class ScatterTopComponent extends TopComponent implements LookupListener {
+    private static final long serialVersionUID = 1752389678088215586L;
 
     private Lookup.Result<Clustering> result = null;
-    private ScatterPlot frame;
+    private final ScatterPlot frame;
     private static final Logger logger = Logger.getLogger(ScatterTopComponent.class.getName());
 
     public ScatterTopComponent() {

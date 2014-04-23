@@ -58,6 +58,9 @@ public class ScatterPlot extends JPanel {
 
         // Add plot to Swing component
         add(new InteractivePanel(plot), BorderLayout.CENTER);
+        revalidate();
+        validate();
+        repaint();
     }
 
 }
