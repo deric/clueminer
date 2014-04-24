@@ -1,6 +1,7 @@
 package org.clueminer.explorer;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,10 +59,11 @@ import org.openide.windows.CloneableTopComponent;
 public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, EvolutionListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
-    private final transient ExplorerManager explorerManager = new ExplorerManager();
+    private final transient ExplorerManager mgr = new ExplorerManager();
     private Lookup.Result<Clustering> result = null;
     private AbstractNode root;
     private ClusteringChildren clustChildren;
+    private ClusteringChildFactory factory;
     private Dataset<? extends Instance> dataset;
     private static final RequestProcessor RP = new RequestProcessor("Evolution");
     private RequestProcessor.Task task;
@@ -72,7 +74,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         setName(Bundle.CTL_ExplorerTopComponent());
         setToolTipText(Bundle.HINT_ExplorerTopComponent());
 
-        associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
+        associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
 
         //maybe we want IconView
         //explorerPane.setViewportView(new BeanTreeView());
@@ -83,7 +85,8 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         //root = new AbstractNode(new ClusteringChildren());
         //root.setDisplayName("Clustering Evolution");
         //explorerManager.setRootContext(root);
-        explorerManager.setRootContext(new AbstractNode(Children.create(new ClusteringChildFactory(), true)));
+        factory = new ClusteringChildFactory();
+        mgr.setRootContext(new AbstractNode(Children.create(factory, true)));
 
     }
 
@@ -178,9 +181,8 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             alg.setEvaluator(new AICScore());
             alg.addEvolutionListener(this);
 
-            result = alg.getLookup().lookupResult(Clustering.class);
-            result.addLookupListener(this);
-
+            //   result = alg.getLookup().lookupResult(Clustering.class);
+            //   result.addLookupListener(this);
             logger.log(Level.INFO, "starting evolution...");
             task = RP.create(alg);
             task.addTaskListener(this);
@@ -229,20 +231,21 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
     @Override
     public ExplorerManager getExplorerManager() {
-        return explorerManager;
+        return mgr;
     }
 
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         System.out.println("lookup got " + allClusterings.size() + " clusterings");
-        for (Clustering c : allClusterings) {
-            System.out.println("clustring size" + c.size());
-            System.out.println(c.toString());
-            root = new ClusteringNode(c);
-            //
-        }
-        //explorerManager.setRootContext(root);
+        System.out.println("clustering class: " + allClusterings.getClass().getName());
+        /*for (Clustering c : allClusterings) {
+         System.out.println("clustring size" + c.size());
+         System.out.println(c.toString());
+         root = new ClusteringNode(c);
+         //
+         }
+         mgr.setRootContext(root);*/
     }
 
     public void setDataset(Dataset<? extends Instance> dataset) {
@@ -257,8 +260,11 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         logger.log(Level.INFO, "best in generation, fitness: {0}", avgFitness);
-        clustChildren.createNodes(best.getClustering());
-
+        //clustChildren.createNodes(best.getClustering());
+        factory.createNodeForKey(new ClusteringNode(best.getClustering()));
+        List list = new LinkedList();
+        list.add(new ClusteringNode(best.getClustering()));
+        factory.createKeys(list);
     }
 
     @Override
