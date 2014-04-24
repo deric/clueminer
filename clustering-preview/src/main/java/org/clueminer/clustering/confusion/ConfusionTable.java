@@ -81,12 +81,12 @@ public class ConfusionTable extends JPanel {
         return (a != null && b != null);
     }
 
-    public void render(Graphics2D gr) {
+    public void render(Graphics2D g) {
         int x, y;
         int cnt;
         String s;
         g.setColor(Color.BLACK);
-
+        g.setFont(defaultFont);
         FontRenderContext frc = g.getFontRenderContext();
         FontMetrics fm = g.getFontMetrics();
         int fh = fm.getHeight();
@@ -95,14 +95,14 @@ public class ConfusionTable extends JPanel {
         for (int i = 0; i < a.size(); i++) {
             for (int j = 0; j < b.size(); j++) {
                 cnt = a.get(i).countMutualElements(b.get(j));
-                System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
+                //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
                 x = j * elemSize.width;
                 y = i * elemSize.height;
                 g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);
                 //System.out.println("drawing rect: " + x + ", " + y + " w = " + elemSize.width + ", h= " + elemSize.height);
                 s = String.valueOf(cnt);
                 fw = (g.getFont().getStringBounds(s, frc).getWidth());
-                g.drawString(s, (int) (x + fw / 2), y + elemSize.height / 2 + fh / 2);
+                g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
             }
         }
 
@@ -129,6 +129,8 @@ public class ConfusionTable extends JPanel {
         if (hasData()) {
             this.size.width = elemSize.width * a.size();
             this.size.height = elemSize.height * b.size();
+            double fsize = elemSize.height * 0.3;
+            defaultFont = defaultFont.deriveFont((float) fsize);
             //System.out.println("elem width = " + elemSize.width);
             //System.out.println("|a| = " + a.size());
             //System.out.println("matrix size: " + size.toString());

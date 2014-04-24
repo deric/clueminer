@@ -20,10 +20,10 @@ public class ConfusionMatrix extends JPanel {
     private RowLabels rowLabels;
     private ColumnLabels columnLabels;
     private Dimension dim = new Dimension();
-    private Dimension elemSize = new Dimension();
+    private final Dimension elemSize = new Dimension();
     private Clustering<Cluster> a;
     private Clustering<Cluster> b;
-    private Insets insets = new Insets(0, 0, 5, 10);
+    private final Insets insets = new Insets(0, 0, 5, 10);
 
     public ConfusionMatrix() {
         initComponents();

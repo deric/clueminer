@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.font.FontRenderContext;
 
 /**
@@ -11,6 +12,8 @@ import java.awt.font.FontRenderContext;
  * @author Tomas Barton
  */
 public class RowLabels extends AbstractLabels {
+
+    private final Insets insets = new Insets(0, 5, 0, 0);
 
     @Override
     protected void render(Graphics2D g) {
@@ -43,14 +46,14 @@ public class RowLabels extends AbstractLabels {
 
                 int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
                 checkMax(width);
-                g.drawString(s, 0, annY);
+                g.drawString(s, insets.left, annY);
             }
         }
     }
 
     @Override
     protected void recalculate() {
-        int width = 40 + maxWidth;
+        int width = 40 + maxWidth + insets.left + insets.right;
         int height;
         if (elementSize.height < lineHeight) {
             //no need to display unreadable text
@@ -65,7 +68,9 @@ public class RowLabels extends AbstractLabels {
         }
         this.size.width = width;
         this.size.height = height;
-        System.out.println("row labels size: " + size.toString());
+        double fsize = elementSize.width * 0.1;
+        defaultFont = defaultFont.deriveFont((float) fsize);
+        //System.out.println("row labels size: " + size.toString());
         setMinimumSize(size);
         setPreferredSize(size);
     }

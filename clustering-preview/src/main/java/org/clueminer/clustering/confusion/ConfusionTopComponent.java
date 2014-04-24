@@ -33,16 +33,17 @@ import org.openide.util.NbBundle.Messages;
     "HINT_ConfusionTopComponent=This is a Confusion window"
 })
 public final class ConfusionTopComponent extends TopComponent {
+
     private static final long serialVersionUID = -812734476374687722L;
 
-    private final ConfusionTable table;
+    private final ConfusionMatrix matrix;
 
     public ConfusionTopComponent() {
         initComponents();
         setName(Bundle.CTL_ConfusionTopComponent());
         setToolTipText(Bundle.HINT_ConfusionTopComponent());
-        table = new ConfusionTable();
-        add(table, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        matrix = new ConfusionMatrix();
+        add(matrix, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**

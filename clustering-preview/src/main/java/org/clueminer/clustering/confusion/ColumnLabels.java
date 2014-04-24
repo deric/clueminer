@@ -66,6 +66,8 @@ public class ColumnLabels extends AbstractLabels {
         }
         this.size.width = width;
         this.size.height = height;
+        double fsize = elementSize.width * 0.1;
+        defaultFont = defaultFont.deriveFont((float) fsize);
         setMinimumSize(this.size);
         setSize(this.size);
         setPreferredSize(size);
