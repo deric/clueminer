@@ -1,6 +1,7 @@
 package org.clueminer.clustering.confusion;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -18,8 +19,7 @@ import org.clueminer.clustering.api.Clustering;
 public class ConfusionTable extends JPanel {
 
     private static final long serialVersionUID = -7558362062012338814L;
-    private int elWidth = 30;
-    private int elHeight = 30;
+    private Dimension elemSize = new Dimension(10, 10);
     private Clustering<Cluster> a;
     private Clustering<Cluster> b;
     protected int fontSize = 10;
@@ -31,12 +31,18 @@ public class ConfusionTable extends JPanel {
 
     private void initComponents() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
+        setBackground(Color.BLUE);
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
         this.a = a;
         this.b = b;
 
+        repaint();
+    }
+
+    protected void updateSize(Dimension size) {
+        elemSize = size;
         repaint();
     }
 
@@ -71,15 +77,15 @@ public class ConfusionTable extends JPanel {
                 for (int j = 0; j < b.size(); j++) {
                     cnt = a.get(i).countMutualElements(b.get(j));
                     System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
-                    x = j * elWidth;
-                    y = i * elHeight;
-                    g.drawRect(x, y, elWidth - 1, elHeight - 1);
+                    x = j * elemSize.width;
+                    y = i * elemSize.height;
+                    g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);
                     s = String.valueOf(cnt);
                     fw = (g.getFont().getStringBounds(s, frc).getWidth());
-                    g.drawString(s, (int) (x + fw / 2), y + elHeight / 2 + fh / 2);
+                    g.drawString(s, (int) (x + fw / 2), y + elemSize.height / 2 + fh / 2);
                 }
             }
-
+            g.dispose();
         }
     }
 

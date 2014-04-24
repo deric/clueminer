@@ -1,6 +1,7 @@
 package org.clueminer.clustering.confusion;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
@@ -10,8 +11,6 @@ import java.awt.font.FontRenderContext;
  * @author Tomas Barton
  */
 public class RowLabels extends AbstractLabels {
-
-    private int maxWidth;
 
     @Override
     protected void render(Graphics2D g) {
@@ -49,16 +48,8 @@ public class RowLabels extends AbstractLabels {
         }
     }
 
-    private void checkMax(int width) {
-        if (width > maxWidth) {
-            maxWidth = width;
-            updateSize();
-            createBufferedGraphics();
-        }
-    }
-
     @Override
-    protected void updateSize() {
+    protected void recalculate() {
         int width = 40 + maxWidth;
         int height;
         if (elementSize.height < lineHeight) {
@@ -74,8 +65,15 @@ public class RowLabels extends AbstractLabels {
         }
         this.size.width = width;
         this.size.height = height;
+        System.out.println("row labels size: " + size.toString());
         setMinimumSize(size);
         setPreferredSize(size);
+    }
+
+    @Override
+    protected void updateSize(Dimension size) {
+        elementSize = size;
+        resetCache();
     }
 
     /**

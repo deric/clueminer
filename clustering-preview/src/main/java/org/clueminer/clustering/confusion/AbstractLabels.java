@@ -1,7 +1,6 @@
 package org.clueminer.clustering.confusion;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -28,6 +27,7 @@ public abstract class AbstractLabels extends JPanel {
     protected Font defaultFont;
     protected int lineHeight = 12;
     protected int fontSize = 10;
+    protected int maxWidth;
     protected static final String unknownLabel = "(unknown)";
 
     protected Clustering<Cluster> a;
@@ -36,12 +36,16 @@ public abstract class AbstractLabels extends JPanel {
     public AbstractLabels() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
         elementSize = new Dimension(30, 30);
-        setBackground(Color.red);
     }
 
     protected abstract void render(Graphics2D g);
 
-    protected abstract void updateSize();
+    protected abstract void updateSize(Dimension size);
+
+    /**
+     * Recalculate dimension of component
+     */
+    protected abstract void recalculate();
 
     public abstract boolean hasData();
 
@@ -105,17 +109,6 @@ public abstract class AbstractLabels extends JPanel {
                          null);
         }
     }
-    /*
-     @Override
-     public void paint(Graphics g) {
-     super.paint(g);
-
-     if (bufferedImage == null) {
-     createBufferedGraphics(); // } //cached image
-     }
-     g.drawImage(bufferedImage, 0, 0, size.width, size.height, null);
-     }
-     */
 
     @Override
     public void paintComponent(Graphics g) {
@@ -132,7 +125,7 @@ public abstract class AbstractLabels extends JPanel {
     }
 
     public void resetCache() {
-        updateSize();
+        recalculate();
         createBufferedGraphics();
         repaint();
     }
@@ -147,4 +140,13 @@ public abstract class AbstractLabels extends JPanel {
 
         repaint();
     }
+
+    protected void checkMax(int width) {
+        if (width > maxWidth) {
+            maxWidth = width;
+            recalculate();
+            createBufferedGraphics();
+        }
+    }
+
 }
