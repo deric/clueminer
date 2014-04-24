@@ -264,6 +264,29 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         return c;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
+        int i = 0;
+        int j;
+        for (Cluster<E> c : this) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("C").append(i++).append("[");
+            j = 0;
+            for (E inst : c) {
+                if (j > 0) {
+                    sb.append(",");
+                }
+                sb.append(inst.get(j));
+                j++;
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+    }
+
     class ClusterIterator implements Iterator<Cluster<E>> {
 
         private int index = 0;
