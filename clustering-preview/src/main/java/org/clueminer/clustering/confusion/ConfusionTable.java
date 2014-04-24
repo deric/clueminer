@@ -1,5 +1,6 @@
 package org.clueminer.clustering.confusion;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -8,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -24,6 +26,9 @@ public class ConfusionTable extends JPanel {
     private Clustering<Cluster> b;
     protected int fontSize = 10;
     protected Font defaultFont;
+    protected Dimension size = new Dimension(0, 0);
+    protected BufferedImage bufferedImage;
+    protected Graphics2D g;
 
     public ConfusionTable() {
         initComponents();
@@ -31,26 +36,33 @@ public class ConfusionTable extends JPanel {
 
     private void initComponents() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
-        setBackground(Color.BLUE);
+        //setBackground(Color.BLUE);
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
         this.a = a;
         this.b = b;
 
-        repaint();
+        resetCache();
     }
 
     protected void updateSize(Dimension size) {
         elemSize = size;
-        repaint();
+        resetCache();
     }
 
-    @Override
-    public void paintComponent(Graphics gr) {
-        super.paintComponent(gr);
-        Graphics2D g = (Graphics2D) gr;
+    protected void createBufferedGraphics() {
+        if (!hasData() || size.width == 0 || size.height == 0) {
+            return;
+        }
+        bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
+        g = bufferedImage.createGraphics();
+        this.setOpaque(false);
+        // clear the panel
+        g.setColor(getBackground());
+        g.fillRect(0, 0, size.width, size.height);
 
+        g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
@@ -61,32 +73,89 @@ public class ConfusionTable extends JPanel {
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        if (a != null && b != null) {
+        render(g);
+        g.dispose();
+    }
 
-            int x, y;
-            int cnt;
-            String s;
-            g.setColor(Color.RED);
+    public boolean hasData() {
+        return (a != null && b != null);
+    }
 
-            FontRenderContext frc = g.getFontRenderContext();
-            FontMetrics fm = g.getFontMetrics();
-            int fh = fm.getHeight();
-            double fw;
+    public void render(Graphics2D gr) {
+        int x, y;
+        int cnt;
+        String s;
+        g.setColor(Color.BLACK);
 
-            for (int i = 0; i < a.size(); i++) {
-                for (int j = 0; j < b.size(); j++) {
-                    cnt = a.get(i).countMutualElements(b.get(j));
-                    System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
-                    x = j * elemSize.width;
-                    y = i * elemSize.height;
-                    g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);
-                    s = String.valueOf(cnt);
-                    fw = (g.getFont().getStringBounds(s, frc).getWidth());
-                    g.drawString(s, (int) (x + fw / 2), y + elemSize.height / 2 + fh / 2);
-                }
+        FontRenderContext frc = g.getFontRenderContext();
+        FontMetrics fm = g.getFontMetrics();
+        int fh = fm.getHeight();
+        double fw;
+
+        for (int i = 0; i < a.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                cnt = a.get(i).countMutualElements(b.get(j));
+                System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
+                x = j * elemSize.width;
+                y = i * elemSize.height;
+                g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);
+                //System.out.println("drawing rect: " + x + ", " + y + " w = " + elemSize.width + ", h= " + elemSize.height);
+                s = String.valueOf(cnt);
+                fw = (g.getFont().getStringBounds(s, frc).getWidth());
+                g.drawString(s, (int) (x + fw / 2), y + elemSize.height / 2 + fh / 2);
             }
-            g.dispose();
         }
+
+    }
+
+    public void redraw() {
+        Graphics2D g2 = (Graphics2D) this.getGraphics();
+        if (g2 == null) {
+            return;
+        }
+        //buffered graphics is usually created before
+        if (!hasData() && bufferedImage == null) {
+            createBufferedGraphics();
+        }
+        if (bufferedImage != null) {
+            g2.drawImage(bufferedImage,
+                         0, 0,
+                         size.width, size.height,
+                         null);
+        }
+    }
+
+    protected void recalculate() {
+        if (hasData()) {
+            this.size.width = elemSize.width * a.size();
+            this.size.height = elemSize.height * b.size();
+            //System.out.println("elem width = " + elemSize.width);
+            //System.out.println("|a| = " + a.size());
+            //System.out.println("matrix size: " + size.toString());
+            setMinimumSize(this.size);
+            setSize(this.size);
+            setPreferredSize(size);
+        }
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (bufferedImage == null) {
+            createBufferedGraphics();
+        }
+        //cached image
+        g.drawImage(bufferedImage,
+                    0, 0,
+                    size.width, size.height,
+                    null);
+    }
+
+    public void resetCache() {
+        recalculate();
+        createBufferedGraphics();
+        repaint();
     }
 
 }

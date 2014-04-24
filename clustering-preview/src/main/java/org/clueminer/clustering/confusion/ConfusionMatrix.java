@@ -3,6 +3,7 @@ package org.clueminer.clustering.confusion;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
@@ -22,6 +23,7 @@ public class ConfusionMatrix extends JPanel {
     private Dimension elemSize = new Dimension();
     private Clustering<Cluster> a;
     private Clustering<Cluster> b;
+    private Insets insets = new Insets(0, 0, 5, 10);
 
     public ConfusionMatrix() {
         initComponents();
@@ -33,11 +35,12 @@ public class ConfusionMatrix extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 dim = getSize();
-                sizeUpdated();
-                System.out.println("matix size " + dim.width + ", " + dim.height);
-                revalidate();
-                validate();
-                repaint();
+                //System.out.println("matrix component " + dim.width + ", " + dim.height);
+                if (sizeUpdated()) {
+                    revalidate();
+                    validate();
+                    repaint();
+                }
             }
 
             @Override
@@ -57,29 +60,35 @@ public class ConfusionMatrix extends JPanel {
         });
 
         addRowLabels(0, 0);
-        addMatrix(1, 0);
+        addMatrix(0, 1);
         addColumnLabels(1, 1);
+
     }
 
-    public void sizeUpdated() {
+    public boolean sizeUpdated() {
         int cnt;
         if (a != null && b != null) {
             cnt = Math.min(a.size(), b.size());
             if (cnt > 0) {
-                elemSize.width = dim.width / cnt;
-                elemSize.height = dim.height / cnt;
-                rowLabels.updateSize(elemSize);
-                columnLabels.updateSize(elemSize);
-                table.updateSize(dim);
+                //System.out.println("rows = " + rowLabels.getSize());
+                //System.out.println("cols = " + columnLabels.getSize());
+                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / cnt;
+                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / cnt;
+                //System.out.println("cnt = " + cnt);
+                //System.out.println("setting elem size: " + elemSize);
+                if (elemSize.width > 0 && elemSize.height > 0) {
+                    rowLabels.updateSize(elemSize);
+                    columnLabels.updateSize(elemSize);
+                    table.updateSize(elemSize);
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    private void addMatrix(int column, int row) {
-        //we call constructor just one
-        if (table == null) {
-            table = new ConfusionTable();
-        }
+    private void addMatrix(int row, int column) {
+        table = new ConfusionTable();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -91,19 +100,18 @@ public class ConfusionMatrix extends JPanel {
         add(table, c);
     }
 
-    private void addRowLabels(int column, int row) {
+    private void addRowLabels(int row, int column) {
         rowLabels = new RowLabels();
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.fill = GridBagConstraints.VERTICAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         /**
          * at least one component must be stretching in the free space or
          * there must be some glue to fill the empty space (if no,
          * components would be centered to middle)
          */
-        c.weightx = 0.2;
+        c.weightx = 0.5;
         c.weighty = 1.0;
-        c.gridwidth = GridBagConstraints.REMAINDER;
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
@@ -111,16 +119,14 @@ public class ConfusionMatrix extends JPanel {
 
     }
 
-    private void addColumnLabels(int column, int row) {
+    private void addColumnLabels(int row, int column) {
         columnLabels = new ColumnLabels();
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.NONE;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1.0;
         //component in last row should be streatched to fill space at the bottom
         c.weighty = 0.0;
-        // c.gridwidth = GridBagConstraints.REMAINDER;
-        //  c.gridheight = GridBagConstraints.REMAINDER;
         c.insets = new java.awt.Insets(5, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
