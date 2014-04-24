@@ -3,6 +3,8 @@ package org.clueminer.clustering.confusion;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 
 /**
  *
@@ -10,7 +12,7 @@ import javax.swing.JPanel;
  */
 public class ConfusionMatrix extends JPanel {
 
-    private ConfusionMatrix matrix;
+    private ConfusionTable table;
     private RowLabels rowLabels;
     private ColumnLabels columnLabels;
 
@@ -28,8 +30,8 @@ public class ConfusionMatrix extends JPanel {
 
     private void addMatrix(int column, int row) {
         //we call constructor just one
-        if (matrix == null) {
-            matrix = new ConfusionMatrix();
+        if (table == null) {
+            table = new ConfusionTable();
         }
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -39,7 +41,7 @@ public class ConfusionMatrix extends JPanel {
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
-        add(matrix, c);
+        add(table, c);
     }
 
     private void addRowLabels(int column, int row) {
@@ -76,6 +78,12 @@ public class ConfusionMatrix extends JPanel {
         c.gridx = column;
         c.gridy = row;
         add(columnLabels, c);
+    }
+
+    public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
+        table.setClusterings(a, b);
+        rowLabels.setClusterings(a, b);
+        columnLabels.setClusterings(a, b);
     }
 
 }

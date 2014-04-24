@@ -1,11 +1,26 @@
 package org.clueminer.clustering.confusion;
 
-import javax.swing.JPanel;
+import java.awt.Graphics2D;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ColumnLabels extends JPanel {
+public class ColumnLabels extends AbstractLabels {
+
+    @Override
+    protected void render(Graphics2D g) {
+
+    }
+
+    @Override
+    protected void updateSize() {
+
+    }
+
+    @Override
+    public boolean hasData() {
+        return false;
+    }
 
 }

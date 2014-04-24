@@ -11,12 +11,12 @@ public class ConfDemo extends JFrame {
 
     private static final long serialVersionUID = 861272115283587449L;
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
-    private ConfusionTable confTable;
+    private ConfusionMatrix confMatrix;
 
     public ConfDemo() throws IOException {
         initComponents();
 
-        confTable.setClusterings(FakeClustering.iris(), FakeClustering.irisWrong());
+        confMatrix.setClusterings(FakeClustering.iris(), FakeClustering.irisWrong());
     }
 
     // this function will be run from the EDT
@@ -54,8 +54,8 @@ public class ConfDemo extends JFrame {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = WEST_INSETS;
 
-        confTable = new ConfusionTable();
-        this.getContentPane().add(confTable, c);
+        confMatrix = new ConfusionMatrix();
+        this.getContentPane().add(confMatrix, c);
         this.pack();
     }
 
