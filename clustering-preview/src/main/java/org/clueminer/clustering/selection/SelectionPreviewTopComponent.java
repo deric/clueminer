@@ -89,11 +89,11 @@ public final class SelectionPreviewTopComponent extends TopComponent implements 
             public void select(Workspace workspace) {
                 Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
                 if (dataset != null) {
-                    System.out.println("well map");
-                    System.out.println("dataset size = " + dataset.size());
-                    for (Instance inst : dataset) {
-                        System.out.println("inst: " + inst.toString());
-                    }
+                    /*System.out.println("well map");
+                     System.out.println("dataset size = " + dataset.size());
+                     for (Instance inst : dataset) {
+                     System.out.println("inst: " + inst.toString());
+                     }*/
                 }
 
             }

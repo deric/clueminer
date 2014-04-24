@@ -4,12 +4,13 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Tomas Barton
  */
-public interface Evolution extends Runnable {
+public interface Evolution extends Runnable, Lookup.Provider {
 
     /**
      *

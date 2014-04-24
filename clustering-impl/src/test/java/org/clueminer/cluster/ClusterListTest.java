@@ -357,4 +357,11 @@ public class ClusterListTest {
         assertEquals(size, c.getClusterId());
     }
 
+    @Test
+    public void testToString() {
+        String str = clusters.toString();
+        assertNotNull(str);
+        System.out.println(str);
+    }
+
 }

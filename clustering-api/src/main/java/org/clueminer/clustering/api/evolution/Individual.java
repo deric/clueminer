@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 
 /**
+ * @param <E>
  * @TODO eventually move to the API package, when mature enough
  *
  * @author Tomas Barton

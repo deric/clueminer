@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evaluation.AICScore;
 import org.clueminer.evolution.EvolutionFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -19,6 +22,7 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.IconView;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -51,12 +55,13 @@ import org.openide.windows.CloneableTopComponent;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener {
+public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, EvolutionListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
-    private transient ExplorerManager explorerManager = new ExplorerManager();
+    private final transient ExplorerManager explorerManager = new ExplorerManager();
     private Lookup.Result<Clustering> result = null;
-    private ClusteringNode root;
+    private AbstractNode root;
+    private ClusteringChildren clustChildren;
     private Dataset<? extends Instance> dataset;
     private static final RequestProcessor RP = new RequestProcessor("Evolution");
     private RequestProcessor.Task task;
@@ -67,16 +72,19 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         setName(Bundle.CTL_ExplorerTopComponent());
         setToolTipText(Bundle.HINT_ExplorerTopComponent());
 
+        clustChildren = new ClusteringChildren();
         associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
-        explorerManager.setRootContext(new AbstractNode(new ClusteringChildren()));
-        explorerManager.getRootContext().setDisplayName("Marilyn Monroe's Movies");
+        //root = new AbstractNode(new ClusteringChildren());
+        //root.setDisplayName("Clustering Evolution");
+        //explorerManager.setRootContext(root);
+        explorerManager.setRootContext(new AbstractNode(Children.create(new ClusteringChildFactory(), true)));
 
     }
 
     private String[] initEvolution() {
         EvolutionFactory ef = EvolutionFactory.getInstance();
         List<String> list = ef.getProviders();
-        System.out.println("evolution providers: "+list.size());
+        System.out.println("evolution providers: " + list.size());
         String[] res = new String[list.size()];
         int i = 0;
         for (String s : list) {
@@ -161,7 +169,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             alg.setDataset(dataset);
             alg.setGenerations(sliderGenerations.getValue());
             alg.setAlgorithm(new KMeans(3, 100));
-            
+            alg.setEvaluator(new AICScore());
+            alg.addEvolutionListener(this);
+
+            result = alg.getLookup().lookupResult(Clustering.class);
+            result.addLookupListener(this);
+
             logger.log(Level.INFO, "starting evolution...");
             task = RP.create(alg);
             task.addTaskListener(this);
@@ -216,12 +229,13 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        System.out.println("got "+allClusterings.size() +" clusterings");
-        /*for (Clustering c : allClusterings) {
+        System.out.println("lookup got " + allClusterings.size() + " clusterings");
+        for (Clustering c : allClusterings) {
             System.out.println("clustring size" + c.size());
+            System.out.println(c.toString());
             root = new ClusteringNode(c);
             //
-        }*/
+        }
         //explorerManager.setRootContext(root);
     }
 
@@ -230,7 +244,19 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     @Override
-    public void taskFinished(Task task) {        
+    public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
+    }
+
+    @Override
+    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
+        logger.log(Level.INFO, "best in generation, fitness: {0}", avgFitness);
+        clustChildren.createNodes(best.getClustering());
+
+    }
+
+    @Override
+    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
+        logger.log(Level.INFO, "final result of the evolution, generation: {0} best fitness: {1}", new Object[]{g, bestFitness});
     }
 }

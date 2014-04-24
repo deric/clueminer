@@ -17,6 +17,9 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -24,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class AttrEvolution implements Runnable, Evolution {
+public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private int populationSize = 100;
     private int generations;
@@ -56,9 +59,14 @@ public class AttrEvolution implements Runnable, Evolution {
     protected ClusteringAlgorithm algorithm;
     private boolean maximizedFitness;
     private static String name = "Attributes' evolution";
-    private static Logger logger = Logger.getLogger(AttrEvolution.class.getName());
+    private static final Logger logger = Logger.getLogger(AttrEvolution.class.getName());
+    private transient InstanceContent instanceContent;
+    private transient Lookup lookup;
 
     public AttrEvolution() {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+
         isFinished = false;
         avgFitness = new Pair<Double, Double>();
         bestFitness = new Pair<Double, Double>();
@@ -314,5 +322,10 @@ public class AttrEvolution implements Runnable, Evolution {
     @Override
     public void setGenerations(int generations) {
         this.generations = generations;
+    }
+
+    @Override
+    public Lookup getLookup() {
+        return lookup;
     }
 }

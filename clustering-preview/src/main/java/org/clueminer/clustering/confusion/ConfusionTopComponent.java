@@ -2,11 +2,17 @@ package org.clueminer.clustering.confusion;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.Collection;
+import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -32,11 +38,12 @@ import org.openide.util.NbBundle.Messages;
     "CTL_ConfusionTopComponent=Confusion Window",
     "HINT_ConfusionTopComponent=This is a Confusion window"
 })
-public final class ConfusionTopComponent extends TopComponent {
+public final class ConfusionTopComponent extends TopComponent implements LookupListener {
 
     private static final long serialVersionUID = -812734476374687722L;
 
     private final ConfusionMatrix matrix;
+    private Lookup.Result<Clustering> result = null;
 
     public ConfusionTopComponent() {
         initComponents();
@@ -61,12 +68,13 @@ public final class ConfusionTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        result.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        result.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -79,5 +87,20 @@ public final class ConfusionTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends Clustering> clusterings = result.allInstances();
+        if (!clusterings.isEmpty()) {
+            Clustering clustering = clusterings.iterator().next();
+            System.out.println("got clustering " + clustering.size());
+            //jLabel1.setText(Integer.toString(clustering.getIndex()));
+            //jLabel2.setText(clustering.getDate().toString());
+        } else {
+            //jLabel1.setText("[no selection]");
+            //jLabel2.setText("");
+            System.out.println("no clusterings available");
+        }
     }
 }
