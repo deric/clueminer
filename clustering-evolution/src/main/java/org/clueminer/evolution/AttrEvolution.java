@@ -190,6 +190,7 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
+            //instanceContent.add(pop.getBestIndividual().getClustering());
             fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());
         }
 

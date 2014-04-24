@@ -72,8 +72,14 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         setName(Bundle.CTL_ExplorerTopComponent());
         setToolTipText(Bundle.HINT_ExplorerTopComponent());
 
-        clustChildren = new ClusteringChildren();
         associateLookup(ExplorerUtils.createLookup(explorerManager, getActionMap()));
+
+        //maybe we want IconView
+        //explorerPane.setViewportView(new BeanTreeView());
+        explorerPane.setViewportView(new IconView());
+
+        clustChildren = new ClusteringChildren();
+
         //root = new AbstractNode(new ClusteringChildren());
         //root.setDisplayName("Clustering Evolution");
         //explorerManager.setRootContext(root);
@@ -101,7 +107,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        explorerPane = new IconView();
+        explorerPane = new javax.swing.JScrollPane();
         jToolBar1 = new javax.swing.JToolBar();
         btnStart = new javax.swing.JButton();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
