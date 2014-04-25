@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.ColorGenerator;
  */
 public class UniqueColors implements ColorGenerator {
 
+    private static final long serialVersionUID = -8374193292627939796L;
     private int id = 0;
     private static final byte EXPECTED_MAX = 15;
     private static final int HUE_FACTOR = 255 / EXPECTED_MAX;
@@ -24,6 +25,11 @@ public class UniqueColors implements ColorGenerator {
     @Override
     public Color next(Color base) {
         return next();
+    }
+
+    @Override
+    public void reset() {
+        id = 0;
     }
 
 }

@@ -36,4 +36,9 @@ public class PaletteGenerator implements ColorGenerator {
 
         return previous;
     }
+
+    @Override
+    public void reset() {
+        previous = null;
+    }
 }

@@ -37,4 +37,9 @@ public class ColorBrewer implements ColorGenerator {
         return rg.next();
     }
 
+    @Override
+    public void reset() {
+        cnt = 0;
+    }
+
 }

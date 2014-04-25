@@ -47,4 +47,9 @@ public class RandomColorsGenerator implements ColorGenerator {
     public Color next(Color base) {
         return next();
     }
+
+    @Override
+    public void reset() {
+        //nothing to do
+    }
 }

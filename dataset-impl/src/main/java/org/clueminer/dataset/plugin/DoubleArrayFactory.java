@@ -64,6 +64,7 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
 
     /**
      * Creates a new DataRow with the given initial capacity.
+     * @param size
      */
     @Override
     public DoubleArrayDataRow create(int size) {

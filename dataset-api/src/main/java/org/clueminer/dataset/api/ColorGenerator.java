@@ -12,11 +12,16 @@ import java.io.Serializable;
 public interface ColorGenerator extends Serializable{
 
     public Color next();
-    
+
     /**
      * Generate color based on the previous color
      * @param base - color on which will be the result based
-     * @return 
+     * @return
      */
     public Color next(Color base);
+
+    /**
+     * Go back to initial color (if generator is not purely random)
+     */
+    public void reset();
 }
