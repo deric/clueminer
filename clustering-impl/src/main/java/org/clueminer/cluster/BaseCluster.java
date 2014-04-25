@@ -107,7 +107,6 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     public int countMutualElements(Cluster c) {
         int mutual = 0;
         for (Instance inst : this) {
-            System.out.println("inst " + inst.toString() + " idx: " + inst.getIndex());
             if (c.contains(inst.getIndex())) {
                 mutual++;
             }
