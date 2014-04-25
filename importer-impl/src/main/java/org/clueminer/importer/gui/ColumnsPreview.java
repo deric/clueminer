@@ -3,7 +3,10 @@ package org.clueminer.importer.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -25,6 +28,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     private AttributeDraft[] attributes;
     private AttributeProp[] attrPanels;
     private ImporterUI importerUI;
+    private static final Logger logger = Logger.getLogger(ColumnsPreview.class.getName());
 
     public ColumnsPreview() {
         initComponents();
@@ -37,26 +41,32 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     @Override
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         this.importerUI = importerUI;
-        Container container = importer.getContainer();
-
-        if (container != null) {
-            ContainerLoader loader = container.getLoader();
-            if (loader != null) {
-                Iterable<AttributeDraft> attrs = loader.getAttributes();
-                System.out.println("detected " + loader.getAttributeCount() + " attributes");
-                if (numAttributes != loader.getAttributeCount()) {
-                    numAttributes = loader.getAttributeCount();
-                    this.removeAll();
-                    attributes = new AttributeDraft[numAttributes];
-                    attrPanels = new AttributeProp[numAttributes];
-                    for (AttributeDraft atrd : attrs) {
-                        generateAttribute(atrd.getIndex(), atrd);
+        final Container container = importer.getContainer();
+        final ColumnsPreview preview = this;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (container != null) {
+                    // we might have to check if reload was completed
+                    ContainerLoader loader = container.getLoader();
+                    if (loader != null) {
+                        Iterable<AttributeDraft> attrs = loader.getAttributes();
+                        logger.log(Level.INFO, "detected {0} attributes", loader.getAttributeCount());
+                        if (numAttributes != loader.getAttributeCount()) {
+                            numAttributes = loader.getAttributeCount();
+                            preview.removeAll();
+                            attributes = new AttributeDraft[numAttributes];
+                            attrPanels = new AttributeProp[numAttributes];
+                            for (AttributeDraft atrd : attrs) {
+                                generateAttribute(atrd.getIndex(), atrd);
+                            }
+                        }
+                    } else {
+                        NotifyUtil.error("Error", "missing loader", false);
                     }
                 }
-            } else {
-                NotifyUtil.error("Error", "missing loader", false);
             }
-        }
+        });
     }
 
     private void generateAttribute(int num, AttributeDraft atrd) {
@@ -85,7 +95,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     }
 
     public void attributeChanged(AttributeDraft attr) {
-        System.out.println("updating attribute " + attr.getName() + " idx " + attr.getIndex());
+        logger.log(Level.INFO, "updating attribute {0} idx {1}", new Object[]{attr.getName(), attr.getIndex()});
         int idx = attr.getIndex();
         if (idx < attrPanels.length) {
             attrPanels[idx].setAttrName(attr.getName());

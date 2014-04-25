@@ -36,9 +36,9 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     protected static final int NULL_INDEX = -1;
 
     private ObjectList<InstanceDraft> instanceList;
-    private final ObjectList<AttributeDraft> attributeList;
+    private ObjectList<AttributeDraft> attributeList;
     private Dataset<? extends Instance> dataset;
-    private final Object2ObjectMap<String, AttributeDraft> attributeMap;
+    private Object2ObjectMap<String, AttributeDraft> attributeMap;
     private Report report;
     private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
@@ -303,10 +303,15 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         report = new Report();
         instanceList = new ObjectArrayList<InstanceDraft>();
         //we keep attributes from previous iteration
-        //attributeList = new ObjectArrayList<AttributeDraft>();
-        //attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
+        //reset only instances
         instanceMap = new Object2IntOpenHashMap<String>();
         instanceMap.defaultReturnValue(NULL_INDEX);
+    }
+
+    @Override
+    public void resetAttributes() {
+        attributeList = new ObjectArrayList<AttributeDraft>();
+        attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

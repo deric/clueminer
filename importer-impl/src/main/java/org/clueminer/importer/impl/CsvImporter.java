@@ -78,7 +78,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     public void setSeparator(char separator) {
-        this.separator = separator;
+        if (this.separator != separator) {
+            this.separator = separator;
+            //might change number of detected attributes, it's safer to remove
+            //all of them
+            loader.resetAttributes();
+        }
     }
 
     @Override

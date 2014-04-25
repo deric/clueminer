@@ -154,4 +154,10 @@ public interface ContainerLoader {
      */
     void reset();
 
+    /**
+     * Will remove all attributes (should be triggered when number of attributes
+     * changes)
+     */
+    void resetAttributes();
+
 }
