@@ -16,14 +16,13 @@ import org.clueminer.exception.EscapeException;
  */
 public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
 
-    private static int DEFAULT_CAPACITY = 50;
+    private static int DEFAULT_CAPACITY = 5;
     /**
      * The decimal point character.
      */
     private char decimalPointCharacter = '.';
 
     /**
-     * @param type
      * @param decimalPointCharacter the letter for decimal points, usually '.'
      */
     public DoubleArrayFactory(char decimalPointCharacter) {
@@ -77,6 +76,9 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * parsed using
      * <code>Double.parseDouble(String)</code> .
      *
+     * @param strings
+     * @param attributes
+     * @return
      * @see FileDataRowReader
      */
     @Override
@@ -112,6 +114,9 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * <code>data[i]</code> will be cast to String. If it is numerical, it will
      * be cast to Number.
      *
+     * @param data
+     * @param attributes
+     * @return
      * @throws ClassCastException if data class does not match attribute type
      * @see DatabaseDataRowReader
      */
@@ -139,6 +144,9 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * <code>data[i]</code> will be cast to String. If it is numerical, it will
      * be cast to Number.
      *
+     * @param data
+     * @param attributes
+     * @return
      * @throws ClassCastException if data class does not match attribute type
      * @see DatabaseDataRowReader
      */
