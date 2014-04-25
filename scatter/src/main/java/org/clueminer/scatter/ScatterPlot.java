@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -30,36 +31,48 @@ public class ScatterPlot extends JPanel {
         setSize(new Dimension(800, 600));
     }
 
-    public void setClustering(Clustering<Cluster> clustering) {
-        removeAll();
+    /**
+     * Updating chart might take a while, therefore it's safer to preform update
+     * in EDT
+     *
+     * @param clustering
+     */
+    public void setClustering(final Clustering<Cluster> clustering) {
+        SwingUtilities.invokeLater(new Runnable() {
 
-        // Create a new xy-plot
-        XYPlot plot = new XYPlot();
+            @Override
+            public void run() {
+                removeAll();
 
-        for (Cluster<Instance> clust : clustering) {
-            DataTable data = new DataTable(Double.class, Double.class);
-            for (Instance inst : clust) {
-                data.add(inst.value(0), inst.value(1));
+                // Create a new xy-plot
+                XYPlot plot = new XYPlot();
+
+                for (Cluster<Instance> clust : clustering) {
+                    DataTable data = new DataTable(Double.class, Double.class);
+                    for (Instance inst : clust) {
+                        data.add(inst.value(0), inst.value(1));
+                    }
+
+                    DataSeries ds = new DataSeries(clust.getName(), data);
+                    plot.add(ds);
+
+                    PointRenderer pointRenderer = plot.getPointRenderer(ds);
+                    pointRenderer.setColor(clust.getColor());
+                    pointRenderer.setShape(shape);
+                }
+
+                // Format plot
+                plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
+                plot.getTitle().setText("Scatterplot of clustering");
+                plot.setLegendVisible(true);
+
+                // Add plot to Swing component
+                add(new InteractivePanel(plot), BorderLayout.CENTER);
+                revalidate();
+                validate();
+                repaint();
             }
-
-            DataSeries ds = new DataSeries(clust.getName(), data);
-            plot.add(ds);
-
-            PointRenderer pointRenderer = plot.getPointRenderer(ds);
-            pointRenderer.setColor(clust.getColor());
-            pointRenderer.setShape(shape);
-        }
-
-        // Format plot
-        plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-        plot.getTitle().setText("Scatterplot of clustering");
-        plot.setLegendVisible(true);
-
-        // Add plot to Swing component
-        add(new InteractivePanel(plot), BorderLayout.CENTER);
-        revalidate();
-        validate();
-        repaint();
+        });
     }
 
 }

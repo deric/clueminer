@@ -3,7 +3,6 @@ package org.clueminer.scatter;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -41,6 +40,7 @@ import org.openide.util.Utilities;
     "HINT_ScatterTopComponent=This is a Scatter window"
 })
 public final class ScatterTopComponent extends TopComponent implements LookupListener {
+
     private static final long serialVersionUID = 1752389678088215586L;
 
     private Lookup.Result<Clustering> result = null;
@@ -96,9 +96,7 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        logger.log(Level.INFO, "clustering lookup: got {0} clusterings", allClusterings.size());
         for (Clustering c : allClusterings) {
-            System.out.println("clustring size" + c.size());
             frame.setClustering(c);
         }
     }
