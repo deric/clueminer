@@ -45,10 +45,10 @@ public class PAM extends KClustererBase implements PartitioningClustering {
             for (int i = 0; i < dataset.size(); i++) {
                 int assign = 0;
                 current = dataset.get(i);
-                double minDist = distance.measure(dataset.get(medioids[0]), current);
+                double minDist = distanceMeasure.measure(dataset.get(medioids[0]), current);
 
                 for (int k = 1; k < medioids.length; k++) {
-                    dist = distance.measure(dataset.get(medioids[k]), current);
+                    dist = distanceMeasure.measure(dataset.get(medioids[k]), current);
                     if (dist < minDist) {
                         minDist = dist;
                         assign = k;
@@ -73,7 +73,7 @@ public class PAM extends KClustererBase implements PartitioningClustering {
                     if (j == i || assignments.assigned(j) != clusterId) {
                         continue;
                     }
-                    currCandidateDist += Math.pow(distance.measure(medCandadate, dataset.get(j)), 2);
+                    currCandidateDist += Math.pow(distanceMeasure.measure(medCandadate, dataset.get(j)), 2);
                 }
 
                 if (currCandidateDist < bestMedCandDist[clusterId]) {

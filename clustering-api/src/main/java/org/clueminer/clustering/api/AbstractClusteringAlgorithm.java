@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.distance.api.DistanceMeasure;
 
 /**
@@ -9,6 +10,7 @@ import org.clueminer.distance.api.DistanceMeasure;
 public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
     protected DistanceMeasure distanceMeasure;
+    protected ColorGenerator colorGenerator;
 
     public static final String DISTANCE = "distanceMeasure";
 
@@ -21,4 +23,15 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     public void setDistanceFunction(DistanceMeasure dm) {
         this.distanceMeasure = dm;
     }
+
+    @Override
+    public ColorGenerator getColorGenerator() {
+        return colorGenerator;
+    }
+
+    @Override
+    public void setColorGenerator(ColorGenerator colorGenerator) {
+        this.colorGenerator = colorGenerator;
+    }
+
 }

@@ -1,6 +1,7 @@
 package org.clueminer.clustering.algorithm;
 
 import org.clueminer.cluster.ClusterList;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -13,18 +14,16 @@ import org.clueminer.distance.api.DistanceMeasure;
  *
  * @author Tomas Barton
  */
-public abstract class KClustererBase implements PartitioningClustering {
-
-    protected DistanceMeasure distance;
-
+public abstract class KClustererBase extends AbstractClusteringAlgorithm implements PartitioningClustering {
+    
     @Override
     public DistanceMeasure getDistanceFunction() {
-        return distance;
+        return distanceMeasure;
     }
 
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
-        this.distance = dm;
+        this.distanceMeasure = dm;
     }
 
     /**

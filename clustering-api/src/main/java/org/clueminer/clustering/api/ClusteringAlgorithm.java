@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api;
 
 import java.util.prefs.Preferences;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -32,4 +33,17 @@ public interface ClusteringAlgorithm {
     public DistanceMeasure getDistanceFunction();
 
     public void setDistanceFunction(DistanceMeasure dm);
+
+    /**
+     * Algorithm responsible for assigning colors to new clusters
+     *
+     * @param cg
+     */
+    public void setColorGenerator(ColorGenerator cg);
+
+    /**
+     *
+     * @return
+     */
+    public ColorGenerator getColorGenerator();
 }

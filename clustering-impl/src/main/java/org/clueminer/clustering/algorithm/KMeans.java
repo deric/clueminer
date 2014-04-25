@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.BaseCluster;
 import org.clueminer.cluster.ClusterList;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
@@ -28,7 +29,7 @@ import org.clueminer.utils.DatasetTools;
  * @author Thomas Abeel
  *
  */
-public class KMeans implements PartitioningClustering {
+public class KMeans extends AbstractClusteringAlgorithm implements PartitioningClustering {
 
     /**
      * The number of clusters.
@@ -45,11 +46,7 @@ public class KMeans implements PartitioningClustering {
      * Random generator for this clusterer.
      */
     private Random rg;
-    /**
-     * The distance measure used in the algorithm, defaults to Euclidean
-     * distance.
-     */
-    private DistanceMeasure dm;
+    
     /**
      * The centroids of the different clusters.
      */
@@ -100,7 +97,7 @@ public class KMeans implements PartitioningClustering {
     public KMeans(int clusters, int iterations, DistanceMeasure dm) {
         this.numberOfClusters = clusters;
         this.numberOfIterations = iterations;
-        this.dm = dm;
+        this.distanceMeasure = dm;
         rg = new Random(System.currentTimeMillis());
     }
 
@@ -111,12 +108,12 @@ public class KMeans implements PartitioningClustering {
 
     @Override
     public DistanceMeasure getDistanceFunction() {
-        return dm;
+        return distanceMeasure;
     }
 
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
-        this.dm = dm;
+        this.distanceMeasure = dm;
     }
 
     @Override
@@ -176,10 +173,10 @@ public class KMeans implements PartitioningClustering {
             int[] assignment = new int[data.size()];
             for (int i = 0; i < data.size(); i++) {
                 int tmpCluster = 0;
-                double minDistance = dm.measure(centroids[0], data.instance(i));
+                double minDistance = distanceMeasure.measure(centroids[0], data.instance(i));
                 for (int j = 1; j < centroids.length; j++) {
-                    double dist = dm.measure(centroids[j], data.instance(i));
-                    if (dm.compare(dist, minDistance)) {
+                    double dist = distanceMeasure.measure(centroids[j], data.instance(i));
+                    if (distanceMeasure.compare(dist, minDistance)) {
                         minDistance = dist;
                         tmpCluster = j;
                     }
@@ -211,7 +208,7 @@ public class KMeans implements PartitioningClustering {
                         tmp[j] = (float) sumPosition[i][j] / countPosition[i];
                     }
                     Instance newCentroid = new DoubleArrayDataRow(tmp);
-                    if (dm.measure(newCentroid, centroids[i]) > 0.0001) {
+                    if (distanceMeasure.measure(newCentroid, centroids[i]) > 0.0001) {
                         centroidsChanged = true;
                         centroids[i] = newCentroid;
                     }
@@ -241,10 +238,10 @@ public class KMeans implements PartitioningClustering {
         }
         for (int i = 0; i < data.size(); i++) {
             int tmpCluster = 0;
-            double minDistance = dm.measure(centroids[0], data.instance(i));
+            double minDistance = distanceMeasure.measure(centroids[0], data.instance(i));
             for (int j = 0; j < centroids.length; j++) {
-                double dist = dm.measure(centroids[j], data.instance(i));
-                if (dm.compare(dist, minDistance)) {
+                double dist = distanceMeasure.measure(centroids[j], data.instance(i));
+                if (distanceMeasure.compare(dist, minDistance)) {
                     minDistance = dist;
                     tmpCluster = j;
                 }
