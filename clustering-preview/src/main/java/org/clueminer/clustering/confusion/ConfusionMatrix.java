@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.Clustering;
  */
 public class ConfusionMatrix extends JPanel {
 
+    private static final long serialVersionUID = 8898532203822388282L;
     private ConfusionTable table;
     private RowLabels rowLabels;
     private ColumnLabels columnLabels;
@@ -106,9 +107,9 @@ public class ConfusionMatrix extends JPanel {
         c.fill = GridBagConstraints.VERTICAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         /**
-         * at least one component must be stretching in the free space or
-         * there must be some glue to fill the empty space (if no,
-         * components would be centered to middle)
+         * at least one component must be stretching in the free space or there
+         * must be some glue to fill the empty space (if no, components would be
+         * centered to middle)
          */
         c.weightx = 0.5;
         c.weighty = 1.0;

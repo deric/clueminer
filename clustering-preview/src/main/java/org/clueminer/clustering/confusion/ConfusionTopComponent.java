@@ -1,6 +1,7 @@
 package org.clueminer.clustering.confusion;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Collection;
 import org.clueminer.clustering.api.Clustering;
@@ -50,7 +51,8 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
         setName(Bundle.CTL_ConfusionTopComponent());
         setToolTipText(Bundle.HINT_ConfusionTopComponent());
         matrix = new ConfusionMatrix();
-        add(matrix, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        contentPane.setLayout(new GridBagLayout());
+        contentPane.add(matrix, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**
@@ -61,10 +63,35 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setLayout(new java.awt.GridBagLayout());
+        contentPane = new javax.swing.JPanel();
+        lbStatus = new javax.swing.JLabel();
+
+        lbStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        org.openide.awt.Mnemonics.setLocalizedText(lbStatus, org.openide.util.NbBundle.getMessage(ConfusionTopComponent.class, "ConfusionTopComponent.lbStatus.text")); // NOI18N
+        lbStatus.setToolTipText(org.openide.util.NbBundle.getMessage(ConfusionTopComponent.class, "ConfusionTopComponent.lbStatus.toolTipText")); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(contentPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(lbStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(contentPane, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel contentPane;
+    private javax.swing.JLabel lbStatus;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
@@ -93,14 +120,17 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> clusterings = result.allInstances();
         if (!clusterings.isEmpty()) {
-            Clustering clustering = clusterings.iterator().next();
-            System.out.println("got clustering " + clustering.size());
-            //jLabel1.setText(Integer.toString(clustering.getIndex()));
-            //jLabel2.setText(clustering.getDate().toString());
+            if (clusterings.size() == 2) {
+                lbStatus.setText("");
+                Clustering clustA = clusterings.iterator().next();
+                Clustering clustB = clusterings.iterator().next();
+                matrix.setClusterings(clustA, clustB);
+                matrix.setSize(getSize().width, getSize().height);
+            } else {
+                lbStatus.setText("[ please select 2 clusterings ]");
+            }
         } else {
-            //jLabel1.setText("[no selection]");
-            //jLabel2.setText("");
-            System.out.println("no clusterings available");
+            lbStatus.setText("[ no clusterings available ]");
         }
     }
 }

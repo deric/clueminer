@@ -22,12 +22,12 @@ import org.openide.util.lookup.Lookups;
  */
 public class ClusteringNode extends AbstractNode {
 
-    private Clustering<Cluster> clustering;
 
     public ClusteringNode(Clustering<Cluster> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
-        setDisplayName(generateName());
-        this.clustering = clusters;
+        String name = generateName();
+        setDisplayName(name);
+        setName(name);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class ClusteringNode extends AbstractNode {
     }
 
     private String generateName() {
+        Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
         if (clustering != null) {
             StringBuilder sb = new StringBuilder("(" + clustering.size() + ")");
             sb.append("[");
@@ -61,6 +62,7 @@ public class ClusteringNode extends AbstractNode {
                     sb.append(',');
                 }
                 sb.append(s);
+                i++;
             }
             sb.append("]");
             return sb.toString();
