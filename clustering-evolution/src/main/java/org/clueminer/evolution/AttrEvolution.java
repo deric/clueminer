@@ -12,7 +12,9 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
@@ -33,7 +35,7 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
     private int generations;
     private Dataset<? extends Instance> dataset;
     private boolean isFinished = true;
-    private Random rand = new Random();
+    private final Random rand = new Random();
     /**
      * Probability of mutation
      */
@@ -64,19 +66,19 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
     private transient Lookup lookup;
 
     public AttrEvolution() {
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
-
-        isFinished = false;
-        avgFitness = new Pair<Double, Double>();
-        bestFitness = new Pair<Double, Double>();
-        time = new Pair<Long, Long>();
+        initEvolution();
     }
 
     public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
-        isFinished = false;
         this.generations = generations;
+        initEvolution();
+    }
+
+    private void initEvolution() {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        isFinished = false;
         avgFitness = new Pair<Double, Double>();
         bestFitness = new Pair<Double, Double>();
         time = new Pair<Long, Long>();
@@ -190,8 +192,16 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
-            //instanceContent.add(pop.getBestIndividual().getClustering());
-            fireBestIndividual(g, pop.getBestIndividual(), pop.getAvgFitness());
+            AbstractIndividual bestInd = pop.getBestIndividual();
+            Clustering<Cluster> clustering = bestInd.getClustering();
+            System.out.print("adding clustering to lookup ");
+            System.out.print("[");
+            for (int s : clustering.clusterSizes()) {
+                System.out.print(s + ", ");
+            }
+            System.out.println("]");
+            instanceContent.add(clustering);
+            fireBestIndividual(g, bestInd, pop.getAvgFitness());
         }
 
         time.b = System.currentTimeMillis();

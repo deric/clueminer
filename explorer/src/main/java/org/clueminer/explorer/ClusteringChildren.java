@@ -1,46 +1,53 @@
 package org.clueminer.explorer;
 
-import java.util.ArrayList;
-import org.clueminer.clustering.api.Cluster;
+import java.util.Collection;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ClusteringChildren extends Children.Keys {
+public class ClusteringChildren extends Children.Keys<Clustering> {
 
-    private Clustering<Cluster> clustering;
-    private ArrayList list = new ArrayList();
+    private Lookup.Result<Clustering> result;
 
     public ClusteringChildren() {
+
     }
 
-    public ClusteringChildren(Clustering<Cluster> clusters) {
-        this.clustering = clusters;
+    public ClusteringChildren(Evolution alg) {
+        result = alg.getLookup().lookupResult(Clustering.class);
+        result.addLookupListener(new LookupListener() {
+            @Override
+            public void resultChanged(LookupEvent evt) {
+                System.out.println("clust child lookup event! " + evt);
+                addNotify();
+            }
+        });
 
-        setKeys(clusters);
     }
 
     @Override
-    protected Node[] createNodes(Object key) {
-        Clustering obj = (Clustering) key;
-        list.add(key);
-        return new Node[]{new ClusteringNode(obj)};
+    protected Node[] createNodes(Clustering key) {
+        return new Node[]{new ClusteringNode(key)};
     }
 
     @Override
     protected void addNotify() {
-        super.addNotify();
-        /*  ClusteringResult[] objs = new ClusteringResult[clustering.length];
-         for (int i = 0; i < objs.length; i++) {
-         ClusteringResult cat = new ClusteringResult();
-         cat.setName(Categories[i]);
-         objs[i] = cat;
-         }
-         setKeys(objs);*/
-        setKeys(list);
+        if (result != null) {
+            Collection<? extends Clustering> coll = result.allInstances();
+            if (coll != null && coll.size() > 0) {
+                setKeys(coll);
+            }
+        } else {
+            System.out.println("coll result is null!");
+        }
     }
+
 }

@@ -62,8 +62,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private final transient ExplorerManager mgr = new ExplorerManager();
     private Lookup.Result<Clustering> result = null;
     private AbstractNode root;
-    private ClusteringChildren clustChildren;
-    private ClusteringChildFactory factory;
     private Dataset<? extends Instance> dataset;
     private static final RequestProcessor RP = new RequestProcessor("Evolution");
     private RequestProcessor.Task task;
@@ -79,14 +77,10 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         //maybe we want IconView
         //explorerPane.setViewportView(new BeanTreeView());
         explorerPane.setViewportView(new IconView());
-
-        clustChildren = new ClusteringChildren();
-
         //root = new AbstractNode(new ClusteringChildren());
         //root.setDisplayName("Clustering Evolution");
         //explorerManager.setRootContext(root);
-        factory = new ClusteringChildFactory();
-        mgr.setRootContext(new AbstractNode(Children.create(factory, true)));
+//        mgr.setRootContext(new AbstractNode(Children.create(factory, true)));
 
     }
 
@@ -181,8 +175,11 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             alg.setEvaluator(new AICScore());
             alg.addEvolutionListener(this);
 
-            //   result = alg.getLookup().lookupResult(Clustering.class);
-            //   result.addLookupListener(this);
+            //childern node will get all clustering results
+            ClusteringChildren children = new ClusteringChildren(alg);
+            root = new AbstractNode(children);
+            root.setDisplayName("root node");
+            mgr.setRootContext(root);
             logger.log(Level.INFO, "starting evolution...");
             task = RP.create(alg);
             task.addTaskListener(this);
@@ -208,13 +205,13 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
-        result.addLookupListener(this);
+        //result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        //result.addLookupListener(this);
     }
 
     @Override
     public void componentClosed() {
-        result.removeLookupListener(this);
+        //result.removeLookupListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
@@ -260,11 +257,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         logger.log(Level.INFO, "best in generation, fitness: {0}", avgFitness);
-        //clustChildren.createNodes(best.getClustering());
-        factory.createNodeForKey(new ClusteringNode(best.getClustering()));
-        List list = new LinkedList();
-        list.add(new ClusteringNode(best.getClustering()));
-        factory.createKeys(list);
     }
 
     @Override

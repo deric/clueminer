@@ -21,15 +21,15 @@ import org.openide.util.lookup.Lookups;
  * @author Tomas Barton
  */
 public class ClusteringNode extends AbstractNode {
-    
+
     private Clustering<Cluster> clustering;
-    
+
     public ClusteringNode(Clustering<Cluster> clusters) {
-        super(new ClusteringChildren(clusters), Lookups.singleton(clusters));
-        setDisplayName("cluster " + clusters.size());
+        super(Children.LEAF, Lookups.singleton(clusters));
+        setDisplayName(generateName());
         this.clustering = clusters;
     }
-    
+
     @Override
     public PasteType getDropType(Transferable t, final int action, int index) {
         final Node dropNode = NodeTransfer.node(t,
@@ -50,18 +50,35 @@ public class ClusteringNode extends AbstractNode {
         }
         return null;
     }
-    
+
+    private String generateName() {
+        if (clustering != null) {
+            StringBuilder sb = new StringBuilder("(" + clustering.size() + ")");
+            sb.append("[");
+            int i = 0;
+            for (int s : clustering.clusterSizes()) {
+                if (i > 0) {
+                    sb.append(',');
+                }
+                sb.append(s);
+            }
+            sb.append("]");
+            return sb.toString();
+        }
+        return "(empty)";
+    }
+
     @Override
     public Cookie getCookie(Class clazz) {
         Children ch = getChildren();
-        
+
         if (clazz.isInstance(ch)) {
             return (Cookie) ch;
         }
-        
+
         return super.getCookie(clazz);
     }
-    
+
     @Override
     protected void createPasteTypes(Transferable t, List s) {
         super.createPasteTypes(t, s);
@@ -70,14 +87,14 @@ public class ClusteringNode extends AbstractNode {
             s.add(paste);
         }
     }
-    
+
     @Override
     public Action[] getActions(boolean context) {
         return new Action[]{
             SystemAction.get(NewAction.class),
             SystemAction.get(PasteAction.class)};
     }
-    
+
     @Override
     public boolean canDestroy() {
         return true;
