@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class SampleDatasetTest {
 
-    private static SampleDataset dataset;
+    private static SampleDataset<Instance> dataset;
     private static final double delta = 1e-7;
 
     public SampleDatasetTest() {
@@ -306,5 +306,14 @@ public class SampleDatasetTest {
         assertEquals(false, dataset.hasIndex(dataset.size()));
         assertEquals(false, dataset.hasIndex(dataset.size() + 1));
         assertEquals(false, dataset.hasIndex(-1));
+    }
+
+    @Test
+    public void testInstanceIndex() {
+        Instance inst = dataset.get(0);
+        assertEquals(0, inst.getIndex());
+        int index = dataset.size() - 1;
+        inst = dataset.get(index);
+        assertEquals(index, inst.getIndex());
     }
 }

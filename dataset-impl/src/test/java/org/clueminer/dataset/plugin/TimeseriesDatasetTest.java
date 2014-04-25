@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.types.TimePoint;
@@ -321,5 +322,14 @@ public class TimeseriesDatasetTest {
      */
     @Test
     public void testDuplicate() {
+    }
+
+    @Test
+    public void testInstanceIndex() {
+        Instance inst = dataset.get(0);
+        assertEquals(0, inst.getIndex());
+        int index = dataset.size() - 1;
+        inst = dataset.get(index);
+        assertEquals(index, inst.getIndex());
     }
 }

@@ -18,6 +18,11 @@ import org.clueminer.math.Vector;
  */
 public interface Instance<T extends Number> extends Cloneable, Serializable, Vector<T>, DataVector {
 
+    /**
+     * ID might contain any characters
+     *
+     * @return unique identification at least in the dataset
+     */
     public String getId();
 
     public void setId(String id);
@@ -25,6 +30,14 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
     public String getName();
 
     public void setName(String name);
+
+    /**
+     *
+     * @return numeric position in dataset, start from 0
+     */
+    public int getIndex();
+
+    public void setIndex(int i);
 
     /**
      * Full name is a combination of name and ID or dataset name.

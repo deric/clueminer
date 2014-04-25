@@ -14,6 +14,7 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
     protected String name;
     protected String id;
     protected Object classValue;
+    protected int index;
     /**
      * color might be part of GUI extension package, however is heavily used
      * when plotting and keeping same colors through all charts is quite
@@ -26,21 +27,32 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
         return name;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param name
+     */
     @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getId(){
+    public String getId() {
         return this.id;
     }
 
     @Override
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Color getColor() {
         return color;
@@ -60,4 +72,23 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
     public final void setClassValue(Object obj) {
         this.classValue = obj;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param index
+     */
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
 }

@@ -74,6 +74,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
         Instance copy;
         for (Instance inst : evolution.getDataset()) {
             copy = data.builder().createCopyOf(inst, data);
+            copy.setId(inst.getId());
 
             for (int i = 0; i < inst.size(); i++) {
                 copy.set(i, inst.value(i) * weights[i]);

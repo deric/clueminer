@@ -47,10 +47,12 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public boolean add(Instance i) {
+    public boolean add(Instance inst) {
         ensureCapacity(n);
 
-        data[n++] = i;
+        data[n] = inst;
+        inst.setIndex(n);
+        n++;
         return true;
     }
 

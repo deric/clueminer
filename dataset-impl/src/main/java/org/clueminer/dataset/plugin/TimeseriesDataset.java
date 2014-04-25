@@ -107,6 +107,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         check(instance);
         instance.setParent(this);
         instance.setColor(colorGenerator.next());
+        instance.setIndex(size());
         return super.add(instance);
     }
 

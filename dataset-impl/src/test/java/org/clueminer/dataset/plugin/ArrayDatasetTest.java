@@ -479,4 +479,14 @@ public class ArrayDatasetTest {
         dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
     }
 
+    @Test
+    public void testInstanceIndex() {
+        Instance inst = dataset.get(0);
+        assertEquals(0, inst.getIndex());
+        dataset.add(dataset.builder().create(new double[]{1.0, 2.0}));
+        int index = dataset.size() - 1;
+        inst = dataset.get(index);
+        assertEquals(index, inst.getIndex());
+    }
+
 }

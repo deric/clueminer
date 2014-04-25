@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E> implements Dataset<E> {
 
@@ -43,14 +44,14 @@ public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E>
         attr.setIndex(i);
         attributes.put(i, attr);
     }
-    
+
     @Override
     public void setAttributes(Map<Integer, Attribute> attr){
         this.attributes = attr;
     }
-    
+
     /**
-     * 
+     *
      * @return reference to attribute map
      */
     @Override
