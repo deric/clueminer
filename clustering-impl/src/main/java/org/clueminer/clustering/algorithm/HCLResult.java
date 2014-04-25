@@ -161,7 +161,11 @@ public class HCLResult implements HierarchicalResult {
                 //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
                 //mapping is tracked in cluster
                 // values in cluster array doesn't need mapping!
-                clust.add(dataset.get(i), idx);
+                /**
+                 * TODO the orig idx is probably very useless
+                 */
+                //clust.add(dataset.get(i), idx);
+                clust.add(dataset.get(i));
                 //logger.log(Level.WARNING, "{0} -> {1}: clust num: {4} |{2}| = {3}, {5}", new Object[]{i, idx, clust.getName(), clust.size(), num, dataset.get(i).classValue()});
             }
         }

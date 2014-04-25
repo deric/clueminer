@@ -35,16 +35,15 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         setAttributes(dataset.getAttributes());
     }
 
-    /**
-     *
-     * @param inst
-     * @param origId
-     */
     @Override
-    public void add(E inst, int origId) {
-        add(inst);
-        mapping.add(origId);
+    public boolean add(Instance inst) {
+        if (super.add(inst)) {
+            mapping.add(inst.getIndex());
+            return true;
+        }
+        return false;
     }
+
 
     @Override
     public boolean contains(int origId) {
@@ -98,11 +97,18 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         return centroid;
     }
 
+    /**
+     * Counting is based in instance index which must be unique in dataset
+     *
+     * @param c
+     * @return
+     */
     @Override
     public int countMutualElements(Cluster c) {
         int mutual = 0;
         for (Instance inst : this) {
-            if (c.contains(inst)) {
+            System.out.println("inst " + inst.toString() + " idx: " + inst.getIndex());
+            if (c.contains(inst.getIndex())) {
                 mutual++;
             }
         }
@@ -111,7 +117,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Cluster ");
+        StringBuilder sb = new StringBuilder("BaseCluster ");
         sb.append(getName());
         sb.append(" (").append(size()).append(") ");
         sb.append(" [ ");

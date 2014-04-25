@@ -83,7 +83,9 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public boolean add(E e) {
         check(e);
         instanceAdded(e);
-        e.setIndex(size());
+        if (e.getIndex() < 0) {
+            e.setIndex(size());
+        }
         return super.add(e);
     }
 

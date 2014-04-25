@@ -64,7 +64,7 @@ public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Seri
      * @param inst
      * @param origId
      */
-    public void add(E inst, int origId);
+    //public void add(E inst, int origId);
 
     /**
      * Checks presence of element by original id (position in input matrix)

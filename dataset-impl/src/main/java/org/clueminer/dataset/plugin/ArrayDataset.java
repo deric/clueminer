@@ -51,7 +51,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         ensureCapacity(n);
 
         data[n] = inst;
-        inst.setIndex(n);
+        if (inst.getIndex() < 0) {
+            inst.setIndex(n);
+        }
         n++;
         return true;
     }

@@ -14,7 +14,7 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
     protected String name;
     protected String id;
     protected Object classValue;
-    protected int index;
+    protected int index = -1;
     /**
      * color might be part of GUI extension package, however is heavily used
      * when plotting and keeping same colors through all charts is quite
