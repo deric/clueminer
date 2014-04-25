@@ -17,6 +17,8 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.colors.ColorBrewer;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.Lookup;
@@ -36,6 +38,7 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
     private Dataset<? extends Instance> dataset;
     private boolean isFinished = true;
     private final Random rand = new Random();
+    private ColorGenerator cg = new ColorBrewer();
     /**
      * Probability of mutation
      */
@@ -282,6 +285,9 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
     @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
+        if (cg != null) {
+            algorithm.setColorGenerator(cg);
+        }
     }
 
     @Override
@@ -338,5 +344,16 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
     @Override
     public Lookup getLookup() {
         return lookup;
+    }
+
+    @Override
+    public void setColorGenerator(ColorGenerator cg) {
+        this.cg = cg;
+
+    }
+
+    @Override
+    public ColorGenerator getColorGenerator() {
+        return cg;
     }
 }

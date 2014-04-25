@@ -46,7 +46,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * Random generator for this clusterer.
      */
     private Random rg;
-    
+
     /**
      * The centroids of the different clusters.
      */
@@ -230,6 +230,9 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
         BaseCluster cluster;
         for (int i = 0; i < centroids.length; i++) {
             cluster = new BaseCluster(data.size());
+            if (colorGenerator != null) {
+                cluster.setColor(colorGenerator.next());
+            }
             cluster.setName("cluster " + (i + 1));
             cluster.setClusterId(i);
             //we have to copy attributes settings

@@ -2,6 +2,7 @@ package org.clueminer.clustering.api.evolution;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.Lookup;
@@ -67,4 +68,17 @@ public interface Evolution extends Runnable, Lookup.Provider {
      * @return true when fitness should be maximized
      */
     public boolean isMaximizedFitness();
+
+    /**
+     * Generates colors for newly created clusters
+     *
+     * @param cg
+     */
+    public void setColorGenerator(ColorGenerator cg);
+
+    /**
+     *
+     * @return
+     */
+    public ColorGenerator getColorGenerator();
 }
