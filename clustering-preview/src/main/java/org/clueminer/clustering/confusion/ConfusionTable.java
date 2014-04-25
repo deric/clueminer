@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -29,6 +30,7 @@ public class ConfusionTable extends JPanel {
     protected Dimension size = new Dimension(0, 0);
     protected BufferedImage bufferedImage;
     protected Graphics2D g;
+    private int[][] confmat;
 
     public ConfusionTable() {
         initComponents();
@@ -39,11 +41,40 @@ public class ConfusionTable extends JPanel {
         //setBackground(Color.BLUE);
     }
 
-    public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-        this.a = a;
-        this.b = b;
+    public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        this.a = c1;
+        this.b = c2;
+
+        confmat = countMutual(c1, c2);
 
         resetCache();
+    }
+
+    /**
+     *
+     * @param c1
+     * @param c2
+     * @return matrix with numbers of instances in same clusters
+     */
+    public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        int[][] conf = new int[c1.size()][c2.size()];
+        //System.out.println("C1: " + c1.toString());
+        //System.out.println("C2: " + c2.toString());
+        Cluster<Instance> curr;
+        for (int i = 0; i < c1.size(); i++) {
+            curr = c1.get(i);
+            for (Instance inst : curr) {
+                for (int j = 0; j < c2.size(); j++) {
+                    //System.out.println("looking for: " + inst.getIndex() + " found? " + clust.contains(inst.getIndex()));
+                    if (c2.get(j).contains(inst.getIndex())) {
+                        conf[i][j]++;
+                        break;
+                    }
+                }
+            }
+        }
+        //Dump.matrix(conf, "confmat", 2);
+        return conf;
     }
 
     protected void updateSize(Dimension size) {
@@ -94,8 +125,9 @@ public class ConfusionTable extends JPanel {
 
         for (int i = 0; i < a.size(); i++) {
             for (int j = 0; j < b.size(); j++) {
-                cnt = a.get(i).countMutualElements(b.get(j));
-                //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b" + b.get(j).getName() + ": " + cnt);
+                cnt = confmat[i][j];
+                //cnt = a.get(i).countMutualElements(b.get(j));
+                //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b-" + b.get(j).getName() + ": " + cnt);
                 x = j * elemSize.width;
                 y = i * elemSize.height;
                 g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);

@@ -279,7 +279,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
                 if (j > 0) {
                     sb.append(",");
                 }
-                sb.append(inst.get(j));
+                sb.append(inst.getIndex());
                 j++;
             }
             sb.append("]");

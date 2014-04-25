@@ -123,7 +123,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
 
             @Override
             public void projectActivated(Project project) {
-                
+
             }
         });
 
@@ -171,7 +171,6 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
         Collection<? extends Clustering> allClusterings = result.allInstances();
         logger.log(Level.INFO, "clustering lookup: got {0} clusterings", allClusterings.size());
         for (Clustering c : allClusterings) {
-            System.out.println("clustring size" + c.size());
             frame.setClustering(c);
         }
 

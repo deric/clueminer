@@ -53,6 +53,8 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
     @Override
     public DoubleArrayDataRow createCopyOf(DoubleArrayDataRow orig) {
         DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
+        row.setId(orig.getId());
+        row.setIndex(orig.getIndex());
         row.setClassValue(orig.classValue());
         return row;
     }
@@ -64,6 +66,7 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
 
     /**
      * Creates a new DataRow with the given initial capacity.
+     *
      * @param size
      */
     @Override

@@ -5,6 +5,7 @@ import java.util.Arrays;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class AbstractPopulation<E extends AbstractIndividual> {
 
@@ -19,10 +20,10 @@ public class AbstractPopulation<E extends AbstractIndividual> {
      */
     public double getAvgFitness() {
         avgFitness = 0;
-        for (int i = 0; i < individuals.length; i++) {
-            individuals[i].getFitness();
-            avgFitness += individuals[i].getFitness();
-            bestFitness = Math.max(bestFitness, individuals[i].getFitness());
+        for (E individual : individuals) {
+            individual.getFitness();
+            avgFitness += individual.getFitness();
+            bestFitness = Math.max(bestFitness, individual.getFitness());
         }
         avgFitness /= individuals.length;
         return avgFitness;
@@ -35,9 +36,9 @@ public class AbstractPopulation<E extends AbstractIndividual> {
      */
     public E getBestIndividual() {
         E best = this.individuals[0];
-        for (int i = 0; i < this.individuals.length; i++) {
-            if (this.individuals[i].getFitness() > best.getFitness()) {
-                best = this.individuals[i];
+        for (E individual : this.individuals) {
+            if (individual.getFitness() > best.getFitness()) {
+                best = individual;
             }
         }
         return best;
@@ -78,8 +79,8 @@ public class AbstractPopulation<E extends AbstractIndividual> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== POPULATION ===\n");
-        for (int i = 0; i < individuals.length; i++) {
-            sb.append(individuals[i].toString());
+        for (E individual : individuals) {
+            sb.append(individual.toString());
             sb.append("\n");
         }
         sb.append("=== avgFIT: ").append(avgFitness).append(" ===\n");

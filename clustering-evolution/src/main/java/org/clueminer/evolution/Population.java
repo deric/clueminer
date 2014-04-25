@@ -68,8 +68,8 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== POPULATION ===\n");
-        for (int i = 0; i < individuals.length; i++) {
-            sb.append(individuals[i].toString());
+        for (WeightsIndividual individual : individuals) {
+            sb.append(individual.toString());
             sb.append("\n");
         }
         sb.append("=== avgFIT: ").append(avgFitness).append(" ===\n");

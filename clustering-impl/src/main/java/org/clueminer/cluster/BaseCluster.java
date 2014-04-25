@@ -44,7 +44,6 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         return false;
     }
 
-
     @Override
     public boolean contains(int origId) {
         return mapping.contains(origId);
@@ -106,7 +105,11 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     @Override
     public int countMutualElements(Cluster c) {
         int mutual = 0;
+        System.out.println("size: " + size() + " mapping size: " + mapping.size());
+        System.out.println("the other: " + c.toString());
+
         for (Instance inst : this) {
+            //System.out.println("looking for: " + inst.getIndex() + " found? " + c.contains(inst.getIndex()));
             if (c.contains(inst.getIndex())) {
                 mutual++;
             }
@@ -126,7 +129,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
                 sb.append(", ");
             }
             elem = this.get(i);
-            sb.append(elem.getName());
+            sb.append(elem.getIndex());
         }
         sb.append(" ]");
         return sb.toString();

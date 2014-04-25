@@ -104,7 +104,6 @@ public final class ClusterExplorerTopComponent extends TopComponent implements E
         //treeView.removeAll();
         Collection<? extends Clustering> allClusterings = result.allInstances();
         for (Clustering c : allClusterings) {
-            System.out.println("clustring size" + c.size());
             root = new ClustersNode(c);
         }
         mgr.setRootContext(root);
