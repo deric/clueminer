@@ -16,10 +16,10 @@ public class ColorScheme implements ColorPalette {
     private BufferedImage negColorImage;
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private boolean useDoubleGradient = true;    
+    private boolean useDoubleGradient = true;
     private double max;
     private double min;
-    private double mid;   
+    private double mid;
 
     public ColorScheme() {
         updateColors(Color.red, Color.black, Color.green);
@@ -28,12 +28,12 @@ public class ColorScheme implements ColorPalette {
     public ColorScheme(boolean useDoubleGradient) {
         this.useDoubleGradient = useDoubleGradient;
     }
-    
+
     public ColorScheme(Color min, Color max) {
         this.useDoubleGradient = false;
         updateColors(min, Color.gray, max);
     }
-    
+
     public ColorScheme(Color min, Color mid, Color max) {
         this.useDoubleGradient = true;
         updateColors(min, mid, max);
@@ -129,5 +129,24 @@ public class ColorScheme implements ColorPalette {
     public void setUseDoubleGradient(boolean useDoubleGradient) {
         this.useDoubleGradient = useDoubleGradient;
     }
-        
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param bg
+     * @return
+     */
+    @Override
+    public Color complementary(Color bg) {
+        double y = (299 * bg.getRed() + 587 * bg.getGreen() + 114 * bg.getBlue()) / 1000;
+        return y >= 128 ? Color.black : Color.white;
+
+        //this return purle colors etc. - too colorful
+        /*  Color textColor = new Color(255 - bg.getRed(),
+         255 - bg.getGreen(),
+         255 - bg.getBlue());
+
+         return textColor;*/
+    }
+
 }

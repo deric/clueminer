@@ -13,7 +13,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.colors.ColorScheme;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.gui.ColorPalette;
 
 /**
  *
@@ -31,6 +33,9 @@ public class ConfusionTable extends JPanel {
     protected BufferedImage bufferedImage;
     protected Graphics2D g;
     private int[][] confmat;
+    private int min;
+    private int max;
+    protected ColorPalette colorScheme;
 
     public ConfusionTable() {
         initComponents();
@@ -38,7 +43,7 @@ public class ConfusionTable extends JPanel {
 
     private void initComponents() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
-        //setBackground(Color.BLUE);
+        colorScheme = new ColorScheme();
     }
 
     public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
@@ -46,7 +51,8 @@ public class ConfusionTable extends JPanel {
         this.b = c2;
 
         confmat = countMutual(c1, c2);
-
+        findMinMax(confmat);
+        colorScheme.setRange(min, max);
         resetCache();
     }
 
@@ -114,7 +120,7 @@ public class ConfusionTable extends JPanel {
 
     public void render(Graphics2D g) {
         int x, y;
-        int cnt;
+        int value;
         String s;
         g.setColor(Color.BLACK);
         g.setFont(defaultFont);
@@ -125,16 +131,21 @@ public class ConfusionTable extends JPanel {
 
         for (int i = 0; i < a.size(); i++) {
             for (int j = 0; j < b.size(); j++) {
-                cnt = confmat[i][j];
+                value = confmat[i][j];
                 //cnt = a.get(i).countMutualElements(b.get(j));
                 //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b-" + b.get(j).getName() + ": " + cnt);
                 x = j * elemSize.width;
                 y = i * elemSize.height;
+                g.setColor(colorScheme.getColor(value));
+                g.fillRect(x, y, elemSize.width, elemSize.height);
+                s = String.valueOf(value);
+                fw = (g.getFont().getStringBounds(s, frc).getWidth());
+                g.setColor(colorScheme.complementary(g.getColor()));
+                g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+                //draw rectangle around
+                g.setColor(Color.BLACK);
                 g.drawRect(x, y, elemSize.width - 1, elemSize.height - 1);
                 //System.out.println("drawing rect: " + x + ", " + y + " w = " + elemSize.width + ", h= " + elemSize.height);
-                s = String.valueOf(cnt);
-                fw = (g.getFont().getStringBounds(s, frc).getWidth());
-                g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
             }
         }
 
@@ -155,6 +166,7 @@ public class ConfusionTable extends JPanel {
                          size.width, size.height,
                          null);
         }
+        g2.dispose();
     }
 
     protected void recalculate() {
@@ -184,12 +196,32 @@ public class ConfusionTable extends JPanel {
                     0, 0,
                     size.width, size.height,
                     null);
+        g.dispose();
     }
 
     public void resetCache() {
         recalculate();
         createBufferedGraphics();
         repaint();
+    }
+
+    /**
+     * Finds min and max value in confusion matrix
+     *
+     * @param confmat
+     */
+    private void findMinMax(int[][] confmat) {
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
+        for (int[] row : confmat) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] < min) {
+                    min = row[j];
+                } else if (row[j] > max) {
+                    max = row[j];
+                }
+            }
+        }
     }
 
 }
