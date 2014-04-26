@@ -5,7 +5,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.evaluation.external.JaccardIndex;
+import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;

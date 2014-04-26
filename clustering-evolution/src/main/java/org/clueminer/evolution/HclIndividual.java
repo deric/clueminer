@@ -56,7 +56,6 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         params.put("std", standard);
         params.putBoolean("fitted-params", false);
 
-
         /**
          * 0 for ALC method, 1 for CLC or -1 otherwise
          */
@@ -95,27 +94,22 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
 
         long start = System.currentTimeMillis();
 
-
         Matrix input = Scaler.standartize(evolution.getDataset().arrayCopy(), params.get("std", "None"), params.getBoolean("log-scale", false));
 
         System.out.println("input matrix");
         input.print(5, 2);
-
 
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
         HierarchicalResult rowsResult = ((AgglomerativeClustering) algorithm).hierarchy(input, evolution.getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
-
         //   progress.setTitle("Clustering by columns");
         //  params.setProperty("calculate-rows", String.valueOf(false));
         //  HierarchicalResult columnsResult = algorithm.hierarchy(input, evolution.getDataset(), params);
         // validate(columnsResult);
-
         //System.out.println("params: " + params.toString());
-       //printResult(rowsResult);
-
+        //printResult(rowsResult);
         if (debug) {
             Matrix proximity = rowsResult.getProximityMatrix();
             //    Matrix cprox = columnsResult.getProximityMatrix();
@@ -127,24 +121,19 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         long time = System.currentTimeMillis() - start;
         System.out.println("clustering took " + time + " ms");
 
-
-      //  double cutoff = rowsResult.findCutoff();
-      //  System.out.println("rows tree cutoff = " + cutoff);
-
+        //  double cutoff = rowsResult.findCutoff();
+        //  System.out.println("rows tree cutoff = " + cutoff);
         //   cutoff = columnsResult.findCutoff();
         //   System.out.println("columns tree cutoff = " + cutoff);
-
         String cutoffAlg = params.get("cutoff", "NaiveCutoff");
 
-       // if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = ClusterEvaluatorFactory.getInstance().getProvider(cutoffAlg);
-            NaiveCutoff strategy = new NaiveCutoff();
-            rowsResult.findCutoff(strategy);
-       // }// else we use a naive approach
+        // if (!cutoffAlg.equals("-- naive --")) {
+        ClusterEvaluator eval = ClusterEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+        NaiveCutoff strategy = new NaiveCutoff();
+        rowsResult.findCutoff(strategy);
+        // }// else we use a naive approach
 
         Clustering clust = rowsResult.getClustering();
-
-
 
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {
@@ -185,8 +174,6 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         System.out.println(evaluators);
         System.out.println(scores);
 
-
-
         fitness = evolution.getEvaluator().score(clust, evolution.getDataset());
         System.out.println("fitness = " + fitness);
     }
@@ -195,7 +182,6 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     public double getFitness() {
         return fitness;
     }
-
 
     @Override
     public void mutate() {
@@ -206,30 +192,28 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         }
     }
 
-  /*  public List<Individual> cross(WeightsIndividual i) {
-        ArrayList<Individual> offsprings = new ArrayList<Individual>();
-        // we'll work with copies
-        WeightsIndividual thisOne = this.deepCopy();
-        WeightsIndividual secondOne = ((WeightsIndividual) i).deepCopy();
-        int cross_id = rand.nextInt(evolution.attributesCount());
-        System.arraycopy(((WeightsIndividual) i).weights, 0, thisOne.weights, 0, cross_id);
-        System.arraycopy(((WeightsIndividual) i).weights, cross_id, secondOne.weights, cross_id, evolution.attributesCount() - cross_id);
-        System.arraycopy(this.weights, 0, secondOne.weights, 0, cross_id);
-        System.arraycopy(this.weights, cross_id, thisOne.weights, cross_id, evolution.attributesCount() - cross_id);
-        offsprings.add(thisOne);
-        offsprings.add(secondOne);
-        return offsprings;
-    }
+    /*  public List<Individual> cross(WeightsIndividual i) {
+     ArrayList<Individual> offsprings = new ArrayList<Individual>();
+     // we'll work with copies
+     WeightsIndividual thisOne = this.deepCopy();
+     WeightsIndividual secondOne = ((WeightsIndividual) i).deepCopy();
+     int cross_id = rand.nextInt(evolution.attributesCount());
+     System.arraycopy(((WeightsIndividual) i).weights, 0, thisOne.weights, 0, cross_id);
+     System.arraycopy(((WeightsIndividual) i).weights, cross_id, secondOne.weights, cross_id, evolution.attributesCount() - cross_id);
+     System.arraycopy(this.weights, 0, secondOne.weights, 0, cross_id);
+     System.arraycopy(this.weights, cross_id, thisOne.weights, cross_id, evolution.attributesCount() - cross_id);
+     offsprings.add(thisOne);
+     offsprings.add(secondOne);
+     return offsprings;
+     }
 
-    public HclIndividual deepCopy() {
-        WeightsIndividual newOne = new WeightsIndividual(evolution);
-        newOne.weights = new double[this.weights.length];
-        System.arraycopy(this.weights, 0, newOne.weights, 0, this.weights.length);
-        newOne.fitness = this.fitness;
-        return newOne;
-    }*/
-
-
+     public HclIndividual deepCopy() {
+     WeightsIndividual newOne = new WeightsIndividual(evolution);
+     newOne.weights = new double[this.weights.length];
+     System.arraycopy(this.weights, 0, newOne.weights, 0, this.weights.length);
+     newOne.fitness = this.fitness;
+     return newOne;
+     }*/
     @Override
     public Clustering<Cluster> getClustering() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

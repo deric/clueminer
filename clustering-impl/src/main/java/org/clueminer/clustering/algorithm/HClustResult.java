@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.cluster.ClusterList;
+//import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Merge;

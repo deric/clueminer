@@ -100,6 +100,16 @@
             <artifactId>clustering-evolution</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-eval</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-dist</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

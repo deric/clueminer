@@ -7,7 +7,6 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.algorithm.DendrogramBuilder;
 import org.clueminer.clustering.algorithm.HierarchicalAgglomerativeClustering;
 import org.clueminer.clustering.api.AgglomerativeClustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.dataset.api.Dataset;
@@ -54,7 +53,6 @@ public class DendrogramDataTest {
             Exceptions.printStackTrace(ex);
         }
         algorithm = new HierarchicalAgglomerativeClustering();
-
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this

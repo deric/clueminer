@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
+import org.clueminer.clustering.api.Cluster;
 
 /**
  *
@@ -27,10 +28,11 @@ public class ColumnLabels extends AbstractLabels {
             int width;
             // clockwise 90 degrees
             g.rotate(Math.PI / 2.0);
+            Cluster curr;
             for (int col = 0; col < b.size(); col++) {
+                curr = b.get(col);
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
-                s = b.get(col).getName();
-
+                s = curr.getName() + " (" + curr.size() + ")";
                 width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
                 checkMax(width);
                 g.drawString(s, 0, -coordX);

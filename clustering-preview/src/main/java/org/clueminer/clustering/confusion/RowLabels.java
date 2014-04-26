@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.font.FontRenderContext;
+import org.clueminer.clustering.api.Cluster;
 
 /**
  *
@@ -25,6 +26,7 @@ public class RowLabels extends AbstractLabels {
             FontMetrics fm = g.getFontMetrics();
             int ascent = fm.getMaxAscent();
             int descent = fm.getDescent();
+            String s;
             /*
              * Fonts are not scaling lineraly
 
@@ -36,10 +38,12 @@ public class RowLabels extends AbstractLabels {
              * --------------descent
              *
              */
+            Cluster curr;
             double offset = (elementSize.height / 2.0) + ((ascent - descent) / 2.0);
             for (int row = 0; row < a.size(); row++) {
+                curr = a.get(row);
                 annY = (float) (row * elementSize.height + offset);
-                String s = a.get(row).getName();
+                s = curr.getName() + " (" + curr.size() + ")";
                 if (s == null) {
                     s = unknownLabel;
                 }

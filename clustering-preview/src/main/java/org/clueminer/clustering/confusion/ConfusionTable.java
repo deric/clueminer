@@ -64,8 +64,8 @@ public class ConfusionTable extends JPanel {
      */
     public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         int[][] conf = new int[c1.size()][c2.size()];
-        //System.out.println("C1: " + c1.toString());
-        //System.out.println("C2: " + c2.toString());
+        System.out.println("C1: " + c1.toString());
+        System.out.println("C2: " + c2.toString());
         Cluster<Instance> curr;
         for (int i = 0; i < c1.size(); i++) {
             curr = c1.get(i);
@@ -74,7 +74,6 @@ public class ConfusionTable extends JPanel {
                     //System.out.println("looking for: " + inst.getIndex() + " found? " + clust.contains(inst.getIndex()));
                     if (c2.get(j).contains(inst.getIndex())) {
                         conf[i][j]++;
-                        break;
                     }
                 }
             }

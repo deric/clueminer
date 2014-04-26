@@ -1,12 +1,12 @@
 package org.clueminer.explorer;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
@@ -14,7 +14,6 @@ import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evaluation.AICScore;
 import org.clueminer.evolution.EvolutionFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -23,7 +22,6 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.IconView;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -32,7 +30,6 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import org.openide.util.Utilities;
 import org.openide.windows.CloneableTopComponent;
 
 /**
@@ -172,7 +169,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             alg.setDataset(dataset);
             alg.setGenerations(sliderGenerations.getValue());
             alg.setAlgorithm(new KMeans(3, 100));
-            alg.setEvaluator(new AICScore());
+
+            ClusterEvaluatorFactory fact = ClusterEvaluatorFactory.getInstance();
+            alg.setEvaluator(fact.getDefault());
             alg.addEvolutionListener(this);
 
             //childern node will get all clustering results

@@ -273,7 +273,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append("C").append(i++).append("[");
+            sb.append("C").append(i++).append("(").append(c.size()).append(")")
+                    .append("[");
             j = 0;
             for (E inst : c) {
                 if (j > 0) {

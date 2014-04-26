@@ -4,16 +4,12 @@ import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.evaluation.CIndex;
-import org.clueminer.evaluation.Gamma;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.FileHandler;
 import org.junit.AfterClass;
@@ -79,10 +75,10 @@ public class KMeansTest {
             //we have 3 classes there, we do NOT expect k-means to be sucesseful
             //in separating this 3 classes
             assertEquals(3, clusters.size());
-            ClusterEvaluation ci = new CIndex();
-            System.out.println("CIndex= " + ci.score(clusters, data));
-            ClusterEvaluation gamma = new Gamma();
-            System.out.println("gamma= " + gamma.score(clusters, data));
+          //  ClusterEvaluation ci = new CIndex();
+            // System.out.println("CIndex= " + ci.score(clusters, data));
+            //  ClusterEvaluation gamma = new Gamma();
+            // System.out.println("gamma= " + gamma.score(clusters, data));
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
             fail();

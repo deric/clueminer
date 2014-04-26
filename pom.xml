@@ -202,9 +202,11 @@
         <module>chart-base</module>
         <module>curve</module>
         <module>validation</module>
-    <module>scatter</module>
-    <module>fixtures-clustering</module>
-  </modules>
+        <module>scatter</module>
+        <module>fixtures-clustering</module>
+        <module>clustering-eval</module>
+        <module>clustering-dist</module>
+    </modules>
     <reporting>
         <plugins>
             <plugin>

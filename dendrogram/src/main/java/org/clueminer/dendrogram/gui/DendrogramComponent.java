@@ -17,7 +17,6 @@ import org.clueminer.clustering.gui.ClusteringToolbar;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.DendrogramData;
-import org.clueminer.evaluation.hclust.CopheneticCorrelation;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -229,10 +228,10 @@ public class DendrogramComponent extends ClusterAnalysis {
             evaluators.append(c.getName()).append("\t");
         }
 
-        HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
-        evaluators.append("CPCC").append("\t");
-        scores.append(cophenetic.score(rowsResult)).append("\t");
-
+        //this would introduce extra dependency
+        //HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
+        //evaluators.append("CPCC").append("\t");
+        //scores.append(cophenetic.score(rowsResult)).append("\t");
         System.out.println(evaluators);
         System.out.println(scores);
         logger.log(Level.INFO, "coefficients finished");
