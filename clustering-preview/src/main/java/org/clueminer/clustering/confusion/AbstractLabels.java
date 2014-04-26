@@ -138,7 +138,7 @@ public abstract class AbstractLabels extends JPanel {
         this.a = a;
         this.b = b;
 
-        repaint();
+        resetCache();
     }
 
     protected void checkMax(int width) {

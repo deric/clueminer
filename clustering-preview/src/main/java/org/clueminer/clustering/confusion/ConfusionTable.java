@@ -78,7 +78,6 @@ public class ConfusionTable extends JPanel {
                 }
             }
         }
-        //Dump.matrix(conf, "confmat", 2);
         return conf;
     }
 
