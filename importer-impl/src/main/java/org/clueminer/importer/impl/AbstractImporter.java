@@ -99,24 +99,20 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
             final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
             String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");
             if (!executor.isRunning()) {
-            executor.execute(task, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        logger.log(Level.INFO, "reloading file");
-                        Container container = controller.importFile(reader, importer);
-                        if (container != null && file != null) {
-                            container.setSource(file.getPath());
+                executor.execute(task, new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            logger.log(Level.INFO, "reloading file");
+                            controller.importFile(reader, importer, true);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
                         }
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
                     }
-                }
                 }, taskName, errorHandler);
             } else {
                 logger.log(Level.INFO, "executor is still running");
             }
-
 
         } else {
             logger.log(Level.WARNING, "file reader is null");

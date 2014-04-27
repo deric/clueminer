@@ -64,7 +64,7 @@ public class ImportControllerImpl implements ImportController {
                 importer = getMatchingImporter(detectMIME(file));
             }
             if (fileObject != null && importer != null) {
-                Container c = importFile(fileObject.getInputStream(), importer);
+                Container c = importFile(fileObject.getInputStream(), importer, false);
                 if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                     try {
                         fileObject.delete();
@@ -84,7 +84,7 @@ public class ImportControllerImpl implements ImportController {
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             if (fileObject != null) {
-                Container c = importFile(fileObject.getInputStream(), importer);
+                Container c = importFile(fileObject.getInputStream(), importer, false);
                 if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                     try {
                         fileObject.delete();
@@ -99,14 +99,13 @@ public class ImportControllerImpl implements ImportController {
     }
 
     @Override
-    public Container importFile(Reader reader, FileImporter importer) {
+    public Container importFile(Reader reader, FileImporter importer, boolean reload) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(Container.class);
-
+        System.out.println("importer contr num attr: " + container.getLoader().getAttributeCount());
         //Report
         Report report = new Report();
         container.setReport(report);
-
         importer.setReader(reader);
 
         try {
@@ -125,10 +124,10 @@ public class ImportControllerImpl implements ImportController {
     }
 
     @Override
-    public Container importFile(InputStream stream, FileImporter importer) {
+    public Container importFile(InputStream stream, FileImporter importer, boolean reload) {
         try {
             Reader reader = ImportUtils.getTextReader(stream);
-            return importFile(reader, importer);
+            return importFile(reader, importer, reload);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

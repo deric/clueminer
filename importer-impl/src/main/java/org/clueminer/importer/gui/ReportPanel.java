@@ -598,7 +598,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                     try {
                         logger.log(Level.INFO, "importing file..");
                         loader.reset();
-                        Container cont = controller.importFile(currentFile.getInputStream(), fi);
+                        Container cont = controller.importFile(currentFile.getInputStream(), fi, true);
                         setData(cont.getReport(), cont);
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
@@ -618,7 +618,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void attributeChanged(AttributeDraft attr, Object property) {
-        if(colPreviewPane != null){
+        if (colPreviewPane != null) {
             //update GUI
             logger.log(Level.INFO, "attr {0} changed prop ={1}", new Object[]{attr.getName(), property});
             colPreviewPane.attributeChanged(attr);

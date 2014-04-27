@@ -56,8 +56,11 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     }
 
     @Override
-    public void setSource(String source) {
-        this.source = source;
+    public void setSource(String src) {
+        if (src == null) {
+            throw new RuntimeException("source can't be null");
+        }
+        this.source = src;
     }
 
     @Override
@@ -75,7 +78,8 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         checkInstanceDraft(instance);
 
         if (instanceMap.containsKey(instance.getId())) {
-            String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_instanceExist", instance.getId(), row);
+            String message = NbBundle.getMessage(ImportContainerImpl.class,
+                                                 "ImportContainerException_instanceExist", instance.getId(), row);
             report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
@@ -90,7 +94,9 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         AttributeDraft attr = attributeMap.get(key);
 
         if (!attr.getType().equals(typeClass)) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Attribute_Type_Mismatch", key, attr.getClass()), Level.SEVERE));
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class,
+                                                          "ImportContainerException_Attribute_Type_Mismatch",
+                                                          key, attr.getClass()), Level.SEVERE));
 
         }
         return attr;

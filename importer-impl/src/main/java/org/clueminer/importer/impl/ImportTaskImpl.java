@@ -61,10 +61,10 @@ public class ImportTaskImpl implements ImportTask {
             Exceptions.printStackTrace(ex);
         }
 
-        final String containerSource = fileObject.getNameExt();
+        final String containerSource = fileObject.getPath();
         try {
             logger.log(Level.INFO, "imporing file..");
-            Container container = controller.importFile(stream, importer);
+            Container container = controller.importFile(stream, importer, false);
             if (container != null) {
                 container.setSource(containerSource);
             }

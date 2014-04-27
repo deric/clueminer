@@ -56,6 +56,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             if (attrd.getRole().equals(BasicAttrRole.INPUT)) {
                 Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
                 dataset.setAttribute(attrd.getIndex(), attr);
+            } else {
+                logger.log(Level.INFO, "skipping attr {0} {1}", new Object[]{attrd.getName(), attrd.getIndex()});
             }
         }
 

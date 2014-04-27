@@ -39,7 +39,7 @@ public class Gui2 extends JFrame {
         LineNumberReader reader = new LineNumberReader(br);
 
         ImportControllerImpl controller = new ImportControllerImpl();
-        Container container = controller.importFile(reader, new CsvImporter());
+        Container container = controller.importFile(reader, new CsvImporter(), false);
         Report report = container.getReport();
         reportPanel.setData(report, container);
     }

@@ -240,7 +240,11 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         int i = 0;
         for (String attrName : columns) {
             if (!loader.hasAttribute(attrName)) {
-                loader.createAttribute(i, attrName);
+                AttributeDraft attrd = loader.createAttribute(i, attrName);
+                if (attrName.startsWith("meta_")) {
+                    attrd.setRole(BasicAttrRole.META);
+                }
+
                 logger.log(Level.INFO, "created missing attr: {0}", attrName);
             }
             /**
@@ -266,7 +270,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                         draft.setValue(i, castedVal);
                     } catch (ParsingError ex) {
                         report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                     }
                 } else {
                     draft.setValue(i, value);
@@ -352,7 +356,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -366,7 +370,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {

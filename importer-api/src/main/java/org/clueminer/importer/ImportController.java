@@ -25,9 +25,23 @@ public interface ImportController {
 
     public Container importFile(File file, FileImporter importer) throws FileNotFoundException;
 
-    public Container importFile(Reader reader, FileImporter importer);
+    /**
+     *
+     * @param reader
+     * @param importer
+     * @param reload   true when reloading same file
+     * @return
+     */
+    public Container importFile(Reader reader, FileImporter importer, boolean reload);
 
-    public Container importFile(InputStream stream, FileImporter importer);
+    /**
+     *
+     * @param stream
+     * @param importer
+     * @param reload   true when reloading same file
+     * @return
+     */
+    public Container importFile(InputStream stream, FileImporter importer, boolean reload);
 
     public FileImporter getFileImporter(File file);
 

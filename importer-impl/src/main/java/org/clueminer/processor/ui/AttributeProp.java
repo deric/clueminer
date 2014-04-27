@@ -1,5 +1,7 @@
 package org.clueminer.processor.ui;
 
+import java.awt.AWTEvent;
+import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
@@ -27,11 +29,10 @@ public class AttributeProp extends javax.swing.JPanel {
         initComponents();
         setType(atrd.getType());
         setRole(atrd.getRole().toString());
-        //setName(attr.getName());
+        setAttrName(atrd.getName());
     }
 
     public final void setAttrName(String name) {
-        System.out.println("trying to change name to: " + name);
         tfName.setText(name);
     }
 
@@ -42,8 +43,9 @@ public class AttributeProp extends javax.swing.JPanel {
     }
 
     public final void setRole(String role) {
-        System.out.println("trying to change role to: " + role);
-        cbRole.setSelectedItem(role);
+        System.out.println("trying to change attr's " + attr.getIndex() + " role to: " + role.toLowerCase());
+        changingRole = true;
+        cbRole.setSelectedItem(role.toLowerCase());
     }
 
     /**
@@ -177,10 +179,21 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private void cbRoleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbRoleItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
+            AWTEvent curr = EventQueue.getCurrentEvent();
+            System.out.println("awt thread: " + curr);
+            if (curr.getSource() == cbRole) {
+                System.out.println("source is cbRole");
+            } else {
+                System.out.println("source is " + curr.getSource());
+            }
             String strRole = (String) cbRole.getSelectedItem();
             AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
             attr.setRole(role);
-            importerUI.fireImporterChanged();
+            if (changingRole) {
+                changingRole = false;
+            } else {
+                importerUI.fireImporterChanged();
+            }
         }
     }//GEN-LAST:event_cbRoleItemStateChanged
 

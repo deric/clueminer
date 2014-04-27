@@ -133,11 +133,14 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         if (workspace != null) {
                             workspace.add(dataset);  //add plate to project's lookup
                         }
-
                         project = pc.getCurrentProject();
-                        String filename = importTask.getContainer().getSource();
+                        String filename = container.getSource();
                         dataset.setName(filename);
-                        project.getLookup().lookup(ProjectInformationImpl.class).setFile(new File(filename));
+                        if (filename == null) {
+                            throw new RuntimeException("no source was given");
+                        }
+                        ProjectInformationImpl pinfo = project.getLookup().lookup(ProjectInformationImpl.class);
+                        pinfo.setFile(new File(filename));
                         project.add(dataset);
                         pc.openProject(project);
 
