@@ -87,7 +87,7 @@ public class ConfusionTable extends JPanel {
     }
 
     protected void createBufferedGraphics() {
-        if (!hasData() || size.width == 0 || size.height == 0) {
+        if (!hasData() || size.width <= 0 || size.height <= 0) {
             return;
         }
         bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
