@@ -15,10 +15,17 @@ import org.clueminer.dataset.api.Instance;
 public interface Clustering<T extends Cluster> extends Cloneable, Serializable, Iterable<T>, Collection<T> {
 
     /**
+     * Human readable name of the clustering
+     *
+     * @return basic information about clustering
+     */
+    String getName();
+
+    /**
      * @return number of clusters in clustering
      */
     @Override
-    public int size();
+    int size();
 
     /**
      * Get i-th item
@@ -26,14 +33,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param i
      * @return
      */
-    public T get(int i);
+    T get(int i);
 
     /**
      * Inserts Dataset (a cluster) into Clustering (a set of clusters)
      *
      * @param d
      */
-    public void put(Cluster<? extends Instance> d);
+    void put(Cluster<? extends Instance> d);
 
     /**
      * Inserts Cluster at i-th position
@@ -41,7 +48,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param index
      * @param d
      */
-    public void put(int index, Cluster<Instance> d);
+    void put(int index, Cluster<Instance> d);
 
     /**
      * Return true if Dataset exists at index
@@ -49,14 +56,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param index
      * @return
      */
-    public boolean hasAt(int index);
+    boolean hasAt(int index);
 
     /**
      * Merge all given Datasets into the first one
      *
      * @param datasets
      */
-    public void merge(Cluster<Instance>... datasets);
+    void merge(Cluster<Instance>... datasets);
 
     /**
      * Name of i-th cluster
@@ -64,7 +71,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param i
      * @return label of cluster (e.g. number as string)
      */
-    public String getClusterLabel(int i);
+    String getClusterLabel(int i);
 
     /**
      * In case of hard assignments should be equal to total number of elements
@@ -72,7 +79,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return total number of elements (in all clusters)
      */
-    public int instancesCount();
+    int instancesCount();
 
     /**
      * Iterator over all instances in clustering regardless assignment to a
@@ -80,20 +87,20 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return instances iterator
      */
-    public Iterator<Instance> instancesIterator();
+    Iterator<Instance> instancesIterator();
 
     /**
      * Computes centroid for the whole dataset (clustering)
      *
      * @return centroid for all clusters
      */
-    public Instance getCentroid();
+    Instance getCentroid();
 
     /**
      *
      * @return sizes of all clusters
      */
-    public Integer[] clusterSizes();
+    Integer[] clusterSizes();
 
     /**
      * Return ID of item's cluster
@@ -101,7 +108,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param instanceId
      * @return
      */
-    public int assignedCluster(int instanceId);
+    int assignedCluster(int instanceId);
 
     /**
      * Create new cluster with given ID
@@ -109,13 +116,13 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param clusterId
      * @return newly created cluster
      */
-    public Cluster<? extends Instance> createCluster(int clusterId);
+    Cluster<? extends Instance> createCluster(int clusterId);
 
     /**
      * Create cluster with new ID (starting from 0)
      *
      * @return
      */
-    public Cluster<? extends Instance> createCluster();
+    Cluster<? extends Instance> createCluster();
 
 }

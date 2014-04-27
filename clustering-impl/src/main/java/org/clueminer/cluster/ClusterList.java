@@ -25,6 +25,30 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         data = new Cluster[capacity];
     }
 
+    @Override
+    public String getName() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        int j;
+        for (Cluster<E> c : this) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("C").append(i++).append("(").append(c.size()).append(")")
+                    .append("[");
+            j = 0;
+            for (E inst : c) {
+                if (j > 0) {
+                    sb.append(",");
+                }
+                sb.append(inst.getIndex());
+                j++;
+            }
+            sb.append("]");
+        }
+        return sb.toString();
+    }
+
     public final void ensureCapacity(int requested) {
         if (requested >= getCapacity()) {
             int capacity = (int) (requested * 1.618); //golden ratio :)
@@ -267,25 +291,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
-        int i = 0;
-        int j;
-        for (Cluster<E> c : this) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("C").append(i++).append("(").append(c.size()).append(")")
-                    .append("[");
-            j = 0;
-            for (E inst : c) {
-                if (j > 0) {
-                    sb.append(",");
-                }
-                sb.append(inst.getIndex());
-                j++;
-            }
-            sb.append("]");
-        }
-        return sb.toString();
+        return sb.append(getName()).toString();
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {
