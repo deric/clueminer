@@ -11,11 +11,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -31,20 +28,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Evolution.class)
 public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
-    private int populationSize = 100;
-
-    private Dataset<? extends Instance> dataset;
     private boolean isFinished = true;
     private final Random rand = new Random();
 
-    /**
-     * Probability of mutation
-     */
-    protected double mutationProbability = 0.3;
-    /**
-     * Probability of crossover
-     */
-    protected double crossoverProbability = 0.3;
     /**
      * for start and final average fitness
      */
@@ -57,7 +43,6 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
      * for star and final time
      */
     private Pair<Long, Long> time;
-    protected ClusterEvaluation evaluator;
 
     private static String name = "Attributes' evolution";
     private static final Logger logger = Logger.getLogger(AttrEvolution.class.getName());
@@ -84,21 +69,6 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public int attributesCount() {
-        return dataset.attributeCount();
-    }
-
-    @Override
-    public Dataset<? extends Instance> getDataset() {
-        return dataset;
-    }
-
-    @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
-        this.dataset = dataset;
     }
 
     @Override
@@ -223,7 +193,6 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
         }
         return Double.NaN;
     }
-    private final transient EventListenerList evoListeners = new EventListenerList();
 
     private void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
         EvolutionListener[] listeners;
@@ -236,11 +205,6 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
         }
     }
 
-    @Override
-    public void addEvolutionListener(EvolutionListener listener) {
-        evoListeners.add(EvolutionListener.class, listener);
-    }
-
     private void fireFinalResult(int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
         EvolutionListener[] listeners;
@@ -251,80 +215,6 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
                 listener.finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
             }
         }
-    }
-
-    @Override
-    public double getMutationProbability() {
-        return mutationProbability;
-    }
-
-    @Override
-    public void setMutationProbability(double mutationProbability) {
-        this.mutationProbability = mutationProbability;
-    }
-
-    @Override
-    public double getCrossoverProbability() {
-        return crossoverProbability;
-    }
-
-    /**
-     *
-     * @param crossoverProbability
-     */
-    @Override
-    public void setCrossoverProbability(double crossoverProbability) {
-        this.crossoverProbability = crossoverProbability;
-    }
-
-    @Override
-    public ClusteringAlgorithm getAlgorithm() {
-        return algorithm;
-    }
-
-    @Override
-    public void setAlgorithm(ClusteringAlgorithm algorithm) {
-        this.algorithm = algorithm;
-        if (cg != null) {
-            algorithm.setColorGenerator(cg);
-        }
-    }
-
-    @Override
-    public ClusterEvaluation getEvaluator() {
-        return evaluator;
-    }
-
-    @Override
-    public void setEvaluator(ClusterEvaluation evaluator) {
-        this.evaluator = evaluator;
-        maximizedFitness = evaluator.compareScore(1.0, 0.0);
-    }
-
-    /**
-     * External validation criterion, is used only for reporting, not during
-     * evolution
-     *
-     * @return
-     */
-    @Override
-    public ClusterEvaluation getExternal() {
-        return external;
-    }
-
-    @Override
-    public void setExternal(ClusterEvaluation external) {
-        this.external = external;
-    }
-
-    @Override
-    public int getPopulationSize() {
-        return populationSize;
-    }
-
-    @Override
-    public void setPopulationSize(int populationSize) {
-        this.populationSize = populationSize;
     }
 
 }

@@ -238,8 +238,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        System.out.println("lookup got " + allClusterings.size() + " clusterings");
-        System.out.println("clustering class: " + allClusterings.getClass().getName());
         /*for (Clustering c : allClusterings) {
          System.out.println("clustring size" + c.size());
          System.out.println(c.toString());
