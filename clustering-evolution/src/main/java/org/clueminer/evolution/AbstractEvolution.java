@@ -154,4 +154,20 @@ public abstract class AbstractEvolution implements Evolution {
         evoListeners.add(EvolutionListener.class, listener);
     }
 
+    @Override
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    @Override
+    public void setPopulationSize(int populationSize) {
+        this.populationSize = populationSize;
+    }
+
+    @Override
+    public void setEvaluator(ClusterEvaluation evaluator) {
+        this.evaluator = evaluator;
+        maximizedFitness = evaluator.compareScore(1.0, 0.0);
+    }
+
 }
