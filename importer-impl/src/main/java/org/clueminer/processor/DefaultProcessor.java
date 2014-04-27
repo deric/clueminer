@@ -9,15 +9,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.gui.msg.NotifyUtil;
+import org.clueminer.importer.impl.DatasetType;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.ProjectController;
+import org.clueminer.types.TimePoint;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -53,7 +59,16 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         //basic numeric dataset
         logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), container.getAttributeCount()});
-        dataset = new ArrayDataset(container.getInstanceCount(), container.getAttributeCount());
+
+        DatasetType dataType = DatasetType.valueOf(container.getDataType().toUpperCase());
+
+        if (dataType == DatasetType.DISCRETE) {
+            dataset = new ArrayDataset(container.getInstanceCount(), container.getAttributeCount());
+        } else if (dataType == DatasetType.CONTINUOUS) {
+            dataset = new TimeseriesDataset(container.getInstanceCount());
+        } else {
+            NotifyUtil.error("Error", "dataset type " + container.getDataType() + " is not supported by this processor", false);
+        }
 
         ArrayList<AttributeDraft> inputAttr = new ArrayList<AttributeDraft>(container.getAttributeCount());
         //scan attributes
@@ -73,14 +88,32 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         //set attributes
         int index = 0;
         Map<Integer, Integer> inputMap = new HashMap<Integer, Integer>();
-        for (AttributeDraft attrd : inputAttr) {
-            //create just input attributes
-            Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
-            attr.setIndex(index);
-            dataset.setAttribute(index, attr);
-            logger.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
-            inputMap.put(attrd.getIndex(), index);
-            index++;
+
+        //TODO move this to separate processor
+        if (dataType == DatasetType.DISCRETE) {
+            for (AttributeDraft attrd : inputAttr) {
+                //create just input attributes
+                Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
+                attr.setIndex(index);
+                dataset.setAttribute(index, attr);
+                logger.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
+                inputMap.put(attrd.getIndex(), index);
+                index++;
+            }
+        } else if (dataType == DatasetType.CONTINUOUS) {
+            TimePoint tp[] = new TimePointAttribute[inputAttr.size()];
+            AttributeDraft attrd;
+            for (int i = 0; i < tp.length; i++) {
+                attrd = inputAttr.get(i);
+                try {
+                    double pos = Double.valueOf(attrd.getName());
+                    tp[i] = new TimePointAttribute(i, (long) pos, pos);
+                    inputMap.put(attrd.getIndex(), i);
+                } catch (NumberFormatException e) {
+                    NotifyUtil.warn("time attribute error", "failed to parse '" + attrd.getName() + "' as a number", true);
+                }
+            }
+            ((Timeseries) dataset).setTimePoints(tp);
         }
 
         Instance<? extends Double> inst;
@@ -141,6 +174,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         return type;
     }
 
+    /**
+     * Sort attributes by index (number of column)
+     */
     private class AttributeComparator implements Comparator<AttributeDraft> {
 
         @Override
