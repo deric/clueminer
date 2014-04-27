@@ -8,6 +8,7 @@ import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.Insets2D;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
@@ -50,6 +51,7 @@ public class ScatterPlot extends JPanel {
 
                 int attrX = 0;
                 int attrY = 1;
+                Color orig, trans;
 
                 for (Cluster<Instance> clust : clustering) {
                     DataTable data = new DataTable(Double.class, Double.class);
@@ -61,7 +63,10 @@ public class ScatterPlot extends JPanel {
                     plot.add(ds);
 
                     PointRenderer pointRenderer = plot.getPointRenderer(ds);
-                    pointRenderer.setColor(clust.getColor());
+                    orig = clust.getColor();
+                    //last param is transparency
+                    trans = new Color(orig.getRed(), orig.getGreen(), orig.getBlue(), 200);
+                    pointRenderer.setColor(trans);
                     pointRenderer.setShape(shape);
                 }
 

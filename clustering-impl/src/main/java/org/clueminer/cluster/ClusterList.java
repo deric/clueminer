@@ -27,25 +27,16 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public String getName() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("[");
         int i = 0;
-        int j;
         for (Cluster<E> c : this) {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append("C").append(i++).append("(").append(c.size()).append(")")
-                    .append("[");
-            j = 0;
-            for (E inst : c) {
-                if (j > 0) {
-                    sb.append(",");
-                }
-                sb.append(inst.getIndex());
-                j++;
-            }
-            sb.append("]");
+            sb.append(c.size());
+            i++;
         }
+        sb.append("]");
         return sb.toString();
     }
 
