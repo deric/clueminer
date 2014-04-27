@@ -15,6 +15,8 @@ import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.EvolutionFactory;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -160,30 +162,32 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        System.out.println("start button clicked");
         if (dataset != null) {
             //start evolution
             String evolution = (String) comboEvolution.getSelectedItem();
             EvolutionFactory ef = EvolutionFactory.getInstance();
             Evolution alg = ef.getProvider(evolution);
-            alg.setDataset(dataset);
-            alg.setGenerations(sliderGenerations.getValue());
-            alg.setAlgorithm(new KMeans(3, 100));
+            if (alg != null) {
+                alg.setDataset(dataset);
+                alg.setGenerations(sliderGenerations.getValue());
+                alg.setAlgorithm(new KMeans(3, 100));
 
-            ClusterEvaluatorFactory fact = ClusterEvaluatorFactory.getInstance();
-            alg.setEvaluator(fact.getDefault());
-            alg.addEvolutionListener(this);
+                ClusterEvaluatorFactory fact = ClusterEvaluatorFactory.getInstance();
+                alg.setEvaluator(fact.getDefault());
+                alg.addEvolutionListener(this);
+                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");
+                alg.setProgressHandle(ph);
 
-            //childern node will get all clustering results
-            ClusteringChildren children = new ClusteringChildren(alg);
-            root = new AbstractNode(children);
-            root.setDisplayName("root node");
-            mgr.setRootContext(root);
-            logger.log(Level.INFO, "starting evolution...");
-            task = RP.create(alg);
-            task.addTaskListener(this);
-            task.schedule(0);
-
+                //childern node will get all clustering results
+                ClusteringChildren children = new ClusteringChildren(alg);
+                root = new AbstractNode(children);
+                root.setDisplayName("root node");
+                mgr.setRootContext(root);
+                logger.log(Level.INFO, "starting evolution...");
+                task = RP.create(alg);
+                task.addTaskListener(this);
+                task.schedule(0);
+            }
         }
     }//GEN-LAST:event_btnStartActionPerformed
 

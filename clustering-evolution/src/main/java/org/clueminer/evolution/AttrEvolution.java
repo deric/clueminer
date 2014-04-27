@@ -17,8 +17,6 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.colors.ColorBrewer;
-import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.Lookup;
@@ -31,14 +29,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
+public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private int populationSize = 100;
-    private int generations;
+
     private Dataset<? extends Instance> dataset;
     private boolean isFinished = true;
     private final Random rand = new Random();
-    private ColorGenerator cg = new ColorBrewer();
+
     /**
      * Probability of mutation
      */
@@ -60,13 +58,9 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
      */
     private Pair<Long, Long> time;
     protected ClusterEvaluation evaluator;
-    protected ClusterEvaluation external;
-    protected ClusteringAlgorithm algorithm;
-    private boolean maximizedFitness;
+
     private static String name = "Attributes' evolution";
     private static final Logger logger = Logger.getLogger(AttrEvolution.class.getName());
-    private transient InstanceContent instanceContent;
-    private transient Lookup lookup;
 
     public AttrEvolution() {
         initEvolution();
@@ -117,6 +111,10 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
         bestFitness.a = best.getFitness();
         ArrayList<Individual> selected = new ArrayList<Individual>(populationSize);
         //System.out.println(pop);
+        if (ph != null) {
+            ph.start(generations);
+            ph.progress("starting evolution...");
+        }
 
         for (int g = 0; g < generations && !isFinished; g++) {
 
@@ -183,7 +181,9 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
             } else {
                 indsToCopy = newIndsArr.length;
             }
-            System.out.println("individuals in population: " + indsToCopy);
+            if (ph != null) {
+                ph.progress(indsToCopy + " new individuals in population. generation: " + g);
+            }
             if (indsToCopy > 0) {
                 //System.out.println("copying " + indsToCopy);
                 //TODO: old population should be sorted as well? take only part of the new population?
@@ -197,14 +197,11 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
             AbstractIndividual bestInd = pop.getBestIndividual();
             Clustering<Cluster> clustering = bestInd.getClustering();
-            System.out.print("adding clustering to lookup ");
-            System.out.print("[");
-            for (int s : clustering.clusterSizes()) {
-                System.out.print(s + ", ");
-            }
-            System.out.println("]");
             instanceContent.add(clustering);
             fireBestIndividual(g, bestInd, pop.getAvgFitness());
+            if (ph != null) {
+                ph.progress(g);
+            }
         }
 
         time.b = System.currentTimeMillis();
@@ -215,6 +212,9 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
 
         // System.out.println("evolution took " + (end - start) + " ms");
         fireFinalResult(generations, best, time, bestFitness, avgFitness);
+        if (ph != null) {
+            ph.finish();
+        }
     }
 
     private double externalValidation(Individual best) {
@@ -223,7 +223,7 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
         }
         return Double.NaN;
     }
-    private transient EventListenerList evoListeners = new EventListenerList();
+    private final transient EventListenerList evoListeners = new EventListenerList();
 
     private void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
         EvolutionListener[] listeners;
@@ -327,33 +327,4 @@ public class AttrEvolution implements Runnable, Evolution, Lookup.Provider {
         this.populationSize = populationSize;
     }
 
-    @Override
-    public boolean isMaximizedFitness() {
-        return maximizedFitness;
-    }
-
-    public int getGenerations() {
-        return generations;
-    }
-
-    @Override
-    public void setGenerations(int generations) {
-        this.generations = generations;
-    }
-
-    @Override
-    public Lookup getLookup() {
-        return lookup;
-    }
-
-    @Override
-    public void setColorGenerator(ColorGenerator cg) {
-        this.cg = cg;
-
-    }
-
-    @Override
-    public ColorGenerator getColorGenerator() {
-        return cg;
-    }
 }

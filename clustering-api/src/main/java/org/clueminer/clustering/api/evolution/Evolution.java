@@ -5,6 +5,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
 
 /**
@@ -17,68 +18,74 @@ public interface Evolution extends Runnable, Lookup.Provider {
      *
      * @return unique identification of algorithm
      */
-    public String getName();
+    String getName();
 
-    public Dataset<? extends Instance> getDataset();
+    Dataset<? extends Instance> getDataset();
 
-    public void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<? extends Instance> dataset);
 
     /**
      * Number of attributes in current dataset
      *
      * @return number greater than 0
      */
-    public int attributesCount();
+    int attributesCount();
 
     /**
      * Set number of generations in an evolutionary algorithm
      *
      * @param generations
      */
-    public void setGenerations(int generations);
+    void setGenerations(int generations);
 
-    public double getMutationProbability();
+    double getMutationProbability();
 
-    public void setMutationProbability(double mutationProbability);
+    void setMutationProbability(double mutationProbability);
 
-    public double getCrossoverProbability();
+    double getCrossoverProbability();
 
-    public void setCrossoverProbability(double crossoverProbability);
+    void setCrossoverProbability(double crossoverProbability);
 
-    public ClusteringAlgorithm getAlgorithm();
+    ClusteringAlgorithm getAlgorithm();
 
-    public void setAlgorithm(ClusteringAlgorithm algorithm);
+    void setAlgorithm(ClusteringAlgorithm algorithm);
 
-    public ClusterEvaluation getEvaluator();
+    ClusterEvaluation getEvaluator();
 
-    public void setEvaluator(ClusterEvaluation evaluator);
+    void setEvaluator(ClusterEvaluation evaluator);
 
-    public ClusterEvaluation getExternal();
+    ClusterEvaluation getExternal();
 
-    public void setExternal(ClusterEvaluation external);
+    void setExternal(ClusterEvaluation external);
 
-    public int getPopulationSize();
+    int getPopulationSize();
 
-    public void setPopulationSize(int populationSize);
+    void setPopulationSize(int populationSize);
 
-    public void addEvolutionListener(EvolutionListener listener);
+    void addEvolutionListener(EvolutionListener listener);
 
     /**
      *
      * @return true when fitness should be maximized
      */
-    public boolean isMaximizedFitness();
+    boolean isMaximizedFitness();
 
     /**
      * Generates colors for newly created clusters
      *
      * @param cg
      */
-    public void setColorGenerator(ColorGenerator cg);
+    void setColorGenerator(ColorGenerator cg);
 
     /**
      *
      * @return
      */
-    public ColorGenerator getColorGenerator();
+    ColorGenerator getColorGenerator();
+
+    /**
+     *
+     * @param ph
+     */
+    void setProgressHandle(ProgressHandle ph);
 }
