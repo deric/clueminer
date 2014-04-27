@@ -3,6 +3,7 @@ package org.clueminer.scatter;
 import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
+import de.erichseifert.gral.plots.axes.AxisRenderer;
 import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.Insets2D;
@@ -47,10 +48,13 @@ public class ScatterPlot extends JPanel {
                 // Create a new xy-plot
                 XYPlot plot = new XYPlot();
 
+                int attrX = 0;
+                int attrY = 1;
+
                 for (Cluster<Instance> clust : clustering) {
                     DataTable data = new DataTable(Double.class, Double.class);
                     for (Instance inst : clust) {
-                        data.add(inst.value(0), inst.value(1));
+                        data.add(inst.value(attrX), inst.value(attrY));
                     }
 
                     DataSeries ds = new DataSeries(clust.getName(), data);
@@ -63,8 +67,17 @@ public class ScatterPlot extends JPanel {
 
                 // Format plot
                 plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-                plot.getTitle().setText("Scatterplot of clustering");
+                plot.getTitle().setText(clustering.getName());
                 plot.setLegendVisible(true);
+
+                if (clustering.size() > 0) {
+                    Cluster c = clustering.get(0);
+                    // Format axes
+                    AxisRenderer axisRendererX = plot.getAxisRenderer(XYPlot.AXIS_X);
+                    axisRendererX.setLabel(c.getAttribute(attrX).getName());
+                    AxisRenderer axisRendererY = plot.getAxisRenderer(XYPlot.AXIS_Y);
+                    axisRendererY.setLabel(c.getAttribute(attrY).getName());
+                }
 
                 // Add plot to Swing component
                 add(new InteractivePanel(plot), BorderLayout.CENTER);
