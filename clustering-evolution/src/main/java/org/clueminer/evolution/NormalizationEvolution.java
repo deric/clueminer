@@ -16,6 +16,8 @@ import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -27,16 +29,26 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
 
     private static final String name = "Normalizations";
 
+    public NormalizationEvolution() {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+    }
+
     @Override
     public String getName() {
         return name;
     }
 
-    @Override
-    public void run() {
+    private void prepare() {
         if (dataset == null) {
             throw new RuntimeException("missing data");
         }
+    }
+
+    @Override
+    public void run() {
+        prepare();
+
         Preferences params = NbPreferences.forModule(NormalizationEvolution.class);
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();
