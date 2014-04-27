@@ -2,6 +2,7 @@ package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.netbeans.api.progress.ProgressHandle;
 
 /**
  *
@@ -11,6 +12,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
 
     protected DistanceMeasure distanceMeasure;
     protected ColorGenerator colorGenerator;
+    protected ProgressHandle ph;
 
     public static final String DISTANCE = "distanceMeasure";
 
@@ -32,6 +34,11 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     @Override
     public void setColorGenerator(ColorGenerator colorGenerator) {
         this.colorGenerator = colorGenerator;
+    }
+
+    @Override
+    public void setProgressHandle(ProgressHandle ph) {
+        this.ph = ph;
     }
 
 }

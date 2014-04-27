@@ -21,7 +21,7 @@ import org.openide.util.TaskListener;
 public class ClusteringRunner implements Runnable {
 
     private ClusteringDialog config = null;
-    private ClusterAnalysis analysis;
+    private final ClusterAnalysis analysis;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;

@@ -21,6 +21,8 @@ import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Exportable;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Task;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -150,9 +152,13 @@ public class DendrogramComponent extends ClusterAnalysis {
 
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
+        final ProgressHandle ph1 = ProgressHandleFactory.createHandle("Clustering columns");
+        algorithm.setProgressHandle(ph1);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, data, params);
 
         //   progress.setTitle("Clustering by columns");
+        final ProgressHandle ph2 = ProgressHandleFactory.createHandle("Clustering rows");
+        algorithm.setProgressHandle(ph2);
         params.putBoolean("calculate-rows", false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, data, params);
         // validate(columnsResult);

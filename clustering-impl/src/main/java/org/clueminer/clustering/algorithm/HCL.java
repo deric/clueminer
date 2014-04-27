@@ -60,12 +60,9 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
-
     @Override
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences map) {
         System.out.println(map.toString());
-
         TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
         result = new HCLResult(dataset);
 
@@ -84,14 +81,19 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         int method = map.getInt("method-linkage", 0);
 
         //============= Init ====================
-
-
         if (calculateRows) {
             n = input.rowsCount();
-            System.out.println("calculating row");
         } else {
             n = input.columnsCount();
-            System.out.println("calculating columns");
+        }
+
+        if (ph != null) {
+            ph.start(3 * n);
+            if (calculateRows) {
+                ph.progress("clustering rows");
+            } else {
+                ph.progress("clustering columns");
+            }
         }
 
         int two_n = 2 * n;
@@ -108,7 +110,6 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         int[] NodeOrder = new int[n];
         int[] NumberOfChildren = new int[two_n];
         int[][] LeavesUnder = new int[two_n][];
-
 
         for (int i = 0; i < two_n; ++i) {
             Height[i] = 0.0;
@@ -153,6 +154,9 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         //factor = (float) 1.0;  //factor is used as an optional scaling factor
         factor = distanceMeasure.getSimilarityFactor();
         //factor = (float) 1.0;
+        if (ph != null) {
+            ph.progress("creating similarity matrix");
+        }
         for (i = 1; i < n; ++i) {
             /*
              * CurrentProgress = (int) (i * Factor); if (CurrentProgress >
@@ -191,11 +195,13 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
                     MinIndex[i] = j;
                 }
             }
+            if (ph != null) {
+                ph.progress(i - 1);
+            }
         }
         // Dump.matrix(SimilarityMatrix, "similarity ", 2);
 
         // AlgorithmData result = new AlgorithmData();
-
         JMatrix proximity = new JMatrix(SimilarityMatrix.clone());
 
         /*
@@ -207,9 +213,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         result.setProximityMatrix(proximity);
 
         //  Dump.matrix(SimilarityMatrix, "proximity", 3);
-
         //========================================
-
         if (stop) {
             throw new RuntimeException("algorithm was stopped");
         }
@@ -221,14 +225,11 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
          * set zero position
          fireValueChanged(event);
          */
-
-        long CalculatedNodes = 0;
+        int CalculatedNodes = n;
         CurrentProgress = 0;
         OldCurrentProgress = 0;
         Factor = UNITS / (double) n;
         int j, k, p;
-        int testcount = 0;
-        int Counter;
         int NodeCounter = 0;
         double MaxDistance = 0;
         double MinDistance = Double.POSITIVE_INFINITY;
@@ -242,6 +243,9 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         while (parentless > 1) { 				//main loop runs until every node except the root node is assigned a parent node.
             if (stop) {
                 throw new RuntimeException("algorihm was stopped");
+            }
+            if (ph != null) {
+                ph.progress(CalculatedNodes++);
             }
             /*
              * CurrentProgress = (int) ((CalculatedNodes + 1) * Factor); if
@@ -273,7 +277,6 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
             //JCB
             //  if(i >= n || j >= n || i < 0 || j < 0)
             //  break;
-
             close_d = test_d;
             double height_k = close_d;                              //was close_d/2.0 ????????
             if ((Math.abs(close_d) > 0) && (Math.abs(close_d) < MinDistance)) {
@@ -461,9 +464,10 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
             }
         }
         //========================================
-
+        if (ph != null) {
+            ph.finish();
+        }
         result.setSimilarityMatrix(new JMatrix(SimilarityMatrix));
-
 
         treeData.setLeft(Child1);
         treeData.setRight(Child2);
@@ -484,10 +488,8 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         //  if(!genes)
         //      for(int q = 0; q < Height.length; q++){
         //            System.out.println("H"+q+" = "+Height[q]);
-
         //      }
         //result.addParam("function", distance.getName());
-
         return result;
     }
 
@@ -555,21 +557,22 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * determined until the optimal orderings of both children of the node are
      * calculated.
      *
-     * @param Child1 the first child of a given node
-     * @param Child2 the second child of a given node
+     * @param Child1           the first child of a given node
+     * @param Child2           the second child of a given node
      * @param NumberOfChildren the number of leaves below a given node
-     * @param LeavesUnder an array of nodes with arrays of leaves under those
-     * nodes
-     * @param OptimalSum matrix containing the optimal sum of all similarities
-     * between adjacent leaves between two leaves set to be a maximum apart
+     * @param LeavesUnder      an array of nodes with arrays of leaves under
+     *                         those
+     *                         nodes
+     * @param OptimalSum       matrix containing the optimal sum of all
+     *                         similarities
+     *                         between adjacent leaves between two leaves set to be a maximum apart
      * @param SimilarityMatrix matrix containing similarities between all leaves
-     * @param n the total number of leaves
-     * @param node the node to be optimized
+     * @param n                the total number of leaves
+     * @param node             the node to be optimized
      *
      * @author dschlauch
      */
     public void MakeOptimalSumMatrix(int[] Child1, int[] Child2, int[] NumberOfChildren, int[][] LeavesUnder, double[][] OptimalSum, double[][] SimilarityMatrix, int n, int node) {
-
 
         //(n*2-2) is the highest node, and starting point
         if (stop) {
@@ -677,25 +680,34 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * of similarities of all adjacent leaves between u and w. The float is
      * stored in the OptimalSum JMatrix.
      *
-     * @param NumberOfChildren the number of leaves below a given node
-     * @param rankedU contains an array in ascending order of the optimal sum
-     * values for each leaf of U
-     * @param rankedW contains an array in ascending order of the optimal sum
-     * values for each leaf of W
-     * @param SimilarityMatrix matrix containing similarities between all leaves
+     * @param NumberOfChildren   the number of leaves below a given node
+     * @param rankedU            contains an array in ascending order of the
+     *                           optimal sum
+     *                           values for each leaf of U
+     * @param rankedW            contains an array in ascending order of the
+     *                           optimal sum
+     *                           values for each leaf of W
+     * @param SimilarityMatrix   matrix containing similarities between all
+     *                           leaves
      * @param leafRankingOrderU, leafRankingOrderW contains a ranked order of
-     * leaves in M by optimal sum versus a leaf in U
+     *                           leaves in M by optimal sum versus a leaf in U
      * @param leafRankingOrderU, leafRankingOrderW contains a ranked order of
-     * leaves in K by optimal sum versus a leaf in W
-     * @param OptimalSum matrix containing the optimal sum of all similarities
-     * between adjacent leaves between two leaves set to be a maximum apart
-     * @param LeavesUnder an array of nodes with arrays of leaves under those
-     * nodes
-     * @param n the total number of leaves
-     * @param unode the grand-child node on the outside, adjacent to mnode
-     * @param mnode the grand-child node on the inside, adjacent to unode
-     * @param knode the grand-child node on the inside, adjacent to wnode
-     * @param wnode the grand-child node on the outside, adjacent to knode
+     *                           leaves in K by optimal sum versus a leaf in W
+     * @param OptimalSum         matrix containing the optimal sum of all
+     *                           similarities
+     *                           between adjacent leaves between two leaves set to be a maximum apart
+     * @param LeavesUnder        an array of nodes with arrays of leaves under
+     *                           those
+     *                           nodes
+     * @param n                  the total number of leaves
+     * @param unode              the grand-child node on the outside, adjacent
+     *                           to mnode
+     * @param mnode              the grand-child node on the inside, adjacent to
+     *                           unode
+     * @param knode              the grand-child node on the inside, adjacent to
+     *                           wnode
+     * @param wnode              the grand-child node on the outside, adjacent
+     *                           to knode
      *
      * @author dschlauch
      */
@@ -757,17 +769,19 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * the complete tree and two optimal outside leaves and uses recursion to
      * order the new, optimized tree.
      *
-     * @param node the node to be ordered
+     * @param node             the node to be ordered
      * @param NumberOfChildren the number of leaves below a given node
-     * @param LeavesUnder an array of nodes with arrays of leaves under those
-     * nodes
-     * @param Child1 the first child of a given node
-     * @param Child2 the second child of a given node
-     * @param OptimalSum matrix containing the optimal sum of all similarities
-     * between adjacent leaves between two leaves set to be a maximum apart
-     * @param bestU the leaf set to be on the outside of the child U
-     * @param bestW the leaf set to be on the outside of the child W
-     * @param n the total number of leaves
+     * @param LeavesUnder      an array of nodes with arrays of leaves under
+     *                         those
+     *                         nodes
+     * @param Child1           the first child of a given node
+     * @param Child2           the second child of a given node
+     * @param OptimalSum       matrix containing the optimal sum of all
+     *                         similarities
+     *                         between adjacent leaves between two leaves set to be a maximum apart
+     * @param bestU            the leaf set to be on the outside of the child U
+     * @param bestW            the leaf set to be on the outside of the child W
+     * @param n                the total number of leaves
      *
      * @author dschlauch
      */
@@ -828,15 +842,17 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * fix it.
      *
      * @param NumberOfChildren the number of leaves below a given node
-     * @param Child1 the first child of a given node
-     * @param Child2 the second child of a given node
-     * @param bestU the leaf set to be on the outside of the child U
-     * @param bestW the leaf set to be on the outside of the child W
-     * @param node the node that will have its children or grand-children
-     * rotated, if necessary
-     * @param n the total number of leaves
-     * @param LeavesUnder an array of nodes with arrays of leaves under those
-     * nodes
+     * @param Child1           the first child of a given node
+     * @param Child2           the second child of a given node
+     * @param bestU            the leaf set to be on the outside of the child U
+     * @param bestW            the leaf set to be on the outside of the child W
+     * @param node             the node that will have its children or
+     *                         grand-children
+     *                         rotated, if necessary
+     * @param n                the total number of leaves
+     * @param LeavesUnder      an array of nodes with arrays of leaves under
+     *                         those
+     *                         nodes
      *
      * @author dschlauch
      */

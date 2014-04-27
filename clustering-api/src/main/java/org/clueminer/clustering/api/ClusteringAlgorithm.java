@@ -6,6 +6,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
+import org.netbeans.api.progress.ProgressHandle;
 
 /**
  *
@@ -46,4 +47,12 @@ public interface ClusteringAlgorithm {
      * @return
      */
     public ColorGenerator getColorGenerator();
+
+    /**
+     * API for displaying progress in UI, if not set algorithm should work
+     * anyway
+     *
+     * @param ph
+     */
+    public void setProgressHandle(ProgressHandle ph);
 }
