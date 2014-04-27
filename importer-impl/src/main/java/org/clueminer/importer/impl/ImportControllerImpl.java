@@ -102,7 +102,12 @@ public class ImportControllerImpl implements ImportController {
     public Container importFile(Reader reader, FileImporter importer, boolean reload) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(Container.class);
+        if (reload) {
+            System.out.println("container is reloading");
+            //container.getLoader().reset();
+        }
         System.out.println("importer contr num attr: " + container.getLoader().getAttributeCount());
+        System.out.println("importer contr num inst: " + container.getLoader().getInstanceCount());
         //Report
         Report report = new Report();
         container.setReport(report);

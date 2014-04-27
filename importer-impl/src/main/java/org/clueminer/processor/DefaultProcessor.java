@@ -1,5 +1,10 @@
 package org.clueminer.processor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
@@ -50,15 +55,32 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), container.getAttributeCount()});
         dataset = new ArrayDataset(container.getInstanceCount(), container.getAttributeCount());
 
-        //set attributes
+        ArrayList<AttributeDraft> inputAttr = new ArrayList<AttributeDraft>(container.getAttributeCount());
+        //scan attributes
+        int metaCnt = 0;
         for (AttributeDraft attrd : container.getAttributes()) {
-            //create just input attributes
             if (attrd.getRole().equals(BasicAttrRole.INPUT)) {
-                Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
-                dataset.setAttribute(attrd.getIndex(), attr);
-            } else {
-                logger.log(Level.INFO, "skipping attr {0} {1}", new Object[]{attrd.getName(), attrd.getIndex()});
+                inputAttr.add(attrd);
+            } else if (attrd.getRole().equals(BasicAttrRole.META)) {
+                metaCnt++;
             }
+        }
+        //sort attributes by index
+        Collections.sort(inputAttr, new AttributeComparator());
+
+        logger.log(Level.INFO, "found {0} meta attributes, and input attributes {1}", new Object[]{metaCnt, inputAttr.size()});
+
+        //set attributes
+        int index = 0;
+        Map<Integer, Integer> inputMap = new HashMap<Integer, Integer>();
+        for (AttributeDraft attrd : inputAttr) {
+            //create just input attributes
+            Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
+            attr.setIndex(index);
+            dataset.setAttribute(index, attr);
+            logger.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
+            inputMap.put(attrd.getIndex(), index);
+            index++;
         }
 
         Instance<? extends Double> inst;
@@ -73,13 +95,15 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
              * (class/label/id) are treated specially
              *
              */
+            int realIdx;
             for (int j = 0; j < container.getAttributeCount(); j++) {
                 //right now we support only double attributes
                 try {
                     attr = container.getAttribute(j);
                     if (attr.getRole().equals(BasicAttrRole.INPUT)) {
-                        if (dataset.getAttribute(j).isNumerical()) {
-                            inst.set(j, (Double) instd.getValue(j));
+                        if (attr.isNumerical()) {
+                            realIdx = inputMap.get(j);
+                            inst.set(realIdx, (Double) instd.getValue(j));
                         } else {
                             logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
                         }
@@ -115,6 +139,25 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             type = BasicAttrType.STRING;
         }
         return type;
+    }
+
+    private class AttributeComparator implements Comparator<AttributeDraft> {
+
+        @Override
+        public int compare(AttributeDraft attr1, AttributeDraft attr2) {
+
+            int id1 = attr1.getIndex();
+            int id2 = attr2.getIndex();
+
+            if (id1 > id2) {
+                return 1;
+            } else if (id1 < id2) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
     }
 
 }

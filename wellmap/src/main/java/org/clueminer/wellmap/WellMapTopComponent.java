@@ -32,17 +32,17 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(dtd = "-//org.clueminer.wellmap//WellMap//EN",
-        autostore = false)
+                     autostore = false)
 @TopComponent.Description(preferredID = "WellMapTopComponent",
-        iconBase = "org/clueminer/wellmap/well16.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+                          iconBase = "org/clueminer/wellmap/well16.png",
+                          persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.wellmap.WellMapTopComponent")
 @ActionReference(path = "Menu/Window" /*
-         * , position = 333
-         */)
+ * , position = 333
+ */)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_WellMapAction",
-        preferredID = "WellMapTopComponent")
+                                     preferredID = "WellMapTopComponent")
 @Messages({
     "CTL_WellMapAction=WellMap",
     "CTL_WellMapTopComponent=Well Map",
@@ -158,9 +158,6 @@ public final class WellMapTopComponent extends TopComponent implements LookupLis
         if (d != null) {
             logger.log(Level.INFO, "well map: res change. dataset size{0}", d.size());
             logger.log(Level.INFO, "class: " + d, getClass().getName());
-            for (Instance inst : d) {
-                System.out.println("inst: " + inst.getName());
-            }
         }
     }
 

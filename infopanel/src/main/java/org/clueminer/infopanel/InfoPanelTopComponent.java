@@ -98,11 +98,12 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
 
                 Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
                 if (dataset != null) {
-                    System.out.println("well map");
-                    System.out.println("dataset size = " + dataset.size());
-                    for (Instance inst : dataset) {
-                        System.out.println("inst: " + inst.toString());
-                    }
+                    logger.log(Level.INFO, "got dataset {0}", dataset.size());
+                    /* System.out.println("well map");
+                     System.out.println("dataset size = " + dataset.size());
+                     for (Instance inst : dataset) {
+                     System.out.println("inst: " + inst.toString());
+                     }*/
                 }
 
             }
@@ -199,7 +200,6 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
         }
 
         if (htsResult != null) {
-            logger.log(Level.INFO, "got HTS Plate");
             Collection<? extends HtsPlate> allPlates = htsResult.allInstances();
             for (HtsPlate<HtsInstance> d : allPlates) {
                 updatePlate(d);

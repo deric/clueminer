@@ -82,6 +82,11 @@ public class AttributeProp extends javax.swing.JPanel {
                 cbTypeItemStateChanged(evt);
             }
         });
+        cbType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbTypeActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(AttributeProp.class, "AttributeProp.jLabel3.text")); // NOI18N
 
@@ -184,8 +189,9 @@ public class AttributeProp extends javax.swing.JPanel {
             if (curr.getSource() == cbRole) {
                 System.out.println("source is cbRole");
             } else {
-                System.out.println("source is " + curr.getSource());
+                System.out.println("source is " + curr.getSource().getClass().getName());
             }
+            System.out.println("item evt: " + evt.getSource().getClass());
             String strRole = (String) cbRole.getSelectedItem();
             AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
             attr.setRole(role);
@@ -196,6 +202,11 @@ public class AttributeProp extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_cbRoleItemStateChanged
+
+    private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
+        // TODO add your handling code here:
+        System.out.println("action evt: " + evt.getSource().getClass());
+    }//GEN-LAST:event_cbTypeActionPerformed
 
     protected Class<?> stringToClass(String type) {
         if (type.equals("double")) {

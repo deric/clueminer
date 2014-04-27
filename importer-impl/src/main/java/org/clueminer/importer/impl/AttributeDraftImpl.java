@@ -52,12 +52,16 @@ public class AttributeDraftImpl implements AttributeDraft {
 
     @Override
     public boolean isNumerical() {
+        if (type == Double.class || type.equals(Integer.class) || type.equals(Float.class) || type.equals(Long.class)) {
+            return true;
+        }
         return numerical;
     }
 
     @Override
     public void setNumerical(boolean b) {
         this.numerical = b;
+        throw new RuntimeException("rather set directly type");
     }
 
     @Override
