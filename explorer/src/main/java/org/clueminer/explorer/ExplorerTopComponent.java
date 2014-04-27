@@ -168,6 +168,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             EvolutionFactory ef = EvolutionFactory.getInstance();
             Evolution alg = ef.getProvider(evolution);
             if (alg != null) {
+                btnStart.setEnabled(false);
                 alg.setDataset(dataset);
                 alg.setGenerations(sliderGenerations.getValue());
                 alg.setAlgorithm(new KMeans(3, 100));
@@ -255,6 +256,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
+        btnStart.setEnabled(true);
     }
 
     @Override
