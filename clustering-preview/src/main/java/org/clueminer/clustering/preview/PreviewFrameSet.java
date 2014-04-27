@@ -181,13 +181,13 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         if (metaInst instanceof ContinuousInstance) {
             ContinuousInstance tsInst = (ContinuousInstance) metaInst;
             Timeseries<ContinuousInstance> ts = (Timeseries<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();
-               double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
-             if (pos > xmax) {
+            double pos = ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getPosition();
+            if (pos > xmax) {
                 xmax = pos;
                 plot.setXBounds(0, xmax);
             }
-            logger.log(Level.INFO, "x max is {0}", xmax);
-            logger.log(Level.INFO, "x max time is {0}", ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getTimestamp());
+            //logger.log(Level.INFO, "x max is {0}", xmax);
+            //logger.log(Level.INFO, "x max time is {0}", ((TimePointAttribute) ts.getAttribute(ts.attributeCount() - 1)).getTimestamp());
             if (useGlobalScale) {
                 if (tsInst.getMin() < ymin) {
                     ymin = tsInst.getMin();
