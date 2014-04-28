@@ -37,8 +37,8 @@ import org.openide.util.Utilities;
 )
 @Messages({
     "CTL_ScatterAction=Scatter",
-    "CTL_ScatterTopComponent=Scatter Window",
-    "HINT_ScatterTopComponent=This is a Scatter window"
+    "CTL_ScatterTopComponent=Scatter",
+    "HINT_ScatterTopComponent=Scatter plot - 2D projection"
 })
 public final class ScatterTopComponent extends TopComponent implements LookupListener {
 
