@@ -37,8 +37,8 @@ import org.openide.util.Utilities;
 )
 @Messages({
     "CTL_ConfusionAction=Confusion",
-    "CTL_ConfusionTopComponent=Confusion Window",
-    "HINT_ConfusionTopComponent=This is a Confusion window"
+    "CTL_ConfusionTopComponent=Confusion Matrix",
+    "HINT_ConfusionTopComponent=Confusion Matrix"
 })
 public final class ConfusionTopComponent extends TopComponent implements LookupListener {
 

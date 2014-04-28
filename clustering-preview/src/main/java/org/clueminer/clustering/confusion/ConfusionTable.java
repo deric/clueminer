@@ -16,7 +16,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.colors.ColorScheme;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.gui.ColorPalette;
-import org.clueminer.utils.Dump;
 
 /**
  *
@@ -37,6 +36,7 @@ public class ConfusionTable extends JPanel {
     private int min;
     private int max;
     protected ColorPalette colorScheme;
+    private boolean maxInRows = true;
 
     public ConfusionTable() {
         initComponents();
@@ -79,7 +79,7 @@ public class ConfusionTable extends JPanel {
                 }
             }
         }
-        Dump.matrix(conf, "conf mat", 3);
+        //Dump.matrix(conf, "conf mat", 0);
         return conf;
     }
 
@@ -101,14 +101,14 @@ public class ConfusionTable extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         render(g);
         g.dispose();
@@ -128,8 +128,11 @@ public class ConfusionTable extends JPanel {
         FontMetrics fm = g.getFontMetrics();
         int fh = fm.getHeight();
         double fw;
-
         for (int i = 0; i < rowData.size(); i++) {
+            if (maxInRows) {
+                findMinMaxRow(confmat, i);
+                colorScheme.setRange(min, max);
+            }
             for (int j = 0; j < colData.size(); j++) {
                 value = confmat[i][j];
                 //cnt = a.get(i).countMutualElements(b.get(j));
@@ -162,9 +165,9 @@ public class ConfusionTable extends JPanel {
         }
         if (bufferedImage != null) {
             g2.drawImage(bufferedImage,
-                         0, 0,
-                         size.width, size.height,
-                         null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         }
         g2.dispose();
     }
@@ -193,9 +196,9 @@ public class ConfusionTable extends JPanel {
         }
         //cached image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
         g.dispose();
     }
 
@@ -217,9 +220,37 @@ public class ConfusionTable extends JPanel {
             for (int j = 0; j < row.length; j++) {
                 if (row[j] < min) {
                     min = row[j];
-                } else if (row[j] > max) {
+                }
+                if (row[j] > max) {
                     max = row[j];
                 }
+            }
+        }
+    }
+
+    private void findMinMaxRow(int[][] confmat, int rowId) {
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
+        int[] row = confmat[rowId];
+        for (int j = 0; j < row.length; j++) {
+            if (row[j] < min) {
+                min = row[j];
+            }
+            if (row[j] > max) {
+                max = row[j];
+            }
+        }
+    }
+
+    private void findMinMaxCol(int[][] confmat, int colId) {
+        min = Integer.MAX_VALUE;
+        max = Integer.MIN_VALUE;
+        for (int j = 0; j < confmat[colId].length; j++) {
+            if (confmat[j][colId] < min) {
+                min = confmat[j][colId];
+            }
+            if (confmat[j][colId] > max) {
+                max = confmat[j][colId];
             }
         }
     }
