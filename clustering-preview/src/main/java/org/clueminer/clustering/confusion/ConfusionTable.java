@@ -44,7 +44,7 @@ public class ConfusionTable extends JPanel {
 
     private void initComponents() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
-        colorScheme = new ColorScheme();
+        colorScheme = new ColorScheme(Color.RED, Color.YELLOW, Color.GREEN);
     }
 
     public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
@@ -65,8 +65,8 @@ public class ConfusionTable extends JPanel {
      */
     public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         int[][] conf = new int[c1.size()][c2.size()];
-        System.out.println("C1: " + c1.toString());
-        System.out.println("C2: " + c2.toString());
+        //System.out.println("C1: " + c1.toString());
+        //System.out.println("C2: " + c2.toString());
         Cluster<Instance> curr;
         for (int i = 0; i < c1.size(); i++) {
             curr = c1.get(i);
