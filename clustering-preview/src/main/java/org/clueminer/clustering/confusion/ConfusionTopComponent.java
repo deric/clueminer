@@ -101,7 +101,7 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
                 Clustering clustA = it.next();
                 Clustering clustB = it.next();
                 matrix.setClusterings(clustA, clustB);
-                matrix.setSize(getSize().width, getSize().height);
+                //matrix.setSize(getSize().width, getSize().height);
             } else {
                 //  lbStatus.setText("[ please select 2 clusterings ]");
             }
