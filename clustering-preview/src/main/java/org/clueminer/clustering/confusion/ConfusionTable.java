@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.colors.ColorScheme;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.gui.ColorPalette;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -25,8 +26,8 @@ public class ConfusionTable extends JPanel {
 
     private static final long serialVersionUID = -7558362062012338814L;
     private Dimension elemSize = new Dimension(10, 10);
-    private Clustering<Cluster> a;
-    private Clustering<Cluster> b;
+    private Clustering<Cluster> rowData;
+    private Clustering<Cluster> colData;
     protected int fontSize = 10;
     protected Font defaultFont;
     protected Dimension size = new Dimension(0, 0);
@@ -47,8 +48,8 @@ public class ConfusionTable extends JPanel {
     }
 
     public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        this.a = c1;
-        this.b = c2;
+        this.rowData = c1;
+        this.colData = c2;
 
         confmat = countMutual(c1, c2);
         findMinMax(confmat);
@@ -78,6 +79,7 @@ public class ConfusionTable extends JPanel {
                 }
             }
         }
+        Dump.matrix(conf, "conf mat", 3);
         return conf;
     }
 
@@ -113,7 +115,7 @@ public class ConfusionTable extends JPanel {
     }
 
     public boolean hasData() {
-        return (a != null && b != null);
+        return (rowData != null && colData != null);
     }
 
     public void render(Graphics2D g) {
@@ -127,8 +129,8 @@ public class ConfusionTable extends JPanel {
         int fh = fm.getHeight();
         double fw;
 
-        for (int i = 0; i < a.size(); i++) {
-            for (int j = 0; j < b.size(); j++) {
+        for (int i = 0; i < rowData.size(); i++) {
+            for (int j = 0; j < colData.size(); j++) {
                 value = confmat[i][j];
                 //cnt = a.get(i).countMutualElements(b.get(j));
                 //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b-" + b.get(j).getName() + ": " + cnt);
@@ -169,8 +171,8 @@ public class ConfusionTable extends JPanel {
 
     protected void recalculate() {
         if (hasData()) {
-            this.size.width = elemSize.width * a.size();
-            this.size.height = elemSize.height * b.size();
+            this.size.width = elemSize.width * colData.size();
+            this.size.height = elemSize.height * rowData.size();
             double fsize = elemSize.height * 0.3;
             defaultFont = defaultFont.deriveFont((float) fsize);
             //System.out.println("elem width = " + elemSize.width);

@@ -14,6 +14,8 @@ import org.clueminer.clustering.api.Cluster;
  */
 public class RowLabels extends AbstractLabels {
 
+    private static final long serialVersionUID = -1771575720458918717L;
+
     private final Insets insets = new Insets(0, 5, 0, 0);
 
     @Override
@@ -39,9 +41,10 @@ public class RowLabels extends AbstractLabels {
              *
              */
             Cluster curr;
+            maxWidth = 0;
             double offset = (elementSize.height / 2.0) + ((ascent - descent) / 2.0);
-            for (int row = 0; row < a.size(); row++) {
-                curr = a.get(row);
+            for (int row = 0; row < rowData.size(); row++) {
+                curr = rowData.get(row);
                 annY = (float) (row * elementSize.height + offset);
                 s = curr.getName() + " (" + curr.size() + ")";
                 if (s == null) {
@@ -52,12 +55,16 @@ public class RowLabels extends AbstractLabels {
                 checkMax(width);
                 g.drawString(s, insets.left, annY);
             }
+            if (changedMax) {
+                changedMax = false;
+                recalculate();
+            }
         }
     }
 
     @Override
     protected void recalculate() {
-        int width = 40 + maxWidth + insets.left + insets.right;
+        int width = 10 + maxWidth + insets.left + insets.right;
         int height;
         if (elementSize.height < lineHeight) {
             //no need to display unreadable text
@@ -67,7 +74,7 @@ public class RowLabels extends AbstractLabels {
             bufferedImage = null;
         } else {
             visible = true;
-            height = elementSize.height * a.size() + 1;
+            height = elementSize.height * rowData.size() + 1;
 
         }
         this.size.width = width;
@@ -92,7 +99,7 @@ public class RowLabels extends AbstractLabels {
      */
     @Override
     public boolean hasData() {
-        return (a != null);
+        return (rowData != null);
     }
 
 }

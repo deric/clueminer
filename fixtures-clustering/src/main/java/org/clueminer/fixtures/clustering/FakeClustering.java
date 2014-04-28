@@ -25,6 +25,7 @@ public class FakeClustering {
     private static Clustering<Cluster> irisClusters;
     private static Clustering<Cluster> irisWrong;
     private static Clustering<Cluster> irisWrong2;
+    private static Clustering<Cluster> irisWrong4;
     private static Clustering<Cluster> simpleClustering;
     private static Clustering<Cluster> simpleResponse;
     private static Dataset<Instance> irisData;
@@ -150,6 +151,48 @@ public class FakeClustering {
             irisWrong2.add(c);
         }
         return irisWrong2;
+    }
+
+    public static Clustering irisWrong4() {
+        if (irisWrong4 == null) {
+            irisWrong4 = new ClusterList(4);
+            Cluster a = new BaseCluster(50);
+            a.setName("cluster 1");
+            //will contain 30 elements of first class
+            a.setAttributes(irisData.getAttributes());
+            for (int i = 0; i < 30; i++) {
+                a.add(irisData.instance(i));
+            }
+
+            Cluster b = new BaseCluster(50);
+            b.setName("cluster 2");
+            //will contain 20 elements of first class
+            b.setAttributes(irisData.getAttributes());
+            for (int i = 30; i < 50; i++) {
+                b.add(irisData.instance(i));
+            }
+            Cluster c = new BaseCluster(50);
+            c.setName("cluster 3");
+            c.setAttributes(irisData.getAttributes());
+            //the rest (100) goes to the last cluster
+            for (int i = 50; i < 100; i++) {
+                c.add(irisData.instance(i));
+            }
+
+            Cluster d = new BaseCluster(50);
+            d.setName("cluster 4");
+            d.setAttributes(irisData.getAttributes());
+            //the rest (100) goes to the last cluster
+            for (int i = 100; i < 150; i++) {
+                d.add(irisData.instance(i));
+            }
+
+            irisWrong4.add(a);
+            irisWrong4.add(b);
+            irisWrong4.add(c);
+            irisWrong4.add(d);
+        }
+        return irisWrong4;
     }
 
     public static Dataset<Instance> wine() {

@@ -13,6 +13,8 @@ import org.clueminer.clustering.api.Cluster;
  */
 public class ColumnLabels extends AbstractLabels {
 
+    private static final long serialVersionUID = 3616092058872720426L;
+
     @Override
     protected void render(Graphics2D g) {
         //we draw strings in rows and then we rotate the whole image
@@ -29,8 +31,9 @@ public class ColumnLabels extends AbstractLabels {
             // clockwise 90 degrees
             g.rotate(Math.PI / 2.0);
             Cluster curr;
-            for (int col = 0; col < b.size(); col++) {
-                curr = b.get(col);
+            maxWidth = 0;
+            for (int col = 0; col < colData.size(); col++) {
+                curr = colData.get(col);
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
                 s = curr.getName() + " (" + curr.size() + ")";
                 width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
@@ -38,6 +41,10 @@ public class ColumnLabels extends AbstractLabels {
                 g.drawString(s, 0, -coordX);
             }
             g.rotate(-Math.PI / 2.0);
+            if (changedMax) {
+                changedMax = false;
+                recalculate();
+            }
         }
     }
 
@@ -56,7 +63,7 @@ public class ColumnLabels extends AbstractLabels {
 
     @Override
     public boolean hasData() {
-        return (b != null);
+        return (colData != null);
     }
 
     @Override
@@ -64,7 +71,7 @@ public class ColumnLabels extends AbstractLabels {
         int width = 50;
         int height = 50 + maxWidth;
         if (hasData()) {
-            width = elementSize.width * b.size() + 1;
+            width = elementSize.width * colData.size() + 1;
         }
         this.size.width = width;
         this.size.height = height;

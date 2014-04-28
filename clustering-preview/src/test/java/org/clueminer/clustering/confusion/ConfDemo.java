@@ -16,7 +16,7 @@ public class ConfDemo extends JFrame {
     public ConfDemo() throws IOException {
         initComponents();
 
-        confMatrix.setClusterings(FakeClustering.iris(), FakeClustering.irisWrong());
+        confMatrix.setClusterings(FakeClustering.iris(), FakeClustering.irisWrong4());
     }
 
     // this function will be run from the EDT

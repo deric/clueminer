@@ -73,8 +73,8 @@ public class ConfusionMatrix extends JPanel {
             if (cnt > 0) {
                 //System.out.println("rows = " + rowLabels.getSize());
                 //System.out.println("cols = " + columnLabels.getSize());
-                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / cnt;
-                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / cnt;
+                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / b.size();
+                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / a.size();
                 //System.out.println("cnt = " + cnt);
                 //System.out.println("setting elem size: " + elemSize);
                 if (elemSize.width > 0 && elemSize.height > 0) {
@@ -111,7 +111,7 @@ public class ConfusionMatrix extends JPanel {
          * must be some glue to fill the empty space (if no, components would be
          * centered to middle)
          */
-        c.weightx = 0.5;
+        c.weightx = 0.3;
         c.weighty = 1.0;
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;

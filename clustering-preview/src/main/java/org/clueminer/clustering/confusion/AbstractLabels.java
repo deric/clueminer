@@ -30,8 +30,9 @@ public abstract class AbstractLabels extends JPanel {
     protected int maxWidth;
     protected static final String unknownLabel = "(unknown)";
 
-    protected Clustering<Cluster> a;
-    protected Clustering<Cluster> b;
+    protected Clustering<Cluster> rowData;
+    protected Clustering<Cluster> colData;
+    protected boolean changedMax = false;
 
     public AbstractLabels() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -135,8 +136,8 @@ public abstract class AbstractLabels extends JPanel {
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-        this.a = a;
-        this.b = b;
+        this.rowData = a;
+        this.colData = b;
 
         resetCache();
     }
@@ -144,8 +145,7 @@ public abstract class AbstractLabels extends JPanel {
     protected void checkMax(int width) {
         if (width > maxWidth) {
             maxWidth = width;
-            recalculate();
-            createBufferedGraphics();
+            changedMax = true;
         }
     }
 
