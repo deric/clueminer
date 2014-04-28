@@ -52,8 +52,10 @@ public class ConfusionTable extends JPanel {
         this.colData = c2;
 
         confmat = countMutual(c1, c2);
-        findMinMax(confmat);
-        colorScheme.setRange(min, max);
+        if (!maxInRows) {
+            findMinMax(confmat);
+            colorScheme.setRange(min, max);
+        }
         resetCache();
     }
 

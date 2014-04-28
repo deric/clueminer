@@ -22,9 +22,9 @@ public class ConfusionMatrix extends JPanel {
     private ColumnLabels columnLabels;
     private Dimension dim = new Dimension();
     private final Dimension elemSize = new Dimension();
-    private Clustering<Cluster> a;
-    private Clustering<Cluster> b;
-    private final Insets insets = new Insets(0, 0, 5, 10);
+    private Clustering<Cluster> rowData;
+    private Clustering<Cluster> colData;
+    private final Insets insets = new Insets(10, 0, 5, 10);
 
     public ConfusionMatrix() {
         initComponents();
@@ -35,23 +35,17 @@ public class ConfusionMatrix extends JPanel {
         this.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                dim = getSize();
-                //System.out.println("matrix component " + dim.width + ", " + dim.height);
-                if (sizeUpdated()) {
-                    revalidate();
-                    validate();
-                    repaint();
-                }
+                recalculate();
             }
 
             @Override
             public void componentMoved(ComponentEvent e) {
-
+                recalculate();
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
-
+                recalculate();
             }
 
             @Override
@@ -66,15 +60,24 @@ public class ConfusionMatrix extends JPanel {
 
     }
 
+    private void recalculate() {
+        dim = getSize();
+        //System.out.println("matrix component " + dim.width + ", " + dim.height);
+        sizeUpdated();
+      //  if (sizeUpdated()) {
+            revalidate();
+            validate();
+            repaint();
+        //  }
+    }
+
     public boolean sizeUpdated() {
-        int cnt;
-        if (a != null && b != null) {
-            cnt = Math.min(a.size(), b.size());
-            if (cnt > 0) {
+        if (rowData != null && colData != null) {
+            if (rowData.size() > 0 && colData.size() > 0) {
                 //System.out.println("rows = " + rowLabels.getSize());
                 //System.out.println("cols = " + columnLabels.getSize());
-                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / b.size();
-                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / a.size();
+                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / colData.size();
+                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / rowData.size();
                 //System.out.println("cnt = " + cnt);
                 //System.out.println("setting elem size: " + elemSize);
                 if (elemSize.width > 0 && elemSize.height > 0) {
@@ -95,7 +98,7 @@ public class ConfusionMatrix extends JPanel {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1.0;
         c.weighty = 1.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        c.insets = new java.awt.Insets(insets.top, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
         add(table, c);
@@ -113,7 +116,7 @@ public class ConfusionMatrix extends JPanel {
          */
         c.weightx = 0.3;
         c.weighty = 1.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        c.insets = new java.awt.Insets(insets.top, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
         add(rowLabels, c);
@@ -135,11 +138,13 @@ public class ConfusionMatrix extends JPanel {
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-        this.a = a;
-        this.b = b;
+        this.rowData = a;
+        this.colData = b;
         table.setClusterings(a, b);
         rowLabels.setClusterings(a, b);
         columnLabels.setClusterings(a, b);
+
+        recalculate();
     }
 
 }
