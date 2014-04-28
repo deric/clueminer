@@ -20,8 +20,8 @@ public class ConfusionMatrix extends JPanel {
     private ConfusionTable table;
     private RowLabels rowLabels;
     private ColumnLabels columnLabels;
-    private Dimension dim = new Dimension();
-    private final Dimension elemSize = new Dimension();
+    private Dimension dim = new Dimension(100, 100);
+    private final Dimension elemSize = new Dimension(10, 10);
     private Clustering<Cluster> rowData;
     private Clustering<Cluster> colData;
     private final Insets insets = new Insets(10, 0, 5, 10);
@@ -40,11 +40,13 @@ public class ConfusionMatrix extends JPanel {
 
             @Override
             public void componentMoved(ComponentEvent e) {
+                dim = getSize();
                 recalculate();
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
+                dim = getSize();
                 recalculate();
             }
 
@@ -61,14 +63,19 @@ public class ConfusionMatrix extends JPanel {
     }
 
     private void recalculate() {
-        dim = getSize();
+        //System.out.println("prefered size: " + getPreferredSize());
+        //System.out.println("size: " + getSize());
+        //System.out.println("min size: " + getMinimumSize());
+        //System.out.println("======");
+        dim.width = (int) Math.ceil(getSize().width * 0.9);
+        dim.height = (int) Math.ceil(getSize().height * 0.9);
         //System.out.println("matrix component " + dim.width + ", " + dim.height);
-        sizeUpdated();
-      //  if (sizeUpdated()) {
+
+        if (sizeUpdated()) {
             revalidate();
             validate();
             repaint();
-        //  }
+        }
     }
 
     public boolean sizeUpdated() {
