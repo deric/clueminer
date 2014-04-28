@@ -183,7 +183,7 @@ public class ConfusionTable extends JPanel {
             //System.out.println("elem width = " + elemSize.width);
             //System.out.println("|a| = " + a.size());
             //System.out.println("matrix size: " + size.toString());
-            setMinimumSize(this.size);
+            //setMinimumSize(this.size);
             setSize(this.size);
             setPreferredSize(size);
         }

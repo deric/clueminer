@@ -69,7 +69,7 @@ public class ColumnLabels extends AbstractLabels {
     @Override
     protected void recalculate() {
         int width = 50;
-        int height = 50 + maxWidth;
+        int height = 30 + maxWidth;
         if (hasData()) {
             width = elementSize.width * colData.size() + 1;
         }

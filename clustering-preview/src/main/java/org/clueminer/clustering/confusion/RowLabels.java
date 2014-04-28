@@ -83,6 +83,7 @@ public class RowLabels extends AbstractLabels {
         defaultFont = defaultFont.deriveFont((float) fsize);
         //System.out.println("row labels size: " + size.toString());
         setMinimumSize(size);
+        setSize(size);
         setPreferredSize(size);
     }
 
