@@ -46,7 +46,7 @@ public class RowLabels extends AbstractLabels {
             for (int row = 0; row < rowData.size(); row++) {
                 curr = rowData.get(row);
                 annY = (float) (row * elementSize.height + offset);
-                s = curr.getName() + " (" + curr.size() + ")";
+                s = curr.getName();
                 if (s == null) {
                     s = unknownLabel;
                 }

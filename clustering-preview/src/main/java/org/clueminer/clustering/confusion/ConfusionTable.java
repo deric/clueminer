@@ -37,6 +37,7 @@ public class ConfusionTable extends JPanel {
     private int max;
     protected ColorPalette colorScheme;
     private boolean maxInRows = true;
+    private boolean displayClustSizes = true;
 
     public ConfusionTable() {
         initComponents();
@@ -103,14 +104,14 @@ public class ConfusionTable extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+                           RenderingHints.VALUE_RENDER_QUALITY);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+                           RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         render(g);
         g.dispose();
@@ -153,7 +154,41 @@ public class ConfusionTable extends JPanel {
                 //System.out.println("drawing rect: " + x + ", " + y + " w = " + elemSize.width + ", h= " + elemSize.height);
             }
         }
+        if (displayClustSizes) {
+            drawClusterSizes(g);
+        }
+    }
 
+    private void drawClusterSizes(Graphics2D g) {
+        g.setColor(Color.GRAY);
+        FontRenderContext frc = g.getFontRenderContext();
+        FontMetrics fm = g.getFontMetrics();
+        int fh = fm.getHeight();
+        double fw;
+        String s;
+        Cluster curr;
+        int x;
+        //display sums one row below table
+
+        //columns
+        int y = rowData.size() * elemSize.height;
+        for (int col = 0; col < colData.size(); col++) {
+            x = col * elemSize.width;
+            curr = colData.get(col);
+            s = String.valueOf(curr.size());
+            fw = (g.getFont().getStringBounds(s, frc).getWidth());
+            g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+        }
+
+        //last row
+        x = colData.size() * elemSize.width;
+        for (int row = 0; row < rowData.size(); row++) {
+            y = row * elemSize.height;
+            curr = rowData.get(row);
+            s = String.valueOf(curr.size());
+            fw = (g.getFont().getStringBounds(s, frc).getWidth());
+            g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+        }
     }
 
     public void redraw() {
@@ -167,18 +202,24 @@ public class ConfusionTable extends JPanel {
         }
         if (bufferedImage != null) {
             g2.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                         0, 0,
+                         size.width, size.height,
+                         null);
         }
         g2.dispose();
     }
 
     protected void recalculate() {
         if (hasData()) {
-            this.size.width = elemSize.width * colData.size();
-            this.size.height = elemSize.height * rowData.size();
-            double fsize = elemSize.height * 0.3;
+            int rows = rowData.size();
+            int cols = colData.size();
+            if (displayClustSizes) {
+                rows += 1;
+                cols += 1;
+            }
+            this.size.width = elemSize.width * cols;
+            this.size.height = elemSize.height * rows;
+            double fsize = elemSize.height * 0.5;
             defaultFont = defaultFont.deriveFont((float) fsize);
             //System.out.println("elem width = " + elemSize.width);
             //System.out.println("|a| = " + a.size());
@@ -198,9 +239,9 @@ public class ConfusionTable extends JPanel {
         }
         //cached image
         g.drawImage(bufferedImage,
-                0, 0,
-                size.width, size.height,
-                null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         g.dispose();
     }
 
@@ -255,6 +296,14 @@ public class ConfusionTable extends JPanel {
                 max = confmat[j][colId];
             }
         }
+    }
+
+    public boolean isDisplayClustSizes() {
+        return displayClustSizes;
+    }
+
+    public void setDisplayClustSizes(boolean displayClustSizes) {
+        this.displayClustSizes = displayClustSizes;
     }
 
 }

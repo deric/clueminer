@@ -25,6 +25,7 @@ public class ConfusionMatrix extends JPanel {
     private Clustering<Cluster> rowData;
     private Clustering<Cluster> colData;
     private final Insets insets = new Insets(10, 0, 5, 10);
+    private boolean displayClusterSizes = true;
 
     public ConfusionMatrix() {
         initComponents();
@@ -56,9 +57,9 @@ public class ConfusionMatrix extends JPanel {
             }
         });
 
-        addRowLabels(0, 0);
-        addMatrix(0, 1);
-        addColumnLabels(1, 1);
+        addColumnLabels(0, 1);
+        addRowLabels(1, 0);
+        addMatrix(1, 1);
 
     }
 
@@ -83,8 +84,14 @@ public class ConfusionMatrix extends JPanel {
             if (rowData.size() > 0 && colData.size() > 0) {
                 //System.out.println("rows = " + rowLabels.getSize());
                 //System.out.println("cols = " + columnLabels.getSize());
-                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / colData.size();
-                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / rowData.size();
+                int rows = rowData.size();
+                int cols = colData.size();
+                if (displayClusterSizes) {
+                    rows += 1;
+                    cols += 1;
+                }
+                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / cols;
+                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / rows;
                 //System.out.println("cnt = " + cnt);
                 //System.out.println("setting elem size: " + elemSize);
                 if (elemSize.width > 0 && elemSize.height > 0) {
@@ -152,6 +159,15 @@ public class ConfusionMatrix extends JPanel {
         columnLabels.setClusterings(a, b);
 
         recalculate();
+    }
+
+    public boolean isDisplayClusterSizes() {
+        return displayClusterSizes;
+    }
+
+    public void setDisplayClusterSizes(boolean displayClusterSizes) {
+        this.displayClusterSizes = displayClusterSizes;
+        table.setDisplayClustSizes(displayClusterSizes);
     }
 
 }

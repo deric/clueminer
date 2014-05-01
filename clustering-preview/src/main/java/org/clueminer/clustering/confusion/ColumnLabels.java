@@ -35,7 +35,7 @@ public class ColumnLabels extends AbstractLabels {
             for (int col = 0; col < colData.size(); col++) {
                 curr = colData.get(col);
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
-                s = curr.getName() + " (" + curr.size() + ")";
+                s = curr.getName();
                 width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
                 checkMax(width);
                 g.drawString(s, 0, -coordX);
