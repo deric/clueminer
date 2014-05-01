@@ -2,7 +2,6 @@ package org.clueminer.dendrogram;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +31,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.Lookups;
+import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -66,14 +66,16 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
     private Project project;
     private Lookup.Result<Dataset> result = null;
     private final InstanceContent content = new InstanceContent();
+    private final InstanceContent contentGlobal = new InstanceContent();
     private static final Logger logger = Logger.getLogger(DendrogramTopComponent.class.getName());
+    private ProxyLookup proxyLookup;
 
     public DendrogramTopComponent() {
         initComponents();
         setName(Bundle.CTL_DendrogramTopComponent());
         setToolTipText(Bundle.HINT_DendrogramTopComponent());
         dendrogram = new DendrogramComponent();
-        // ProxyLookup proxyLookup = new ProxyLookup(Utilities.actionsGlobalContext(), new AbstractLookup(content));
+        //proxyLookup = new ProxyLookup(Utilities.actionsGlobalContext(), new AbstractLookup(contentGlobal));
         associateLookup(new AbstractLookup(content));
 
         add(dendrogram, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -176,6 +178,8 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
      * only, i.e. deserialization routines; otherwise you could get a
      * non-deserialized instance. To obtain the singleton instance, use
      * {@link #findInstance}.
+     *
+     * @return
      */
     public static synchronized DendrogramTopComponent getDefault() {
         if (instance == null) {
@@ -187,6 +191,8 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
     /**
      * Obtain the CustomerTopComponent instance. Never call {@link #getDefault}
      * directly!
+     *
+     * @return
      */
     public static synchronized DendrogramTopComponent findInstance() {
         TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
@@ -218,9 +224,14 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        System.out.println("dedrogram component lookup event " + ev.toString());
-        Collection<? extends Dataset> allDatasets = result.allInstances();
-        System.out.println("datasets size= " + allDatasets.size());
+        logger.log(Level.INFO, "lookup event {0}", ev.toString());
+        /*  Collection<? extends Dataset> allDatasets = result.allInstances();
+         for (Dataset<? extends Instance> d : allDatasets) {
+         logger.log(Level.INFO, "adding dataset to lookup: {0}", d.size());
+         //content.add(d);
+         content.set(Collections.singleton(d), null);
+         }*/
+//        System.out.println("datasets size= " + allDatasets.size());
     }
 
     public void setDataset(Dataset<? extends Instance> dataset) {
@@ -266,7 +277,9 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
         pc.getCurrentProject().add(Lookups.singleton(clust));
+        logger.log(Level.INFO, "adding to lookup clustring {0} - {1}", new Object[]{clust.size(), clust.getName()});
         content.set(Collections.singleton(clust), null);
+        contentGlobal.set(Collections.singleton(clust), null);
     }
 
     @Override
@@ -275,7 +288,12 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         //add result to lookup
         if (hclust != null) {
             pc.getCurrentProject().add(Lookups.singleton(hclust));
-            System.out.println("adding clustering result to lookup");
+            //System.out.println("adding clustering result to lookup");
+            Clustering c = hclust.getClustering();
+            logger.log(Level.INFO, "hclust update: {0}", c.size());
+            content.set(Collections.singleton(c), null);
+            contentGlobal.set(Collections.singleton(c), null);
+
         }
 
     }

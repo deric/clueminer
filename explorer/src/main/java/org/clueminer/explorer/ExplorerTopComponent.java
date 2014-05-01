@@ -32,6 +32,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.util.Utilities;
 import org.openide.windows.CloneableTopComponent;
 
 /**
@@ -209,8 +210,14 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
     @Override
     public void componentOpened() {
-        //result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
         //result.addLookupListener(this);
+        //resultChanged(new LookupEvent(result));
+
+        ClustGlobal children = new ClustGlobal(result);
+        root = new AbstractNode(children);
+        root.setDisplayName("root node");
+        mgr.setRootContext(root);
     }
 
     @Override
@@ -238,13 +245,15 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        /*for (Clustering c : allClusterings) {
-         System.out.println("clustring size" + c.size());
-         System.out.println(c.toString());
-         root = new ClusteringNode(c);
-         //
-         }
-         mgr.setRootContext(root);*/
+        ClusteringNode node;
+        for (Clustering c : allClusterings) {
+            //System.out.println("clustring size" + c.size());
+            //System.out.println(c.toString());
+            //root = new ClusteringNode(c);
+            node = new ClusteringNode(c);
+            //
+        }
+        //mgr.setRootContext(root);
     }
 
     public void setDataset(Dataset<? extends Instance> dataset) {
