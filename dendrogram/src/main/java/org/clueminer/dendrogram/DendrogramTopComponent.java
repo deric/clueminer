@@ -279,7 +279,7 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         pc.getCurrentProject().add(Lookups.singleton(clust));
         logger.log(Level.INFO, "adding to lookup clustring {0} - {1}", new Object[]{clust.size(), clust.getName()});
         content.set(Collections.singleton(clust), null);
-        contentGlobal.set(Collections.singleton(clust), null);
+        //contentGlobal.set(Collections.singleton(clust), null);
     }
 
     @Override
@@ -292,7 +292,7 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
             Clustering c = hclust.getClustering();
             logger.log(Level.INFO, "hclust update: {0}", c.size());
             content.set(Collections.singleton(c), null);
-            contentGlobal.set(Collections.singleton(c), null);
+            ///contentGlobal.set(Collections.singleton(c), null);
 
         }
 
