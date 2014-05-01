@@ -38,6 +38,8 @@ public class ConfusionTable extends JPanel {
     protected ColorPalette colorScheme;
     private boolean maxInRows = true;
     private boolean displayClustSizes = true;
+    protected int maxWidth;
+    protected boolean changedMax = false;
 
     public ConfusionTable() {
         initComponents();
@@ -168,6 +170,7 @@ public class ConfusionTable extends JPanel {
         String s;
         Cluster curr;
         int x;
+        maxWidth = 0;
         //display sums one row below table
 
         //columns
@@ -177,6 +180,7 @@ public class ConfusionTable extends JPanel {
             curr = colData.get(col);
             s = String.valueOf(curr.size());
             fw = (g.getFont().getStringBounds(s, frc).getWidth());
+            checkMax((int) fw);
             g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
         }
 
@@ -187,6 +191,7 @@ public class ConfusionTable extends JPanel {
             curr = rowData.get(row);
             s = String.valueOf(curr.size());
             fw = (g.getFont().getStringBounds(s, frc).getWidth());
+            checkMax((int) fw);
             g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
         }
     }
@@ -221,6 +226,10 @@ public class ConfusionTable extends JPanel {
             this.size.height = elemSize.height * rows;
             double fsize = elemSize.height * 0.5;
             defaultFont = defaultFont.deriveFont((float) fsize);
+            if (maxWidth >= elemSize.width) {
+                fsize *= 0.9;
+                defaultFont = defaultFont.deriveFont((float) fsize);
+            }
             //System.out.println("elem width = " + elemSize.width);
             //System.out.println("|a| = " + a.size());
             //System.out.println("matrix size: " + size.toString());
@@ -236,6 +245,10 @@ public class ConfusionTable extends JPanel {
 
         if (bufferedImage == null) {
             createBufferedGraphics();
+            if (changedMax) {
+                changedMax = false;
+                resetCache();
+            }
         }
         //cached image
         g.drawImage(bufferedImage,
@@ -306,4 +319,10 @@ public class ConfusionTable extends JPanel {
         this.displayClustSizes = displayClustSizes;
     }
 
+    protected void checkMax(int width) {
+        if (width > maxWidth) {
+            maxWidth = width;
+            changedMax = true;
+        }
+    }
 }
