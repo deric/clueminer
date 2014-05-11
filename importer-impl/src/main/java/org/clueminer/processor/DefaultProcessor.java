@@ -153,10 +153,14 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                     logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getValue(j), e.toString()});
                     Exceptions.printStackTrace(e);
                 }
-                if (instd.getId() != null) {
-                    inst.setId(instd.getId());
-                }
                 //dataset.setAttributeValue(i, j, (Double) instd.getValue(i));
+            }
+            if (instd.getId() != null) {
+                inst.setId(instd.getId());
+            }
+
+            if (inst.getName() == null && inst.classValue() != null) {
+                inst.setName(inst.classValue().toString());
             }
             dataset.add(inst);
             logger.log(Level.ALL, inst.toString());
