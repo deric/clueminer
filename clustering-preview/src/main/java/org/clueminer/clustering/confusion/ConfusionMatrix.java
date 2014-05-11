@@ -22,8 +22,8 @@ public class ConfusionMatrix extends JPanel {
     private ColumnLabels columnLabels;
     private Dimension dim = new Dimension(100, 100);
     private final Dimension elemSize = new Dimension(10, 10);
-    private Clustering<Cluster> rowData;
-    private Clustering<Cluster> colData;
+    private String[] rowData;
+    private String[] colData;
     private final Insets insets = new Insets(10, 0, 5, 10);
     private boolean displayClusterSizes = true;
 
@@ -81,17 +81,17 @@ public class ConfusionMatrix extends JPanel {
 
     public boolean sizeUpdated() {
         if (rowData != null && colData != null) {
-            if (rowData.size() > 0 && colData.size() > 0) {
+            if (rowData.length > 0 && colData.length > 0) {
                 //System.out.println("rows = " + rowLabels.getSize());
                 //System.out.println("cols = " + columnLabels.getSize());
-                int rows = rowData.size();
-                int cols = colData.size();
+                int rowCnt = rowData.length;
+                int colCnt = colData.length;
                 if (displayClusterSizes) {
-                    rows += 1;
-                    cols += 1;
+                    rowCnt += 1;
+                    colCnt += 1;
                 }
-                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / cols;
-                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / rows;
+                elemSize.width = (dim.width - insets.left - insets.right - rowLabels.getSize().width) / colCnt;
+                elemSize.height = (dim.height - insets.top - insets.bottom - columnLabels.getSize().height) / rowCnt;
                 //System.out.println("cnt = " + cnt);
                 //System.out.println("setting elem size: " + elemSize);
                 if (elemSize.width > 0 && elemSize.height > 0) {
@@ -152,21 +152,21 @@ public class ConfusionMatrix extends JPanel {
     }
 
     public void setClustering(Clustering<Cluster> clust) {
-        this.colData = clust;
-
         table.setClustering(clust);
-        rowLabels.setLabels(table.getRowLabels());
-        columnLabels.setLabels(table.getColLabels());
-        recalculate();
+        updateLabels();
 
     }
 
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-        this.rowData = a;
-        this.colData = b;
         table.setClusterings(a, b);
-        rowLabels.setLabels(table.getRowLabels());
-        columnLabels.setLabels(table.getColLabels());
+        updateLabels();
+    }
+
+    private void updateLabels() {
+        rowData = table.getRowLabels();
+        colData = table.getColLabels();
+        rowLabels.setLabels(rowData);
+        columnLabels.setLabels(colData);
 
         recalculate();
     }
