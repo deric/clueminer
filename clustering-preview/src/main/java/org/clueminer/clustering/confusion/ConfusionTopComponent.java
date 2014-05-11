@@ -14,6 +14,7 @@ import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.clueminer.eval.external.Accuracy;
 
 /**
  * Top component which displays something.
@@ -103,7 +104,11 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
                 //matrix.setSize(getSize().width, getSize().height);
             } else if (clusterings.size() == 1) {
                 Iterator<? extends Clustering> it = clusterings.iterator();
-                matrix.setClustering(it.next());
+                Clustering clustA = it.next();
+                matrix.setClustering(clustA);
+                Accuracy eval = new Accuracy();
+                double score = eval.score(clustA);
+                System.out.println("accuracy = " + score);
                 //  lbStatus.setText("[ please select 2 clusterings ]");
             }
         } else {

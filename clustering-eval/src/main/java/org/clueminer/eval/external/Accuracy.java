@@ -59,6 +59,11 @@ public class Accuracy extends ExternalEvaluator {
         return countScore(table);
     }
 
+    public double score(Clustering<Cluster> clusters) {
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
+        return countScore(table);
+    }
+
     @Override
     public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
         return score(clusters, dataset);

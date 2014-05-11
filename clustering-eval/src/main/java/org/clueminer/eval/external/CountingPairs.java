@@ -23,6 +23,8 @@ import org.clueminer.dataset.api.Instance;
  */
 public class CountingPairs {
 
+    private static final String unknownLabel = "unknown";
+
     public static Table<String, String, Integer> newTable() {
         return Tables.newCustomTable(
                 Maps.<String, Map<String, Integer>>newHashMap(),
@@ -56,7 +58,12 @@ public class CountingPairs {
             for (int i = 0; i < current.size(); i++) {
                 inst = current.instance(i);
                 cluster = current.getName();
-                label = inst.classValue().toString();
+                Object klass = inst.classValue();
+                if (klass != null) {
+                    label = klass.toString();
+                } else {
+                    label = unknownLabel;
+                }
 
                 if (table.contains(cluster, label)) {
                     cnt = table.get(cluster, label);

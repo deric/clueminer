@@ -1,6 +1,9 @@
 package org.clueminer.clustering.confusion;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,9 +21,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.colors.ColorScheme;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.external.CountingPairs;
 import org.clueminer.gui.ColorPalette;
-import org.clueminer.utils.Dump;
 
 /**
  *
@@ -47,6 +48,7 @@ public class ConfusionTable extends JPanel {
     protected boolean changedMax = false;
     private String[] colLabels;
     private String[] rowLabels;
+    private static final String unknownLabel = "unknown";
 
     public ConfusionTable() {
         initComponents();
@@ -126,14 +128,15 @@ public class ConfusionTable extends JPanel {
      */
     public int[][] countMutual(Clustering<Cluster> clust) {
         //SortedSet klasses = dataset.getClasses();
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clust);
+        //Table<String, String, Integer> table = counting.contingencyTable(clust);
+        Table<String, String, Integer> table = contingencyTable(clust);
         //String[] klassLabels = (String[]) klasses.toArray(new String[klasses.size()]);
         Set<String> cols = table.columnKeySet();
         colLabels = cols.toArray(new String[cols.size()]);
         int[][] conf = new int[clust.size()][colLabels.length];
 
         int i = 0;
-        Dump.array(colLabels, "classes");
+        //Dump.array(colLabels, "classes");
         for (Cluster c : clust) {
             Map<String, Integer> row = table.row(c.getName());
             for (int j = 0; j < colLabels.length; j++) {
@@ -143,8 +146,61 @@ public class ConfusionTable extends JPanel {
             }
             i++;
         }
-        Dump.matrix(conf, "conf mat", 0);
+        //Dump.matrix(conf, "conf mat", 0);
         return conf;
+    }
+
+    public Table<String, String, Integer> newTable() {
+        return Tables.newCustomTable(
+                Maps.<String, Map<String, Integer>>newHashMap(),
+                new Supplier<Map<String, Integer>>() {
+                    @Override
+                    public Map<String, Integer> get() {
+                        return Maps.newHashMap();
+                    }
+                });
+    }
+
+    /**
+     * Should count number of item with same assignment to <Cluster A, Class X>
+     * Instances must have included information about class assignment. This
+     * table is sometimes called contingency table
+     *
+     * Classes are in rows, Clusters are in columns
+     *
+     * @param clustering
+     * @return table with counts of items for each pair cluster, class
+     */
+    public Table<String, String, Integer> contingencyTable(Clustering<Cluster> clustering) {
+        // a lookup table for storing correctly / incorrectly classified items
+        Table<String, String, Integer> table = newTable();
+
+        //Cluster current;
+        Instance inst;
+        String cluster, label;
+        int cnt;
+        for (Cluster<Instance> current : clustering) {
+            for (int i = 0; i < current.size(); i++) {
+                inst = current.instance(i);
+                cluster = current.getName();
+                Object klass = inst.classValue();
+                if (klass != null) {
+                    label = klass.toString();
+                } else {
+                    label = unknownLabel;
+                }
+
+                if (table.contains(cluster, label)) {
+                    cnt = table.get(cluster, label);
+                } else {
+                    cnt = 0;
+                }
+
+                cnt++;
+                table.put(cluster, label, cnt);
+            }
+        }
+        return table;
     }
 
     protected void updateSize(Dimension size) {
@@ -179,7 +235,7 @@ public class ConfusionTable extends JPanel {
     }
 
     public boolean hasData() {
-        return (rowData != null && colData != null);
+        return (rowLabels != null && colLabels != null);
     }
 
     public void render(Graphics2D g) {
@@ -197,7 +253,7 @@ public class ConfusionTable extends JPanel {
                 findMinMaxRow(confmat, i);
                 colorScheme.setRange(min, max);
             }
-            for (int j = 0; j < colData.size(); j++) {
+            for (int j = 0; j < colLabels.length; j++) {
                 value = confmat[i][j];
                 //cnt = a.get(i).countMutualElements(b.get(j));
                 //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b-" + b.get(j).getName() + ": " + cnt);
@@ -234,17 +290,18 @@ public class ConfusionTable extends JPanel {
 
         //columns
         int y = rowData.size() * elemSize.height;
-        for (int col = 0; col < colData.size(); col++) {
-            x = col * elemSize.width;
-            curr = colData.get(col);
-            s = String.valueOf(curr.size());
-            fw = (g.getFont().getStringBounds(s, frc).getWidth());
-            checkMax((int) fw);
-            g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+        if (colData != null) {
+            for (int col = 0; col < colData.size(); col++) {
+                x = col * elemSize.width;
+                curr = colData.get(col);
+                s = String.valueOf(curr.size());
+                fw = (g.getFont().getStringBounds(s, frc).getWidth());
+                checkMax((int) fw);
+                g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+            }
         }
-
         //last row
-        x = colData.size() * elemSize.width;
+        x = colLabels.length * elemSize.width;
         for (int row = 0; row < rowData.size(); row++) {
             y = row * elemSize.height;
             curr = rowData.get(row);
@@ -275,8 +332,8 @@ public class ConfusionTable extends JPanel {
 
     protected void recalculate() {
         if (hasData()) {
-            int rows = rowData.size();
-            int cols = colData.size();
+            int rows = rowLabels.length;
+            int cols = colLabels.length;
             if (displayClustSizes) {
                 rows += 1;
                 cols += 1;
