@@ -6,7 +6,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.font.FontRenderContext;
-import org.clueminer.clustering.api.Cluster;
 
 /**
  *
@@ -28,7 +27,7 @@ public class RowLabels extends AbstractLabels {
             FontMetrics fm = g.getFontMetrics();
             int ascent = fm.getMaxAscent();
             int descent = fm.getDescent();
-            String s;
+            String str;
             /*
              * Fonts are not scaling lineraly
 
@@ -40,20 +39,18 @@ public class RowLabels extends AbstractLabels {
              * --------------descent
              *
              */
-            Cluster curr;
             maxWidth = 0;
             double offset = (elementSize.height / 2.0) + ((ascent - descent) / 2.0);
-            for (int row = 0; row < rowData.size(); row++) {
-                curr = rowData.get(row);
+            for (int row = 0; row < labels.length; row++) {
                 annY = (float) (row * elementSize.height + offset);
-                s = curr.getName();
-                if (s == null) {
-                    s = unknownLabel;
+                str = labels[row];
+                if (str == null) {
+                    str = unknownLabel;
                 }
 
-                int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+                int width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax(width);
-                g.drawString(s, insets.left, annY);
+                g.drawString(str, insets.left, annY);
             }
             if (changedMax) {
                 changedMax = false;
@@ -74,7 +71,7 @@ public class RowLabels extends AbstractLabels {
             bufferedImage = null;
         } else {
             visible = true;
-            height = elementSize.height * rowData.size() + 1;
+            height = elementSize.height * labels.length + 1;
 
         }
         this.size.width = width;
@@ -100,7 +97,7 @@ public class RowLabels extends AbstractLabels {
      */
     @Override
     public boolean hasData() {
-        return (rowData != null);
+        return (labels != null && labels.length > 0);
     }
 
 }

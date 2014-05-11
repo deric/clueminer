@@ -151,12 +151,22 @@ public class ConfusionMatrix extends JPanel {
         add(columnLabels, c);
     }
 
+    public void setClustering(Clustering<Cluster> clust) {
+        this.colData = clust;
+
+        table.setClustering(clust);
+        rowLabels.setLabels(table.getRowLabels());
+        columnLabels.setLabels(table.getColLabels());
+        recalculate();
+
+    }
+
     public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
         this.rowData = a;
         this.colData = b;
         table.setClusterings(a, b);
-        rowLabels.setClusterings(a, b);
-        columnLabels.setClusterings(a, b);
+        rowLabels.setLabels(table.getRowLabels());
+        columnLabels.setLabels(table.getColLabels());
 
         recalculate();
     }

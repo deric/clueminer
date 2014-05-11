@@ -27,11 +27,11 @@ public class CountingPairs {
         return Tables.newCustomTable(
                 Maps.<String, Map<String, Integer>>newHashMap(),
                 new Supplier<Map<String, Integer>>() {
-            @Override
-            public Map<String, Integer> get() {
-                return Maps.newHashMap();
-            }
-        });
+                    @Override
+                    public Map<String, Integer> get() {
+                        return Maps.newHashMap();
+                    }
+                });
     }
 
     /**
@@ -82,7 +82,7 @@ public class CountingPairs {
         // a lookup table for storing same / differently classified items
         Table<String, String, Integer> table = newTable();
 
-        //Cluster current;        
+        //Cluster current;
         String label1, label2;
         int cnt;
         for (Cluster<Instance> a : c1) {
@@ -112,13 +112,13 @@ public class CountingPairs {
     public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
         BiMap<String, String> matching = HashBiMap.create(table.size());
 
-        //sort clusters by number of diverse classes inside, clusters containing 
+        //sort clusters by number of diverse classes inside, clusters containing
         //only one class will have priority
         TreeMap<String, Integer> sortedClusters = new ValueComparableMap<String, Integer>(Ordering.natural());
 
         for (String rowKey : table.rowKeySet()) {
             sortedClusters.put(rowKey, table.row(rowKey).size());
-        }        
+        }
         LinkedList<String> notAssigned = new LinkedList<String>();
         //for each real class we have to find best match
         for (String cluster : sortedClusters.keySet()) {
@@ -127,8 +127,8 @@ public class CountingPairs {
             String maxKey = null;
             for (String klass : assign.keySet()) {
                 value = assign.get(klass);
-                //if one class would have same number of assignments to two 
-                //clusters, it's hard to decide which is which                
+                //if one class would have same number of assignments to two
+                //clusters, it's hard to decide which is which
                 if (value >= max && !matching.containsKey(klass)) {
                     max = value;
                     maxKey = klass;
@@ -146,7 +146,7 @@ public class CountingPairs {
         }
         //some cluster hasn't been assigned to a class
         // matching.size() < sortedClusters.size()
-        if (notAssigned.size() > 0) {            
+        if (notAssigned.size() > 0) {
             for (String cluster : notAssigned) {
                 for (String klass : table.columnKeySet()) {
                     if (!matching.containsKey(klass)) {
@@ -160,15 +160,20 @@ public class CountingPairs {
     }
 
     /**
-     *  - TP (true positive) - as the number of points that are present in the same cluster in both C1 and C2.
-     *  - FP (false positive) - as the number of points that are present in the same cluster in C1 but not in C2.
-     *  - FN (false negative) - as the number of points that are present in the same cluster in C2 but not in C1.
-     *  - TN (true negative) - as the number of points that are in different clusters in both C1 and C2.
+     * - TP (true positive) - as the number of points that are present in the
+     * same cluster in both C1 and C2.
+     * - FP (false positive) - as the number of points that are present in the
+     * same cluster in C1 but not in C2.
+     * - FN (false negative) - as the number of points that are present in the
+     * same cluster in C2 but not in C1.
+     * - TN (true negative) - as the number of points that are in different
+     * clusters in both C1 and C2.
+     *
      * @param table
-     * @param matching
+     * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     * supervised learning)
+     *         supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;

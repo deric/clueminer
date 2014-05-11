@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
-import org.clueminer.clustering.api.Cluster;
 
 /**
  *
@@ -18,7 +17,7 @@ public class ColumnLabels extends AbstractLabels {
     @Override
     protected void render(Graphics2D g) {
         //we draw strings in rows and then we rotate the whole image
-        String s;
+        String str;
         int coordX;
         if (hasData()) {
             g.setColor(Color.black);
@@ -30,15 +29,13 @@ public class ColumnLabels extends AbstractLabels {
             int width;
             // clockwise 90 degrees
             g.rotate(Math.PI / 2.0);
-            Cluster curr;
             maxWidth = 0;
-            for (int col = 0; col < colData.size(); col++) {
-                curr = colData.get(col);
+            for (int col = 0; col < labels.length; col++) {
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
-                s = curr.getName();
-                width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+                str = labels[col];
+                width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax(width);
-                g.drawString(s, 0, -coordX);
+                g.drawString(str, 0, -coordX);
             }
             g.rotate(-Math.PI / 2.0);
             if (changedMax) {
@@ -63,7 +60,7 @@ public class ColumnLabels extends AbstractLabels {
 
     @Override
     public boolean hasData() {
-        return (colData != null);
+        return (labels != null && labels.length > 0);
     }
 
     @Override
@@ -71,7 +68,7 @@ public class ColumnLabels extends AbstractLabels {
         int width = 50;
         int height = 30 + maxWidth;
         if (hasData()) {
-            width = elementSize.width * colData.size() + 1;
+            width = elementSize.width * labels.length + 1;
         }
         this.size.width = width;
         this.size.height = height;

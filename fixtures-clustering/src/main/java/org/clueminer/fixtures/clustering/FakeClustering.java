@@ -86,7 +86,7 @@ public class FakeClustering {
             irisWrong = new ClusterList(3);
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1");
-            a.setAttributes(irisData.getAttributes());
+            a.setAttributes(irisDataset().getAttributes());
             //add few instances to first cluster
             a.add(irisData.instance(0));
             a.add(irisData.instance(1));
@@ -126,7 +126,7 @@ public class FakeClustering {
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1");
             //will contain 30 elements of first class
-            a.setAttributes(irisData.getAttributes());
+            a.setAttributes(irisDataset().getAttributes());
             for (int i = 0; i < 30; i++) {
                 a.add(irisData.instance(i));
             }
@@ -159,7 +159,7 @@ public class FakeClustering {
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1");
             //will contain 30 elements of first class
-            a.setAttributes(irisData.getAttributes());
+            a.setAttributes(irisDataset().getAttributes());
             for (int i = 0; i < 30; i++) {
                 a.add(irisData.instance(i));
             }

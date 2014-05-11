@@ -1,7 +1,6 @@
 package org.clueminer.clustering.confusion;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Collection;
 import java.util.Iterator;
@@ -102,7 +101,9 @@ public final class ConfusionTopComponent extends TopComponent implements LookupL
                 Clustering clustB = it.next();
                 matrix.setClusterings(clustA, clustB);
                 //matrix.setSize(getSize().width, getSize().height);
-            } else {
+            } else if (clusterings.size() == 1) {
+                Iterator<? extends Clustering> it = clusterings.iterator();
+                matrix.setClustering(it.next());
                 //  lbStatus.setText("[ please select 2 clusterings ]");
             }
         } else {

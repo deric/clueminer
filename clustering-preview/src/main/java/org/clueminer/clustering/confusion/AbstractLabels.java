@@ -8,8 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
 
 /**
  *
@@ -30,8 +28,7 @@ public abstract class AbstractLabels extends JPanel {
     protected int maxWidth;
     protected static final String unknownLabel = "(unknown)";
 
-    protected Clustering<Cluster> rowData;
-    protected Clustering<Cluster> colData;
+    protected String[] labels;
     protected boolean changedMax = false;
 
     public AbstractLabels() {
@@ -135,9 +132,8 @@ public abstract class AbstractLabels extends JPanel {
         return size;
     }
 
-    public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
-        this.rowData = a;
-        this.colData = b;
+    public void setLabels(String[] lb) {
+        this.labels = lb;
 
         resetCache();
     }

@@ -1,5 +1,6 @@
 package org.clueminer.clustering.confusion;
 
+import com.google.common.collect.Table;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,12 +11,16 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.colors.ColorScheme;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.external.CountingPairs;
 import org.clueminer.gui.ColorPalette;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -40,6 +45,8 @@ public class ConfusionTable extends JPanel {
     private boolean displayClustSizes = true;
     protected int maxWidth;
     protected boolean changedMax = false;
+    private String[] colLabels;
+    private String[] rowLabels;
 
     public ConfusionTable() {
         initComponents();
@@ -53,8 +60,30 @@ public class ConfusionTable extends JPanel {
     public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         this.rowData = c1;
         this.colData = c2;
+        rowLabels = clusterNames(c1);
+        colLabels = clusterNames(c2);
 
         confmat = countMutual(c1, c2);
+        if (!maxInRows) {
+            findMinMax(confmat);
+            colorScheme.setRange(min, max);
+        }
+        resetCache();
+    }
+
+    private String[] clusterNames(Clustering<Cluster> clust) {
+        String[] labels = new String[clust.size()];
+        for (int i = 0; i < clust.size(); i++) {
+            labels[i] = clust.get(i).getName();
+        }
+        return labels;
+    }
+
+    public void setClustering(Clustering<Cluster> clust) {
+        this.rowData = clust;
+        rowLabels = clusterNames(clust);
+
+        confmat = countMutual(clust);
         if (!maxInRows) {
             findMinMax(confmat);
             colorScheme.setRange(min, max);
@@ -85,6 +114,36 @@ public class ConfusionTable extends JPanel {
             }
         }
         //Dump.matrix(conf, "conf mat", 0);
+        return conf;
+    }
+
+    /**
+     * Count number of classes in each cluster when we don't know how many
+     * classes we have
+     *
+     * @param clust
+     * @return
+     */
+    public int[][] countMutual(Clustering<Cluster> clust) {
+        //SortedSet klasses = dataset.getClasses();
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clust);
+        //String[] klassLabels = (String[]) klasses.toArray(new String[klasses.size()]);
+        Set<String> cols = table.columnKeySet();
+        colLabels = cols.toArray(new String[cols.size()]);
+        int[][] conf = new int[clust.size()][colLabels.length];
+
+        int i = 0;
+        Dump.array(colLabels, "classes");
+        for (Cluster c : clust) {
+            Map<String, Integer> row = table.row(c.getName());
+            for (int j = 0; j < colLabels.length; j++) {
+                if (row.containsKey(colLabels[j])) {
+                    conf[i][j] = row.get(colLabels[j]);
+                }
+            }
+            i++;
+        }
+        Dump.matrix(conf, "conf mat", 0);
         return conf;
     }
 
@@ -324,5 +383,13 @@ public class ConfusionTable extends JPanel {
             maxWidth = width;
             changedMax = true;
         }
+    }
+
+    public String[] getColLabels() {
+        return colLabels;
+    }
+
+    public String[] getRowLabels() {
+        return rowLabels;
     }
 }
