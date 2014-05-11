@@ -31,7 +31,7 @@ public class ClustGlobal extends Children.Keys<Clustering> {
         this.result.addLookupListener(new LookupListener() {
             @Override
             public void resultChanged(LookupEvent evt) {
-                logger.log(Level.INFO, "clust child lookup event! {0}", evt);
+                //logger.log(Level.INFO, "clust child lookup event! {0}", evt);
                 addNotify();
             }
         });
