@@ -72,7 +72,12 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.chart.api</publicPackage>
+                        <publicPackage>org.clueminer.chart.data</publicPackage>
                         <publicPackage>org.clueminer.chart.factory</publicPackage>
+                        <publicPackage>org.clueminer.chart.graphics</publicPackage>
+                        <publicPackage>org.clueminer.chart.legends</publicPackage>
+                        <publicPackage>org.clueminer.chart.points</publicPackage>
+                        <publicPackage>org.clueminer.chart.util</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
