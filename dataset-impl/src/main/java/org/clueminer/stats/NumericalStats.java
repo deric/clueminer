@@ -191,4 +191,9 @@ public class NumericalStats implements Statistics {
         }
         return Math.sqrt(asum / data.size());
     }
+
+    @Override
+    public double get(String key) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

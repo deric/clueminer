@@ -15,15 +15,14 @@ public interface Statistics extends Serializable, Cloneable {
     /**
      * Update statistics with a new value
      *
-     * @param statistics
+     * @param value
      */
     public void valueAdded(double value);
-    
-    
+
     /**
      * A value was removed from a dataset
      *
-     * @param statistics
+     * @param value
      */
     public void valueRemoved(double value);
 
@@ -42,4 +41,13 @@ public interface Statistics extends Serializable, Cloneable {
      * @return
      */
     public double statistics(IStats name);
+
+    /**
+     * Returns the specified information for the whole data source.
+     *
+     * @param key Requested information.
+     * @return The value for the specified key as value, or <i>NaN</i>
+     * if the specified statistical value does not exist
+     */
+    public double get(String key);
 }
