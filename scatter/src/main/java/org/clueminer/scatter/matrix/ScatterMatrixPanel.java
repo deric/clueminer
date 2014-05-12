@@ -1,5 +1,7 @@
 package org.clueminer.scatter.matrix;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import de.erichseifert.gral.data.DataSeries;
 import de.erichseifert.gral.data.DataTable;
 import de.erichseifert.gral.plots.XYPlot;
@@ -15,6 +17,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -33,6 +36,7 @@ public class ScatterMatrixPanel extends JPanel {
 
     private final Shape shape = new Ellipse2D.Double(-3, -3, 6, 6);
     private static final Logger logger = Logger.getLogger(ScatterMatrixPanel.class.getName());
+    private Legend legend;
 
     public ScatterMatrixPanel() {
         initComponents();
@@ -40,6 +44,7 @@ public class ScatterMatrixPanel extends JPanel {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
+        legend = new Legend();
         setSize(new Dimension(800, 600));
     }
 
@@ -65,15 +70,29 @@ public class ScatterMatrixPanel extends JPanel {
 
                         for (int i = 0; i < attrCnt; i++) {
                             for (int j = 0; j < i; j++) {
-                                chart = clusteringPlot(clustering, i, j);
-                                c.gridx = i;
-                                c.gridy = j;
+                                chart = clusteringPlot(clustering, j, i);
+                                c.gridx = j;
+                                c.gridy = i;
                                 add(chart, c);
                             }
                         }
+                        //place legend
+                        c.gridx = attrCnt - 1;
+                        c.gridy = 0;
+                        ImmutableMap.Builder<Integer, Entry<String, Color>> mapBuilder
+                                = new ImmutableMap.Builder<Integer, Entry<String, Color>>();
+                        int i = 0;
+                        for (Cluster<Instance> clust : clustering) {
+                            mapBuilder.put(i, Maps.immutableEntry(clust.getName(), clust.getColor()));
+                            i++;
+                        }
+                        legend.setLabels(mapBuilder.build());
+                        add(legend, c);
+
                     } else {
                         logger.log(Level.SEVERE, "empty cluster");
                     }
+
                 }
 
                 revalidate();
@@ -108,8 +127,7 @@ public class ScatterMatrixPanel extends JPanel {
 
         // Format plot
         plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-        plot.getTitle().setText(clustering.getName());
-        plot.setLegendVisible(true);
+        plot.setLegendVisible(false);
 
         if (clustering.size() > 0) {
             Cluster c = clustering.get(0);
