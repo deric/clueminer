@@ -1,7 +1,5 @@
 package org.clueminer.processor.ui;
 
-import java.awt.AWTEvent;
-import java.awt.EventQueue;
 import java.awt.event.ItemEvent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
