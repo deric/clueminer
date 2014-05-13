@@ -173,6 +173,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 prevColCnt = columns.length;
             }
         }
+
+        if (loader.getAttributeCount() != columns.length) {
+            logger.log(Level.INFO, "expected: {0} but got {1}", new Object[]{loader.getAttributeCount(), columns.length});
+            loader.resetAttributes();
+        }
+
         if (hasHeader && !skipHeader && !parsedHeader) {
             parseHeader(columns);
             parsedHeader = true;
@@ -245,7 +251,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                     attrd.setRole(BasicAttrRole.META);
                 }
 
-                logger.log(Level.INFO, "created missing attr: {0}", attrName);
+                logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
             }
             /**
              * TODO check if attributes are already defined
@@ -254,19 +260,33 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         }
     }
 
+    private AttributeDraft getAttribute(int i) {
+        AttributeDraft attr;
+        if (i < loader.getAttributeCount() && i > -1) {
+            attr = loader.getAttribute(i);
+        } else {
+            logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
+            attr = loader.createAttribute(i, "attr_" + i);
+        }
+
+        return attr;
+    }
+
     private void addInstance(int num, String[] columns) {
         InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
         int i = 0;
         AttributeRole role;
         Object castedVal;
+        AttributeDraft attr;
         for (String value : columns) {
             try {
-                role = loader.getAttribute(i).getRole();
+                attr = getAttribute(i);
+                role = attr.getRole();
                 if (role == BasicAttrRole.ID) {
                     draft.setId(value);
                 } else if (role == BasicAttrRole.INPUT) {
                     try {
-                        castedVal = loader.getAttribute(i).getParser().parse(value);
+                        castedVal = attr.getParser().parse(value);
                         draft.setValue(i, castedVal);
                     } catch (ParsingError ex) {
                         report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,

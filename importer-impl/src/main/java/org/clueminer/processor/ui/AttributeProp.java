@@ -17,8 +17,6 @@ public class AttributeProp extends javax.swing.JPanel {
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
     private final ImporterUI importerUI;
-    private boolean changingRole = false;
-    private boolean changingType = false;
 
     /**
      * Creates new form AttributeProp
@@ -37,14 +35,10 @@ public class AttributeProp extends javax.swing.JPanel {
     }
 
     public final void setType(Class<?> type) {
-        //event invoked by app (not user)
-        changingType = true;
         cbType.setSelectedItem(classToString(type));
     }
 
     public final void setRole(String role) {
-        System.out.println("trying to change attr's " + attr.getIndex() + " role to: " + role.toLowerCase());
-        changingRole = true;
         cbRole.setSelectedItem(role.toLowerCase());
     }
 
@@ -80,11 +74,6 @@ public class AttributeProp extends javax.swing.JPanel {
         cbType.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbTypeItemStateChanged(evt);
-            }
-        });
-        cbType.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbTypeActionPerformed(evt);
             }
         });
 
@@ -161,21 +150,11 @@ public class AttributeProp extends javax.swing.JPanel {
     }//GEN-LAST:event_chckImportActionPerformed
 
     private void cbTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbTypeItemStateChanged
-        System.out.println("type change: " + evt.toString());
-        /**
-         * Sometimes current event might help to determine if it was triggered
-         * by an user
-         */
-        //AWTEvent curr = EventQueue.getCurrentEvent();
-
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             String item = (String) cbType.getSelectedItem();
-            attr.setType(stringToClass(item));
-            if (changingType) {
-                //do not trigger extra event
-                changingType = false;
-            } else {
-                System.out.println("fireing type changed");
+            Class<?> type = stringToClass(item);
+            if (type != attr.getType()) {
+                attr.setType(type);
                 importerUI.fireImporterChanged();
             }
         }
@@ -184,29 +163,14 @@ public class AttributeProp extends javax.swing.JPanel {
 
     private void cbRoleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbRoleItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
-            AWTEvent curr = EventQueue.getCurrentEvent();
-            System.out.println("awt thread: " + curr);
-            if (curr.getSource() == cbRole) {
-                System.out.println("source is cbRole");
-            } else {
-                System.out.println("source is " + curr.getSource().getClass().getName());
-            }
-            System.out.println("item evt: " + evt.getSource().getClass());
             String strRole = (String) cbRole.getSelectedItem();
             AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
-            attr.setRole(role);
-            if (changingRole) {
-                changingRole = false;
-            } else {
+            if (attr.getRole() != role) {
+                attr.setRole(role);
                 importerUI.fireImporterChanged();
             }
         }
     }//GEN-LAST:event_cbRoleItemStateChanged
-
-    private void cbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTypeActionPerformed
-        // TODO add your handling code here:
-        System.out.println("action evt: " + evt.getSource().getClass());
-    }//GEN-LAST:event_cbTypeActionPerformed
 
     protected Class<?> stringToClass(String type) {
         if (type.equals("double")) {
