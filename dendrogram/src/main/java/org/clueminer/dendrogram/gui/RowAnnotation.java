@@ -28,39 +28,27 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     protected void render(Graphics2D g) {
         if (rowsOrder != null) {
             g.setColor(Color.black);
-            float annY;
             g.setFont(defaultFont);
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
             Font f;
-            int ascent = fm.getMaxAscent();
-            int descent = fm.getDescent();
-            /*
-             * Fonts are not scaling lineraly
-            
-             *---------------ascent
-             *
-             * FONT
-             * ----- baseline
-             *
-             * --------------descent
-             *
-             */
-            double offset = (elementSize.height / 2.0) + ((ascent - descent) / 2.0);
+            String str;
+            int width;
+            float x = 0.0f, y;
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
-                annY = (float) (row * elementSize.height + offset);
-                String s = dendroData.getRowsResult().getInstance(row).getName();
-                if (s == null) {
-                    s = unknownLabel;
+                str = dendroData.getRowsResult().getInstance(row).getName();
+                if (str == null) {
+                    str = unknownLabel;
                 }
                 if (row == firstSelectedRow) {
                     f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
                     g.setFont(f);
                 }
 
-                int width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+                width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax(width);
-                g.drawString(s, 0, annY);
+                y = (row * elementSize.height + elementSize.height / 2f + fm.getDescent() / 2f);
+                g.drawString(str, x, y);
 
                 if (row == lastSelectedRow) {
                     g.setFont(defaultFont);
