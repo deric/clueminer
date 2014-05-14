@@ -85,8 +85,6 @@ public class Legend extends JPanel {
             g.setFont(defaultFont);
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
-            int ascent = fm.getMaxAscent();
-            int descent = fm.getDescent();
             int baseSize = (int) (0.33 * fm.getHeight());
             shape = new Ellipse2D.Double(0, 0, baseSize, baseSize);
             int leftPadding = shape.getBounds().width + 5;
@@ -108,7 +106,7 @@ public class Legend extends JPanel {
 
                 int width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax(width);
-                g.drawString(str, x, (y + fm.getHeight() - (ascent - descent) / 4));
+                g.drawString(str, x, (y + lineHeight / 2f + (fm.getAscent() - fm.getDescent()) / 4f));
 
                 color = labels.get(row).getValue();
                 g.setColor(color);
@@ -120,7 +118,7 @@ public class Legend extends JPanel {
 
                 symb = drawSymbol(color, (int) (bounds.width * scale), (int) (bounds.height * scale));
                 //System.out.println("shape pos" + );
-                trans.translate(insets.left - shape.getBounds().width / 2.0, y + fm.getHeight() / 2.0 - bounds.height / 2.0 + (ascent - descent) / 8);
+                trans.translate(insets.left - shape.getBounds().width / 2.0, y + lineHeight / 2.0 - bounds.height / 2.0);
                 g.drawImage(symb, trans, null);
             }
             if (changedMax) {
