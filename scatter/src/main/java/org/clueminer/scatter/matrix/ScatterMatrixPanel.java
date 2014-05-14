@@ -93,7 +93,6 @@ public class ScatterMatrixPanel extends JPanel {
                     } else {
                         logger.log(Level.SEVERE, "empty cluster");
                     }
-
                 }
 
                 revalidate();

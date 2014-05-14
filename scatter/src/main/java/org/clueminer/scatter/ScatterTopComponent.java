@@ -78,7 +78,9 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        if(result != null){
+            result.removeLookupListener(this);
+        }
     }
 
     void writeProperties(java.util.Properties p) {

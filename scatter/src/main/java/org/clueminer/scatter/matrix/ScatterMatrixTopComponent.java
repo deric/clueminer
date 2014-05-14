@@ -1,10 +1,27 @@
 package org.clueminer.scatter.matrix;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
+import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays scatter matrix
@@ -30,15 +47,20 @@ import org.openide.util.NbBundle.Messages;
     "CTL_ScatterMatrixTopComponent=ScatterMatrix",
     "HINT_ScatterMatrixTopComponent=Scatter Matrix"
 })
-public final class ScatterMatrixTopComponent extends TopComponent {
+public final class ScatterMatrixTopComponent extends TopComponent implements LookupListener {
 
     private static final long serialVersionUID = -8856890744361709638L;
+    private Dataset<? extends Instance> dataset;
+    private final ScatterMatrixPanel frame;
+    private static final Logger logger = Logger.getLogger(ScatterMatrixTopComponent.class.getName());
+    private Lookup.Result<Clustering> result = null;
 
     public ScatterMatrixTopComponent() {
         initComponents();
         setName(Bundle.CTL_ScatterMatrixTopComponent());
         setToolTipText(Bundle.HINT_ScatterMatrixTopComponent());
-
+        frame = new ScatterMatrixPanel();
+        add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**
@@ -49,23 +71,50 @@ public final class ScatterMatrixTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        result.addLookupListener(this);
+        resultChanged(new LookupEvent(result));
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Project project = pc.getCurrentProject();
+        projectUpdate(project);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+
+            @Override
+            public void initialize(Workspace workspace) {
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+            }
+
+            @Override
+            public void disable() {
+
+            }
+
+            @Override
+            public void projectActivated(Project project) {
+                projectUpdate(project);
+            }
+        });
     }
 
     @Override
@@ -84,4 +133,33 @@ public final class ScatterMatrixTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
+
+    void projectUpdate(Project project) {
+        if (project != null) {
+            dataset = project.getLookup().lookup(Dataset.class);
+            if (dataset != null) {
+                //TODO implement
+                logger.log(Level.INFO, "dataset {0}", dataset.size());
+            }
+        }
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends Clustering> allClusterings = result.allInstances();
+        if (allClusterings != null && allClusterings.size() > 0) {
+
+            Iterator<? extends Clustering> it = allClusterings.iterator();
+
+            if (it.hasNext()) {
+                Clustering clust = it.next();
+                if (clust != null) {
+                    frame.setClustering(clust);
+                }
+            }
+
+        }
+
+    }
+
 }
