@@ -92,6 +92,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     @Override
     public void dataLoaded() {
         //
+        logger.log(Level.INFO, "data was loaded");
     }
 
     public void attributeChanged(AttributeDraft attr) {

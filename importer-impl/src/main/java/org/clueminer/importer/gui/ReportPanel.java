@@ -219,7 +219,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         }
     }
 
-    private void fileImporterChanged(FileImporter importer) {
+    public void fileImporterChanged(FileImporter importer) {
         if (importerUI != null) {
             importerUI.unsetup(false);
             importerUI.removeListener(colPreviewPane);

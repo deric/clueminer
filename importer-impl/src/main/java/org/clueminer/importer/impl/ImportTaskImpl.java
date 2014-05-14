@@ -93,6 +93,7 @@ public class ImportTaskImpl implements ImportTask {
             //addListener(reportPanel);
             reportPanel.setCurrentFile(fileObject);
             reportPanel.setData(report, container);
+            reportPanel.fileImporterChanged(importer);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ImportControllerUIImpl.class, "ReportPanel.title"));
             if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 reportPanel.destroy();
@@ -114,7 +115,6 @@ public class ImportTaskImpl implements ImportTask {
                 }
                 logger.log(Level.INFO, "processing input file");
                 controller.process(container, processor, workspace);
-                logger.log(Level.INFO, "dataset size: {0}", container.getLoader().getDataset().size());
                 fireDataLoaded();
             } else {
                 //cancel button was pressed

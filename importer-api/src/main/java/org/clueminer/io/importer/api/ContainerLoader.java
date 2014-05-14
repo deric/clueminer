@@ -91,6 +91,11 @@ public interface ContainerLoader {
 
     void setDataset(Dataset<? extends Instance> dataset);
 
+    /**
+     * Loaded dataset
+     *
+     * @return
+     */
     Dataset<? extends Instance> getDataset();
 
     void setFile(FileObject file);

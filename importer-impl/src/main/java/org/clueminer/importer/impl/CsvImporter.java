@@ -97,10 +97,13 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     public boolean execute(Container container) {
         this.container = container;
         this.loader = container.getLoader();
+        loader.reset(); //remove all previous instances
+        loader.setDataset(null);
+        loader.setNumberOfLines(0);
         this.report = new Report();
         this.file = container.getFile();
         parsedHeader = false;
-
+        logger.log(Level.INFO, "has header = {0}", hasHeader);
         try {
             if (reader != null) {
                 lineReader = ImportUtils.getTextReader(reader);
@@ -174,11 +177,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
         }
 
-        if (loader.getAttributeCount() != columns.length) {
-            logger.log(Level.INFO, "expected: {0} but got {1}", new Object[]{loader.getAttributeCount(), columns.length});
-            loader.resetAttributes();
-        }
-
         if (hasHeader && !skipHeader && !parsedHeader) {
             parseHeader(columns);
             parsedHeader = true;
@@ -190,6 +188,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
              * Second line sometimes contains extra attributes specification,
              * like type, role etc.
              */
+
+            if (loader.getAttributeCount() != columns.length) {
+                logger.log(Level.INFO, "expected: {0} but got {1}", new Object[]{loader.getAttributeCount(), columns.length});
+                loader.resetAttributes();
+            }
+
             if (num == 1) {
                 int i = 0;
                 boolean matched = true;
@@ -230,7 +234,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             } else {
                 res = String.class;
             }
-            attr = loader.getAttribute(attrIndex);
+            attr = getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
             if (!attr.getType().equals(res)) {
                 logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getType()});
@@ -290,7 +294,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                         draft.setValue(i, castedVal);
                     } catch (ParsingError ex) {
                         report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                                "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                     }
                 } else {
                     draft.setValue(i, value);
@@ -376,7 +380,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -390,7 +394,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i        current index in line
+     * @param i current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {
