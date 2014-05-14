@@ -168,6 +168,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         }
         logger.log(Level.INFO, "loaded {0} instances", i);
         container.setDataset(dataset);
+        //import finished - clean preloaded data
+        container.reset();
+        container.resetAttributes();
     }
 
     private AttributeType getType(Object klass) {

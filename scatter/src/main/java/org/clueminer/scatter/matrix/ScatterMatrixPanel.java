@@ -59,7 +59,7 @@ public class ScatterMatrixPanel extends JPanel {
                 DrawablePanel chart;
                 GridBagConstraints c = new GridBagConstraints();
                 c.fill = GridBagConstraints.BOTH;
-                c.anchor = GridBagConstraints.NORTHWEST;
+                c.anchor = GridBagConstraints.CENTER;
                 c.weightx = 1.0;
                 c.weighty = 1.0;
 
@@ -72,13 +72,14 @@ public class ScatterMatrixPanel extends JPanel {
                             for (int j = 0; j < i; j++) {
                                 chart = clusteringPlot(clustering, j, i);
                                 c.gridx = j;
-                                c.gridy = i;
+                                c.gridy = i - 1;
                                 add(chart, c);
                             }
                         }
                         //place legend
-                        c.gridx = attrCnt - 1;
+                        c.gridx = attrCnt - 2;
                         c.gridy = 0;
+                        c.fill = GridBagConstraints.BOTH;
                         ImmutableMap.Builder<Integer, Entry<String, Color>> mapBuilder
                                 = new ImmutableMap.Builder<Integer, Entry<String, Color>>();
                         int i = 0;

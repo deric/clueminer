@@ -9,10 +9,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,10 +38,12 @@ public class Legend extends JPanel {
     protected int maxWidth;
     protected boolean changedMax = false;
     protected int lineHeight = 12;
+    private float maxFontSize = 50;
     protected boolean visible = true;
     protected boolean isAntiAliasing = true;
-    private final Insets insets = new Insets(0, 5, 0, 0);
+    private final Insets insets = new Insets(10, 10, 10, 10);
     protected static final String unknownLabel = "(unknown)";
+    private Shape shape;
 
     public Legend() {
         initComponents();
@@ -49,6 +55,7 @@ public class Legend extends JPanel {
         this.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
+                bufferedImage = null;
                 recalculate();
             }
 
@@ -74,43 +81,62 @@ public class Legend extends JPanel {
 
     protected void render(Graphics2D g) {
         if (hasData()) {
-            g.setColor(Color.black);
-            float annY;
+            AffineTransform trans = new AffineTransform();
             g.setFont(defaultFont);
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
             int ascent = fm.getMaxAscent();
             int descent = fm.getDescent();
+            int baseSize = (int) (0.33 * fm.getHeight());
+            shape = new Ellipse2D.Double(0, 0, baseSize, baseSize);
+            int leftPadding = shape.getBounds().width + 5;
             String str;
-            /*
-             * Fonts are not scaling lineraly
+            BufferedImage symb;
+            int x, y;
+            double scale = 1.0;
+            Color color;
 
-             *---------------ascent
-             *
-             * FONT
-             * ----- baseline
-             *
-             * --------------descent
-             *
-             */
             maxWidth = 0;
-            double offset = (lineHeight / 2.0) + ((ascent - descent) / 2.0);
             for (int row = 0; row < labels.size(); row++) {
-                annY = (float) (row * fontSize + offset);
+                g.setColor(Color.black);
                 str = labels.get(row).getKey();
                 if (str == null) {
                     str = unknownLabel;
                 }
+                x = insets.left + leftPadding;
+                y = row * lineHeight;
 
                 int width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax(width);
-                g.drawString(str, insets.left, annY);
+                g.drawString(str, x, (y + fm.getHeight() - (ascent - descent) / 4));
+
+                color = labels.get(row).getValue();
+                g.setColor(color);
+                //for debugging
+                //g.drawRect(x, y, width, fm.getHeight());
+                trans.setToIdentity();
+
+                Rectangle bounds = shape.getBounds();
+
+                symb = drawSymbol(color, (int) (bounds.width * scale), (int) (bounds.height * scale));
+                //System.out.println("shape pos" + );
+                trans.translate(insets.left - shape.getBounds().width / 2.0, y + fm.getHeight() / 2.0 - bounds.height / 2.0 + (ascent - descent) / 8);
+                g.drawImage(symb, trans, null);
             }
             if (changedMax) {
                 changedMax = false;
-                recalculate();
+                //bufferedImage = null;
             }
         }
+    }
+
+    private BufferedImage drawSymbol(Color color, int width, int height) {
+        BufferedImage bi = new BufferedImage(width + 2, height + 2, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D buff = bi.createGraphics();
+        buff.setPaint(color);
+        buff.draw(shape);
+        buff.fill(shape);
+        return bi;
     }
 
     private void recalculate() {
@@ -123,9 +149,7 @@ public class Legend extends JPanel {
         //System.out.println("matrix component " + dim.width + ", " + dim.height);
 
         if (sizeUpdated()) {
-            revalidate();
-            validate();
-            repaint();
+            createBufferedGraphics();
         }
     }
 
@@ -136,12 +160,17 @@ public class Legend extends JPanel {
             w = size.height;
             lineHeight = (size.height - insets.top - insets.bottom) / labels.size();
             h = labels.size() * lineHeight + insets.top + insets.bottom;
-            fsize = (lineHeight * 0.9);
+            fsize = (lineHeight * 0.5);
+            if (fsize >= maxFontSize) {
+                fsize = maxFontSize;
+            }
             defaultFont = defaultFont.deriveFont((float) fsize);
+
             if (size.height != h) {
                 this.size.width = w;
                 this.size.height = h;
 
+                //System.out.println("legend size: " + size.toString());
                 setMinimumSize(size);
                 setSize(size);
                 setPreferredSize(size);
@@ -213,7 +242,8 @@ public class Legend extends JPanel {
 
     public void resetCache() {
         recalculate();
-        createBufferedGraphics();
+        revalidate();
+        validate();
         repaint();
     }
 
@@ -246,6 +276,14 @@ public class Legend extends JPanel {
         render(g);
 
         g.dispose();
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
     }
 
 }
