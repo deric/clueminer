@@ -61,13 +61,13 @@ public class Legend extends JPanel {
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                size = getSize();
+                size = getPreferredSize();
                 recalculate();
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
-                size = getSize();
+                size = getPreferredSize();
                 recalculate();
             }
 
@@ -144,8 +144,8 @@ public class Legend extends JPanel {
         //System.out.println("size: " + getSize());
         //System.out.println("min size: " + getMinimumSize());
         //System.out.println("======");
-        size.width = (int) Math.ceil(getSize().width * 0.9);
-        size.height = (int) Math.ceil(getSize().height * 0.9);
+        //size.width = (int) Math.ceil(getSize().width * 0.9);
+        //size.height = (int) Math.ceil(getSize().height * 0.9);
         //System.out.println("matrix component " + dim.width + ", " + dim.height);
 
         if (sizeUpdated()) {
@@ -171,8 +171,8 @@ public class Legend extends JPanel {
                 this.size.height = h;
 
                 //System.out.println("legend size: " + size.toString());
-                setMinimumSize(size);
-                setSize(size);
+                //setMinimumSize(size);
+                //setSize(size);
                 setPreferredSize(size);
                 return true;
             }
