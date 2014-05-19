@@ -60,6 +60,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         }
     }
 
+    @Override
     public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
         fireDatasetChanged(new DendrogramDataEvent(this));
@@ -324,6 +325,11 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
          * scroller.getViewport().repaint();
          */
         //  dendrogramPanel.heatmap.invalidate();
+    }
+
+    @Override
+    public void setClustering(Clustering clustering) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private class ViewerComponentListener implements ComponentListener {

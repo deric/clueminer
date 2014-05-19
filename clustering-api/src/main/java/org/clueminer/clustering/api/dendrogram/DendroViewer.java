@@ -57,4 +57,10 @@ public interface DendroViewer {
 
     public void setDataset(DendrogramMapping dataset);
 
+    /**
+     *
+     * @param clustering
+     */
+    public void setClustering(Clustering clustering);
+
 }

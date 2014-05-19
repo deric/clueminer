@@ -322,6 +322,11 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         //  dendrogramPanel.heatmap.invalidate();
     }
 
+    @Override
+    public void setClustering(Clustering clustering) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DgViewer viewer;
