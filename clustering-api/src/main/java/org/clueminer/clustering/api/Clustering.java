@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.Lookup;
 
 /**
  * Clustering is a set of clusters where each of clusters have to implement
@@ -124,5 +125,28 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return
      */
     Cluster<? extends Instance> createCluster();
+
+    /**
+     * Lookup is used for retrieving objects associated with this clustering
+     * result
+     *
+     * @return lookup instance for accessing related objects (Dataset,
+     * hierarchical clustering etc.)
+     */
+    public Lookup getLookup();
+
+    /**
+     * Add object to lookup
+     *
+     * @param instance
+     */
+    public void lookupAdd(Object instance);
+
+    /**
+     * Removes object from lookup
+     *
+     * @param instance
+     */
+    public void lookupRemove(Object instance);
 
 }

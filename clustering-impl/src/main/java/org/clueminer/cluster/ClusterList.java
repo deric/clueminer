@@ -5,6 +5,9 @@ import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -20,9 +23,14 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      * number of instances in this dataset
      */
     private int n = 0;
+    //Lookup
+    private final transient InstanceContent instanceContent;
+    private final transient AbstractLookup lookup;
 
     public ClusterList(int capacity) {
         data = new Cluster[capacity];
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
     }
 
     @Override
@@ -283,6 +291,21 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
         return sb.append(getName()).toString();
+    }
+
+    @Override
+    public Lookup getLookup() {
+        return lookup;
+    }
+
+    @Override
+    public void lookupAdd(Object instance) {
+        instanceContent.add(instance);
+    }
+
+    @Override
+    public void lookupRemove(Object instance) {
+        instanceContent.remove(instance);
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {
