@@ -12,6 +12,9 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
+import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.PasteType;
 import org.openide.util.lookup.Lookups;
@@ -21,7 +24,6 @@ import org.openide.util.lookup.Lookups;
  * @author Tomas Barton
  */
 public class ClusteringNode extends AbstractNode {
-
 
     public ClusteringNode(Clustering<Cluster> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -100,5 +102,29 @@ public class ClusteringNode extends AbstractNode {
     @Override
     public boolean canDestroy() {
         return true;
+    }
+
+    @Override
+    protected Sheet createSheet() {
+        Sheet sheet = Sheet.createDefault();
+        Sheet.Set set = Sheet.createPropertiesSet();
+        Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
+        if (clustering != null) {
+            try {
+                set.setDisplayName("Clustering (" + clustering.size() + ")");
+                Property nameProp = new PropertySupport.Reflection(clustering, String.class, "getName", null);
+                nameProp.setName("Name");
+                set.put(nameProp);
+
+                Property sizeProp = new PropertySupport.Reflection(clustering, Integer.class, "size", null);
+                sizeProp.setName("Size");
+                set.put(sizeProp);
+            } catch (NoSuchMethodException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+        }
+        sheet.put(set);
+        return sheet;
     }
 }
