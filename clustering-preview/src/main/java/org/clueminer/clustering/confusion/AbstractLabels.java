@@ -60,9 +60,9 @@ public abstract class AbstractLabels extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.isAntiAliasing) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -99,13 +99,10 @@ public abstract class AbstractLabels extends JPanel {
         //buffered graphics is usually created before
         if (!hasData() && bufferedImage == null) {
             createBufferedGraphics();
+        } else {
+            return;
         }
-        if (bufferedImage != null) {
-            g2.drawImage(bufferedImage,
-                         0, 0,
-                         size.width, size.height,
-                         null);
-        }
+        paintComponent(g2);
     }
 
     @Override
@@ -115,11 +112,22 @@ public abstract class AbstractLabels extends JPanel {
         if (bufferedImage == null) {
             createBufferedGraphics();
         }
-        //cached image
-        g.drawImage(bufferedImage,
+        //if no data, bufferedImage is null
+        if (bufferedImage != null) {
+            int dx = Math.abs(size.width - bufferedImage.getWidth());
+            int dy = Math.abs(size.height - bufferedImage.getHeight());
+
+            //requested size is different from buffered one, clear the cache
+            if (dx > 5 || dy > 5) {
+                createBufferedGraphics();
+            }
+
+            //cached image
+            g.drawImage(bufferedImage,
                     0, 0,
                     size.width, size.height,
                     null);
+        }
     }
 
     public void resetCache() {
