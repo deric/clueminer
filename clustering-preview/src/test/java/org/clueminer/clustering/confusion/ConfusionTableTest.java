@@ -1,6 +1,7 @@
 package org.clueminer.clustering.confusion;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -47,9 +48,10 @@ public class ConfusionTableTest {
     @Test
     public void testSetClusterings_Clustering_Dataset() {
         int[][] conf = subject.countMutual(FakeClustering.irisWrong2());
-        assertEquals(30, conf[0][0]);
-        assertEquals(20, conf[1][0]);
-        assertEquals(50, conf[2][1]);
+        Dump.matrix(conf, "iris wrong", 0);
+        assertEquals(30, conf[1][0]);
+        assertEquals(20, conf[1][1]);
+        assertEquals(50, conf[0][2]);
         assertEquals(50, conf[2][2]);
     }
 

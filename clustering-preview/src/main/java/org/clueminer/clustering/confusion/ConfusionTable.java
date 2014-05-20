@@ -84,8 +84,8 @@ public class ConfusionTable extends JPanel {
     }
 
     public void setClustering(Clustering<Cluster> clust) {
-        this.rowData = clust;
-        rowLabels = clusterNames(clust);
+        this.colData = clust;
+        colLabels = clusterNames(clust);
 
         confmat = countMutual(clust);
         if (!maxInRows) {
@@ -103,8 +103,6 @@ public class ConfusionTable extends JPanel {
      */
     public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         int[][] conf = new int[c1.size()][c2.size()];
-        //System.out.println("C1: " + c1.toString());
-        //System.out.println("C2: " + c2.toString());
         Cluster<Instance> curr;
         sumRows = new int[c1.size()];
         sumCols = new int[c2.size()];
@@ -113,7 +111,6 @@ public class ConfusionTable extends JPanel {
             curr = c1.get(i);
             for (Instance inst : curr) {
                 for (int j = 0; j < c2.size(); j++) {
-                    //System.out.println("looking for: " + inst.getIndex() + " found? " + clust.contains(inst.getIndex()));
                     if (c2.get(j).contains(inst.getIndex())) {
                         conf[i][j]++;
                     }
@@ -133,7 +130,8 @@ public class ConfusionTable extends JPanel {
 
     /**
      * Count number of classes in each cluster when we don't know how many
-     * classes we have
+     * classes we have.
+     *
      *
      * @param clust
      * @return
@@ -143,24 +141,24 @@ public class ConfusionTable extends JPanel {
         //Table<String, String, Integer> table = counting.contingencyTable(clust);
         Table<String, String, Integer> table = contingencyTable(clust);
         //String[] klassLabels = (String[]) klasses.toArray(new String[klasses.size()]);
-        Set<String> cols = table.columnKeySet();
-        colLabels = cols.toArray(new String[cols.size()]);
-        int[][] conf = new int[clust.size()][colLabels.length];
-        sumCols = new int[colLabels.length];
-        sumRows = new int[clust.size()];
+        Set<String> rows = table.rowKeySet();
+        rowLabels = rows.toArray(new String[rows.size()]);
+        int[][] conf = new int[rowLabels.length][clust.size()];
+        sumCols = new int[clust.size()];
+        sumRows = new int[rowLabels.length];
 
-        int i = 0;
-        //Dump.array(colLabels, "classes");
+        int k = 0;
+        //Dump.array(rowLabels, "classes");
         for (Cluster c : clust) {
-            Map<String, Integer> row = table.row(c.getName());
-            for (int j = 0; j < colLabels.length; j++) {
-                if (row.containsKey(colLabels[j])) {
-                    conf[i][j] = row.get(colLabels[j]);
-                    sumCols[j] += conf[i][j];
+            Map<String, Integer> col = table.column(c.getName());
+            for (int i = 0; i < rowLabels.length; i++) {
+                if (col.containsKey(rowLabels[i])) {
+                    conf[i][k] = col.get(rowLabels[i]);
+                    sumRows[i] += conf[i][k];
                 }
-                sumRows[i] += conf[i][j];
+                sumCols[k] += conf[i][k];
             }
-            i++;
+            k++;
         }
         //Dump.matrix(conf, "conf mat", 0);
         return conf;
@@ -206,14 +204,14 @@ public class ConfusionTable extends JPanel {
                     label = unknownLabel;
                 }
 
-                if (table.contains(cluster, label)) {
-                    cnt = table.get(cluster, label);
+                if (table.contains(label, cluster)) {
+                    cnt = table.get(label, cluster);
                 } else {
                     cnt = 0;
                 }
 
                 cnt++;
-                table.put(cluster, label, cnt);
+                table.put(label, cluster, cnt);
             }
         }
         return table;
@@ -264,7 +262,7 @@ public class ConfusionTable extends JPanel {
         FontMetrics fm = g.getFontMetrics();
         int fh = fm.getHeight();
         double fw;
-        for (int i = 0; i < rowData.size(); i++) {
+        for (int i = 0; i < rowLabels.length; i++) {
             if (maxInRows) {
                 findMinMaxRow(confmat, i);
                 colorScheme.setRange(min, max);
@@ -309,7 +307,7 @@ public class ConfusionTable extends JPanel {
 
         //columns
         if (sumCols != null) {
-            y = rowData.size() * elemSize.height;
+            y = rowLabels.length * elemSize.height;
             for (int col = 0; col < sumCols.length; col++) {
                 x = col * elemSize.width;
                 str = String.valueOf(sumCols[col]);
