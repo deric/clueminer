@@ -31,8 +31,6 @@ public class ConfusionTable extends JPanel {
 
     private static final long serialVersionUID = -7558362062012338814L;
     private Dimension elemSize = new Dimension(10, 10);
-    private Clustering<Cluster> rowData;
-    private Clustering<Cluster> colData;
     protected int fontSize = 10;
     protected Font defaultFont;
     protected Dimension size = new Dimension(0, 0);
@@ -51,6 +49,9 @@ public class ConfusionTable extends JPanel {
     private static final String unknownLabel = "unknown";
     private int[] sumRows;
     private int[] sumCols;
+    //color zeros with out of scale color
+    private boolean zeroColoring = true;
+    private static final Color zeroColor = Color.LIGHT_GRAY;
 
     public ConfusionTable() {
         initComponents();
@@ -62,8 +63,6 @@ public class ConfusionTable extends JPanel {
     }
 
     public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        this.rowData = c1;
-        this.colData = c2;
         rowLabels = clusterNames(c1);
         colLabels = clusterNames(c2);
 
@@ -84,7 +83,6 @@ public class ConfusionTable extends JPanel {
     }
 
     public void setClustering(Clustering<Cluster> clust) {
-        this.colData = clust;
         colLabels = clusterNames(clust);
 
         confmat = countMutual(clust);
@@ -273,10 +271,15 @@ public class ConfusionTable extends JPanel {
                 //System.out.println("a-" + a.get(i).getName() + "-vs" + "-b-" + b.get(j).getName() + ": " + cnt);
                 x = j * elemSize.width;
                 y = i * elemSize.height;
-                g.setColor(colorScheme.getColor(value));
+                if (zeroColoring && value == 0) {
+                    g.setColor(zeroColor);
+                } else {
+                    g.setColor(colorScheme.getColor(value));
+                }
                 g.fillRect(x, y, elemSize.width, elemSize.height);
                 s = String.valueOf(value);
                 fw = (g.getFont().getStringBounds(s, frc).getWidth());
+
                 g.setColor(colorScheme.complementary(g.getColor()));
                 g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
                 //draw rectangle around
