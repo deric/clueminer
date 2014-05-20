@@ -322,9 +322,22 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         //  dendrogramPanel.heatmap.invalidate();
     }
 
+    /**
+     * Set clustering as the data source. However clustering structure does not
+     * contain hierarchical data, we have to find them either in cache or
+     * compute hierarchical structure
+     *
+     * @param clustering
+     */
     @Override
     public void setClustering(Clustering clustering) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Lookup lookup = clustering.getLookup();
+        if (lookup != null) {
+            DendrogramMapping mapping = lookup.lookup(DendrogramMapping.class);
+            if (mapping != null) {
+                setDataset(mapping);
+            }
+        }
     }
 
     private class ViewerComponentListener implements ComponentListener {

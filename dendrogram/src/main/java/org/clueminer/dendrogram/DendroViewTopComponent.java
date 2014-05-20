@@ -105,7 +105,7 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
             if (it.hasNext()) {
                 Clustering clust = it.next();
                 if (clust != null) {
-                    //frame.setClustering(clust);
+                    frame.setClustering(clust);
                 }
             }
 

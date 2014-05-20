@@ -7,7 +7,7 @@ import org.clueminer.clustering.api.ClusterEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.dendrogram.DendrogramData;
+import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evaluation.hclust.CopheneticCorrelation;
@@ -126,6 +126,8 @@ public class HclDendroPanel extends DendroPanel {
         }// else we use a naive approach
 
         clust = dendroData.getRowsClustering();
+        //associate dendroData with clustering
+        clust.lookupAdd(dendroData);
         System.out.println("result clust size " + clust.size());
         List<ClusterEvaluator> list = ClusterEvaluatorFactory.getInstance().getAll();
 
@@ -175,5 +177,10 @@ public class HclDendroPanel extends DendroPanel {
         System.out.println(scores);
         repaint();
         return rowsResult;
+    }
+
+    @Override
+    public void initViewer() {
+        viewer = new DgViewer();
     }
 }

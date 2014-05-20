@@ -42,11 +42,9 @@ public class DendrogramData implements DendrogramMapping {
         this.rowsResult = (HCLResult) rowResult;
     }
 
+    @Override
     public boolean isEmpty() {
-        if (getNumberOfColumns() == 0 && getNumberOfRows() == 0) {
-            return true;
-        }
-        return false;
+        return getNumberOfColumns() == 0 && getNumberOfRows() == 0;
     }
 
     /**

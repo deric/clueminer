@@ -12,7 +12,6 @@ import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.SettingsPanel;
-import org.clueminer.dgram.DgViewer;
 
 public abstract class DendroPanel extends JPanel {
 
@@ -28,12 +27,16 @@ public abstract class DendroPanel extends JPanel {
         initComponents();
     }
 
+    /**
+     * A template method
+     */
+    public abstract void initViewer();
+
     private void initComponents() {
         GridBagLayout gbl = new GridBagLayout();
         setLayout(gbl);
         GridBagConstraints c = new GridBagConstraints();
-
-        viewer = new DgViewer();
+        initViewer();
         panel = new SettingsPanel(viewer);
         options = new OptionsPanel(this);
 
