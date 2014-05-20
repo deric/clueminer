@@ -49,6 +49,8 @@ public class ConfusionTable extends JPanel {
     private String[] colLabels;
     private String[] rowLabels;
     private static final String unknownLabel = "unknown";
+    private int[] sumRows;
+    private int[] sumCols;
 
     public ConfusionTable() {
         initComponents();
@@ -67,7 +69,7 @@ public class ConfusionTable extends JPanel {
 
         confmat = countMutual(c1, c2);
         if (!maxInRows) {
-            findMinMax(confmat);
+            findMinMaxMatrix(confmat);
             colorScheme.setRange(min, max);
         }
         resetCache();
@@ -87,7 +89,7 @@ public class ConfusionTable extends JPanel {
 
         confmat = countMutual(clust);
         if (!maxInRows) {
-            findMinMax(confmat);
+            findMinMaxMatrix(confmat);
             colorScheme.setRange(min, max);
         }
         resetCache();
@@ -95,8 +97,8 @@ public class ConfusionTable extends JPanel {
 
     /**
      *
-     * @param c1
-     * @param c2
+     * @param c1 - clustering displayed in rows
+     * @param c2 - clustering displayed in columns
      * @return matrix with numbers of instances in same clusters
      */
     public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
@@ -104,6 +106,9 @@ public class ConfusionTable extends JPanel {
         //System.out.println("C1: " + c1.toString());
         //System.out.println("C2: " + c2.toString());
         Cluster<Instance> curr;
+        sumRows = new int[c1.size()];
+        sumCols = new int[c2.size()];
+
         for (int i = 0; i < c1.size(); i++) {
             curr = c1.get(i);
             for (Instance inst : curr) {
@@ -114,7 +119,14 @@ public class ConfusionTable extends JPanel {
                     }
                 }
             }
+            sumRows[i] = curr.size();
         }
+
+        //update sum of columns
+        for (int j = 0; j < c2.size(); j++) {
+            sumCols[j] = c2.get(j).size();
+        }
+
         //Dump.matrix(conf, "conf mat", 0);
         return conf;
     }
@@ -134,6 +146,8 @@ public class ConfusionTable extends JPanel {
         Set<String> cols = table.columnKeySet();
         colLabels = cols.toArray(new String[cols.size()]);
         int[][] conf = new int[clust.size()][colLabels.length];
+        sumCols = new int[colLabels.length];
+        sumRows = new int[clust.size()];
 
         int i = 0;
         //Dump.array(colLabels, "classes");
@@ -142,7 +156,9 @@ public class ConfusionTable extends JPanel {
             for (int j = 0; j < colLabels.length; j++) {
                 if (row.containsKey(colLabels[j])) {
                     conf[i][j] = row.get(colLabels[j]);
+                    sumCols[j] += conf[i][j];
                 }
+                sumRows[i] += conf[i][j];
             }
             i++;
         }
@@ -221,14 +237,14 @@ public class ConfusionTable extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                           RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                           RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         render(g);
         g.dispose();
@@ -272,43 +288,46 @@ public class ConfusionTable extends JPanel {
             }
         }
         if (displayClustSizes) {
-            drawClusterSizes(g);
+            drawSums(g);
         }
     }
 
-    private void drawClusterSizes(Graphics2D g) {
+    /**
+     * Displays sums in rows/columns next to table
+     *
+     * @param g
+     */
+    private void drawSums(Graphics2D g) {
         g.setColor(Color.GRAY);
         FontRenderContext frc = g.getFontRenderContext();
         FontMetrics fm = g.getFontMetrics();
         int fh = fm.getHeight();
         double fw;
-        String s;
-        Cluster curr;
-        int x;
+        String str;
+        int x, y;
         maxWidth = 0;
-        //display sums one row below table
 
         //columns
-        int y = rowData.size() * elemSize.height;
-        if (colData != null) {
-            for (int col = 0; col < colData.size(); col++) {
+        if (sumCols != null) {
+            y = rowData.size() * elemSize.height;
+            for (int col = 0; col < sumCols.length; col++) {
                 x = col * elemSize.width;
-                curr = colData.get(col);
-                s = String.valueOf(curr.size());
-                fw = (g.getFont().getStringBounds(s, frc).getWidth());
+                str = String.valueOf(sumCols[col]);
+                fw = (g.getFont().getStringBounds(str, frc).getWidth());
                 checkMax((int) fw);
-                g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+                g.drawString(str, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
             }
         }
         //last row
-        x = colLabels.length * elemSize.width;
-        for (int row = 0; row < rowData.size(); row++) {
-            y = row * elemSize.height;
-            curr = rowData.get(row);
-            s = String.valueOf(curr.size());
-            fw = (g.getFont().getStringBounds(s, frc).getWidth());
-            checkMax((int) fw);
-            g.drawString(s, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+        if (sumRows != null) {
+            x = colLabels.length * elemSize.width;
+            for (int row = 0; row < sumRows.length; row++) {
+                y = row * elemSize.height;
+                str = String.valueOf(sumRows[row]);
+                fw = (g.getFont().getStringBounds(str, frc).getWidth());
+                checkMax((int) fw);
+                g.drawString(str, (int) (x - fw / 2 + elemSize.width / 2), y + elemSize.height / 2 + fh / 2);
+            }
         }
     }
 
@@ -323,9 +342,9 @@ public class ConfusionTable extends JPanel {
         }
         if (bufferedImage != null) {
             g2.drawImage(bufferedImage,
-                         0, 0,
-                         size.width, size.height,
-                         null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         }
         g2.dispose();
     }
@@ -368,9 +387,9 @@ public class ConfusionTable extends JPanel {
         }
         //cached image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
         g.dispose();
     }
 
@@ -385,7 +404,7 @@ public class ConfusionTable extends JPanel {
      *
      * @param confmat
      */
-    private void findMinMax(int[][] confmat) {
+    private void findMinMaxMatrix(int[][] confmat) {
         min = Integer.MAX_VALUE;
         max = Integer.MIN_VALUE;
         for (int[] row : confmat) {
