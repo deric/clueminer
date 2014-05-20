@@ -15,16 +15,16 @@ public interface ClusterEvaluation {
      *
      * @return evaluation metric's name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the score the current clusterer obtains on the dataset.
      *
-     * @param d - the dataset to test the clusterer on.
+     * @param clusters - clustering to be evaluated
      * @param dataset - the original dataset
      * @return the score the clusterer obtained on this particular dataset
      */
-    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset);
+    double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset);
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
@@ -35,7 +35,7 @@ public interface ClusterEvaluation {
      * @param proximity matrix of distances between all points
      * @return
      */
-    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity);
+    double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity);
 
     /**
      * Compares the two scores according to the criterion in the implementation.
@@ -47,5 +47,5 @@ public interface ClusterEvaluation {
      * @return true if the first score is better than the second, false in all
      * other cases
      */
-    public boolean compareScore(double score1, double score2);
+    boolean compareScore(double score1, double score2);
 }
