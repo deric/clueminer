@@ -3,6 +3,7 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.prefs.Preferences;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.Lookup;
 
@@ -133,20 +134,33 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return lookup instance for accessing related objects (Dataset,
      * hierarchical clustering etc.)
      */
-    public Lookup getLookup();
+    Lookup getLookup();
 
     /**
      * Add object to lookup
      *
      * @param instance
      */
-    public void lookupAdd(Object instance);
+    void lookupAdd(Object instance);
 
     /**
      * Removes object from lookup
      *
      * @param instance
      */
-    public void lookupRemove(Object instance);
+    void lookupRemove(Object instance);
 
+    /**
+     * Parameters which were used to compute clustering
+     *
+     * @return
+     */
+    Preferences getParams();
+
+    /**
+     * Sets parameters which were used to obtain clustering
+     *
+     * @param params
+     */
+    void setParams(Preferences params);
 }
