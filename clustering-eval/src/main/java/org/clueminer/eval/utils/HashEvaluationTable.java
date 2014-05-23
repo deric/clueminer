@@ -76,6 +76,7 @@ public class HashEvaluationTable implements EvaluationTable {
         return evalToScoreMap(internalMap);
     }
 
+    @Override
     public Map<String, Double> getExternal() {
         return evalToScoreMap(externalMap);
     }

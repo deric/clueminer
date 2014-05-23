@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.openide.actions.NewAction;
@@ -137,9 +138,19 @@ public class ClusteringNode extends AbstractNode {
         return sheet;
     }
 
+    private EvaluationTable evaluationTable(Clustering<Cluster> clustering) {
+        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+        //we try to compute score just once, to eliminate delays
+        if (evalTable == null) {
+            evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+            clustering.lookupAdd(evalTable);
+        }
+        return evalTable;
+    }
+
     private void internalSheet(Clustering<Cluster> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
-        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+        EvaluationTable evalTable = evaluationTable(clustering);
         set.setName("Internal Evaluation");
         set.setDisplayName("Internal Evaluation");
         for (final Entry<String, Double> score : evalTable.getInternal().entrySet()) {
@@ -151,7 +162,7 @@ public class ClusteringNode extends AbstractNode {
 
     private void externalSheet(Clustering<Cluster> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
-        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+        EvaluationTable evalTable = evaluationTable(clustering);
         set.setName("External Evaluation");
         set.setDisplayName("External Evaluation");
         for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {

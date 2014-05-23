@@ -59,7 +59,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     @Override
     public void countFitness() {
         clustering = updateCustering();
-        fitness = evolution.getEvaluator().score(clustering, evolution.getDataset());
+        fitness = evaluationTable(clustering).getScore(evolution.getEvaluator());
     }
 
     /**

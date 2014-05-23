@@ -5,7 +5,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -194,9 +193,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         }// else we use a naive approach
 
         clust = dendroData.getRowsClustering();
-        System.out.println("result clust size " + clust.size());
-        List<ClusterEvaluator> list = InternalEvaluatorFactory.getInstance().getAll();
-
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {
             case -1:
@@ -210,7 +206,6 @@ public class DendrogramComponent extends ClusterAnalysis {
                 break;
         }
 
-        double s;
         StringBuilder scores = new StringBuilder();
         StringBuilder evaluators = new StringBuilder();
 
@@ -229,11 +224,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         evaluators.append("Cutoff").append("\t");
         scores.append(cutoffAlg).append("\t");
 
-        for (ClusterEvaluator c : list) {
-            s = c.score(clust, data);
-            scores.append(s).append("\t");
-            evaluators.append(c.getName()).append("\t");
-        }
 
         //this would introduce extra dependency
         //HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
@@ -247,8 +237,8 @@ public class DendrogramComponent extends ClusterAnalysis {
 
     public String formatTime(long millis) {
         return String.format("%d min, %d sec",
-                             TimeUnit.MILLISECONDS.toMinutes(millis),
-                             TimeUnit.MILLISECONDS.toSeconds(millis)
+                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis)
                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
         );
     }
