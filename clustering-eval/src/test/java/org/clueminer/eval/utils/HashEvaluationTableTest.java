@@ -19,6 +19,7 @@ public class HashEvaluationTableTest {
 
     private HashEvaluationTable subject;
     private static Clustering irisCorrect;
+    private static final double delta = 1e-9;
     public HashEvaluationTableTest() {
         subject = new HashEvaluationTable(irisCorrect, FakeClustering.irisDataset());
     }
@@ -47,7 +48,7 @@ public class HashEvaluationTableTest {
     @Test
     public void testGetScore() {
         double score = subject.getScore(new Precision());
-        System.out.println("precision = " + score);
+        assertEquals(1.0, score, delta);
     }
 
     @Test
@@ -55,6 +56,16 @@ public class HashEvaluationTableTest {
         String[] eval = subject.getEvaluators();
         assertEquals(true, eval.length > 0);
         Dump.array(eval, "evaluators");
+    }
+
+    @Test
+    public void testGetInternal() {
+        System.out.println("internal: " + subject.getInternal().toString());
+    }
+
+    @Test
+    public void testGetExternal() {
+        System.out.println("external: " + subject.getExternal().toString());
     }
 
 }

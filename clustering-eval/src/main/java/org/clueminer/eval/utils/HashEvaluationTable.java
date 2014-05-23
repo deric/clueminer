@@ -3,6 +3,8 @@ package org.clueminer.eval.utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -25,26 +27,57 @@ public class HashEvaluationTable implements EvaluationTable {
     private Dataset<? extends Instance> dataset;
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
+    private HashMap<String, Double> scores;
 
     public HashEvaluationTable(Clustering<Cluster> clustering, Dataset<? extends Instance> dataset) {
-        setData(clustering, dataset);
         initEvaluators();
+        setData(clustering, dataset);
     }
 
     @Override
     public final void setData(Clustering<Cluster> clustering, Dataset<? extends Instance> dataset) {
         this.clustering = clustering;
         this.dataset = dataset;
+        reset();
+    }
+
+    private void reset() {
+        scores = new HashMap<String, Double>(internalMap.size() + externalMap.size());
     }
 
     /**
-     * @TODO implement this
+     * Computes evaluator score and caches the result
+     *
      * @param evaluator
      * @return
      */
     @Override
     public double getScore(ClusterEvaluation evaluator) {
-        return Double.NaN;
+        String key = evaluator.getName();
+        if (scores.containsKey(key)) {
+            return scores.get(key);
+        } else {
+            double score = evaluator.score(clustering, dataset);
+            scores.put(key, score);
+            return score;
+        }
+    }
+
+    private Map<String, Double> evalToScoreMap(Object2ObjectMap<String, ClusterEvaluation> map) {
+        HashMap<String, Double> res = new HashMap<String, Double>(map.size());
+        for (ClusterEvaluation eval : map.values()) {
+            res.put(eval.getName(), getScore(eval));
+        }
+        return res;
+    }
+
+    @Override
+    public Map<String, Double> getInternal() {
+        return evalToScoreMap(internalMap);
+    }
+
+    public Map<String, Double> getExternal() {
+        return evalToScoreMap(externalMap);
     }
 
     @Override
@@ -71,7 +104,7 @@ public class HashEvaluationTable implements EvaluationTable {
             externalMap = new Object2ObjectOpenHashMap<String, ClusterEvaluation>();
             ExternalEvaluatorFactory extf = ExternalEvaluatorFactory.getInstance();
             for (ExternalEvaluator eval : extf.getAll()) {
-                internalMap.put(eval.getName(), eval);
+                externalMap.put(eval.getName(), eval);
             }
         }
     }
