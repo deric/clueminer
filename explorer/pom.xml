@@ -105,6 +105,11 @@
             <artifactId>org-netbeans-api-progress</artifactId>
             <version>RELEASE74</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-eval</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

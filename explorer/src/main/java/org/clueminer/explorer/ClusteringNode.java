@@ -3,9 +3,12 @@ package org.clueminer.explorer;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.eval.utils.HashEvaluationTable;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
 import org.openide.nodes.AbstractNode;
@@ -122,9 +125,26 @@ public class ClusteringNode extends AbstractNode {
             } catch (NoSuchMethodException ex) {
                 Exceptions.printStackTrace(ex);
             }
-
+            sheet.put(evaluationSheet(clustering));
         }
         sheet.put(set);
         return sheet;
+    }
+
+    private Sheet.Set evaluationSheet(Clustering<Cluster> clustering) {
+        Sheet.Set set = Sheet.createPropertiesSet();
+        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, getLookup().lookup(Dataset.class));
+        set.setDisplayName("Internal Evaluation");
+        for (Entry<String, Double> score : evalTable.getInternal().entrySet()) {
+            try {
+                Property nameProp = new PropertySupport.Reflection(score, Double.class, "getValue", null);
+                nameProp.setName(score.getKey());
+                set.put(nameProp);
+            } catch (NoSuchMethodException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+        return set;
     }
 }
