@@ -1,6 +1,6 @@
-package org.clueminer.eval.external;
+package org.clueminer.eval.utils;
 
-import org.clueminer.eval.external.ValueComparableMap;
+import org.clueminer.eval.utils.ValueComparableMap;
 import com.google.common.collect.Ordering;
 import java.util.TreeMap;
 import org.junit.After;

@@ -1,5 +1,6 @@
 package org.clueminer.eval.external;
 
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;

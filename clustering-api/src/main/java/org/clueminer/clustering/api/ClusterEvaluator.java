@@ -15,4 +15,14 @@ public abstract class ClusterEvaluator implements ClusterEvaluation, Serializabl
     public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public boolean isExternal() {
+        return false;
+    }
 }

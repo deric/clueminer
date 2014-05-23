@@ -48,4 +48,11 @@ public interface ClusterEvaluation {
      * other cases
      */
     boolean compareScore(double score1, double score2);
+
+    /**
+     *
+     *
+     * @return true when class labels are required in order to evaluate score
+     */
+    boolean isExternal();
 }

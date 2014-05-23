@@ -1,4 +1,4 @@
-package org.clueminer.eval.external;
+package org.clueminer.eval.utils;
 
 import java.util.HashMap;
 import java.util.Map;

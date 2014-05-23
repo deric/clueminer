@@ -1,6 +1,6 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.external.CountingPairs;
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.external.AdjustedRand;
 import com.google.common.collect.Table;
 import org.clueminer.fixtures.clustering.FakeClustering;

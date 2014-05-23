@@ -1,5 +1,6 @@
 package org.clueminer.eval.external;
 
+import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.util.Set;
