@@ -210,6 +210,8 @@ public class HClustResult implements HierarchicalResult {
          //proximity.printLower(5, 2);
          // similarity.print(4, 2);
          */
+        //add input dataset to clustering lookup
+        result.lookupAdd(dataset);
         return result;
     }
 

@@ -77,7 +77,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * current system time. For the distance we use the Euclidean n-space
      * distance.
      *
-     * @param clusters   - the number of clusters
+     * @param clusters - the number of clusters
      * @param iterations - the number of iterations
      */
     public KMeans(int clusters, int iterations) {
@@ -89,10 +89,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * iterations. Also the Random Generator for the clusterer is given as
      * parameter.
      *
-     * @param clusters   - the number of clusters
+     * @param clusters - the number of clusters
      * @param iterations - the number of iterations
      *
-     * @param dm         - the distance measure to use
+     * @param dm - the distance measure to use
      */
     public KMeans(int clusters, int iterations, DistanceMeasure dm) {
         this.numberOfClusters = clusters;
@@ -255,6 +255,11 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             output.get(tmpCluster).add(data.instance(i));
 
         }
+        /**
+         * associate dataset which was used to create clustering with the
+         * clustering
+         */
+        output.lookupAdd(data);
         return output;
     }
 

@@ -2,6 +2,7 @@ package org.clueminer.explorer;
 
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.Action;
@@ -110,7 +111,10 @@ public class ClusteringNode extends AbstractNode {
     @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
-        Sheet.Set set = Sheet.createPropertiesSet();
+        Sheet.Set set = sheet.get(Sheet.PROPERTIES);
+        if (set == null) {
+            set = Sheet.createPropertiesSet();
+        }
         Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
         if (clustering != null) {
             try {
@@ -125,26 +129,41 @@ public class ClusteringNode extends AbstractNode {
             } catch (NoSuchMethodException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            sheet.put(evaluationSheet(clustering));
+
+            sheet.put(set);
+            internalSheet(clustering, sheet);
+            externalSheet(clustering, sheet);
         }
-        sheet.put(set);
         return sheet;
     }
 
-    private Sheet.Set evaluationSheet(Clustering<Cluster> clustering) {
-        Sheet.Set set = Sheet.createPropertiesSet();
-        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, getLookup().lookup(Dataset.class));
+    private void internalSheet(Clustering<Cluster> clustering, Sheet sheet) {
+        Sheet.Set set = new Sheet.Set();
+        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+        set.setName("Internal Evaluation");
         set.setDisplayName("Internal Evaluation");
-        for (Entry<String, Double> score : evalTable.getInternal().entrySet()) {
-            try {
-                Property nameProp = new PropertySupport.Reflection(score, Double.class, "getValue", null);
-                nameProp.setName(score.getKey());
-                set.put(nameProp);
-            } catch (NoSuchMethodException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+        for (final Entry<String, Double> score : evalTable.getInternal().entrySet()) {
+            Property evalProp = new EvaluatorProperty(score.getKey(), score.getValue());
+            set.put(evalProp);
+        }
+        sheet.put(set);
+    }
+
+    private void externalSheet(Clustering<Cluster> clustering, Sheet sheet) {
+        Sheet.Set set = new Sheet.Set();
+        HashEvaluationTable evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+        set.setName("External Evaluation");
+        set.setDisplayName("External Evaluation");
+        for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {
+            Property evalProp = new PropertySupport.ReadOnly<Double>(score.getKey(), Double.class, "", "") {
+                @Override
+                public Double getValue() throws IllegalAccessException, InvocationTargetException {
+                    return score.getValue();
+                }
+            };
+            set.put(evalProp);
         }
 
-        return set;
+        sheet.put(set);
     }
 }

@@ -174,6 +174,7 @@ public class HCLResult implements HierarchicalResult {
          }*/
         //proximity.printLower(5, 2);
         // similarity.print(4, 2);
+        result.lookupAdd(dataset);
         return result;
     }
 
