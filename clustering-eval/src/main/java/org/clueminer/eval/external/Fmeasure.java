@@ -19,7 +19,7 @@ import org.clueminer.math.Matrix;
  */
 public class Fmeasure extends ExternalEvaluator {
 
-    private static String name = "F-measure";
+    private static final String name = "F-measure";
     private static final long serialVersionUID = 5075558180348805172L;
     private double beta = 1.0;
 
@@ -47,7 +47,7 @@ public class Fmeasure extends ExternalEvaluator {
             index += fmeasure;
         }
 
-        //average value        
+        //average value
         return index / table.columnKeySet().size();
     }
 

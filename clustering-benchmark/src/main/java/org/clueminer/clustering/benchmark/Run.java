@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -150,7 +150,7 @@ public class Run {
         }
         // DatasetFixture.allDatasets();
 
-        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
 
         String name;

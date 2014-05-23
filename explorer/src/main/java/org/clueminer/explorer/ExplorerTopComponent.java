@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
@@ -174,7 +174,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 alg.setGenerations(sliderGenerations.getValue());
                 alg.setAlgorithm(new KMeans(3, 100));
 
-                ClusterEvaluatorFactory fact = ClusterEvaluatorFactory.getInstance();
+                InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
                 alg.addEvolutionListener(this);
                 final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");

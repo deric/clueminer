@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -187,14 +188,14 @@ public class DendrogramComponent extends ClusterAnalysis {
         String cutoffAlg = params.get("cutoff", "Naive");
         Clustering clust;
         if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = ClusterEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
             HillClimbCutoff strategy = new HillClimbCutoff(eval);
             rowsResult.findCutoff(strategy);
         }// else we use a naive approach
 
         clust = dendroData.getRowsClustering();
         System.out.println("result clust size " + clust.size());
-        List<ClusterEvaluator> list = ClusterEvaluatorFactory.getInstance().getAll();
+        List<ClusterEvaluator> list = InternalEvaluatorFactory.getInstance().getAll();
 
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {

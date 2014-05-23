@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -147,7 +147,7 @@ public class AttrEvolutionTest {
 
     @Test
     public void testVariousMeasuresAndDatasets() {
-        ClusterEvaluatorFactory factory = ClusterEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
         Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
         //just to make the test fast

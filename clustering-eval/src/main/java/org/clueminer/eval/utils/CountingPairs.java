@@ -1,6 +1,5 @@
 package org.clueminer.eval.utils;
 
-import org.clueminer.eval.utils.ValueComparableMap;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

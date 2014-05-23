@@ -8,7 +8,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -71,7 +71,7 @@ public class HCLDialog extends ClusteringDialog {
     }
 
     private String[] initCutoff() {
-        ClusterEvaluatorFactory ef = ClusterEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory ef = InternalEvaluatorFactory.getInstance();
         List<String> list = ef.getProviders();
         list.add("-- naive --");
         String[] res = new String[list.size()];

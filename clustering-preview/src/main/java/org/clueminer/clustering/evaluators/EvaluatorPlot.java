@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.math.plot.Plot2DPanel;
 
@@ -73,7 +73,7 @@ public class EvaluatorPlot extends JPanel {
     }
     
     public void setEvaluator(String eval){
-        evaluator = ClusterEvaluatorFactory.getInstance().getProvider(eval);
+        evaluator = InternalEvaluatorFactory.getInstance().getProvider(eval);
         System.out.println("evaluator is "+evaluator.getName());
         clusteringChanged();
     }   

@@ -17,7 +17,7 @@ import org.clueminer.math.Matrix;
 public class JaccardIndex extends ExternalEvaluator {
 
     private static final long serialVersionUID = -1547620533572167033L;
-    private static String name = "Jaccard";
+    private static final String name = "Jaccard";
 
     @Override
     public String getName() {

@@ -15,32 +15,32 @@ import org.clueminer.math.Matrix;
  * @author Tomas Barton
  */
 public class Precision extends ExternalEvaluator {
-    
+
     private static final long serialVersionUID = -1547620533572167033L;
-    private static String name = "Precision";
-    
+    private static final String name = "Precision";
+
     @Override
     public String getName() {
         return name;
     }
-    
+
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         return countScore(table);
     }
-    
+
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
         return countScore(table);
     }
-    
+
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
         return score(clusters, dataset);
     }
-    
+
     public double countScore(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
@@ -51,7 +51,7 @@ public class Precision extends ExternalEvaluator {
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             //System.out.println("class: " + matching.inverse().get(cluster) + " cluster = " + cluster);
-            
+
             //System.out.println(res);
             tp = res.get("tp");
             fp = res.get("fp");
@@ -61,7 +61,7 @@ public class Precision extends ExternalEvaluator {
             index += precision;
         }
 
-        //average value        
+        //average value
         return index / table.columnKeySet().size();
     }
 

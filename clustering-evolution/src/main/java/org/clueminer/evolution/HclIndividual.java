@@ -7,7 +7,7 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -128,7 +128,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         String cutoffAlg = params.get("cutoff", "NaiveCutoff");
 
         // if (!cutoffAlg.equals("-- naive --")) {
-        ClusterEvaluator eval = ClusterEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+        ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
         NaiveCutoff strategy = new NaiveCutoff();
         rowsResult.findCutoff(strategy);
         // }// else we use a naive approach

@@ -3,7 +3,7 @@ package org.clueminer.clustering.evaluators;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
-import org.clueminer.clustering.api.ClusterEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 
 /**
  *
@@ -16,7 +16,7 @@ public class EvaluatorComboBox extends AbstractListModel<String> implements Comb
     private String selection = null;
     
     public EvaluatorComboBox(){
-        List<String> list = ClusterEvaluatorFactory.getInstance().getProviders();
+        List<String> list = InternalEvaluatorFactory.getInstance().getProviders();
         providers = list.toArray(new String[list.size()]);
     }
 
