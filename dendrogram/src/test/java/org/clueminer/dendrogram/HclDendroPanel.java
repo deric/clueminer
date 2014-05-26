@@ -128,6 +128,7 @@ public class HclDendroPanel extends DendroPanel {
         clust = dendroData.getRowsClustering();
         //associate dendroData with clustering
         clust.lookupAdd(dendroData);
+        clust.setParams(params);
         System.out.println("result clust size " + clust.size());
         List<ClusterEvaluator> list = InternalEvaluatorFactory.getInstance().getAll();
 

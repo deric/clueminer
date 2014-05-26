@@ -14,7 +14,6 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.gui.ColorGenerator;
 
 /**
  * Color stripe for showing assignments to clusters

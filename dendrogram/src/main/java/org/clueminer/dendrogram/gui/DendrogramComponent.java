@@ -193,6 +193,8 @@ public class DendrogramComponent extends ClusterAnalysis {
         }// else we use a naive approach
 
         clust = dendroData.getRowsClustering();
+        clust.lookupAdd(dendroData);
+        clust.setParams(params);
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {
             case -1:

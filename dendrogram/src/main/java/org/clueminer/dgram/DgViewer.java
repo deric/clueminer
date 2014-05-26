@@ -331,6 +331,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      */
     @Override
     public void setClustering(Clustering clustering) {
+        logger.log(Level.INFO, "got clustering size: {0}", clustering.size());
         Lookup lookup = clustering.getLookup();
         if (lookup != null) {
             DendrogramMapping mapping = lookup.lookup(DendrogramMapping.class);
