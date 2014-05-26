@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -26,9 +27,10 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private int linepos;
     final static BasicStroke dashed
             = new BasicStroke(1.0f,
-                              BasicStroke.CAP_BUTT,
-                              BasicStroke.JOIN_MITER,
-                              10.0f, dash1, 0.0f);
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER,
+                    10.0f, dash1, 0.0f);
+    private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
@@ -97,12 +99,19 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      * @param isAdjusting
      */
     public void setCutoff(int pos, boolean isAdjusting) {
-        double cut = computeCutoff(pos);
+        final double cut = computeCutoff(pos);
         if (!isAdjusting) {
-            //quite expensive to compute
-            clustering.setCutoff(cut);
-            //@TODO depending on horizontal or vertical position we shoud choose rows or columns
-            panel.fireClusteringChanged(panel.getDendrogramData().getRowsClustering());
+            RequestProcessor.Task task = RP.create(new Runnable() {
+
+                @Override
+                public void run() {
+                    //quite expensive to compute
+                    clustering.setCutoff(cut);
+                    //@TODO depending on horizontal or vertical position we shoud choose rows or columns
+                    panel.fireClusteringChanged(panel.getDendrogramData().getRowsClustering());
+                }
+            });
+            RP.post(task);
         }
         repaint();
     }
