@@ -10,16 +10,18 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @see http://en.wikipedia.org/wiki/Accuracy_and_precision for definition
  * @author Tomas Barton
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class Accuracy extends ExternalEvaluator {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static String name = "Accuracy";
+    private static final String name = "Accuracy";
 
     @Override
     public String getName() {

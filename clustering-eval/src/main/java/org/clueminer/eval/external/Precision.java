@@ -9,11 +9,13 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class Precision extends ExternalEvaluator {
 
     private static final long serialVersionUID = -1547620533572167033L;

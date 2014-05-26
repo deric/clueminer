@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Based on Adjusted Rand coefficient: Hubert, L. and Arabie, P. (1985)
@@ -19,10 +20,11 @@ import org.clueminer.math.Matrix;
  * @see RandIndex
  * @author Tomas Barton
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class AdjustedRand extends ExternalEvaluator {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static String name = "Adjusted Rand";
+    private static final String name = "Adjusted Rand";
 
     @Override
     public String getName() {
@@ -80,7 +82,7 @@ public class AdjustedRand extends ExternalEvaluator {
         String[] ck = new String[cols.size()];
 
         int k = 0;
-        //we have to order items in set, so that on diagonal will be highest 
+        //we have to order items in set, so that on diagonal will be highest
         //numbers - for corresponding clusters
         for (String c : cols) {
             rk[k] = matching.get(c);

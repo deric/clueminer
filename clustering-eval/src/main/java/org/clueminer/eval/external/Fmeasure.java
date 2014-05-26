@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * F-measure or F-score
@@ -17,6 +18,7 @@ import org.clueminer.math.Matrix;
  * @see http://en.wikipedia.org/wiki/F1_score
  * @author Tomas Barton
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class Fmeasure extends ExternalEvaluator {
 
     private static final String name = "F-measure";

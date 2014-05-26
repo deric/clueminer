@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Fowlkes-Mallows coefficient
@@ -20,10 +21,11 @@ import org.clueminer.math.Matrix;
  * @see http://en.wikipedia.org/wiki/Fowlkes%E2%80%93Mallows_index
  * @author Tomas Barton
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class FowlkesMallows extends ExternalEvaluator {
 
     private static final long serialVersionUID = 101045082257039885L;
-    private static String name = "Fowlkes-Mallows";
+    private static final String name = "Fowlkes-Mallows";
 
     @Override
     public String getName() {
@@ -48,7 +50,7 @@ public class FowlkesMallows extends ExternalEvaluator {
         int tp, fp, fn;
         double index = 0.0;
         double fowles;
-        //for each cluster we have score of quality        
+        //for each cluster we have score of quality
         for (String cluster : matching.values()) {
             res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             tp = res.get("tp");
