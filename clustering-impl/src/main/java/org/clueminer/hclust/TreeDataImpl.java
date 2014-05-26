@@ -36,7 +36,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     private double[] height;
     private DistanceMeasure function;
     private double cutoff = -1;
-    private int clusters[];
+    private int clusterAssignment[];
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private static final Logger logger = Logger.getLogger(TreeDataImpl.class.getName());
@@ -217,7 +217,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
     }
 
     public void setCutoff(double cutoff) {
-        clusters = null; //clear result, if any
+        clusterAssignment = null; //clear result, if any
         clusterNum = 0;
         this.cutoff = cutoff;
     }
@@ -245,7 +245,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
             }
             //ensureClusters(nodesNum);
             logger.log(Level.INFO, "allocating space for : {0}", new Object[]{leavesNum});
-            clusters = new int[leavesNum];
+            clusterAssignment = new int[leavesNum];
             findClusters(getIntRoot(), -1);
         }
     }
@@ -257,9 +257,9 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         synchronized (this) {
             int nodesNum = getNumberOfTerminalNodes(0.00001);
             logger.log(Level.INFO, "expected tree nodes number: {0}", new Object[]{nodesNum});
-            clusters = new int[nodesNum];
+            clusterAssignment = new int[nodesNum];
             findClusters(getIntRoot(), -1);
-            Dump.array(clusters, "result clusters");
+            Dump.array(clusterAssignment, "result clusters");
         }
     }
 
@@ -272,12 +272,12 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
      * @return array of node's assignments
      */
     public int[] getClusters(int terminalsNum) {
-        if (clusters == null) {
+        if (clusterAssignment == null) {
             formClusters(terminalsNum);
         }
         // for each leaf we want its cluster assignment
-        logger.log(Level.INFO, "leaves {0}, actual clusters size {1}", new Object[]{numLeaves(), clusters.length});
-        return clusters;
+        logger.log(Level.INFO, "leaves {0}, actual clusters size {1}", new Object[]{numLeaves(), clusterAssignment.length});
+        return clusterAssignment;
     }
 
     /**
@@ -312,7 +312,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
             //Logger.getLogger(TreeDataImpl.class.getName()).log(Level.INFO, "getting {0} clusters size: {1}", new Object[]{idx, clusters.length});
             //assign cluster's id
             //logger.log(Level.INFO, "setting idx: {0} to cluster {1}", new Object[]{idx, clusterNum});
-            clusters[idx] = clusterNum;
+            clusterAssignment[idx] = clusterNum;
             return;
         }
 

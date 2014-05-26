@@ -104,11 +104,12 @@ public class HCLResult implements HierarchicalResult {
         return clustering;
     }
 
-    public void updateClustering() {
+    public Clustering updateClustering() {
         clustering = getClustering(dataset);
         /**
          * TODO: fire result?
          */
+        return clustering;
     }
 
     /**
@@ -213,11 +214,12 @@ public class HCLResult implements HierarchicalResult {
     }
 
     @Override
-    public void setCutoff(double cutoff) {
+    public Clustering updateCutoff(double cutoff) {
         treeData.setCutoff(cutoff);
         //maximum number of clusters is number of instances
         treeData.formClusters(similarity.rowsCount());
-        updateClustering();
+
+        return updateClustering();
     }
 
     @Override
@@ -228,7 +230,7 @@ public class HCLResult implements HierarchicalResult {
     @Override
     public double findCutoff() {
         double cut = cutoffStrategy.findCutoff(this);
-        setCutoff(cut);
+        updateCutoff(cut);
         System.out.println(treeData.toString());
         return cut;
     }
@@ -236,14 +238,14 @@ public class HCLResult implements HierarchicalResult {
     @Override
     public double findCutoff(CutoffStrategy strategy) {
         double cut = strategy.findCutoff(this);
-        setCutoff(cut);
+        updateCutoff(cut);
         return cut;
     }
 
     @Override
     public double cutTreeByLevel(int level) {
         double cut = treeData.treeCutByLevel(level);
-        setCutoff(cut);
+        updateCutoff(cut);
         return cut;
     }
 

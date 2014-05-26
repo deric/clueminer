@@ -13,7 +13,8 @@ public class NaiveCutoff implements CutoffStrategy {
      * Search for the highest distance between tree levels (might determine a
      * reasonable number of clusters - simple, but not very precise)
      *
-     * @param tree
+     * @param hclust
+     * @return
      */
     @Override
     public double findCutoff(HierarchicalResult hclust) {

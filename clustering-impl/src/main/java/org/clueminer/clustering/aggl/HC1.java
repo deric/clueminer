@@ -69,8 +69,10 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         HashSet<Integer> blacklist = new HashSet<Integer>();
         DendroNode node = null;
         Set<Integer> left, right;
+        int mapping[] = new int[dataset.size()];
 
         int nodeId = dataset.size();
+        int i = 0;
         while (!pq.isEmpty()) {
             curr = pq.poll();
             //System.out.println("current: " + curr);
@@ -80,6 +82,7 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
                 nodes[node.getId()] = node;
+                //mapping[i++] = node.getId();
 
                 blacklist.add(curr.getRow());
                 blacklist.add(curr.getColumn());
@@ -96,6 +99,7 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroTreeData treeData = new DynamicTreeData();
         treeData.setRoot(node);
         result.setTreeData(treeData);
+        //result.setMapping(mapping);
 
         similarityMatrix.printLower(5, 2);
 

@@ -4,7 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
@@ -12,6 +15,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.openide.util.RequestProcessor;
+
 
 /**
  *
@@ -31,6 +35,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                     BasicStroke.JOIN_MITER,
                     10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
+    private static final Logger logger = Logger.getLogger(CutoffLine.class.getName());
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
@@ -76,8 +81,12 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
 
     private double computeCutoff(int pos) {
         //min tree distance is distance of lowest level, not leaves!
+        if (tree != null && tree.hasData()) {
         double cut = (pos - tree.getMinDistance()) * clustering.getMaxTreeHeight() / (tree.getMaxDistance() - tree.getMinDistance());
-        return (clustering.getMaxTreeHeight() - cut);
+            return (clustering.getMaxTreeHeight() - cut);
+        } else {
+            return 0.0;
+        }
     }
 
     public int getLinePosition() {
@@ -100,15 +109,18 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      */
     public void setCutoff(int pos, boolean isAdjusting) {
         final double cut = computeCutoff(pos);
+        logger.log(Level.INFO, "cut for {0} = {1}", new Object[]{pos, cut});
         if (!isAdjusting) {
             RequestProcessor.Task task = RP.create(new Runnable() {
 
                 @Override
                 public void run() {
                     //quite expensive to compute
-                    clustering.setCutoff(cut);
-                    //@TODO depending on horizontal or vertical position we shoud choose rows or columns
-                    panel.fireClusteringChanged(panel.getDendrogramData().getRowsClustering());
+                    Clustering c = clustering.updateCutoff(cut);
+                    if (c != null) {
+                        //@TODO depending on horizontal or vertical position we shoud choose rows or columns
+                        panel.fireClusteringChanged(c);
+                    }
                 }
             });
             RP.post(task);

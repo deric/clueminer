@@ -1,5 +1,7 @@
 package org.clueminer.clustering.api.dendrogram;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -12,94 +14,104 @@ public interface DendroNode {
      *
      * @return true when is a leaf node
      */
-    public boolean isLeaf();
+    boolean isLeaf();
 
     /**
      *
      * @return true when node is top of a dendrogram tree
      */
-    public boolean isRoot();
+    boolean isRoot();
 
     /**
      *
      * @return left node if any, otherwise null
      */
-    public DendroNode getLeft();
+    DendroNode getLeft();
 
-    public void setLeft(DendroNode left);
+    void setLeft(DendroNode left);
 
     /**
      *
      * @return true when left node exists
      */
-    public boolean hasLeft();
+    boolean hasLeft();
 
     /**
      *
      * @return right node if any, otherwise null
      */
-    public DendroNode getRight();
+    DendroNode getRight();
 
-    public void setRight(DendroNode right);
+    void setRight(DendroNode right);
 
     /**
      *
      * @return true when right node exists
      */
-    public boolean hasRight();
+    boolean hasRight();
 
     /**
      * (Sub)tree level
      *
      * @return number of levels under this node
      */
-    public int level();
+    int level();
 
     /**
      * In case that tree construction is finished, we can cache tree levels
      *
      * @param level
      */
-    public void setLevel(int level);
+    void setLevel(int level);
 
     /**
      * If root node, parent is null
      *
      * @return parent node
      */
-    public DendroNode getParent();
+    DendroNode getParent();
 
-    public void setParent(DendroNode parent);
+    void setParent(DendroNode parent);
 
     /**
      *
      * @return number of children
      */
-    public int childCnt();
+    int childCnt();
 
-    public double getHeight();
+    double getHeight();
 
-    public void setHeight(double height);
+    void setHeight(double height);
 
     /**
      * Position of last node is also width of the tree
      *
      * @return width of tree
      */
-    public double getPosition();
+    double getPosition();
 
-    public void setPosition(double value);
+    void setPosition(double value);
 
-    public void setId(int id);
+    void setId(int id);
 
-    public int getId();
+    int getId();
 
     /**
      * Corresponding instance from the dataset (valid only if node is a leaf)
      *
      * @return Instance
      */
-    public Instance getInstance();
+    Instance getInstance();
 
-    public void setInstance(Instance instance);
+    void setInstance(Instance instance);
+
+    /**
+     * printing helper
+     *
+     * @param out
+     * @param isRight
+     * @param indent
+     * @throws IOException
+     */
+    void printTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
 }

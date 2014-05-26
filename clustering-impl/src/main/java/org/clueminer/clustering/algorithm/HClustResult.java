@@ -1,6 +1,7 @@
 package org.clueminer.clustering.algorithm;
 
 import com.google.common.primitives.Ints;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +14,18 @@ import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
+import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 
@@ -45,6 +49,8 @@ public class HClustResult implements HierarchicalResult {
     private DendroNode[] nodes;
     private int numNodes = 0;
     private Clustering clustering = null;
+    private CutoffStrategy cutoffStrategy = new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault());
+    private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -155,63 +161,14 @@ public class HClustResult implements HierarchicalResult {
     public Clustering getClustering(Dataset<? extends Instance> parent) {
         setDataset(parent);
 
-        Clustering result = new ClusterList(dataset.size());
-        /**
-         * TODO find cutoff
-         */
+        int estClusters = (int) Math.sqrt(dataset.size());
+        Clustering result = new ClusterList(estClusters);
 
-        /*        //we need number of instances in dataset
-         int[] clusters = treeData.getClusters(parent.size());
-         Dump.array(clusters, "cluster assignments");
+        //estimated capacity
+        int perCluster = (int) (parent.size() / (float) estClusters);
 
-         Clustering result = new ClusterList(treeData.getNumberOfClusters());
-         if (treeData.getNumberOfClusters() <= 0) {
-         logger.log(Level.WARNING, "0 clusters according to treeData");
-         return result;
-         }
-         if (clusters.length != parent.size()) {
-         throw new RuntimeException("unexpected size of clustering result " + clusters.length + ", dataset size is " + parent.size());
-         }
-
-         //estimated capacity
-         int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
-         int num, idx;
-         Cluster<Instance> clust;
-         //Dump.array(clusters, "clusters-assignment");
-         //Dump.array(itemsMapping, "items-mapping");
-         for (int i = 0; i < clusters.length; i++) {
-         num = clusters[i] - 1; //numbering starts from 1
-         //if clustering wasn't computed yet, we have to wait...
-         if (num >= 0) {
-         if (!result.hasAt(num)) {
-         clust = new BaseCluster<Instance>(perCluster);
-         clust.setName("Cluster " + (num + 1));
-         clust.setParent(parent);
-
-         Attribute[] attr = parent.copyAttributes();
-         for (int j = 0; j < attr.length; j++) {
-         clust.setAttribute(j, attr[j]);
-         }
-         result.put(num, clust);
-         } else {
-         clust = result.get(num);
-         }
-         idx = itemsMapping[i];
-         //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
-         //logger.log(Level.WARNING, "{0} -> {1}: cluster {2}", new Object[]{i, idx, num});
-         //mapping is tracked in cluster
-         // values in cluster array doesn't need mapping!
-         clust.add(dataset.get(i), idx);
-         }
-         }
-         for (Object c : result) {
-         logger.log(Level.INFO, "{0}", c.toString());
-         }
-         //proximity.printLower(5, 2);
-         // similarity.print(4, 2);
-         */
-        //add input dataset to clustering lookup
-        result.lookupAdd(dataset);
+        //proximity.printLower(5, 2);
+        // similarity.print(4, 2);
         return result;
     }
 
@@ -225,8 +182,45 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public void setCutoff(double cutoff) {
+    public Clustering updateCutoff(double cutoff) {
         this.cutoff = cutoff;
+        int[] assign = new int[dataset.size()];
+        int estClusters = (int) Math.sqrt(dataset.size());
+        Clustering clusters = new ClusterList(estClusters);
+        DendroNode root = treeData.getRoot();
+        if (root != null) {
+            checkCutoff(root, cutoff, clusters, assign);
+            if (clusters.size() > 0) {
+                mapping = assign;
+            }
+        }
+        //add input dataset to clustering lookup
+        clusters.lookupAdd(dataset);
+        return clusters;
+    }
+
+    private void checkCutoff(DendroNode node, double cutoff, Clustering clusters, int[] assign) {
+        if (node.isLeaf()) {
+            return;
+        }
+        if (node.getHeight() <= cutoff) {
+            //both branches goes to the same cluster
+            Cluster clust = clusters.createCluster();
+            subtreeToCluster(node, clust, assign);
+        } else {
+            checkCutoff(node.getLeft(), cutoff, clusters, assign);
+            checkCutoff(node.getRight(), cutoff, clusters, assign);
+        }
+    }
+
+    private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
+        if (node.isLeaf()) {
+            c.add(node.getInstance());
+            assign[node.getId()] = c.getClusterId();
+        } else {
+            subtreeToCluster(node.getLeft(), c, assign);
+            subtreeToCluster(node.getRight(), c, assign);
+        }
     }
 
     @Override
@@ -236,37 +230,75 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public double cutTreeByLevel(int level) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        DendroNode node = treeData.getRoot();
+        double cut = findLevel(node, level);
+        updateCutoff(cut);
+        return cut;
+    }
+
+    private double findLevel(DendroNode node, int level) {
+        if (node.level() == level) {
+            return (node.getParent().getHeight() + node.getHeight()) / 2.0;
+        } else {
+            double ret = findLevel(node.getLeft(), level);
+            if (ret > -1) {
+                return ret;
+            }
+            ret = findLevel(node.getRight(), level);
+            if (ret > -1) {
+                return ret;
+            }
+        }
+        return -1;
     }
 
     @Override
     public double findCutoff() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double cut = cutoffStrategy.findCutoff(this);
+        updateCutoff(cut);
+        System.out.println(treeData.toString());
+        return cut;
     }
 
     @Override
     public double findCutoff(CutoffStrategy strategy) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double cut = strategy.findCutoff(this);
+        updateCutoff(cut);
+        return cut;
     }
 
     @Override
     public Map<Integer, Double> getScores(String evaluator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (scores.containsKey(evaluator)) {
+            return scores.get(evaluator);
+        }
+        return null;
     }
 
     @Override
     public double getScore(String evaluator, int clustNum) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.scores.get(evaluator).get(clustNum);
     }
 
     @Override
     public void setScores(String evaluator, int clustNum, double sc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.scores.containsKey(evaluator)) {
+            this.scores.get(evaluator).put(clustNum, sc);
+        } else {
+            Map<Integer, Double> hm = new HashMap<Integer, Double>();
+            hm.put(clustNum, sc);
+            this.scores.put(evaluator, hm);
+        }
     }
 
     @Override
     public boolean isScoreCached(String evaluator, int clustNum) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.scores.containsKey(evaluator)) {
+            if (this.scores.get(evaluator).containsKey(clustNum)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -325,23 +357,22 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public int[] getMapping() {
         if (mapping == null) {
-            throw new RuntimeException("Empty mapping");
-        }
 
-        if (merges != null) {
-            //we need a guarantee of ordered items
-            LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
-            for (Merge m : getMerges()) {
-                samples.add(m.mergedCluster()); //this should be unique
-                if (!samples.contains(m.remainingCluster())) {
-                    //linked sample (on higher levels cluster is marked with lowest number in the cluster)
-                    samples.add(m.remainingCluster());
+            if (merges != null) {
+                //we need a guarantee of ordered items
+                LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
+                for (Merge m : getMerges()) {
+                    samples.add(m.mergedCluster()); //this should be unique
+                    if (!samples.contains(m.remainingCluster())) {
+                        //linked sample (on higher levels cluster is marked with lowest number in the cluster)
+                        samples.add(m.remainingCluster());
+                    }
                 }
+                //convert List<Integer> to int[]
+                mapping = Ints.toArray(samples);
+            } else {
+                throw new RuntimeException("empty merges!");
             }
-            //convert List<Integer> to int[]
-            mapping = Ints.toArray(samples);
-        } else {
-            throw new RuntimeException("empty merges!");
         }
 
         return mapping;
@@ -461,4 +492,5 @@ public class HClustResult implements HierarchicalResult {
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
     }
+
 }

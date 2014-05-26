@@ -41,11 +41,13 @@ public interface HierarchicalResult extends Serializable {
     public int[] getClusters(int terminalsNum);
 
     /**
-     * Set dendrogram tree cut-off, which determines number of clusters
+     * Set dendrogram tree cut-off, which determines number of clusters and
+     * returns clustering with given cut-off
      *
      * @param cutoff
+     * @return
      */
-    public void setCutoff(double cutoff);
+    public Clustering updateCutoff(double cutoff);
 
     /**
      * Dendrogram tree cut-off

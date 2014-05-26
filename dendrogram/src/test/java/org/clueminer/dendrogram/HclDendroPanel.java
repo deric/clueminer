@@ -25,7 +25,7 @@ public class HclDendroPanel extends DendroPanel {
 
     private static final long serialVersionUID = -5113017275195427868L;
     private Preferences params;
-    private boolean debug = true;
+    private boolean debug = false;
 
     public HclDendroPanel() {
         params = NbPreferences.forModule(HclDendroPanel.class);
@@ -91,23 +91,22 @@ public class HclDendroPanel extends DendroPanel {
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, getDataset(), params);
-        Dump.array(rowsResult.getMapping(), "row mapping: ");
+        //Dump.array(rowsResult.getMapping(), "row mapping: ");
 
         //   progress.setTitle("Clustering by columns");
-        params.putBoolean("calculate-rows", false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
+        //params.putBoolean("calculate-rows", false);
+        //HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
         // validate(columnsResult);
 
         //System.out.println("params: " + params.toString());
         //printResult(rowsResult);
-        if (debug) {
-            Matrix proximity = rowsResult.getProximityMatrix();
+        /*if (debug) {            Matrix proximity = rowsResult.getProximityMatrix();
             Matrix cprox = columnsResult.getProximityMatrix();
             System.out.println("row proximity matrix:");
             proximity.print(5, 2);
             System.out.println("columns proximity matrix:");
             cprox.print(5, 2);
-        }
+        }*/
         long time = System.currentTimeMillis() - start;
         System.out.println("clustering took " + time + " ms");
 
@@ -115,7 +114,7 @@ public class HclDendroPanel extends DendroPanel {
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
         //     System.out.println("columns tree cutoff = " + cutoff);
-        DendrogramData dendroData = new DendrogramData(getDataset(), input, rowsResult, columnsResult);
+        DendrogramData dendroData = new DendrogramData(getDataset(), input, rowsResult, null);
         viewer.setDataset(dendroData);
         String cutoffAlg = params.get("cutoff", "-- naive --");
         Clustering clust;
