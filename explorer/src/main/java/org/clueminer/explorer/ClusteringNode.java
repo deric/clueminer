@@ -5,6 +5,8 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -127,11 +129,13 @@ public class ClusteringNode extends AbstractNode {
                 Property sizeProp = new PropertySupport.Reflection(clustering, Integer.class, "size", null);
                 sizeProp.setName("Size");
                 set.put(sizeProp);
+
             } catch (NoSuchMethodException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
             sheet.put(set);
+            algorithmSheet(clustering, sheet);
             internalSheet(clustering, sheet);
             externalSheet(clustering, sheet);
         }
@@ -172,9 +176,36 @@ public class ClusteringNode extends AbstractNode {
                     return score.getValue();
                 }
             };
+            evalProp.setDisplayName(score.getKey());
             set.put(evalProp);
         }
 
         sheet.put(set);
+    }
+
+    private void algorithmSheet(Clustering<Cluster> clustering, Sheet sheet) {
+        try {
+            final Preferences params = clustering.getParams();
+            if (params == null) {
+                return;
+            }
+            Sheet.Set set = new Sheet.Set();
+            set.setName("Algorithm");
+            set.setDisplayName("Algorithm");
+            for (final String key : params.keys()) {
+                Property evalProp = new PropertySupport.ReadOnly<String>(key, String.class, "", "") {
+                    @Override
+                    public String getValue() throws IllegalAccessException, InvocationTargetException {
+                        return params.get(key, "");
+                    }
+                };
+                evalProp.setDisplayName(key);
+                set.put(evalProp);
+            }
+
+            sheet.put(set);
+        } catch (BackingStoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 }
