@@ -110,15 +110,15 @@ public class DynamicTreeData implements DendroTreeData {
     }
 
     public void printTree(OutputStreamWriter out) throws IOException {
-        DendroNode node = getRoot().getRight();
-        if (node != null) {
-            node.printTree(out, true, "");
-        }
-        out.write("tree");
-        out.write('\n');
-        node = getRoot().getLeft();
+        DendroNode node = getRoot().getLeft();
         if (node != null) {
             node.printTree(out, false, "");
+        }
+        out.write("root");
+        out.write('\n');
+        node = getRoot().getRight();
+        if (node != null) {
+            node.printTree(out, true, "");
         }
     }
 

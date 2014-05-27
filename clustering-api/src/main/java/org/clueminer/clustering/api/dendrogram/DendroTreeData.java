@@ -39,6 +39,7 @@ public interface DendroTreeData {
     void setRoot(DendroNode root);
 
     /**
+     * Left-most leaf
      *
      * @return first leaf
      */
