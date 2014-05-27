@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
@@ -62,9 +63,10 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         Matrix similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
         result.setSimilarityMatrix(similarityMatrix);
 
-        //result.setMapping(mapping);
-        System.out.println("queue size: " + pq.size());
-        result.setTreeData(computeLinkage(pq, similarityMatrix));
+        //System.out.println("queue size: " + pq.size());
+        DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
+        result.setMapping(createMapping(treeData.getRoot()));
+        result.setTreeData(treeData);
         return result;
     }
 
@@ -83,24 +85,21 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         HashSet<Integer> blacklist = new HashSet<Integer>();
         DendroNode node = null;
         Set<Integer> left, right;
-
         int nodeId = dataset.size();
-        System.out.println("linkage: " + linkage.getName());
         /**
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            System.out.println(curr.toString() + " remain: " + pq.size());
+            //System.out.println(curr.toString() + " remain: " + pq.size());
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++);
                 node.setLeft(nodes[curr.getRow()]);
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
 
-                System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
-
+                //System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
                 blacklist.add(curr.getRow());
                 blacklist.add(curr.getColumn());
 
@@ -133,6 +132,33 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroNode node = new DTreeNode(id);
         nodes[id] = node;
         return node;
+    }
+
+    /**
+     * In-order tree walk to mark default order of instances
+     *
+     * @param node
+     * @return
+     */
+    private int[] createMapping(DendroNode node) {
+        Stack<DendroNode> stack = new Stack<DendroNode>();
+        int i = 0;
+        int[] mapping = new int[dataset.size()];
+        while (!stack.isEmpty() || node != null) {
+            if (node != null) {
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.pop();
+                if (node.isLeaf()) {
+                    mapping[i++] = node.getInstance().getIndex();
+                    //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
+                }
+                node = node.getRight();
+            }
+
+        }
+        return mapping;
     }
 
     private void updateDistances(int mergedId, Set<Integer> mergedCluster, Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments, PriorityQueue<Element> pq) {
