@@ -62,6 +62,20 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
         Matrix similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
         result.setSimilarityMatrix(similarityMatrix);
 
+        //result.setMapping(mapping);
+        System.out.println("queue size: " + pq.size());
+        result.setTreeData(computeLinkage(pq, similarityMatrix));
+        return result;
+    }
+
+    /**
+     * Find most closest items and merges them into one cluster (subtree)
+     *
+     * @param pq
+     * @param similarityMatrix
+     * @return
+     */
+    private DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix) {
         //each instance will form a cluster
         Map<Integer, Set<Integer>> assignments = initialAssignment(dataset.size());
 
@@ -76,9 +90,9 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
          */
-        while (!pq.isEmpty()) {
+        while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size());
+            System.out.println(curr.toString() + " remain: " + pq.size());
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++);
                 node.setLeft(nodes[curr.getRow()]);
@@ -96,7 +110,7 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //merge together and add as a new cluster
                 left.addAll(right);
                 updateDistances(node.getId(), left, similarityMatrix, assignments, pq);
-                System.out.println("assign: " + assignments.toString());
+                //when assignment have size == 1, all clusters are merged into one
             }
         }
 
@@ -110,24 +124,9 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
             System.out.print(", right: " + nodes[i].getRight());
             System.out.print("\n");
         }
-
+        //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
-        node.setParent(null);
-        result.setTreeData(treeData);
-        //result.setMapping(mapping);
-
-        similarityMatrix.printLower(5, 2);
-
-        System.out.println("queue size: " + pq.size());
-
-        /*        DendrogramBuilder db = new DendrogramBuilder();
-         List<Merge> merges = db.buildDendrogram(result.getSimilarityMatrix(), linkage);
-         result.setMerges(merges);*/
-        return result;
-    }
-
-    private DendroTreeData computeLinkage() {
-        return null;
+        return treeData;
     }
 
     private DendroNode getOrCreate(int id) {

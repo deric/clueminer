@@ -87,9 +87,11 @@ public class HC1Test {
         Matrix input = new JMatrix(dataset.arrayCopy());
         input.print(3, 2);
         HierarchicalResult result = subject.hierarchy(input, dataset, NbPreferences.forModule(HC1Test.class));
+        Matrix similarityMatrix = result.getSimilarityMatrix();
+        assertNotNull(similarityMatrix);
+        assertEquals(similarityMatrix.rowsCount(), dataset.size());
 
-        assertNotNull(result.getSimilarityMatrix());
-        assertEquals(result.getSimilarityMatrix().rowsCount(), dataset.size());
+        similarityMatrix.printLower(5, 2);
 
         System.out.println("single linkage");
         result.getTreeData().print();
