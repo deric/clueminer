@@ -557,4 +557,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData {
         }
         return current;
     }
+
+    @Override
+    public void print() {
+        Dump.array(height, "height");
+        Dump.array(left, "left");
+        Dump.array(right, "right");
+    }
 }

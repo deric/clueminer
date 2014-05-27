@@ -54,16 +54,18 @@ public class DendrogramBuilder {
      * The resulting {@link edu.ucla.sspace.util.MultiMap} {@code clusterToRows}
      * contains the mapping from each cluster to the rows that are a part of it.
      *
-     * @param m a matrix whose rows are to be compared and agglomeratively
-     * merged into clusters
-     * @param linkage how two clusters should be compared for similarity when
-     * deciding which clusters to merge together
+     * @param m                  a matrix whose rows are to be compared and
+     *                           agglomeratively
+     *                           merged into clusters
+     * @param linkage            how two clusters should be compared for
+     *                           similarity when
+     *                           deciding which clusters to merge together
      * @param similarityFunction how to compare two rows of a matrix for
-     * similarity
+     *                           similarity
      *
      * @return a dendrogram corresponding to the merge steps for each cluster,
-     * where each row is initially assigned to its own cluster whose id is the
-     * same as its row's index
+     *         where each row is initially assigned to its own cluster whose id is the
+     *         same as its row's index
      */
     public DendrogramBuilder() {
         this.workQueue = WorkQueue.getWorkQueue();
@@ -85,14 +87,15 @@ public class DendrogramBuilder {
      * cluster.
      *
      * @param similarityMatrix a square matrix whose (i, j) values denote the
-     * similarity of row i to row j.
+     *                         similarity of row i to row j.
+     * @param linkage
      *
      * @return a dendrogram corresponding to the merge steps for each cluster,
-     * where each row is initially assigned to its own cluster whose id is the
-     * same as its row's index
+     *         where each row is initially assigned to its own cluster whose id is the
+     *         same as its row's index
      *
      * @throws IllegalArgumentException if {@code similarityMatrix} is not a
-     * square matrix
+     *                                  square matrix
      */
     public List<Merge> buildDendrogram(Matrix similarityMatrix, ClusterLinkage linkage) {
 
@@ -110,7 +113,7 @@ public class DendrogramBuilder {
         // Create the initial set of clusters where each row is originally in
         // its own cluster
         final Map<Integer, Set<Integer>> clusterAssignment = HierarchicalAgglomerativeClustering.generateInitialAssignment(rows);
-        System.out.println("assignments: "+clusterAssignment.toString());
+        System.out.println("assignments: " + clusterAssignment.toString());
         LOGGER.log(Level.INFO, "Calculating initial inter-cluster similarity using {0}", linkage);
         // Generate the initial set of cluster pairings based on the highest
         // similarity.  This mapping will be update as the number of clusters
@@ -121,7 +124,7 @@ public class DendrogramBuilder {
         // For each cluster, find the most similar cluster
         for (Integer clusterId : clusterAssignment.keySet()) {
             clusterSimilarities.put(clusterId, HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment, clusterId,
-                    linkage, similarityMatrix));
+                                                                                                   linkage, similarityMatrix));
         }
 
         LOGGER.finer("Assigning clusters");
@@ -166,7 +169,7 @@ public class DendrogramBuilder {
             Set<Integer> cluster2 = clusterAssignment.get(cluster2index);
 
             LOGGER.log(Level.FINER, "Merged cluster {0} with {1}, similarity {2}",
-                    new Object[]{cluster1index, cluster2index, highestSimilarity});
+                       new Object[]{cluster1index, cluster2index, highestSimilarity});
 
             // Update the cluster assignments, adding in elements from the
             // second cluster and remove all references to the second merged-in
@@ -186,9 +189,9 @@ public class DendrogramBuilder {
 
             // Recalculate the inter-cluster similarity of a cluster in two
             // cases:
-            // 
+            //
             // 1) a cluster that paired with either of these two (i.e. was most
-            // similar to one of them before the merge).  
+            // similar to one of them before the merge).
             //
             // 2) the most similar cluster to the newly merged cluster
             for (Map.Entry<Integer, Pairing> e : clusterSimilarities.entrySet()) {
@@ -215,7 +218,7 @@ public class DendrogramBuilder {
                         || p.pairedIndex == cluster2index) {
                     // Reassign with the new most-similar
                     e.setValue(HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment, clusterId,
-                            linkage, similarityMatrix));
+                                                                                   linkage, similarityMatrix));
                 }
             }
 
@@ -242,8 +245,8 @@ public class DendrogramBuilder {
         // similarity.  This mapping will be update as the number of clusters
         // are reduced, where merging a cluster will causes all the pairings
         // pointing to it constinuents recalculated.
-        final Map<Integer, Pairing> clusterSimilarities =
-                new ConcurrentHashMap<Integer, Pairing>(clusterAssignment.size());
+        final Map<Integer, Pairing> clusterSimilarities
+                = new ConcurrentHashMap<Integer, Pairing>(clusterAssignment.size());
 
         // For each cluster, find the most similar cluster.  Use the current
         // thread as the task key so any other thread executing this method
@@ -255,8 +258,8 @@ public class DendrogramBuilder {
                 @Override
                 public void run() {
                     clusterSimilarities.put(clustId,
-                            HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment, clustId,
-                            linkage, similarityMatrix));
+                                            HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment, clustId,
+                                                                                                linkage, similarityMatrix));
                 }
             });
         }
@@ -265,13 +268,11 @@ public class DendrogramBuilder {
         LOGGER.finer("Assigning clusters");
         List<Merge> merges = new ArrayList<Merge>(rows - 1);
 
-
         // Perform rows-1 merges to merge all elements
         for (int mergeIter = 0; mergeIter < rows - 1; ++mergeIter) {
             LOGGER.log(Level.FINER, "Computing dendogram merge {0}", mergeIter);
             System.out.println("Computing dendogram merge "
                     + mergeIter + "/" + (rows - 1));
-
 
             // Find the two clusters that have the highest similarity
             int cluster1index = 0;
@@ -308,9 +309,9 @@ public class DendrogramBuilder {
             Set<Integer> cluster2 = clusterAssignment.get(cluster2index);
 
             LOGGER.log(Level.FINER,
-                    "Merged cluster {0} with {1}, similarity {2}",
-                    new Object[]{cluster1index, cluster2index,
-                highestSimilarity});
+                       "Merged cluster {0} with {1}, similarity {2}",
+                       new Object[]{cluster1index, cluster2index,
+                           highestSimilarity});
 
             // Update the cluster assignments, adding in elements from the
             // second cluster and remove all references to the second merged-in
@@ -326,9 +327,9 @@ public class DendrogramBuilder {
 
             // Recalculate the inter-cluster similarity of a cluster in two
             // cases:
-            // 
+            //
             // 1) a cluster that paired with either of these two (i.e. was most
-            // similar to one of them before the merge).  
+            // similar to one of them before the merge).
             //
             // 2) the most similar cluster to the newly merged cluster
             final ConcurrentNavigableMap<Double, Integer> mostSimilarMap = new ConcurrentSkipListMap<Double, Integer>();
@@ -359,9 +360,8 @@ public class DendrogramBuilder {
 
                         // First, calculate the similarity between this
                         // cluster and the newly merged cluster
-                        double simToNewCluster =
-                                linkage.similarity(similarityMatrix, cluster1,
-                                clusterAssignment.get(clusterId));
+                        double simToNewCluster = linkage.similarity(similarityMatrix, cluster1,
+                                                                    clusterAssignment.get(clusterId));
 
                         // If this cluster is now the most similar to
                         // the newly-merged cluster update its mapping
@@ -377,13 +377,13 @@ public class DendrogramBuilder {
                                 || p.pairedIndex == c2index) {
                             // Reassign with the new most-similar
                             e.setValue(HierarchicalAgglomerativeClustering.findMostSimilar(clusterAssignment,
-                                    clusterId, linkage, similarityMatrix));
+                                                                                           clusterId, linkage, similarityMatrix));
                         }
 
                         // Once all of the cluster for this thread has been
                         // processed, update the similarity map.
                         mostSimilarMap.put(mostSimilarToMerged,
-                                mostSimilarToMergedId);
+                                           mostSimilarToMergedId);
                     }
                 });
             }
@@ -400,8 +400,8 @@ public class DendrogramBuilder {
 
             // Update the new most similar to the newly-merged cluster
             clusterSimilarities.put(cluster1index,
-                    new Pairing(highest.getKey(),
-                    highest.getValue()));
+                                    new Pairing(highest.getKey(),
+                                                highest.getValue()));
         }
 
         return merges;

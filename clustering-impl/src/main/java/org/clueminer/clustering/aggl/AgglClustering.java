@@ -85,7 +85,7 @@ public class AgglClustering {
                     similarityMatrix.set(i, j, distance);
                     //System.out.println("#" + n + " (" + i + ", " + j + ") = " + distance);
                     // when printing lower part of matrix this indexes should match
-                    queue.add(new Element(distance, j, i));
+                    queue.add(new Element(distance, i, j));
                     ph.progress(n++);
                 }
             }

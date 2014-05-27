@@ -11,37 +11,42 @@ public interface DendroTreeData {
      *
      * @return number of tree leaves
      */
-    public int numLeaves();
+    int numLeaves();
 
     /**
      * Total number of tree nodes including leaves.
      *
      * @return
      */
-    public int numNodes();
+    int numNodes();
 
     /**
      *
      * @return number of levels in tree
      */
-    public int treeLevels();
+    int treeLevels();
 
     /**
      *
      * @return tree node
      */
-    public DendroNode getRoot();
+    DendroNode getRoot();
 
     /**
      *
      * @param root
      */
-    public void setRoot(DendroNode root);
+    void setRoot(DendroNode root);
 
     /**
      *
      * @return first leaf
      */
-    public DendroNode first();
+    DendroNode first();
+
+    /**
+     * Print tree to stdout
+     */
+    void print();
 
 }

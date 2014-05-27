@@ -5,13 +5,16 @@ import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
+
 /**
- * It is a measure of how faithfully the tree represents the dissimilarities among observations
+ * It is a measure of how faithfully the tree represents the dissimilarities
+ * among observations
+ *
  * @author Tomas Barton
  */
 public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
 
-    private static String name = "Cophenetic Correlation";
+    private static final String name = "Cophenetic Correlation";
 
     @Override
     public String getName() {
@@ -27,7 +30,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
     @Override
     public double score(HierarchicalResult result) {
         Matrix proximity = result.getProximityMatrix();
-        HCLResult r = (HCLResult) result; 
+        HCLResult r = (HCLResult) result;
         double[][] copheneticMatrix = getCopheneticMatrix(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
         return copheneticCoefficient(proximity.getArray(), copheneticMatrix);
     }

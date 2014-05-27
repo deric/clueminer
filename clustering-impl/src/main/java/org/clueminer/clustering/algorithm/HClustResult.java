@@ -27,7 +27,6 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 
 /**
  *
@@ -386,6 +385,7 @@ public class HClustResult implements HierarchicalResult {
     public void setMerges(List<Merge> merges) {
         this.merges = merges;
         updateMapping();
+        constructTree();
     }
 
     @Override
@@ -412,7 +412,6 @@ public class HClustResult implements HierarchicalResult {
             throw new RuntimeException("merges empty!");
         }
         logger.log(Level.INFO, "constructing tree, merge size:{0}", merges.size());
-        Dump.array(mapping, "mapping");
         treeData = new DynamicTreeData();
 
         nodes = new DendroNode[merges.size() + 1];
@@ -440,7 +439,6 @@ public class HClustResult implements HierarchicalResult {
         numberLeaves(current);
         updatePositions(current);
 
-//        BTreePrinter.printNode(prev);
         treeData.setRoot(current);
         logger.log(Level.INFO, "max tree height: {0}", current.getHeight());
     }

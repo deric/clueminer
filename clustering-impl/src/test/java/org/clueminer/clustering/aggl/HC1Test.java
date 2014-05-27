@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.io.IOException;
-import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -26,6 +25,7 @@ public class HC1Test {
 
     private static final HC1 subject = new HC1();
     private static final CommonFixture fixture = new CommonFixture();
+
     public HC1Test() {
     }
 
@@ -54,7 +54,6 @@ public class HC1Test {
         assertNotNull(subject.getName());
     }
 
-
     /**
      * Test of cluster method, of class HC1.
      */
@@ -76,18 +75,24 @@ public class HC1Test {
     public void testHierarchy_3args() throws IOException {
         CsvLoader loader = new CsvLoader();
         Dataset<? extends Instance> dataset = new ArrayDataset(17, 4);
-        loader.addNameAttr(4);
-        loader.addMetaAttr(4);
+
+        loader.setClassIndex(4);
+        //loader.addMetaAttr(4);
+        ///loader.setSkipIndex(skip);
+        //loader.setSkipHeader(true);
         loader.setSeparator(' ');
         loader.load(fixture.schoolData(), dataset);
         assertEquals(17, dataset.size());
-
+        System.out.println("attr cnt: " + dataset.attributeCount());
         Matrix input = new JMatrix(dataset.arrayCopy());
+        input.print(3, 2);
         HierarchicalResult result = subject.hierarchy(input, dataset, NbPreferences.forModule(HC1Test.class));
 
         assertNotNull(result.getSimilarityMatrix());
         assertEquals(result.getSimilarityMatrix().rowsCount(), dataset.size());
 
+        System.out.println("single linkage");
+        result.getTreeData().print();
     }
 
     /**

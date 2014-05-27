@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -121,5 +122,16 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    @Override
+    public void print() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTree(out);
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
 
 }

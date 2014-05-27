@@ -174,15 +174,17 @@ public class DTreeNode implements DendroNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[ ").append("#").append(getId()).append(getPosition()).append(", ").append(level).append(" ]");
+        sb.append("[ ").append("#").append(getId()).append(", ")
+                .append(String.format("%.2f", getHeight()))
+                .append(", ").append(level).append(" ]");
         return sb.toString();
     }
 
     protected void printNodeValue(OutputStreamWriter out) throws IOException {
         if (instance == null) {
-            out.write("node: " + getId());
+            out.write("#" + getId());
         } else {
-            out.write(instance.getFullName());
+            out.write(instance.getName());
         }
         out.write('\n');
     }
