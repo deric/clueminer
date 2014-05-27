@@ -354,25 +354,24 @@ public class HClustResult implements HierarchicalResult {
         mapping[pos] = idx;
     }
 
+    private void updateMapping() {
+        //we need a guarantee of ordered items
+        LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
+        for (Merge m : getMerges()) {
+            samples.add(m.mergedCluster()); //this should be unique
+            if (!samples.contains(m.remainingCluster())) {
+                //linked sample (on higher levels cluster is marked with lowest number in the cluster)
+                samples.add(m.remainingCluster());
+            }
+        }
+        //convert List<Integer> to int[]
+        mapping = Ints.toArray(samples);
+    }
+
     @Override
     public int[] getMapping() {
-        if (mapping == null) {
-
-            if (merges != null) {
-                //we need a guarantee of ordered items
-                LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
-                for (Merge m : getMerges()) {
-                    samples.add(m.mergedCluster()); //this should be unique
-                    if (!samples.contains(m.remainingCluster())) {
-                        //linked sample (on higher levels cluster is marked with lowest number in the cluster)
-                        samples.add(m.remainingCluster());
-                    }
-                }
-                //convert List<Integer> to int[]
-                mapping = Ints.toArray(samples);
-            } else {
-                throw new RuntimeException("empty merges!");
-            }
+        if (mapping == null && merges != null) {
+            updateMapping();
         }
 
         return mapping;
@@ -386,6 +385,7 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public void setMerges(List<Merge> merges) {
         this.merges = merges;
+        updateMapping();
     }
 
     @Override
