@@ -24,7 +24,7 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
 
     @Override
     public String getName() {
-        if (name == null) {
+        if (name == null && classValue != null) {
             return classValue.toString();
         }
         return name;
