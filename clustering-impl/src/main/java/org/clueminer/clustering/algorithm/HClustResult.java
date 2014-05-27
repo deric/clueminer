@@ -489,6 +489,7 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
+        updatePositions(treeData.getRoot());
     }
 
 }

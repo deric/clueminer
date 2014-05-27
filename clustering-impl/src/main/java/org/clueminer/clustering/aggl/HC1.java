@@ -151,6 +151,7 @@ public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClu
             } else {
                 node = stack.pop();
                 if (node.isLeaf()) {
+                    node.setPosition(i);
                     mapping[i++] = node.getInstance().getIndex();
                     //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
                 }
