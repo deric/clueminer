@@ -91,7 +91,7 @@ public class HclDendroPanel extends DendroPanel {
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, getDataset(), params);
-        //Dump.array(rowsResult.getMapping(), "row mapping: ");
+        Dump.array(rowsResult.getMapping(), "row mapping: ");
 
         //   progress.setTitle("Clustering by columns");
         //params.putBoolean("calculate-rows", false);

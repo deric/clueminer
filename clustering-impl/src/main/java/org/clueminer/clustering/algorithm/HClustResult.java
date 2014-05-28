@@ -388,10 +388,17 @@ public class HClustResult implements HierarchicalResult {
         constructTree();
     }
 
+    /**
+     * During clustering we usually change order of rows, this should translate
+     * indexes of rows to instance indexes
+     *
+     * @param index row index, starting from 0
+     * @return
+     */
     @Override
     public Instance getInstance(int index) {
         if (dataset != null) {
-            return dataset.instance(index);
+            return dataset.instance(getMappedIndex(index));
         } else {
             throw new RuntimeException("dataset is null");
         }

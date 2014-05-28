@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

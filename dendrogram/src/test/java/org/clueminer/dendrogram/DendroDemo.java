@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
