@@ -25,13 +25,16 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Hierarchical agglomerative clustering
  *
+ * @see
+ * http://nlp.stanford.edu/IR-book/html/htmledition/time-complexity-of-hac-1.html
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HC1 extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
+public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
-    private final static String name = "HC1";
+    private final static String name = "HAC";
     private DendroNode nodes[];
     private Dataset<? extends Instance> dataset;
     private ClusterLinkage linkage;

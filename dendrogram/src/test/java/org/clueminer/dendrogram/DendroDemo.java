@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.aggl.HC1;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -42,7 +42,7 @@ public class DendroDemo extends JFrame {
             @Override
             public void run() {
                 dendroPanel.setDataset(data);
-                dendroPanel.setAlgorithm(new HC1());
+                dendroPanel.setAlgorithm(new HAC());
                 //dendroPanel.setAlgorithm(new HCL());
                 //dendroPanel.setAlgorithm(new HierarchicalAgglomerativeClustering());
                 dendroPanel.execute();

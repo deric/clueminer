@@ -21,12 +21,12 @@ import org.openide.util.NbPreferences;
  *
  * @author deric
  */
-public class HC1Test {
+public class HACTest {
 
-    private static final HC1 subject = new HC1();
+    private static final HAC subject = new HAC();
     private static final CommonFixture fixture = new CommonFixture();
 
-    public HC1Test() {
+    public HACTest() {
     }
 
     @BeforeClass
@@ -86,7 +86,7 @@ public class HC1Test {
         System.out.println("attr cnt: " + dataset.attributeCount());
         Matrix input = new JMatrix(dataset.arrayCopy());
         input.print(3, 2);
-        HierarchicalResult result = subject.hierarchy(input, dataset, NbPreferences.forModule(HC1Test.class));
+        HierarchicalResult result = subject.hierarchy(input, dataset, NbPreferences.forModule(HACTest.class));
         Matrix similarityMatrix = result.getSimilarityMatrix();
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.size());
