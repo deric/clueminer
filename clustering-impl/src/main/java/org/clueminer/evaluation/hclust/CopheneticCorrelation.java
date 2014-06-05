@@ -1,6 +1,5 @@
 package org.clueminer.evaluation.hclust;
 
-import java.util.HashSet;
 import java.util.Stack;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -9,7 +8,6 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
-import org.clueminer.utils.Dump;
 
 /**
  * It is a measure of how faithfully the tree represents the dissimilarities
@@ -25,8 +23,6 @@ import org.clueminer.utils.Dump;
 public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
 
     private static final String name = "Cophenetic Correlation";
-    int expCnt = 0;
-    int assign = 0;
 
     @Override
     public String getName() {
@@ -70,7 +66,6 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
         int idx;
         int left, right;
         double height;
-        expCnt = 0;
         double[][] cophenetic = new double[m][n];
         //System.out.println("matrix " + m + " x " + n);
         //System.out.println("tree level " + tree.treeLevels());
@@ -83,73 +78,37 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
             //System.out.println("idx= " + idx + ", l=" + left + ", r=" + right + ", h=" + height);
             countDistance(tree, cophenetic, left, right, height);
         }
-        Dump.matrix(cophenetic, "cophenetic", 2);
-        System.out.println("expanded " + expCnt + " nodes");
         return cophenetic;
     }
 
+    /**
+     * Recursive version of counting distances in dendrogram tree (probably most
+     * efficient)
+     *
+     * @param treeData
+     * @param rowsCount
+     * @param columnsCount
+     * @return
+     */
     public double[][] getCopheneticMatrix(DendroTreeData treeData, int rowsCount, int columnsCount) {
         Matrix treeMatrix = new SymmetricMatrix(rowsCount, columnsCount);
-        expCnt = 0;
-        DendroNode leave;
-        treeData.print();
-        HashSet<DendroNode> visited;
-        for (int i = 0; i < rowsCount - 1; i++) {
-            visited = new HashSet<DendroNode>();
-            for (int j = 0; j < i; j++) {
-                visited.add(treeData.getLeaf(i));
-            }
-            leave = treeData.getLeaf(i);
-            treeDistance(leave, treeMatrix, visited);
+        DendroNode node;
+        Stack<DendroNode> stack = new Stack<DendroNode>();
+        stack.push(treeData.getRoot());
+        DendroNode left, right;
+        while (!stack.isEmpty()) {
+            node = stack.pop();
+            left = node.getLeft();
+            right = node.getRight();
+            countDistance(treeMatrix, left, right, node.getHeight());
+            enqueue(left, stack);
+            enqueue(right, stack);
         }
-
-        treeMatrix.printLower(5, 2);
-        System.out.println("expanded " + expCnt + " nodes");
-        System.out.println("assigned " + assign + " nodes");
         return treeMatrix.getArray();
     }
 
-    /**
-     *
-     * @param from
-     * @param treeMatrix
-     */
-    private void treeDistance(DendroNode from, Matrix treeMatrix, HashSet<DendroNode> visited) {
-        DendroNode node;
-        Stack<DendroNode> stack = new Stack<DendroNode>();
-        stack.push(from);
-
-        int i, j;
-        double maxHeight = Double.MIN_VALUE;
-        while (!stack.isEmpty()) {
-            node = stack.pop();
-            expCnt++;
-            visited.add(node);
-            if (node.isLeaf()) {
-                System.out.println("node: " + node.toString() + " - " + node.getInstance().getName());
-                enqueue(node.getParent(), stack, visited);
-                if (node != from) {
-                    i = from.getInstance().getIndex();
-                    j = node.getInstance().getIndex();
-                    System.out.println("(" + i + ", " + j + ") = " + maxHeight);
-                    assign++;
-                    treeMatrix.set(i, j, maxHeight);
-                }
-            } else {
-                //check current tree distance
-                if (node.getHeight() > maxHeight) {
-                    maxHeight = node.getHeight();
-                }
-                enqueue(node.getParent(), stack, visited);
-                enqueue(node.getRight(), stack, visited);
-                enqueue(node.getLeft(), stack, visited);
-            }
-            System.out.println("stack (" + stack.size() + "): " + stack.toString());
-        }
-    }
-
-    private void enqueue(DendroNode node, Stack<DendroNode> stack, HashSet<DendroNode> visited) {
-        if (node != null && !visited.contains(node)) {
+    private void enqueue(DendroNode node, Stack<DendroNode> stack) {
+        if (node != null && !node.isLeaf()) {
             stack.push(node);
         }
     }
@@ -166,7 +125,6 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @param height
      */
     private void countDistance(TreeDataImpl tree, double[][] cophenetic, int left, int right, double height) {
-        expCnt++;
         //System.out.println("left= " + left + ", height= " + height + ", right= " + right);
         if (!tree.isLeaf(left)) {
             //set same level for its children
@@ -184,6 +142,35 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
         //symetric matrix
         cophenetic[left][right] = height;
         cophenetic[right][left] = height;
+    }
+
+    /**
+     * Count distance between two given nodes, if left and right are directly
+     * leaves, saves into matrix Cophenetic their distance, i.e. height of their
+     * parent node
+     *
+     * We have to start from root node to make it work.
+     *
+     * @param tree
+     * @param matrix
+     * @param left
+     * @param right
+     * @param height
+     */
+    private void countDistance(Matrix matrix, DendroNode left, DendroNode right, double height) {
+        if (!left.isLeaf()) {
+            countDistance(matrix, left.getLeft(), right, height);
+            countDistance(matrix, left.getRight(), right, height);
+            return;
+        }
+
+        if (!right.isLeaf()) {
+            countDistance(matrix, left, right.getLeft(), height);
+            countDistance(matrix, left, right.getRight(), height);
+            return;
+        }
+
+        matrix.set(left.getInstance().getIndex(), right.getInstance().getIndex(), height);
     }
 
     /**
