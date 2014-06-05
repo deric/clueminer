@@ -24,8 +24,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
 
     private static final long serialVersionUID = 7942079385178130303L;
-    private static String name = "Median Linkage";
-    
+    public static final String name = "Median Linkage";
+
     public MedianLinkage(){
         super(new EuclideanDistance());
     }

@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
 
     private static final long serialVersionUID = -852898753773273748L;
-    private static String name = "Complete Linkage";
+    public static final String name = "Complete Linkage";
 
     public CompleteLinkage() {
         super(new EuclideanDistance());

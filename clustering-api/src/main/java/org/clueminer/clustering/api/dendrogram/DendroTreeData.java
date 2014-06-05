@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api.dendrogram;
 
 /**
+ * Dendrogram tree structure
  *
  * @author Tomas Barton
  */
@@ -49,5 +50,42 @@ public interface DendroTreeData {
      * Print tree to stdout
      */
     void print();
+
+    /**
+     * Set mapping to instances indexes
+     *
+     * @param mapping
+     */
+    void setMapping(int[] mapping);
+
+    /**
+     * Mapped index
+     *
+     * @param i
+     * @return instance index
+     */
+    int getMappedId(int i);
+
+    /**
+     *
+     * @param i th leaf
+     * @return
+     */
+    DendroNode getLeaf(int i);
+
+    /**
+     * Set leaf at given position
+     *
+     * @param i
+     * @param node
+     */
+    void setLeaf(int i, DendroNode node);
+
+    /**
+     * Set array of leaves nodes
+     *
+     * @param leaves
+     */
+    void setLeaves(DendroNode[] leaves);
 
 }

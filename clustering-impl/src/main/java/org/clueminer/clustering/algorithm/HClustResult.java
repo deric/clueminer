@@ -45,7 +45,6 @@ public class HClustResult implements HierarchicalResult {
     private double cutoff = Double.NaN;
     private Dataset<? extends Instance> dataset;
     private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
-    private DendroNode[] nodes;
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy = new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault());
@@ -421,7 +420,7 @@ public class HClustResult implements HierarchicalResult {
         logger.log(Level.INFO, "constructing tree, merge size:{0}", merges.size());
         treeData = new DynamicTreeData();
 
-        nodes = new DendroNode[merges.size() + 1];
+        DendroNode[] nodes = new DendroNode[merges.size() + 1];
 
         DendroNode current = null;
         DendroNode prev = null;
@@ -447,6 +446,7 @@ public class HClustResult implements HierarchicalResult {
         updatePositions(current);
 
         treeData.setRoot(current);
+        treeData.setLeaves(nodes);
         logger.log(Level.INFO, "max tree height: {0}", current.getHeight());
     }
 
@@ -486,11 +486,12 @@ public class HClustResult implements HierarchicalResult {
     }
 
     private DendroNode getNode(int idx) {
-        if (nodes[idx] == null) {
-            nodes[idx] = new DTreeNode();
-            nodes[idx].setId(idx);
+        DendroNode node = treeData.getLeaf(idx);
+        if (node == null) {
+            node = new DTreeNode();
+            node.setId(idx);
         }
-        return nodes[idx];
+        return node;
     }
 
     @Override

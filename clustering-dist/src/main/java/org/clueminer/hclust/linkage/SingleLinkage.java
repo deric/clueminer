@@ -22,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SingleLinkage extends AbstractLinkage {
 
     private static final long serialVersionUID = 6661476787499047883L;
-    private static String name = "Single Linkage";
+    public static final String name = "Single Linkage";
 
     public SingleLinkage() {
         super(new EuclideanDistance());

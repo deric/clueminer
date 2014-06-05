@@ -7,12 +7,15 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.openide.util.Exceptions;
 
 /**
+ * Represents a tree structure
  *
  * @author Tomas Barton
  */
 public class DynamicTreeData implements DendroTreeData {
 
     private DendroNode root;
+    private int[] mapping;
+    private DendroNode[] leaves;
 
     public DynamicTreeData() {
 
@@ -131,6 +134,47 @@ public class DynamicTreeData implements DendroTreeData {
             out.close();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void setMapping(int[] mapping) {
+        this.mapping = mapping;
+    }
+
+    @Override
+    public DendroNode getLeaf(int i) {
+        if (leaves != null && i < leaves.length) {
+            return leaves[i];
+        }
+        return null;
+    }
+
+    @Override
+    public void setLeaves(DendroNode[] leaves) {
+        this.leaves = leaves;
+    }
+
+    @Override
+    public int getMappedId(int i) {
+        if (mapping != null && i < mapping.length) {
+            return mapping[i];
+        }
+        return -1;
+    }
+
+    /**
+     * @TODO maybe implement node array reallocation (normally we know how many
+     * nodes we have)
+     * @param i
+     * @param node
+     */
+    @Override
+    public void setLeaf(int i, DendroNode node) {
+        if (leaves != null) {
+            leaves[i] = node;
+        } else {
+            throw new RuntimeException("leaves mapping was not initialized");
         }
     }
 

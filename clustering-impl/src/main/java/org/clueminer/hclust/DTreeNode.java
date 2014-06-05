@@ -181,10 +181,9 @@ public class DTreeNode implements DendroNode {
     }
 
     protected void printNodeValue(OutputStreamWriter out) throws IOException {
-        if (instance == null) {
-            out.write("#" + getId());
-        } else {
-            out.write(instance.getName());
+        out.write("#" + getId());
+        if (instance != null) {
+            out.write(" - " + instance.getName());
         }
         out.write('\n');
     }

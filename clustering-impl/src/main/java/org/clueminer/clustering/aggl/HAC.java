@@ -69,7 +69,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
         //System.out.println("queue size: " + pq.size());
         DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
-        result.setMapping(createMapping(treeData.getRoot()));
+        result.setMapping(createMapping(treeData));
         result.setTreeData(treeData);
         result.setProximityMatrix(similarityMatrix);
         return result;
@@ -145,10 +145,12 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @param node
      * @return
      */
-    private int[] createMapping(DendroNode node) {
+    private int[] createMapping(DendroTreeData treeData) {
+        DendroNode node = treeData.getRoot();
         Stack<DendroNode> stack = new Stack<DendroNode>();
         int i = 0;
         int[] mapping = new int[dataset.size()];
+        DendroNode[] leaves = new DendroNode[dataset.size()];
         while (!stack.isEmpty() || node != null) {
             if (node != null) {
                 stack.push(node);
@@ -157,13 +159,17 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 node = stack.pop();
                 if (node.isLeaf()) {
                     node.setPosition(i);
-                    mapping[i++] = node.getInstance().getIndex();
+                    leaves[i] = node;
+                    mapping[i] = node.getInstance().getIndex();
+                    i++;
                     //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
                 }
                 node = node.getRight();
             }
 
         }
+        treeData.setLeaves(leaves);
+        treeData.setMapping(mapping);
         return mapping;
     }
 
