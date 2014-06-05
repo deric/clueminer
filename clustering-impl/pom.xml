@@ -146,6 +146,12 @@
             <artifactId>clustering-dist</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-core-startup</artifactId>
+            <version>RELEASE74</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
