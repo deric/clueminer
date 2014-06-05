@@ -95,6 +95,11 @@ public class HACTest {
 
         System.out.println("single linkage");
         result.getTreeData().print();
+        Matrix proximity = result.getProximityMatrix();
+        assertNotNull(proximity);
+        assertEquals(dataset.size(), proximity.rowsCount());
+        assertEquals(dataset.size(), proximity.columnsCount());
+
     }
 
     /**

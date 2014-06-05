@@ -71,6 +71,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
         result.setMapping(createMapping(treeData.getRoot()));
         result.setTreeData(treeData);
+        result.setProximityMatrix(similarityMatrix);
         return result;
     }
 
