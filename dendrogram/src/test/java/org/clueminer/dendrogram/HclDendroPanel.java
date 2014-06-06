@@ -94,8 +94,8 @@ public class HclDendroPanel extends DendroPanel {
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
         //   progress.setTitle("Clustering by columns");
-        //params.putBoolean("calculate-rows", false);
-        //HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
+        params.putBoolean("calculate-rows", false);
+        HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
         // validate(columnsResult);
 
         //System.out.println("params: " + params.toString());
@@ -114,7 +114,7 @@ public class HclDendroPanel extends DendroPanel {
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
         //     System.out.println("columns tree cutoff = " + cutoff);
-        DendrogramData dendroData = new DendrogramData(getDataset(), input, rowsResult, null);
+        DendrogramData dendroData = new DendrogramData(getDataset(), input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);
         String cutoffAlg = params.get("cutoff", "-- naive --");
         Clustering clust;

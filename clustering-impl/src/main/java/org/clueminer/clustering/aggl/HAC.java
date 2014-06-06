@@ -118,16 +118,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             }
         }
 
-        for (int i = 0; i < nodes.length; i++) {
-            System.out.print(i + ": " + nodes[i].getId());
-            if (nodes[i].isLeaf()) {
-                System.out.print(" " + nodes[i].getInstance().getName() + " parent: " + nodes[i].getParent().getId());
-            }
-            System.out.print(", parent: " + nodes[i].getParent());
-            System.out.print(", left: " + nodes[i].getLeft());
-            System.out.print(", right: " + nodes[i].getRight());
-            System.out.print("\n");
-        }
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
         return treeData;
