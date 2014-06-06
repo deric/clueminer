@@ -2,6 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.util.List;
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
@@ -95,6 +96,7 @@ public class HclDendroPanel extends DendroPanel {
 
         //   progress.setTitle("Clustering by columns");
         params.putBoolean("calculate-rows", false);
+        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
         // validate(columnsResult);
 
