@@ -19,6 +19,7 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
@@ -39,6 +40,8 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     private DendroNode nodes[];
     private Dataset<? extends Instance> dataset;
     private ClusterLinkage linkage;
+    private AgglParams params;
+
     /**
      * number of items to cluster
      */
@@ -63,11 +66,11 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref) {
         this.dataset = dataset;
         HierarchicalResult result = new HClustResult(dataset);
-        AgglParams param = new AgglParams(pref);
+        params = new AgglParams(pref);
         Matrix similarityMatrix;
-        distanceMeasure = param.getDistanceMeasure();
-        linkage = param.getLinkage();
-        if (param.clusterRows()) {
+        distanceMeasure = params.getDistanceMeasure();
+        linkage = params.getLinkage();
+        if (params.clusterRows()) {
             n = dataset.size();
         } else {
             //columns clustering
@@ -76,7 +79,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         int items = (n - 1) * n / 2;
         PriorityQueue<Element> pq = new PriorityQueue<Element>(items);
 
-        if (param.clusterRows()) {
+        if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
         } else {
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
@@ -168,7 +171,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 if (node.isLeaf()) {
                     node.setPosition(i);
                     leaves[i] = node;
-                    mapping[i] = node.getInstance().getIndex();
+                    mapping[i] = node.getIndex();
                     i++;
                     //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
                 }
@@ -208,8 +211,12 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             cluster.add(i);
             clusterAssignment.put(i, cluster);
             //each cluster is also a dendrogram leaf
-            nodes[i] = new DTreeNode(i);
-            nodes[i].setInstance(dataset.get(i));
+            if (params.clusterRows()) {
+                nodes[i] = new DLeaf(i, dataset.get(i));
+            } else {
+                nodes[i] = new DLeaf(i, dataset.getAttribute(i));
+            }
+
         }
         return clusterAssignment;
     }

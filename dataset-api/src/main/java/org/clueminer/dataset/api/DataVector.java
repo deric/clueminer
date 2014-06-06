@@ -9,14 +9,28 @@ import java.util.Iterator;
 public interface DataVector {
 
     /**
+     * Human readable name, if any
+     *
+     * @return string identification
+     */
+    String getName();
+
+    /**
      *
      * @return length of the vector
      */
-    public int size();
+    int size();
 
     /**
      *
      * @return iterator over all elements
      */
-    public Iterator<? extends Object> values();
+    Iterator<? extends Object> values();
+
+    /**
+     * Id of row/column
+     *
+     * @return non-negative index starting from 0
+     */
+    int getIndex();
 }

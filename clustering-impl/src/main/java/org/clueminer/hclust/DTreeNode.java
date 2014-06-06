@@ -3,7 +3,6 @@ package org.clueminer.hclust;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
-import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -19,7 +18,6 @@ public class DTreeNode implements DendroNode {
     private double position;
     private int level = -1;
     private int id;
-    private Instance instance;
 
     public DTreeNode() {
     }
@@ -162,16 +160,6 @@ public class DTreeNode implements DendroNode {
     }
 
     @Override
-    public Instance getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void setInstance(Instance instance) {
-        this.instance = instance;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[ ").append("#").append(getId()).append(", ")
@@ -182,11 +170,9 @@ public class DTreeNode implements DendroNode {
 
     protected void printNodeValue(OutputStreamWriter out) throws IOException {
         out.write("#" + getId());
-        if (instance != null) {
-            out.write(" - " + instance.getName());
-        }
         out.write('\n');
     }
+
 
     // use string and not stringbuffer on purpose as we need to change the indent at each recursion
     @Override
@@ -206,6 +192,16 @@ public class DTreeNode implements DendroNode {
         if (right != null) {
             right.printTree(out, true, indent + (isRight ? "        " : " |      "));
         }
+    }
+
+    /**
+     * Valid only for leaves
+     *
+     * @return
+     */
+    @Override
+    public int getIndex() {
+        return -1;
     }
 
 }

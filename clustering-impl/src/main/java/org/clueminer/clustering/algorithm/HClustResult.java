@@ -18,6 +18,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -213,7 +214,7 @@ public class HClustResult implements HierarchicalResult {
 
     private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
         if (node.isLeaf()) {
-            c.add(node.getInstance());
+            c.add(((DendroLeaf) node).getData());
             assign[node.getId()] = c.getClusterId();
         } else {
             subtreeToCluster(node.getLeft(), c, assign);

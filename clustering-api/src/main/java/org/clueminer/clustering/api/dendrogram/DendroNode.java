@@ -2,7 +2,6 @@ package org.clueminer.clustering.api.dendrogram;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -97,13 +96,11 @@ public interface DendroNode {
     int getId();
 
     /**
-     * Corresponding instance from the dataset (valid only if node is a leaf)
+     * Mapping index, used for mapping to Instances or Attributes
      *
-     * @return Instance
+     * @return
      */
-    Instance getInstance();
-
-    void setInstance(Instance instance);
+    int getIndex();
 
     /**
      * printing helper

@@ -170,7 +170,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
             return;
         }
 
-        matrix.set(left.getInstance().getIndex(), right.getInstance().getIndex(), height);
+        matrix.set(left.getIndex(), right.getIndex(), height);
     }
 
     /**
