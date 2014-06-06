@@ -84,4 +84,24 @@ public class DgBottomTree extends DgTree {
         //nothing to do
     }
 
+    /**
+     * Biggest distance between branches
+     *
+     * @return
+     */
+    @Override
+    public int getTreeWidth() {
+        return size.width;
+    }
+
+    /**
+     * Distance from leaves to root
+     *
+     * @return
+     */
+    @Override
+    public int getTreeHeight() {
+        return size.height;
+    }
+
 }

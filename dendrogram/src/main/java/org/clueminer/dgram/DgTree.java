@@ -256,13 +256,23 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         this.treeColor = treeColor;
     }
 
+    /**
+     * Biggest distance between branches
+     *
+     * @return
+     */
     @Override
     public int getTreeWidth() {
-        return size.width;
+        return size.height;
     }
 
+    /**
+     * Distance from leaves to root
+     *
+     * @return
+     */
     @Override
     public int getTreeHeight() {
-        return size.height;
+        return size.width;
     }
 }

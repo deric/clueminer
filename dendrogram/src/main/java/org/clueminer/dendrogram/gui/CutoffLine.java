@@ -52,8 +52,10 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
 
         linepos = computePosition(clustering.getCutoff());
         g2.setStroke(dashed);
+        //draw dashed line across whole tree width
         // x1, y1, x2, y2
-        g2.drawLine(linepos, 0, linepos, tree.getSize().height);
+        g2.drawLine(linepos, 0, linepos, tree.getTreeWidth());
+
     }
 
     @Override
