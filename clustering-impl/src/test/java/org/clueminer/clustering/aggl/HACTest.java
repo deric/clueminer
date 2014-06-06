@@ -5,16 +5,19 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.io.CsvLoader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -24,6 +27,8 @@ import org.openide.util.NbPreferences;
 public class HACTest {
 
     private static final HAC subject = new HAC();
+    private static Dataset<? extends Instance> school;
+    private static final CommonFixture fixture = new CommonFixture();
 
     public HACTest() {
     }
@@ -67,6 +72,22 @@ public class HACTest {
     public void testHierarchy_Dataset_Preferences() {
     }
 
+    public static Dataset<? extends Instance> schoolData() {
+        if (school == null) {
+            CsvLoader loader = new CsvLoader();
+            school = new ArrayDataset(17, 4);
+            loader.setClassIndex(4);
+            loader.setSeparator(' ');
+            try {
+                loader.load(fixture.schoolData(), school);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return school;
+
+    }
+
     /**
      * Test of hierarchy method, of class HC1.
      *
@@ -74,7 +95,7 @@ public class HACTest {
      */
     @Test
     public void testHierarchy_3args() throws IOException {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        Dataset<? extends Instance> dataset = schoolData();
         assertEquals(17, dataset.size());
         assertEquals(4, dataset.attributeCount());
         Matrix input = new JMatrix(dataset.arrayCopy());
@@ -96,7 +117,7 @@ public class HACTest {
 
     @Test
     public void testColumnClustering() throws IOException {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        Dataset<? extends Instance> dataset = schoolData();
         Matrix input = new JMatrix(dataset.arrayCopy());
         input.print(3, 2);
         Preferences pref = NbPreferences.forModule(HACTest.class);
