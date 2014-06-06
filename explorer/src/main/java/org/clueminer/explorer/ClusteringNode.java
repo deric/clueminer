@@ -1,5 +1,6 @@
 package org.clueminer.explorer;
 
+import java.awt.Image;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,8 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dgram.DgViewer;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
@@ -38,7 +41,16 @@ public class ClusteringNode extends AbstractNode {
         setDisplayName(name);
         setName(name);
     }
+    /*
+     @Override
+    public Image getIcon(int type) {
+        Image img;
 
+
+        //return ImageUtilities.loadImage("org/myorg/myeditor/icon.png");
+     return null;
+     }
+*/
     @Override
     public PasteType getDropType(Transferable t, final int action, int index) {
         final Node dropNode = NodeTransfer.node(t,
