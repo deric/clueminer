@@ -14,6 +14,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
  */
 public class DgBottomTree extends DgTree {
 
+    private static final long serialVersionUID = 4173316284862271458L;
+
     public DgBottomTree(DendroPane panel) {
         super(panel);
     }
@@ -67,8 +69,7 @@ public class DgBottomTree extends DgTree {
         this.dendroData = dataset;
         if (dendroData.hasColumnsClustering()) {
             HierarchicalResult clustering = dataset.getColsResult();
-            treeData = clustering.getTreeData();
-            updateSize();
+            setTreeData(clustering.getTreeData());
         }
     }
 

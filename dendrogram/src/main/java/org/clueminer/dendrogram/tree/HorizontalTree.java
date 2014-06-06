@@ -73,7 +73,7 @@ public class HorizontalTree extends AbstractTree {
         //move the tree branch to middle of cell
         setOffsetX(-elementSize.width / 2);
         int width = stepSize * treeData.treeLevels();
-        int height = getMaxDistance();//for scale
+        int height = getTreeHeight();//for scale
         //System.out.println("row tree width= "+width+", height= "+height);
         setSizes(width, height);
     }

@@ -16,7 +16,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.openide.util.RequestProcessor;
 
-
 /**
  *
  * @author Tomas Barton
@@ -76,13 +75,20 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      * @return
      */
     private int computePosition(double cutoff) {
-        return (int) (tree.getMaxDistance() - (cutoff / clustering.getMaxTreeHeight() * tree.getMaxDistance()));
+        return (int) (tree.getTreeHeight() - (cutoff / clustering.getMaxTreeHeight() * tree.getTreeHeight()));
     }
 
+    /**
+     * Translates cutoff
+     *
+     * @param pos position from 0 to 100
+     * @return
+     */
     private double computeCutoff(int pos) {
         //min tree distance is distance of lowest level, not leaves!
         if (tree != null && tree.hasData()) {
-        double cut = (pos - tree.getMinDistance()) * clustering.getMaxTreeHeight() / (tree.getMaxDistance() - tree.getMinDistance());
+            double cut = (pos - tree.getTreeWidth()) * clustering.getMaxTreeHeight() / (tree.getTreeHeight() - tree.getTreeWidth());
+            System.out.println("cutoff = " + (clustering.getMaxTreeHeight() - cut));
             return (clustering.getMaxTreeHeight() - cut);
         } else {
             return 0.0;
@@ -94,11 +100,11 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     }
 
     public double getMaxDistance() {
-        return tree.getMaxDistance();
+        return tree.getTreeHeight();
     }
 
     public double getMinDistance() {
-        return tree.getMinDistance();
+        return tree.getTreeWidth();
     }
 
     /**

@@ -7,9 +7,7 @@ import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -26,15 +24,7 @@ public class DendroDemo extends JFrame {
         setLayout(new BorderLayout());
         dendroPanel = new HclDendroPanel();
 
-        final Dataset<Instance> data = new SampleDataset<Instance>();
-        CommonFixture tf = new CommonFixture();
-
-        CsvLoader loader = new CsvLoader();
-        loader.setClassIndex(4);
-        loader.setSeparator(' ');
-        loader.setDataset(data);
-        loader.addNameAttr(4);
-        loader.load(tf.schoolData());
+        final Dataset<? extends Instance> data = FakeDatasets.schoolData();
 
         System.out.println("dataset size: " + data.size());
         RP.execute(new Runnable() {

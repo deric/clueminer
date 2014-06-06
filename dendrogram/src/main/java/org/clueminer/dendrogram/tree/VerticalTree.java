@@ -74,8 +74,8 @@ public class VerticalTree extends AbstractTree {
         this.stepSize = this.elementSize.height;
         setOffsetY(-elementSize.height / 2);
         int height = this.stepSize * length;
-        System.out.println("vertical tree size width = " + getMaxDistance() + " height = " + height);
-        setSizes(getMaxDistance(), height);
+        System.out.println("vertical tree size width = " + getTreeHeight() + " height = " + height);
+        setSizes(getTreeHeight(), height);
     }
 
     @Override

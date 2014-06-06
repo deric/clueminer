@@ -97,8 +97,8 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
-        int max = source.getMaxDistance();
-        int min = source.getMinDistance();
+        int max = source.getTreeHeight();
+        int min = source.getTreeWidth();
 
         slider.setMinimum(min);
         slider.setMaximum(max);

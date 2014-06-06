@@ -9,9 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -42,7 +40,7 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     private Color treeColor = Color.blue;
     private static final long serialVersionUID = -6201677645559622330L;
     protected EventListenerList treeListeners = new EventListenerList();
-    private Dimension size = new Dimension(0, 0);
+    protected Dimension size = new Dimension(0, 0);
     private static final Logger logger = Logger.getLogger(DgTree.class.getName());
     private final StdScale scale = new StdScale();
     private BufferedImage buffImg;
@@ -105,16 +103,6 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         //invalidate cache
         buffImg = null;
         repaint();
-    }
-
-    @Override
-    public int getMinDistance() {
-        return -1;
-    }
-
-    @Override
-    public int getMaxDistance() {
-        return -1;
     }
 
     @Override
@@ -206,6 +194,8 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     @Override
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
+        updateSize();
+        fireTreeUpdated();
     }
 
     @Override
@@ -266,4 +256,13 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         this.treeColor = treeColor;
     }
 
+    @Override
+    public int getTreeWidth() {
+        return size.width;
+    }
+
+    @Override
+    public int getTreeHeight() {
+        return size.height;
+    }
 }

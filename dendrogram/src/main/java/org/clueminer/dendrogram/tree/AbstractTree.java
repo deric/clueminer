@@ -276,7 +276,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
      * Returns the min distance on tree in pixels
      */
     @Override
-    public int getMinDistance() {
+    public int getTreeWidth() {
         return min_pixels;
     }
 
@@ -284,7 +284,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
      * Returns the max distance on tree in pixels
      */
     @Override
-    public int getMaxDistance() {
+    public int getTreeHeight() {
         return max_pixels;
     }
 
@@ -743,8 +743,8 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
 
         if (treeListeners != null) {
             listeners = treeListeners.getListeners(TreeListener.class);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].clusterSelected(source, cluster, dataset);
+            for (TreeListener listener : listeners) {
+                listener.clusterSelected(source, cluster, dataset);
             }
         }
         return true;
@@ -761,8 +761,8 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
 
             listeners = treeListeners.getListeners(TreeListener.class);
             System.out.println("listeners size " + listeners.length);
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].treeUpdated(this, size.width, size.height);
+            for (TreeListener listener : listeners) {
+                listener.treeUpdated(this, size.width, size.height);
             }
         }
     }

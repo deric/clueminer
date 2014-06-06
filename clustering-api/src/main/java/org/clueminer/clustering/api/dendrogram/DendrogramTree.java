@@ -14,9 +14,19 @@ public interface DendrogramTree extends DendrogramDataListener {
 
     public void updateSize();
 
-    public int getMinDistance();
+    /**
+     * Distance in pixels from one side of tree to another
+     *
+     * @return
+     */
+    public int getTreeWidth();
 
-    public int getMaxDistance();
+    /**
+     * Height of rendered tree in pixels
+     *
+     * @return
+     */
+    public int getTreeHeight();
 
     public void setTreeData(DendroTreeData treeData);
 
@@ -37,9 +47,9 @@ public interface DendrogramTree extends DendrogramDataListener {
     public int getHeight();
 
     /**
-     * Moves and resizes this component. The new location of the top-left
-     * corner is specified by <code>x</code> and <code>y</code>, and the
-     * new size is specified by <code>width</code> and <code>height</code>.
+     * Moves and resizes this component. The new location of the top-left corner
+     * is specified by <code>x</code> and <code>y</code>, and the new size is
+     * specified by <code>width</code> and <code>height</code>.
      * <p>
      * This method changes layout-related information, and therefore,
      * invalidates the component hierarchy.
@@ -47,12 +57,12 @@ public interface DendrogramTree extends DendrogramDataListener {
      * @param x      the new <i>x</i>-coordinate of this component
      * @param y      the new <i>y</i>-coordinate of this component
      * @param width  the new <code>width</code> of this component
-     * @param height the new <code>height</code> of this
-     *               component
+     * @param height the new <code>height</code> of this component
      */
     public void setBounds(int x, int y, int width, int height);
 
     /**
+     * Zero tree height
      *
      * @return minimal tree distance
      */
@@ -60,6 +70,11 @@ public interface DendrogramTree extends DendrogramDataListener {
 
     public double getMidTreeHeight();
 
+    /**
+     * Distance which represents root of the tree
+     *
+     * @return
+     */
     public double getMaxTreeHeight();
 
 }

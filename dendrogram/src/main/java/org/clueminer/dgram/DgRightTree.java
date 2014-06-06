@@ -17,6 +17,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 public class DgRightTree extends DgTree {
 
     private static final Border border = BorderFactory.createEmptyBorder(0, 10, 0, 0);
+    private static final long serialVersionUID = -6425876686675787316L;
 
     public DgRightTree(DendroPane panel) {
         super(panel);
@@ -52,8 +53,7 @@ public class DgRightTree extends DgTree {
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
         HierarchicalResult clustering = dataset.getRowsResult();
-        treeData = clustering.getTreeData();
-        updateSize();
+        setTreeData(clustering.getTreeData());
     }
 
     @Override

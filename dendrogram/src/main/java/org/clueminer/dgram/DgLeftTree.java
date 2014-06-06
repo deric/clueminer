@@ -13,6 +13,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
  */
 public class DgLeftTree extends DgTree {
 
+    private static final long serialVersionUID = 6752253584322193098L;
+
     public DgLeftTree(DendroPane panel) {
         super(panel);
     }
@@ -46,8 +48,7 @@ public class DgLeftTree extends DgTree {
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
         HierarchicalResult clustering = dataset.getRowsResult();
-        treeData = clustering.getTreeData();
-        updateSize();
+        setTreeData(clustering.getTreeData());
     }
 
     @Override

@@ -240,6 +240,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         clusteringListeners.remove(ClusteringListener.class, listener);
     }
 
+    @Override
     public void fireClusteringChanged(Clustering clust) {
         ClusteringListener[] listeners;
 
@@ -249,6 +250,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         }
     }
 
+    @Override
     public Dimension getElementSize() {
         return elementSize;
     }

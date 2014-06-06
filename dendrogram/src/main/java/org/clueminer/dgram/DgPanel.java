@@ -223,7 +223,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         c.weighty = 0;
         //c.gridwidth = GridBagConstraints.RELATIVE;
         //c.gridheight = GridBagConstraints.REMAINDER; //last in column
-        c.insets = new java.awt.Insets(0, 5, 0, 0);
+        c.insets = new java.awt.Insets(0, 15, 0, 0);
         c.gridx = column;
         c.gridy = row;
 
