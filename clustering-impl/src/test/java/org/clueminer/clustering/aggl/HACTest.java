@@ -103,16 +103,13 @@ public class HACTest {
         Preferences pref = NbPreferences.forModule(HACTest.class);
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         HierarchicalResult result = subject.hierarchy(input, dataset, pref);
-        Matrix similarityMatrix = result.getSimilarityMatrix();
+        Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.size());
+        assertEquals(similarityMatrix.columnsCount(), dataset.size());
 
         similarityMatrix.printLower(5, 2);
         result.getTreeData().print();
-        Matrix proximity = result.getProximityMatrix();
-        assertNotNull(proximity);
-        assertEquals(dataset.size(), proximity.rowsCount());
-        assertEquals(dataset.size(), proximity.columnsCount());
     }
 
     @Test
@@ -124,16 +121,12 @@ public class HACTest {
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult result = subject.hierarchy(input, dataset, pref);
-        Matrix similarityMatrix = result.getSimilarityMatrix();
+        Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.attributeCount());
         assertEquals(similarityMatrix.columnsCount(), dataset.attributeCount());
 
         result.getTreeData().print();
-        Matrix proximity = result.getProximityMatrix();
-        assertNotNull(proximity);
-        assertEquals(dataset.attributeCount(), proximity.rowsCount());
-        assertEquals(dataset.attributeCount(), proximity.columnsCount());
 
     }
 

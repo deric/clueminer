@@ -45,7 +45,7 @@ public class HClustResultTest {
         Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
         rowsResult = algorithm.hierarchy(input, pref);
         DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), new SingleLinkage(new EuclideanDistance()));
+        List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), new SingleLinkage(new EuclideanDistance()));
         rowsResult.setMerges(merges);
     }
 
@@ -285,7 +285,7 @@ public class HClustResultTest {
     public void testGetMapping() {
         int[] mapping = rowsResult.getMapping();
         //number of leaves should be the same as number of rows in similarity matrix
-        assertEquals(rowsResult.getSimilarityMatrix().rowsCount(), mapping.length);
+        assertEquals(rowsResult.getProximityMatrix().rowsCount(), mapping.length);
 
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;

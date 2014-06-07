@@ -23,7 +23,6 @@ import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -84,7 +83,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         } else {
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
         }
-        result.setSimilarityMatrix(similarityMatrix);
+        result.setProximityMatrix(similarityMatrix);
 
         similarityMatrix.printLower(5, 2);
 
@@ -92,7 +91,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
         result.setMapping(createMapping(treeData));
         result.setTreeData(treeData);
-        result.setProximityMatrix(similarityMatrix);
         return result;
     }
 

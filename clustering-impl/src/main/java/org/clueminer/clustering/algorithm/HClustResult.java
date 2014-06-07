@@ -94,16 +94,6 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public Matrix getSimilarityMatrix() {
-        return similarity;
-    }
-
-    @Override
-    public void setSimilarityMatrix(Matrix m) {
-        this.similarity = m;
-    }
-
-    @Override
     public void setMapping(int[] assignments) {
         this.mapping = assignments;
     }

@@ -72,16 +72,6 @@ public class HCLResult implements HierarchicalResult {
         createDefaultMapping();
     }
 
-    @Override
-    public Matrix getSimilarityMatrix() {
-        return similarity;
-    }
-
-    @Override
-    public void setSimilarityMatrix(Matrix m) {
-        this.similarity = m;
-    }
-
     public void createDefaultMapping() {
         itemsMapping = treeData.createTreeOrder();
     }

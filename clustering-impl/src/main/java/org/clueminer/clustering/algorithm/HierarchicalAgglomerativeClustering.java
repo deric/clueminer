@@ -378,7 +378,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
         int rows = similarityMatrix.rowsCount();
         HierarchicalResult result = new HClustResult();
-        result.setSimilarityMatrix(similarityMatrix);
+        result.setProximityMatrix(similarityMatrix);
         //Dump.matrix(similarityMatrix.getArray(), "similarity", 2);
 
         // Create the initial set of clusters where each row is originally in
@@ -426,7 +426,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             }
             System.out.println("clusters: " + assignments.size() + ", max clusters: " + maxNumberOfClusters);
             LOGGER.log(Level.INFO, "clusters: {0}, max clusters: {1}, highest sim: {2}, treshold: {3}",
-                    new Object[]{assignments.size(), maxNumberOfClusters, highestSimilarity, clusterSimilarityThreshold});
+                       new Object[]{assignments.size(), maxNumberOfClusters, highestSimilarity, clusterSimilarityThreshold});
             // If the similarity of the two most similar clusters falls below
             // the threshold, then the final set of clusters has been
             // determined.
@@ -489,8 +489,8 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
             // Update the new most similar to the newly-merged cluster
             clusterSimilarities.put(newClusterId,
-                    new Pairing(mostSimilarToMerged,
-                            mostSimilarToMergedId));
+                                    new Pairing(mostSimilarToMerged,
+                                                mostSimilarToMergedId));
         }
 
         result.setMapping(toAssignArray(assignments, rows));

@@ -26,7 +26,7 @@ public class HclDendroPanel extends DendroPanel {
 
     private static final long serialVersionUID = -5113017275195427868L;
     private Preferences params;
-    private boolean debug = false;
+    private boolean debug = true;
 
     public HclDendroPanel() {
         params = NbPreferences.forModule(HclDendroPanel.class);
@@ -102,13 +102,14 @@ public class HclDendroPanel extends DendroPanel {
 
         //System.out.println("params: " + params.toString());
         //printResult(rowsResult);
-        /*if (debug) {            Matrix proximity = rowsResult.getProximityMatrix();
+        if (debug) {
+            Matrix proximity = rowsResult.getProximityMatrix();
             Matrix cprox = columnsResult.getProximityMatrix();
             System.out.println("row proximity matrix:");
             proximity.print(5, 2);
             System.out.println("columns proximity matrix:");
             cprox.print(5, 2);
-        }*/
+        }
         long time = System.currentTimeMillis() - start;
         System.out.println("clustering took " + time + " ms");
 

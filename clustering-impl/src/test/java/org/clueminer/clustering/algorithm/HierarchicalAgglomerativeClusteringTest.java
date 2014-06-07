@@ -1,13 +1,11 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.List;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.hclust.linkage.CompleteLinkage;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Dump;
@@ -16,8 +14,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -33,7 +29,6 @@ public class HierarchicalAgglomerativeClusteringTest {
 
     @BeforeClass
     public static void setUpClass() {
-
 
         /**
          * @see
@@ -128,10 +123,10 @@ public class HierarchicalAgglomerativeClusteringTest {
         ClusterLinkage linkage = new CompleteLinkage(new EuclideanDistance());
         alg.setLinkage(linkage);
         //Preferences pref = NbPreferences.forModule(HierarchicalAgglomerativeClustering.class);
-        HierarchicalResult rowsResult = HierarchicalAgglomerativeClustering.clusterSimilarityMatrix(similarityMatrix, -1, linkage, -1);       
+        HierarchicalResult rowsResult = HierarchicalAgglomerativeClustering.clusterSimilarityMatrix(similarityMatrix, -1, linkage, -1);
         DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), linkage);
-        rowsResult.setMerges(merges);        
+        List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), linkage);
+        rowsResult.setMerges(merges);
         System.out.println("merges " + merges.toString());
         Dump.array(rowsResult.getMapping(), "assignments");
 
@@ -195,7 +190,8 @@ public class HierarchicalAgglomerativeClusteringTest {
     }
 
     /**
-     * Test of clusterSimilarityMatrix method, of class HierarchicalAgglomerativeClustering.
+     * Test of clusterSimilarityMatrix method, of class
+     * HierarchicalAgglomerativeClustering.
      */
     @Test
     public void testClusterSimilarityMatrix() {

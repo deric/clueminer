@@ -14,13 +14,17 @@ import org.clueminer.math.Matrix;
  */
 public interface HierarchicalResult extends Serializable {
 
+    /**
+     * Proximity (a.k.a. similarity matrix) is a NxN matrix of distances
+     * (similarities) between items. When the distance metric is symmetrical we
+     * are fine with lower/upper diagonal matrix (distance to self is usually 0,
+     * so even the diagonal could be left out)
+     *
+     * @return
+     */
     public Matrix getProximityMatrix();
 
     public void setProximityMatrix(Matrix m);
-
-    public Matrix getSimilarityMatrix();
-
-    public void setSimilarityMatrix(Matrix m);
 
     /**
      * Cuts dendrogram tree into k clusters

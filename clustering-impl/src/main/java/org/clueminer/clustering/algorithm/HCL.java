@@ -467,7 +467,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         if (ph != null) {
             ph.finish();
         }
-        result.setSimilarityMatrix(new JMatrix(SimilarityMatrix));
+        result.setProximityMatrix(new JMatrix(SimilarityMatrix));
 
         treeData.setLeft(Child1);
         treeData.setRight(Child2);

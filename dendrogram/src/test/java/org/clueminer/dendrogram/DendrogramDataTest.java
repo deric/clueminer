@@ -62,7 +62,7 @@ public class DendrogramDataTest {
         HierarchicalResult rowsResult = algorithm.hierarchy(input, pref);
         System.out.println(rowsResult.toString());
         DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getSimilarityMatrix(), new SingleLinkage(new EuclideanDistance()));
+        List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), new SingleLinkage(new EuclideanDistance()));
         rowsResult.setMerges(merges);
 
         dendroData = new DendrogramData(dataset, input, rowsResult, null);
