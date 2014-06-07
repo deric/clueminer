@@ -97,7 +97,7 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public void setMapping(int[] assignments) {
-        this.mapping = assignments;
+        treeData.setMapping(assignments);
     }
 
     public Assignments getAssignments() {
@@ -331,18 +331,18 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int getMappedIndex(int idx) {
-        if (mapping == null) {
-            throw new RuntimeException("Empty mapping");
+        if (treeData == null) {
+            throw new RuntimeException("Empty tree data");
         }
-        return mapping[idx];
+        return treeData.getMappedId(idx);
     }
 
     @Override
     public void setMappedIndex(int pos, int idx) {
-        if (mapping == null) {
-            throw new RuntimeException("Empty mapping");
-        }
-        mapping[pos] = idx;
+        // if (treeData == null) {
+        throw new RuntimeException("not available yet");
+        //}
+        //treeData.set
     }
 
     private void updateMapping() {
@@ -473,6 +473,13 @@ public class HClustResult implements HierarchicalResult {
         return level;
     }
 
+    /**
+     * Recursive tree nodes positions update
+     *
+     * @TODO move this methods to tree itself
+     * @param node
+     * @return
+     */
     private double updatePositions(DendroNode node) {
         if (node.isLeaf()) {
             return node.getPosition();

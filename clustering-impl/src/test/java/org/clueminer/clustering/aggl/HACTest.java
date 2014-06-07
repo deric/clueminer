@@ -102,6 +102,7 @@ public class HACTest {
         input.print(3, 2);
         Preferences pref = NbPreferences.forModule(HACTest.class);
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult result = subject.hierarchy(input, dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);

@@ -118,7 +118,7 @@ public class HierarchicalAgglomerativeClusteringTest {
     /**
      * Test of cluster method, of class HierarchicalAgglomerativeClustering.
      */
-    @Test
+    //@Test
     public void testCluster_3args() {
         ClusterLinkage linkage = new CompleteLinkage(new EuclideanDistance());
         alg.setLinkage(linkage);

@@ -2,21 +2,15 @@ package org.clueminer.dendrogram;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.algorithm.DendrogramBuilder;
-import org.clueminer.clustering.algorithm.HierarchicalAgglomerativeClustering;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.Merge;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -54,22 +48,17 @@ public class DendrogramDataTest {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-        algorithm = new HierarchicalAgglomerativeClustering();
+        algorithm = new HAC();
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Preferences pref = NbPreferences.forModule(DendrogramDataTest.class);
         Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
 
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, pref);
-        System.out.println(rowsResult.toString());
-        DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), new SingleLinkage(new EuclideanDistance()));
-        rowsResult.setMerges(merges);
+        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, pref);
 
-        HAC alg = new HAC();
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult colResuls = alg.hierarchy(input, dataset, pref);
+        HierarchicalResult colResuls = algorithm.hierarchy(input, dataset, pref);
 
         dendroData = new DendrogramData(dataset, input, rowsResult, colResuls);
     }
