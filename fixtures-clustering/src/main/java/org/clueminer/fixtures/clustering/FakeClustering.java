@@ -61,6 +61,8 @@ public class FakeClustering {
             irisClusters.add(a);
             irisClusters.add(b);
             irisClusters.add(c);
+            //add dataset to lookup
+            irisClusters.lookupAdd(irisData);
         }
         return irisClusters;
     }
@@ -111,6 +113,8 @@ public class FakeClustering {
             irisWrong.add(a);
             irisWrong.add(b);
             irisWrong.add(c);
+            //add dataset to lookup
+            irisWrong.lookupAdd(irisData);
         }
         return irisWrong;
     }
@@ -149,6 +153,8 @@ public class FakeClustering {
             irisWrong2.add(a);
             irisWrong2.add(b);
             irisWrong2.add(c);
+            //add dataset to lookup
+            irisWrong2.lookupAdd(irisData);
         }
         return irisWrong2;
     }
@@ -191,6 +197,8 @@ public class FakeClustering {
             irisWrong4.add(b);
             irisWrong4.add(c);
             irisWrong4.add(d);
+            //add dataset to lookup
+            irisWrong4.lookupAdd(irisData);
         }
         return irisWrong4;
     }
@@ -312,6 +320,8 @@ public class FakeClustering {
             simpleResponse.add(a);
             simpleResponse.add(b);
             simpleResponse.add(c);
+            //add dataset to lookup
+            simpleResponse.lookupAdd(data);
         }
 
         return simpleResponse;
