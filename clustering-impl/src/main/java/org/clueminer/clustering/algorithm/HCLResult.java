@@ -29,7 +29,6 @@ public class HCLResult implements HierarchicalResult {
 
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;
-    private Matrix similarity;
     private TreeDataImpl treeData;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private CutoffStrategy cutoffStrategy = new NaiveCutoff();
@@ -207,7 +206,7 @@ public class HCLResult implements HierarchicalResult {
     public Clustering updateCutoff(double cutoff) {
         treeData.setCutoff(cutoff);
         //maximum number of clusters is number of instances
-        treeData.formClusters(similarity.rowsCount());
+        treeData.formClusters(proximity.rowsCount());
 
         return updateClustering();
     }

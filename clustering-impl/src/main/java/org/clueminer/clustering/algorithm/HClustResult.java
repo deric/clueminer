@@ -37,7 +37,6 @@ public class HClustResult implements HierarchicalResult {
 
     private static final long serialVersionUID = -515379303769981129L;
     private Matrix proximity;
-    private Matrix similarity;
     private Matrix inputData;
     private int[] mapping;
     private Assignments assignments;

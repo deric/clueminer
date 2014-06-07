@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.algorithm.DendrogramBuilder;
 import org.clueminer.clustering.algorithm.HierarchicalAgglomerativeClustering;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -65,7 +67,11 @@ public class DendrogramDataTest {
         List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), new SingleLinkage(new EuclideanDistance()));
         rowsResult.setMerges(merges);
 
-        dendroData = new DendrogramData(dataset, input, rowsResult, null);
+        HAC alg = new HAC();
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        HierarchicalResult colResuls = alg.hierarchy(input, dataset, pref);
+
+        dendroData = new DendrogramData(dataset, input, rowsResult, colResuls);
     }
 
     @AfterClass
@@ -250,6 +256,12 @@ public class DendrogramDataTest {
      */
     @Test
     public void testHasColumnsClustering() {
-        assertEquals(false, dendroData.hasColumnsClustering());
+        assertEquals(true, dendroData.hasColumnsClustering());
+    }
+
+    @Test
+    public void testPrintMatrix() {
+        assertEquals(false, dendroData.isEmpty());
+        dendroData.printMappedMatix(2);
     }
 }

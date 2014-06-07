@@ -62,4 +62,11 @@ public interface DendrogramMapping {
     public double getMidValue();
 
     public boolean isEmpty();
+
+    /**
+     * Print matrix with applied clustering mapping
+     *
+     * @param d number of decimal places
+     */
+    public void printMappedMatix(int d);
 }

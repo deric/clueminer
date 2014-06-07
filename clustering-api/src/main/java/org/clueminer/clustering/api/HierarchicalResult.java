@@ -229,4 +229,5 @@ public interface HierarchicalResult extends Serializable {
      * @param dataset input dataset
      */
     public void setDataset(Dataset<? extends Instance> dataset);
+
 }

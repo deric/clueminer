@@ -102,14 +102,6 @@ public class HclDendroPanel extends DendroPanel {
 
         //System.out.println("params: " + params.toString());
         //printResult(rowsResult);
-        if (debug) {
-            Matrix proximity = rowsResult.getProximityMatrix();
-            Matrix cprox = columnsResult.getProximityMatrix();
-            System.out.println("row proximity matrix:");
-            proximity.print(5, 2);
-            System.out.println("columns proximity matrix:");
-            cprox.print(5, 2);
-        }
         long time = System.currentTimeMillis() - start;
         System.out.println("clustering took " + time + " ms");
 

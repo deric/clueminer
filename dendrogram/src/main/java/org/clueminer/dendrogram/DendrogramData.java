@@ -1,5 +1,9 @@
 package org.clueminer.dendrogram;
 
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -23,6 +27,7 @@ public class DendrogramData implements DendrogramMapping {
     private double mid = 0;
     private HierarchicalResult rowsResult;
     private HierarchicalResult colsResult;
+    private static final Logger log = Logger.getLogger(DendrogramData.class.getName());
 
     public DendrogramData(Dataset<? extends Instance> dataset) {
         this.instances = dataset;
@@ -124,22 +129,27 @@ public class DendrogramData implements DendrogramMapping {
         mid = (max - min) / 2 + min;
     }
 
+    @Override
     public double getMinValue() {
         return min;
     }
 
+    @Override
     public double getMaxValue() {
         return max;
     }
 
+    @Override
     public double getMidValue() {
         return mid;
     }
 
+    @Override
     public double get(int i, int j) {
         return matrix.get(i, j);
     }
 
+    @Override
     public double getMappedValue(int rowIndex, int columnIndex) {
         return get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
     }
@@ -208,5 +218,39 @@ public class DendrogramData implements DendrogramMapping {
     @Override
     public boolean hasColumnsClustering() {
         return colsResult != null && getNumberOfColumns() > 0;
+    }
+
+    @Override
+    public void printMappedMatix(int d) {
+        if (!hasRowsClustering()) {
+            log.severe("missing row clustering");
+            return;
+        }
+        if (!hasColumnsClustering()) {
+            log.severe("missing column clustering");
+            return;
+        }
+        DecimalFormat format = new DecimalFormat();
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        printMatrix(new PrintWriter(System.out, true), format, getNumberOfRows(), getNumberOfColumns(), d + 5);
+    }
+
+    public void printMatrix(PrintWriter output, NumberFormat format, int m, int n, int width) {
+        output.println();  // start on new line.
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                String s = format.format(getMappedValue(i, j)); // format the number
+                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        output.println();   // end with blank line.
     }
 }
