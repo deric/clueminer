@@ -143,9 +143,11 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     private DendroNode getOrCreate(int id) {
-        DendroNode node = new DTreeNode(id);
-        nodes[id] = node;
-        return node;
+        if (nodes[id] == null) {
+            DendroNode node = new DTreeNode(id);
+            nodes[id] = node;
+        }
+        return nodes[id];
     }
 
     /**

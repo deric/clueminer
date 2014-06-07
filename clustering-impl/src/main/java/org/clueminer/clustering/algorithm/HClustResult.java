@@ -425,6 +425,7 @@ public class HClustResult implements HierarchicalResult {
             if (prev == null) {
                 prev = getNode(m.remainingCluster());
             }
+
             current.setLeft(prev);
             current.setRight(getNode(m.mergedCluster()));
             current.setHeight(m.similarity());
