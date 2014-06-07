@@ -355,4 +355,14 @@ public class HCLResult implements HierarchicalResult {
         this.cutoffStrategy = cutoffStrategy;
     }
 
+    /**
+     * It's a square matrix, doesn't matter which dimension we'll return
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return proximity.rowsCount();
+    }
+
 }

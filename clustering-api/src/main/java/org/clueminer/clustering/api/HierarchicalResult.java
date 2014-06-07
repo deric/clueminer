@@ -230,4 +230,12 @@ public interface HierarchicalResult extends Serializable {
      */
     public void setDataset(Dataset<? extends Instance> dataset);
 
+    /**
+     * Size of input data (dimension of similarity/proximity matrix) which
+     * depends whether it is row/columns clustering
+     *
+     * @return size of input data
+     */
+    public int size();
+
 }

@@ -36,6 +36,7 @@ public class DendrogramData implements DendrogramMapping {
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
         this.instances = dataset;
+        checkParams(matrix, rowResult, columnResult);
         this.setMatrix(matrix);
         this.rowsResult = rowResult;
         this.colsResult = columnResult;
@@ -43,8 +44,23 @@ public class DendrogramData implements DendrogramMapping {
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
         this.instances = dataset;
+        checkParams(matrix, rowResult, null);
         this.setMatrix(matrix);
         this.rowsResult = (HCLResult) rowResult;
+    }
+
+    private void checkParams(Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
+        if (matrix == null) {
+            throw new RuntimeException("input matrix can't be null");
+        }
+        if (matrix.rowsCount() != rowResult.size()) {
+            throw new RuntimeException("row result size does not match dimension of input matrix " + rowResult.size() + " vs. " + matrix.rowsCount());
+        }
+        if (columnResult != null) {
+            if (matrix.columnsCount() != columnResult.size()) {
+                throw new RuntimeException("column result size does not match dimension of input matrix " + columnResult.size() + " vs. " + matrix.columnsCount());
+            }
+        }
     }
 
     @Override

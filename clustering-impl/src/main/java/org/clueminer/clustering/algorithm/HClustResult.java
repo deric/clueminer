@@ -89,6 +89,9 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public void setProximityMatrix(Matrix m) {
+        if (m.rowsCount() != m.columnsCount()) {
+            throw new RuntimeException("expected square matrix, got " + m.rowsCount() + " x " + m.columnsCount());
+        }
         this.proximity = m;
     }
 
@@ -489,6 +492,16 @@ public class HClustResult implements HierarchicalResult {
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
         updatePositions(treeData.getRoot());
+    }
+
+    /**
+     * It's a square matrix, doesn't matter which dimension we'll return
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return proximity.rowsCount();
     }
 
 }
