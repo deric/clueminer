@@ -178,4 +178,9 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    @Override
+    public int[] getMapping() {
+        return mapping;
+    }
+
 }

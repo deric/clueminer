@@ -98,6 +98,7 @@ public class HclDendroPanel extends DendroPanel {
         params.putBoolean("calculate-rows", false);
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
+        Dump.array(columnsResult.getMapping(), "col mapping: ");
         // validate(columnsResult);
 
         //System.out.println("params: " + params.toString());
@@ -118,6 +119,10 @@ public class HclDendroPanel extends DendroPanel {
             HillClimbCutoff strategy = new HillClimbCutoff(eval);
             rowsResult.findCutoff(strategy);
         }// else we use a naive approach
+
+        if (debug) {
+            dendroData.printMappedMatix(2);
+        }
 
         clust = dendroData.getRowsClustering();
         //associate dendroData with clustering

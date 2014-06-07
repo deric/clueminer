@@ -361,11 +361,15 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int[] getMapping() {
-        if (mapping == null && merges != null) {
-            updateMapping();
-        }
+        /* if (mapping == null && merges != null) {
+         updateMapping();
+         }
 
-        return mapping;
+         return mapping;*/
+        if (treeData != null) {
+            return treeData.getMapping();
+        }
+        return null;
     }
 
     @Override

@@ -191,7 +191,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public void setRowsResult(HierarchicalResult rowsResult) {
-        this.rowsResult = (HCLResult) rowsResult;
+        this.rowsResult = rowsResult;
     }
 
     @Override
@@ -200,7 +200,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public void setColsResult(HierarchicalResult colsResult) {
-        this.colsResult = (HCLResult) colsResult;
+        this.colsResult = colsResult;
     }
 
     @Override

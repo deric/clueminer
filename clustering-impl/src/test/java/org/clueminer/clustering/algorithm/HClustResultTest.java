@@ -1,15 +1,13 @@
 package org.clueminer.clustering.algorithm;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.prefs.Preferences;
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.Merge;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;
@@ -37,16 +35,13 @@ public class HClustResultTest {
     @BeforeClass
     public static void setUpClass() {
         dataset = FakeClustering.irisDataset();
-        algorithm = new HierarchicalAgglomerativeClustering();
+        algorithm = new HAC();
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Preferences pref = NbPreferences.forModule(HClustResultTest.class);
         Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
-        rowsResult = algorithm.hierarchy(input, pref);
-        DendrogramBuilder db = new DendrogramBuilder();
-        List<Merge> merges = db.buildDendrogram(rowsResult.getProximityMatrix(), new SingleLinkage(new EuclideanDistance()));
-        rowsResult.setMerges(merges);
+        rowsResult = algorithm.hierarchy(input, dataset, pref);
     }
 
     @AfterClass
@@ -80,6 +75,10 @@ public class HClustResultTest {
      */
     @Test
     public void testGetProximityMatrix() {
+        Matrix m = rowsResult.getProximityMatrix();
+        assertEquals(dataset.size(), m.rowsCount());
+        assertEquals(dataset.size(), m.columnsCount());
+
     }
 
     /**
@@ -87,20 +86,6 @@ public class HClustResultTest {
      */
     @Test
     public void testSetProximityMatrix() {
-    }
-
-    /**
-     * Test of getSimilarityMatrix method, of class HClustResult.
-     */
-    @Test
-    public void testGetSimilarityMatrix() {
-    }
-
-    /**
-     * Test of setSimilarityMatrix method, of class HClustResult.
-     */
-    @Test
-    public void testSetSimilarityMatrix() {
     }
 
     /**
@@ -290,7 +275,12 @@ public class HClustResultTest {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
 
+        //check that each mapped number is there just once
+        HashSet<Integer> hash = new HashSet<Integer>();
+
         for (int i = 0; i < mapping.length; i++) {
+            assertEquals(false, hash.contains(mapping[i]));
+            hash.add(mapping[i]);
             if (mapping[i] < min) {
                 min = mapping[i];
             }

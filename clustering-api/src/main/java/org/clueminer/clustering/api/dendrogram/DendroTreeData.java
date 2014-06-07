@@ -59,6 +59,13 @@ public interface DendroTreeData {
     void setMapping(int[] mapping);
 
     /**
+     * Return mapping of leaves to indexes in dataset
+     *
+     * @return
+     */
+    int[] getMapping();
+
+    /**
      * Mapped index
      *
      * @param i
