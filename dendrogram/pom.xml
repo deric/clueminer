@@ -165,8 +165,11 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.dendrogram.*</publicPackage>
+                        <publicPackage>org.clueminer.dendrogram</publicPackage>
+                        <publicPackage>org.clueminer.dendrogram.gui</publicPackage>
+                        <publicPackage>org.clueminer.dendrogram.tree</publicPackage>
                         <publicPackage>org.clueminer.dgram</publicPackage>
+                        <publicPackage>org.clueminer.dgram.vis</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

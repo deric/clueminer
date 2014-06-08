@@ -4,18 +4,18 @@ import java.awt.Image;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
 
 /**
  *
+ * Generates thumbnail of a heat-map
+ *
  * @author Tomas Barton
  */
-public class Visualization {
+public class DGramVis {
 
-    public Image generate(Clustering<? extends Cluster> clustering) {
-        Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+    public static Image generate(Clustering<? extends Cluster> clustering, int width, int height) {
+        //Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
         //if (dataset != null) {
         Heatmap heatmap = new Heatmap();
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
@@ -31,10 +31,10 @@ public class Visualization {
         /*       DgViewer viewer = new DgViewer();
          viewer.setDataset(null);
          viewer.setClustering(clustering);*/
-        return heatmap.generate(64, 64);
+        return heatmap.generate(width, height);
     }
 
-    private DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
+    private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

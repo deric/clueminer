@@ -13,8 +13,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.DgViewer;
+import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
@@ -35,26 +34,34 @@ import org.openide.util.lookup.Lookups;
  */
 public class ClusteringNode extends AbstractNode {
 
+    private Image image;
+
     public ClusteringNode(Clustering<Cluster> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
         String name = generateName();
         setDisplayName(name);
         setName(name);
     }
-    /*
-     @Override
+
+    /**
+     * Generate thumbnail of clustering
+     *
+     * @param type
+     * @return
+     */
+    @Override
     public Image getIcon(int type) {
-        Image img;
-
-
+        if (image == null) {
+            Clustering<? extends Cluster> clustering = getLookup().lookup(Clustering.class);
+            image = DGramVis.generate(clustering, 64, 64);
+        }
         //return ImageUtilities.loadImage("org/myorg/myeditor/icon.png");
-     return null;
-     }
-*/
+        return image;
+    }
+
     @Override
     public PasteType getDropType(Transferable t, final int action, int index) {
-        final Node dropNode = NodeTransfer.node(t,
-                DnDConstants.ACTION_COPY_OR_MOVE + NodeTransfer.CLIPBOARD_CUT);
+        final Node dropNode = NodeTransfer.node(t, DnDConstants.ACTION_COPY_OR_MOVE + NodeTransfer.CLIPBOARD_CUT);
         if (null != dropNode) {
             /*   final Movie movie = (Movie)dropNode.getLookup().lookup( Movie.class );
              if( null != movie  && !this.equals( dropNode.getParentNode() )) {
