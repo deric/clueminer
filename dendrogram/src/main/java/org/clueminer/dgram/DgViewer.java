@@ -357,7 +357,8 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
             //this method invalidate buffered image which is usually necessary
             //on component dimensions change (in case that the heatmap panel is bigger
             //than the frame)
-            dendrogramPanel.getHeatmap().drawData();
+            //@TODO is it really necessary?
+            dendrogramPanel.getHeatmap().resetCache();
             viewer.updateLayout();
             repaint();
         }

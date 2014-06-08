@@ -13,8 +13,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
@@ -30,7 +28,6 @@ import org.clueminer.dendrogram.tree.VerticalTree;
 public class Heatmap extends JPanel implements DendrogramDataListener, TreeListener, DendroHeatmap {
 
     private static final long serialVersionUID = -676917065082387341L;
-    private Dataset<? extends Instance> data;
     protected Dimension elementSize;
     private boolean isDrawBorders = false;
     private boolean isCompact = true;
@@ -60,6 +57,13 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private DendroPane panel;
     private Dimension size = new Dimension(10, 10);
 
+    public Heatmap() {
+        setBackground(Color.GRAY);
+        this.setDoubleBuffered(false);
+        elementSize = new Dimension(10, 10);
+        updateSize();
+    }
+
     public Heatmap(DendroPane p) {
         this.panel = p;
         setBackground(panel.getBackground());
@@ -79,8 +83,14 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         this.insets.left = offset;
     }
 
-    public void setData(Dataset<Instance> data) {
-        this.data = data;
+    /**
+     * Dataset to display
+     *
+     * @param dendroData
+     */
+    @Override
+    public void setData(DendrogramMapping dendroData) {
+        this.dendroData = dendroData;
     }
 
     /**
@@ -92,6 +102,9 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     /**
      * Selects rows from start to end.
+     *
+     * @param start
+     * @param end
      */
     public void selectRows(int start, int end) {
         firstSelectedRow = start;
@@ -101,6 +114,9 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     /**
      * Selects columns from start to end.
+     *
+     * @param start
+     * @param end
      */
     public void selectColumns(int start, int end) {
         firstSelectedColumn = start;
@@ -110,9 +126,9 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     /**
      * Sets dendroData for this viewer and its header.
+     *
      */
-    public void onDataChanged(Dataset<? extends Instance> data) {
-        this.data = data;
+    public void onDataChanged() {
         if (showClusters) {
             haveColorBar = false;
         }
@@ -139,13 +155,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         }
         //no columns ordering
         return column;
-    }
-
-    /**
-     * Returns the dendroData.
-     */
-    public Dataset<? extends Instance> getData() {
-        return data;
     }
 
     public Dimension getElementSize() {
@@ -196,6 +205,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     /**
      * Returns content width
+     *
+     * @return
      */
     public int getContentWidth() {
         return size.width;
@@ -221,17 +232,19 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      *
      * This function should be called whenever the dendroData or the gradient
      * changes.
+     *
+     * @param mapSize
      */
     @Override
-    public void drawData() {
+    public BufferedImage drawData(Dimension mapSize) {
         this.setOpaque(true);
         //if we don't have any dendroData, ends here
         if (dendroData == null) {
-            return;
+            return null;
         }
 
         if (this.elementSize.getHeight() < 1) {
-            return;
+            return null;
         }
 
         bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
@@ -263,6 +276,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
             }
         }
         bufferedGraphics.dispose();
+        return bufferedImage;
     }
 
     // Always required for good double-buffering.
@@ -294,7 +308,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         if (bufferedImage == null) {
             // Ideally, we only to call drawData in the constructor, or if we
             // change the dendroData or gradients. We include this just to be safe.
-            drawData();
+            bufferedImage = drawData(size);
+            // TODO bufferedImage might be still null
         }
 
         // The dendroData plot itself is drawn with 1 pixel per dendroData point, and the
@@ -510,17 +525,11 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     private boolean isLegalColumn(int column) {
-        if (column < 0 || column > (dendroData.getNumberOfColumns() - 1 + colorWidth)) {
-            return false;
-        }
-        return true;
+        return column >= 0 && column <= (dendroData.getNumberOfColumns() - 1 + colorWidth);
     }
 
     private boolean isLegalRow(int row) {
-        if (row < 0 || row > dendroData.getNumberOfRows() - 1) {
-            return false;
-        }
-        return true;
+        return row >= 0 && row <= dendroData.getNumberOfRows() - 1;
     }
 
     public void onSelected() {
@@ -530,11 +539,10 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        onDataChanged(dataset.getInstances());
         // this is the expensive function that draws the dendroData plot into a
         // BufferedImage. The dendroData plot is then cheaply drawn to the screen when
         // needed, saving us a lot of time in the end.
-        drawData();
+        drawData(size);
         //paints whole component
         redraw();
     }
@@ -573,7 +581,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
             redraw();
         } else {
             //drawing is expensive, so we try to call it as few times as possible
-            drawData();
+            drawData(size);
         }
     }
 
@@ -585,7 +593,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
             redraw();
         } else {
             //drawing is expensive, so we try to call it as few times as possible
-            drawData();
+            drawData(size);
         }
     }
 
@@ -598,12 +606,45 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
             this.selectColumns(cluster.firstElem, cluster.lastElem);
         }
 
-        drawData();
+        drawData(size);
     }
 
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
         //nothing to do right now
+    }
+
+    /**
+     * Generate image of given size
+     *
+     * @param width
+     * @param height
+     * @return
+     */
+    public Image generate(int width, int height) {
+        double fWidth = width / (double) dendroData.getNumberOfColumns();
+        double fHeight = height / (double) dendroData.getNumberOfRows();
+
+        elementSize.width = (int) Math.ceil(fWidth);
+        elementSize.height = (int) Math.ceil(fHeight);
+
+        size.width = elementSize.width * dendroData.getNumberOfColumns();
+        size.height = elementSize.height * dendroData.getNumberOfRows();
+
+        BufferedImage img = drawData(size);
+
+        if (img.getHeight() != height || img.getWidth() != width) {
+            //@TODO resize image
+        }
+
+        return bufferedImage;
+    }
+
+    @Override
+    public void resetCache() {
+        updateSize();
+        bufferedImage = drawData(size);
+        redraw();
     }
 
     /**

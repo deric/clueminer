@@ -2,13 +2,24 @@ package org.clueminer.dgram.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dendrogram.DendrogramData;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -20,8 +31,20 @@ public class IconDemo extends JFrame {
 
     public IconDemo() {
         setLayout(new BorderLayout());
+        Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
+        Matrix input = new JMatrix(dataset.arrayCopy());
+
+        Preferences params = NbPreferences.forModule(IconDemo.class);
+        AgglomerativeClustering algorithm = new HAC();
+        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
+
+        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
+
+        DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);
 
         Clustering<? extends Cluster> clustering = FakeClustering.iris();
+        clustering.lookupAdd(dendroData);
 
         Visualization vis = new Visualization();
         Image image = vis.generate(clustering);

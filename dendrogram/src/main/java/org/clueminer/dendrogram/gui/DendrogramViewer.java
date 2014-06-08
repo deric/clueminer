@@ -346,7 +346,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
             //this method invalidate buffered image which is usually necessary
             //on component dimensions change (in case that the heatmap panel is bigger
             //than the frame)
-            dendrogramPanel.getHeatmap().drawData();
+            dendrogramPanel.getHeatmap().resetCache();
             viewer.updateLayout();
             repaint();
         }
