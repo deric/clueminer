@@ -18,6 +18,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.VerticalTree;
+import org.imgscalr.Scalr;
 
 /**
  * This class is used to render a heatmap of given dendroData.
@@ -631,13 +632,15 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         size.width = elementSize.width * dendroData.getNumberOfColumns();
         size.height = elementSize.height * dendroData.getNumberOfRows();
 
-        BufferedImage img = drawData(size);
+        BufferedImage image = drawData(size);
 
-        if (img.getHeight() != height || img.getWidth() != width) {
-            //@TODO resize image
+        if (image.getHeight() != height || image.getWidth() != width) {
+            image = Scalr.resize(image, Scalr.Method.SPEED,
+                                 Scalr.Mode.FIT_TO_HEIGHT,
+                                 width, height, Scalr.OP_ANTIALIAS);
         }
 
-        return bufferedImage;
+        return image;
     }
 
     @Override
