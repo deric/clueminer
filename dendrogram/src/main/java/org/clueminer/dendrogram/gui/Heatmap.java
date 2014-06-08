@@ -544,6 +544,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
+        updateSize();
         // this is the expensive function that draws the dendroData plot into a
         // BufferedImage. The dendroData plot is then cheaply drawn to the screen when
         // needed, saving us a lot of time in the end.
