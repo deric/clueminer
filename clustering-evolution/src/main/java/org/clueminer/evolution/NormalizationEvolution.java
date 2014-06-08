@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.HillClimbCutoff;
@@ -29,10 +30,13 @@ import org.openide.util.lookup.ServiceProvider;
 public class NormalizationEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "Normalizations";
+    private AgglomerativeClustering algorithm;
 
     public NormalizationEvolution() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
+        //TODO allow changing algorithm used
+        algorithm = new HCL();
     }
 
     @Override
@@ -81,16 +85,13 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
      */
     protected void makeClusters(String std, boolean logscale, Preferences params, int i) {
         Clustering clustering;
-        //TODO allow changing algorithm used
-        AgglomerativeClustering algorithm = new HCL();
         Matrix input = standartize(dataset, std, logscale);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         HillClimbCutoff strategy = new HillClimbCutoff((ClusterEvaluator) evaluator);
         rowsResult.findCutoff(strategy);
         clustering = rowsResult.getClustering();
-        DendrogramMapping mapping = Lookup.getDefault().lookup(DendrogramMapping.class);
-        mapping.setMatrix(input);
-        mapping.setRowsResult(rowsResult);
+        DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
+        clustering.lookupAdd(mapping);
         instanceContent.add(clustering);
         if (ph != null) {
             ph.progress(i++);
