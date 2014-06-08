@@ -15,7 +15,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendrogramData;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;

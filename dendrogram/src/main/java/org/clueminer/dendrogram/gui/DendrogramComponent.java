@@ -16,7 +16,7 @@ import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringToolbar;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendrogramData;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;

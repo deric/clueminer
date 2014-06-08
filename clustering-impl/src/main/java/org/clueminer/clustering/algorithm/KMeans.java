@@ -2,8 +2,8 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.Random;
 import java.util.prefs.Preferences;
-import org.clueminer.cluster.BaseCluster;
-import org.clueminer.cluster.ClusterList;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;

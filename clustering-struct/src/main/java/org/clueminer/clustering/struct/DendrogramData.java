@@ -1,10 +1,9 @@
-package org.clueminer.dendrogram;
+package org.clueminer.clustering.struct;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
-import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -29,6 +28,10 @@ public class DendrogramData implements DendrogramMapping {
     private HierarchicalResult colsResult;
     private static final Logger log = Logger.getLogger(DendrogramData.class.getName());
 
+    public DendrogramData() {
+
+    }
+
     public DendrogramData(Dataset<? extends Instance> dataset) {
         this.instances = dataset;
 
@@ -46,7 +49,7 @@ public class DendrogramData implements DendrogramMapping {
         this.instances = dataset;
         checkParams(matrix, rowResult, null);
         this.setMatrix(matrix);
-        this.rowsResult = (HCLResult) rowResult;
+        this.rowsResult = rowResult;
     }
 
     private void checkParams(Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {

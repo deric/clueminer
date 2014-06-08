@@ -1,4 +1,4 @@
-package org.clueminer.cluster;
+package org.clueminer.clustering.struct;
 
 import com.google.common.collect.Sets;
 import java.awt.Color;

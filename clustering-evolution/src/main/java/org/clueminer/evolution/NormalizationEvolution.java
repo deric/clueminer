@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -87,6 +88,9 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         HillClimbCutoff strategy = new HillClimbCutoff((ClusterEvaluator) evaluator);
         rowsResult.findCutoff(strategy);
         clustering = rowsResult.getClustering();
+        DendrogramMapping mapping = Lookup.getDefault().lookup(DendrogramMapping.class);
+        mapping.setMatrix(input);
+        mapping.setRowsResult(rowsResult);
         instanceContent.add(clustering);
         if (ph != null) {
             ph.progress(i++);

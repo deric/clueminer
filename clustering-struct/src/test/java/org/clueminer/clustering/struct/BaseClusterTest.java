@@ -1,5 +1,7 @@
-package org.clueminer.cluster;
+package org.clueminer.clustering.struct;
 
+import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.clustering.struct.BaseCluster;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;

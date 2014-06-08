@@ -152,6 +152,11 @@
             <version>RELEASE74</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-struct</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

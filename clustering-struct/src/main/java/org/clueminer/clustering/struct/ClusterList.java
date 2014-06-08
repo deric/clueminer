@@ -1,4 +1,4 @@
-package org.clueminer.cluster;
+package org.clueminer.clustering.struct;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -22,6 +22,13 @@ public interface DendrogramMapping {
 
     public Matrix getMatrix();
 
+    /**
+     * Set input data matrix for clustring
+     *
+     * @param input
+     */
+    public void setMatrix(Matrix input);
+
     public Dataset<? extends Instance> getInstances();
 
     /**
@@ -38,7 +45,16 @@ public interface DendrogramMapping {
 
     public HierarchicalResult getRowsResult();
 
+    /**
+     * Set result of rows clustering
+     *
+     * @param rowsResult
+     */
+    public void setRowsResult(HierarchicalResult rowsResult);
+
     public HierarchicalResult getColsResult();
+
+    public void setColsResult(HierarchicalResult colsResult);
 
     public Clustering getRowsClustering();
 

@@ -2,7 +2,7 @@ package org.clueminer.explorer;
 
 import java.util.Arrays;
 import java.util.List;
-import org.clueminer.cluster.ClusterList;
+import org.clueminer.clustering.struct.ClusterList;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Children;

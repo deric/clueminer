@@ -206,7 +206,8 @@
         <module>fixtures-clustering</module>
         <module>clustering-eval</module>
         <module>clustering-dist</module>
-    </modules>
+    <module>clustering-struct</module>
+  </modules>
     <reporting>
         <plugins>
             <plugin>

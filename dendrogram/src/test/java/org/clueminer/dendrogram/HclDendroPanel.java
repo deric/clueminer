@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram;
 
+import org.clueminer.clustering.struct.DendrogramData;
 import java.util.List;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;

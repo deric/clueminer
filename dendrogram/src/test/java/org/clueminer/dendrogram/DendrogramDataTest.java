@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram;
 
+import org.clueminer.clustering.struct.DendrogramData;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.prefs.Preferences;

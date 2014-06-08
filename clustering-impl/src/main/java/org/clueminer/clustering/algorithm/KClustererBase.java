@@ -1,6 +1,6 @@
 package org.clueminer.clustering.algorithm;
 
-import org.clueminer.cluster.ClusterList;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
