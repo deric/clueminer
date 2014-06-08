@@ -189,12 +189,7 @@ public class ClusteringNode extends AbstractNode {
         set.setName("External Evaluation");
         set.setDisplayName("External Evaluation");
         for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {
-            Property evalProp = new PropertySupport.ReadOnly<Double>(score.getKey(), Double.class, "", "") {
-                @Override
-                public Double getValue() throws IllegalAccessException, InvocationTargetException {
-                    return score.getValue();
-                }
-            };
+            Property evalProp = new EvaluatorProperty(score.getKey(), score.getValue());
             evalProp.setDisplayName(score.getKey());
             set.put(evalProp);
         }

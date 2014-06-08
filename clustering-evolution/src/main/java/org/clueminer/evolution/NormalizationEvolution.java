@@ -54,7 +54,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
     public void run() {
         prepare();
 
-        Preferences params = NbPreferences.forModule(NormalizationEvolution.class);
+        Preferences params;
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();
 
@@ -66,6 +66,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         }
         int i = 0;
         for (String std : standartizations) {
+            params = NbPreferences.forModule(NormalizationEvolution.class);
             //no log scale
             makeClusters(std, false, params, i);
             //with log scale
@@ -86,10 +87,15 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
     protected void makeClusters(String std, boolean logscale, Preferences params, int i) {
         Clustering clustering;
         Matrix input = standartize(dataset, std, logscale);
+        params.put("algorithm", algorithm.getName());
+        params.putBoolean("logscale", logscale);
+        params.put("std", std);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         HillClimbCutoff strategy = new HillClimbCutoff((ClusterEvaluator) evaluator);
+        params.put("cutoff-score", evaluator.getName());
         rowsResult.findCutoff(strategy);
         clustering = rowsResult.getClustering();
+
         DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
         clustering.lookupAdd(mapping);
         instanceContent.add(clustering);
