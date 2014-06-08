@@ -4,14 +4,14 @@ import org.clueminer.math.Standardisation;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Does not standardise at all
+ * Does not standardize at all
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Standardisation.class)
 public class StdNone extends Standardisation {
 
-    private static String name = "None";
+    private static final String name = "None";
 
     @Override
     public String getName() {

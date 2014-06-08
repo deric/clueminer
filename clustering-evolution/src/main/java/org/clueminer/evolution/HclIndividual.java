@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evaluation.hclust.CopheneticCorrelation;
@@ -94,7 +95,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
 
         long start = System.currentTimeMillis();
 
-        Matrix input = Scaler.standartize(evolution.getDataset().arrayCopy(), params.get("std", "None"), params.getBoolean("log-scale", false));
+        Matrix input = Scaler.standartize(evolution.getDataset().arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
 
         System.out.println("input matrix");
         input.print(5, 2);
@@ -131,9 +132,15 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
         NaiveCutoff strategy = new NaiveCutoff();
         rowsResult.findCutoff(strategy);
-        // }// else we use a naive approach
 
+        // }// else we use a naive approach
         Clustering clust = rowsResult.getClustering();
+
+        DendrogramData dendroData = new DendrogramData(evolution.getDataset(), input, rowsResult);
+
+        clust.setParams(params);
+        //clust.lookupAdd(evolution.getDataset());
+        clust.lookupAdd(dendroData);
 
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {

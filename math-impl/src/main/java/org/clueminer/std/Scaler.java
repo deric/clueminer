@@ -11,6 +11,11 @@ import org.clueminer.math.Standardisation;
  */
 public class Scaler {
 
+    /**
+     * Provider for skipping normalization
+     */
+    public static final String NONE = "None";
+
     public static Matrix standartize(double[][] datasetArray, String method, boolean logScale) {
         StandardisationFactory sf = StandardisationFactory.getInstance();
         Standardisation std = sf.getProvider(method);
@@ -21,7 +26,7 @@ public class Scaler {
 
         int m = datasetArray.length;
         int n = datasetArray[0].length;
-        
+
         double[][] stdarr = std.optimize(datasetArray, m, n);
         if (logScale) {
             stdarr = logScale(stdarr, m, n);

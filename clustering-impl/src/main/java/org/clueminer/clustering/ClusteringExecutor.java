@@ -36,7 +36,7 @@ public class ClusteringExecutor {
             throw new NullPointerException("no data to process");
         }
 
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", null), params.getBoolean("log-scale", false));
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);

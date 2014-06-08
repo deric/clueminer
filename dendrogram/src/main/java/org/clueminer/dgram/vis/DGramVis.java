@@ -1,6 +1,7 @@
 package org.clueminer.dgram.vis;
 
 import java.awt.Image;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
@@ -24,11 +25,14 @@ import org.clueminer.std.Scaler;
  */
 public class DGramVis {
 
+    private static final Logger log = Logger.getLogger(DGramVis.class.getName());
+
     public static Image generate(Clustering<? extends Cluster> clustering, int width, int height) {
         //if (dataset != null) {
         Heatmap heatmap = new Heatmap();
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
+            log.warning("missing mapping, running clustering");
             mapping = createMapping(clustering);
         } else {
             if (!mapping.hasColumnsClustering()) {
@@ -36,7 +40,7 @@ public class DGramVis {
                 Preferences params = clustering.getParams();
                 AgglomerativeClustering algorithm = new HAC();
 
-                Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", "none"), params.getBoolean("log-scale", false));
+                Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
                 params.putBoolean(AgglParams.CLUSTER_ROWS, false);
                 HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
                 mapping.setColsResult(colsResult);
@@ -59,7 +63,7 @@ public class DGramVis {
         Preferences params = clustering.getParams();
         AgglomerativeClustering algorithm = new HAC();
 
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", null), params.getBoolean("log-scale", false));
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
