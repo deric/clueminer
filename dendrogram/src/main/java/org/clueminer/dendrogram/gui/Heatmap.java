@@ -71,6 +71,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     public Heatmap(DendroPane p) {
         this.panel = p;
         setBackground(panel.getBackground());
+        colorScheme = panel.getScheme();
         Listener listener = new Listener();
         addMouseListener(listener);
         addMouseMotionListener(listener);
