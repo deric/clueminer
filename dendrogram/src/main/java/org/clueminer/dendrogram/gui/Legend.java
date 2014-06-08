@@ -78,7 +78,7 @@ public class Legend extends JPanel implements DendrogramDataListener {
         //draws box with colors
         for (int y = 2; y < colorBarHeight; y++) {
             yStart = colorBarHeight - y;
-            bufferedGraphics.setColor(panel.getScheme().getColor(value));
+            bufferedGraphics.setColor(panel.getScheme().getColor(value, panel.getDendrogramData()));
             value -= inc;
             bufferedGraphics.fillRect(1, yStart, colorBarWidth - 2, 1);
         }

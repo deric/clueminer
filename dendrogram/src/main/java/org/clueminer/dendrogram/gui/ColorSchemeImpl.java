@@ -5,7 +5,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
-import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
  *
@@ -17,10 +17,14 @@ public class ColorSchemeImpl implements ColorScheme {
     private final BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
     protected static Color missingColor = new Color(128, 128, 128);
     protected static Color maskColor = new Color(255, 255, 255, 128);
-    private final DendroPane panel;
+    private boolean useDoubleGradient = true;
 
-    public ColorSchemeImpl(DendroPane p) {
-        panel = p;
+    public ColorSchemeImpl(boolean useDoubleGradient) {
+        this.useDoubleGradient = useDoubleGradient;
+    }
+
+    public ColorSchemeImpl() {
+
     }
 
     /**
@@ -40,34 +44,52 @@ public class ColorSchemeImpl implements ColorScheme {
         return image;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param value
+     * @param dendroData
+     * @return
+     */
     @Override
-    public Color getColor(double value) {
+    public Color getColor(double value, DendrogramMapping dendroData) {
         if (Double.isNaN(value)) {
             return missingColor;
         }
 
         double maximum;
         int colorIndex, rgb;
-        if (panel.useDoubleGradient()) {
-            maximum = value < panel.getDendrogramData().getMidValue() ? panel.getDendrogramData().getMinValue() : panel.getDendrogramData().getMaxValue();
-            colorIndex = (int) (255 * (value - panel.getDendrogramData().getMidValue()) / (maximum - panel.getDendrogramData().getMidValue()));
+        if (useDoubleGradient) {
+            maximum = value < dendroData.getMidValue() ? dendroData.getMinValue() : dendroData.getMaxValue();
+            colorIndex = (int) (255 * (value - dendroData.getMidValue()) / (maximum - dendroData.getMidValue()));
             if (colorIndex < 0) {
                 colorIndex = -colorIndex;
             }
             colorIndex = colorIndex > 255 ? 255 : colorIndex;
-            rgb = value < panel.getDendrogramData().getMidValue() ? negColorImage.getRGB(255 - colorIndex, 0)
+            rgb = value < dendroData.getMidValue() ? negColorImage.getRGB(255 - colorIndex, 0)
                     : posColorImage.getRGB(colorIndex, 0);
         } else {
-            double span = panel.getDendrogramData().getMaxValue() - panel.getDendrogramData().getMinValue();
-            if (value <= panel.getDendrogramData().getMinValue()) {
+            double span = dendroData.getMaxValue() - dendroData.getMinValue();
+            if (value <= dendroData.getMinValue()) {
                 colorIndex = 0;
-            } else if (value >= panel.getDendrogramData().getMaxValue()) {
+            } else if (value >= dendroData.getMaxValue()) {
                 colorIndex = 255;
             } else {
-                colorIndex = (int) (((value - panel.getDendrogramData().getMinValue()) / span) * 255);
+                colorIndex = (int) (((value - dendroData.getMinValue()) / span) * 255);
             }
             rgb = posColorImage.getRGB(colorIndex, 0);
         }
         return new Color(rgb);
     }
+
+    @Override
+    public boolean isUseDoubleGradient() {
+        return useDoubleGradient;
+    }
+
+    @Override
+    public void setUseDoubleGradient(boolean useDoubleGradient) {
+        this.useDoubleGradient = useDoubleGradient;
+    }
+
 }

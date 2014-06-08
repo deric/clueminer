@@ -93,7 +93,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
 
     private void initComponents() {
         setBackground(bg);
-        colorScheme = new ColorSchemeImpl(this);
+        colorScheme = new ColorSchemeImpl(useDoubleGradient);
     }
 
     /**

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -57,11 +58,13 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private Rectangle bounds;
     private DendroPane panel;
     private Dimension size = new Dimension(10, 10);
+    private ColorScheme colorScheme;
 
     public Heatmap() {
         setBackground(Color.GRAY);
         this.setDoubleBuffered(false);
         elementSize = new Dimension(10, 10);
+        colorScheme = new ColorSchemeImpl();
         updateSize();
     }
 
@@ -363,7 +366,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         boolean mask = this.firstSelectedRow >= 0 && this.lastSelectedRow >= 0 && (row < this.firstSelectedRow || row > this.lastSelectedRow);
         mask = (mask || this.firstSelectedColumn >= 0 && this.lastSelectedColumn >= 0 && (column < this.firstSelectedColumn || column > this.lastSelectedColumn));
 //System.out.println("orig row "+row+" -> "+rowIndex(row)+" orig col= "+column+" -> "+colIndex(column));
-        g.setColor(panel.getScheme().getColor(this.dendroData.get(rowIndex(row), colIndex(column))));
+        g.setColor(colorScheme.getColor(dendroData.get(rowIndex(row), colIndex(column)), dendroData));
         //System.out.println("x: "+x+", y: "+y+" insets: "+insets+" element size: "+elementSize);
         g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         if (mask) {
@@ -648,6 +651,16 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         updateSize();
         bufferedImage = drawData(size);
         redraw();
+    }
+
+    @Override
+    public void setColorScheme(ColorScheme scheme) {
+        this.colorScheme = scheme;
+    }
+
+    @Override
+    public ColorScheme getScheme() {
+        return colorScheme;
     }
 
     /**

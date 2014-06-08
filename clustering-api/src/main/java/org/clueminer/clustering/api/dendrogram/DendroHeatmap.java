@@ -29,4 +29,17 @@ public interface DendroHeatmap {
      */
     public void resetCache();
 
+    /**
+     * Set heatmap color scheme
+     *
+     * @param scheme
+     */
+    public void setColorScheme(ColorScheme scheme);
+
+    /**
+     *
+     * @return color scheme of the heatmap
+     */
+    public ColorScheme getScheme();
+
 }

@@ -9,7 +9,30 @@ import java.awt.image.BufferedImage;
  */
 public interface ColorScheme {
 
-    public BufferedImage createGradientImage(Color color1, Color color2);
+    /**
+     * Create color pallete which is afterwards used for generating colors
+     *
+     * @param color1
+     * @param color2
+     * @return
+     */
+    BufferedImage createGradientImage(Color color1, Color color2);
 
-    public Color getColor(double value);
+    /**
+     * Generates color for given double value
+     *
+     * @param value
+     * @param dendroData
+     * @return
+     */
+    Color getColor(double value, DendrogramMapping dendroData);
+
+    boolean isUseDoubleGradient();
+
+    /**
+     * Whether to use gradient with 3 colors or just with 2
+     *
+     * @param useDoubleGradient using 3 colors when true
+     */
+    void setUseDoubleGradient(boolean useDoubleGradient);
 }
