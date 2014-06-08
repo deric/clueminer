@@ -31,7 +31,7 @@ public class Visualization {
         /*       DgViewer viewer = new DgViewer();
          viewer.setDataset(null);
          viewer.setClustering(clustering);*/
-        return heatmap.generate(32, 32);
+        return heatmap.generate(64, 64);
     }
 
     private DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {

@@ -626,20 +626,28 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      * @return
      */
     public Image generate(int width, int height) {
+
         double fWidth = width / (double) dendroData.getNumberOfColumns();
         double fHeight = height / (double) dendroData.getNumberOfRows();
 
+        //element size can't be smaller than 1px
         elementSize.width = (int) Math.ceil(fWidth);
         elementSize.height = (int) Math.ceil(fHeight);
 
         size.width = elementSize.width * dendroData.getNumberOfColumns();
         size.height = elementSize.height * dendroData.getNumberOfRows();
 
-        BufferedImage image = drawData(size);
+        //if we have much more rows, we should use wider columns
+        if (size.height > size.width) {
+            elementSize.width = size.height / dendroData.getNumberOfColumns();
+            size.width = elementSize.width * dendroData.getNumberOfColumns();
+        }
+        //@TODO do the same with high dimensional data (-> streatch rows)
 
+        BufferedImage image = drawData(size);
         if (image.getHeight() != height || image.getWidth() != width) {
             image = Scalr.resize(image, Scalr.Method.SPEED,
-                                 Scalr.Mode.FIT_TO_HEIGHT,
+                                 Scalr.Mode.AUTOMATIC,
                                  width, height, Scalr.OP_ANTIALIAS);
         }
 
