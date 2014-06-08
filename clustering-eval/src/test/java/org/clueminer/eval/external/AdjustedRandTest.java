@@ -2,6 +2,8 @@ package org.clueminer.eval.external;
 
 import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.Table;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -132,5 +134,12 @@ public class AdjustedRandTest {
 
         double score = test.countScore(table);
         assertEquals(0.31257344300822565, score, delta);
+    }
+
+    @Test
+    public void testScoreDataset() {
+        Clustering<Cluster> clustering = FakeClustering.irisWrong4();
+        double score = test.score(clustering, FakeClustering.irisDataset());
+        System.out.println("clust(4) = " + score);
     }
 }

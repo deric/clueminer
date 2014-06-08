@@ -35,21 +35,22 @@ public class AdjustedRand extends ExternalEvaluator {
         double score;
         int[][] contingency = extendedContingency(table);
         //extra row/column is used for storing sums - the last one
-        int diameter = contingency.length - 1;
+        int diamRow = contingency.length - 1;
+        int diamCol = contingency[0].length - 1;
 
         double a = 0;
         int b1 = 0;
         int b2 = 0;
-        for (int i = 0; i < diameter; i++) {
+        for (int i = 0; i < diamRow; i++) {
             //diagonal item
             a += combinationOfTwo(contingency[i][i]);
             //last column (sum over a row)
-            b1 += combinationOfTwo(contingency[i][diameter]);
+            b1 += combinationOfTwo(contingency[i][diamCol]);
             //last row (sum over a column)
-            b2 += combinationOfTwo(contingency[diameter][i]);
+            b2 += combinationOfTwo(contingency[diamRow][i]);
         }
 
-        double all = combinationOfTwo(contingency[diameter][diameter]);
+        double all = combinationOfTwo(contingency[diamRow][diamCol]);
         double bProd = b1 * b2;
         score = (a - (bProd) / all) / ((b1 + b2) / 2.0 - (bProd) / all);
 
@@ -75,9 +76,11 @@ public class AdjustedRand extends ExternalEvaluator {
         Set<String> rows = table.rowKeySet();
         Set<String> cols = table.columnKeySet();
 
-        if (rows.size() != cols.size()) {
-            throw new RuntimeException("expected same number of rows and columns, but got rows = " + rows.size() + " and colums = " + cols.size());
-        }
+        /* number of rows could be different if we compare clusters to classes
+
+         if (rows.size() != cols.size()) {
+         throw new RuntimeException("expected same number of rows and columns, but got rows = " + rows.size() + " and colums = " + cols.size());
+         }*/
         String[] rk = new String[rows.size()];
         String[] ck = new String[cols.size()];
 
