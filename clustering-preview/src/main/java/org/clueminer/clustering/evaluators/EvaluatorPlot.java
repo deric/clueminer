@@ -8,8 +8,11 @@ import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.ui.DrawablePanel;
 import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.Insets2D;
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.Collection;
@@ -39,7 +42,8 @@ public class EvaluatorPlot extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
+        setSize(new Dimension(800, 600));
     }
 
     private void clusteringChanged() {
@@ -48,7 +52,11 @@ public class EvaluatorPlot extends JPanel {
         //double[] x = null;
         //double[] y = null;
         if (clusterings != null && evaluatorX != null && evaluatorY != null) {
-            add(clusteringPlot(clusterings));
+            add(clusteringPlot(clusterings),
+                new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+                                       GridBagConstraints.NORTHWEST,
+                                       GridBagConstraints.BOTH,
+                                       new Insets(0, 0, 0, 0), 0, 0));
             /* Map<Integer, Double> scores = clustering.getScores(evaluator.getName());
              Iterator<Entry<Integer, Double>> it = scores.entrySet().iterator();
              x = new double[scores.size()];
@@ -105,7 +113,7 @@ public class EvaluatorPlot extends JPanel {
         // Format plot
         plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
         //plot.getTitle().setText(clustering.getName());
-        plot.setLegendVisible(true);
+        plot.setLegendVisible(false);
 
         // Format axes
         AxisRenderer axisRendererX = plot.getAxisRenderer(XYPlot.AXIS_X);
