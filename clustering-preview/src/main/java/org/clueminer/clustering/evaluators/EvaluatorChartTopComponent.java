@@ -5,6 +5,7 @@ import java.awt.Insets;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -40,16 +41,18 @@ import org.openide.windows.TopComponent;
 public final class EvaluatorChartTopComponent extends TopComponent implements LookupListener {
 
     private static final long serialVersionUID = 3847461878488077650L;
-    private final EvaluatorPlot plot;
+    private EvaluatorPlot plot;
     private Lookup.Result<Clustering> result = null;
-    private Logger log = Logger.getLogger(EvaluatorChartTopComponent.class.getName());
+    private static final Logger log = Logger.getLogger(EvaluatorChartTopComponent.class.getName());
+    private JComboBox comboEvaluatorX;
+    private JComboBox comboEvaluatorY;
 
     public EvaluatorChartTopComponent() {
         initComponents();
         setName(Bundle.CTL_EvaluatorChartTopComponent());
         setToolTipText(Bundle.HINT_EvaluatorChartTopComponent());
-        plot = new EvaluatorPlot();
-        contentPane.add(plot, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(50, 0, 0, 0), 0, 0));
+        init();
+
     }
 
     /**
@@ -60,86 +63,11 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jToolBar1 = new javax.swing.JToolBar();
-        comboEvaluatorX = new javax.swing.JComboBox();
-        comboEvaluatorY = new javax.swing.JComboBox();
-        contentPane = new javax.swing.JPanel();
-
-        setLayout(new java.awt.BorderLayout());
-
-        jToolBar1.setRollover(true);
-
-        comboEvaluatorX.setModel(new EvaluatorComboBox());
-        comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorXActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(comboEvaluatorX);
-
-        comboEvaluatorY.setModel(new EvaluatorComboBox());
-        comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorYActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(comboEvaluatorY);
-
-        javax.swing.GroupLayout contentPaneLayout = new javax.swing.GroupLayout(contentPane);
-        contentPane.setLayout(contentPaneLayout);
-        contentPaneLayout.setHorizontalGroup(
-            contentPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        contentPaneLayout.setVerticalGroup(
-            contentPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 141, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(contentPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contentPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        add(jPanel1, java.awt.BorderLayout.PAGE_START);
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorXActionPerformed
-        String item = (String) comboEvaluatorX.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorX(item);
-        }
-    }//GEN-LAST:event_comboEvaluatorXActionPerformed
-
-    private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorYActionPerformed
-        String item = (String) comboEvaluatorY.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorY(item);
-        }
-    }//GEN-LAST:event_comboEvaluatorYActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox comboEvaluatorX;
-    private javax.swing.JComboBox comboEvaluatorY;
-    private javax.swing.JPanel contentPane;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-
     @Override
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
@@ -167,6 +95,20 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
         // TODO read your settings according to their version
     }
 
+    private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {
+        String item = (String) comboEvaluatorX.getSelectedItem();
+        if (item != null) {
+            plot.setEvaluatorX(item);
+        }
+    }
+
+    private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
+        String item = (String) comboEvaluatorY.getSelectedItem();
+        if (item != null) {
+            plot.setEvaluatorY(item);
+        }
+    }
+
     @Override
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> clusterings = result.allInstances();
@@ -174,5 +116,50 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
         if (!clusterings.isEmpty()) {
             plot.setClusterings(clusterings);
         }
+    }
+
+    private void init() {
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 1.0;
+        //component in last row should be streatched to fill space at the bottom
+        c.weighty = 0.1;
+        c.insets = new java.awt.Insets(5, 0, 0, 0);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5, 5, 5, 10);
+
+        comboEvaluatorX = new JComboBox();
+        comboEvaluatorX.setModel(new EvaluatorComboBox());
+        comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboEvaluatorXActionPerformed(evt);
+            }
+        });
+        add(comboEvaluatorX, c);
+
+        comboEvaluatorY = new JComboBox();
+        comboEvaluatorY.setModel(new EvaluatorComboBox());
+        comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboEvaluatorYActionPerformed(evt);
+            }
+        });
+        c.insets = new Insets(5, 0, 5, 5);
+        c.gridx = 1;
+        add(comboEvaluatorY, c);
+
+        plot = new EvaluatorPlot();
+        c.gridy = 1;
+        c.gridwidth = 2;
+        c.gridx = 0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(plot, c);
     }
 }

@@ -57,34 +57,13 @@ public class EvaluatorPlot extends JPanel {
                                        GridBagConstraints.NORTHWEST,
                                        GridBagConstraints.BOTH,
                                        new Insets(0, 0, 0, 0), 0, 0));
-            /* Map<Integer, Double> scores = clustering.getScores(evaluator.getName());
-             Iterator<Entry<Integer, Double>> it = scores.entrySet().iterator();
-             x = new double[scores.size()];
-             y = new double[scores.size()];
-             int i = 0;
-             while (it.hasNext()) {
-             Entry<Integer, Double> mapping = it.next();
-             x[i] = mapping.getKey();
-             y[i] = mapping.getValue();
-             i++;
-             }*/
+
+            revalidate();
+            validate();
+            repaint();
+
         }
-        /*
-         // create your PlotPanel (you can use it as a JPanel)
-         Plot2DPanel plot = new Plot2DPanel();
 
-         // define the legend position
-         plot.addLegend("SOUTH");
-
-         // add a line plot to the PlotPanel
-         String title = "unknown";
-         if (evaluatorX != null) {
-         title = evaluatorX.getName();
-         }
-         plot.addLinePlot(title, x, y);
-
-         add(plot);
-         */
     }
 
     private DrawablePanel clusteringPlot(Collection<? extends Clustering> clusterings) {
