@@ -3,6 +3,8 @@ package org.clueminer.clustering.evaluators;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -40,13 +42,14 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
     private static final long serialVersionUID = 3847461878488077650L;
     private final EvaluatorPlot plot;
     private Lookup.Result<Clustering> result = null;
+    private Logger log = Logger.getLogger(EvaluatorChartTopComponent.class.getName());
 
     public EvaluatorChartTopComponent() {
         initComponents();
         setName(Bundle.CTL_EvaluatorChartTopComponent());
         setToolTipText(Bundle.HINT_EvaluatorChartTopComponent());
         plot = new EvaluatorPlot();
-        add(plot, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(50, 0, 0, 0), 0, 0));
+        contentPane.add(plot, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(50, 0, 0, 0), 0, 0));
     }
 
     /**
@@ -56,70 +59,100 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        comboEvaluators = new javax.swing.JComboBox();
         jPanel1 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        comboEvaluatorX = new javax.swing.JComboBox();
+        comboEvaluatorY = new javax.swing.JComboBox();
+        contentPane = new javax.swing.JPanel();
 
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
 
-        comboEvaluators.setModel(new EvaluatorComboBox());
-        comboEvaluators.addActionListener(new java.awt.event.ActionListener() {
+        jToolBar1.setRollover(true);
+
+        comboEvaluatorX.setModel(new EvaluatorComboBox());
+        comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorsActionPerformed(evt);
+                comboEvaluatorXActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 0, 0);
-        add(comboEvaluators, gridBagConstraints);
+        jToolBar1.add(comboEvaluatorX);
+
+        comboEvaluatorY.setModel(new EvaluatorComboBox());
+        comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboEvaluatorYActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(comboEvaluatorY);
+
+        javax.swing.GroupLayout contentPaneLayout = new javax.swing.GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 141, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(contentPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(contentPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 400;
-        gridBagConstraints.ipady = 270;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(jPanel1, gridBagConstraints);
+        add(jPanel1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboEvaluatorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorsActionPerformed
-        String item = (String) comboEvaluators.getSelectedItem();
+    private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorXActionPerformed
+        String item = (String) comboEvaluatorX.getSelectedItem();
         if (item != null) {
-
+            plot.setEvaluatorX(item);
         }
-    }//GEN-LAST:event_comboEvaluatorsActionPerformed
+    }//GEN-LAST:event_comboEvaluatorXActionPerformed
+
+    private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvaluatorYActionPerformed
+        String item = (String) comboEvaluatorY.getSelectedItem();
+        if (item != null) {
+            plot.setEvaluatorY(item);
+        }
+    }//GEN-LAST:event_comboEvaluatorYActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox comboEvaluators;
+    private javax.swing.JComboBox comboEvaluatorX;
+    private javax.swing.JComboBox comboEvaluatorY;
+    private javax.swing.JPanel contentPane;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
         result.addLookupListener(this);
-        resultChanged(null);
+        resultChanged(new LookupEvent(result));
+        //resultChanged(null);
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        if (result != null) {
+            result.removeLookupListener(this);
+        }
     }
 
     void writeProperties(java.util.Properties p) {
@@ -137,7 +170,7 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
     @Override
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> clusterings = result.allInstances();
-        System.out.println("lookup event, result size: " + clusterings.size());
+        log.log(Level.INFO, "lookup event, result size: {0}", clusterings.size());
         if (!clusterings.isEmpty()) {
             plot.setClusterings(clusterings);
         }

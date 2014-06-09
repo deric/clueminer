@@ -47,7 +47,7 @@ public class EvaluatorPlot extends JPanel {
 
         //double[] x = null;
         //double[] y = null;
-        if (clusterings != null) {
+        if (clusterings != null && evaluatorX != null && evaluatorY != null) {
             add(clusteringPlot(clusterings));
             /* Map<Integer, Double> scores = clustering.getScores(evaluator.getName());
              Iterator<Entry<Integer, Double>> it = scores.entrySet().iterator();
