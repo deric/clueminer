@@ -11,7 +11,8 @@ import org.clueminer.dataset.api.Instance;
  */
 public interface EvaluationTable {
 
-    void setData(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset);
+    void setData(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset);
+
     /**
      * Get score for given evaluator
      *

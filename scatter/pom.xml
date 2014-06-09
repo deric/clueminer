@@ -32,14 +32,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>gral</id>
-            <name>GRAL</name>
-            <url>http://mvn.erichseifert.de/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
     <dependencies>

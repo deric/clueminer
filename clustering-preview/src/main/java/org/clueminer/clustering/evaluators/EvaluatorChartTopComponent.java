@@ -3,7 +3,7 @@ package org.clueminer.clustering.evaluators;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -39,7 +39,7 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
 
     private static final long serialVersionUID = 3847461878488077650L;
     private final EvaluatorPlot plot;
-    private Lookup.Result<HierarchicalResult> result = null;
+    private Lookup.Result<Clustering> result = null;
 
     public EvaluatorChartTopComponent() {
         initComponents();
@@ -112,7 +112,7 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
 
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult(HierarchicalResult.class);
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
         result.addLookupListener(this);
         resultChanged(null);
     }
@@ -136,11 +136,10 @@ public final class EvaluatorChartTopComponent extends TopComponent implements Lo
 
     @Override
     public void resultChanged(LookupEvent le) {
-        Collection<? extends HierarchicalResult> clusterings = result.allInstances();
+        Collection<? extends Clustering> clusterings = result.allInstances();
         System.out.println("lookup event, result size: " + clusterings.size());
         if (!clusterings.isEmpty()) {
-            HierarchicalResult clust = clusterings.iterator().next();
-            plot.setClustering(clust);
+            plot.setClusterings(clusterings);
         }
     }
 }

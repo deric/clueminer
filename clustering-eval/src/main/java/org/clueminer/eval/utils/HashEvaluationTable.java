@@ -29,14 +29,14 @@ public class HashEvaluationTable implements EvaluationTable {
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
     private HashMap<String, Double> scores;
 
-    public HashEvaluationTable(Clustering<Cluster> clustering, Dataset<? extends Instance> dataset) {
+    public HashEvaluationTable(Clustering<? extends Cluster> clustering, Dataset<? extends Instance> dataset) {
         initEvaluators();
         setData(clustering, dataset);
     }
 
     @Override
-    public final void setData(Clustering<Cluster> clustering, Dataset<? extends Instance> dataset) {
-        this.clustering = clustering;
+    public final void setData(Clustering<? extends Cluster> clustering, Dataset<? extends Instance> dataset) {
+        this.clustering = (Clustering<Cluster>) clustering;
         this.dataset = dataset;
         reset();
     }

@@ -49,6 +49,14 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>gral</id>
+            <name>GRAL</name>
+            <url>http://mvn.erichseifert.de/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <build>
@@ -206,8 +214,8 @@
         <module>fixtures-clustering</module>
         <module>clustering-eval</module>
         <module>clustering-dist</module>
-    <module>clustering-struct</module>
-  </modules>
+        <module>clustering-struct</module>
+    </modules>
     <reporting>
         <plugins>
             <plugin>
