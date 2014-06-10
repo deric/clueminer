@@ -49,19 +49,15 @@ public class EvaluatorPlot extends JPanel {
     private void clusteringChanged() {
         this.removeAll();
 
-        //double[] x = null;
-        //double[] y = null;
         if (clusterings != null && evaluatorX != null && evaluatorY != null) {
             add(clusteringPlot(clusterings),
                 new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
                                        GridBagConstraints.NORTHWEST,
                                        GridBagConstraints.BOTH,
                                        new Insets(0, 0, 0, 0), 0, 0));
-
             revalidate();
             validate();
             repaint();
-
         }
 
     }
