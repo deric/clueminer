@@ -2,12 +2,11 @@ package org.clueminer.importer.impl;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeBuilder;
@@ -36,21 +35,22 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     protected static final int NULL_INDEX = -1;
 
     private ObjectList<InstanceDraft> instanceList;
-    private ObjectList<AttributeDraft> attributeList;
+    private HashMap<Integer, AttributeDraft> attributeList;
     private Dataset<? extends Instance> dataset;
-    private Object2ObjectMap<String, AttributeDraft> attributeMap;
+    private HashMap<String, AttributeDraft> attributeMap;
     private Report report;
     private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
     private Class<?> defaultNumericType = Double.class;
     private String dataType = "discrete";
+    private String md5 = null;
 
     public ImportContainerImpl() {
         report = new Report();
         instanceList = new ObjectArrayList<InstanceDraft>();
-        attributeList = new ObjectArrayList<AttributeDraft>();
-        attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
+        attributeList = new HashMap<Integer, AttributeDraft>();
+        attributeMap = new HashMap<String, AttributeDraft>();
         instanceMap = new Object2IntOpenHashMap<String>();
         instanceMap.defaultReturnValue(NULL_INDEX);
     }
@@ -158,7 +158,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
      */
     @Override
     public Iterable<AttributeDraft> getAttributes() {
-        return attributeMap.values();
+        return attributeList.values();
     }
 
     /**
@@ -171,7 +171,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
         attr.setType(defaultNumericType);
         attr.setRole(BasicAttrRole.INPUT);
         attributeMap.put(name, attr);
-        attributeList.add(index, attr);
+        attributeList.put(index, attr);
         return attr;
     }
 
@@ -283,7 +283,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
      */
     @Override
     public boolean hasPrimaryKey() {
-        for (AttributeDraft attr : attributeList) {
+        for (AttributeDraft attr : attributeList.values()) {
             if (attr.getRole() == BasicAttrRole.ID) {
                 return true;
             }
@@ -316,8 +316,18 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
     @Override
     public void resetAttributes() {
-        attributeList = new ObjectArrayList<AttributeDraft>();
-        attributeMap = new Object2ObjectOpenHashMap<String, AttributeDraft>();
+        attributeList = new HashMap<Integer, AttributeDraft>();
+        attributeMap = new HashMap<String, AttributeDraft>();
+    }
+
+    @Override
+    public String getMD5() {
+        return md5;
+    }
+
+    @Override
+    public void setMD5(String md5) {
+        this.md5 = md5;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {

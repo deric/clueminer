@@ -89,12 +89,18 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     @Override
     public void reload() {
         if (reader != null) {
-
+            logger.info("reload called");
             LongTask task = null;
             if (this instanceof LongTask) {
                 task = (LongTask) this;
             }
             final FileImporter importer = (FileImporter) this;
+            if (getFile() != null) {
+                importer.setFile(file);
+            } else {
+                logger.warning("missing file object");
+                throw new RuntimeException("missing file object");
+            }
 
             final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
             String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");

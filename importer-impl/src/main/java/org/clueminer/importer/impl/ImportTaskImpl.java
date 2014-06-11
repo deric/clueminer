@@ -3,6 +3,9 @@ package org.clueminer.importer.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
@@ -55,23 +58,40 @@ public class ImportTaskImpl implements ImportTask {
     @Override
     public void run() {
         InputStream stream = null;
+        byte[] digest = null;
         try {
             stream = fileObject.getInputStream();
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         }
+        final String containerSource;
+        if (fileObject != null) {
+            containerSource = fileObject.getPath();
+            importer.setFile(fileObject);
+        } else {
+            containerSource = "missing source!";
+        }
 
-        final String containerSource = fileObject.getName();
         try {
-            logger.log(Level.INFO, "imporing file..");
-            Container container = controller.importFile(stream, importer, false);
+            logger.log(Level.INFO, "imporing file: {0}", containerSource);
+
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            DigestInputStream dis = new DigestInputStream(stream, md);
+            Container container = controller.importFile(dis, importer, false);
             if (container != null) {
                 container.setSource(containerSource);
+
+                if (digest == null) {
+                    digest = md.digest();
+                    container.setMD5(new String(digest));
+                }
             }
+
+            logger.log(Level.INFO, "file MD5: {0}", new String(digest));
             logger.log(Level.INFO, "displaing import dialog...");
             //display import window
             finishImport(container);
-        } catch (Exception ex) {
+        } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         } finally {
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {

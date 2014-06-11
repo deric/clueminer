@@ -52,6 +52,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -84,6 +85,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     private DataTableModel dataTableModel;
     private static final Logger logger = Logger.getLogger(ReportPanel.class.getName());
     private FileObject currentFile;
+    private static final RequestProcessor RP = new RequestProcessor("Preloading file");
 
     /**
      * Creates new form ReportPanel
@@ -236,7 +238,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         logger.log(Level.INFO, "new file importer: {0}", fileImporter.getName());
         if (controller != null) {
             importerUI = controller.getUI(importer);
-            System.out.println("importer UI: " + importerUI);
             if (importerUI != null) {
                 JPanel panel = importerUI.getPanel();
                 importerUI.setup(importer);
@@ -248,11 +249,14 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 importerPanel.validate();
                 importerPanel.revalidate();
                 importerPanel.repaint();
+            } else {
+                logger.warning("importer UI missing");
             }
         } else {
             logger.log(Level.SEVERE, "no controller found");
         }
         dataTableModel.fireTableDataChanged();
+        repaint();
     }
 
     private void fillReport(final Report report) {
@@ -592,11 +596,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         final ContainerLoader loader = importer.getContainer().getLoader();
         final FileImporter fi = (FileImporter) importer;
         if (currentFile != null) {
-            Thread thread = new Thread(fillingThreads, new Runnable() {
+            RP.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         logger.log(Level.INFO, "importing file..");
+
                         loader.reset();
                         Container cont = controller.importFile(currentFile.getInputStream(), fi, true);
                         setData(cont.getReport(), cont);
@@ -605,10 +610,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                     }
                 }
             });
-            thread.start();
         } else {
             logger.log(Level.INFO, "current file is null");
         }
+        this.validate();
+        this.revalidate();
+        this.repaint();
     }
 
     @Override

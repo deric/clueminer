@@ -101,9 +101,12 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         loader.setDataset(null);
         loader.setNumberOfLines(0);
         this.report = new Report();
-        this.file = container.getFile();
+        if (container.getFile() != null) {
+            this.file = container.getFile();
+        }
         parsedHeader = false;
         logger.log(Level.INFO, "has header = {0}", hasHeader);
+        logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
         try {
             if (reader != null) {
                 lineReader = ImportUtils.getTextReader(reader);
@@ -113,7 +116,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 throw new RuntimeException("importer wasn't provided with any readable source");
             }
 
-            logger.log(Level.INFO, "parsing CSV: {0}", container.getSource());
             importData(lineReader);
             fireAnalysisFinished();
         } catch (IOException e) {
@@ -253,6 +255,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 AttributeDraft attrd = loader.createAttribute(i, attrName);
                 if (attrName.startsWith("meta_")) {
                     attrd.setRole(BasicAttrRole.META);
+                    logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
                 }
 
                 logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
@@ -271,6 +274,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         } else {
             logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
             attr = loader.createAttribute(i, "attr_" + i);
+            logger.log(Level.INFO, "attr name {0}, role = {1}", new Object[]{attr.getName(), attr.getRole().toString()});
         }
 
         return attr;
@@ -294,7 +298,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                         draft.setValue(i, castedVal);
                     } catch (ParsingError ex) {
                         report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
                     }
                 } else {
                     draft.setValue(i, value);
@@ -380,7 +384,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     private boolean isNextCharacterEscapedQuote(String nextLine, boolean inQuotes, int i) {
@@ -394,7 +398,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
      *
      * @param nextLine the current line
      * @param inQuotes true if the current context is quoted
-     * @param i current index in line
+     * @param i        current index in line
      * @return true if the following character is a quote
      */
     protected boolean isNextCharacterEscapable(String nextLine, boolean inQuotes, int i) {

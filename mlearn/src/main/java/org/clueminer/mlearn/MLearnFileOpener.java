@@ -13,7 +13,6 @@ import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
 import org.clueminer.importer.ImportTask;
 import org.clueminer.importer.gui.ImportControllerUIImpl;
-import org.clueminer.importer.impl.ImportControllerImpl;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
@@ -45,7 +44,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
     private static final Logger logger = Logger.getLogger(MLearnFileOpener.class.getName());
 
     public MLearnFileOpener() {
-        controller = new ImportControllerImpl();
+        controller = Lookup.getDefault().lookup(ImportController.class);
         controllerUI = new ImportControllerUIImpl(controller);
     }
 
@@ -69,11 +68,9 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
         try {
             if (isFileSupported(f)) {
                 importTask = controllerUI.importFile(fileObject);
-                importTask.addListener(this);
                 if (importTask != null) {
-                    final RequestProcessor.Task task = RP.create(importTask);
-                    //task.addTaskListener(this);
-                    task.schedule(0);
+                    importTask.addListener(this);
+                    RP.post(importTask);
                 } else {
                     logger.log(Level.SEVERE, "failed to create an import task");
                 }
@@ -119,6 +116,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
 
     @Override
     public void dataLoaded() {
+        logger.info("data loaded");
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {

@@ -49,6 +49,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                 if (container != null) {
                     // we might have to check if reload was completed
                     ContainerLoader loader = container.getLoader();
+                    logger.log(Level.INFO, "md5: {0}", container.getMD5());
                     if (loader != null) {
                         Iterable<AttributeDraft> attrs = loader.getAttributes();
                         logger.log(Level.INFO, "detected {0} attributes", loader.getAttributeCount());
@@ -60,6 +61,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                             for (AttributeDraft atrd : attrs) {
                                 generateAttribute(atrd.getIndex(), atrd);
                             }
+
                         }
                     } else {
                         NotifyUtil.error("Error", "missing loader", false);
@@ -84,9 +86,6 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         AttributeProp column = new AttributeProp(atrd, importerUI);
         attrPanels[num] = column;
         add(column, c);
-        this.validate();
-        this.revalidate();
-        this.repaint();
     }
 
     @Override

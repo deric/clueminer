@@ -82,4 +82,17 @@ public interface Container {
      *         <code>false</code> otherwise
      */
     boolean verify();
+
+    /**
+     *
+     * @return MD5 fingerprint
+     */
+    String getMD5();
+
+    /**
+     * Computed fingerprint for this file
+     *
+     * @param md5
+     */
+    void setMD5(String md5);
 }

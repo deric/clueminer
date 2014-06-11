@@ -10,7 +10,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.types.FileType;
 import org.clueminer.importer.ImportController;
@@ -40,8 +43,11 @@ public class ImportControllerImpl implements ImportController {
     private final List<FileImporter> fileImporters;
     private final ImporterUI[] uis;
     private final MimeUtil2 mimeUtil = new MimeUtil2();
+    private static final Logger log = Logger.getLogger(ImportControllerImpl.class.getName());
+    private final HashMap<String, Container> containers;
 
     public ImportControllerImpl() {
+        this.containers = new HashMap<String, Container>();
         fileImporters = FileImporterFactory.getInstance().getAll();
 
         //Get UIS
@@ -51,6 +57,7 @@ public class ImportControllerImpl implements ImportController {
         mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
         mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
         mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
+        log.info("creating new ImportController");
     }
 
     @Override
@@ -64,6 +71,7 @@ public class ImportControllerImpl implements ImportController {
                 importer = getMatchingImporter(detectMIME(file));
             }
             if (fileObject != null && importer != null) {
+                importer.setFile(fileObject);
                 Container c = importFile(fileObject.getInputStream(), importer, false);
                 if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                     try {
@@ -84,6 +92,7 @@ public class ImportControllerImpl implements ImportController {
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             if (fileObject != null) {
+                importer.setFile(fileObject);
                 Container c = importFile(fileObject.getInputStream(), importer, false);
                 if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                     try {
@@ -101,13 +110,30 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public Container importFile(Reader reader, FileImporter importer, boolean reload) {
         //Create Container
-        final Container container = Lookup.getDefault().lookup(Container.class);
-        if (reload) {
-            System.out.println("container is reloading");
-            //container.getLoader().reset();
+        Container container;
+        String path = importer.getFile().getPath();
+        /*if (reload) {
+         container = Lookup.getDefault().lookup(Container.class);
+         //container.getLoader().reset();
+         } else {
+         container = new ImportContainerImpl();
+         }*/
+        log.log(Level.INFO, "reload {0}", reload);
+        if (importer.getFile() != null) {
+            log.log(Level.INFO, "importing file: {0}", importer.getFile().getPath());
         }
-        System.out.println("importer contr num attr: " + container.getLoader().getAttributeCount());
-        System.out.println("importer contr num inst: " + container.getLoader().getInstanceCount());
+        // unique container for path
+        if (containers.containsKey(path)) {
+            container = containers.get(path);
+        } else {
+            log.log(Level.INFO, "did not find container for {0}, size = {1}", new Object[]{path, containers.size()});
+            container = new ImportContainerImpl();
+            containers.put(path, container);
+        }
+
+        //container = Lookup.getDefault().lookup(Container.class);
+        log.log(Level.INFO, "importer contr num attr: {0}", container.getLoader().getAttributeCount());
+        log.log(Level.INFO, "importer contr num inst: {0}", container.getLoader().getInstanceCount());
         //Report
         Report report = new Report();
         container.setReport(report);
@@ -149,6 +175,7 @@ public class ImportControllerImpl implements ImportController {
             fi = getMatchingImporter(detectMIME(file));
         }
         if (fileObject != null && fi != null) {
+            fi.setFile(fileObject);
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                 try {
                     fileObject.delete();

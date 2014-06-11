@@ -1,5 +1,7 @@
 package org.clueminer.importer.gui;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
@@ -23,6 +25,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
 
     private ContainerLoader container;
     private JTable table;
+    private static final Logger log = Logger.getLogger(DataTableModel.class.getName());
 
     public DataTableModel() {
 
@@ -117,7 +120,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                System.out.println("setting header: " + attr.getName() + " type: " + attr.getType().toString());
+                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType().toString(), attr.getRole().toString()});
             }
             th.repaint();
         }
