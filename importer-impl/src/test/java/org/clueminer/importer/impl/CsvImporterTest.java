@@ -10,6 +10,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -82,16 +83,6 @@ public class CsvImporterTest {
     }
 
     /**
-     * Test of setFile method, of class CsvImporter.
-     *
-     * @throws java.io.IOException
-     */
-    @Test
-    public void testSetFile() throws IOException {
-        subject.setFile(fixtures.irisData());
-    }
-
-    /**
      * Test of isAccepting method, of class CsvImporter.
      */
     @Test
@@ -106,9 +97,8 @@ public class CsvImporterTest {
     //@Test
     public void testExecute() throws IOException {
         Container container = new ImportContainerImpl();
-        container.setFile(fixtures.irisData());
 
-        subject.execute(container);
+        subject.execute(container, FileUtil.toFileObject(fixtures.irisData()));
         assertEquals(150, container.getLoader().getNumberOfLines());
     }
 

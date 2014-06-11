@@ -16,7 +16,6 @@ import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -27,8 +26,6 @@ import org.openide.util.NbBundle;
  */
 public abstract class AbstractImporter implements FileImporter, LongTask {
 
-    protected FileObject file;
-    protected Reader reader;
     protected Container container;
     protected Report report;
     protected ProgressTicket progressTicket;
@@ -52,26 +49,6 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public FileObject getFile() {
-        return file;
-    }
-
-    @Override
-    public void setFile(FileObject file) {
-        this.file = file;
-    }
-
-    @Override
-    public void setFile(File file) {
-        this.file = FileUtil.toFileObject(file);
-    }
-
-    @Override
-    public void setReader(Reader reader) {
-        this.reader = reader;
-    }
-
-    @Override
     public Container getContainer() {
         return container;
     }
@@ -87,42 +64,35 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public void reload() {
-        if (reader != null) {
-            logger.info("reload called");
-            LongTask task = null;
-            if (this instanceof LongTask) {
-                task = (LongTask) this;
-            }
-            final FileImporter importer = (FileImporter) this;
-            if (getFile() != null) {
-                importer.setFile(file);
-            } else {
-                logger.warning("missing file object");
-                throw new RuntimeException("missing file object");
-            }
-
-            final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
-            String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");
-            if (!executor.isRunning()) {
-                executor.execute(task, new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            logger.log(Level.INFO, "reloading file");
-                            controller.importFile(reader, importer, true);
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
-                }, taskName, errorHandler);
-            } else {
-                logger.log(Level.INFO, "executor is still running");
-            }
-
-        } else {
-            logger.log(Level.WARNING, "file reader is null");
+    public void reload(final FileObject file, final Reader reader) {
+        logger.info("reload called");
+        LongTask task = null;
+        if (this instanceof LongTask) {
+            task = (LongTask) this;
         }
+        final FileImporter importer = this;
+        final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
+        String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");
+        if (!executor.isRunning()) {
+            executor.execute(task, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        logger.log(Level.INFO, "reloading file");
+                        controller.importFile(file, reader, importer, true);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, taskName, errorHandler);
+        } else {
+            logger.log(Level.INFO, "executor is still running");
+        }
+    }
+
+    @Override
+    public void reload(File file) {
+
     }
 
     @Override

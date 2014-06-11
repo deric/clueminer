@@ -1,7 +1,6 @@
 package org.clueminer.spi;
 
 import java.io.File;
-import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.Collection;
 import org.clueminer.types.FileType;
@@ -12,29 +11,6 @@ import org.openide.filesystems.FileObject;
  * @author Tomas Barton
  */
 public interface FileImporter extends Importer {
-
-    /**
-     * Sets the reader where characters can be retrieved.
-     *
-     * @param reader the reader on data
-     */
-    void setReader(Reader reader);
-
-    /**
-     * Return File which is supposed to be processed
-     *
-     * @return File
-     */
-    FileObject getFile();
-
-    /**
-     * Sets File to process
-     *
-     * @param file
-     */
-    void setFile(FileObject file);
-
-    void setFile(File file);
 
     /**
      * Return true if importer supports given MIME type
@@ -71,8 +47,17 @@ public interface FileImporter extends Importer {
 
     /**
      * Reload import (with new importer settings)
+     *
+     * @param file
      */
-    void reload();
+    void reload(File file);
+
+    /**
+     *
+     * @param file
+     * @param reader
+     */
+    void reload(final FileObject file, Reader reader);
 
     /**
      * Add listener to events invoked by importer (pre-loading data finished
@@ -89,15 +74,4 @@ public interface FileImporter extends Importer {
      */
     void removeListener(AnalysisListener listener);
 
-    /**
-     *
-     * @return
-     */
-    LineNumberReader getLineReader();
-
-    /**
-     *
-     * @param lineReader
-     */
-    void setLineReader(LineNumberReader lineReader);
 }

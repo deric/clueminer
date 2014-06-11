@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +62,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader loader;
-    private LineNumberReader lineReader;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
@@ -94,33 +94,33 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     }
 
     @Override
-    public boolean execute(Container container) {
+    public boolean execute(Container container, FileObject file) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(file);
+        container.setFile(file);
+        return execute(container, lineReader);
+    }
+
+    @Override
+    public boolean execute(Container container, Reader reader) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
+        return execute(container, lineReader);
+    }
+
+    public boolean execute(Container container, LineNumberReader lineReader) throws IOException {
         this.container = container;
+        logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
         this.loader = container.getLoader();
         loader.reset(); //remove all previous instances
         loader.setDataset(null);
         loader.setNumberOfLines(0);
         this.report = new Report();
-        if (container.getFile() != null) {
-            this.file = container.getFile();
-        }
         parsedHeader = false;
         logger.log(Level.INFO, "has header = {0}", hasHeader);
         logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
-        try {
-            if (reader != null) {
-                lineReader = ImportUtils.getTextReader(reader);
-            } else if (file != null) {
-                lineReader = ImportUtils.getTextReader(file);
-            } else {
-                throw new RuntimeException("importer wasn't provided with any readable source");
-            }
 
-            importData(lineReader);
-            fireAnalysisFinished();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        importData(lineReader);
+        fireAnalysisFinished();
+
         return !cancel;
     }
 
@@ -180,6 +180,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         }
 
         if (hasHeader && !skipHeader && !parsedHeader) {
+            logger.log(Level.INFO, "header: {0}", line);
             parseHeader(columns);
             parsedHeader = true;
         } else if (skipHeader) {
@@ -503,16 +504,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             return new LineNumberReader(br);
         }
         return ImportUtils.getTextReader(fileObject);
-    }
-
-    @Override
-    public LineNumberReader getLineReader() {
-        return lineReader;
-    }
-
-    @Override
-    public void setLineReader(LineNumberReader lineReader) {
-        this.lineReader = lineReader;
     }
 
     protected ContainerLoader getLoader() {

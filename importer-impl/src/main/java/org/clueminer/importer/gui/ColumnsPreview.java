@@ -92,6 +92,10 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     public void dataLoaded() {
         //
         logger.log(Level.INFO, "data was loaded");
+        attributes = null;
+        attrPanels = null;
+        //remove all previous attributes
+        removeAll();
     }
 
     public void attributeChanged(AttributeDraft attr) {

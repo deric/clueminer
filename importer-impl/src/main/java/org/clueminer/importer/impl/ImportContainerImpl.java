@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +19,6 @@ import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 
 /**
@@ -230,11 +228,6 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     public void setFile(FileObject file) {
         this.file = file;
         setSource(file.getPath());
-    }
-
-    @Override
-    public void setFile(File source) {
-        file = FileUtil.toFileObject(source);
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.clueminer.io.importer.api;
 
-import java.io.File;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -38,7 +37,7 @@ public interface Container {
      *
      * @param source
      */
-    void setFile(File source);
+    void setFile(FileObject source);
 
     FileObject getFile();
 

@@ -14,6 +14,7 @@ import org.clueminer.spi.FileImporter;
 import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
 import org.clueminer.spi.ImporterWizardUI;
+import org.openide.filesystems.FileObject;
 
 /**
  *
@@ -27,21 +28,23 @@ public interface ImportController {
 
     /**
      *
+     * @param file
      * @param reader
      * @param importer
      * @param reload   true when reloading same file
      * @return
      */
-    public Container importFile(Reader reader, FileImporter importer, boolean reload);
+    public Container importFile(FileObject file, Reader reader, FileImporter importer, boolean reload);
 
     /**
      *
+     * @param file
      * @param stream
      * @param importer
      * @param reload   true when reloading same file
      * @return
      */
-    public Container importFile(InputStream stream, FileImporter importer, boolean reload);
+    public Container importFile(FileObject file, InputStream stream, FileImporter importer, boolean reload);
 
     public FileImporter getFileImporter(File file);
 

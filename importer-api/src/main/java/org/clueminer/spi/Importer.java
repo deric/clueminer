@@ -1,7 +1,10 @@
 package org.clueminer.spi;
 
+import java.io.IOException;
+import java.io.Reader;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Report;
+import org.openide.filesystems.FileObject;
 
 /**
  * Interface for classes which imports data from files, databases, streams or
@@ -23,13 +26,22 @@ public interface Importer {
     String getName();
 
     /**
-     * Run the import process
      *
-     * @param loader the container where imported data will be pushed
-     * @return <code>true</code> if the import is successful or
-     *         <code>false</code> if it has been canceled
+     * @param container
+     * @param reader
+     * @return
+     * @throws java.io.IOException
      */
-    boolean execute(Container loader);
+    boolean execute(Container container, Reader reader) throws IOException;
+
+    /**
+     *
+     * @param container
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    boolean execute(Container container, FileObject file) throws IOException;
 
     /**
      * Returns the import container. The container is the import "result", all

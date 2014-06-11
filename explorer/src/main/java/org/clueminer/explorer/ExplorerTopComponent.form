@@ -17,7 +17,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="explorerPane" pref="663" max="32767" attributes="0"/>
-          <Component id="jToolBar1" pref="663" max="32767" attributes="0"/>
+          <Component id="jToolBar1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -32,9 +32,6 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JScrollPane" name="explorerPane">
-      <Properties>
-        <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
-      </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
     </Container>

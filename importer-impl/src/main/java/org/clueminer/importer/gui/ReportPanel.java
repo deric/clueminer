@@ -334,7 +334,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     }
 
     public void destroy() {
-        fillingThreads.interrupt();
+        if (fileImporter != null) {
+            fileImporter.removeListener(dataTableModel);
+            fileImporter.removeListener(this);
+        }
+        currentFile = null;
+        colPreviewPane.dataLoaded();
     }
 
     public Processor getProcessor() {
@@ -600,10 +605,10 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 @Override
                 public void run() {
                     try {
-                        logger.log(Level.INFO, "importing file..");
+                        logger.log(Level.INFO, "importer changed");
 
                         loader.reset();
-                        Container cont = controller.importFile(currentFile.getInputStream(), fi, true);
+                        Container cont = controller.importFile(currentFile, currentFile.getInputStream(), fi, true);
                         setData(cont.getReport(), cont);
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
@@ -621,6 +626,11 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     @Override
     public void dataLoaded() {
         logger.log(Level.INFO, "data loaded");
+        if (fileImporter != null) {
+            fileImporter.removeListener(dataTableModel);
+            fileImporter.removeListener(this);
+        }
+        currentFile = null;
     }
 
     @Override
