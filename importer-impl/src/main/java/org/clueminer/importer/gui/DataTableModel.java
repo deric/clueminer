@@ -80,7 +80,10 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         AttributeDraft attr = container.getAttribute(columnIndex);
-        return attr.getType().getClass();
+        if (attr != null) {
+            return attr.getType().getClass();
+        }
+        return null;
     }
 
     private void updateData() {
@@ -120,7 +123,7 @@ public class DataTableModel extends AbstractTableModel implements AnalysisListen
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType().toString(), attr.getRole().toString()});
+                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
             }
             th.repaint();
         }

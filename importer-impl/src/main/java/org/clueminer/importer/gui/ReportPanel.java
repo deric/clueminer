@@ -597,7 +597,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     }
 
     @Override
-    public void importerChanged(final Importer importer, ImporterUI importerUI) {
+    public void importerChanged(final Importer importer, final ImporterUI importerUI) {
         final ContainerLoader loader = importer.getContainer().getLoader();
         final FileImporter fi = (FileImporter) importer;
         if (currentFile != null) {
@@ -605,10 +605,11 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 @Override
                 public void run() {
                     try {
-                        logger.log(Level.INFO, "importer changed");
+                        logger.log(Level.INFO, "importer changed, caused by {0}", importerUI);
 
                         loader.reset();
                         Container cont = controller.importFile(currentFile, currentFile.getInputStream(), fi, true);
+                        logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
                         setData(cont.getReport(), cont);
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);

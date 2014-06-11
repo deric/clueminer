@@ -68,6 +68,7 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
         chckQuotation = new javax.swing.JCheckBox();
         lbNumType = new javax.swing.JLabel();
         cbDefaultType = new javax.swing.JComboBox();
+        chckStrictQuotes = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbSeparator, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.lbSeparator.text")); // NOI18N
 
@@ -97,6 +98,13 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
 
         cbDefaultType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "double", "float", "int", "long" }));
 
+        org.openide.awt.Mnemonics.setLocalizedText(chckStrictQuotes, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckStrictQuotes.text")); // NOI18N
+        chckStrictQuotes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckStrictQuotesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,6 +112,7 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chckStrictQuotes)
                     .addComponent(chckHeader)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbSeparator)
@@ -131,7 +140,9 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
                 .addComponent(chckHeader)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chckQuotation)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chckStrictQuotes)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -148,14 +159,25 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
     }//GEN-LAST:event_chckHeaderActionPerformed
 
     private void chckQuotationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckQuotationActionPerformed
-        importer.setIgnoreQuotations(chckQuotation.isSelected());
-        fireImporterChanged();
+        if (importer.isIgnoreQuotations() != chckQuotation.isSelected()) {
+            importer.setIgnoreQuotations(chckQuotation.isSelected());
+            fireImporterChanged();
+        }
+
     }//GEN-LAST:event_chckQuotationActionPerformed
+
+    private void chckStrictQuotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckStrictQuotesActionPerformed
+        if (importer.isStrictQuotes() != chckStrictQuotes.isSelected()) {
+            importer.setStrictQuotes(chckStrictQuotes.isSelected());
+            fireImporterChanged();
+        }
+    }//GEN-LAST:event_chckStrictQuotesActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbDefaultType;
     private javax.swing.JCheckBox chckHeader;
     private javax.swing.JCheckBox chckQuotation;
+    private javax.swing.JCheckBox chckStrictQuotes;
     private javax.swing.JComboBox comboSeparator;
     private javax.swing.JLabel lbNumType;
     private javax.swing.JLabel lbSeparator;

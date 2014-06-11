@@ -118,6 +118,10 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         logger.log(Level.INFO, "has header = {0}", hasHeader);
         logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
 
+        for (AttributeDraft attr : loader.getAttributes()) {
+            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
+        }
+
         importData(lineReader);
         fireAnalysisFinished();
 

@@ -1,6 +1,8 @@
 package org.clueminer.processor.ui;
 
 import java.awt.event.ItemEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.io.importer.api.AttributeDraft;
@@ -15,6 +17,7 @@ public class AttributeProp extends javax.swing.JPanel {
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
     private final ImporterUI importerUI;
+    private static Logger log = Logger.getLogger(AttributeProp.class.getName());
 
     /**
      * Creates new form AttributeProp
@@ -153,6 +156,7 @@ public class AttributeProp extends javax.swing.JPanel {
             Class<?> type = stringToClass(item);
             if (type != attr.getType()) {
                 attr.setType(type);
+                log.log(Level.INFO, "attr {0} type changed to {1}", new Object[]{attr.getName(), type});
                 importerUI.fireImporterChanged();
             }
         }
@@ -165,6 +169,7 @@ public class AttributeProp extends javax.swing.JPanel {
             AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
             if (attr.getRole() != role) {
                 attr.setRole(role);
+                log.log(Level.INFO, "attr {0} role changed to {1}", new Object[]{attr.getName(), role.toString()});
                 importerUI.fireImporterChanged();
             }
         }
