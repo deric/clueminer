@@ -271,12 +271,19 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
 
     private void parseHeader(String[] columns) {
         int i = 0;
+        String lower;
         for (String attrName : columns) {
             if (!loader.hasAttribute(attrName)) {
                 AttributeDraft attrd = loader.createAttribute(i, attrName);
-                if (attrName.startsWith("meta_")) {
+                lower = attrName.toLowerCase();
+                //sort of "smart" guesses based on attribute's name
+                if (lower.startsWith("meta_")) {
                     attrd.setRole(BasicAttrRole.META);
                     logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
+                } else if (lower.startsWith("id")) {
+                    attrd.setRole(BasicAttrRole.ID);
+                } else if (lower.startsWith("!")) {
+                    attrd.setRole(BasicAttrRole.CLASS);
                 }
 
                 logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});

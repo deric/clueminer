@@ -137,4 +137,15 @@ public class AttributeDraftImpl implements AttributeDraft {
         return new DoubleParser();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("AttributeDraft [ ");
+        sb.append(getIndex()).append(": ");
+        sb.append(getName()).append(", ");
+        sb.append("type: ").append(getType().getName()).append(", ");
+        sb.append("role: ").append(getRole()).append(", ");
+        sb.append("]");
+        return sb.toString();
+    }
+
 }
