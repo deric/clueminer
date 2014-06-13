@@ -16,6 +16,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
+import org.openide.util.ImageUtilities;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -26,15 +28,28 @@ import org.clueminer.std.Scaler;
 public class DGramVis {
 
     private static final Logger log = Logger.getLogger(DGramVis.class.getName());
+    private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
-    public static Image generate(Clustering<? extends Cluster> clustering, int width, int height) {
-        //if (dataset != null) {
-        Heatmap heatmap = new Heatmap();
+    public static Image generate(final Clustering<? extends Cluster> clustering, int width, int height) {
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             log.warning("missing mapping, running clustering");
-            mapping = createMapping(clustering);
+            //add empty mapping
+            DendrogramMapping map = new DendrogramData();
+            clustering.lookupAdd(map);
+            RP.post(new Runnable() {
+                @Override
+                public void run() {
+                    createMapping(clustering);
+                }
+            });
+            return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+
         } else {
+            if (!mapping.hasRowsClustering()) {
+                //computing still in progress
+                return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+            }
             if (!mapping.hasColumnsClustering()) {
                 Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
                 Preferences params = clustering.getParams();
@@ -46,9 +61,9 @@ public class DGramVis {
                 mapping.setColsResult(colsResult);
             }
         }
+        Heatmap heatmap = new Heatmap();
         heatmap.setData(mapping);
 
-        //}
         /**
          * TODO implement structure generation
          */
@@ -70,7 +85,10 @@ public class DGramVis {
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
 
-        DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult, colsResult);
+        DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        mapping.setMatrix(input);
+        mapping.setRowsResult(rowsResult);
+        mapping.setColsResult(colsResult);
         clustering.lookupAdd(mapping);
 
         return mapping;
