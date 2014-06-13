@@ -8,6 +8,7 @@ import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +64,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader loader;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
+    private List<String> missing = new LinkedList<String>();
 
     public CsvImporter() {
         separator = ',';
@@ -198,7 +200,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 prevColCnt = columns.length;
             }
         }
-
+        //Dump.array(columns, "line " + num + " (" + columns.length + ")");
         if (hasHeader && !skipHeader && !parsedHeader) {
             logger.log(Level.INFO, "header: {0}", line);
             parseHeader(columns);
@@ -272,25 +274,26 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     private void parseHeader(String[] columns) {
         int i = 0;
         String lower;
+        AttributeDraft attrd;
         for (String attrName : columns) {
             if (!loader.hasAttribute(attrName)) {
-                AttributeDraft attrd = loader.createAttribute(i, attrName);
-                lower = attrName.toLowerCase();
-                //sort of "smart" guesses based on attribute's name
-                if (lower.startsWith("meta_")) {
-                    attrd.setRole(BasicAttrRole.META);
-                    logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
-                } else if (lower.startsWith("id")) {
-                    attrd.setRole(BasicAttrRole.ID);
-                } else if (lower.startsWith("!")) {
-                    attrd.setRole(BasicAttrRole.CLASS);
-                }
-
-                logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
+                attrd = loader.createAttribute(i, attrName);
+            } else {
+                attrd = loader.createAttribute(i, "attr_" + i);
             }
-            /**
-             * TODO check if attributes are already defined
-             */
+
+            lower = attrName.toLowerCase();
+            //sort of "smart" guesses based on attribute's name
+            if (lower.startsWith("meta_")) {
+                attrd.setRole(BasicAttrRole.META);
+                logger.log(Level.INFO, "meta attr {0}", new Object[]{i});
+            } else if (lower.startsWith("id")) {
+                attrd.setRole(BasicAttrRole.ID);
+            } else if (lower.startsWith("!")) {
+                attrd.setRole(BasicAttrRole.CLASS);
+            }
+            logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
+
             i++;
         }
     }
@@ -312,7 +315,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
         int i = 0;
         AttributeRole role;
-        Object castedVal;
         AttributeDraft attr;
         for (String value : columns) {
             try {
@@ -321,13 +323,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 if (role == BasicAttrRole.ID) {
                     draft.setId(value);
                 } else if (role == BasicAttrRole.INPUT) {
-                    try {
-                        castedVal = attr.getParser().parse(value);
-                        draft.setValue(i, castedVal);
-                    } catch (ParsingError ex) {
-                        report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                                                                      "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
-                    }
+                    draft.setValue(i, parseValue(attr, value, i, num, draft));
                 } else {
                     draft.setValue(i, value);
                 }
@@ -342,6 +338,38 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         }
         loader.addInstance(draft, num);
         numInstances++;
+    }
+
+    /**
+     * Parse given input values as specified type
+     *
+     * @param attr
+     * @param value
+     * @param i
+     * @param num
+     * @param draft
+     * @return
+     */
+    private Object parseValue(AttributeDraft attr, String value, int i, int num, InstanceDraft draft) {
+        Object castedVal = null;
+
+        //check for missing values
+        if (missing.size() > 0) {
+            for (String missingValue : missing) {
+                if (missingValue.equals(value)) {
+                    //TODO: should be returned by specific parser
+                    return Double.NaN;
+                }
+            }
+        }
+
+        try {
+            castedVal = attr.getParser().parse(value);
+        } catch (ParsingError ex) {
+            report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
+                                                          "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
+        }
+        return castedVal;
     }
 
     /**
@@ -539,6 +567,19 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
 
     protected void setLoader(ContainerLoader loader) {
         this.loader = loader;
+    }
+
+    /**
+     * List of strings which are considered as missing values
+     *
+     * @return
+     */
+    public List<String> getMissing() {
+        return missing;
+    }
+
+    public void setMissing(List<String> missing) {
+        this.missing = missing;
     }
 
 }

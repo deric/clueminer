@@ -3,10 +3,13 @@ package org.clueminer.importer.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -383,6 +386,10 @@ public class CsvImporterTest {
         CsvImporter importer = new CsvImporter();
         Container container = new ImportContainerImpl();
         importer.setSeparator(';');
+        importer.setHasHeader(false);
+        List<String> missing = new LinkedList<String>();
+        missing.add("NA");
+        importer.setMissing(missing);
         String line = "id-123;1;NA;NA;1;1;1;1;1;1;1;NA;1;1;1;1;1";
         Reader reader = new StringReader(line);
         try {
@@ -390,14 +397,41 @@ public class CsvImporterTest {
 
             ContainerLoader loader = container.getLoader();
             assertEquals(1, loader.getNumberOfLines());
-            for (AttributeDraft attr : loader.getAttributes()) {
-                System.out.println("attr: " + attr.toString());
-            }
-            //assertEquals(17, loader.getAttributeCount());
-
+            assertEquals(BasicAttrRole.INPUT, loader.getAttribute(0).getRole());
+            assertEquals(17, loader.getAttributeCount());
+            assertEquals(1, loader.getInstanceCount());
+            InstanceDraft inst = loader.getInstance(0);
+            System.out.println("inst " + inst.toString());
+            assertEquals(1.0, inst.getValue(1));
+            assertEquals(Double.NaN, inst.getValue(2));
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
 
     }
+
+    @Test
+    public void testParsingHeader() {
+        CsvImporter importer = new CsvImporter();
+        Container container = new ImportContainerImpl();
+        importer.setSeparator(',');
+        importer.setHasHeader(true);
+        String line = "id,meta_1,input_1,foo,bar";
+        Reader reader = new StringReader(line);
+        try {
+            importer.execute(container, reader);
+
+            ContainerLoader loader = container.getLoader();
+            assertEquals(1, loader.getNumberOfLines());
+            assertEquals(BasicAttrRole.ID, loader.getAttribute(0).getRole());
+            assertEquals(BasicAttrRole.META, loader.getAttribute(1).getRole());
+            assertEquals(BasicAttrRole.INPUT, loader.getAttribute(2).getRole());
+            assertEquals(5, loader.getAttributeCount());
+            assertEquals(0, loader.getInstanceCount());
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
 }
