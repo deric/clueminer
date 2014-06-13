@@ -1,8 +1,12 @@
 package org.clueminer.importer.impl;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
+import org.clueminer.io.importer.api.ContainerLoader;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -11,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -94,7 +99,7 @@ public class CsvImporterTest {
      *
      * @throws java.io.IOException
      */
-    //@Test
+    //   @Test
     public void testExecute() throws IOException {
         Container container = new ImportContainerImpl();
 
@@ -371,5 +376,28 @@ public class CsvImporterTest {
 
     @Test
     public void testSetLineReader() {
+    }
+
+    @Test
+    public void testMissingValues() {
+        CsvImporter importer = new CsvImporter();
+        Container container = new ImportContainerImpl();
+        importer.setSeparator(';');
+        String line = "id-123;1;NA;NA;1;1;1;1;1;1;1;NA;1;1;1;1;1";
+        Reader reader = new StringReader(line);
+        try {
+            importer.execute(container, reader);
+
+            ContainerLoader loader = container.getLoader();
+            assertEquals(1, loader.getNumberOfLines());
+            for (AttributeDraft attr : loader.getAttributes()) {
+                System.out.println("attr: " + attr.toString());
+            }
+            //assertEquals(17, loader.getAttributeCount());
+
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
     }
 }

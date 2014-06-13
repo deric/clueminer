@@ -82,7 +82,9 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             this.separator = separator;
             //might change number of detected attributes, it's safer to remove
             //all of them
-            loader.resetAttributes();
+            if (loader != null) {
+                loader.resetAttributes();
+            }
         }
     }
 
@@ -108,7 +110,9 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
 
     public boolean execute(Container container, LineNumberReader lineReader) throws IOException {
         this.container = container;
-        logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
+        if (container.getFile() != null) {
+            logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
+        }
         this.loader = container.getLoader();
         loader.reset(); //remove all previous instances
         loader.setDataset(null);
@@ -160,17 +164,29 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         /*it.setSkipBlanks(true);
          it.setCommentIdentifier("#");
          it.setSkipComments(true);*/
-        int count = 0;
+        int count;
+        int prev = -1;
+        boolean reading = true;
 
         logger.log(Level.INFO, "reader ready? {0}", reader.ready());
-        for (; reader.ready();) {
+        while (reader.ready() && reading) {
             String line = reader.readLine();
+            count = reader.getLineNumber();
+            //logger.log(Level.INFO, "line {0}: {1}", new Object[]{count, line});
             if (line != null && !line.isEmpty()) {
                 lineRead(count, line);
-                count++;
             }
+            //we should have read a next line, but we didn't
+            if (count == prev) {
+                reading = false;
+                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line: {0}", new Object[]{count});
+            }
+            prev = reader.getLineNumber();
         }
-        loader.setNumberOfLines(count);
+        loader.setNumberOfLines(prev);
+        //close the input
+        reader.close();
+        Progress.finish(progressTicket);
     }
 
     protected void lineRead(int num, String line) throws IOException {
