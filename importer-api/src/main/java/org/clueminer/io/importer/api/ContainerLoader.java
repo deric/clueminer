@@ -58,6 +58,14 @@ public interface ContainerLoader {
     boolean hasAttribute(String key);
 
     /**
+     * Check if we have attribute on that index
+     *
+     * @param index
+     * @return
+     */
+    public boolean hasAttributeAtIndex(int index);
+
+    /**
      * Basically we check for unique ID column
      *
      * @return true when any of attributes could be a primary key

@@ -164,12 +164,24 @@ public class ImportContainerImpl implements Container, ContainerLoader {
      */
     @Override
     public AttributeDraft createAttribute(int index, String name) {
-        AttributeDraft attr = new AttributeDraftImpl(name);
-        attr.setIndex(index);
-        attr.setType(defaultNumericType);
-        attr.setRole(BasicAttrRole.INPUT);
-        attributeMap.put(name, attr);
-        attributeList.put(index, attr);
+        AttributeDraft attr;
+        //try to avoid duplicate attribute
+        if (!hasAttributeAtIndex(index)) {
+            attr = new AttributeDraftImpl(name);
+            attr.setIndex(index);
+            attr.setType(defaultNumericType);
+            attr.setRole(BasicAttrRole.INPUT);
+            attributeMap.put(name, attr);
+            attributeList.put(index, attr);
+        } else {
+            attr = attributeList.get(index);
+            if (!attr.getName().equals(name)) {
+                //update attribute's names map
+                attributeMap.remove(attr.getName());
+                attr.setName(name);
+                attributeMap.put(name, attr);
+            }
+        }
         return attr;
     }
 
@@ -287,6 +299,17 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public AttributeDraft getAttribute(int index) {
         return attributeList.get(index);
+    }
+
+    /**
+     * Check if we have an attribute for given column index
+     *
+     * @param index
+     * @return
+     */
+    @Override
+    public boolean hasAttributeAtIndex(int index) {
+        return attributeList.containsKey(index);
     }
 
     @Override

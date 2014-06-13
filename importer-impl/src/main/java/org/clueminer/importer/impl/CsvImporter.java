@@ -276,10 +276,23 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
         String lower;
         AttributeDraft attrd;
         for (String attrName : columns) {
-            if (!loader.hasAttribute(attrName)) {
-                attrd = loader.createAttribute(i, attrName);
+            if (loader.hasAttributeAtIndex(i)) {
+                if (!loader.getAttribute(i).getName().equals(attrName) && loader.hasAttribute(attrName)) {
+                    //this should be unique. TODO: really?
+                    attrd = loader.createAttribute(i, attrName + "_" + i);
+                } else {
+                    //get or update attribute name
+                    attrd = loader.createAttribute(i, attrName);
+                }
             } else {
-                attrd = loader.createAttribute(i, "attr_" + i);
+                //create new attribute
+                if (loader.hasAttribute(attrName)) {
+                    //duplicate attribute name
+                    attrd = loader.createAttribute(i, attrName + "_" + i);
+                } else {
+                    attrd = loader.createAttribute(i, attrName);
+                }
+                logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
             }
 
             lower = attrName.toLowerCase();
@@ -292,8 +305,6 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             } else if (lower.startsWith("!")) {
                 attrd.setRole(BasicAttrRole.CLASS);
             }
-            logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
-
             i++;
         }
     }
