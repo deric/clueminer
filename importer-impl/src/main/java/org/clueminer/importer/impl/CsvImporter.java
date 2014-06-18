@@ -181,9 +181,9 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             //we should have read a next line, but we didn't
             if (count == prev) {
                 reading = false;
-                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line: {0}", new Object[]{count});
+                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line #{0}: {1}", new Object[]{count, line});
             }
-            prev = reader.getLineNumber();
+            prev = count;
         }
         loader.setNumberOfLines(prev);
         //close the input
@@ -219,11 +219,13 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
                 loader.resetAttributes();
             }
 
-            if (num == 1) {
+            //LineNumberReader counts from 1, so this is 2nd line
+            if (num == 2) {
                 int i = 0;
                 boolean matched = true;
                 for (String column : columns) {
                     matched &= parseType(column, i++);
+                    //logger.log(Level.WARNING, "col: {0} matched: {1}", new Object[]{column, matched});
                 }
                 //if all columns contain resonable value, we skip the line
                 if (matched) {
@@ -268,6 +270,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
             return true;
         }
+        logger.log(Level.WARNING, "column ''{0}'' doesn''t seem to contain reasonable type value", column);
         return false;
     }
 

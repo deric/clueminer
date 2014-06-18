@@ -431,7 +431,29 @@ public class CsvImporterTest {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
 
+    @Test
+    public void testParsingTypes() {
+        CsvImporter importer = new CsvImporter();
+        Container container = new ImportContainerImpl();
+        importer.setSeparator(',');
+        importer.setHasHeader(true);
+        String line = "attr1,attr2,attr3\ndouble,double,string";
+        Reader reader = new StringReader(line);
+        try {
+            importer.execute(container, reader);
+
+            ContainerLoader loader = container.getLoader();
+            assertEquals(2, loader.getNumberOfLines());
+            assertEquals(Double.class, loader.getAttribute(0).getType());
+            assertEquals(Double.class, loader.getAttribute(1).getType());
+            assertEquals(String.class, loader.getAttribute(2).getType());
+            assertEquals(3, loader.getAttributeCount());
+            assertEquals(0, loader.getInstanceCount());
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
 }
