@@ -46,7 +46,7 @@ public class IconDemo extends JFrame {
         Clustering<? extends Cluster> clustering = FakeClustering.iris();
         clustering.lookupAdd(dendroData);
 
-        Image image = DGramVis.generate(clustering, 64, 64);
+        Image image = DGramVis.generate(clustering, 64, 64, null);
 
         JLabel picLabel = new JLabel(new ImageIcon(image));
 

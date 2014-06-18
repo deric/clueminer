@@ -12,6 +12,7 @@ import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
@@ -32,7 +33,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Tomas Barton
  */
-public class ClusteringNode extends AbstractNode {
+public class ClusteringNode extends AbstractNode implements DendrogramVisualizationListener {
 
     private Image image;
 
@@ -53,7 +54,8 @@ public class ClusteringNode extends AbstractNode {
     public Image getIcon(int type) {
         if (image == null) {
             Clustering<? extends Cluster> clustering = getLookup().lookup(Clustering.class);
-            image = DGramVis.generate(clustering, 64, 64);
+            image = DGramVis.generate(clustering, 64, 64, this);
+            fireIconChange();
         }
         //return ImageUtilities.loadImage("org/myorg/myeditor/icon.png");
         return image;
@@ -221,5 +223,16 @@ public class ClusteringNode extends AbstractNode {
         } catch (BackingStoreException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    @Override
+    public void clusteringFinished(Clustering<? extends Cluster> clustering) {
+        //not much to do
+    }
+
+    @Override
+    public void previewUpdated(Image preview) {
+        this.image = preview;
+        fireIconChange();
     }
 }

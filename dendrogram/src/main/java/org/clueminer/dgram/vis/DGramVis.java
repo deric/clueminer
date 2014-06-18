@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -30,8 +31,8 @@ public class DGramVis {
     private static final Logger log = Logger.getLogger(DGramVis.class.getName());
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
-    public static Image generate(final Clustering<? extends Cluster> clustering, int width, int height) {
-        DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+    public static Image generate(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
+        final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             log.warning("missing mapping, running clustering");
             //add empty mapping
@@ -41,6 +42,14 @@ public class DGramVis {
                 @Override
                 public void run() {
                     createMapping(clustering);
+                    Heatmap heatmap = new Heatmap();
+                    heatmap.setData(mapping);
+                    Image img = heatmap.generate(width, height);
+                    if (listener != null) {
+                        listener.clusteringFinished(clustering);
+                        listener.previewUpdated(img);
+                    }
+
                 }
             });
             return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
@@ -61,8 +70,6 @@ public class DGramVis {
                 mapping.setColsResult(colsResult);
             }
         }
-        Heatmap heatmap = new Heatmap();
-        heatmap.setData(mapping);
 
         /**
          * TODO implement structure generation
@@ -70,7 +77,7 @@ public class DGramVis {
         /*       DgViewer viewer = new DgViewer();
          viewer.setDataset(null);
          viewer.setClustering(clustering);*/
-        return heatmap.generate(width, height);
+        return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
     }
 
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
