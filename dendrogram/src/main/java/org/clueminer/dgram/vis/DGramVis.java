@@ -35,21 +35,14 @@ public class DGramVis {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             log.warning("missing mapping, running clustering");
-            //add empty mapping
-            DendrogramMapping map = new DendrogramData();
-            clustering.lookupAdd(map);
             RP.post(new Runnable() {
                 @Override
                 public void run() {
+                    //add empty mapping
+                    DendrogramMapping map = new DendrogramData();
+                    clustering.lookupAdd(map);
                     createMapping(clustering);
-                    Heatmap heatmap = new Heatmap();
-                    heatmap.setData(mapping);
-                    Image img = heatmap.generate(width, height);
-                    if (listener != null) {
-                        listener.clusteringFinished(clustering);
-                        listener.previewUpdated(img);
-                    }
-
+                    generateImage(clustering, width, height, listener, map);
                 }
             });
             return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
@@ -69,6 +62,7 @@ public class DGramVis {
                 HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
                 mapping.setColsResult(colsResult);
             }
+            return generateImage(clustering, width, height, listener, mapping);
         }
 
         /**
@@ -77,7 +71,17 @@ public class DGramVis {
         /*       DgViewer viewer = new DgViewer();
          viewer.setDataset(null);
          viewer.setClustering(clustering);*/
-        return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+    }
+
+    private static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+        Heatmap heatmap = new Heatmap();
+        heatmap.setData(mapping);
+        Image img = heatmap.generate(width, height);
+        if (listener != null) {
+            listener.clusteringFinished(clustering);
+            listener.previewUpdated(img);
+        }
+        return img;
     }
 
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
