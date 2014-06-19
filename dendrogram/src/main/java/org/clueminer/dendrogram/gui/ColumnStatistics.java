@@ -55,7 +55,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
         bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
         g = bufferedImage.createGraphics();
         this.setOpaque(true);
-        Dataset<? extends Instance> data = dataset.getInstances();
+        Dataset<? extends Instance> data = dataset.getDataset();
         // clear the panel
         //  g.setColor(panel.bg);
         //  g.fillRect(0, 0, size.width, size.height);

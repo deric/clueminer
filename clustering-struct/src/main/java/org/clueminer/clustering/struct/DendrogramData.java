@@ -20,7 +20,7 @@ import org.clueminer.math.Matrix;
 public class DendrogramData implements DendrogramMapping {
 
     private Matrix matrix;
-    private Dataset<? extends Instance> instances;
+    private Dataset<? extends Instance> dataset;
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private double mid = 0;
@@ -33,12 +33,12 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public DendrogramData(Dataset<? extends Instance> dataset) {
-        this.instances = dataset;
+        this.dataset = dataset;
 
     }
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
-        this.instances = dataset;
+        this.dataset = dataset;
         checkParams(matrix, rowResult, columnResult);
         this.setMatrix(matrix);
         this.rowsResult = rowResult;
@@ -46,7 +46,7 @@ public class DendrogramData implements DendrogramMapping {
     }
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
-        this.instances = dataset;
+        this.dataset = dataset;
         checkParams(matrix, rowResult, null);
         this.setMatrix(matrix);
         this.rowsResult = rowResult;
@@ -123,6 +123,7 @@ public class DendrogramData implements DendrogramMapping {
     /**
      * @param matrix the matrix to set
      */
+    @Override
     public final void setMatrix(Matrix matrix) {
         this.matrix = matrix;
         findMinMax(matrix);
@@ -177,15 +178,16 @@ public class DendrogramData implements DendrogramMapping {
      * @return the instances
      */
     @Override
-    public Dataset<? extends Instance> getInstances() {
-        return instances;
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
     }
 
     /**
      * @param instances the instances to set
      */
-    public void setInstances(Dataset<? extends Instance> instances) {
-        this.instances = instances;
+    @Override
+    public void setDataset(Dataset<? extends Instance> instances) {
+        this.dataset = instances;
     }
 
     @Override
@@ -208,12 +210,12 @@ public class DendrogramData implements DendrogramMapping {
 
     @Override
     public Clustering getRowsClustering() {
-        return rowsResult.getClustering(instances);
+        return rowsResult.getClustering(dataset);
     }
 
     @Override
     public Clustering getColumnsClustering() {
-        return colsResult.getClustering(instances);
+        return colsResult.getClustering(dataset);
     }
 
     /**

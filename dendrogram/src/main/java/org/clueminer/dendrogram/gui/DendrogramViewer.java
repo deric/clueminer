@@ -54,7 +54,7 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     @Override
     public String getName() {
         if (data != null) {
-            return data.getInstances().getName();
+            return data.getDataset().getName();
         } else {
             return DendrogramViewer.class.getName();
         }

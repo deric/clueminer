@@ -2,6 +2,8 @@ package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -21,6 +23,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     private int maxTextWidth;
     private int firstSelectedColumn = -1;
     private int lastSelectedColumn = -1;
+    private static final Logger log = Logger.getLogger(ColumnAnnotation.class.getName());
 
     public ColumnAnnotation(DendroPane p) {
         super(p);
@@ -31,7 +34,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         //we draw strings in rows and then we rotate the whole image
         String s;
         if (columnsOrder != null) {
-            Dataset<? extends Instance> data = dendroData.getInstances();
+            Dataset<? extends Instance> data = dendroData.getDataset();
             g.setColor(Color.black);
             int coordX;
             g.setFont(defaultFont);

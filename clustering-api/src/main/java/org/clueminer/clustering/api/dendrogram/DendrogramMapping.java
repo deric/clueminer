@@ -29,7 +29,14 @@ public interface DendrogramMapping {
      */
     public void setMatrix(Matrix input);
 
-    public Dataset<? extends Instance> getInstances();
+    public Dataset<? extends Instance> getDataset();
+
+    /**
+     * Set dataset which was clustered
+     *
+     * @param dataset
+     */
+    public void setDataset(Dataset<? extends Instance> dataset);
 
     /**
      *

@@ -53,14 +53,22 @@ public class DGramVis {
                 return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
             }
             if (!mapping.hasColumnsClustering()) {
-                Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-                Preferences params = clustering.getParams();
-                AgglomerativeClustering algorithm = new HAC();
+                RP.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+                        Preferences params = clustering.getParams();
+                        AgglomerativeClustering algorithm = new HAC();
 
-                Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-                params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-                HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
-                mapping.setColsResult(colsResult);
+                        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+                        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+                        HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
+                        mapping.setColsResult(colsResult);
+                        mapping.setDataset(dataset);
+                        generateImage(clustering, width, height, listener, mapping);
+                    }
+                });
+
             }
             return generateImage(clustering, width, height, listener, mapping);
         }
@@ -97,6 +105,7 @@ public class DGramVis {
         HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
 
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        mapping.setDataset(dataset);
         mapping.setMatrix(input);
         mapping.setRowsResult(rowsResult);
         mapping.setColsResult(colsResult);

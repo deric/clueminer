@@ -54,7 +54,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     @Override
     public String getName() {
         if (data != null) {
-            return data.getInstances().getName();
+            return data.getDataset().getName();
         } else {
             return DgViewer.class.getName();
         }
@@ -63,8 +63,8 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     @Override
     public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
-        fireDatasetChanged(new DendrogramDataEvent(this));
         updateLayout();
+        fireDatasetChanged(new DendrogramDataEvent(this));
     }
 
     public DendrogramMapping getDendrogramData() {
@@ -140,6 +140,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         return elementSize.height;
     }
 
+    @Override
     public void setCellWidth(int width, boolean isAdjusting) {
         if (width > 0) {
             elementSize.width = width;
@@ -152,10 +153,12 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         return elementSize.width;
     }
 
+    @Override
     public void setHorizontalTreeVisible(boolean show) {
         dendrogramPanel.setHorizontalTreeVisible(show);
     }
 
+    @Override
     public boolean isHorizontalTreeVisible() {
         return dendrogramPanel.isHorizontalTreeVisible();
     }

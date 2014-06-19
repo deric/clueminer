@@ -101,7 +101,7 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
     public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
         if (plate != null) {
             if (cluster.firstElem > -1) {
-                HtsPlate selected = (HtsPlate) data.getInstances().duplicate();
+                HtsPlate selected = (HtsPlate) data.getDataset().duplicate();
 
                 for (int i = cluster.firstElem; i <= cluster.lastElem; i++) {
                     selected.add(plate.instance(data.getRowIndex(i)));
