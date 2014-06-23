@@ -22,6 +22,8 @@ import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.colors.ColorBrewer;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
@@ -50,6 +52,8 @@ public class HClustResult implements HierarchicalResult {
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy = new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault());
     private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
+    private ColorGenerator colorGenerator = new ColorBrewer();
+    private int num;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -174,14 +178,19 @@ public class HClustResult implements HierarchicalResult {
         this.cutoff = cutoff;
         int[] assign = new int[dataset.size()];
         int estClusters = (int) Math.sqrt(dataset.size());
+        colorGenerator.reset();
+        num = 1; //human readable
         Clustering clusters = new ClusterList(estClusters);
         DendroNode root = treeData.getRoot();
+        System.out.println("cutoff = " + cutoff);
+        treeData.print();
         if (root != null) {
             checkCutoff(root, cutoff, clusters, assign);
             if (clusters.size() > 0) {
                 mapping = assign;
             }
         }
+        Dump.array(assign, "assignment");
         logger.info(clusters.toString());
         //add input dataset to clustering lookup
         clusters.lookupAdd(dataset);
@@ -196,7 +205,14 @@ public class HClustResult implements HierarchicalResult {
         if (node.getHeight() <= cutoff) {
             //both branches goes to the same cluster
             Cluster clust = clusters.createCluster();
+            clust.setColor(colorGenerator.next());
+            clust.setName("cluster " + (num + 1));
+            clust.setClusterId(num++);
+            clust.setParent(getDataset());
+            clust.setAttributes(getDataset().getAttributes());
             subtreeToCluster(node, clust, assign);
+            System.out.println("cluster " + clust.getName());
+            System.out.println(clust.toString());
         } else {
             checkCutoff(node.getLeft(), cutoff, clusters, assign);
             checkCutoff(node.getRight(), cutoff, clusters, assign);

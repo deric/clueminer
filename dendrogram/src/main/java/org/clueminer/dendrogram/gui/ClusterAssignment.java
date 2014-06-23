@@ -88,9 +88,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         Graphics2D g2d = (Graphics2D) g;
         //places color bar to canvas
         g2d.drawImage(bufferedImage,
-                insets.left, insets.top,
-                size.width, size.height,
-                null);
+                      insets.left, insets.top,
+                      size.width, size.height,
+                      null);
         g2d.dispose();
     }
 
@@ -102,10 +102,12 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
         if (flatClust != null) {
             HierarchicalResult res = flatClust.getLookup().lookup(HierarchicalResult.class);
+            System.out.println("lookup " + res);
             if (res != null) {
                 hieraRes = res;
             }
         }
+        System.out.println("hierarchical mapping: " + hieraRes);
         if (flatClust != null && hieraRes != null) {
             int[] clusters = hieraRes.getClusters(flatClust.instancesCount());
             int i = 0;
