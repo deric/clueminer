@@ -14,6 +14,7 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.utils.Dump;
 
 /**
  * Color stripe for showing assignments to clusters
@@ -23,7 +24,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 public class ClusterAssignment extends JPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 7662186965958650502L;
-    private DendrogramMapping dendroData;
     private Dimension size = new Dimension(0, 0);
     private final DendroPane panel;
     private int stripeWidth = 20;
@@ -38,6 +38,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private int lineHeight;
     private final int labelOffset = 5;
     private Clustering<Cluster> flatClust;
+    private HierarchicalResult hieraRes;
 
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
@@ -62,9 +63,9 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private void updateSize() {
         int width = 0;
         int height = 0;
-        if (dendroData != null) {
+        if (hieraRes != null) {
             width = stripeWidth + 2 * labelOffset + maxTextWidth;
-            height = panel.getElementSize().height * dendroData.getNumberOfRows() + 2;
+            height = panel.getElementSize().height * hieraRes.getDataset().size() + 2;
         }
         setDimension(width, height);
     }
@@ -99,11 +100,16 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
         buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         buffGr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        if (dendroData != null) {
-            HierarchicalResult clustering = dendroData.getRowsResult();
-            flatClust = dendroData.getRowsClustering();
-            int[] clusters = clustering.getClusters(dendroData.getNumberOfRows());
+        if (flatClust != null) {
+            HierarchicalResult res = flatClust.getLookup().lookup(HierarchicalResult.class);
+            if (res != null) {
+                hieraRes = res;
+            }
+        }
+        if (flatClust != null && hieraRes != null) {
+            int[] clusters = hieraRes.getClusters(flatClust.instancesCount());
             int i = 0;
+            Dump.array(clusters, "clusters");
             if (clusters.length == 0) {
                 logger.log(Level.INFO, "clusters size is 0!!!");
                 return;
@@ -116,11 +122,11 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             int x = 0;
             int mapped;
             while (i < clusters.length) {
-                mapped = clustering.getMappedIndex(i);
+                mapped = hieraRes.getMappedIndex(i);
                 if (clusters[mapped] != currClust) {
                     drawCluster(buffGr, x, start, i, currClust);
                     start = i; //index if new cluster start
-                    currClust = clusters[clustering.getMappedIndex(i)];
+                    currClust = clusters[hieraRes.getMappedIndex(i)];
                 }
                 i++;
             }
@@ -184,7 +190,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dendroData) {
-        this.dendroData = dendroData;
+        hieraRes = dendroData.getRowsResult();
         updateSize();
         bufferedImage = null; //clear cached image
         repaint();
@@ -203,11 +209,13 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
     @Override
     public void clusteringChanged(Clustering clust) {
+        flatClust = clust;
         createBufferedGraphics();
     }
 
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
+        hieraRes = hclust;
         //
     }
 

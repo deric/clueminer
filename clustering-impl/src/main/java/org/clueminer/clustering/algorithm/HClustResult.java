@@ -28,6 +28,7 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -165,11 +166,7 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public int[] getClusters(int terminalsNum) {
-        int[] clusters = new int[getDataset().size()];
-        /**
-         * TODO: fill with assignments
-         */
-        return clusters;
+        return mapping;
     }
 
     @Override
@@ -185,8 +182,10 @@ public class HClustResult implements HierarchicalResult {
                 mapping = assign;
             }
         }
+        logger.info(clusters.toString());
         //add input dataset to clustering lookup
         clusters.lookupAdd(dataset);
+        clusters.lookupAdd(this);
         return clusters;
     }
 
