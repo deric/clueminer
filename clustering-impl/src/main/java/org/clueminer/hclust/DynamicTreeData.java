@@ -117,8 +117,9 @@ public class DynamicTreeData implements DendroTreeData {
         if (node != null) {
             node.printTree(out, false, "");
         }
-        out.write("root");
-        out.write('\n');
+        if (getRoot() != null) {
+            ((DTreeNode) getRoot()).printNodeValue(out);
+        }
         node = getRoot().getRight();
         if (node != null) {
             node.printTree(out, true, "");

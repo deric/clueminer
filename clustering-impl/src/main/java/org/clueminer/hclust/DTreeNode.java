@@ -169,7 +169,7 @@ public class DTreeNode implements DendroNode {
     }
 
     protected void printNodeValue(OutputStreamWriter out) throws IOException {
-        out.write("#" + getId());
+        out.write("#" + getId() + " (" + String.format("%.2f", getHeight()) + ")");
         out.write('\n');
     }
 

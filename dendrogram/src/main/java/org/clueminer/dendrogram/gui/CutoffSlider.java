@@ -95,10 +95,18 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         //we don't care
     }
 
+    /**
+     * Slider accepts only integers, so the cutoff represents percentage of the
+     * tree
+     *
+     * @param source
+     * @param width
+     * @param height
+     */
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
-        int max = source.getTreeHeight();
-        int min = source.getTreeWidth();
+        int max = 100;
+        int min = 0;
 
         slider.setMinimum(min);
         slider.setMaximum(max);
