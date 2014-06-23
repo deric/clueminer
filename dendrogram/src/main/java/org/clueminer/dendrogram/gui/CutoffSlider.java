@@ -30,6 +30,10 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     private int orientation;
     private CutoffLine cutoffLine;
     private JPanel parent;
+    /**
+     * false - min on left, max on right
+     */
+    private boolean inverted = true;
 
     /**
      *
@@ -41,6 +45,21 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         this.parent = panel;
         this.orientation = orientation;
         this.cutoffLine = cutoff;
+        initComponents();
+    }
+
+    /**
+     *
+     * @param panel
+     * @param orientation SwingConstants.HORIZONTAL
+     * @param invert      true - left-to-right | false - right-to-left
+     * @param cutoff
+     */
+    public CutoffSlider(JPanel panel, int orientation, boolean invert, CutoffLine cutoff) {
+        this.parent = panel;
+        this.orientation = orientation;
+        this.cutoffLine = cutoff;
+        this.inverted = invert;
         initComponents();
     }
 
@@ -58,6 +77,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         verticalFill.weighty = 1.0;
 
         slider = new JSlider(orientation);
+        slider.setInverted(inverted);
         slider.setMinimum((int) cutoffLine.getMinDistance());
         slider.setMaximum((int) cutoffLine.getMaxDistance());
         slider.setValue(cutoffLine.getLinePosition());
@@ -118,4 +138,16 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     public void stateChanged(ChangeEvent e) {
         cutoffLine.setCutoff(slider.getValue(), slider.getValueIsAdjusting());
     }
+
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
+        if (slider != null) {
+            slider.setInverted(inverted);
+        }
+    }
+
 }

@@ -91,8 +91,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         if (tree != null && tree.hasData()) {
             double cut = (pos * clustering.getMaxTreeHeight() / 100.0);
             //inverse value (slider min is on left)
-            //TODO this depends on tree orientation (currently leaves on right)
-            return (clustering.getMaxTreeHeight() - cut);
+            return cut;
         } else {
             return 0.0;
         }
@@ -118,7 +117,6 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      */
     public void setCutoff(int pos, boolean isAdjusting) {
         final double cut = computeCutoff(pos);
-        logger.log(Level.INFO, "cut for {0} = {1}", new Object[]{pos, cut});
         if (!isAdjusting && clustering != null) {
             RequestProcessor.Task task = RP.create(new Runnable() {
 
