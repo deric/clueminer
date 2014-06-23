@@ -50,6 +50,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     protected DendrogramViewer dendroViewer;
     private Legend legend;
     protected Dimension size;
+    private int sliderDiameter;
     /**
      * Using gradient with 3 colors instead of just 2 colors
      */
@@ -253,7 +254,7 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
 
     private void addRowSlider(int column, int row) {
         if (slider == null) {
-            slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff);
+            slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff, 6);
             dendroViewer.addDendrogramDataListener(slider);
             rowsTree.addTreeListener(slider);
         }
@@ -566,5 +567,15 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     @Override
     public DendroHeatmap getHeatmap() {
         return heatmap;
+    }
+
+    @Override
+    public void setSliderDiameter(int sliderDiam) {
+        this.sliderDiameter = sliderDiam;
+    }
+
+    @Override
+    public int getSliderDiameter() {
+        return sliderDiameter;
     }
 }

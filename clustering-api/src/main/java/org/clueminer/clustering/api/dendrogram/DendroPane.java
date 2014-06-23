@@ -10,44 +10,58 @@ import org.clueminer.clustering.api.Clustering;
  */
 public interface DendroPane {
 
-    public DendrogramMapping getDendrogramData();
+     DendrogramMapping getDendrogramData();
 
-    public boolean useDoubleGradient();
+     boolean useDoubleGradient();
 
-    public boolean isAntiAliasing();
+     boolean isAntiAliasing();
 
     /**
      * Size of single square in heatmap
      *
      * @return dimension of element in dendrogram
      */
-    public Dimension getElementSize();
+     Dimension getElementSize();
 
     /**
      *
      * @return panel background
      */
-    public Color getBackground();
+     Color getBackground();
 
     /**
      *
      * @return color scheme used in heatmap
      */
-    public ColorScheme getScheme();
+     ColorScheme getScheme();
 
     /**
      * E.g. when user changes cutoff
      *
      * @param clust
      */
-    public void fireClusteringChanged(Clustering clust);
+     void fireClusteringChanged(Clustering clust);
 
-    public String formatNumber(Object number);
+     String formatNumber(Object number);
 
     /**
      * Heatmap is a visualization of data
      *
      * @return heatmap
      */
-    public DendroHeatmap getHeatmap();
+     DendroHeatmap getHeatmap();
+
+    /**
+     * Cutoff slider diameter
+     *
+     * @param sliderDiam
+     */
+    void setSliderDiameter(int sliderDiam);
+
+    /**
+     * Width of cut off slider
+     *
+     * @return
+     */
+    int getSliderDiameter();
 }

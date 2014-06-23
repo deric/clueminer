@@ -45,7 +45,7 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     private final StdScale scale = new StdScale();
     private BufferedImage buffImg;
     private Graphics2D buffGr;
-    private final Insets insets = new Insets(0, 0, 0, 0);
+    protected final Insets insets = new Insets(0, 0, 0, 0);
     /**
      * mark nodes in dendrogram with a circle
      */
@@ -74,8 +74,8 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
      */
     @Override
     public void updateSize() {
-        width = treeHeight;
-        height = dendroData.getNumberOfRows() * elementHeight;
+        width = insets.left + treeHeight + insets.right + panel.getSliderDiameter();
+        height = insets.top + dendroData.getNumberOfRows() * elementHeight + insets.bottom;
         halfElem = elementHeight / 2;
         //nodes on right, 90 deg rot
         setSizes(width, height);
@@ -269,10 +269,10 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     /**
      * Distance from leaves to root
      *
-     * @return
+     * @return actual height of tree without offsets
      */
     @Override
     public int getTreeHeight() {
-        return size.width;
+        return treeHeight;
     }
 }

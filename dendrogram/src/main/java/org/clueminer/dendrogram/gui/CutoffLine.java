@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
@@ -35,10 +34,12 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                     10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
     private static final Logger logger = Logger.getLogger(CutoffLine.class.getName());
+    private int sliderDiameter = 6;
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
         this.tree = tree;
+        this.sliderDiameter = p.getSliderDiameter();
         this.setOpaque(false); //don't paint background (parent component is responsible for that)
     }
 
@@ -77,7 +78,9 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      * @return
      */
     private int computePosition(double cutoff) {
-        return (int) (tree.getTreeHeight() - (cutoff / clustering.getMaxTreeHeight() * tree.getTreeHeight()));
+        //there's a gap on tree root side which is equal to sliderDiameter
+        int treeHeight = tree.getTreeHeight() - sliderDiameter;
+        return (int) (treeHeight - (cutoff / clustering.getMaxTreeHeight() * treeHeight)) + sliderDiameter;
     }
 
     /**

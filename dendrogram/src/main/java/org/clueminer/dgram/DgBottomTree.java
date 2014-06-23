@@ -22,8 +22,8 @@ public class DgBottomTree extends DgTree {
 
     @Override
     public void updateSize() {
-        width = dendroData.getNumberOfColumns() * elementWidth;
-        height = treeHeight;
+        width = insets.left + dendroData.getNumberOfColumns() * elementWidth + insets.right;
+        height = insets.top + treeHeight + insets.bottom;
         halfElem = elementWidth / 2;
         //nodes on right, 90 deg rot
         setSizes(width, height);
@@ -101,7 +101,7 @@ public class DgBottomTree extends DgTree {
      */
     @Override
     public int getTreeHeight() {
-        return size.height;
+        return treeHeight;
     }
 
 }

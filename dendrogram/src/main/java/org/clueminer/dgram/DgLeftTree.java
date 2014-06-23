@@ -8,6 +8,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
 /**
+ * Dendrogram tree with leaves on left and root on right side
  *
  * @author Tomas Barton
  */

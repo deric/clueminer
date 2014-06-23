@@ -82,6 +82,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
+    private int cutoffSliderSize = 6;
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -223,7 +224,8 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         c.weighty = 0;
         //c.gridwidth = GridBagConstraints.RELATIVE;
         //c.gridheight = GridBagConstraints.REMAINDER; //last in column
-        c.insets = new java.awt.Insets(0, 15, 0, 0);
+
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
 
@@ -275,13 +277,13 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
 
     private void addRowSlider(int column, int row) {
         if (slider == null) {
-            slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff);
+            slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff, cutoffSliderSize);
             dendroViewer.addDendrogramDataListener(slider);
             rowsTree.addTreeListener(slider);
         }
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.SOUTH;
+        c.anchor = GridBagConstraints.SOUTHEAST;
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = column;
         c.gridy = row;
@@ -588,5 +590,15 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     @Override
     public DendroHeatmap getHeatmap() {
         return heatmap;
+    }
+
+    @Override
+    public void setSliderDiameter(int sliderDiam) {
+        this.cutoffSliderSize = sliderDiam;
+    }
+
+    @Override
+    public int getSliderDiameter() {
+        return cutoffSliderSize;
     }
 }

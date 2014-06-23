@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -34,6 +35,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      * false - min on left, max on right
      */
     private boolean inverted = true;
+    private int sliderDiameter;
 
     /**
      *
@@ -41,10 +43,11 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      * @param orientation -- SwingConstants.HORIZONTAL
      * @param cutoff
      */
-    public CutoffSlider(JPanel panel, int orientation, CutoffLine cutoff) {
+    public CutoffSlider(JPanel panel, int orientation, CutoffLine cutoff, int sliderDiam) {
         this.parent = panel;
         this.orientation = orientation;
         this.cutoffLine = cutoff;
+        this.sliderDiameter = sliderDiam;
         initComponents();
     }
 
@@ -65,7 +68,6 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
     private void initComponents() {
         setLayout(new GridBagLayout());
-        setBackground(parent.getBackground());
 
         GridBagConstraints verticalFill = new GridBagConstraints();
         verticalFill.anchor = GridBagConstraints.NORTH;
@@ -79,9 +81,15 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         slider.setValue(cutoffLine.getLinePosition());
         slider.addChangeListener(this);
         slider.setBackground(parent.getBackground());
+        slider.setUI(new CustomSliderUI(slider, sliderDiameter));
 
         GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.NONE;
+
+        if (orientation == SwingConstants.HORIZONTAL) {
+            c.fill = GridBagConstraints.HORIZONTAL;
+        } else {
+            c.fill = GridBagConstraints.VERTICAL;
+        }
         if (inverted) {
             c.anchor = GridBagConstraints.NORTHEAST;
         } else {
