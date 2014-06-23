@@ -67,10 +67,6 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         setLayout(new GridBagLayout());
         setBackground(parent.getBackground());
 
-        GridBagConstraints noFill = new GridBagConstraints();
-        noFill.anchor = GridBagConstraints.WEST;
-        noFill.fill = GridBagConstraints.NONE;
-
         GridBagConstraints verticalFill = new GridBagConstraints();
         verticalFill.anchor = GridBagConstraints.NORTH;
         verticalFill.fill = GridBagConstraints.VERTICAL;
@@ -86,12 +82,18 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.SOUTH;
+        if (inverted) {
+            c.anchor = GridBagConstraints.NORTHEAST;
+        } else {
+            c.anchor = GridBagConstraints.NORTHWEST;
+        }
         c.weightx = 1.0;
         c.weighty = 0.0;
         c.insets = new java.awt.Insets(0, 0, 0, 0);
         c.gridx = 0;
         c.gridy = 1;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.gridheight = GridBagConstraints.REMAINDER;
         add(Box.createVerticalGlue(), verticalFill);
         add(slider, c);
     }
@@ -131,7 +133,6 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         slider.setMinimum(min);
         slider.setMaximum(max);
         slider.setValue(cutoffLine.getLinePosition());
-
     }
 
     @Override
@@ -149,5 +150,4 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
             slider.setInverted(inverted);
         }
     }
-
 }
