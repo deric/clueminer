@@ -1,5 +1,6 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -10,7 +11,10 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Silhouette score
  *
+ * @link http://en.wikipedia.org/wiki/Silhouette_(clustering)
+ * @see  Peter J. Rousseeuw (1987). "Silhouettes: a Graphical Aid to the Interpretation and Validation of Cluster Analysis". Computational and Applied Mathematics 20: 53–65. doi:10.1016/0377-0427(87)90125-7
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusterEvaluator.class)
@@ -35,34 +39,59 @@ public class Silhouette extends ClusterEvaluator {
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         double score = 0;
-        double a, b, dist, clusterDist;
-        Instance x, y;
-        Dataset clust;
+        Cluster clust;
         //for each cluster
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
-            clusterDist = 0;
-            //calculate distance to all other objects in cluster
-            for (int j = 0; j < clust.size(); j++) {
-                x = clust.instance(j);
-                a = 0;
-                for (int k = 0; k < clust.size(); k++) {
-                    if (j != k) {
-                        y = clust.instance(k);
-                        dist = dm.measure(x, y);
-                        a += dist;
-                    }
-                }
-                //average distance
-                a /= clust.size() - 1;
-
-                //find minimal distance to other clusters
-                b = minDistance(x, clusters, i);
-                clusterDist += (b - a) / Math.max(b, a);
-            }
-            score += (clusterDist / clust.size());
+            score += clusterScore(clust, clusters, i);
         }
         return (score / clusters.size());
+    }
+
+    /**
+     * Score for single cluster
+     *
+     * @param clust
+     * @param clusters
+     * @param i
+     * @return
+     */
+    public double clusterScore(Cluster clust, Clustering clusters, int i) {
+        double clusterDist = 0.0;
+
+        //calculate distance to all other objects in cluster
+        for (int j = 0; j < clust.size(); j++) {
+            clusterDist += instanceScore(clust, clusters, i, j);
+        }
+        return (clusterDist / clust.size());
+    }
+
+    /**
+     *
+     * @param clust
+     * @param clusters
+     * @param i        index of cluster
+     * @param j        index of the instance
+     * @return
+     */
+    public double instanceScore(Cluster clust, Clustering clusters, int i, int j) {
+        Instance x, y;
+        double a, b, dist;
+        x = clust.instance(j);
+        a = 0;
+        for (int k = 0; k < clust.size(); k++) {
+            if (j != k) {
+                y = clust.instance(k);
+                dist = dm.measure(x, y);
+                a += dist;
+            }
+        }
+        //average distance
+        a /= clust.size() - 1;
+
+        //find minimal distance to other clusters
+        b = minDistance(x, clusters, i);
+        return (b - a) / Math.max(b, a);
     }
 
     /**
@@ -70,7 +99,7 @@ public class Silhouette extends ClusterEvaluator {
      *
      * @param x
      * @param clusters
-     * @param i
+     * @param i        i-th cluster
      * @return
      */
     private double minDistance(Instance x, Clustering clusters, int i) {
