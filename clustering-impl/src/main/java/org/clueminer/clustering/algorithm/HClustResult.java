@@ -30,7 +30,6 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 
 /**
  *
@@ -182,15 +181,12 @@ public class HClustResult implements HierarchicalResult {
         num = 1; //human readable
         Clustering clusters = new ClusterList(estClusters);
         DendroNode root = treeData.getRoot();
-        System.out.println("cutoff = " + cutoff);
-        treeData.print();
         if (root != null) {
             checkCutoff(root, cutoff, clusters, assign);
             if (clusters.size() > 0) {
                 mapping = assign;
             }
         }
-        Dump.array(assign, "assignment");
         logger.info(clusters.toString());
         //add input dataset to clustering lookup
         clusters.lookupAdd(dataset);
@@ -202,21 +198,40 @@ public class HClustResult implements HierarchicalResult {
         if (node.isLeaf()) {
             return;
         }
-        if (node.getHeight() <= cutoff) {
+        if (node.getHeight() == cutoff) {
             //both branches goes to the same cluster
-            Cluster clust = clusters.createCluster();
-            clust.setColor(colorGenerator.next());
-            clust.setName("cluster " + (num + 1));
-            clust.setClusterId(num++);
-            clust.setParent(getDataset());
-            clust.setAttributes(getDataset().getAttributes());
+            Cluster clust = makeCluster(clusters);
             subtreeToCluster(node, clust, assign);
-            System.out.println("cluster " + clust.getName());
-            System.out.println(clust.toString());
+        } else if (node.getLeft().getHeight() < cutoff || node.getRight().getHeight() < cutoff) {
+            Cluster clust;
+            if (node.getLeft().getHeight() < cutoff && node.getRight().getHeight() < cutoff) {
+                clust = makeCluster(clusters);
+                subtreeToCluster(node.getLeft(), clust, assign);
+                clust = makeCluster(clusters);
+                subtreeToCluster(node.getRight(), clust, assign);
+            } else if (node.getRight().getHeight() < cutoff) {
+                clust = makeCluster(clusters);
+                subtreeToCluster(node.getRight(), clust, assign);
+                checkCutoff(node.getLeft(), cutoff, clusters, assign);
+            } else if (node.getLeft().getHeight() < cutoff) {
+                clust = makeCluster(clusters);
+                subtreeToCluster(node.getLeft(), clust, assign);
+                checkCutoff(node.getLeft(), cutoff, clusters, assign);
+            }
         } else {
             checkCutoff(node.getLeft(), cutoff, clusters, assign);
             checkCutoff(node.getRight(), cutoff, clusters, assign);
         }
+    }
+
+    private Cluster makeCluster(Clustering clusters) {
+        Cluster clust = clusters.createCluster();
+        clust.setColor(colorGenerator.next());
+        clust.setName("cluster " + (num + 1));
+        clust.setClusterId(num++);
+        clust.setParent(getDataset());
+        clust.setAttributes(getDataset().getAttributes());
+        return clust;
     }
 
     private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
