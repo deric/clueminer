@@ -36,6 +36,7 @@ import org.clueminer.dendrogram.tree.AbstractScale;
 import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
 import org.clueminer.dendrogram.tree.VerticalScale;
+import org.clueminer.dgram.eval.SilhouettePlot;
 
 /**
  *
@@ -60,6 +61,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     protected ColumnAnnotation columnAnnotationBar;
     protected ColumnStatistics statistics;
     protected ClusterAssignment clusterAssignment;
+    protected SilhouettePlot silhouettePlot;
     private JLayeredPane treeLayered;
     private CutoffSlider slider;
     private boolean showColumnsTree = true;
@@ -137,6 +139,8 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         //panel for clusters' assignment
         addClustersAssignment(gridx + 1, gridy);
         addRowAnnotation(lastCol, gridy, isLabelVisible());
+
+        addEvaluation(lastCol + 1, gridy);
 
         if (showColorBar) {
             colorBar = new HCLColorBar();
@@ -327,6 +331,33 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
             c.gridy = row;
             add(rowAnnotationBar, c);
         }
+    }
+
+    private void addEvaluation(int column, int row) {
+        //we call constructor just one
+        if (silhouettePlot == null) {
+            //heatmap annotations
+            silhouettePlot = new SilhouettePlot();
+            dendroViewer.addDendrogramDataListener(silhouettePlot);
+        }
+        if (dendroData != null) {
+            silhouettePlot.setDendrogramData(dendroData);
+        }
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.VERTICAL;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        /**
+         * at least one component must be stretching in the free space or there
+         * must be some glue to fill the empty space (if no, components would be
+         * centered to middle)
+         */
+        c.weightx = 0.3;
+        c.weighty = 1.0;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.insets = new java.awt.Insets(0, 0, 0, 0);
+        c.gridx = column;
+        c.gridy = row;
+        add(silhouettePlot, c);
     }
 
     private void addLegend(int column, int row) {

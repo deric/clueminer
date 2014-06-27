@@ -27,6 +27,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
     private Silhouette silhouette;
     private StdScale scale;
     private double[] score;
+    private DendrogramMapping dendroData;
 
     public SilhouettePlot() {
         super();
@@ -142,6 +143,11 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
             }
             //Dump.array(score, "silhouette score");
         }
+    }
+
+    public void setDendrogramData(DendrogramMapping dendroData) {
+        this.dendroData = dendroData;
+        resetCache();
     }
 
 }
