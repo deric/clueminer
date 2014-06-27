@@ -125,7 +125,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
         element.height = height;
-        resetCache();
+        if (!isAdjusting) {
+            resetCache();
+        }
     }
 
     /**
