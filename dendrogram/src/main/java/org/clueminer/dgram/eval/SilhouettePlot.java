@@ -20,28 +20,30 @@ import org.clueminer.utils.Dump;
  */
 public class SilhouettePlot extends BPanel implements DendrogramDataListener {
 
+    private static final long serialVersionUID = 4887302917255522954L;
+
     private Clustering<? extends Cluster> clustering;
-    private Dimension element = new Dimension(0, 0);
+    private Dimension element = new Dimension(5, 5);
     private Silhouette silhouette;
     private StdScale scale;
     private double[] score;
 
     public SilhouettePlot() {
+        super();
         setLayout(new BorderLayout());
         silhouette = new Silhouette();
         scale = new StdScale();
-        size.width = 100;
     }
 
     @Override
     public void render(Graphics2D g) {
         if (hasData()) {
-            Dump.array(score, "sil score");
+            //Dump.array(score, "sil score");
             Cluster clust;
             int x = 0, y;
             int k = 0;
             double value;
-            g.setColor(Color.BLACK);
+            //g.setColor(Color.BLACK);
             for (int i = 0; i < clustering.size(); i++) {
                 clust = clustering.get(i);
                 for (int j = 0; j < clust.size(); j++) {
@@ -63,13 +65,21 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
      * @return
      */
     private double plotMax() {
-        return size.width;
+        return reqSize.width;
     }
 
     @Override
-    public void updateSize(Dimension size) {
-        if (element.height != size.height) {
-            element.height = size.height;
+    public void sizeUpdated(Dimension size) {
+        if (hasData()) {
+            //we dont care about width
+            realSize.width = size.width;
+            realSize.height = size.height;
+            double perLine = Math.ceil(size.height / (double) clustering.instancesCount());
+            if (perLine < 1) {
+                perLine = 1;// 1px line height
+                realSize.height = clustering.instancesCount();
+            }
+            element.height = (int) perLine;
             resetCache();
         }
     }
@@ -82,13 +92,12 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
     @Override
     public void recalculate() {
         if (hasData()) {
-            size.height = clustering.instancesCount() * element.height;
+            realSize.width = reqSize.width;
+            realSize.height = clustering.instancesCount() * element.height;
         }
-        size.width = getSize().width;
-
-        setMinimumSize(size);
-        setSize(size);
-        setPreferredSize(size);
+        setMinimumSize(reqSize);
+        setSize(reqSize);
+        setPreferredSize(realSize);
     }
 
     @Override
@@ -124,13 +133,14 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
         if (hasData()) {
             score = new double[clustering.instancesCount()];
             Cluster clust;
+            int k = 0;
             for (int i = 0; i < clustering.size(); i++) {
                 clust = clustering.get(i);
                 for (int j = 0; j < clust.size(); j++) {
-                    score[i] = silhouette.instanceScore(clust, clustering, i, j);
+                    score[k++] = silhouette.instanceScore(clust, clustering, i, j);
                 }
             }
-            Dump.array(score, "silhouette score");
+            //Dump.array(score, "silhouette score");
         }
     }
 

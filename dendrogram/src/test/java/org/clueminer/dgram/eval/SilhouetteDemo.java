@@ -1,6 +1,10 @@
 package org.clueminer.dgram.eval;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -20,13 +24,13 @@ public class SilhouetteDemo extends JFrame {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
 
     public SilhouetteDemo() throws IOException, CloneNotSupportedException {
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         sPanel = new SilhouettePlot();
 
-        final Clustering<? extends Cluster> data = FakeClustering.iris();
+        final Clustering<? extends Cluster> data = FakeClustering.irisWrong();
         sPanel.setClustering(data);
         System.out.println("dataset size: " + data.size());
-        add(sPanel);
+        add(sPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     // this function will be run from the EDT
