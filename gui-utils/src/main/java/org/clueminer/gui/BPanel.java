@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
@@ -15,13 +17,46 @@ import javax.swing.JPanel;
  */
 public abstract class BPanel extends JPanel {
 
+    private static final long serialVersionUID = -5425978383189367748L;
+
     protected Dimension size = new Dimension(0, 0);
     protected BufferedImage bufferedImage;
     protected Graphics2D g;
 
+    public BPanel() {
+        this.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                size = getSize();
+                sizeUpdated(size);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                size = getSize();
+                sizeUpdated(size);
+                recalculate();
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
+            }
+        });
+    }
+
     public abstract void render(Graphics2D g);
 
-    public abstract void updateSize(Dimension size);
+    /**
+     * Called when component's dimension changes
+     *
+     * @param size new component size
+     */
+    public abstract void sizeUpdated(Dimension size);
 
     public abstract boolean hasData();
 
@@ -45,9 +80,9 @@ public abstract class BPanel extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (isAntiAliasing()) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -72,15 +107,15 @@ public abstract class BPanel extends JPanel {
             int dy = Math.abs(size.height - bufferedImage.getHeight());
 
             //requested size is different from buffered one, clear the cache
-            if (dx > 5 || dy > 5) {
+            if (dx > 1 || dy > 1) {
                 createBufferedGraphics();
             }
 
             //cached image
             g.drawImage(bufferedImage,
-                        0, 0,
-                        size.width, size.height,
-                        null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         }
     }
 
