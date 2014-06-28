@@ -26,12 +26,13 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private DendrogramTree tree;
     private HierarchicalResult clustering;
     final static float dash1[] = {10.0f};
-    private int linepos;
+    //start at tree root
+    private int linepos = 100;
     final static BasicStroke dashed
             = new BasicStroke(1.0f,
-                    BasicStroke.CAP_BUTT,
-                    BasicStroke.JOIN_MITER,
-                    10.0f, dash1, 0.0f);
+                              BasicStroke.CAP_BUTT,
+                              BasicStroke.JOIN_MITER,
+                              10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
     private static final Logger logger = Logger.getLogger(CutoffLine.class.getName());
     private int sliderDiameter = 6;

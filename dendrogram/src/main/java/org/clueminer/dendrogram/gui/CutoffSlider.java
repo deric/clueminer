@@ -36,6 +36,8 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      */
     private boolean inverted = true;
     private int sliderDiameter;
+    private int max = 100;
+    private int min = 0;
 
     /**
      *
@@ -76,9 +78,9 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
         slider = new JSlider(orientation);
         slider.setInverted(inverted);
-        slider.setMinimum((int) cutoffLine.getMinDistance());
-        slider.setMaximum((int) cutoffLine.getMaxDistance());
-        slider.setValue(cutoffLine.getLinePosition());
+        slider.setMinimum(min);
+        slider.setMaximum(max);
+        slider.setValue(100);
         slider.addChangeListener(this);
         slider.setBackground(parent.getBackground());
         slider.setUI(new CustomSliderUI(slider, sliderDiameter));
@@ -92,8 +94,10 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         }
         if (inverted) {
             c.anchor = GridBagConstraints.NORTHEAST;
+            slider.setValue(100);
         } else {
             c.anchor = GridBagConstraints.NORTHWEST;
+            slider.setValue(0);
         }
         c.weightx = 1.0;
         c.weighty = 0.0;
@@ -135,11 +139,6 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      */
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
-        int max = 100;
-        int min = 0;
-
-        slider.setMinimum(min);
-        slider.setMaximum(max);
         slider.setValue(cutoffLine.getLinePosition());
     }
 
