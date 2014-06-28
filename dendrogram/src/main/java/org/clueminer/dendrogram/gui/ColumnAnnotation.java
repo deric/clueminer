@@ -2,7 +2,6 @@ package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
@@ -110,11 +109,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
             visible = true;
             this.elementSize.width = width;
             updateSize();
-            if (isAdjusting) {
-                redraw();
-            } else {
-                createBufferedGraphics();
-            }
+            createBufferedGraphics();
         }
     }
 
