@@ -76,6 +76,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         ensureCapacity(n);
 
         data[n++] = e;
+        //cluster numbers start from 1
+        e.setClusterId(n); //intentionally
         return true;
     }
 
@@ -119,6 +121,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             n++;
         }
         data[index] = x;
+        //cluster numbers start from 1
+        x.setClusterId(index + 1);
     }
 
     @Override

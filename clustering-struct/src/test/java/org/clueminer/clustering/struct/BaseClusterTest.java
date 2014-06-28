@@ -1,7 +1,6 @@
 package org.clueminer.clustering.struct;
 
-import org.clueminer.clustering.struct.ClusterList;
-import org.clueminer.clustering.struct.BaseCluster;
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
@@ -101,7 +100,10 @@ public class BaseClusterTest {
      */
     @Test
     public void testSetClusterId() {
-
+        Cluster x = new BaseCluster(1);
+        assertEquals(0, x.getClusterId());
+        x.setClusterId(99);
+        assertEquals(99, x.getClusterId());
     }
 
     /**
@@ -109,7 +111,8 @@ public class BaseClusterTest {
      */
     @Test
     public void testGetClusterId() {
-        assertEquals(0, irisClusters.get(0).getClusterId());
+        //cluster ID start from 1 (human readable)
+        assertEquals(1, irisClusters.get(0).getClusterId());
     }
 
     /**
@@ -117,6 +120,8 @@ public class BaseClusterTest {
      */
     @Test
     public void testGetColor() {
+        Cluster x = new BaseCluster(1);
+        assertNull(x.getColor());
     }
 
     /**
@@ -124,6 +129,10 @@ public class BaseClusterTest {
      */
     @Test
     public void testSetColor() {
+        Cluster x = new BaseCluster(1);
+        Color c = Color.RED;
+        x.setColor(c);
+        assertEquals(c, x.getColor());
     }
 
     /**
