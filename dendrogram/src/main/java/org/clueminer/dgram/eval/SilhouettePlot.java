@@ -37,7 +37,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         super();
         silhouette = new Silhouette();
         scale = new StdScale();
-        this.fitToSpace = fit;
+        fitToSpace = fit;
     }
 
     @Override
@@ -45,8 +45,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         if (hasData()) {
             //Dump.array(score, "sil score");
             FontMetrics fm = g.getFontMetrics();
+            Cluster clust = null;
             float y;
-            int x = 0;
+            int x = 0, k = 0, prev = -1;
             double value, s;
             for (int i = 0; i < dataset.size(); i++) {
                 s = score[i];
@@ -54,14 +55,20 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                     s = -1.0;
                 }
                 value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-
-                g.setColor(Color.BLUE);
-                g.fillRect(x, i * element.height, (int) value, element.height);
-                if (hierarchicalResult != null && dataset != null) {
-                    g.setColor(Color.BLACK);
-                    y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                    g.drawString(String.format("%.2f", s), (float) (x + value + 5), y);
+                if (hierarchicalResult != null) {
+                    k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
+                    if (k != prev) {
+                        clust = clustering.get(k - 1);
+                    }
+                    g.setColor(clust.getColor());
                 }
+                g.fillRect(x, i * element.height, (int) value, element.height);
+
+                g.setColor(Color.BLACK);
+                y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                g.drawString(String.format("%.2f", s), (float) (x + value + 10), y);
+
+                prev = k;
             }
         }
     }
