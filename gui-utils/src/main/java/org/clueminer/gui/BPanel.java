@@ -140,6 +140,8 @@ public abstract class BPanel extends JPanel {
     public void resetCache() {
         recalculate();
         createBufferedGraphics();
+        validate();
+        revalidate();
         repaint();
     }
 

@@ -2,6 +2,7 @@ package org.clueminer.dgram.eval;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -43,22 +44,24 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     public void render(Graphics2D g) {
         if (hasData()) {
             //Dump.array(score, "sil score");
-            Cluster clust;
-            int x = 0, y;
-            int k = 0;
-            double value;
-            //g.setColor(Color.BLACK);
-            for (int i = 0; i < clustering.size(); i++) {
-                clust = clustering.get(i);
-                for (int j = 0; j < clust.size(); j++) {
-                    double s = score[k];
-                    value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-                    y = element.height * k;
-                    g.setColor(Color.BLUE);
-                    g.fillRect(x, y, (int) value, element.height);
-                    k++;
+            FontMetrics fm = g.getFontMetrics();
+            float y;
+            int x = 0;
+            double value, s;
+            for (int i = 0; i < dataset.size(); i++) {
+                s = score[i];
+                if (Double.isNaN(s)) {
+                    s = -1.0;
                 }
+                value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
 
+                g.setColor(Color.BLUE);
+                g.fillRect(x, i * element.height, (int) value, element.height);
+                if (hierarchicalResult != null && dataset != null) {
+                    g.setColor(Color.BLACK);
+                    y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                    g.drawString(String.format("%.2f", s), (float) (x + value + 5), y);
+                }
             }
         }
     }
@@ -139,8 +142,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        setClustering(dataset.getRowsClustering());
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping mapping) {
+        hierarchicalResult = mapping.getRowsResult();
+        setClustering(mapping.getRowsClustering());
     }
 
     @Override
@@ -181,21 +185,12 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                     score[i] = value;
                 }
             }
-            /*
-             Cluster clust;
-             int k = 0;
-             for (int i = 0; i < clustering.size(); i++) {
-             clust = clustering.get(i);
-             for (int j = 0; j < clust.size(); j++) {
-             score[k++] = silhouette.instanceScore(clust, clustering, i, j);
-             }
-             }*/
             //Dump.array(score, "silhouette score");
         }
     }
 
     public void setDendrogramData(DendrogramMapping dendroData) {
-        this.dataset = dendroData.getDataset();
+        dataset = dendroData.getDataset();
         hierarchicalResult = dendroData.getRowsResult();
         setClustering(dendroData.getRowsClustering());
         resetCache();
@@ -209,7 +204,10 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
-        setClustering(hclust.getClustering());
+        if (hclust != null) {
+            hierarchicalResult = hclust;
+            setClustering(hclust.getClustering());
+        }
     }
 
 }
