@@ -168,8 +168,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             }
             if (hasData()) {
                 reqSize.height = clustering.instancesCount() * element.height;
-                resetCache();
             }
+            resetCache();
         }
     }
 
