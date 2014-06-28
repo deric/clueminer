@@ -1,24 +1,24 @@
 package org.clueminer.dgram.eval;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringListener;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
-import org.clueminer.utils.Dump;
 
 /**
  *
  * @author Tomas Barton
  */
-public class SilhouettePlot extends BPanel implements DendrogramDataListener {
+public class SilhouettePlot extends BPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 4887302917255522954L;
 
@@ -29,11 +29,11 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
     private double[] score;
     private DendrogramMapping dendroData;
 
-    public SilhouettePlot() {
+    public SilhouettePlot(boolean fit) {
         super();
-        setLayout(new BorderLayout());
         silhouette = new Silhouette();
         scale = new StdScale();
+        this.fitToSpace = fit;
     }
 
     @Override
@@ -69,25 +69,38 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
         return reqSize.width;
     }
 
+    /**
+     *
+     * @param w
+     * @param h
+     */
+    public void setElementSize(int w, int h) {
+        element.width = w;
+        element.height = h;
+        resetCache();
+    }
+
     @Override
     public void sizeUpdated(Dimension size) {
         if (hasData()) {
             //we dont care about width
             realSize.width = size.width;
             realSize.height = size.height;
-            double perLine = Math.ceil(size.height / (double) clustering.instancesCount());
-            if (perLine < 1) {
-                perLine = 1;// 1px line height
-                realSize.height = clustering.instancesCount();
+            if (fitToSpace) {
+                double perLine = Math.ceil(size.height / (double) clustering.instancesCount());
+                if (perLine < 1) {
+                    perLine = 1;// 1px line height
+                    realSize.height = clustering.instancesCount();
+                }
+                element.height = (int) perLine;
             }
-            element.height = (int) perLine;
             resetCache();
         }
     }
 
     @Override
     public boolean hasData() {
-        return clustering != null;
+        return clustering != null && clustering.instancesCount() > 0;
     }
 
     @Override
@@ -95,6 +108,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
         if (hasData()) {
             realSize.width = reqSize.width;
             realSize.height = clustering.instancesCount() * element.height;
+        } else {
+            realSize.width = reqSize.width;
+            realSize.height = reqSize.height;
         }
         setMinimumSize(reqSize);
         setSize(reqSize);
@@ -109,6 +125,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
     void setClustering(Clustering<? extends Cluster> data) {
         this.clustering = data;
         updateScore();
+        if (reqSize.width == 0) {
+            reqSize.width = 100;
+        }
         resetCache();
     }
 
@@ -124,9 +143,15 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
 
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        element.height = height;
-        if (!isAdjusting) {
-            resetCache();
+        if (height > 0) {
+            element.height = height;
+            if (reqSize.width == 0) {
+                reqSize.width = 100;
+            }
+            if (hasData()) {
+                reqSize.height = clustering.instancesCount() * element.height;
+                resetCache();
+            }
         }
     }
 
@@ -152,6 +177,17 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener {
         this.dendroData = dendroData;
         setClustering(dendroData.getRowsClustering());
         resetCache();
+        repaint();
+    }
+
+    @Override
+    public void clusteringChanged(Clustering clust) {
+        setClustering(clust);
+    }
+
+    @Override
+    public void resultUpdate(HierarchicalResult hclust) {
+        setClustering(hclust.getClustering());
     }
 
 }

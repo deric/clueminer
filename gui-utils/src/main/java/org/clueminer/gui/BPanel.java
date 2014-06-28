@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
@@ -25,8 +24,10 @@ public abstract class BPanel extends JPanel {
     protected BufferedImage bufferedImage;
     protected Graphics2D g;
     protected boolean preserveAlpha = false;
+    protected boolean fitToSpace = true;
 
     public BPanel() {
+        setDoubleBuffered(false);
         this.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -71,21 +72,23 @@ public abstract class BPanel extends JPanel {
     public abstract boolean isAntiAliasing();
 
     public void createBufferedGraphics() {
+        System.out.println("creating buffered image " + realSize + " has data " + hasData());
         if (!hasData() || realSize.width <= 0 || realSize.height <= 0) {
             return;
         }
+
         bufferedImage = new BufferedImage(realSize.width, realSize.height, BufferedImage.TYPE_INT_ARGB);
         g = bufferedImage.createGraphics();
-        this.setOpaque(false);
+        //this.setOpaque(false);
         // clear the panel
-        g.setColor(getBackground());
+        //g.setColor(getBackground());
         g.fillRect(0, 0, realSize.width, realSize.height);
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+                           RenderingHints.VALUE_RENDER_QUALITY);
 
         if (isAntiAliasing()) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -106,29 +109,31 @@ public abstract class BPanel extends JPanel {
         }
         //if no data, bufferedImage is null
         if (bufferedImage != null) {
-            int dx = Math.abs(reqSize.width - realSize.width);
-            int dy = Math.abs(reqSize.height - realSize.height);
+            if (fitToSpace) {
+                int dx = Math.abs(reqSize.width - realSize.width);
+                int dy = Math.abs(reqSize.height - realSize.height);
 
-            //requested size is different from buffered one, resize it
-            if (dx > 1 || dy > 1) {
-                int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-                BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, imageType);
-                Graphics2D gr = scaledBI.createGraphics();
-                if (preserveAlpha) {
-                    gr.setComposite(AlphaComposite.Src);
+                //requested size is different from buffered one, resize it
+                if (dx > 1 || dy > 1) {
+                    int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+                    BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, imageType);
+                    Graphics2D gr = scaledBI.createGraphics();
+                    if (preserveAlpha) {
+                        gr.setComposite(AlphaComposite.Src);
+                    }
+                    //AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
+                    //gr.drawRenderedImage(scaledBI, at);
+                    g.drawImage(bufferedImage, 0, 0, reqSize.width, reqSize.height, null);
+                    gr.dispose();
+                    bufferedImage = scaledBI;
                 }
-                //AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
-                //gr.drawRenderedImage(scaledBI, at);
-                g.drawImage(bufferedImage, 0, 0, reqSize.width, reqSize.height, null);
-                gr.dispose();
-                bufferedImage = scaledBI;
             }
 
             //cached image
             g.drawImage(bufferedImage,
-                    0, 0,
-                    reqSize.width, reqSize.height,
-                    null);
+                        0, 0,
+                        reqSize.width, reqSize.height,
+                        null);
         }
     }
 

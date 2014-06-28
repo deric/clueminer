@@ -43,10 +43,10 @@ public abstract class AbstractAnnotation extends JPanel {
         }
         bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
         g = bufferedImage.createGraphics();
-        this.setOpaque(false);
+        setOpaque(true);
         // clear the panel
-        g.setColor(panel.getBackground());
-        g.fillRect(0, 0, size.width, size.height);
+        //g.setColor(panel.getBackground());
+        //g.fillRect(0, 0, size.width, size.height);
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,

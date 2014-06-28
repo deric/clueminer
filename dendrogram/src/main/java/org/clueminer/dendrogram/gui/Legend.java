@@ -25,7 +25,7 @@ public class Legend extends JPanel implements DendrogramDataListener {
 
     public Legend(DendroPane p) {
         this.panel = p;
-        this.setBackground(panel.getBackground());
+        setBackground(panel.getBackground());
         setDoubleBuffered(false);
 
         this.addComponentListener(new ComponentListener() {

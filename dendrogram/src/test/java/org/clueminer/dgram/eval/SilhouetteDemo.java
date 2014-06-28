@@ -1,7 +1,5 @@
 package org.clueminer.dgram.eval;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,7 +23,7 @@ public class SilhouetteDemo extends JFrame {
 
     public SilhouetteDemo() throws IOException, CloneNotSupportedException {
         setLayout(new GridBagLayout());
-        sPanel = new SilhouettePlot();
+        sPanel = new SilhouettePlot(true);
 
         final Clustering<? extends Cluster> data = FakeClustering.irisWrong();
         sPanel.setClustering(data);

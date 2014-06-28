@@ -27,7 +27,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
     @Override
     protected void render(Graphics2D g) {
         if (rowsOrder != null) {
-            g.setColor(Color.black);
+            g.setColor(Color.BLACK);
             g.setFont(defaultFont);
             FontRenderContext frc = g.getFontRenderContext();
             FontMetrics fm = g.getFontMetrics();
@@ -74,9 +74,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                0, 0,
-                size.width, size.height,
-                null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
     }
 
     /**

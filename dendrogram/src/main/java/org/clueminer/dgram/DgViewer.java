@@ -266,10 +266,8 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         ClusteringListener[] listeners;
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);
-        System.out.println("fireing results update, listeners size: " + listeners.length);
         for (ClusteringListener listener : listeners) {
             listener.resultUpdate(clust);
-            System.out.println("listerner: " + listener.getClass().toString());
         }
     }
 
