@@ -1,7 +1,5 @@
 package org.clueminer.cluster;
 
-import org.clueminer.clustering.struct.ClusterList;
-import org.clueminer.clustering.struct.BaseCluster;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,6 +7,8 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -348,7 +348,8 @@ public class ClusterListTest {
     public void testCreateCluster_int() {
         int size = clusters.size();
         Cluster c = clusters.createCluster(size + 1);
-        assertEquals(size + 1, c.getClusterId());
+        //ID start from 1
+        assertEquals(size + 2, c.getClusterId());
         assertEquals(size + 1, clusters.size());
     }
 
@@ -356,7 +357,7 @@ public class ClusterListTest {
     public void testCreateCluster_0args() {
         int size = clusters.size();
         Cluster c = clusters.createCluster();
-        assertEquals(size, c.getClusterId());
+        assertEquals(size + 1, c.getClusterId());
     }
 
     @Test
