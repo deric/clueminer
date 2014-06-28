@@ -10,6 +10,8 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
@@ -23,11 +25,12 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     private static final long serialVersionUID = 4887302917255522954L;
 
     private Clustering<? extends Cluster> clustering;
+    private Dataset<? extends Instance> dataset;
     private Dimension element = new Dimension(5, 5);
     private Silhouette silhouette;
     private StdScale scale;
     private double[] score;
-    private DendrogramMapping dendroData;
+    private HierarchicalResult hierarchicalResult;
 
     public SilhouettePlot(boolean fit) {
         super();
@@ -100,7 +103,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
     @Override
     public boolean hasData() {
-        return clustering != null && clustering.instancesCount() > 0;
+        return clustering != null && clustering.instancesCount() > 0 && dataset != null;
     }
 
     @Override
@@ -124,6 +127,10 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
     void setClustering(Clustering<? extends Cluster> data) {
         this.clustering = data;
+        Dataset<? extends Instance> d = data.getLookup().lookup(Dataset.class);
+        if (d != null) {
+            dataset = d;
+        }
         updateScore();
         if (reqSize.width == 0) {
             reqSize.width = 100;
@@ -160,21 +167,36 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
      */
     private void updateScore() {
         if (hasData()) {
-            score = new double[clustering.instancesCount()];
+            score = new double[dataset.size()];
             Cluster clust;
-            int k = 0;
-            for (int i = 0; i < clustering.size(); i++) {
-                clust = clustering.get(i);
-                for (int j = 0; j < clust.size(); j++) {
-                    score[k++] = silhouette.instanceScore(clust, clustering, i, j);
+            int k;
+            double value;
+            for (int i = 0; i < dataset.size(); i++) {
+                k = clustering.assignedCluster(i);
+                clust = clustering.get(k - 1);
+                value = silhouette.instanceScore(clust, clustering, i, dataset.get(i));
+                if (hierarchicalResult != null) {
+                    score[hierarchicalResult.getMappedIndex(i)] = value;
+                } else {
+                    score[i] = value;
                 }
             }
+            /*
+             Cluster clust;
+             int k = 0;
+             for (int i = 0; i < clustering.size(); i++) {
+             clust = clustering.get(i);
+             for (int j = 0; j < clust.size(); j++) {
+             score[k++] = silhouette.instanceScore(clust, clustering, i, j);
+             }
+             }*/
             //Dump.array(score, "silhouette score");
         }
     }
 
     public void setDendrogramData(DendrogramMapping dendroData) {
-        this.dendroData = dendroData;
+        this.dataset = dendroData.getDataset();
+        hierarchicalResult = dendroData.getRowsResult();
         setClustering(dendroData.getRowsClustering());
         resetCache();
         repaint();

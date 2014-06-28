@@ -61,7 +61,7 @@ public class Silhouette extends ClusterEvaluator {
 
         //calculate distance to all other objects in cluster
         for (int j = 0; j < clust.size(); j++) {
-            clusterDist += instanceScore(clust, clusters, i, j);
+            clusterDist += instanceScore(clust, clusters, i, clust.instance(j));
         }
         return (clusterDist / clust.size());
     }
@@ -71,17 +71,16 @@ public class Silhouette extends ClusterEvaluator {
      * @param clust
      * @param clusters
      * @param i        index of cluster
-     * @param j        index of the instance
+     * @param x
      * @return
      */
-    public double instanceScore(Cluster clust, Clustering clusters, int i, int j) {
-        Instance x, y;
+    public double instanceScore(Cluster clust, Clustering clusters, int i, Instance x) {
+        Instance y;
         double a, b, dist;
-        x = clust.instance(j);
         a = 0;
         for (int k = 0; k < clust.size(); k++) {
-            if (j != k) {
-                y = clust.instance(k);
+            y = clust.instance(k);
+            if (x.getIndex() != y.getIndex()) {
                 dist = dm.measure(x, y);
                 a += dist;
             }
