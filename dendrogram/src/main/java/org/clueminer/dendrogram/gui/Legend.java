@@ -129,12 +129,18 @@ public class Legend extends BPanel implements DendrogramDataListener {
     @Override
     public void sizeUpdated(Dimension size) {
         if (hasData()) {
-            colorBarHeight = (int) (0.9 * size.height);
-            colorBarWidth = (int) Math.min(30, 0.5 * size.width);
-            realSize.width = insets.left + colorBarWidth + spaceBetweenBarAndLabels + textWidth + insets.right;
-            realSize.height = insets.top + colorBarHeight + insets.bottom;
+            int cbh = (int) (0.9 * size.height);
+            int cbw = (int) Math.min(30, 0.5 * size.width);
+
+            realSize.width = insets.left + cbw + spaceBetweenBarAndLabels + textWidth + insets.right;
+            realSize.height = insets.top + cbh + insets.bottom;
             setPreferredSize(realSize);
-            setSize(realSize);
+            setSize(realSize.width, realSize.height - 2);
+
+            if (Math.abs(cbh - colorBarHeight) > 1 || Math.abs(cbw - colorBarWidth) > 1) {
+                buffScale = null;
+                resetCache();
+            }
         }
     }
 
@@ -150,7 +156,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
             //default height which is not bellow zero
             colorBarHeight = 20;
         }
-        setMinimumSize(realSize);
+        //setMinimumSize(realSize);
     }
 
     @Override
