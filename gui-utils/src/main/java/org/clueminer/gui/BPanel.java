@@ -72,7 +72,6 @@ public abstract class BPanel extends JPanel {
     public abstract boolean isAntiAliasing();
 
     public void createBufferedGraphics() {
-        System.out.println("creating buffered image " + realSize + " has data " + hasData());
         if (!hasData() || realSize.width <= 0 || realSize.height <= 0) {
             return;
         }
@@ -86,9 +85,9 @@ public abstract class BPanel extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (isAntiAliasing()) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -109,12 +108,12 @@ public abstract class BPanel extends JPanel {
         }
         //if no data, bufferedImage is null
         if (bufferedImage != null) {
-            if (fitToSpace) {
-                int dx = Math.abs(reqSize.width - realSize.width);
-                int dy = Math.abs(reqSize.height - realSize.height);
+            int dx = Math.abs(reqSize.width - realSize.width);
+            int dy = Math.abs(reqSize.height - realSize.height);
 
-                //requested size is different from buffered one, resize it
-                if (dx > 1 || dy > 1) {
+            //requested size is different from buffered one, resize it
+            if (dx > 1 || dy > 1) {
+                if (fitToSpace) {
                     int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
                     BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, imageType);
                     Graphics2D gr = scaledBI.createGraphics();
@@ -126,14 +125,17 @@ public abstract class BPanel extends JPanel {
                     g.drawImage(bufferedImage, 0, 0, reqSize.width, reqSize.height, null);
                     gr.dispose();
                     bufferedImage = scaledBI;
+                } else {
+                    //difference between real and requested is too big
+                    createBufferedGraphics();
                 }
             }
 
             //cached image
             g.drawImage(bufferedImage,
-                        0, 0,
-                        reqSize.width, reqSize.height,
-                        null);
+                    0, 0,
+                    reqSize.width, reqSize.height,
+                    null);
         }
     }
 
