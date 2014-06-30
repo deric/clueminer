@@ -71,11 +71,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         });
 
         chckFitToPanel.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.chckFitToPanel.text")); // NOI18N
-        chckFitToPanel.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                chckFitToPanelStateChanged(evt);
-            }
-        });
         chckFitToPanel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chckFitToPanelActionPerformed(evt);
@@ -185,13 +180,9 @@ public class SettingsPanel extends javax.swing.JPanel {
 
     private void chckFitToPanelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckFitToPanelActionPerformed
         if (viewer != null) {
-            viewer.setFitToPanel(!viewer.isFitToPanel());
+            viewer.setFitToPanel(chckFitToPanel.isSelected());
         }
     }//GEN-LAST:event_chckFitToPanelActionPerformed
-
-    private void chckFitToPanelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chckFitToPanelStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chckFitToPanelStateChanged
 
     private void chckShowHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckShowHorizontalActionPerformed
     }//GEN-LAST:event_chckShowHorizontalActionPerformed

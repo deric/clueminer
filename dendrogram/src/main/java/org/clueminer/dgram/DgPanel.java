@@ -5,10 +5,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.text.DecimalFormat;
 import javax.swing.Box;
 import javax.swing.JLayeredPane;
@@ -37,12 +40,13 @@ import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
 import org.clueminer.dendrogram.tree.VerticalScale;
 import org.clueminer.dgram.eval.SilhouettePlot;
+import org.clueminer.gui.BPanel;
 
 /**
  *
  * @author Tomas Barton
  */
-public class DgPanel extends JPanel implements DendrogramDataListener, DendroPane {
+public class DgPanel extends BPanel implements DendrogramDataListener, DendroPane {
 
     private static final long serialVersionUID = -5443298776673785208L;
     //component to draw a tree for rows
@@ -71,6 +75,8 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     private boolean showLegend = true;
     private boolean showLabels = true;
     private boolean showSlider = true;
+    private boolean showEvalPlot = true;
+    private boolean fitToPanel = false;
     protected DendroViewer dendroViewer;
     private Legend legend;
     protected Dimension size;
@@ -85,6 +91,8 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
     private int cutoffSliderSize = 6;
+    protected Dimension reqSize = new Dimension(0, 0);
+    protected Dimension realSize = new Dimension(0, 0);
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -96,6 +104,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
 
     private void initComponents() {
         setBackground(bg);
+        setOpaque(true);
         colorScheme = new ColorSchemeImpl(useDoubleGradient);
     }
 
@@ -103,12 +112,101 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
      * Layout settings of component - should be called when any component is
      * shown or hidden
      *
-     * |(0,0) | (0, 1) horizontal|
-     *
-     * |(0,1) | (1, 1) heatmap | |vertical | | \----------------------------/
      */
     private void updateLayout() {
+        if (!hasData()) {
+            //    return;
+        }
         this.removeAll(); //clean the component
+
+        if (fitToPanel) {
+            prepareComputedLayout();
+            this.reqSize = getSize();
+            recalculate();
+            computeLayout();
+        } else {
+            autoLayout();
+        }
+        validate();
+        revalidate();
+        repaint();
+
+        this.updateUI();
+    }
+
+    @Override
+    public void sizeUpdated(Dimension reqSize) {
+        if (fitToPanel) {
+            this.reqSize = reqSize;
+            recalculate();
+            computeLayout();
+        } else {
+            //let LayoutManager deal with this
+        }
+    }
+
+    @Override
+    public void render(Graphics2D g) {
+        System.out.println("render called");
+        //setLayout(null);
+
+        //rowsTree.setBounds(0, 0, 200, 200);
+    }
+
+    @Override
+    public void recalculate() {
+        if (fitToPanel) {
+            System.out.println("computed layout");
+            System.out.println("reqSize " + reqSize);
+
+            //maximal percentage for rows tree
+            //rows tree will have at most 200px (30% of the screen)
+            int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
+            int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
+            int heatmapWidth, heatmapHeight = reqSize.height;
+            if (showEvalPlot) {
+                heatmapWidth = (int) (reqSize.width * 0.4);
+            } else {
+                heatmapWidth = reqSize.width - rowsTreeDim;
+            }
+
+            if (showColumnsTree) {
+                heatmapHeight -= colsTreeDim;
+            }
+            //column annotations is usually bigger than tree annotation
+            heatmapHeight -= columnAnnotationBar.getSize().height;
+            //compute element height
+            double perLine = Math.floor(heatmapHeight / (double) dendroData.getNumberOfRows());
+            if (perLine < 1) {
+                perLine = 1;// 1px line height
+            }
+            elementSize.height = (int) perLine;
+            int diff = heatmapHeight - (dendroData.getNumberOfRows() * elementSize.height);
+            System.out.println("heatmap h diff = " + diff);
+
+            //compute element width
+            perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
+            if (perLine < 1) {
+                perLine = 1;// 1px line height
+            }
+            elementSize.width = (int) perLine;
+            diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
+            System.out.println("heatmap w diff = " + diff);
+            System.out.println("element " + elementSize);
+            System.out.println("rows tree diam " + rowsTreeDim);
+            dendroViewer.setCellHeight(elementSize.height, false);
+            dendroViewer.setCellWidth(elementSize.width, false);
+        }
+    }
+
+    /*
+     *
+     * |(0,0) tree cut | (0, 1) horizontal tree |
+     * |(0,1) vertical | (1, 1) heatmap         |
+     * |               |
+     */
+    private void autoLayout() {
+        System.out.println("auto layout");
         setLayout(new GridBagLayout());
         int gridy = 0, gridx = 0;
         int lastCol = 0;
@@ -154,20 +252,87 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
          horizontalFill.fill = GridBagConstraints.HORIZONTAL;
 
          this.add(Box.createHorizontalGlue(), horizontalFill);*/
-        validate();
-        revalidate();
-        repaint();
-
-        this.updateUI();
     }
 
-    private void addHeatmap(int column, int row) {
-        //we call constructor just one
+    private void prepareComputedLayout() {
+        setLayout(null);
+
+        createHeatmap();
+        add(heatmap);
+
+        createLegend();
+        add(legend);
+
+        //rows
+        if (showRowsTree) {
+            createRowsTree();
+            add((Component) rowsTree);
+        }
+
+        //columns
+        if (showColumnsTree) {
+            createColumnsTree();
+            add((Component) columnsTree);
+        }
+
+        createColumnAnnotation();
+        add(columnAnnotationBar);
+    }
+
+
+    /*
+     * Compute precisely each component size for given space
+     *
+     * |                      |              |                 |
+     * |    rowsTree (30%)    |  heatmap 40% | cluster         |  eval plot (30%)
+     * |                      |              | assignment 30px |    if present
+     * |                      |              | (fixed)
+     */
+    private void computeLayout() {
+        Dimension dim, dimHeatmap;
+        int heatmapXoffset, heatmapYoffset;
+
+        //X, Y position of heatmap's top left corner
+        heatmapXoffset = insets.left + rowsTree.getSize().width;
+        heatmapYoffset = insets.top + columnsTree.getSize().height;
+
+        if (showColumnsTree) {
+            dim = columnsTree.getSize();
+            columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
+            //legend height
+
+        } else {
+
+        }
+        if (showRowsTree) {
+            dim = rowsTree.getSize();
+            rowsTree.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+        }
+
+        dimHeatmap = heatmap.getSize();
+        heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
+
+        dim = columnAnnotationBar.getSize();
+        columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
+
+        dim = legend.getSize();
+        legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+
+        System.out.println("preffered " + getPreferredSize());
+        System.out.println("size " + getSize());
+        System.out.println("min " + getMinimumSize());
+    }
+
+    private void createHeatmap() {
         if (heatmap == null) {
             heatmap = new Heatmap(this);
             heatmap.setOffset(0);
             dendroViewer.addDendrogramDataListener(heatmap);
         }
+    }
+
+    private void addHeatmap(int column, int row) {
+        createHeatmap();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -179,10 +344,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         add(heatmap, c);
     }
 
-    private void addColumnsTree(int column, int row) {
-        if (showRowsTree) {
-            column++;
-        }
+    private void createColumnsTree() {
         //we call constructor just one
         if (columnsTree == null) {
             columnsTree = new DgBottomTree(this);
@@ -190,7 +352,13 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
             //@TODO we should remove listener if component is not displayed
             dendroViewer.addDendrogramDataListener(columnsTree);
         }
+    }
 
+    private void addColumnsTree(int column, int row) {
+        createColumnsTree();
+        if (showRowsTree) {
+            column++;
+        }
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.SOUTHWEST;
@@ -212,7 +380,7 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addRowsTree(int column, int row) {
+    private void createRowsTree() {
         //we call constructor just one
         if (rowsTree == null) {
             rowsTree = new DgRightTree(this);
@@ -222,6 +390,45 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
             cutoff = new CutoffLine(this, rowsTree);
             dendroViewer.addDendrogramDataListener(cutoff);
         }
+        if (treeLayered == null) {
+            treeLayered = new JLayeredPane();
+            treeLayered.setLayout(new LayoutManager() {
+                @Override
+                public void addLayoutComponent(String name, Component comp) {
+                }
+
+                @Override
+                public void removeLayoutComponent(Component comp) {
+                }
+
+                @Override
+                public Dimension preferredLayoutSize(Container parent) {
+                    return rowsTree.getSize();
+                }
+
+                @Override
+                public Dimension minimumLayoutSize(Container parent) {
+                    return rowsTree.getSize();
+                }
+
+                @Override
+                public void layoutContainer(Container parent) {
+                    Insets insets = parent.getInsets();
+                    int w = parent.getWidth() - insets.left - insets.right;
+                    int h = parent.getHeight() - insets.top - insets.bottom;
+
+                    cutoff.setBounds(insets.left, insets.top, w, h);
+                    rowsTree.setBounds(insets.left, insets.top, w, h);
+                }
+            });
+
+            treeLayered.add(cutoff, 0); //lower level
+            treeLayered.add((Component) rowsTree, 1); //upper level
+        }
+    }
+
+    private void addRowsTree(int column, int row) {
+        createRowsTree();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -234,39 +441,6 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         c.gridx = column;
         c.gridy = row;
 
-        treeLayered = new JLayeredPane();
-        treeLayered.setLayout(new LayoutManager() {
-            @Override
-            public void addLayoutComponent(String name, Component comp) {
-            }
-
-            @Override
-            public void removeLayoutComponent(Component comp) {
-            }
-
-            @Override
-            public Dimension preferredLayoutSize(Container parent) {
-                return rowsTree.getSize();
-            }
-
-            @Override
-            public Dimension minimumLayoutSize(Container parent) {
-                return rowsTree.getSize();
-            }
-
-            @Override
-            public void layoutContainer(Container parent) {
-                Insets insets = parent.getInsets();
-                int w = parent.getWidth() - insets.left - insets.right;
-                int h = parent.getHeight() - insets.top - insets.bottom;
-
-                cutoff.setBounds(insets.left, insets.top, w, h);
-                rowsTree.setBounds(insets.left, insets.top, w, h);
-            }
-        });
-
-        treeLayered.add(cutoff, 0); //lower level
-        treeLayered.add((Component) rowsTree, 1); //upper level
         add(treeLayered, c);
 
         if (showScale) {
@@ -376,11 +550,15 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         add(silhouettePlot, c);
     }
 
-    private void addLegend(int column, int row, int span) {
+    private void createLegend() {
         //we call constructor just one
         if (legend == null) {
             legend = new Legend(this);
         }
+    }
+
+    private void addLegend(int column, int row, int span) {
+        createLegend();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -393,13 +571,17 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
         add(legend, c);
     }
 
-    private void addColumnAnnotationBar(int column, int row) {
+    private void createColumnAnnotation() {
         //we call constructor just one
         if (columnAnnotationBar == null) {
             columnAnnotationBar = new ColumnAnnotation(this);
             dendroViewer.addDendrogramDataListener(columnAnnotationBar);
             rowsTree.addTreeListener(columnAnnotationBar);
         }
+    }
+
+    private void addColumnAnnotationBar(int column, int row) {
+        createColumnAnnotation();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -460,8 +642,12 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        rowsTree.fireTreeUpdated();
-        columnsTree.fireTreeUpdated();
+        if (rowsTree != null) {
+            rowsTree.fireTreeUpdated();
+        }
+        if (columnsTree != null) {
+            columnsTree.fireTreeUpdated();
+        }
         //@TODO probably call repaint
         repaint();
     }
@@ -571,14 +757,14 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
         elementSize.width = width;
         updateWidth(width);
-        setSizes();
+        //setSizes();
     }
 
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
         elementSize.height = height;
         updateHeight(height);
-        setSizes();
+        //setSizes();
     }
 
     @Override
@@ -649,4 +835,31 @@ public class DgPanel extends JPanel implements DendrogramDataListener, DendroPan
     public int getSliderDiameter() {
         return cutoffSliderSize;
     }
+
+    public boolean isFitToPanel() {
+        return fitToPanel;
+    }
+
+    public void setFitToPanel(boolean fitToPanel) {
+        if (this.fitToPanel != fitToPanel) {
+            this.fitToPanel = fitToPanel;
+            updateLayout();
+        }
+    }
+
+    public boolean isShowEvalPlot() {
+        return showEvalPlot;
+    }
+
+    public void setShowEvalPlot(boolean showEvalPlot) {
+        if (this.showEvalPlot != showEvalPlot) {
+            this.showEvalPlot = showEvalPlot;
+            updateLayout();
+        }
+    }
+
+    public boolean hasData() {
+        return dendroData != null;
+    }
+
 }

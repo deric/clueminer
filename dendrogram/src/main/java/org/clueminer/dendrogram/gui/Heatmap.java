@@ -62,7 +62,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     public Heatmap() {
         setBackground(Color.GRAY);
-        this.setDoubleBuffered(false);
+        setDoubleBuffered(true); //offscree painting
+        setOpaque(true);  //not transparent
         elementSize = new Dimension(10, 10);
         colorScheme = new ColorSchemeImpl();
         updateSize();

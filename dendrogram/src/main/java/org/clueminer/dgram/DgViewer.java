@@ -39,7 +39,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     private JScrollPane scroller;
     protected Dimension elementSize;
     protected DendrogramMapping data;
-    private boolean fitToPanel = true;
+    private boolean fitToPanel = false;
     private final transient EventListenerList datasetListeners = new EventListenerList();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
     private static final Logger logger = Logger.getLogger(DgViewer.class.getName());
@@ -91,6 +91,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         scroller = new JScrollPane();
         scroller.getViewport().add(dendrogramPanel);
         scroller.getViewport().setDoubleBuffered(true);
+        scroller.getViewport().setOpaque(true);
         scroller.setVisible(true);
         scroller.getVerticalScrollBar().addAdjustmentListener(this);
         setVisible(true);
@@ -103,7 +104,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     }
 
     private void updateLayout() {
-        int heatmapSize = this.getSize().width - dendrogramPanel.getVerticalTreeSize().width - dendrogramPanel.getAnnotationWidth();
+        //int heatmapSize = this.getSize().width - dendrogramPanel.getVerticalTreeSize().width - dendrogramPanel.getAnnotationWidth();
         /*  System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
 
          System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
@@ -116,9 +117,12 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         //setMinimumSize(dendrogramPanel.getSize());
         //update size of scrollbars
         scroller.getViewport().revalidate();
+        /*validate();
+         revalidate();*/
         repaint();
     }
 
+    @Override
     public void setCellHeight(int height, boolean isAdjusting) {
         if (height > 0) {
             elementSize.height = height;
@@ -127,11 +131,14 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         }
     }
 
+    @Override
     public void setFitToPanel(boolean fitToPanel) {
         this.fitToPanel = fitToPanel;
+        dendrogramPanel.setFitToPanel(fitToPanel);
         updateLayout();
     }
 
+    @Override
     public boolean isFitToPanel() {
         return fitToPanel;
     }
