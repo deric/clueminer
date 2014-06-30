@@ -310,6 +310,10 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
         //we call constructor just one
         if (legend == null) {
             legend = new Legend(this);
+            dendroViewer.addDendrogramDataListener(legend);
+            if (dendroData != null) {
+                legend.setData(dendroData);
+            }
         }
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;

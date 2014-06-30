@@ -554,6 +554,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (legend == null) {
             legend = new Legend(this);
+            dendroViewer.addDendrogramDataListener(legend);
+            if (dendroData != null) {
+                legend.setData(dendroData);
+            }
         }
     }
 
