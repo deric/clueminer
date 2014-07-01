@@ -66,7 +66,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected ColumnStatistics statistics;
     protected ClusterAssignment clusterAssignment;
     protected SilhouettePlot silhouettePlot;
-    private JLayeredPane treeLayered;
+    private JLayeredPane rowTreeLayered;
     private CutoffSlider slider;
     private boolean showColumnsTree = true;
     private boolean showRowsTree = true;
@@ -277,6 +277,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         createColumnAnnotation();
         add(columnAnnotationBar);
+
+        if (showSlider) {
+            createRowSlider();
+            add(slider);
+        }
     }
 
 
@@ -305,8 +310,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         }
         if (showRowsTree) {
-            dim = rowsTree.getSize();
-            rowsTree.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+            createRowsTree();
+            dim = rowTreeLayered.getSize();
+            rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
         }
 
         dimHeatmap = heatmap.getSize();
@@ -315,8 +321,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
 
-        dim = legend.getSize();
-        legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+        if (showLegend) {
+            dim = legend.getSize();
+            legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+        }
+
+        if (showSlider) {
+            dim = slider.getSize();
+            slider.setBounds(insets.left, heatmapYoffset - dim.height, dim.width, dim.height);
+        }
 
         System.out.println("preffered " + getPreferredSize());
         System.out.println("size " + getSize());
@@ -390,9 +403,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             cutoff = new CutoffLine(this, rowsTree);
             dendroViewer.addDendrogramDataListener(cutoff);
         }
-        if (treeLayered == null) {
-            treeLayered = new JLayeredPane();
-            treeLayered.setLayout(new LayoutManager() {
+        if (rowTreeLayered == null) {
+            rowTreeLayered = new JLayeredPane();
+            rowTreeLayered.setLayout(new LayoutManager() {
                 @Override
                 public void addLayoutComponent(String name, Component comp) {
                 }
@@ -416,14 +429,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                     Insets insets = parent.getInsets();
                     int w = parent.getWidth() - insets.left - insets.right;
                     int h = parent.getHeight() - insets.top - insets.bottom;
-
+                    System.out.println("row tree insets " + insets);
                     cutoff.setBounds(insets.left, insets.top, w, h);
                     rowsTree.setBounds(insets.left, insets.top, w, h);
                 }
             });
 
-            treeLayered.add(cutoff, 0); //lower level
-            treeLayered.add((Component) rowsTree, 1); //upper level
+            rowTreeLayered.add(cutoff, 0); //lower level
+            rowTreeLayered.add((Component) rowsTree, 1); //upper level
         }
     }
 
@@ -441,7 +454,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         c.gridx = column;
         c.gridy = row;
 
-        add(treeLayered, c);
+        add(rowTreeLayered, c);
 
         if (showScale) {
             if (rowsScale == null) {
@@ -454,12 +467,16 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addRowSlider(int column, int row) {
+    private void createRowSlider() {
         if (slider == null) {
             slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff, cutoffSliderSize);
             dendroViewer.addDendrogramDataListener(slider);
             rowsTree.addTreeListener(slider);
         }
+    }
+
+    private void addRowSlider(int column, int row) {
+        createRowSlider();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.SOUTHEAST;
