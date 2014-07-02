@@ -10,12 +10,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.text.DecimalFormat;
 import javax.swing.Box;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
@@ -313,6 +310,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             createRowsTree();
             dim = rowTreeLayered.getSize();
             rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+
+            dim = cutoff.getSize();
+            cutoff.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+            dim = rowsTree.getSize();
+            rowsTree.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
         }
 
         dimHeatmap = heatmap.getSize();
