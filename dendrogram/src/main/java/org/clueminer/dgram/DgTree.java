@@ -54,7 +54,7 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
 
     public DgTree(DendroPane panel) {
         this.panel = panel;
-        setBackground(panel.getBackground());
+        setOpaque(false);
         Dimension elem = panel.getElementSize();
         elementWidth = elem.width;
         elementHeight = elem.height;

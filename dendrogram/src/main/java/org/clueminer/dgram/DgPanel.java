@@ -263,7 +263,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //rows
         if (showRowsTree) {
             createRowsTree();
-            add((Component) rowsTree);
+            add(rowTreeLayered);
+
+            if (showSlider) {
+                createRowSlider();
+                add(slider);
+            }
         }
 
         //columns
@@ -275,10 +280,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         createColumnAnnotation();
         add(columnAnnotationBar);
 
-        if (showSlider) {
-            createRowSlider();
-            add(slider);
-        }
     }
 
 
@@ -308,13 +309,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         if (showRowsTree) {
             createRowsTree();
-            dim = rowTreeLayered.getSize();
-            rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
-
-            dim = cutoff.getSize();
-            cutoff.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
             dim = rowsTree.getSize();
-            rowsTree.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+            rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
         }
 
         dimHeatmap = heatmap.getSize();
@@ -431,7 +427,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                     Insets insets = parent.getInsets();
                     int w = parent.getWidth() - insets.left - insets.right;
                     int h = parent.getHeight() - insets.top - insets.bottom;
-                    System.out.println("row tree insets " + insets);
                     cutoff.setBounds(insets.left, insets.top, w, h);
                     rowsTree.setBounds(insets.left, insets.top, w, h);
                 }

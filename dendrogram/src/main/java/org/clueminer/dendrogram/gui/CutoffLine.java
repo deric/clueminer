@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -22,8 +21,8 @@ import org.openide.util.RequestProcessor;
 public class CutoffLine extends JPanel implements DendrogramDataListener {
 
     private static final long serialVersionUID = -8874221664051165124L;
-    private DendroPane panel;
-    private DendrogramTree tree;
+    private final DendroPane panel;
+    private final DendrogramTree tree;
     private HierarchicalResult clustering;
     final static float dash1[] = {10.0f};
     //start at tree root
@@ -34,7 +33,6 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                               BasicStroke.JOIN_MITER,
                               10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
-    private static final Logger logger = Logger.getLogger(CutoffLine.class.getName());
     private int sliderDiameter = 6;
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
@@ -57,7 +55,6 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         //draw dashed line across whole tree width
         // x1, y1, x2, y2
         g2.drawLine(linepos, 0, linepos, tree.getTreeWidth());
-
     }
 
     @Override
