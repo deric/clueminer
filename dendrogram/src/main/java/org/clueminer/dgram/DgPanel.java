@@ -280,6 +280,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         createColumnAnnotation();
         add(columnAnnotationBar);
 
+        if (isLabelVisible()) {
+            createRowAnnotation();
+            add(rowAnnotationBar);
+        }
+
     }
 
 
@@ -297,20 +302,25 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         //X, Y position of heatmap's top left corner
         heatmapXoffset = insets.left + rowsTree.getSize().width;
-        heatmapYoffset = insets.top + columnsTree.getSize().height;
 
         if (showColumnsTree) {
+            heatmapYoffset = insets.top + columnsTree.getSize().height;
             dim = columnsTree.getSize();
             columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
             //legend height
-
         } else {
-
+            heatmapYoffset = insets.top;
         }
+
         if (showRowsTree) {
             createRowsTree();
             dim = rowsTree.getSize();
             rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+
+            if (showSlider) {
+                dim = slider.getSize();
+                slider.setBounds(insets.left, heatmapYoffset - dim.height, dim.width, dim.height);
+            }
         }
 
         dimHeatmap = heatmap.getSize();
@@ -324,9 +334,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
         }
 
-        if (showSlider) {
-            dim = slider.getSize();
-            slider.setBounds(insets.left, heatmapYoffset - dim.height, dim.width, dim.height);
+        if (isLabelVisible()) {
+            dim = rowAnnotationBar.getSize();
+            System.out.println("row annot: " + dim);
+            legend.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, dim.width, dim.height);
         }
 
         System.out.println("preffered " + getPreferredSize());
@@ -484,6 +495,21 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     }
 
+    private void createRowAnnotation() {
+        //we call constructor just one
+        if (rowAnnotationBar == null) {
+            //heatmap annotations
+            rowAnnotationBar = new RowAnnotation(this);
+            dendroViewer.addDendrogramDataListener(rowAnnotationBar);
+            if (rowsTree != null) {
+                rowsTree.addTreeListener(rowAnnotationBar);
+            }
+        }
+        if (dendroData != null) {
+            rowAnnotationBar.setDendrogramData(dendroData);
+        }
+    }
+
     private void addRowAnnotation(int column, int row, boolean visible) {
         if (!visible) {
             if (rowAnnotationBar != null) {
@@ -499,18 +525,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             horizontalFill.gridy = row;
             this.add(Box.createHorizontalGlue(), horizontalFill);
         } else {
-            //we call constructor just one
-            if (rowAnnotationBar == null) {
-                //heatmap annotations
-                rowAnnotationBar = new RowAnnotation(this);
-                dendroViewer.addDendrogramDataListener(rowAnnotationBar);
-                if (rowsTree != null) {
-                    rowsTree.addTreeListener(rowAnnotationBar);
-                }
-            }
-            if (dendroData != null) {
-                rowAnnotationBar.setDendrogramData(dendroData);
-            }
+            createRowAnnotation();
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.HORIZONTAL;
             c.anchor = GridBagConstraints.NORTHWEST;

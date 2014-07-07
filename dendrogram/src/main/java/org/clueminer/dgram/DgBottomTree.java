@@ -22,12 +22,14 @@ public class DgBottomTree extends DgTree {
 
     @Override
     public void updateSize() {
-        width = insets.left + dendroData.getNumberOfColumns() * elementWidth + insets.right;
-        height = insets.top + treeHeight + insets.bottom;
-        halfElem = elementWidth / 2;
-        //nodes on right, 90 deg rot
-        setSizes(width, height);
-        invalidateCache();
+        if (hasData()) {
+            width = insets.left + dendroData.getNumberOfColumns() * elementWidth + insets.right;
+            height = insets.top + treeHeight + insets.bottom;
+            halfElem = elementWidth / 2;
+            //nodes on right, 90 deg rot
+            setSizes(width, height);
+            invalidateCache();
+        }
     }
 
     /*
