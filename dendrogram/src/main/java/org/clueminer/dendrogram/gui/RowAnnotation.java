@@ -74,9 +74,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
     }
 
     /**
@@ -94,13 +94,13 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             bufferedImage = null;
         } else {
             visible = true;
-            height = elementSize.height * dendroData.getNumberOfRows() + 1;
-
+            height = lineHeight * dendroData.getNumberOfRows() + 1;
         }
         this.size.width = width;
         this.size.height = height;
         setMinimumSize(size);
         setPreferredSize(size);
+        setSize(size);
     }
 
     @Override
@@ -128,6 +128,14 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         this.lastSelectedRow = last;
         createBufferedGraphics();
         redraw();
+    }
+
+    public void setElement(int dimension) {
+        //TODO: support vertical orientation
+        setLineHeight(dimension);
+        updateSize();
+        createBufferedGraphics();
+        resetCache();
     }
 
     @Override

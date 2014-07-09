@@ -190,9 +190,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
             System.out.println("heatmap w diff = " + diff);
             System.out.println("element " + elementSize);
+            System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
             System.out.println("rows tree diam " + rowsTreeDim);
             dendroViewer.setCellHeight(elementSize.height, false);
             dendroViewer.setCellWidth(elementSize.width, false);
+//            rowAnnotationBar.setElement(elementSize.height);
         }
     }
 
@@ -343,6 +345,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
+            System.out.println("row annotation " + dim);
             rowAnnotationBar.setBounds(heatmapXoffset + dimHeatmap.width + clustAssign.width, heatmapYoffset, dim.width, dim.height);
         }
 
