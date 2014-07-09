@@ -284,7 +284,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             createRowAnnotation();
             add(rowAnnotationBar);
         }
-
+        createClusterAssignments();
+        add(clusterAssignment);
     }
 
 
@@ -297,7 +298,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      * |                      |              | (fixed)
      */
     private void computeLayout() {
-        Dimension dim, dimHeatmap;
+        Dimension dim, dimHeatmap, clustAssign;
         int heatmapXoffset, heatmapYoffset;
 
         //X, Y position of heatmap's top left corner
@@ -313,14 +314,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
 
         if (showRowsTree) {
+            if (showSlider) {
+                dim = slider.getSize();
+                //heatmapYoffset += dim.height;
+                slider.setBounds(insets.left, heatmapYoffset - dim.height, dim.width, dim.height);
+            }
             createRowsTree();
             dim = rowsTree.getSize();
             rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
-
-            if (showSlider) {
-                dim = slider.getSize();
-                slider.setBounds(insets.left, heatmapYoffset - dim.height, dim.width, dim.height);
-            }
         }
 
         dimHeatmap = heatmap.getSize();
@@ -331,13 +332,18 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (showLegend) {
             dim = legend.getSize();
+            System.out.println("legend offfset " + insets.top);
             legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
         }
 
+        clustAssign = clusterAssignment.getSize();
+        System.out.println("cluster assign size: " + dim);
+        System.out.println("heatmap x " + heatmapXoffset + " y offset " + heatmapYoffset);
+        clusterAssignment.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, dim.width, dim.height);
+
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
-            System.out.println("row annot: " + dim);
-            legend.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, dim.width, dim.height);
+            rowAnnotationBar.setBounds(heatmapXoffset + dimHeatmap.width + clustAssign.width, heatmapYoffset, dim.width, dim.height);
         }
 
         System.out.println("preffered " + getPreferredSize());
@@ -647,7 +653,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         add(statistics, c);
     }
 
-    private void addClustersAssignment(int column, int row) {
+    private void createClusterAssignments() {
         //we call constructor just one
         if (clusterAssignment == null) {
             //heatmap annotations
@@ -655,6 +661,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             dendroViewer.addDendrogramDataListener(clusterAssignment);
             dendroViewer.addClusteringListener(clusterAssignment);
         }
+    }
+
+    private void addClustersAssignment(int column, int row) {
+        createClusterAssignments();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
