@@ -288,6 +288,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         createClusterAssignments();
         add(clusterAssignment);
+
+        if (showEvalPlot) {
+            createEvaluation();
+            add(silhouettePlot);
+        }
     }
 
 
@@ -302,6 +307,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private void computeLayout() {
         Dimension dim, dimHeatmap, clustAssign;
         int heatmapXoffset, heatmapYoffset;
+        int totalWidth;
 
         //X, Y position of heatmap's top left corner
         heatmapXoffset = insets.left + rowsTree.getSize().width;
@@ -341,12 +347,21 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         clustAssign = clusterAssignment.getSize();
         System.out.println("cluster assign size: " + dim);
         System.out.println("heatmap x " + heatmapXoffset + " y offset " + heatmapYoffset);
-        clusterAssignment.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, clustAssign.width, clustAssign.height);
+        //row tree + heatmap
+        totalWidth = heatmapXoffset + dimHeatmap.width;
+        clusterAssignment.setBounds(totalWidth, heatmapYoffset, clustAssign.width, clustAssign.height);
+        totalWidth += clustAssign.width;
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
             System.out.println("row annotation " + dim);
-            rowAnnotationBar.setBounds(heatmapXoffset + dimHeatmap.width + clustAssign.width, heatmapYoffset, dim.width, dim.height);
+            rowAnnotationBar.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
+            totalWidth += dim.width;
+        }
+
+        if (showEvalPlot) {
+            dim = silhouettePlot.getSize();
+            silhouettePlot.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
         }
 
         System.out.println("preffered " + getPreferredSize());
@@ -554,7 +569,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addEvaluation(int column, int row) {
+    private void createEvaluation() {
         //we call constructor just one
         if (silhouettePlot == null) {
             //heatmap annotations
@@ -566,6 +581,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (dendroData != null) {
             silhouettePlot.setDendrogramData(dendroData);
         }
+    }
+
+    private void addEvaluation(int column, int row) {
+        createEvaluation();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
