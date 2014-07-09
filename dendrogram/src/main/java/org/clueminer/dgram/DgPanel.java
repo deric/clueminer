@@ -341,7 +341,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         clustAssign = clusterAssignment.getSize();
         System.out.println("cluster assign size: " + dim);
         System.out.println("heatmap x " + heatmapXoffset + " y offset " + heatmapYoffset);
-        clusterAssignment.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, dim.width, dim.height);
+        clusterAssignment.setBounds(heatmapXoffset + dimHeatmap.width, heatmapYoffset, clustAssign.width, clustAssign.height);
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
