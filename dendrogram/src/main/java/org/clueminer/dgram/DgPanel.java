@@ -73,7 +73,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private boolean showLabels = true;
     private boolean showSlider = true;
     private boolean showEvalPlot = true;
-    private boolean fitToPanel = false;
+    private boolean fitToPanel = true;
     protected DendroViewer dendroViewer;
     private Legend legend;
     protected Dimension size;
