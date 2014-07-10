@@ -50,6 +50,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         chckShowVertical = new javax.swing.JCheckBox();
         chckShowLabels = new javax.swing.JCheckBox();
         chckShowLegend = new javax.swing.JCheckBox();
+        chckShowEval = new javax.swing.JCheckBox();
 
         lbLineHeight.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lbLineHeight.text")); // NOI18N
 
@@ -111,6 +112,13 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        chckShowEval.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.chckShowEval.text")); // NOI18N
+        chckShowEval.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckShowEvalActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -130,13 +138,16 @@ public class SettingsPanel extends javax.swing.JPanel {
                             .addComponent(slideCellWidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chckShowLabels)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(chckShowHorizontal)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chckShowHorizontal)
+                            .addComponent(chckShowVertical))
                         .addGap(18, 18, 18)
-                        .addComponent(chckShowLegend))
-                    .addComponent(chckShowVertical)
-                    .addComponent(chckShowLabels))
-                .addContainerGap(154, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chckShowEval)
+                            .addComponent(chckShowLegend))))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,7 +169,9 @@ public class SettingsPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(chckFitToPanel))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(chckShowVertical)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(chckShowVertical)
+                            .addComponent(chckShowEval))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chckShowLabels)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -211,8 +224,16 @@ public class SettingsPanel extends javax.swing.JPanel {
             viewer.setLegendVisible(chckShowLegend.isSelected());
         }
     }//GEN-LAST:event_chckShowLegendStateChanged
+
+    private void chckShowEvalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckShowEvalActionPerformed
+        if (viewer != null) {
+            viewer.setEvaluationVisible(chckShowEval.isSelected());
+        }
+    }//GEN-LAST:event_chckShowEvalActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chckFitToPanel;
+    private javax.swing.JCheckBox chckShowEval;
     private javax.swing.JCheckBox chckShowHorizontal;
     private javax.swing.JCheckBox chckShowLabels;
     private javax.swing.JCheckBox chckShowLegend;

@@ -923,6 +923,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
+    @Override
     public boolean hasData() {
         return dendroData != null;
     }

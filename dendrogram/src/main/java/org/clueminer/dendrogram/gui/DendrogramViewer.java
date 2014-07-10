@@ -332,6 +332,11 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public void setEvaluationVisible(boolean show) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DendrogramViewer viewer;

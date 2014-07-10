@@ -45,6 +45,13 @@ public interface DendroViewer {
 
     public void setLabelsVisible(boolean show);
 
+    /**
+     * Show Silhoulette evaluation
+     *
+     * @param show
+     */
+    public void setEvaluationVisible(boolean show);
+
     public boolean isLabelVisible();
 
     public void setCellWidth(int width, boolean isAdjusting);
