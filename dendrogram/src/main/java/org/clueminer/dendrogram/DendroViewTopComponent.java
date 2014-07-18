@@ -46,14 +46,35 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
 
     private static final long serialVersionUID = -1479282981915282578L;
     private Lookup.Result<Clustering> result = null;
-    private final DendroViewer frame;
+    private DendroViewer frame;
+    private DendroToolbar toolbar;
 
     public DendroViewTopComponent() {
         initComponents();
         setName(Bundle.CTL_DendroViewTopComponent());
         setToolTipText(Bundle.HINT_DendroViewTopComponent());
+        initialize();
+    }
+
+    private void initialize() {
         frame = new DgViewer();
-        add((Component) frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.insets = new Insets(0, 0, 0, 0);
+        add((Component) frame, c);
+
+        toolbar = new DendroToolbar();
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0.1;
+        add(toolbar, c);
     }
 
     /**
