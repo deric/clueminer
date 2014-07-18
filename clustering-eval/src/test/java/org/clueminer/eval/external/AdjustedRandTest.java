@@ -1,16 +1,17 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.Table;
+import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -111,28 +112,28 @@ public class AdjustedRandTest {
     public void testCountScore() {
         Table<String, String, Integer> table = CountingPairs.newTable();
         //fake contingency table
-  /*     table.put("u1", "v1", 1);
-         table.put("u1", "v2", 1);
-         table.put("u1", "v3", 0);
-         table.put("u2", "v1", 1);
-         table.put("u2", "v2", 2);
-         table.put("u2", "v3", 1);
-         table.put("u3", "v1", 0);
-         table.put("u3", "v2", 0);
-         table.put("u3", "v3", 4);
-         */
-        //rows and columns can't be interchanged
-        table.put("v1", "u1", 1);
-        table.put("v1", "u2", 1);
-        table.put("v1", "u3", 0);
-        table.put("v2", "u1", 1);
-        table.put("v2", "u2", 2);
-        table.put("v2", "u3", 0);
-        table.put("v3", "u1", 0);
-        table.put("v3", "u2", 1);
-        table.put("v3", "u3", 4);
 
-        double score = test.countScore(table);
+        int[][] mat = new int[4][4];
+        mat[0][0] = 1;
+        mat[0][1] = 1;
+        mat[0][2] = 0;
+        mat[0][3] = 2; //sum of row[0]
+        mat[1][0] = 1;
+        mat[1][1] = 2;
+        mat[1][2] = 1;
+        mat[1][3] = 4; //sum of row[1]
+        mat[2][0] = 0;
+        mat[2][1] = 0;
+        mat[2][2] = 4;
+        mat[2][3] = 4;//sum of row[2]
+        //col sums
+        mat[3][0] = 2;
+        mat[3][1] = 3;
+        mat[3][2] = 5;
+        mat[3][3] = 10;
+
+        double score = test.countScore(mat);
+        System.out.println("score: " + score);
         assertEquals(0.31257344300822565, score, delta);
     }
 
@@ -141,5 +142,29 @@ public class AdjustedRandTest {
         Clustering<Cluster> clustering = FakeClustering.irisWrong4();
         double score = test.score(clustering, FakeClustering.irisDataset());
         System.out.println("clust(4) = " + score);
+    }
+
+    public void dumpTable(Table<String, String, Integer> table) {
+        StringBuilder sb = new StringBuilder();
+        Set<String> rows = table.columnKeySet();
+        Set<String> cols = table.rowKeySet();
+        String separator = "   ";
+        //print header
+        sb.append(separator);
+        for (String col : cols) {
+            sb.append(col);
+            sb.append(separator);
+        }
+        sb.append("\n");
+        for (String row : rows) {
+            sb.append(row);
+            sb.append(separator);
+            for (String col : cols) {
+                sb.append(table.get(col, row));
+                sb.append(separator);
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
     }
 }

@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,12 +32,13 @@ public class AdjustedRand extends ExternalEvaluator {
         return name;
     }
 
-    public double countScore(Table<String, String, Integer> table) {
+    public double countScore(int[][] contingency) {
         double score;
-        int[][] contingency = extendedContingency(table);
         //extra row/column is used for storing sums - the last one
         int diamRow = contingency.length - 1;
         int diamCol = contingency[0].length - 1;
+
+        Dump.matrix(contingency, "contingency", 2);
 
         double a = 0;
         int b1 = 0;
@@ -55,6 +57,19 @@ public class AdjustedRand extends ExternalEvaluator {
         score = (a - (bProd) / all) / ((b1 + b2) / 2.0 - (bProd) / all);
 
         return score;
+
+    }
+
+    /**
+     * Count Adjusted Rand index
+     *
+     * @param table contingency table where last column/row sums values in the
+     *              column/row
+     * @return
+     */
+    public double countScore(Table<String, String, Integer> table) {
+        //WARNING the result is sensitive to matching rows/columns
+        return countScore(extendedContingency(table));
     }
 
     /**
@@ -73,6 +88,7 @@ public class AdjustedRand extends ExternalEvaluator {
 
     private int[][] extendedContingency(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
+        System.out.println("matching: " + matching);
         Set<String> rows = table.rowKeySet();
         Set<String> cols = table.columnKeySet();
 
