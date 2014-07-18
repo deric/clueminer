@@ -195,7 +195,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-libs-junit4</artifactId>
-            <version>RELEASE74</version>
+            <version>RELEASE80</version>
             <scope>test</scope>
         </dependency>
         <dependency>

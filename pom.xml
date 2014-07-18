@@ -234,7 +234,7 @@
         </plugins>
     </reporting>
     <properties>
-        <netbeans.version>RELEASE74</netbeans.version>
+        <netbeans.version>RELEASE80</netbeans.version>
         <brandingToken>clueminer</brandingToken>
     </properties>
 </project>

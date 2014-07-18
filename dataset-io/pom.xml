@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE74</version>
+            <version>RELEASE80</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE74</version>
+            <version>RELEASE80</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE74</version>
+            <version>RELEASE80</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
