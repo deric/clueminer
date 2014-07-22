@@ -5,13 +5,18 @@ import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.hclust.HillClimbCutoff;
+import org.clueminer.hclust.NaiveCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 
@@ -42,12 +47,21 @@ public class ClusteringExecutor {
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
 
         DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
+        CutoffStrategy strategy;
 
-        /**
-         * @TODO generate clustering
-         */
-        //clustering.lookupAdd(mapping);
-        return null;
+        String cutoffAlg = params.get("cutoff", "-- naive --");
+        Clustering clustering;
+        if (!cutoffAlg.equals("-- naive --")) {
+            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            strategy = new HillClimbCutoff(eval);
+        } else {
+            strategy = new NaiveCutoff();
+        }
+        rowsResult.findCutoff(strategy);
+
+        clustering = rowsResult.getClustering();
+        clustering.lookupAdd(mapping);
+        return clustering;
     }
 
     public AgglomerativeClustering getAlgorithm() {

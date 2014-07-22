@@ -1,5 +1,6 @@
 package org.clueminer.hclust;
 
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 
@@ -18,6 +19,14 @@ public class NaiveCutoff implements CutoffStrategy {
      */
     @Override
     public double findCutoff(HierarchicalResult hclust) {
+        if (hclust instanceof HCLResult) {
+            return findCutoffOld(hclust);
+        } else {
+            return findCutoffNg(hclust);
+        }
+    }
+
+    public double findCutoffOld(HierarchicalResult hclust) {
         double lower = 0.0, upper, dist;
         double max = Double.MIN_VALUE;
         double max_l = 0.0;
@@ -35,4 +44,9 @@ public class NaiveCutoff implements CutoffStrategy {
         }
         return (max / 2 + max_l);
     }
+
+    private double findCutoffNg(HierarchicalResult hclust) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
