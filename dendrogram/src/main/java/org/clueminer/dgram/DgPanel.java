@@ -111,14 +111,16 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      *
      */
     private void updateLayout() {
-        if (!hasData()) {
-            return;
-        }
         this.removeAll(); //clean the component
 
         if (fitToPanel) {
             prepareComputedLayout();
             this.reqSize = getSize();
+
+            if (!hasData()) {
+                return;
+            }
+
             recalculate();
             computeLayout();
         } else {
@@ -133,6 +135,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void sizeUpdated(Dimension reqSize) {
+        if (!hasData()) {
+            return;
+        }
         if (fitToPanel) {
             this.reqSize = reqSize;
             recalculate();
@@ -171,7 +176,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                 heatmapHeight -= colsTreeDim;
             }
             //column annotations is usually bigger than tree annotation
-            heatmapHeight -= columnAnnotationBar.getSize().height;
+            if (columnAnnotationBar != null) {
+                heatmapHeight -= columnAnnotationBar.getSize().height;
+            }
             //compute element height
             double perLine = Math.floor(heatmapHeight / (double) dendroData.getNumberOfRows());
             if (perLine < 1) {
@@ -706,7 +713,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
+        System.out.println("got dendrogramMapping");
         this.dendroData = dataset;
+        updateLayout();
+        //sizeUpdated(getSize());
         if (rowsTree != null) {
             rowsTree.fireTreeUpdated();
         }
@@ -728,19 +738,24 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (rowAnnotationBar != null) {
             width += rowAnnotationBar.getWidth();
         }
-        width += columnsScale.getWidth();
+        if (columnsScale != null) {
+            width += columnsScale.getWidth();
+        }
         size.width = width;
     }
 
     private void updateHeight(int elemHeight) {
         //height of heatmap
         int height = dendroData.getNumberOfRows() * elemHeight;
-        if (showColumnsTree) {
+        if (showColumnsTree && columnsTree != null) {
             height += columnsTree.getHeight();
         }
         height += insets.bottom + insets.top;
         if (columnAnnotationBar != null) {
-            int colsize = Math.max(columnAnnotationBar.getDimension().height, rowsScale.getHeight());
+            int colsize = columnAnnotationBar.getDimension().height;
+            if (rowsScale != null) {
+                colsize = Math.max(columnAnnotationBar.getDimension().height, rowsScale.getHeight());
+            }
             height += colsize;
         }
         size.height = height;

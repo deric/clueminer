@@ -371,7 +371,9 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
             //on component dimensions change (in case that the heatmap panel is bigger
             //than the frame)
             //@TODO is it really necessary?
-            dendrogramPanel.getHeatmap().resetCache();
+            if (dendrogramPanel.getHeatmap() != null) {
+                dendrogramPanel.getHeatmap().resetCache();
+            }
             viewer.updateLayout();
             repaint();
         }

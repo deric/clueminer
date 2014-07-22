@@ -71,6 +71,7 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        chckFitToPanel.setSelected(true);
         chckFitToPanel.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.chckFitToPanel.text")); // NOI18N
         chckFitToPanel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
