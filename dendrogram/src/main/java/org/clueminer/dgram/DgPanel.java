@@ -112,7 +112,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      */
     private void updateLayout() {
         if (!hasData()) {
-            //    return;
+            return;
         }
         this.removeAll(); //clean the component
 
