@@ -81,7 +81,7 @@ public class DendroView extends JFrame {
         c.insets = new Insets(0, 0, 0, 0);
         add((Component) frame, c);
 
-        toolbar = new DendroToolbar();
+        toolbar = new DendroToolbar(frame);
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;
