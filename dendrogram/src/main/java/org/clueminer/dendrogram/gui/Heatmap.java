@@ -559,7 +559,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      */
     public void redraw() {
         Graphics2D g = (Graphics2D) this.getGraphics();
-        if (bufferedImage != null) {
+        if (g != null && bufferedImage != null) {
             g.drawImage(bufferedImage,
                         0, 0,
                         size.width, size.height,

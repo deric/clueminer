@@ -73,7 +73,7 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
         toolbar = new DendroToolbar();
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0.1;
+        c.weighty = 0;
         add(toolbar, c);
     }
 

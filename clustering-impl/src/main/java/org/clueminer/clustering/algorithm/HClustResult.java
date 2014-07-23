@@ -284,7 +284,7 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public double findCutoff(CutoffStrategy strategy) {
         double cut = strategy.findCutoff(this);
-        updateCutoff(cut);
+        this.clustering = updateCutoff(cut);
         return cut;
     }
 

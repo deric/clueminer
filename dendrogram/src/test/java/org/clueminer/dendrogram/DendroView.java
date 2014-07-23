@@ -38,6 +38,7 @@ public class DendroView extends JFrame {
         DistanceMeasure dm = new EuclideanDistance();
 
         Clustering clust = exec.clusterRows(data, dm, NbPreferences.forModule(DendroView.class));
+        System.out.println("clustering size: " + clust.size());
         frame.setClustering(clust);
 
 
