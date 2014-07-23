@@ -309,9 +309,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      * |                      |              | (fixed)
      */
     private void computeLayout() {
-        Dimension dim, dimHeatmap, clustAssign, dimSlider;
+        Dimension dim, dimHeatmap, clustAssign, dimSlider = null;
         int heatmapXoffset, heatmapYoffset;
-        int totalWidth;
+        int totalWidth, totalHeight;
 
         //X, Y position of heatmap's top left corner
         heatmapXoffset = insets.left + rowsTree.getSize().width;
@@ -340,9 +340,16 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         dimHeatmap = heatmap.getSize();
         heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
+        totalHeight = dimHeatmap.height;
+        if (dimSlider != null) {
+            totalHeight += Math.max(dimSlider.height, heatmapYoffset);
+        } else {
+            totalHeight += heatmapYoffset;
+        }
 
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
+        totalHeight += dim.height;
 
         if (showLegend) {
             dim = legend.getSize();
@@ -369,6 +376,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             dim = silhouettePlot.getSize();
             silhouettePlot.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
         }
+
+        //setPreferredSize(new Dimension(totalWidth, totalHeight));
+        setMinimumSize(new Dimension(totalWidth, totalHeight));
 
         System.out.println("preffered " + getPreferredSize());
         System.out.println("size " + getSize());
