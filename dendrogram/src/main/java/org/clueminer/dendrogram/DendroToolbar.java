@@ -32,6 +32,7 @@ public class DendroToolbar extends JToolBar {
 
         btnFitToSpace = new JToggleButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/fullscreen16.png", false));
         btnFitToSpace.setToolTipText("Fit to window");
+        btnFitToSpace.setSelected(true);
         add(btnFitToSpace);
 
         btnFitToSpace.addActionListener(new ActionListener() {

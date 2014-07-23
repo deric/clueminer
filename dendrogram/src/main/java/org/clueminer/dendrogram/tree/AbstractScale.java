@@ -35,7 +35,7 @@ public abstract class AbstractScale extends JPanel implements DendrogramDataList
 
     protected abstract void drawScale(Graphics2D g2);
 
-    protected abstract void updateSize();
+    public abstract void updateSize();
 
     public AbstractScale(DendroPane panel) {
         setDoubleBuffered(false);

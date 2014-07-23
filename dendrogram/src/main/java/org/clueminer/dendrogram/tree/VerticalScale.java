@@ -88,7 +88,7 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
     }
 
     @Override
-    protected void updateSize() {
+    public void updateSize() {
         int width = tree.getWidth();
         int height = maxScaleDimension + treeScaleSpace;
         setDimension(width, height);

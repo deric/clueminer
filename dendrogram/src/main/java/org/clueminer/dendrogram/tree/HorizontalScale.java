@@ -90,7 +90,7 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
     }
 
     @Override
-    protected void updateSize() {
+    public void updateSize() {
         int width = maxScaleDimension + treeScaleSpace;
         int height = tree.getHeight();
         setDimension(width, height);
