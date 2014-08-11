@@ -102,7 +102,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return sizes of all clusters
      */
-    Integer[] clusterSizes();
+    int[] clusterSizes();
 
     /**
      * Return ID of item's cluster
@@ -113,26 +113,35 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     int assignedCluster(int instanceId);
 
     /**
-     * Create new cluster with given ID
+     * Create new cluster on given index
      *
-     * @param clusterId
+     * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
      * @return newly created cluster
      */
-    Cluster<? extends Instance> createCluster(int clusterId);
+    Cluster<? extends Instance> createCluster(int clusterIndex);
 
     /**
-     * Create cluster with new ID (starting from 0)
+     * Create cluster with new ID (starting from 1)
      *
      * @return
      */
     Cluster<? extends Instance> createCluster();
 
     /**
+     * Create new cluster with given ID and initial capacity
+     *
+     * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
+     * @param capacity  cluster capacity
+     * @return newly created cluster
+     */
+    Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
+
+    /**
      * Lookup is used for retrieving objects associated with this clustering
      * result
      *
      * @return lookup instance for accessing related objects (Dataset,
-     * hierarchical clustering etc.)
+     *         hierarchical clustering etc.)
      */
     Lookup getLookup();
 
