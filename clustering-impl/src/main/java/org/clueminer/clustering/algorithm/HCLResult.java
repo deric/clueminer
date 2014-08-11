@@ -25,6 +25,7 @@ import org.clueminer.math.Matrix;
  *
  * @author Tomas Barton
  */
+@Deprecated
 public class HCLResult implements HierarchicalResult {
 
     private static final long serialVersionUID = 2779535800981843584L;

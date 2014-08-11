@@ -147,7 +147,7 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public Clustering getClustering() {
         if (clustering == null) {
-            getClustering(dataset);
+            clustering = getClustering(dataset);
         }
         return clustering;
     }
@@ -161,9 +161,24 @@ public class HClustResult implements HierarchicalResult {
 
         //estimated capacity
         int perCluster = (int) (parent.size() / (float) estClusters);
+        int[] mapping = getMapping();
+        if (mapping != null) {
+            int id;
+            Cluster clust;
+            for (int i = 0; i < mapping.length; i++) {
+                id = mapping[i];
+                clust = result.createCluster(id);
+                clust.add(dataset.get(i));
+            }
+        } else {
+            //try some cutoff method?
+            System.out.println("don't know how to get clusters..");
+        }
+
 
         //proximity.printLower(5, 2);
         // similarity.print(4, 2);
+        result.lookupAdd(dataset);
         return result;
     }
 

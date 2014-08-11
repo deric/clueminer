@@ -2,7 +2,7 @@ package org.clueminer.evolution;
 
 import java.util.List;
 import java.util.prefs.Preferences;
-import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
@@ -36,7 +36,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        algorithm = new HCL();
+        algorithm = new HAC();
     }
 
     @Override

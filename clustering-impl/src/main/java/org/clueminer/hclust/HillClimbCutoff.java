@@ -29,10 +29,11 @@ public class HillClimbCutoff implements CutoffStrategy {
         do {
             hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
+            System.out.println("clust = " + clust);
             cutoff = hclust.getCutoff();
-            System.out.println("we have " + clust.size() + " clusters");
             evalName = evaluator.getName();
             clustNum = clust.size();
+            System.out.println("we have " + clust.size() + " clusters");
             if(hclust.isScoreCached(evalName, clustNum)){
                 System.out.println("score cached");
                 score = hclust.getScore(evalName, clustNum);

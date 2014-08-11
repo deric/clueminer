@@ -177,8 +177,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     @Override
-    public Integer[] clusterSizes() {
-        Integer[] clusterSizes = new Integer[this.size()];
+    public int[] clusterSizes() {
+        int[] clusterSizes = new int[this.size()];
         for (int i = 0; i < this.size(); i++) {
             clusterSizes[i] = get(i).size();
         }
@@ -278,10 +278,14 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         }
         Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         c.setClusterId(clusterId);
+        c.setName("cluster " + (clusterId + 1));
         put(clusterId, c);
         return c;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cluster<? extends Instance> createCluster() {
         int attrSize = 5; //some default value
@@ -291,6 +295,27 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         int clusterId = size();
         c.setClusterId(clusterId);
+        c.setName("cluster " + (clusterId + 1));
+        put(clusterId, c);
+        return c;
+    }
+
+    /**
+     * Create new cluster with given ID and capacity
+     *
+     * @param clusterId
+     * @param capacity
+     * @return
+     */
+    @Override
+    public Cluster<? extends Instance> createCluster(int clusterId, int capacity) {
+        int attrSize = 5; //some default value
+        if (!isEmpty()) {
+            attrSize = data[0].attributeCount();
+        }
+        Cluster<? extends Instance> c = new BaseCluster(capacity, attrSize);
+        c.setClusterId(clusterId);
+        c.setName("cluster " + (clusterId + 1));
         put(clusterId, c);
         return c;
     }

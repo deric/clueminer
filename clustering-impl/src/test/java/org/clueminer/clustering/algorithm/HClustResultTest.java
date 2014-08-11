@@ -170,6 +170,8 @@ public class HClustResultTest {
      */
     @Test
     public void testCutTreeByLevel() {
+        rowsResult.findCutoff();
+
     }
 
     /**

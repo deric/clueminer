@@ -16,6 +16,7 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
+@Deprecated
 public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
     private boolean stop = false;

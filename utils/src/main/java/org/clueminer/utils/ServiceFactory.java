@@ -18,8 +18,8 @@ public class ServiceFactory<T> {
         List<String> mapKeys = new ArrayList<String>(providers.keySet());
 
         LinkedHashMap<String, T> someMap = new LinkedHashMap<String, T>();
-        for (int i = 0; i < mapKeys.size(); i++) {
-            someMap.put(mapKeys.get(i), providers.get(mapKeys.get(i)));
+        for (String mapKey : mapKeys) {
+            someMap.put(mapKey, providers.get(mapKey));
         }
         providers = someMap;
     }

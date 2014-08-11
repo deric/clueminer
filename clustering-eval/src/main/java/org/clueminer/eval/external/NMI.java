@@ -36,7 +36,9 @@ public class NMI extends ExternalEvaluator {
      * @param elements
      * @return
      */
-    private double entropy(int count, Integer... elements) {
+    //this is cool but hard to cast...
+    // private double entropy(int count, Integer... elements)
+    private double entropy(int count, int[] elements) {
         double entropy = 0;
         double pk;
         for (int d : elements) {
@@ -146,7 +148,7 @@ public class NMI extends ExternalEvaluator {
 
             }
         }
-        Integer[] clusterSizes = new Integer[klassSizes.size()];
+        int[] clusterSizes = new int[klassSizes.size()];
         int i = 0;
         for (String key : klassSizes.keySet()) {
             clusterSizes[i++] = klassSizes.get(key);
