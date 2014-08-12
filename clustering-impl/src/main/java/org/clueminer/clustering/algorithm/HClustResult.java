@@ -282,13 +282,17 @@ public class HClustResult implements HierarchicalResult {
         if (node.level() == level) {
             return (node.getParent().getHeight() + node.getHeight()) / 2.0;
         } else {
-            double ret = findLevel(node.getLeft(), level);
-            if (ret > -1) {
-                return ret;
-            }
-            ret = findLevel(node.getRight(), level);
-            if (ret > -1) {
-                return ret;
+            if (node.isLeaf()) {
+                return -1;
+            } else {
+                double ret = findLevel(node.getLeft(), level);
+                if (ret > -1) {
+                    return ret;
+                }
+                ret = findLevel(node.getRight(), level);
+                if (ret > -1) {
+                    return ret;
+                }
             }
         }
         return -1;
