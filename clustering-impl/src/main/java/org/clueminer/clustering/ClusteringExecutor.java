@@ -10,13 +10,12 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.hclust.HillClimbCutoff;
-import org.clueminer.hclust.NaiveCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 
@@ -53,9 +52,10 @@ public class ClusteringExecutor {
         Clustering clustering;
         if (!cutoffAlg.equals("-- naive --")) {
             ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
-            strategy = new HillClimbCutoff(eval);
+            strategy = CutoffStrategyFactory.getInstance().getDefault();
+            strategy.setEvaluator(eval);
         } else {
-            strategy = new NaiveCutoff();
+            strategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
         }
         rowsResult.findCutoff(strategy);
 

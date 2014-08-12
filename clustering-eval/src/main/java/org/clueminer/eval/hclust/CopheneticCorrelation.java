@@ -1,11 +1,11 @@
-package org.clueminer.evaluation.hclust;
+package org.clueminer.eval.hclust;
 
 import java.util.Stack;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.hclust.TreeDataImpl;
+import org.clueminer.clustering.api.dendrogram.DendroTreeDataOld;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 
@@ -42,8 +42,8 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
         DendroTreeData treeData = result.getTreeData();
         double[][] copheneticMatrix;
 
-        if (treeData instanceof TreeDataImpl) {
-            copheneticMatrix = getCopheneticMatrix((TreeDataImpl) treeData, proximity.rowsCount(), proximity.columnsCount());
+        if (treeData instanceof DendroTreeDataOld) {
+            copheneticMatrix = getCopheneticMatrixOld((DendroTreeDataOld) treeData, proximity.rowsCount(), proximity.columnsCount());
         } else {
             copheneticMatrix = getCopheneticMatrix(treeData, proximity.rowsCount(), proximity.columnsCount());
         }
@@ -61,7 +61,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @param n
      * @return
      */
-    public double[][] getCopheneticMatrix(TreeDataImpl tree, int m, int n) {
+    public double[][] getCopheneticMatrixOld(DendroTreeDataOld tree, int m, int n) {
         int i;
         int idx;
         int left, right;
@@ -124,7 +124,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @param right
      * @param height
      */
-    private void countDistance(TreeDataImpl tree, double[][] cophenetic, int left, int right, double height) {
+    private void countDistance(DendroTreeDataOld tree, double[][] cophenetic, int left, int right, double height) {
         //System.out.println("left= " + left + ", height= " + height + ", right= " + right);
         if (!tree.isLeaf(left)) {
             //set same level for its children

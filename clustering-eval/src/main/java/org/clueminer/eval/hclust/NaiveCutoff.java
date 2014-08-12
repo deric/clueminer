@@ -1,25 +1,45 @@
-package org.clueminer.hclust;
+package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.algorithm.HCLResult;
+import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = CutoffStrategy.class)
 public class NaiveCutoff implements CutoffStrategy {
+
+    public static final String name = "naive cutoff";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public double findCutoff(HierarchicalResult hclust) {
-        if (hclust instanceof HCLResult) {
-            return findCutoffOld(hclust);
-        } else {
-            return findCutoffNg(hclust);
+        double res;
+        /**
+         * TODO remove this in next version
+         */
+        try {
+            res = findCutoffOld(hclust);
+        } catch (Exception e) {
+            res = findCutoffNg(hclust);
         }
+        return res;
     }
 
+    /**
+     *
+     * @param hclust
+     * @return
+     * @deprecated
+     */
     public double findCutoffOld(HierarchicalResult hclust) {
         double lower = 0.0, upper, dist;
         double max = Double.MIN_VALUE;
@@ -82,6 +102,11 @@ public class NaiveCutoff implements CutoffStrategy {
 
     private double distance(DendroNode parent, DendroNode child) {
         return (parent.getHeight() - child.getHeight()) / 2 + child.getHeight();
+    }
+
+    @Override
+    public void setEvaluator(ClusterEvaluator evaluator) {
+        //nothing to do
     }
 
 }

@@ -11,7 +11,7 @@ public class ApplicationTest extends NbTestCase {
         return NbModuleSuite.createConfiguration(ApplicationTest.class).
                 gui(false).
                 //failOnMessage(Level.WARNING). // works at least in RELEASE71
-                failOnException(Level.INFO).
+                failOnException(Level.WARNING).
                 suite(); // RELEASE71+, else use NbModuleSuite.create(NbModuleSuite.createConfiguration(...))
     }
 

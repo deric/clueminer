@@ -7,28 +7,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.struct.ClusterList;
-//import org.clueminer.cluster.ClusterList;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
-import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
-import org.clueminer.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 
 /**
@@ -49,7 +48,7 @@ public class HClustResult implements HierarchicalResult {
     private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
     private int numNodes = 0;
     private Clustering clustering = null;
-    private CutoffStrategy cutoffStrategy = new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault());
+    private CutoffStrategy cutoffStrategy;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
@@ -60,11 +59,19 @@ public class HClustResult implements HierarchicalResult {
     private List<Merge> merges;
 
     public HClustResult() {
-
+        init();
     }
 
     public HClustResult(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+        init();
+    }
+
+    private void init() {
+        cutoffStrategy = CutoffStrategyFactory.getInstance().getDefault();
+        if (cutoffStrategy != null) {
+            cutoffStrategy.setEvaluator(InternalEvaluatorFactory.getInstance().getDefault());
+        }
     }
 
     @Override
@@ -161,12 +168,12 @@ public class HClustResult implements HierarchicalResult {
 
         //estimated capacity
         int perCluster = (int) (parent.size() / (float) estClusters);
-        int[] mapping = getMapping();
-        if (mapping != null) {
+        int[] assign = getMapping();
+        if (assign != null) {
             int id;
             Cluster clust;
-            for (int i = 0; i < mapping.length; i++) {
-                id = mapping[i];
+            for (int i = 0; i < assign.length; i++) {
+                id = assign[i];
                 clust = result.createCluster(id);
                 clust.add(dataset.get(i));
             }
@@ -174,7 +181,6 @@ public class HClustResult implements HierarchicalResult {
             //try some cutoff method?
             System.out.println("don't know how to get clusters..");
         }
-
 
         //proximity.printLower(5, 2);
         // similarity.print(4, 2);
@@ -290,6 +296,9 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public double findCutoff() {
+        if (cutoffStrategy == null) {
+            return Double.NaN;
+        }
         double cut = cutoffStrategy.findCutoff(this);
         updateCutoff(cut);
         System.out.println(treeData.toString());

@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.DendroTreeDataOld;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Dump;
 
@@ -27,7 +28,7 @@ import org.clueminer.utils.Dump;
  * @author Tomas Barton
  *
  */
-public class TreeDataImpl implements Serializable, DendroTreeData {
+public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDataOld {
 
     private static final long serialVersionUID = -3984381476142130357L;
     private int[] left;

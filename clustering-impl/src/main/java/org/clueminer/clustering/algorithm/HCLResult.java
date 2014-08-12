@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.struct.BaseCluster;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.hclust.NaiveCutoff;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
 
@@ -32,7 +32,7 @@ public class HCLResult implements HierarchicalResult {
     private Matrix proximity;
     private TreeDataImpl treeData;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
-    private CutoffStrategy cutoffStrategy = new NaiveCutoff();
+    private CutoffStrategy cutoffStrategy;
     private int[] itemsMapping;
     private Matrix inputData;
     private Clustering clustering = null;
@@ -44,6 +44,7 @@ public class HCLResult implements HierarchicalResult {
 
     public HCLResult(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+        cutoffStrategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
     }
 
     @Override

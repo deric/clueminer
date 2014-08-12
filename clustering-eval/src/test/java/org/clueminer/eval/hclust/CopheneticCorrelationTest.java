@@ -1,4 +1,4 @@
-package org.clueminer.evaluation.hclust;
+package org.clueminer.eval.hclust;
 
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
@@ -14,11 +14,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.hclust.linkage.CompleteLinkage;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -182,7 +180,7 @@ public class CopheneticCorrelationTest {
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
         HCLResult r = (HCLResult) rowsResult;
-        double[][] copheneticMatrix = test.getCopheneticMatrix(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
+        double[][] copheneticMatrix = test.getCopheneticMatrixOld(r.getTreeData(), proximity.rowsCount(), proximity.columnsCount());
         //symetrical matrix
         assertEquals(copheneticMatrix[1][2], copheneticMatrix[2][1], precision);
         //axis is equal to 0.0 (distance to itself)
@@ -194,7 +192,7 @@ public class CopheneticCorrelationTest {
         //0.00  0.71  2.50  2.50  2.50  2.50
         //0.71  0.00  2.50  2.50  2.50  2.50
         //2.50  2.50  0.00  1.41  1.41  1.41
-        //2.50  2.50  1.41  0.00  1.00  0.50
+        //2.50  2.50  1.41  0.00  1.00  0.50FF
         //2.50  2.50  1.41  1.00  0.00  1.00
         //2.50  2.50  1.41  0.50  1.00  0.00
         assertEquals(0.71, copheneticMatrix[0][1], precision);
