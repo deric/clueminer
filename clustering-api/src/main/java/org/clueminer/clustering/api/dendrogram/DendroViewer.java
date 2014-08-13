@@ -3,13 +3,14 @@ package org.clueminer.clustering.api.dendrogram;
 import java.awt.Dimension;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
+import org.clueminer.utils.Exportable;
 
 /**
  * Interface for a dendrogram displayer
  *
  * @author Tomas Barton
  */
-public interface DendroViewer {
+public interface DendroViewer extends Exportable {
 
     /**
      * One heatmap size should be same as dendrogram branches spacing
