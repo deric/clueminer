@@ -1,0 +1,104 @@
+options {
+STATIC=false;
+}
+
+PARSER_BEGIN(NewickParser)
+
+package newick;
+
+import java.util.*;
+
+@SuppressWarnings("unchecked")
+public class NewickParser {
+	/** a very simple tree node class */
+	public static class TreeNode {
+		private List<TreeNode> children;
+		private double weight;
+		private String name;
+		public TreeNode() { this.children = new ArrayList<TreeNode>(); }
+		public void addChild(TreeNode child) { this.children.add(child); }
+		public List<TreeNode> getChildren() { return this.children; }
+		public void setWeight(double weight) { this.weight = weight; }
+		public double getWeight() { return weight; }
+		public void setName(String name) { this.name = name; }
+		public String getName() { return name; }
+		public List<TreeNode> getLeaves() { 
+			List<TreeNode> leaves = new ArrayList<TreeNode>();
+			if (children.size() == 0) leaves.add(this);
+			else for (TreeNode child: children) leaves.addAll(child.getLeaves());
+			return leaves;
+		}
+	}
+
+	/** just a test */
+	public static void main(String args[]) throws Exception {
+	    TreeNode root = new NewickParser(System.in).tree();
+	    System.out.println(root.getName() + ":" + root.getChildren().size());
+	    for (TreeNode node: root.getLeaves()) {
+	    	System.out.println("leaf: " + node.getName());
+	    }
+    }
+}
+
+PARSER_END(NewickParser)
+
+SKIP :
+{
+" "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN : /* LITERALS */
+{
+  <#LETTER:(["a"-"z"]|["A"-"Z"]|"_")>
+| <#DIGIT:["0"-"9"]>
+| <LPAR: "(">
+| <RPAR: ")">
+| <COMMA: ",">
+| <SEMICOLON: ";">
+| <IDENTIFIER: <LETTER> (<DIGIT>|<LETTER>)* | (<DIGIT>)+ >
+| <SINGLE_QUOTED_STRING: "\'" (~["\'"])* "\'"> 
+| <DOUBLE_QUOTED_STRING: "\"" (~["\""])* "\""> 
+| <REALNUMBER: ("-")? ( (<DIGIT>)+ | (<DIGIT>)+"." | (<DIGIT>)+"."(<DIGIT>)+| "."(<DIGIT>)+ )>
+| <COLON: ":">
+}
+
+public TreeNode tree(): { TreeNode root = null; }
+{
+	[ root = branch() ] <SEMICOLON> <EOF>
+	{
+		if (root == null) root = new TreeNode();
+		return root;
+	}
+}
+
+private TreeNode branch(): { Token t; TreeNode node;}
+{
+	node = subtree() [ <COLON> t = <REALNUMBER> { node.setWeight(Double.parseDouble(t.image)); } ] 
+	{
+		return node;
+	}
+}
+
+private TreeNode subtree(): {TreeNode node = null; Token t;}
+{
+	( t = <IDENTIFIER> { node = new TreeNode(); node.setName(t.image); } | 
+	  t = <SINGLE_QUOTED_STRING> { node = new TreeNode(); node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  t = <DOUBLE_QUOTED_STRING> { node = new TreeNode(); node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  node = internal() ) 
+	{ return node; }
+} 
+
+private TreeNode internal(): { Token t; TreeNode node = new TreeNode(); TreeNode child; }
+{
+	<LPAR> ( child = branch() { node.addChild(child); } ( <COMMA> child = branch() { node.addChild(child); } )* ) <RPAR> 
+	( t = <IDENTIFIER> { node.setName(t.image); } | 
+	  t = <SINGLE_QUOTED_STRING> { node.setName(t.image.substring(1, t.image.length()-1)); } |
+	  t = <DOUBLE_QUOTED_STRING> { node.setName(t.image.substring(1, t.image.length()-1)); } )?
+	{ return node; }
+}
+
+
+

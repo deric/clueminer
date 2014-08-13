@@ -167,6 +167,8 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.importer.gui</publicPackage>
                         <publicPackage>org.clueminer.importer.impl</publicPackage>
+                        <publicPackage>org.clueminer.importer.newick</publicPackage>
+                        <publicPackage>org.clueminer.importer.parser</publicPackage>
                         <publicPackage>org.clueminer.processor</publicPackage>
                     </publicPackages>
                 </configuration>
