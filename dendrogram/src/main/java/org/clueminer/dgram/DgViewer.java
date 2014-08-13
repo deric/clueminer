@@ -101,6 +101,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         add(scroller, c);
+        dendrogramPanel.addMouseWheelListener(new MouseWheelDriver(this, scroller));
     }
 
     private void updateLayout() {
