@@ -792,8 +792,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     }
 
     private void setSizes() {
+        //setSize(size);
         setPreferredSize(size);
-        setMinimumSize(size);
+        //setMinimumSize(size);
     }
 
     /**
@@ -867,14 +868,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
         elementSize.width = width;
         updateWidth(width);
-        //setSizes();
+        setSizes();
     }
 
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
         elementSize.height = height;
         updateHeight(height);
-        //setSizes();
+        setSizes();
     }
 
     @Override

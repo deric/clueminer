@@ -56,7 +56,7 @@ public class MouseWheelDriver implements MouseWheelListener {
             }
         } else {
             //pass events to scrollpanel
-
+            scrollPane.dispatchEvent(e);
         }
     }
 
