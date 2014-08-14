@@ -114,18 +114,21 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         this.removeAll(); //clean the component
 
         if (fitToPanel) {
+            if (dendroData != null) {
+                if (!dendroData.hasColumnsClustering()) {
+                    showColumnsTree = false;
+                }
+                if (!dendroData.hasRowsClustering()) {
+                    showRowsTree = false;
+                }
+            }
             prepareComputedLayout();
             this.reqSize = getSize();
 
             if (!hasData()) {
                 return;
             }
-            if (!dendroData.hasColumnsClustering()) {
-                showColumnsTree = false;
-            }
-            if (!dendroData.hasRowsClustering()) {
-                showRowsTree = false;
-            }
+
             recalculate();
             computeLayout();
         } else {
@@ -165,7 +168,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             //rows tree will have at most 200px (30% of the screen)
             int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
             int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
-            int heatmapWidth, heatmapHeight = reqSize.height;
+            int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
             if (showEvalPlot) {
                 heatmapWidth = (int) (reqSize.width * 0.4);
             } else {
@@ -412,7 +415,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             dim = silhouettePlot.getSize();
             silhouettePlot.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
         }
-
         //setPreferredSize(new Dimension(totalWidth, totalHeight));
         setMinimumSize(new Dimension(totalWidth, totalHeight));
 
