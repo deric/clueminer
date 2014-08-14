@@ -120,6 +120,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             if (!hasData()) {
                 return;
             }
+            if (!dendroData.hasColumnsClustering()) {
+                showColumnsTree = false;
+            }
+            if (!dendroData.hasRowsClustering()) {
+                showRowsTree = false;
+            }
             recalculate();
             computeLayout();
         } else {
@@ -174,6 +180,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             if (showColumnsTree) {
                 heatmapHeight -= colsTreeDim;
                 columnsTree.updateSize();
+            } else {
+                if (cutoff != null) {
+                    heatmapHeight -= cutoff.getSize().height;
+                }
             }
             //column annotations is usually bigger than tree annotation
             if (columnAnnotationBar != null) {
@@ -199,8 +209,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             System.out.println("element " + elementSize);
             System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
             System.out.println("rows tree diam " + rowsTreeDim);
-            dendroViewer.setCellHeight(elementSize.height, true);
-            dendroViewer.setCellWidth(elementSize.width, true);
+            dendroViewer.setCellHeight(elementSize.height, false, this);
+            dendroViewer.setCellWidth(elementSize.width, false, this);
 //            rowAnnotationBar.setElement(elementSize.height);
         }
     }
@@ -375,7 +385,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (showLegend) {
             dim = legend.getSize();
             System.out.println("legend offfset " + insets.top);
-            legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+            if (showColumnsTree) {
+                legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+            } else {
+                //we don't have extra space above heatmap
+                legend.setBounds(heatmapXoffset + dimHeatmap.width, totalHeight, dim.width, dim.height);
+            }
         }
 
         clustAssign = clusterAssignment.getSize();

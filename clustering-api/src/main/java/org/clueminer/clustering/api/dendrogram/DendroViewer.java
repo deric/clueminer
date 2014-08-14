@@ -60,8 +60,9 @@ public interface DendroViewer extends Exportable {
      *
      * @param width
      * @param isAdjusting true when value is continously changing
+     * @param source
      */
-    public void setCellWidth(int width, boolean isAdjusting);
+    public void setCellWidth(int width, boolean isAdjusting, Object source);
 
     /**
      * When true dendrogram size will be auto-computed according to window size
@@ -70,7 +71,14 @@ public interface DendroViewer extends Exportable {
      */
     public void setFitToPanel(boolean fitToPanel);
 
-    public void setCellHeight(int height, boolean isAdjusting);
+    /**
+     * Set height of heatmap cell in pixels.
+     *
+     * @param height
+     * @param isAdjusting
+     * @param source
+     */
+    public void setCellHeight(int height, boolean isAdjusting, Object source);
 
     public boolean isFitToPanel();
 

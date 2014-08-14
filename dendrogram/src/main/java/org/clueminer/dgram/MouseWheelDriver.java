@@ -7,6 +7,7 @@ import javax.swing.JScrollPane;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 
 /**
+ * Handles resizing of dendrogram with mouse wheel
  *
  * @author Tomas Barton
  */
@@ -32,13 +33,13 @@ public class MouseWheelDriver implements MouseWheelListener {
                 if (height == dim.height) {
                     height -= 1;
                 }
-                parent.setCellHeight(height, false);
+                parent.setCellHeight(height, false, this);
             } else {
                 height = (int) (dim.height * 1.1);
                 if (height == dim.height) {
                     height += 1;
                 }
-                parent.setCellHeight(height, false);
+                parent.setCellHeight(height, false, this);
             }
         } else if (e.isAltDown() && !e.isControlDown()) {
             parent.setFitToPanel(false);
@@ -47,13 +48,13 @@ public class MouseWheelDriver implements MouseWheelListener {
                 if (width == dim.width) {
                     width -= 1;
                 }
-                parent.setCellWidth(width, false);
+                parent.setCellWidth(width, false, this);
             } else {
                 width = (int) (dim.width * 1.1);
                 if (width == dim.width) {
                     width += 1;
                 }
-                parent.setCellWidth(width, false);
+                parent.setCellWidth(width, false, this);
             }
         } else {
             //pass events to scrollpanel

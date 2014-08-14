@@ -119,10 +119,10 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         repaint();
     }
 
-    public void setCellHeight(int height, boolean isAdjusting) {
+    public void setCellHeight(int height, boolean isAdjusting, Object source) {
         if (height > 0) {
             elementSize.height = height;
-            fireCellHeightChanged(new DendrogramDataEvent(this), height, isAdjusting);
+            fireCellHeightChanged(new DendrogramDataEvent(this), height, isAdjusting, source);
             updateLayout();
         }
     }
@@ -142,10 +142,10 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
     }
 
     @Override
-    public void setCellWidth(int width, boolean isAdjusting) {
+    public void setCellWidth(int width, boolean isAdjusting, Object source) {
         if (width > 0) {
             elementSize.width = width;
-            fireCellWidthChanged(new DendrogramDataEvent(this), width, isAdjusting);
+            fireCellWidthChanged(new DendrogramDataEvent(this), width, isAdjusting, source);
             updateLayout();
         }
     }
@@ -198,25 +198,29 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         return true;
     }
 
-    public boolean fireCellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
+    public boolean fireCellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting, Object source) {
         DendrogramDataListener[] listeners;
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
             for (DendrogramDataListener listener : listeners) {
-                listener.cellWidthChanged(evt, width, isAdjusting);
+                if (listener != source) {
+                    listener.cellWidthChanged(evt, width, isAdjusting);
+                }
             }
         }
         return true;
     }
 
-    protected boolean fireCellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
+    protected boolean fireCellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting, Object source) {
         DendrogramDataListener[] listeners;
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
             for (DendrogramDataListener listener : listeners) {
-                listener.cellHeightChanged(evt, height, isAdjusting);
+                if (listener != source) {
+                    listener.cellHeightChanged(evt, height, isAdjusting);
+                }
             }
         }
         return true;

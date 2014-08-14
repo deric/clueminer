@@ -182,13 +182,13 @@ public class SettingsPanel extends javax.swing.JPanel {
 
     private void slideCellHeightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slideCellHeightStateChanged
         if (viewer != null) {
-            viewer.setCellHeight(slideCellHeight.getValue(), slideCellHeight.getValueIsAdjusting());
+            viewer.setCellHeight(slideCellHeight.getValue(), slideCellHeight.getValueIsAdjusting(), this);
         }
     }//GEN-LAST:event_slideCellHeightStateChanged
 
     private void slideCellWidthStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slideCellWidthStateChanged
         if (viewer != null) {
-            viewer.setCellWidth(slideCellWidth.getValue(), slideCellWidth.getValueIsAdjusting());
+            viewer.setCellWidth(slideCellWidth.getValue(), slideCellWidth.getValueIsAdjusting(), this);
         }
     }//GEN-LAST:event_slideCellWidthStateChanged
 
