@@ -113,27 +113,25 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private void updateLayout() {
         this.removeAll(); //clean the component
 
-        if (fitToPanel) {
-            if (dendroData != null) {
-                if (!dendroData.hasColumnsClustering()) {
-                    showColumnsTree = false;
-                }
-                if (!dendroData.hasRowsClustering()) {
-                    showRowsTree = false;
-                }
+        if (dendroData != null) {
+            //check if we have data to display
+            if (!dendroData.hasColumnsClustering()) {
+                showColumnsTree = false;
             }
-            prepareComputedLayout();
-            this.reqSize = getSize();
+            if (!dendroData.hasRowsClustering()) {
+                showRowsTree = false;
+            }
+        }
+        prepareComputedLayout();
 
+        if (fitToPanel) {
+            this.reqSize = getSize();
             if (!hasData()) {
                 return;
             }
-
             recalculate();
-            computeLayout();
-        } else {
-            autoLayout();
         }
+        computeLayout();
         validate();
         revalidate();
         repaint();
@@ -161,56 +159,54 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void recalculate() {
-        if (fitToPanel) {
-            System.out.println("reqSize " + reqSize);
-
-            //maximal percentage for rows tree
-            //rows tree will have at most 200px (30% of the screen)
-            int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
-            int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
-            int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
-            if (showEvalPlot) {
-                heatmapWidth = (int) (reqSize.width * 0.4);
-            } else {
-                heatmapWidth = reqSize.width - rowsTreeDim;
-            }
-
-            if (showColumnsTree) {
-                heatmapHeight -= colsTreeDim;
-                columnsTree.updateSize();
-            } else {
-                if (slider != null) {
-                    heatmapHeight -= slider.getSize().height;
-                }
-            }
-            //column annotations is usually bigger than tree annotation
-            if (columnAnnotationBar != null) {
-                heatmapHeight -= columnAnnotationBar.getSize().height;
-            }
-            //compute element height
-            double perLine = Math.floor(heatmapHeight / (double) dendroData.getNumberOfRows());
-            if (perLine < 1) {
-                perLine = 1;// 1px line height
-            }
-            elementSize.height = (int) perLine;
-            int diff = heatmapHeight - (dendroData.getNumberOfRows() * elementSize.height);
-            System.out.println("heatmap h diff = " + diff);
-
-            //compute element width
-            perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
-            if (perLine < 1) {
-                perLine = 1;// 1px line height
-            }
-            elementSize.width = (int) perLine;
-            diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
-            System.out.println("heatmap w diff = " + diff);
-            System.out.println("element " + elementSize);
-            System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
-            System.out.println("rows tree diam " + rowsTreeDim);
-            dendroViewer.setCellHeight(elementSize.height, false, this);
-            dendroViewer.setCellWidth(elementSize.width, false, this);
-//            rowAnnotationBar.setElement(elementSize.height);
+        System.out.println("reqSize " + reqSize);
+        //maximal percentage for rows tree
+        //rows tree will have at most 200px (30% of the screen)
+        int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
+        int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
+        int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
+        if (showEvalPlot) {
+            heatmapWidth = (int) (reqSize.width * 0.4);
+        } else {
+            heatmapWidth = reqSize.width - rowsTreeDim;
         }
+
+        if (showColumnsTree) {
+            heatmapHeight -= colsTreeDim;
+            columnsTree.updateSize();
+        } else {
+            if (slider != null) {
+                heatmapHeight -= slider.getSize().height;
+            }
+        }
+        //column annotations is usually bigger than tree annotation
+        if (columnAnnotationBar != null) {
+            heatmapHeight -= columnAnnotationBar.getSize().height;
+        }
+        //compute element height
+        double perLine = Math.floor(heatmapHeight / (double) dendroData.getNumberOfRows());
+        if (perLine < 1) {
+            perLine = 1;// 1px line height
+        }
+        elementSize.height = (int) perLine;
+        int diff = heatmapHeight - (dendroData.getNumberOfRows() * elementSize.height);
+        System.out.println("heatmap h diff = " + diff);
+
+        //compute element width
+        perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
+        if (perLine < 1) {
+            perLine = 1;// 1px line height
+        }
+        elementSize.width = (int) perLine;
+        diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
+        System.out.println("heatmap w diff = " + diff);
+        System.out.println("element " + elementSize);
+        System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
+        System.out.println("rows tree diam " + rowsTreeDim);
+        dendroViewer.setCellHeight(elementSize.height, false, this);
+        dendroViewer.setCellWidth(elementSize.width, false, this);
+//            rowAnnotationBar.setElement(elementSize.height);
+
     }
 
     /*
