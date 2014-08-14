@@ -49,6 +49,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     //component to draw a tree for rows
     private DendrogramTree rowsTree;
     private AbstractScale rowsScale;
+    private CutoffSlider slider;
     private CutoffLine cutoff;
     private DendrogramTree columnsTree;
     private AbstractScale columnsScale;
@@ -64,7 +65,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected ClusterAssignment clusterAssignment;
     protected SilhouettePlot silhouettePlot;
     private JLayeredPane rowTreeLayered;
-    private CutoffSlider slider;
     private boolean showColumnsTree = true;
     private boolean showRowsTree = true;
     private boolean showScale = true;
@@ -154,16 +154,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void render(Graphics2D g) {
-        System.out.println("render called");
-        //setLayout(null);
-
-        //rowsTree.setBounds(0, 0, 200, 200);
     }
 
     @Override
     public void recalculate() {
         if (fitToPanel) {
-            System.out.println("computed layout");
             System.out.println("reqSize " + reqSize);
 
             //maximal percentage for rows tree
@@ -181,8 +176,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                 heatmapHeight -= colsTreeDim;
                 columnsTree.updateSize();
             } else {
-                if (cutoff != null) {
-                    heatmapHeight -= cutoff.getSize().height;
+                if (slider != null) {
+                    heatmapHeight -= slider.getSize().height;
                 }
             }
             //column annotations is usually bigger than tree annotation
@@ -347,6 +342,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             heatmapYoffset = insets.top;
         }
 
+        dimHeatmap = heatmap.getSize();
+        heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
+        totalHeight = dimHeatmap.height;
+
         if (showRowsTree) {
             dim = rowsTree.getSize();
             rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
@@ -356,6 +355,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                 dimSlider = slider.getSize();
                 //heatmapYoffset += dimSlider.height;
                 slider.setBounds(insets.left, heatmapYoffset - dimSlider.height, dimSlider.width, dimSlider.height);
+                if (!showColumnsTree) {
+                    heatmapYoffset += dimSlider.height;
+                    totalHeight += dimSlider.height;
+                }
             }
             if (showScale) {
                 //rowsScale.setSize(dim.width, scaleHeight);
@@ -369,9 +372,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             }
         }
 
-        dimHeatmap = heatmap.getSize();
-        heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
-        totalHeight = dimHeatmap.height;
         if (dimSlider != null) {
             totalHeight += Math.max(dimSlider.height, heatmapYoffset);
         } else {
