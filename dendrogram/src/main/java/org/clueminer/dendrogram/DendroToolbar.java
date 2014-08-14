@@ -3,7 +3,6 @@ package org.clueminer.dendrogram;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
@@ -20,7 +19,7 @@ import org.openide.util.ImageUtilities;
 public class DendroToolbar extends JToolBar {
 
     private static final long serialVersionUID = 3796559248116111100L;
-    private JToggleButton btnFitToSpace;
+    private JButton btnFitToSpace;
     private JButton btnScreenshot;
     private final DendroViewer viewer;
 
@@ -35,7 +34,7 @@ public class DendroToolbar extends JToolBar {
         this.setFloatable(false);
         this.setRollover(true);
 
-        btnFitToSpace = new JToggleButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/fullscreen16.png", false));
+        btnFitToSpace = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/fullscreen16.png", false));
         btnFitToSpace.setToolTipText("Fit to window");
         btnFitToSpace.setSelected(true);
         btnScreenshot = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/screenshot16.png", false));

@@ -55,8 +55,19 @@ public interface DendroViewer extends Exportable {
 
     public boolean isLabelVisible();
 
+    /**
+     * Set width of heatmap cell in pixels.
+     *
+     * @param width
+     * @param isAdjusting true when value is continously changing
+     */
     public void setCellWidth(int width, boolean isAdjusting);
 
+    /**
+     * When true dendrogram size will be auto-computed according to window size
+     *
+     * @param fitToPanel
+     */
     public void setFitToPanel(boolean fitToPanel);
 
     public void setCellHeight(int height, boolean isAdjusting);

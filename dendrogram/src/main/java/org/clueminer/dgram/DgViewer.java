@@ -119,7 +119,6 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         //update size of scrollbars
         scroller.getViewport().revalidate();
         setPreferredSize(dendrogramPanel.getSize());
-        System.out.println("dendro panel size: " + dendrogramPanel.getSize());
         /*  validate();
          revalidate();*/
         repaint();
@@ -130,7 +129,6 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         if (height > 0) {
             elementSize.height = height;
             fireCellHeightChanged(new DendrogramDataEvent(this), height, isAdjusting);
-            System.out.println("new height " + height);
             updateLayout();
         }
     }

@@ -13,8 +13,7 @@ import org.clueminer.clustering.api.dendrogram.DendroViewer;
 public class MouseWheelDriver implements MouseWheelListener {
 
     private final DendroViewer parent;
-    static final String newline = System.getProperty("line.separator");
-    private JScrollPane scrollPane;
+    private final JScrollPane scrollPane;
 
     public MouseWheelDriver(DendroViewer parent, JScrollPane scrollPane) {
         this.parent = parent;
@@ -26,7 +25,8 @@ public class MouseWheelDriver implements MouseWheelListener {
         int notches = e.getWheelRotation();
         Dimension dim = parent.getElementSize();
         int height, width;
-        if (e.isControlDown()) {
+        if (e.isControlDown() && !e.isAltDown()) {
+            parent.setFitToPanel(false);
             if (notches < 0) {
                 height = (int) (dim.height * 0.9);
                 if (height == dim.height) {
@@ -40,7 +40,8 @@ public class MouseWheelDriver implements MouseWheelListener {
                 }
                 parent.setCellHeight(height, false);
             }
-        } else if (e.isAltDown()) {
+        } else if (e.isAltDown() && !e.isControlDown()) {
+            parent.setFitToPanel(false);
             if (notches < 0) {
                 width = (int) (dim.width * 0.9);
                 if (width == dim.width) {

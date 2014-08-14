@@ -199,8 +199,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             System.out.println("element " + elementSize);
             System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
             System.out.println("rows tree diam " + rowsTreeDim);
-            dendroViewer.setCellHeight(elementSize.height, false);
-            dendroViewer.setCellWidth(elementSize.width, false);
+            dendroViewer.setCellHeight(elementSize.height, true);
+            dendroViewer.setCellWidth(elementSize.width, true);
 //            rowAnnotationBar.setElement(elementSize.height);
         }
     }
