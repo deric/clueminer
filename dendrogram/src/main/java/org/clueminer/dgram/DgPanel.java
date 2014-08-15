@@ -7,11 +7,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.text.DecimalFormat;
-import javax.swing.Box;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
@@ -145,16 +143,17 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (fitToPanel) {
             this.reqSize = reqSize;
             recalculate();
-            computeLayout();
-        } else {
-            //let LayoutManager deal with this
         }
+        computeLayout();
     }
 
     @Override
     public void render(Graphics2D g) {
     }
 
+    /**
+     * Calculate sizes of components in order to fit into given panel size
+     */
     @Override
     public void recalculate() {
         //maximal percentage for rows tree
@@ -200,62 +199,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         dendroViewer.setCellWidth(elementSize.width, false, this);
 //            rowAnnotationBar.setElement(elementSize.height);
 
-    }
-
-    /*
-     *
-     * |(0,0) tree cut | (0, 1) horizontal tree |
-     * |(0,1) vertical | (1, 1) heatmap         |
-     * |               |
-     */
-    @Deprecated
-    private void autoLayout() {
-        System.out.println("auto layout");
-        setLayout(new GridBagLayout());
-        int gridy = 0, gridx = 0;
-        int lastCol = 0;
-
-        //columns
-        if (showColumnsTree) {
-            addColumnsTree(gridx, gridy);
-            lastCol = gridx + 3;
-            if (showLegend) {
-                addLegend(lastCol, gridy, 2);
-            }
-            gridy++; //increase index to move other components to next row
-        } else if (showLegend) {
-            addLegend(2, gridy++, 2);
-            lastCol = gridx + 3;
-        }
-
-        //rows
-        if (showRowsTree) {
-            //move heatmap to next column
-            addRowsTree(gridx++, gridy);
-            if (showSlider) {
-                //should be above row's tree
-                addRowSlider(gridx - 1, gridy - 1);
-            }
-        }
-        addHeatmap(gridx, gridy);
-        //panel for clusters' assignment
-        addClustersAssignment(gridx + 1, gridy);
-        addRowAnnotation(lastCol, gridy, isLabelVisible());
-
-        addEvaluation(lastCol + 1, gridy);
-        if (showColorBar) {
-            colorBar = new HCLColorBar();
-            add(colorBar);
-            //this.colorBar.addMouseListener(listener);
-        }
-        addColumnAnnotationBar(gridx, ++gridy);
-        //addColumnStatistics(gridx, ++gridy);
-
-        /* GridBagConstraints horizontalFill = new GridBagConstraints();
-         horizontalFill.anchor = GridBagConstraints.WEST;
-         horizontalFill.fill = GridBagConstraints.HORIZONTAL;
-
-         this.add(Box.createHorizontalGlue(), horizontalFill);*/
     }
 
     private void prepareComputedLayout() {
@@ -427,19 +370,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addHeatmap(int column, int row) {
-        createHeatmap();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 0.0;
-        c.weighty = 0.0;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add(heatmap, c);
-    }
-
     private void createColumnsTree() {
         //we call constructor just one
         if (columnsTree == null) {
@@ -451,28 +381,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (columnsScale == null) {
             columnsScale = new HorizontalScale(columnsTree, this);
             dendroViewer.addDendrogramDataListener(columnsScale);
-        }
-    }
-
-    private void addColumnsTree(int column, int row) {
-        createColumnsTree();
-        if (showRowsTree) {
-            column++;
-        }
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.SOUTHWEST;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.insets = new java.awt.Insets(15, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add((Component) columnsTree, c);
-
-        if (showScale) {
-            c.insets = new java.awt.Insets(0, 0, 0, 0);
-            c.gridx = ++column;
-            add(columnsScale, c);
         }
     }
 
@@ -526,47 +434,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addRowsTree(int column, int row) {
-        createRowsTree();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 0;
-        c.weighty = 0;
-        //c.gridwidth = GridBagConstraints.RELATIVE;
-        //c.gridheight = GridBagConstraints.REMAINDER; //last in column
-
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-
-        add(rowTreeLayered, c);
-
-        if (showScale) {
-            c.insets = new java.awt.Insets(0, 0, 0, 0);
-            c.gridy = ++row;
-            add(rowsScale, c);
-        }
-    }
-
     private void createRowSlider() {
         if (slider == null) {
             slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff, cutoffSliderSize);
             dendroViewer.addDendrogramDataListener(slider);
             rowsTree.addTreeListener(slider);
         }
-    }
-
-    private void addRowSlider(int column, int row) {
-        createRowSlider();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.SOUTHEAST;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add(slider, c);
-
     }
 
     private void createRowAnnotation() {
@@ -584,41 +457,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addRowAnnotation(int column, int row, boolean visible) {
-        if (!visible) {
-            if (rowAnnotationBar != null) {
-                rowsTree.removeTreeListener(rowAnnotationBar);
-                dendroViewer.removeDendrogramDataListener(rowAnnotationBar);
-                rowAnnotationBar = null;
-            }
-
-            GridBagConstraints horizontalFill = new GridBagConstraints();
-            horizontalFill.anchor = GridBagConstraints.WEST;
-            horizontalFill.fill = GridBagConstraints.HORIZONTAL;
-            horizontalFill.gridx = column;
-            horizontalFill.gridy = row;
-            this.add(Box.createHorizontalGlue(), horizontalFill);
-        } else {
-            createRowAnnotation();
-            GridBagConstraints c = new GridBagConstraints();
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.NORTHWEST;
-            /**
-             * at least one component must be stretching in the free space or
-             * there must be some glue to fill the empty space (if no,
-             * components would be centered to middle)
-             */
-            c.weightx = 1.0;
-            c.weighty = 0.0;
-            c.gridwidth = 1;
-            //c.gridwidth = GridBagConstraints.RELATIVE;
-            c.insets = new java.awt.Insets(0, 0, 0, 0);
-            c.gridx = column;
-            c.gridy = row;
-            add(rowAnnotationBar, c);
-        }
-    }
-
     private void createEvaluation() {
         //we call constructor just one
         if (silhouettePlot == null) {
@@ -633,30 +471,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addEvaluation(int column, int row) {
-        createEvaluation();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        /**
-         * at least one component must be stretching in the free space or there
-         * must be some glue to fill the empty space (if no, components would be
-         * centered to middle)
-         */
-        c.weightx = 0.3;
-        c.weighty = 0.0;
-        if (isLabelVisible()) {
-            c.gridwidth = 1;
-        } else {
-            //fill space instead of labels
-            c.gridwidth = 2;
-        }
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add(silhouettePlot, c);
-    }
-
     private void createLegend() {
         //we call constructor just one
         if (legend == null) {
@@ -668,20 +482,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
     }
 
-    private void addLegend(int column, int row, int span) {
-        createLegend();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 0.3;
-        c.weighty = 0.4;
-        c.gridwidth = span;
-        c.insets = new java.awt.Insets(0, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add(legend, c);
-    }
-
     private void createColumnAnnotation() {
         //we call constructor just one
         if (columnAnnotationBar == null) {
@@ -689,22 +489,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             dendroViewer.addDendrogramDataListener(columnAnnotationBar);
             rowsTree.addTreeListener(columnAnnotationBar);
         }
-    }
-
-    private void addColumnAnnotationBar(int column, int row) {
-        createColumnAnnotation();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.weightx = 0.0;
-        //component in last row should be streatched to fill space at the bottom
-        c.weighty = 1.0;
-        // c.gridwidth = GridBagConstraints.REMAINDER;
-        //  c.gridheight = GridBagConstraints.REMAINDER;
-        c.insets = new java.awt.Insets(5, 0, 0, 0);
-        c.gridx = column;
-        c.gridy = row;
-        add(columnAnnotationBar, c);
     }
 
     private void addColumnStatistics(int column, int row) {
@@ -733,25 +517,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             dendroViewer.addDendrogramDataListener(clusterAssignment);
             dendroViewer.addClusteringListener(clusterAssignment);
         }
-    }
-
-    private void addClustersAssignment(int column, int row) {
-        createClusterAssignments();
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTHWEST;
-        /**
-         * at least one component must be stretching in the free space or there
-         * must be some glue to fill the empty space (if no, components would be
-         * centered to middle)
-         */
-        c.weightx = 0.3;
-        c.weighty = 0.0;
-        //c.gridwidth = GridBagConstraints.RELATIVE;
-        c.insets = new java.awt.Insets(0, 5, 0, 5);
-        c.gridx = column;
-        c.gridy = row;
-        add(clusterAssignment, c);
     }
 
     @Override
