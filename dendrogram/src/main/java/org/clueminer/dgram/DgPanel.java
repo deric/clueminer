@@ -84,7 +84,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected ColorSchemeImpl colorScheme;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     protected Dimension elementSize;
-    protected Insets insets = new Insets(5, 5, 5, 5);
+    protected Insets insets = new Insets(5, 5, 40, 5);
     private int cutoffSliderSize = 6;
 
     public DgPanel(DendroViewer v) {
@@ -290,7 +290,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
-        totalHeight += dim.height;
+        int rowsScaleHeight = rowsScale.getHeight();
+        int thirdLineHeight = Math.max(rowsScaleHeight, dim.height);
+        totalHeight += thirdLineHeight;
 
         if (showLegend) {
             dim = legend.getSize();
@@ -550,6 +552,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         size.width = width;
     }
 
+    /**
+     * Computed current component height
+     *
+     * @param elemHeight
+     */
     private void updateHeight(int elemHeight) {
         //height of heatmap
         int heatmapXoffset, heatmapYoffset;
@@ -560,6 +567,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             height += columnsTree.getHeight();
         }
         heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
+        height += heatmapYoffset;
         Dimension dim = rowsTree.getSize();
         Dimension dimSlider = null;
         if (showSlider) {
@@ -570,9 +578,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         updateRowTreePosition(dim, heatmapYoffset, dimSlider);
         height += insets.bottom + insets.top;
         if (columnAnnotationBar != null) {
-            int colsize = columnAnnotationBar.getDimension().height;
+            int colsize = columnAnnotationBar.getSize().height;
             if (rowsScale != null) {
-                colsize = Math.max(columnAnnotationBar.getDimension().height, rowsScale.getHeight());
+                colsize = Math.max(colsize, rowsScale.getHeight());
             }
             height += colsize;
         }
