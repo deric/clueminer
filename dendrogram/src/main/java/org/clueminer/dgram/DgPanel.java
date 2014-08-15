@@ -531,6 +531,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (columnsTree != null) {
             columnsTree.fireTreeUpdated();
         }
+        slider.updatePosition();
         //@TODO probably call repaint
         repaint();
     }

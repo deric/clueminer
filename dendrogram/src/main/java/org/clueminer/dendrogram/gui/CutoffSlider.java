@@ -8,6 +8,7 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -16,6 +17,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 
 /**
+ * A slider which allows manual setting of hierarchical clustering
  *
  * @author Tomas Barton
  */
@@ -38,12 +40,14 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     private int sliderDiameter;
     private int max = 100;
     private int min = 0;
+    private HierarchicalResult hclust;
 
     /**
      *
      * @param panel
      * @param orientation -- SwingConstants.HORIZONTAL
      * @param cutoff
+     * @param sliderDiam
      */
     public CutoffSlider(JPanel panel, int orientation, CutoffLine cutoff, int sliderDiam) {
         this.parent = panel;
@@ -112,6 +116,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
+        hclust = dataset.getRowsResult();
     }
 
     @Override
@@ -139,7 +144,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      */
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
-        slider.setValue(cutoffLine.getLinePosition());
+        updatePosition();
     }
 
     @Override
@@ -149,6 +154,12 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
 
     public boolean isInverted() {
         return inverted;
+    }
+
+    public void updatePosition() {
+        if (hclust != null) {
+            slider.setValue(cutoffLine.computePosition(hclust.getCutoff(), hclust));
+        }
     }
 
     public void setInverted(boolean inverted) {

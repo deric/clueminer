@@ -50,7 +50,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
             return;
         }
 
-        linepos = computePosition(clustering.getCutoff());
+        linepos = computePosition(clustering.getCutoff(), clustering);
         g2.setStroke(dashed);
         //draw dashed line across whole tree width
         // x1, y1, x2, y2
@@ -72,10 +72,11 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      * Computes position of line on the dendrogram tree
      *
      * @param cutoff
+     * @param clustering
      *
      * @return
      */
-    private int computePosition(double cutoff) {
+    protected int computePosition(double cutoff, HierarchicalResult clustering) {
         //there's a gap on tree root side which is equal to sliderDiameter
         int treeHeight = tree.getTreeHeight() - sliderDiameter;
         return (int) (treeHeight - (cutoff / clustering.getMaxTreeHeight() * treeHeight)) + sliderDiameter;
