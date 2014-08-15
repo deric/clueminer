@@ -58,9 +58,15 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                 if (hierarchicalResult != null) {
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
                     if (k != prev) {
-                        clust = clustering.get(k - 1);
+                        if (clustering.hasAt(k - 1)) {
+                            clust = clustering.get(k - 1);
+                        }
                     }
-                    g.setColor(clust.getColor());
+                    if (clust != null) {
+                        g.setColor(clust.getColor());
+                    } else {
+                        g.setColor(Color.GRAY);
+                    }
                 }
                 g.fillRect(x, i * element.height, (int) value, element.height);
 
@@ -184,12 +190,15 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             double value;
             for (int i = 0; i < dataset.size(); i++) {
                 k = clustering.assignedCluster(i);
-                clust = clustering.get(k - 1);
-                value = silhouette.instanceScore(clust, clustering, i, dataset.get(i));
-                if (hierarchicalResult != null) {
-                    score[hierarchicalResult.getMappedIndex(i)] = value;
-                } else {
-                    score[i] = value;
+                //if k == -1 (not assigned to any cluster yet) there's no point to count the score
+                if (clustering.hasAt(k - 1)) {
+                    clust = clustering.get(k - 1);
+                    value = silhouette.instanceScore(clust, clustering, i, dataset.get(i));
+                    if (hierarchicalResult != null) {
+                        score[hierarchicalResult.getMappedIndex(i)] = value;
+                    } else {
+                        score[i] = value;
+                    }
                 }
             }
             //Dump.array(score, "silhouette score");
