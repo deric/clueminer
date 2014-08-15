@@ -288,7 +288,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
 
     @Override
     public BufferedImage getBufferedImage(int w, int h) {
-        Dimension dendroDim = dendrogramPanel.getPreferredSize();
+        Dimension dendroDim = dendrogramPanel.getSize();
         int width, height;
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
