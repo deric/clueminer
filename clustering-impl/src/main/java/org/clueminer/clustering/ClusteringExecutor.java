@@ -53,8 +53,8 @@ public class ClusteringExecutor {
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
-        CutoffStrategy strategy = getCutoffStrategy(params);
-        columnsResult.findCutoff(strategy);
+        //CutoffStrategy strategy = getCutoffStrategy(params);
+        //columnsResult.findCutoff(strategy);
         return columnsResult;
     }
 
@@ -81,6 +81,14 @@ public class ClusteringExecutor {
         return clustering;
     }
 
+    /**
+     * Cluster both - rows and columns
+     *
+     * @param dataset data to be clustered
+     * @param dm      distance metric
+     * @param params
+     * @return
+     */
     public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);

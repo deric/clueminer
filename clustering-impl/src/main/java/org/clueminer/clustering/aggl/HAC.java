@@ -65,6 +65,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref) {
         this.dataset = dataset;
         HierarchicalResult result = new HClustResult(dataset);
+        result.setInputData(input);
         params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
