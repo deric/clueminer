@@ -266,7 +266,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
 
         dimHeatmap = heatmap.getSize();
-        heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
         totalHeight = dimHeatmap.height;
 
         if (showRowsTree) {
@@ -276,11 +275,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                 slider.setSize(dim.width, 15);
                 dimSlider = slider.getSize();
             }
-            updateRowTreePosition(dim, heatmapYoffset, dimSlider);
             if (!showColumnsTree && dimSlider != null) {
                 heatmapYoffset += dimSlider.height;
                 totalHeight += dimSlider.height;
             }
+            updateRowTreePosition(dim, heatmapYoffset, dimSlider);
         }
 
         if (dimSlider != null) {
@@ -288,7 +287,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         } else {
             totalHeight += heatmapYoffset;
         }
-
+        heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
         totalHeight += dim.height;
