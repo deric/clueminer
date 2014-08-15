@@ -70,6 +70,18 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE80</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fixtures-clustering</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -83,6 +95,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.chart.base</publicPackage>
                         <publicPackage>org.clueminer.chart.line</publicPackage>
+                        <publicPackage>org.clueminer.chart.plots</publicPackage>
                         <publicPackage>org.clueminer.chart.renderer</publicPackage>
                     </publicPackages>
                 </configuration>
