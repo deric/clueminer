@@ -70,8 +70,10 @@ public class DgRightTree extends DgTree {
         if (!hasData()) {
             return;
         }
-        elementHeight = height;
-        updateSize();
+        if (elementHeight != height) {
+            elementHeight = height;
+            updateSize();
+        }
     }
 
 }

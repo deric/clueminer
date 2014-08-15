@@ -88,8 +88,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 5, 5);
     private int cutoffSliderSize = 6;
-    protected Dimension reqSize = new Dimension(0, 0);
-    protected Dimension realSize = new Dimension(0, 0);
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -159,7 +157,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void recalculate() {
-        System.out.println("reqSize " + reqSize);
         //maximal percentage for rows tree
         //rows tree will have at most 200px (30% of the screen)
         int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
@@ -189,8 +186,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             perLine = 1;// 1px line height
         }
         elementSize.height = (int) perLine;
-        int diff = heatmapHeight - (dendroData.getNumberOfRows() * elementSize.height);
-        System.out.println("heatmap h diff = " + diff);
+        //int diff = heatmapHeight - (dendroData.getNumberOfRows() * elementSize.height);
+        //System.out.println("heatmap h diff = " + diff);
 
         //compute element width
         perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
@@ -198,11 +195,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             perLine = 1;// 1px line height
         }
         elementSize.width = (int) perLine;
-        diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
-        System.out.println("heatmap w diff = " + diff);
-        System.out.println("element " + elementSize);
-        System.out.println("heatmap dim: " + heatmapWidth + " x " + heatmapHeight);
-        System.out.println("rows tree diam " + rowsTreeDim);
+        // diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
         dendroViewer.setCellHeight(elementSize.height, false, this);
         dendroViewer.setCellWidth(elementSize.width, false, this);
 //            rowAnnotationBar.setElement(elementSize.height);
@@ -215,6 +208,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      * |(0,1) vertical | (1, 1) heatmap         |
      * |               |
      */
+    @Deprecated
     private void autoLayout() {
         System.out.println("auto layout");
         setLayout(new GridBagLayout());
@@ -326,20 +320,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         //X, Y position of heatmap's top left corner
         heatmapXoffset = insets.left + rowsTree.getSize().width;
-
-        if (showColumnsTree) {
-            dim = columnsTree.getSize();
-            heatmapYoffset = insets.top + dim.height;
-            columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
-            if (showScale) {
-                //columnsScale.setSize(scaleHeight, dim.height);
-                columnsScale.updateSize();
-                columnsScale.setBounds(heatmapXoffset + dim.width, insets.top, columnsScale.getSize().width, dim.height);
-            }
-            //legend height
-        } else {
-            heatmapYoffset = insets.top;
-        }
+        heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
 
         dimHeatmap = heatmap.getSize();
         heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
@@ -347,27 +328,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (showRowsTree) {
             dim = rowsTree.getSize();
-            rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
             if (showSlider) {
                 //slider height is constant
                 slider.setSize(dim.width, 15);
                 dimSlider = slider.getSize();
-                //heatmapYoffset += dimSlider.height;
-                slider.setBounds(insets.left, heatmapYoffset - dimSlider.height, dimSlider.width, dimSlider.height);
-                if (!showColumnsTree) {
-                    heatmapYoffset += dimSlider.height;
-                    totalHeight += dimSlider.height;
-                }
             }
-            if (showScale) {
-                //rowsScale.setSize(dim.width, scaleHeight);
-                int scaleYoffset;
-                scaleYoffset = heatmapYoffset + dim.height;
-                if (dimSlider != null) {
-                    scaleYoffset += dimSlider.height;
-                }
-                rowsScale.updateSize();
-                rowsScale.setBounds(insets.left, scaleYoffset, dim.width, rowsScale.getSize().height);
+            updateRowTreePosition(dim, heatmapYoffset, dimSlider);
+            if (!showColumnsTree && dimSlider != null) {
+                heatmapYoffset += dimSlider.height;
+                totalHeight += dimSlider.height;
             }
         }
 
@@ -383,7 +352,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (showLegend) {
             dim = legend.getSize();
-            System.out.println("legend offfset " + insets.top);
             if (showColumnsTree) {
                 legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
             } else {
@@ -393,8 +361,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
 
         clustAssign = clusterAssignment.getSize();
-        System.out.println("cluster assign size: " + dim);
-        System.out.println("heatmap x " + heatmapXoffset + " y offset " + heatmapYoffset);
         //row tree + heatmap
         totalWidth = heatmapXoffset + dimHeatmap.width;
         clusterAssignment.setBounds(totalWidth, heatmapYoffset, clustAssign.width, clustAssign.height);
@@ -402,7 +368,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
-            System.out.println("row annotation " + dim);
             rowAnnotationBar.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
             totalWidth += dim.width;
         }
@@ -413,10 +378,45 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         //setPreferredSize(new Dimension(totalWidth, totalHeight));
         setMinimumSize(new Dimension(totalWidth, totalHeight));
+    }
 
-        System.out.println("preffered " + getPreferredSize());
-        System.out.println("size " + getSize());
-        System.out.println("min " + getMinimumSize());
+    private void updateColumnTreePosition(Dimension dim, int heatmapXoffset) {
+        dim = columnsTree.getSize();
+        columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
+        if (showScale) {
+            //columnsScale.setSize(scaleHeight, dim.height);
+            columnsScale.updateSize();
+            columnsScale.setBounds(heatmapXoffset + dim.width, insets.top, columnsScale.getSize().width, dim.height);
+        }
+    }
+
+    private void updateRowTreePosition(Dimension dim, int heatmapYoffset, Dimension dimSlider) {
+        rowTreeLayered.setBounds(insets.left, heatmapYoffset, dim.width, dim.height);
+        if (showSlider) {
+            slider.setBounds(insets.left, heatmapYoffset - dimSlider.height, dimSlider.width, dimSlider.height);
+        }
+        if (showScale) {
+            //rowsScale.setSize(dim.width, scaleHeight);
+            int scaleYoffset;
+            scaleYoffset = heatmapYoffset + dim.height;
+            if (dimSlider != null) {
+                scaleYoffset += dimSlider.height;
+            }
+            rowsScale.updateSize();
+            rowsScale.setBounds(insets.left, scaleYoffset, dim.width, rowsScale.getSize().height);
+        }
+    }
+
+    private int updateHeatmapYoffset(int heatmapXoffset) {
+        int heatmapYoffset;
+        if (showColumnsTree) {
+            Dimension dim = columnsTree.getSize();
+            heatmapYoffset = insets.top + dim.height;
+            updateColumnTreePosition(dim, heatmapXoffset);
+        } else {
+            heatmapYoffset = insets.top;
+        }
+        return heatmapYoffset;
     }
 
     private void createHeatmap() {
@@ -756,7 +756,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        System.out.println("got dendrogramMapping");
         this.dendroData = dataset;
         updateLayout();
         //sizeUpdated(getSize());
@@ -789,10 +788,22 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     private void updateHeight(int elemHeight) {
         //height of heatmap
+        int heatmapXoffset, heatmapYoffset;
         int height = dendroData.getNumberOfRows() * elemHeight;
+        //X, Y position of heatmap's top left corner
+        heatmapXoffset = insets.left + rowsTree.getSize().width;
         if (showColumnsTree && columnsTree != null) {
             height += columnsTree.getHeight();
         }
+        heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
+        Dimension dim = rowsTree.getSize();
+        Dimension dimSlider = null;
+        if (showSlider) {
+            //slider height is constant
+            slider.setSize(dim.width, 15);
+            dimSlider = slider.getSize();
+        }
+        updateRowTreePosition(dim, heatmapYoffset, dimSlider);
         height += insets.bottom + insets.top;
         if (columnAnnotationBar != null) {
             int colsize = columnAnnotationBar.getDimension().height;
@@ -805,9 +816,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     }
 
     private void setSizes() {
-        //setSize(size);
+        setSize(size);
         setPreferredSize(size);
-        //setMinimumSize(size);
+        setMinimumSize(size);
     }
 
     /**
@@ -887,6 +898,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
         elementSize.height = height;
+        //make sure rows tree gets notified before we compute size of the component
+        rowsTree.cellHeightChanged(evt, height, isAdjusting);
         updateHeight(height);
         setSizes();
     }

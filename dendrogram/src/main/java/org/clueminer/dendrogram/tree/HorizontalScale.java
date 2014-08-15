@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
+ * Display scale for dendrogram tree
  *
  * @author Tomas Barton
  */

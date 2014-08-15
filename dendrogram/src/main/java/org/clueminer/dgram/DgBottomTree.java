@@ -77,8 +77,10 @@ public class DgBottomTree extends DgTree {
 
     @Override
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
-        elementWidth = width;
-        updateSize();
+        if (elementWidth != width) {
+            elementWidth = width;
+            updateSize();
+        }
     }
 
     @Override
