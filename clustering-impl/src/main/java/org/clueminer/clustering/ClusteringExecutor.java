@@ -34,22 +34,34 @@ public class ClusteringExecutor {
         algorithm = new HAC();
     }
 
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
-
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
-
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
+        CutoffStrategy strategy = getCutoffStrategy(params);
+        rowsResult.findCutoff(strategy);
+        return rowsResult;
+    }
 
-        DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
+    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+        if (dataset == null || dataset.isEmpty()) {
+            throw new NullPointerException("no data to process");
+        }
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
+        CutoffStrategy strategy = getCutoffStrategy(params);
+        columnsResult.findCutoff(strategy);
+        return columnsResult;
+    }
+
+    private CutoffStrategy getCutoffStrategy(Preferences params) {
         CutoffStrategy strategy;
-
         String cutoffAlg = params.get("cutoff", "-- naive --");
-        Clustering clustering;
+
         if (!cutoffAlg.equals("-- naive --")) {
             ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
             strategy = CutoffStrategyFactory.getInstance().getDefault();
@@ -57,11 +69,24 @@ public class ClusteringExecutor {
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
         }
-        rowsResult.findCutoff(strategy);
+        return strategy;
+    }
 
-        clustering = rowsResult.getClustering();
+    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
+
+        Clustering clustering = rowsResult.getClustering();
         clustering.lookupAdd(mapping);
         return clustering;
+    }
+
+    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+        HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
+
+        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
+        return mapping;
     }
 
     public AgglomerativeClustering getAlgorithm() {
