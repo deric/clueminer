@@ -132,7 +132,6 @@ public class DynamicTreeData implements DendroTreeData {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
             printTree(out);
             out.flush();
-            out.close();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -144,7 +143,6 @@ public class DynamicTreeData implements DendroTreeData {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
             printCanonicalTree(out);
             out.flush();
-            out.close();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

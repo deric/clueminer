@@ -23,6 +23,7 @@ public class OptimalTreeOrder {
 //        optOrder(tree.getRoot(), clustering.getProximityMatrix());
         System.out.println("printing canonical tree");
         tree.printCanonical();
+        Dump.array(tree.getMapping(), "tree mapping");
     }
 
     /**
