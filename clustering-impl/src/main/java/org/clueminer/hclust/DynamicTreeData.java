@@ -28,6 +28,10 @@ public class DynamicTreeData implements DendroTreeData {
     @Override
     public int numLeaves() {
         if (root != null) {
+            //avoid recursive computations if possible
+            if (mapping != null) {
+                return mapping.length;
+            }
             return root.childCnt();
         }
         return 0;
