@@ -116,4 +116,12 @@ public interface DendroTreeData {
      */
     void swapChildren(DendroNode node);
 
+    /**
+     * Update precomputed position of the node
+     *
+     * @param node
+     * @return
+     */
+    double updatePositions(DendroNode node);
+
 }

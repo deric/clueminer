@@ -260,4 +260,22 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    /**
+     * Recursive tree nodes positions update
+     *
+     * @TODO move this methods to tree itself
+     * @param node
+     * @return
+     */
+    @Override
+    public double updatePositions(DendroNode node) {
+        if (node.isLeaf()) {
+            return node.getPosition();
+        }
+
+        double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
+        node.setPosition(position);
+        return position;
+    }
+
 }

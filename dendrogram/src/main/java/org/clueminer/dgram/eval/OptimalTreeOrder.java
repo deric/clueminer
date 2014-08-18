@@ -27,8 +27,8 @@ public class OptimalTreeOrder {
         //tree.print();
         Dump.array(tree.getMapping(), "tree mapping");
         tree.print();
-        /*   int n = tree.numLeaves();
-         order = new int[n];
+           int n = tree.numLeaves();
+        /* order = new int[n];
          opt = new double[n - 1][n - 1];
          //order[n - 1] = 0;
          subTreeOrder(0, n - 1);
@@ -41,6 +41,8 @@ public class OptimalTreeOrder {
         tree.print();
         optOrder(tree.first(), clustering.getProximityMatrix());
         System.out.println("in order " + inOrderScore(tree.getRoot()));
+        tree.createMapping(n, tree.getRoot());
+        tree.updatePositions(tree.getRoot());
     }
 
     /**

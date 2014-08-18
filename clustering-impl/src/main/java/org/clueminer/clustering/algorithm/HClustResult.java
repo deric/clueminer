@@ -497,7 +497,7 @@ public class HClustResult implements HierarchicalResult {
         numNodes = 0;
         //number leaves, so that we can compute it's position
         numberLeaves(current);
-        updatePositions(current);
+        treeData.updatePositions(current);
 
         treeData.setRoot(current);
         treeData.setLeaves(nodes);
@@ -529,23 +529,6 @@ public class HClustResult implements HierarchicalResult {
         return level;
     }
 
-    /**
-     * Recursive tree nodes positions update
-     *
-     * @TODO move this methods to tree itself
-     * @param node
-     * @return
-     */
-    private double updatePositions(DendroNode node) {
-        if (node.isLeaf()) {
-            return node.getPosition();
-        }
-
-        double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
-        node.setPosition(position);
-        return position;
-    }
-
     private DendroNode getNode(int idx) {
         DendroNode node = treeData.getLeaf(idx);
         if (node == null) {
@@ -558,7 +541,7 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
-        updatePositions(treeData.getRoot());
+        treeData.updatePositions(treeData.getRoot());
     }
 
     /**

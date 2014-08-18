@@ -514,7 +514,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
         return root;
     }
 
-    private double updatePositions(DendroNode node) {
+    public double updatePositions(DendroNode node) {
         if (node.isLeaf()) {
             return node.getPosition();
         }
