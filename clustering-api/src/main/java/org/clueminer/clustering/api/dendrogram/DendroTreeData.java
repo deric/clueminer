@@ -47,6 +47,15 @@ public interface DendroTreeData {
     DendroNode first();
 
     /**
+     * Create mapping of leaves
+     *
+     * @param n
+     * @param node - root
+     * @return
+     */
+    int[] createMapping(int n, DendroNode node);
+
+    /**
      * Print tree to stdout
      */
     void print();
@@ -99,5 +108,12 @@ public interface DendroTreeData {
      * Print canonically numbered tree
      */
     void printCanonical();
+
+    /**
+     * Swap leaf and right children nodes and update mapping
+     *
+     * @param node
+     */
+    void swapChildren(DendroNode node);
 
 }

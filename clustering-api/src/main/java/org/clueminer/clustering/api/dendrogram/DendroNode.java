@@ -91,8 +91,18 @@ public interface DendroNode {
 
     void setPosition(double value);
 
+    /**
+     * set id in mapping (usually from left to right, 0 to n-1)
+     *
+     * @param id
+     */
     void setId(int id);
 
+    /**
+     * id in mapping array
+     *
+     * @return
+     */
     int getId();
 
     /**

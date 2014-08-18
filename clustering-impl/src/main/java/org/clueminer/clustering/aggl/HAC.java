@@ -87,7 +87,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         result.setProximityMatrix(similarityMatrix);
 
         DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
-        createMapping(treeData);
+        treeData.createMapping(n, treeData.getRoot());
         result.setTreeData(treeData);
         return result;
     }
@@ -146,40 +146,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             nodes[id] = node;
         }
         return nodes[id];
-    }
-
-    /**
-     * In-order tree walk to mark default order of instances
-     *
-     * @param node
-     * @return
-     */
-    private int[] createMapping(DendroTreeData treeData) {
-        DendroNode node = treeData.getRoot();
-        Stack<DendroNode> stack = new Stack<DendroNode>();
-        int i = 0;
-        int[] mapping = new int[n];
-        DendroNode[] leaves = new DendroNode[n];
-        while (!stack.isEmpty() || node != null) {
-            if (node != null) {
-                stack.push(node);
-                node = node.getLeft();
-            } else {
-                node = stack.pop();
-                if (node.isLeaf()) {
-                    node.setPosition(i);
-                    leaves[i] = node;
-                    mapping[i] = node.getIndex();
-                    i++;
-                    //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
-                }
-                node = node.getRight();
-            }
-
-        }
-        treeData.setLeaves(leaves);
-        treeData.setMapping(mapping);
-        return mapping;
     }
 
     private void updateDistances(int mergedId, Set<Integer> mergedCluster, Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments, PriorityQueue<Element> pq) {

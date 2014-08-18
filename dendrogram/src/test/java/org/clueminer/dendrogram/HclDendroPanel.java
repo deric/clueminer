@@ -178,7 +178,7 @@ public class HclDendroPanel extends DendroPanel {
          System.out.println(evaluators);
          System.out.println(scores);*/
         repaint();
-        return rowsResult;
+        return columnsResult;
     }
 
     @Override

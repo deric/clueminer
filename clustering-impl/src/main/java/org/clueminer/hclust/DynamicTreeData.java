@@ -2,6 +2,7 @@ package org.clueminer.hclust;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Stack;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.openide.util.Exceptions;
@@ -193,6 +194,39 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    /**
+     * In-order tree walk to mark default order of instances
+     *
+     * @param n
+     * @param node - root of the tree
+     * @return
+     */
+    @Override
+    public int[] createMapping(int n, DendroNode node) {
+        Stack<DendroNode> stack = new Stack<DendroNode>();
+        int i = 0;
+        mapping = new int[n];
+        leaves = new DendroNode[n];
+        while (!stack.isEmpty() || node != null) {
+            if (node != null) {
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.pop();
+                if (node.isLeaf()) {
+                    node.setPosition(i);
+                    leaves[i] = node;
+                    mapping[i] = node.getIndex();
+                    i++;
+                    //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
+                }
+                node = node.getRight();
+            }
+
+        }
+        return mapping;
+    }
+
     @Override
     public int[] getMapping() {
         return mapping;
@@ -211,6 +245,19 @@ public class DynamicTreeData implements DendroTreeData {
             node.printCanonicalTree(out, true, "");
         }
         out.flush();
+    }
+
+    @Override
+    public void swapChildren(DendroNode node) {
+        if (node.hasLeft() && node.hasRight()) {
+            //   mapping[node.getLeft().getId() - 1] = node.getRight().getIndex();
+            //   mapping[node.getRight().getId() - 1] = node.getLeft().getIndex();
+            DendroNode tmp = node.getLeft();
+            node.setLeft(node.getRight());
+            node.setRight(tmp);
+        } else {
+            throw new RuntimeException("can't swap children nodes. missing nodes");
+        }
     }
 
 }

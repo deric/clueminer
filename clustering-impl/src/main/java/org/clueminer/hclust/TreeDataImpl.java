@@ -600,4 +600,14 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
     public void printCanonical() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void swapChildren(DendroNode node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] createMapping(int n, DendroNode node) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

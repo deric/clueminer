@@ -12,18 +12,50 @@ import org.clueminer.utils.Dump;
  */
 public class OptimalTreeOrder {
 
+    private int[] order;
+    private double[][] opt;
+    private Matrix similarity;
+
     public void optimize(HierarchicalResult clustering) {
         System.out.println("tree order");
         System.out.println("similarity matrix");
-        clustering.getProximityMatrix().printLower(2, 2);
+        similarity = clustering.getProximityMatrix();
+        similarity.printLower(2, 2);
         DendroTreeData tree = clustering.getTreeData();
         numberNodes(tree.getRoot(), 0, 0);
         //tree.print();
-        //Dump.array(tree.getMapping(), "tree mapping");
-//        optOrder(tree.getRoot(), clustering.getProximityMatrix());
-        System.out.println("printing canonical tree");
-        tree.printCanonical();
         Dump.array(tree.getMapping(), "tree mapping");
+        tree.print();
+        /*   int n = tree.numLeaves();
+         order = new int[n];
+        opt = new double[n - 1][n - 1];
+        //order[n - 1] = 0;
+        subTreeOrder(0, n - 1);
+*/
+        System.out.println("score before = " + score(tree, similarity));
+        tree.swapChildren(tree.getRoot());
+        Dump.array(tree.getMapping(), "tree mapping");
+        System.out.println("score after = " + score(tree, similarity));
+        tree.print();
+        optOrder(tree.first(), clustering.getProximityMatrix());
+
+    }
+
+    /**
+     * We're trying to minimize distance between tree nodes that are next to
+     * each other
+     *
+     * @param tree
+     * @param similarity
+     * @return
+     */
+    private double score(DendroTreeData tree, Matrix similarity) {
+        double score = 0.0;
+        int[] mapping = tree.getMapping();
+        for (int i = 0; i < tree.numLeaves() - 1; i++) {
+            score += similarity.get(mapping[i], mapping[i + 1]);
+        }
+        return score;
     }
 
     /**
@@ -45,12 +77,46 @@ public class OptimalTreeOrder {
         node.setLevel(level);
     }
 
-    public void optOrder(DendroNode node, Matrix similarity) {
-
+    public int optOrder(DendroNode node, Matrix similarity) {
+        if (node.isLeaf()) {
+            return optOrder(node.getParent(), similarity);
+        }
+        return 0;
     }
 
     public void treeOrder(DendroNode v, DendroNode u, DendroNode r) {
 
+    }
+
+    /**
+     * won't work we would need complete binary tree
+     *
+     * @param pLeft
+     * @param pRight
+     */
+    private void subTreeOrder(int pLeft, int pRight) {
+        int m = pRight - pLeft;
+        int pMid;
+        System.out.println("m = " + m);
+        if (m == 0) {
+            return;
+        } else if (m == 1) {
+            order[pLeft] = pRight ^ 1; //xor
+            return;
+        }
+        int iRight = order[pRight];
+
+        for (int j = 0; j < m; j++) {
+            if (pLeft == 0) {
+                opt[iRight ^ j][0] = 0;
+            } else {
+                opt[iRight ^ j][0] = similarity.get(order[pLeft - 1], iRight ^ j);
+            }
+        }
+        pMid = pLeft + (m - 1) / 2;
+        System.out.println("pMid = " + pMid);
+
+        Dump.array(order, "order");
     }
 
 }
