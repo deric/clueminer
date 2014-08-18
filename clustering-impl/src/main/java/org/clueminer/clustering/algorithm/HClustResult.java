@@ -108,7 +108,7 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public void setMapping(int[] assignments) {
-        treeData.setMapping(assignments);
+        getTreeData().setMapping(assignments);
     }
 
     public Assignments getAssignments() {
@@ -179,7 +179,7 @@ public class HClustResult implements HierarchicalResult {
             }
         } else {
             //try some cutoff method?
-            System.out.println("don't know how to get clusters..");
+            throw new RuntimeException("don't know how to get clusters..");
         }
 
         //proximity.printLower(5, 2);
@@ -305,7 +305,6 @@ public class HClustResult implements HierarchicalResult {
         }
         double cut = cutoffStrategy.findCutoff(this);
         updateCutoff(cut);
-        System.out.println(treeData.toString());
         return cut;
     }
 
