@@ -95,4 +95,9 @@ public interface DendroTreeData {
      */
     void setLeaves(DendroNode[] leaves);
 
+    /**
+     * Print canonically numbered tree
+     */
+    void printCanonical();
+
 }

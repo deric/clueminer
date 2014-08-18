@@ -139,6 +139,18 @@ public class DynamicTreeData implements DendroTreeData {
     }
 
     @Override
+    public void printCanonical() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printCanonicalTree(out);
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public void setMapping(int[] mapping) {
         this.mapping = mapping;
     }
@@ -182,6 +194,21 @@ public class DynamicTreeData implements DendroTreeData {
     @Override
     public int[] getMapping() {
         return mapping;
+    }
+
+    private void printCanonicalTree(OutputStreamWriter out) throws IOException {
+        DendroNode node = getRoot().getLeft();
+        if (node != null) {
+            node.printCanonicalTree(out, false, "");
+        }
+        if (getRoot() != null) {
+            ((DTreeNode) getRoot()).printCanonicalValue(out);
+        }
+        node = getRoot().getRight();
+        if (node != null) {
+            node.printCanonicalTree(out, true, "");
+        }
+        out.flush();
     }
 
 }

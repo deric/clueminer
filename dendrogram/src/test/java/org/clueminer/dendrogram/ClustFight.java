@@ -7,8 +7,10 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dgram.eval.OptimalTreeOrder;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
@@ -37,7 +39,9 @@ public class ClustFight extends JFrame {
                 panel2.setDataset(dataset);
                 panel2.setAlgorithm(new HAC());
                 panel1.execute();
-                panel2.execute();
+                HierarchicalResult res = panel2.execute();
+                OptimalTreeOrder order = new OptimalTreeOrder();
+                order.optimize(res);
             }
         });
 

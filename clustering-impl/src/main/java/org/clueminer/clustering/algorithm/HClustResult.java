@@ -79,7 +79,6 @@ public class HClustResult implements HierarchicalResult {
         if (treeData == null) {
             constructTree();
         }
-        logger.log(Level.INFO, "tree nodes: {0}", treeData.numNodes());
         return treeData;
     }
 
