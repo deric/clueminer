@@ -49,6 +49,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             float y;
             int x = 0, k = 0, prev = -1;
             double value, s;
+            String str;
             for (int i = 0; i < dataset.size(); i++) {
                 s = score[i];
                 if (Double.isNaN(s)) {
@@ -72,7 +73,10 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
                 g.setColor(Color.BLACK);
                 y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                g.drawString(String.format("%.2f", s), (float) (x + value + 10), y);
+                str = String.format("%.2f", s);
+                if (str != null) {
+                    g.drawString(str, (float) (x + value + 10), y);
+                }
 
                 prev = k;
             }

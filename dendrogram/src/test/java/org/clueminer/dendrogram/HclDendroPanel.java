@@ -82,16 +82,17 @@ public class HclDendroPanel extends DendroPanel {
         }
         algorithm.setDistanceFunction(func);
 
-        long start = System.currentTimeMillis();
-
         Matrix input = Scaler.standartize(getDataset().arrayCopy(), params.get("std", "Maximum"), params.getBoolean("log-scale", false));
         if (debug) {
             System.out.println("input matrix");
             input.print(5, 2);
         }
 
+        long start = System.currentTimeMillis();
+
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
+        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
@@ -105,7 +106,7 @@ public class HclDendroPanel extends DendroPanel {
         //System.out.println("params: " + params.toString());
         //printResult(rowsResult);
         long time = System.currentTimeMillis() - start;
-        System.out.println("clustering took " + time + " ms");
+        System.out.println(algorithm.getName() + " clustering took " + time + " ms");
 
         //   double cutoff = rowsResult.findCutoff();
         //   System.out.println("rows tree cutoff = " + cutoff);
@@ -146,36 +147,36 @@ public class HclDendroPanel extends DendroPanel {
         }
 
         double s;
-        StringBuilder scores = new StringBuilder();
-        StringBuilder evaluators = new StringBuilder();
+        /*     StringBuilder scores = new StringBuilder();
+         StringBuilder evaluators = new StringBuilder();
 
-        evaluators.append("Distance function").append("\t");
-        scores.append(algorithm.getDistanceFunction().getName()).append("\t");
+         evaluators.append("Distance function").append("\t");
+         scores.append(algorithm.getDistanceFunction().getName()).append("\t");
 
-        evaluators.append("Standartization").append("\t");
-        scores.append(params.get("std", "Maximum")).append("\t");
+         evaluators.append("Standartization").append("\t");
+         scores.append(params.get("std", "Maximum")).append("\t");
 
-        evaluators.append("Linkage").append("\t");
-        scores.append(linkage).append("\t");
+         evaluators.append("Linkage").append("\t");
+         scores.append(linkage).append("\t");
 
-        evaluators.append("Number of clusters").append("\t");
-        scores.append(rowsResult.getNumClusters()).append("\t");
+         evaluators.append("Number of clusters").append("\t");
+         scores.append(rowsResult.getNumClusters()).append("\t");
 
-        evaluators.append("Cutoff").append("\t");
-        scores.append(cutoffAlg).append("\t");
+         evaluators.append("Cutoff").append("\t");
+         scores.append(cutoffAlg).append("\t");
 
-        for (ClusterEvaluator c : list) {
-            s = c.score(clust, getDataset());
-            scores.append(s).append("\t");
-            evaluators.append(c.getName()).append("\t");
-        }
+         for (ClusterEvaluator c : list) {
+         s = c.score(clust, getDataset());
+         scores.append(s).append("\t");
+         evaluators.append(c.getName()).append("\t");
+         }
 
-        HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
-        evaluators.append("CPCC").append("\t");
-        scores.append(cophenetic.score(rowsResult)).append("\t");
+         HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
+         evaluators.append("CPCC").append("\t");
+         scores.append(cophenetic.score(rowsResult)).append("\t");
 
-        System.out.println(evaluators);
-        System.out.println(scores);
+         System.out.println(evaluators);
+         System.out.println(scores);*/
         repaint();
         return rowsResult;
     }
