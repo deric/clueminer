@@ -1,5 +1,6 @@
 package org.clueminer.dgram.eval;
 
+import java.util.Stack;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -28,17 +29,50 @@ public class OptimalTreeOrder {
         tree.print();
         /*   int n = tree.numLeaves();
          order = new int[n];
-        opt = new double[n - 1][n - 1];
-        //order[n - 1] = 0;
-        subTreeOrder(0, n - 1);
-*/
+         opt = new double[n - 1][n - 1];
+         //order[n - 1] = 0;
+         subTreeOrder(0, n - 1);
+         */
         System.out.println("score before = " + score(tree, similarity));
+        System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.swapChildren(tree.getRoot());
         Dump.array(tree.getMapping(), "tree mapping");
         System.out.println("score after = " + score(tree, similarity));
         tree.print();
         optOrder(tree.first(), clustering.getProximityMatrix());
+        System.out.println("in order " + inOrderScore(tree.getRoot()));
+    }
 
+    /**
+     * Compute score as in-order walk of underlying nodes (after swapping any
+     * nodes in the tree updating mapping would have same complexity)
+     *
+     * @param node
+     * @return
+     */
+    public double inOrderScore(DendroNode node) {
+        Stack<DendroNode> stack = new Stack<DendroNode>();
+        DendroNode prev = null;
+        double score = 0.0;
+        while (!stack.isEmpty() || node != null) {
+            if (node != null) {
+                stack.push(node);
+                node = node.getLeft();
+            } else {
+                node = stack.pop();
+                if (node.isLeaf()) {
+                    //node.setPosition(i);
+                    if (prev != null) {
+                        //System.out.println("dist (" + prev.getIndex() + ", " + node.getIndex() + " ) = " + similarity.get(prev.getIndex(), node.getIndex()));
+                        score += similarity.get(prev.getIndex(), node.getIndex());
+                    }
+                    prev = node;
+                }
+                node = node.getRight();
+            }
+
+        }
+        return score;
     }
 
     /**
