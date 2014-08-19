@@ -46,10 +46,10 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             //Dump.array(score, "sil score");
             FontMetrics fm = g.getFontMetrics();
             Cluster clust = null;
-            float y;
+            // float y;
             int x = 0, k = 0, prev = -1;
             double value, s;
-            String str;
+            // String str;
             for (int i = 0; i < dataset.size(); i++) {
                 s = score[i];
                 if (Double.isNaN(s)) {
@@ -70,13 +70,13 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                     }
                 }
                 g.fillRect(x, i * element.height, (int) value, element.height);
-
-                g.setColor(Color.BLACK);
-                y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                str = String.format("%.2f", s);
-                if (str != null) {
-                    g.drawString(str, (float) (x + value + 10), y);
-                }
+                /*
+                 g.setColor(Color.BLACK);
+                 y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                 str = String.format("%.2f", s);
+                 if (str != null) {
+                 g.drawString(str, (float) (x + value + 10), y);
+                 }*/
 
                 prev = k;
             }
