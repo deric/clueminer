@@ -1,10 +1,11 @@
 package org.clueminer.explorer;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
@@ -39,7 +40,7 @@ import org.openide.windows.TopComponent;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//org.clueminer.explorer//Explorer//EN",
+        dtd = "//org.clueminer.explorer//Explorer//EN",
         autostore = false)
 @TopComponent.Description(
         preferredID = "ExplorerTopComponent",
@@ -56,7 +57,7 @@ import org.openide.windows.TopComponent;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, EvolutionListener {
+public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, EvolutionListener, ToolbarListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
     private final transient ExplorerManager mgr = new ExplorerManager();
@@ -66,33 +67,48 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private static final RequestProcessor RP = new RequestProcessor("Evolution");
     private RequestProcessor.Task task;
     private static final Logger logger = Logger.getLogger(ExplorerTopComponent.class.getName());
+    private ExplorerToolbar toolbar;
+    private javax.swing.JScrollPane explorerPane;
+    private IconView iconView;
 
     public ExplorerTopComponent() {
         initComponents();
         setName(Bundle.CTL_ExplorerTopComponent());
         setToolTipText(Bundle.HINT_ExplorerTopComponent());
+        init();
 
         associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
 
         //maybe we want IconView
         //explorerPane.setViewportView(new BeanTreeView());
-        explorerPane.setViewportView(new IconView());
-        //root = new AbstractNode(new ClusteringChildren());
+        //explorerPane.setViewportView(new IconView());
+//root = new AbstractNode(new ClusteringChildren());
         //root.setDisplayName("Clustering Evolution");
         //explorerManager.setRootContext(root);
 //        mgr.setRootContext(new AbstractNode(Children.create(factory, true)));
-
     }
 
-    private String[] initEvolution() {
-        EvolutionFactory ef = EvolutionFactory.getInstance();
-        List<String> list = ef.getProviders();
-        String[] res = new String[list.size()];
-        int i = 0;
-        for (String s : list) {
-            res[i++] = s;
-        }
-        return res;
+    private void init() {
+        iconView = new IconView();
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(iconView, c);
+
+        toolbar = new ExplorerToolbar();
+        toolbar.setListener(this);
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(toolbar, c);
     }
 
     /**
@@ -102,117 +118,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
-
-        explorerPane = new javax.swing.JScrollPane();
-        jToolBar1 = new javax.swing.JToolBar();
-        btnStart = new javax.swing.JButton();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
-        comboEvolution = new javax.swing.JComboBox();
-        comboEvolution.setModel(new DefaultComboBoxModel(initEvolution()));
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 0), new java.awt.Dimension(20, 32767));
-        jLabel1 = new javax.swing.JLabel();
-        sliderGenerations = new javax.swing.JSlider();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
 
         setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 641;
-        gridBagConstraints.ipady = 247;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
-        add(explorerPane, gridBagConstraints);
-
-        jToolBar1.setRollover(true);
-
-        org.openide.awt.Mnemonics.setLocalizedText(btnStart, org.openide.util.NbBundle.getMessage(ExplorerTopComponent.class, "ExplorerTopComponent.btnStart.text")); // NOI18N
-        btnStart.setFocusable(false);
-        btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnStart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStartActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnStart);
-        jToolBar1.add(filler3);
-
-        comboEvolution.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvolutionActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(comboEvolution);
-        jToolBar1.add(filler4);
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ExplorerTopComponent.class, "ExplorerTopComponent.jLabel1.text")); // NOI18N
-        jToolBar1.add(jLabel1);
-
-        sliderGenerations.setMaximum(200);
-        sliderGenerations.setMinimum(10);
-        sliderGenerations.setValue(10);
-        jToolBar1.add(sliderGenerations);
-        jToolBar1.add(filler1);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 319;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        add(jToolBar1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        if (dataset != null) {
-            //start evolution
-            String evolution = (String) comboEvolution.getSelectedItem();
-            EvolutionFactory ef = EvolutionFactory.getInstance();
-            Evolution alg = ef.getProvider(evolution);
-            if (alg != null) {
-                btnStart.setEnabled(false);
-                alg.setDataset(dataset);
-                alg.setGenerations(sliderGenerations.getValue());
-                alg.setAlgorithm(new KMeans(3, 100));
-
-                InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
-                alg.setEvaluator(fact.getDefault());
-                alg.addEvolutionListener(this);
-                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");
-                alg.setProgressHandle(ph);
-
-                //childern node will get all clustering results
-                ClusteringChildren children = new ClusteringChildren(alg);
-                root = new AbstractNode(children);
-                root.setDisplayName("root node");
-                mgr.setRootContext(root);
-                logger.log(Level.INFO, "starting evolution...");
-                task = RP.create(alg);
-                task.addTaskListener(this);
-                task.schedule(0);
-            }
-        }
-    }//GEN-LAST:event_btnStartActionPerformed
-
-    private void comboEvolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboEvolutionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboEvolutionActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnStart;
-    private javax.swing.JComboBox comboEvolution;
-    private javax.swing.JScrollPane explorerPane;
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JSlider sliderGenerations;
     // End of variables declaration//GEN-END:variables
-
     @Override
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
@@ -270,7 +181,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
-        btnStart.setEnabled(true);
+        //  btnStart.setEnabled(true);
     }
 
     @Override
@@ -281,6 +192,42 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         logger.log(Level.INFO, "final result of the evolution, generation: {0} best fitness: {1}", new Object[]{g, bestFitness});
+    }
+
+    @Override
+    public void evolutionAlgorithmChanged(ActionEvent evt) {
+        //
+    }
+
+    @Override
+    public void startEvolution(ActionEvent evt, String evolution) {
+        if (dataset != null) {
+            //start evolution
+            EvolutionFactory ef = EvolutionFactory.getInstance();
+            Evolution alg = ef.getProvider(evolution);
+            if (alg != null) {
+                toolbar.evolutionStarted();
+                alg.setDataset(dataset);
+                alg.setGenerations(toolbar.getGenerations());
+                alg.setAlgorithm(new KMeans(3, 100));
+
+                InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
+                alg.setEvaluator(fact.getDefault());
+                alg.addEvolutionListener(this);
+                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");
+                alg.setProgressHandle(ph);
+
+                //childern node will get all clustering results
+                ClusteringChildren children = new ClusteringChildren(alg);
+                root = new AbstractNode(children);
+                root.setDisplayName("root node");
+                mgr.setRootContext(root);
+                logger.log(Level.INFO, "starting evolution...");
+                task = RP.create(alg);
+                task.addTaskListener(this);
+                task.schedule(0);
+            }
+        }
     }
 
 }
