@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.Action;
+import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
@@ -231,6 +232,12 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     @Override
     public void previewUpdated(Image preview) {
         this.image = preview;
-        fireIconChange();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                fireIconChange();
+            }
+        });
     }
 }

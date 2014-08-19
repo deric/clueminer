@@ -6,12 +6,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.EvolutionFactory;
@@ -27,13 +27,13 @@ import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.openide.util.Utilities;
 import org.openide.windows.CloneableTopComponent;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
@@ -87,7 +87,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private String[] initEvolution() {
         EvolutionFactory ef = EvolutionFactory.getInstance();
         List<String> list = ef.getProviders();
-        System.out.println("evolution providers: " + list.size());
         String[] res = new String[list.size()];
         int i = 0;
         for (String s : list) {
@@ -103,6 +102,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         explorerPane = new javax.swing.JScrollPane();
         jToolBar1 = new javax.swing.JToolBar();
@@ -114,6 +114,19 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         jLabel1 = new javax.swing.JLabel();
         sliderGenerations = new javax.swing.JSlider();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+
+        setLayout(new java.awt.GridBagLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 641;
+        gridBagConstraints.ipady = 247;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(explorerPane, gridBagConstraints);
 
         jToolBar1.setRollover(true);
 
@@ -146,20 +159,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         jToolBar1.add(sliderGenerations);
         jToolBar1.add(filler1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(explorerPane, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(explorerPane, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 319;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(jToolBar1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
@@ -222,7 +227,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
     @Override
     public void componentClosed() {
-        //result.removeLookupListener(this);
+        if (result != null) {
+            result.removeLookupListener(this);
+        }
     }
 
     void writeProperties(java.util.Properties p) {
@@ -275,4 +282,5 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         logger.log(Level.INFO, "final result of the evolution, generation: {0} best fitness: {1}", new Object[]{g, bestFitness});
     }
+
 }
