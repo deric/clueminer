@@ -110,7 +110,7 @@ public class AdjustedRandTest {
      */
     @Test
     public void testCountScore() {
-        Table<String, String, Integer> table = CountingPairs.newTable();
+        //Table<String, String, Integer> table = CountingPairs.newTable();
         //fake contingency table
 
         int[][] mat = new int[4][4];
@@ -142,6 +142,17 @@ public class AdjustedRandTest {
         Clustering<Cluster> clustering = FakeClustering.irisWrong4();
         double score = test.score(clustering, FakeClustering.irisDataset());
         System.out.println("clust(4) = " + score);
+    }
+
+    @Test
+    public void testIris() {
+        Clustering<Cluster> clustering = FakeClustering.irisWrong5();
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
+        dumpTable(table);
+        double score = test.countScore(table);
+        //value based on experiments (not verified yet) - just to verify that we didnt break the functionality
+        assertEquals(0.14754877843024122, score, delta);
+        System.out.println("clust(5) = " + score);
     }
 
     public void dumpTable(Table<String, String, Integer> table) {

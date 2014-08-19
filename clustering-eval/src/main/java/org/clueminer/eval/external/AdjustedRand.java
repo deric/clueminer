@@ -1,17 +1,17 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.util.Set;
 import org.apache.commons.math3.util.ArithmeticUtils;
-import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,13 +37,13 @@ public class AdjustedRand extends ExternalEvaluator {
         //extra row/column is used for storing sums - the last one
         int diamRow = contingency.length - 1;
         int diamCol = contingency[0].length - 1;
-
-        Dump.matrix(contingency, "contingency", 2);
-
         double a = 0;
         int b1 = 0;
         int b2 = 0;
-        for (int i = 0; i < diamRow; i++) {
+        //for non-square matrix we count with diagonal because row and columns
+        //are sorted (matching classes -> clusters form square matrix)
+        int squareSize = Math.min(diamRow, diamCol);
+        for (int i = 0; i < squareSize; i++) {
             //diagonal item
             a += combinationOfTwo(contingency[i][i]);
             //last column (sum over a row)
@@ -86,17 +86,20 @@ public class AdjustedRand extends ExternalEvaluator {
         return 0;
     }
 
+    /**
+     * Based on "Details of the Adjusted Rand index and Clustering algorithms
+     * Supplement to the paper “An empirical study on Principal
+     * Component Analysis for clustering gene expression data” (to
+     * appear in Bioinformatics)"
+     *
+     * @param table
+     * @return
+     */
     private int[][] extendedContingency(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
-        System.out.println("matching: " + matching);
-        Set<String> rows = table.rowKeySet();
-        Set<String> cols = table.columnKeySet();
+        Set<String> rows = table.rowKeySet();    //clusters
+        Set<String> cols = table.columnKeySet(); //classes
 
-        /* number of rows could be different if we compare clusters to classes
-
-         if (rows.size() != cols.size()) {
-         throw new RuntimeException("expected same number of rows and columns, but got rows = " + rows.size() + " and colums = " + cols.size());
-         }*/
         String[] rk = new String[rows.size()];
         String[] ck = new String[cols.size()];
 
@@ -109,13 +112,33 @@ public class AdjustedRand extends ExternalEvaluator {
             k++;
         }
 
+        //number of rows could be different if we compare clusters to classes
+        if (rows.size() != cols.size()) {
+            //more clusters than classes
+            if (rows.size() > cols.size()) {
+                //CollectionUtils.disjunction();
+                Set<String> unmatchedClusters = Sets.symmetricDifference(matching.values(), rows);
+                for (String str : unmatchedClusters) {
+                    rk[k++] = str;
+                }
+            } else {
+                //more classes than actual clusters
+                Set<String> unmatchedClasses = Sets.symmetricDifference(matching.keySet(), rows);
+                k = rows.size();
+                for (String str : unmatchedClasses) {
+                    ck[k++] = str;
+                }
+            }
+
+        }
+
         //last row (column) will be sum of row's (column's) values
         int[][] contingency = new int[rows.size() + 1][cols.size() + 1];
         int i = 0, j;
         int value;
-        for (String c : ck) {
+        for (String r : rk) {
             j = 0;
-            for (String r : rk) {
+            for (String c : ck) {
                 if (table.contains(r, c)) {
                     value = table.get(r, c);
                 } else {

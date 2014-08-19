@@ -26,6 +26,7 @@ public class FakeClustering {
     private static Clustering<Cluster> irisWrong;
     private static Clustering<Cluster> irisWrong2;
     private static Clustering<Cluster> irisWrong4;
+    private static Clustering<Cluster> irisWrong5;
     private static Clustering<Cluster> simpleClustering;
     private static Clustering<Cluster> simpleResponse;
     private static Dataset<Instance> irisData;
@@ -201,6 +202,51 @@ public class FakeClustering {
             irisWrong4.lookupAdd(irisData);
         }
         return irisWrong4;
+    }
+
+    public static Clustering irisWrong5() {
+        if (irisWrong5 == null) {
+            irisWrong5 = new ClusterList(5);
+            Cluster a = new BaseCluster(49);
+            a.setName("cluster 1");
+            a.setAttributes(irisDataset().getAttributes());
+            for (int i = 0; i < 48; i++) {
+                a.add(irisData.instance(i));
+            }
+
+            Cluster b = new BaseCluster(1);
+            b.setName("cluster 2");
+            b.setAttributes(irisData.getAttributes());
+            b.add(irisData.instance(48));
+
+            Cluster c = new BaseCluster(97);
+            c.setName("cluster 3");
+            c.setAttributes(irisData.getAttributes());
+            for (int i = 49; i < 147; i++) {
+                c.add(irisData.instance(i));
+            }
+
+            Cluster d = new BaseCluster(2);
+            d.setName("cluster 4");
+            d.setAttributes(irisData.getAttributes());
+            for (int i = 147; i < 149; i++) {
+                d.add(irisData.instance(i));
+            }
+
+            Cluster e = new BaseCluster(1);
+            e.setName("cluster 5");
+            e.setAttributes(irisData.getAttributes());
+            e.add(irisData.instance(149));
+
+            irisWrong5.add(a);
+            irisWrong5.add(b);
+            irisWrong5.add(c);
+            irisWrong5.add(d);
+            irisWrong5.add(e);
+            //add dataset to lookup
+            irisWrong5.lookupAdd(irisData);
+        }
+        return irisWrong5;
     }
 
     public static Dataset<Instance> wine() {
