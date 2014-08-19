@@ -36,6 +36,8 @@ public class FakeDatasetsTest {
         Dataset<? extends Instance> glass = FakeDatasets.glassDataset();
         assertEquals(214, glass.size());
         assertEquals(9, glass.attributeCount());
+        //TODO remove quotes from arff
+        assertEquals("'build wind float'", glass.get(0).classValue());
     }
 
 }

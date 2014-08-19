@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
@@ -52,6 +53,22 @@ public class FakeDatasets {
             }
         }
         return glassDataset;
+    }
+
+    public static Dataset<? extends Instance> irisDataset() {
+        if (irisData == null) {
+            CommonFixture tf = new CommonFixture();
+            irisData = new SampleDataset();
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(tf.irisArff(), irisData, 4);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return irisData;
     }
 
 }

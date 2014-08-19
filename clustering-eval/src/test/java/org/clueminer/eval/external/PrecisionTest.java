@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,13 +60,13 @@ public class PrecisionTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(clusters, FakeClustering.irisDataset());
+        double score = test.score(clusters, FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println(test.getName() + " = " + score);
 
         long start = System.currentTimeMillis();
-        score = test.score(iris, FakeClustering.irisDataset());
+        score = test.score(iris, FakeDatasets.irisDataset());
         long end = System.currentTimeMillis();
 
         assertEquals(0.36666666666, score, delta);

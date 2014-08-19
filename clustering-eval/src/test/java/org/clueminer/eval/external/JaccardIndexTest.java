@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,14 +67,14 @@ public class JaccardIndexTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(clusters, FakeClustering.irisDataset());
+        double score = test.score(clusters, FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println("jaccard index = " + score);
 
         //delta here depends on random initialization of k-means
         long start = System.currentTimeMillis();
-        score = test.score(iris, FakeClustering.irisDataset());
+        score = test.score(iris, FakeDatasets.irisDataset());
         long end = System.currentTimeMillis();
         //it should be 0.8045 or 0.81...
         assertEquals(0.15032686686154664, score, delta);
@@ -81,7 +82,7 @@ public class JaccardIndexTest {
         System.out.println("measuring Jaccard took " + (end - start) + " ms");
 
         Clustering<Cluster> irisWrong2 = FakeClustering.irisWrong2();
-        score = test.score(irisWrong2, FakeClustering.irisDataset());
+        score = test.score(irisWrong2, FakeDatasets.irisDataset());
         assertEquals(0.3666666666666667, score, delta);
         System.out.println("jaccard index (wrong clust2) = " + score);
 

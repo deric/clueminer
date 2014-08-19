@@ -3,6 +3,7 @@ package org.clueminer.eval.utils;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,8 +21,9 @@ public class HashEvaluationTableTest {
     private HashEvaluationTable subject;
     private static Clustering irisCorrect;
     private static final double delta = 1e-9;
+
     public HashEvaluationTableTest() {
-        subject = new HashEvaluationTable(irisCorrect, FakeClustering.irisDataset());
+        subject = new HashEvaluationTable(irisCorrect, FakeDatasets.irisDataset());
     }
 
     @BeforeClass

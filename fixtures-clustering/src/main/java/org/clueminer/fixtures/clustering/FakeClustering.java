@@ -1,7 +1,5 @@
 package org.clueminer.fixtures.clustering;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -12,9 +10,6 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -29,13 +24,12 @@ public class FakeClustering {
     private static Clustering<Cluster> irisWrong5;
     private static Clustering<Cluster> simpleClustering;
     private static Clustering<Cluster> simpleResponse;
-    private static Dataset<Instance> irisData;
     private static Dataset<Instance> wine;
 
     public static Clustering iris() {
         if (irisClusters == null) {
-            irisDataset();
             ColorGenerator cg = new RandomColorsGenerator();
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
             /**
              * fictive clustering, create iris cluster based on class labels
              * (the dataset is sorted)
@@ -68,28 +62,13 @@ public class FakeClustering {
         return irisClusters;
     }
 
-    public static Dataset<? extends Instance> irisDataset() {
-        if (irisData == null) {
-            CommonFixture tf = new CommonFixture();
-            irisData = new SampleDataset();
-            ARFFHandler arff = new ARFFHandler();
-            try {
-                arff.load(tf.irisArff(), irisData, 4);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return irisData;
-    }
-
     public static Clustering irisWrong() {
         if (irisWrong == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
             irisWrong = new ClusterList(3);
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1");
-            a.setAttributes(irisDataset().getAttributes());
+            a.setAttributes(irisData.getAttributes());
             //add few instances to first cluster
             a.add(irisData.instance(0));
             a.add(irisData.instance(1));
@@ -127,11 +106,12 @@ public class FakeClustering {
      */
     public static Clustering irisWrong2() {
         if (irisWrong2 == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
             irisWrong2 = new ClusterList(3);
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1"); // Iris-setosa
             //will contain 30 elements of first class (Iris-setosa)
-            a.setAttributes(irisDataset().getAttributes());
+            a.setAttributes(irisData.getAttributes());
             for (int i = 0; i < 30; i++) {
                 a.add(irisData.instance(i));
             }
@@ -162,11 +142,12 @@ public class FakeClustering {
 
     public static Clustering irisWrong4() {
         if (irisWrong4 == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
             irisWrong4 = new ClusterList(4);
             Cluster a = new BaseCluster(50);
             a.setName("cluster 1");
             //will contain 30 elements of first class
-            a.setAttributes(irisDataset().getAttributes());
+            a.setAttributes(irisData.getAttributes());
             for (int i = 0; i < 30; i++) {
                 a.add(irisData.instance(i));
             }
@@ -206,10 +187,11 @@ public class FakeClustering {
 
     public static Clustering irisWrong5() {
         if (irisWrong5 == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
             irisWrong5 = new ClusterList(5);
             Cluster a = new BaseCluster(49);
             a.setName("cluster 1");
-            a.setAttributes(irisDataset().getAttributes());
+            a.setAttributes(irisData.getAttributes());
             for (int i = 0; i < 48; i++) {
                 a.add(irisData.instance(i));
             }

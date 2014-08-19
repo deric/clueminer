@@ -13,10 +13,11 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.openide.util.NbPreferences;
@@ -31,7 +32,7 @@ public class IconDemo extends JFrame {
 
     public IconDemo() {
         setLayout(new BorderLayout());
-        Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
+        Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         Matrix input = new JMatrix(dataset.arrayCopy());
 
         Preferences params = NbPreferences.forModule(IconDemo.class);

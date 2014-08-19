@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -88,7 +89,7 @@ public class NMITest {
     public void testScore_Clustering_Dataset() {
         long start, end;
         start = System.currentTimeMillis();
-        double score = test.score(irisCorrect, FakeClustering.irisDataset());
+        double score = test.score(irisCorrect, FakeDatasets.irisDataset());
         end = System.currentTimeMillis();
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
@@ -96,14 +97,14 @@ public class NMITest {
         System.out.println("nmi class = " + score);
 
         start = System.currentTimeMillis();
-        score = test.score(irisWrong, FakeClustering.irisDataset());
+        score = test.score(irisWrong, FakeDatasets.irisDataset());
         end = System.currentTimeMillis();
         assertEquals(0.6496820278112178, score, delta);
         System.out.println("NMI index = " + score);
         System.out.println("measuring NMI took " + (end - start) + " ms");
 
         start = System.currentTimeMillis();
-        double score2 = test.score(FakeClustering.irisWrong(), FakeClustering.irisDataset());
+        double score2 = test.score(FakeClustering.irisWrong(), FakeDatasets.irisDataset());
         end = System.currentTimeMillis();
         assertTrue(score2 < score);
         assertEquals(0.06793702240876041, score2, delta);

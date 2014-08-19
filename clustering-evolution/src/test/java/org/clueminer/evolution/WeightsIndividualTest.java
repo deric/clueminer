@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.eval.external.JaccardIndex;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class WeightsIndividualTest {
     private static double delta = 1e-9;
 
     public WeightsIndividualTest() {
-        Dataset dataset = FakeClustering.irisDataset();
+        Dataset dataset = FakeDatasets.irisDataset();
         evolution = new AttrEvolution(dataset, 5);
         evolution.setEvaluator(new JaccardIndex());
         evolution.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));

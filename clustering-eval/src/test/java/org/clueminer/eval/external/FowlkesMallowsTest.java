@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -57,14 +58,14 @@ public class FowlkesMallowsTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = test.score(irisCorrect, FakeClustering.irisDataset());
+        double score = test.score(irisCorrect, FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
         System.out.println("fm index = " + score);
 
         //delta here depends on random initialization of k-means
         long start = System.currentTimeMillis();
-        score = test.score(irisWrong, FakeClustering.irisDataset());
+        score = test.score(irisWrong, FakeDatasets.irisDataset());
         long end = System.currentTimeMillis();
         //     assertEquals(1565, score, 1.0);
         System.out.println("fm index = " + score);

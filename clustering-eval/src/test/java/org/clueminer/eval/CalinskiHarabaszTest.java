@@ -5,6 +5,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class CalinskiHarabaszTest {
     @BeforeClass
     public static void setUpClass() {
         clusters = FakeClustering.iris();
-        dataset = FakeClustering.irisDataset();
+        dataset = FakeDatasets.irisDataset();
         test = new CalinskiHarabasz(new EuclideanDistance());
     }
 

@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
 import org.junit.AfterClass;
@@ -34,7 +35,7 @@ public class SilhouetteTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         clusters = FakeClustering.iris();
-        dataset = FakeClustering.irisDataset();
+        dataset = FakeDatasets.irisDataset();
 
         params = getParams();
         input = new JMatrix(dataset.arrayCopy());
