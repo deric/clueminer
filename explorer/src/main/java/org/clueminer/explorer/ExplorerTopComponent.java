@@ -181,7 +181,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
-        //  btnStart.setEnabled(true);
+        toolbar.evolutionFinished();
     }
 
     @Override
