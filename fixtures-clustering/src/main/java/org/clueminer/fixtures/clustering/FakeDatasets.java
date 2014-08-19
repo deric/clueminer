@@ -1,10 +1,12 @@
 package org.clueminer.fixtures.clustering;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
 import org.openide.util.Exceptions;
 
@@ -18,6 +20,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> irisData;
     private static Dataset<? extends Instance> wine;
     private static Dataset<? extends Instance> school;
+    private static Dataset<? extends Instance> glassDataset;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -33,7 +36,22 @@ public class FakeDatasets {
             }
         }
         return school;
+    }
 
+    public static Dataset<? extends Instance> glassDataset() {
+        if (glassDataset == null) {
+            CommonFixture tf = new CommonFixture();
+            glassDataset = new ArrayDataset(214, 9);
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(tf.glassArff(), glassDataset, 9);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return glassDataset;
     }
 
 }

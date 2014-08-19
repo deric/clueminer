@@ -3,10 +3,10 @@ package org.clueminer.fixtures.clustering;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
-import org.clueminer.clustering.struct.BaseCluster;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.RandomColorsGenerator;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
@@ -372,4 +372,5 @@ public class FakeClustering {
 
         return simpleResponse;
     }
+
 }

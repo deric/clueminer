@@ -27,21 +27,22 @@ public class ARFFHandler implements DatasetLoader {
      *
      * @RELATION iris"
      */
-    private static Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
-    private static Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
     /**
      * matches eg. "
      *
      * @ATTRIBUTE sepallength	REAL"
      */
-    private static Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
+    private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
      * Java-ML design only numeric attributes can be read. This method does not
      * read class labels.
      *
-     * @param file the file to read the data from
+     * @param file    the file to read the data from
+     * @param dataset
      *
      * @return the data set represented in the provided file
      * @throws FileNotFoundException if the file can not be found.
@@ -55,7 +56,8 @@ public class ARFFHandler implements DatasetLoader {
      * Load a data set from an ARFF formatted file. Due to limitations in the
      * Java-ML design only numeric attributes can be read.
      *
-     * @param file - the file to read the data from
+     * @param file       - the file to read the data from
+     * @param dataset
      * @param classIndex - the index of the class label
      * @return the data set represented in the provided file
      * @throws FileNotFoundException - if the file can not be found
@@ -68,14 +70,14 @@ public class ARFFHandler implements DatasetLoader {
      *
      * @param file
      * @param out
-     * @param classIndex - indexed from zero!
-     * @param separator - for eliminating all white characters (" ",\n, \t) use
-     * "\\s+"
+     * @param classIndex     - indexed from zero!
+     * @param separator      - for eliminating all white characters (" ",\n, \t)
+     *                       use
+     *                       "\\s+"
      * @param skippedIndexes - indexes of columns that won't be imported
      * @return
-     * @throws FileNotFoundException
      * @throws IllegalArgumentException when type is not convertible to Enum
-     * IAttributeType
+     *                                  IAttributeType
      */
     public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) {
         LineIterator it = new LineIterator(file);
