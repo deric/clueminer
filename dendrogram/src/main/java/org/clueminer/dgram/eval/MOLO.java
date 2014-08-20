@@ -4,6 +4,7 @@ import java.util.Stack;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 
@@ -11,12 +12,13 @@ import org.clueminer.utils.Dump;
  *
  * @author Tomas Barton
  */
-public class OptimalTreeOrder {
+public class MOLO implements OptimalTreeOrder {
 
     private int[] order;
     private double[][] opt;
     private Matrix similarity;
 
+    @Override
     public void optimize(HierarchicalResult clustering) {
         System.out.println("tree order");
         System.out.println("similarity matrix");
