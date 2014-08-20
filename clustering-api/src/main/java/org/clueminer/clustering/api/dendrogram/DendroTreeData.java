@@ -105,18 +105,6 @@ public interface DendroTreeData {
     void setLeaves(DendroNode[] leaves);
 
     /**
-     * Print canonically numbered tree
-     */
-    void printCanonical();
-
-    /**
-     * Swap leaf and right children nodes and update mapping
-     *
-     * @param node
-     */
-    void swapChildren(DendroNode node);
-
-    /**
      * Update precomputed position of the node
      *
      * @param node

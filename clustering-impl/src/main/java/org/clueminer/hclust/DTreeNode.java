@@ -19,8 +19,7 @@ public class DTreeNode implements DendroNode {
     private double position;
     private int level = -1;
     private int id;
-    private int label;
-    private double min;
+    private double min = Double.MAX_VALUE;
 
     public DTreeNode() {
     }
@@ -206,35 +205,6 @@ public class DTreeNode implements DendroNode {
         return -1;
     }
 
-    @Override
-    public int getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(int label) {
-        this.label = label;
-    }
-
-    @Override
-    public void printCanonicalTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException {
-        if (left != null) {
-            left.printCanonicalTree(out, false, indent + (isRight ? " |      " : "        "));
-        }
-
-        out.write(indent);
-        if (isRight) {
-            out.write(" \\");
-        } else {
-            out.write(" /");
-        }
-        out.write("----- ");
-        printCanonicalValue(out);
-        if (right != null) {
-            right.printCanonicalTree(out, true, indent + (isRight ? "        " : " |      "));
-        }
-    }
-
     protected String printBinary(int number, int padding) {
         String binString = Integer.toBinaryString(number);
         if (padding > 0) {
@@ -245,12 +215,6 @@ public class DTreeNode implements DendroNode {
             return buff + binString;
         }
         return Integer.toBinaryString(number);
-    }
-
-    protected void printCanonicalValue(OutputStreamWriter out) throws IOException {
-        //System.out.println(label + " x " + level);
-        out.write(printBinary(label, level));
-        out.write('\n');
     }
 
     /**
@@ -271,5 +235,19 @@ public class DTreeNode implements DendroNode {
     @Override
     public double getMin() {
         return min;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void swapChildren() {
+        if (hasLeft() && hasRight()) {
+            DendroNode tmp = getLeft();
+            setLeft(getRight());
+            setRight(tmp);
+        } else {
+            throw new RuntimeException("can't swap children nodes. missing nodes");
+        }
     }
 }

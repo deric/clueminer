@@ -113,20 +113,6 @@ public interface DendroNode {
     int getIndex();
 
     /**
-     * Binary label (for canonical ordering)
-     *
-     * @return
-     */
-    int getLabel();
-
-    /**
-     * Set binary label
-     *
-     * @param label
-     */
-    void setLabel(int label);
-
-    /**
      * printing helper
      *
      * @param out
@@ -135,8 +121,6 @@ public interface DendroNode {
      * @throws IOException
      */
     void printTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
-
-    void printCanonicalTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
 
     /**
      * minimum distance in subtree - used for ordering dendrogram
@@ -150,4 +134,10 @@ public interface DendroNode {
      * @return minimum distance in a subtree
      */
     double getMin();
+
+    /**
+     * Swap leaf and right children nodes. After this operation whole tree needs
+     * to update mapping.
+     */
+    void swapChildren();
 }
