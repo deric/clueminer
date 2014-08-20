@@ -29,7 +29,7 @@ public class MOLO implements OptimalTreeOrder {
         //tree.print();
         Dump.array(tree.getMapping(), "tree mapping");
         tree.print();
-           int n = tree.numLeaves();
+        int n = tree.numLeaves();
         /* order = new int[n];
          opt = new double[n - 1][n - 1];
          //order[n - 1] = 0;
@@ -37,7 +37,8 @@ public class MOLO implements OptimalTreeOrder {
          */
         System.out.println("score before = " + score(tree, similarity));
         System.out.println("in order " + inOrderScore(tree.getRoot()));
-        tree.swapChildren(tree.getRoot());
+        //tree.swapChildren(tree.getRoot());
+        sortSmallest(tree.getRoot());
         Dump.array(tree.getMapping(), "tree mapping");
         System.out.println("score after = " + score(tree, similarity));
         tree.print();
@@ -45,6 +46,16 @@ public class MOLO implements OptimalTreeOrder {
         System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.createMapping(n, tree.getRoot());
         tree.updatePositions(tree.getRoot());
+    }
+
+    public DendroNode sortSmallest(DendroNode d) {
+        if (d.getLeft().isLeaf() && d.getRight().isLeaf()) {
+            d.setMin(d.getHeight());
+            return d;
+        } else if (!d.getLeft().isLeaf() && d.getRight().isLeaf()) {
+            sortSmallest(d.getLeft());
+        }
+        return d;
     }
 
     /**

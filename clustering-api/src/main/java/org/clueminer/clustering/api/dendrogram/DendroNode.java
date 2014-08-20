@@ -137,4 +137,17 @@ public interface DendroNode {
     void printTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
 
     void printCanonicalTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
+
+    /**
+     * minimum distance in subtree - used for ordering dendrogram
+     *
+     * @param min
+     */
+    void setMin(double min);
+
+    /**
+     *
+     * @return minimum distance in a subtree
+     */
+    double getMin();
 }

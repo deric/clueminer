@@ -7,6 +7,7 @@ import javax.swing.JComboBox;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -17,6 +18,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 7332498789632451008L;
     private final DendroPanel panel;
     private JComboBox algBox;
+    private JComboBox dataBox;
     private ClusteringFactory cf;
 
     /**
@@ -44,5 +46,21 @@ public class OptionsPanel extends javax.swing.JPanel {
             }
         });
         add(algBox);
+
+        dataBox = new JComboBox();
+        dataBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.dataChanged((String) dataBox.getSelectedItem());
+            }
+        });
+        add(dataBox);
+    }
+
+    public void setDatasets(String[] datasets) {
+        for (String str : datasets) {
+            dataBox.addItem(str);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram;
 
+import com.google.common.collect.ImmutableMap;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -7,9 +8,7 @@ import javax.swing.SwingUtilities;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -24,23 +23,18 @@ public class DendroDemoOld extends JFrame {
 
     public DendroDemoOld() throws IOException, CloneNotSupportedException {
         setLayout(new BorderLayout());
-        dendroPanel = new HclDendroPanel2();
 
-        final Dataset<Instance> data = new SampleDataset<Instance>();
-        CommonFixture tf = new CommonFixture();
+        ImmutableMap<String, Dataset<? extends Instance>> map = new ImmutableMap.Builder<String, Dataset<? extends Instance>>()
+                .put("school", FakeDatasets.schoolData())
+                .put("iris", FakeDatasets.irisDataset())
+                .put("US arrests", FakeDatasets.usArrestData())
+                .build();
 
-        CsvLoader loader = new CsvLoader();
-        loader.setClassIndex(4);
-        loader.setSeparator(' ');
-        loader.setDataset(data);
-        loader.addNameAttr(4);
-        loader.load(tf.schoolData());
+        dendroPanel = new HclDendroPanel2(map);
 
-        System.out.println("dataset size: " + data.size());
         RP.execute(new Runnable() {
             @Override
             public void run() {
-                dendroPanel.setDataset(data);
                 dendroPanel.setAlgorithm(new HCL());
                 //dendroPanel.setAlgorithm(new HierarchicalAgglomerativeClustering());
                 dendroPanel.execute();

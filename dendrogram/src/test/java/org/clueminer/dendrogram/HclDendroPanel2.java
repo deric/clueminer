@@ -1,5 +1,8 @@
 package org.clueminer.dendrogram;
 
+import java.util.Map;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.DendrogramViewer;
 
 /**
@@ -9,6 +12,14 @@ import org.clueminer.dendrogram.gui.DendrogramViewer;
 public class HclDendroPanel2 extends HclDendroPanel {
 
     private static final long serialVersionUID = 1839749571569545084L;
+
+    public HclDendroPanel2(Map<String, Dataset<? extends Instance>> data) {
+        super(new DataProvider(data));
+    }
+
+    public HclDendroPanel2(DataProvider provider) {
+        super(provider);
+    }
 
     @Override
     public void initViewer() {

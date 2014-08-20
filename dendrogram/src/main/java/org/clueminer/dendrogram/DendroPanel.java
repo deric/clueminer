@@ -13,6 +13,11 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.SettingsPanel;
 
+/**
+ * Simple dendrogram panel for demo and testing purposes
+ *
+ * @author deric
+ */
 public abstract class DendroPanel extends JPanel {
 
     private static final long serialVersionUID = -8394261467235786115L;
@@ -21,7 +26,7 @@ public abstract class DendroPanel extends JPanel {
     //original dataset
     private Dataset<? extends Instance> dataset;
     private SettingsPanel panel;
-    private OptionsPanel options;
+    protected OptionsPanel options;
 
     public DendroPanel() {
         initComponents();
@@ -87,4 +92,9 @@ public abstract class DendroPanel extends JPanel {
     public DendroViewer getViewer() {
         return viewer;
     }
+
+    public abstract void dataChanged(String datasetName);
+
+    public abstract String[] getDatasets();
+
 }

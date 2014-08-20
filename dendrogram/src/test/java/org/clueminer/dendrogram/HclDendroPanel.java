@@ -1,14 +1,17 @@
 package org.clueminer.dendrogram;
 
-import org.clueminer.clustering.struct.DendrogramData;
 import java.util.List;
+import java.util.Map;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -28,8 +31,16 @@ public class HclDendroPanel extends DendroPanel {
     private static final long serialVersionUID = -5113017275195427868L;
     private Preferences params;
     private boolean debug = true;
+    private DataProvider dataProvider;
 
-    public HclDendroPanel() {
+    public HclDendroPanel(Map<String, Dataset<? extends Instance>> data) {
+        this(new DataProvider(data));
+    }
+
+    public HclDendroPanel(DataProvider provider) {
+        dataProvider = provider;
+        setDataset(dataProvider.first());
+        options.setDatasets(dataProvider.getDatasetNames());
         params = NbPreferences.forModule(HclDendroPanel.class);
         params.put("name", "HCL");
         // alg type
@@ -184,5 +195,22 @@ public class HclDendroPanel extends DendroPanel {
     @Override
     public void initViewer() {
         viewer = new DgViewer();
+    }
+
+    @Override
+    public void dataChanged(String datasetName) {
+        setDataset(dataProvider.getDataset(datasetName));
+        if (algorithm != null) {
+            execute();
+        }
+    }
+
+    @Override
+    public String[] getDatasets() {
+        return dataProvider.getDatasetNames();
+    }
+
+    public void setDataProvider(DataProvider provider) {
+        this.dataProvider = provider;
     }
 }

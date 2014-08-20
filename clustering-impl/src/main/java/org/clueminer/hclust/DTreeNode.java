@@ -20,6 +20,7 @@ public class DTreeNode implements DendroNode {
     private int level = -1;
     private int id;
     private int label;
+    private double min;
 
     public DTreeNode() {
     }
@@ -250,5 +251,25 @@ public class DTreeNode implements DendroNode {
         //System.out.println(label + " x " + level);
         out.write(printBinary(label, level));
         out.write('\n');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param min
+     */
+    @Override
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return
+     */
+    @Override
+    public double getMin() {
+        return min;
     }
 }

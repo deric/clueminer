@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram;
 
+import com.google.common.collect.ImmutableMap;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -34,10 +35,7 @@ public class ClustFight extends JFrame {
         RP.execute(new Runnable() {
             @Override
             public void run() {
-                Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
-                panel1.setDataset(dataset);
                 panel1.setAlgorithm(new HCL());
-                panel2.setDataset(dataset);
                 panel2.setAlgorithm(new HAC());
                 panel1.execute();
                 HierarchicalResult res = panel2.execute();
@@ -55,8 +53,14 @@ public class ClustFight extends JFrame {
         setLayout(gbl);
         GridBagConstraints c = new GridBagConstraints();
 
-        panel1 = new HclDendroPanel();
-        panel2 = new HclDendroPanel();
+        ImmutableMap<String, Dataset<? extends Instance>> map = new ImmutableMap.Builder<String, Dataset<? extends Instance>>()
+                .put("school", FakeDatasets.schoolData())
+                .put("iris", FakeDatasets.irisDataset())
+                .put("US arrests", FakeDatasets.usArrestData())
+                .build();
+
+        panel1 = new HclDendroPanel(map);
+        panel2 = new HclDendroPanel(map);
 
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;

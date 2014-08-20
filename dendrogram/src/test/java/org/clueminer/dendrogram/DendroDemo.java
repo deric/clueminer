@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram;
 
+import com.google.common.collect.ImmutableMap;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import javax.swing.JFrame;
@@ -8,6 +9,7 @@ import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -22,15 +24,18 @@ public class DendroDemo extends JFrame {
 
     public DendroDemo() throws IOException, CloneNotSupportedException {
         setLayout(new BorderLayout());
-        dendroPanel = new HclDendroPanel();
 
-        final Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        ImmutableMap<String, Dataset<? extends Instance>> map = new ImmutableMap.Builder<String, Dataset<? extends Instance>>()
+                .put("school", FakeDatasets.schoolData())
+                .put("iris", FakeDatasets.irisDataset())
+                .put("US arrests", FakeDatasets.usArrestData())
+                .build();
 
-        System.out.println("dataset size: " + data.size());
+        dendroPanel = new HclDendroPanel(map);
+
         RP.execute(new Runnable() {
             @Override
             public void run() {
-                dendroPanel.setDataset(data);
                 dendroPanel.setAlgorithm(new HAC());
                 //dendroPanel.setAlgorithm(new HCL());
                 //dendroPanel.setAlgorithm(new HierarchicalAgglomerativeClustering());
@@ -57,7 +62,7 @@ public class DendroDemo extends JFrame {
                     createAndShowGUI();
                 } catch (Exception e) {
                     System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });
