@@ -137,8 +137,8 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private void drawCluster(Graphics2D g, int x, int start, int end, int clusterNum) {
         int y = start * elemHeight();
         Color color;
-        if (flatClust.hasAt(clusterNum - 1)) {
-            color = flatClust.get(clusterNum - 1).getColor();
+        if (flatClust.hasAt(clusterNum)) {
+            color = flatClust.get(clusterNum).getColor();
         } else {
             color = Color.GRAY;
         }

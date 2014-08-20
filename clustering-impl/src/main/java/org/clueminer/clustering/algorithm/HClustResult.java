@@ -198,7 +198,7 @@ public class HClustResult implements HierarchicalResult {
         int[] assign = new int[dataset.size()];
         int estClusters = (int) Math.sqrt(dataset.size());
         colorGenerator.reset();
-        num = 1; //human readable
+        num = 0; //human readable
         Clustering clusters = new ClusterList(estClusters);
         DendroNode root = treeData.getRoot();
         if (root != null) {

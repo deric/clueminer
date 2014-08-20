@@ -56,8 +56,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
                     if (k != prev) {
-                        if (clustering.hasAt(k - 1)) {
-                            clust = clustering.get(k - 1);
+                        if (clustering.hasAt(k)) {
+                            clust = clustering.get(k);
                         }
                     }
                     if (clust != null) {
@@ -194,14 +194,15 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             for (int i = 0; i < score.length; i++) {
                 instId = hierarchicalResult.getMappedIndex(i);
                 k = clustering.assignedCluster(instId);
+                //System.out.println(i + " -> " + instId + " = " + k + " - " + hierarchicalResult.getDataset().get(instId).getName());
                 //if k == -1 (not assigned to any cluster yet) there's no point to count the score
-                if (clustering.hasAt(k - 1)) {
-                    clust = clustering.get(k - 1);
-                    value = silhouette.instanceScore(clust, clustering, k - 1, hierarchicalResult.getDataset().get(instId));
+                if (clustering.hasAt(k)) {
+                    clust = clustering.get(k);
+                    value = silhouette.instanceScore(clust, clustering, k, hierarchicalResult.getDataset().get(instId));
                     if (hierarchicalResult != null) {
                         score[instId] = value;
                     } else {
-                        score[i] = value;
+                        throw new RuntimeException("missing hierarchical result");
                     }
                 }
             }
