@@ -11,6 +11,13 @@ import org.clueminer.clustering.api.HierarchicalResult;
  */
 public interface OptimalTreeOrder {
 
+    /**
+     * Unique human readable name of the method
+     *
+     * @return method name
+     */
+    String getName();
+
     void optimize(HierarchicalResult clustering);
 
     /**

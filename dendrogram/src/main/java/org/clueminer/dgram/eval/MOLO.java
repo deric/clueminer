@@ -17,6 +17,12 @@ public class MOLO implements OptimalTreeOrder {
     private int[] order;
     private double[][] opt;
     private Matrix similarity;
+    public static final String name = "MOLO";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public void optimize(HierarchicalResult clustering, boolean reverse) {
