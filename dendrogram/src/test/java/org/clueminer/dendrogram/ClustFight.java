@@ -10,6 +10,7 @@ import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.eval.MOLO;
@@ -35,12 +36,18 @@ public class ClustFight extends JFrame {
         RP.execute(new Runnable() {
             @Override
             public void run() {
+                //panel1.setAlgorithm(new HCL());
                 panel1.setAlgorithm(new HCL());
                 panel2.setAlgorithm(new HAC());
-                panel1.execute();
-                HierarchicalResult res = panel2.execute();
+                DendrogramData res1 = panel1.execute();
+                DendrogramData res2 = panel2.execute();
                 OptimalTreeOrder order = new MOLO();
-                order.optimize(res);
+
+                //order.optimize(res1.getRowsResult());
+                order.optimize(res1.getColsResult());
+
+                order.optimize(res2.getRowsResult(), false);
+                order.optimize(res2.getColsResult());
             }
         });
 

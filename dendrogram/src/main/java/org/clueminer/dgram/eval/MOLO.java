@@ -19,13 +19,10 @@ public class MOLO implements OptimalTreeOrder {
     private Matrix similarity;
 
     @Override
-    public void optimize(HierarchicalResult clustering) {
-        System.out.println("tree order");
-        System.out.println("similarity matrix");
+    public void optimize(HierarchicalResult clustering, boolean reverse) {
         similarity = clustering.getProximityMatrix();
         similarity.printLower(2, 2);
         DendroTreeData tree = clustering.getTreeData();
-        numberNodes(tree.getRoot(), 0, 0);
         //tree.print();
         Dump.array(tree.getMapping(), "tree mapping");
         tree.print();
@@ -38,7 +35,12 @@ public class MOLO implements OptimalTreeOrder {
         System.out.println("score before = " + score(tree, similarity));
         System.out.println("in order " + inOrderScore(tree.getRoot()));
         //tree.swapChildren(tree.getRoot());
-        sortSmallest(tree.getRoot());
+        if (reverse) {
+            sortSmallestReverse(tree.getRoot());
+        } else {
+            sortSmallest(tree.getRoot());
+        }
+
         Dump.array(tree.getMapping(), "tree mapping");
         System.out.println("score after = " + score(tree, similarity));
         tree.print();
@@ -48,12 +50,73 @@ public class MOLO implements OptimalTreeOrder {
         tree.updatePositions(tree.getRoot());
     }
 
+    @Override
+    public void optimize(HierarchicalResult clustering) {
+        optimize(clustering, false);
+    }
+
     public DendroNode sortSmallest(DendroNode d) {
+        double min;
         if (d.getLeft().isLeaf() && d.getRight().isLeaf()) {
             d.setMin(d.getHeight());
             return d;
         } else if (!d.getLeft().isLeaf() && d.getRight().isLeaf()) {
+            //right is leaf
             sortSmallest(d.getLeft());
+            min = Math.min(d.getHeight(), d.getLeft().getHeight());
+            //System.out.println("!L: " + d.getHeight() + " vs R: " + d.getLeft().getHeight());
+            d.setMin(min);
+            return d;
+        } else if (d.getLeft().isLeaf() && !d.getRight().isLeaf()) {
+            //left if leaf
+            sortSmallest(d.getRight());
+            min = Math.min(d.getHeight(), d.getRight().getHeight());
+            d.swapChildren();
+            //System.out.println("L: " + d.getHeight() + " vs !R: " + d.getRight().getHeight());
+            d.setMin(min);
+        } else {
+            //both branches are subtrees
+            sortSmallest(d.getLeft());
+            sortSmallest(d.getRight());
+            //System.out.println("L: " + d.getLeft().getHeight() + " vs R: " + d.getRight().getHeight());
+            if (d.getLeft().getMin() >= d.getRight().getMin()) {
+                d.swapChildren();
+            }
+            min = Math.min(d.getRight().getMin(), d.getLeft().getMin());
+            d.setMin(min);
+        }
+        return d;
+    }
+
+    public DendroNode sortSmallestReverse(DendroNode d) {
+        double min;
+        if (d.getLeft().isLeaf() && d.getRight().isLeaf()) {
+            d.setMin(d.getHeight());
+            return d;
+        } else if (!d.getLeft().isLeaf() && d.getRight().isLeaf()) {
+            //right is leaf
+            sortSmallest(d.getLeft());
+            min = Math.min(d.getHeight(), d.getLeft().getHeight());
+            d.swapChildren();
+            System.out.println("!L: " + d.getHeight() + " vs R: " + d.getLeft().getHeight());
+            d.setMin(min);
+            return d;
+        } else if (d.getLeft().isLeaf() && !d.getRight().isLeaf()) {
+            //left if leaf
+            sortSmallest(d.getRight());
+            min = Math.min(d.getHeight(), d.getRight().getHeight());
+            System.out.println("L: " + d.getHeight() + " vs !R: " + d.getRight().getHeight());
+            d.setMin(min);
+        } else {
+            //both branches are subtrees
+            sortSmallest(d.getLeft());
+            sortSmallest(d.getRight());
+            System.out.println("L: " + d.getLeft().getHeight() + " vs R: " + d.getRight().getHeight());
+            if (d.getLeft().getMin() < d.getRight().getMin()) {
+                d.swapChildren();
+            }
+            min = Math.min(d.getRight().getMin(), d.getLeft().getMin());
+            d.setMin(min);
         }
         return d;
     }
@@ -107,25 +170,6 @@ public class MOLO implements OptimalTreeOrder {
         return score;
     }
 
-    /**
-     * Number leaves from 0 to {numNodes}
-     *
-     * @param node
-     * @return
-     */
-    public void numberNodes(DendroNode node, int label, int level) {
-        if (!node.isLeaf()) {
-            if (node.hasLeft()) {
-                numberNodes(node.getLeft(), label << 1, level + 1);
-            }
-            if (node.hasRight()) {
-                numberNodes(node.getRight(), (label << 1) + 1, level + 1);
-            }
-        }
-        node.setLabel(label);
-        node.setLevel(level);
-    }
-
     public int optOrder(DendroNode node, Matrix similarity) {
         if (node.isLeaf()) {
             return optOrder(node.getParent(), similarity);
@@ -136,36 +180,4 @@ public class MOLO implements OptimalTreeOrder {
     public void treeOrder(DendroNode v, DendroNode u, DendroNode r) {
 
     }
-
-    /**
-     * won't work we would need complete binary tree
-     *
-     * @param pLeft
-     * @param pRight
-     */
-    private void subTreeOrder(int pLeft, int pRight) {
-        int m = pRight - pLeft;
-        int pMid;
-        System.out.println("m = " + m);
-        if (m == 0) {
-            return;
-        } else if (m == 1) {
-            order[pLeft] = pRight ^ 1; //xor
-            return;
-        }
-        int iRight = order[pRight];
-
-        for (int j = 0; j < m; j++) {
-            if (pLeft == 0) {
-                opt[iRight ^ j][0] = 0;
-            } else {
-                opt[iRight ^ j][0] = similarity.get(order[pLeft - 1], iRight ^ j);
-            }
-        }
-        pMid = pLeft + (m - 1) / 2;
-        System.out.println("pMid = " + pMid);
-
-        Dump.array(order, "order");
-    }
-
 }

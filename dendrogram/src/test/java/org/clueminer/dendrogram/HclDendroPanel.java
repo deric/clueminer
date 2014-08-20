@@ -30,7 +30,7 @@ public class HclDendroPanel extends DendroPanel {
 
     private static final long serialVersionUID = -5113017275195427868L;
     private Preferences params;
-    private boolean debug = true;
+    private boolean debug = false;
     private DataProvider dataProvider;
 
     public HclDendroPanel(Map<String, Dataset<? extends Instance>> data) {
@@ -84,7 +84,7 @@ public class HclDendroPanel extends DendroPanel {
     }
 
     @Override
-    public HierarchicalResult execute() {
+    public DendrogramData execute() {
 
         DistanceFactory df = DistanceFactory.getInstance();
         AbstractDistance func = df.getProvider("Euclidean");
@@ -189,7 +189,7 @@ public class HclDendroPanel extends DendroPanel {
          System.out.println(evaluators);
          System.out.println(scores);*/
         repaint();
-        return columnsResult;
+        return dendroData;
     }
 
     @Override
@@ -200,6 +200,7 @@ public class HclDendroPanel extends DendroPanel {
     @Override
     public void dataChanged(String datasetName) {
         setDataset(dataProvider.getDataset(datasetName));
+        System.out.println("dataset changed to " + datasetName + ": " + System.identityHashCode(this));
         if (algorithm != null) {
             execute();
         }

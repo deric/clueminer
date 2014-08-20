@@ -12,4 +12,11 @@ import org.clueminer.clustering.api.HierarchicalResult;
 public interface OptimalTreeOrder {
 
     void optimize(HierarchicalResult clustering);
+
+    /**
+     *
+     * @param clustering
+     * @param reverse    whether to use reverse ordering
+     */
+    void optimize(HierarchicalResult clustering, boolean reverse);
 }

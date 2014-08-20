@@ -7,8 +7,8 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.SettingsPanel;
@@ -87,7 +87,7 @@ public abstract class DendroPanel extends JPanel {
         this.dataset = dataset;
     }
 
-    public abstract HierarchicalResult execute();
+    public abstract DendrogramData execute();
 
     public DendroViewer getViewer() {
         return viewer;
