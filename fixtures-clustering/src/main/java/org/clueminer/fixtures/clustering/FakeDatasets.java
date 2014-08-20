@@ -21,6 +21,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> irisData;
     private static Dataset<? extends Instance> wine;
     private static Dataset<? extends Instance> school;
+    private static Dataset<? extends Instance> usArrests;
     private static Dataset<? extends Instance> glassDataset;
     private static final CommonFixture fixture = new CommonFixture();
 
@@ -69,6 +70,22 @@ public class FakeDatasets {
             }
         }
         return irisData;
+    }
+
+    public static Dataset<? extends Instance> usArrestData() {
+        if (usArrests == null) {
+            CsvLoader loader = new CsvLoader();
+            usArrests = new ArrayDataset(17, 4);
+            loader.setClassIndex(0);
+            loader.setSeparator(',');
+            loader.setHasHeader(true);
+            try {
+                loader.load(fixture.usArrestsCsv(), usArrests);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return usArrests;
     }
 
 }

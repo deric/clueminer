@@ -40,4 +40,20 @@ public class FakeDatasetsTest {
         assertEquals("'build wind float'", glass.get(0).classValue());
     }
 
+    @Test
+    public void testIrisDataset() {
+        Dataset<? extends Instance> iris = FakeDatasets.irisDataset();
+        assertEquals(150, iris.size());
+        assertEquals(4, iris.attributeCount());
+    }
+
+    @Test
+    public void testUsArrestData() {
+        Dataset<? extends Instance> usArrests = FakeDatasets.usArrestData();
+        assertEquals(50, usArrests.size());
+        assertEquals(4, usArrests.attributeCount());
+        assertEquals("Alabama", usArrests.get(0).classValue());
+        assertEquals("Wyoming", usArrests.get(49).classValue());
+    }
+
 }
