@@ -11,8 +11,6 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
@@ -24,9 +22,7 @@ import org.clueminer.std.StdScale;
 public class SilhouettePlot extends BPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 4887302917255522954L;
-
     private Clustering<? extends Cluster> clustering;
-    private Dataset<? extends Instance> dataset;
     private Dimension element = new Dimension(5, 5);
     private Silhouette silhouette;
     private StdScale scale;
@@ -50,13 +46,14 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             int x = 0, k = 0, prev = -1;
             double value, s;
             // String str;
-            for (int i = 0; i < dataset.size(); i++) {
-                s = score[i];
-                if (Double.isNaN(s)) {
-                    s = -1.0;
-                }
-                value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-                if (hierarchicalResult != null) {
+            if (hierarchicalResult != null) {
+                for (int i = 0; i < hierarchicalResult.getDataset().size(); i++) {
+                    s = score[i];
+                    if (Double.isNaN(s)) {
+                        s = -1.0;
+                    }
+                    value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
+
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
                     if (k != prev) {
                         if (clustering.hasAt(k - 1)) {
@@ -68,17 +65,18 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                     } else {
                         g.setColor(Color.GRAY);
                     }
-                }
-                g.fillRect(x, i * element.height, (int) value, element.height);
-                /*
-                 g.setColor(Color.BLACK);
-                 y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                 str = String.format("%.2f", s);
-                 if (str != null) {
-                 g.drawString(str, (float) (x + value + 10), y);
-                 }*/
 
-                prev = k;
+                    g.fillRect(x, i * element.height, (int) value, element.height);
+                    /*
+                     g.setColor(Color.BLACK);
+                     y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                     str = String.format("%.2f", s);
+                     if (str != null) {
+                     g.drawString(str, (float) (x + value + 10), y);
+                     }*/
+
+                    prev = k;
+                }
             }
         }
     }
@@ -123,7 +121,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
     @Override
     public boolean hasData() {
-        return clustering != null && clustering.instancesCount() > 0 && dataset != null;
+        return clustering != null && clustering.instancesCount() > 0 && hierarchicalResult != null;
     }
 
     @Override
@@ -147,9 +145,9 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
     void setClustering(Clustering<? extends Cluster> data) {
         this.clustering = data;
-        Dataset<? extends Instance> d = data.getLookup().lookup(Dataset.class);
+        DendrogramMapping d = data.getLookup().lookup(DendrogramMapping.class);
         if (d != null) {
-            dataset = d;
+            hierarchicalResult = d.getRowsResult();
         }
         updateScore();
         if (reqSize.width == 0) {
@@ -188,18 +186,20 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
      */
     private void updateScore() {
         if (hasData()) {
-            score = new double[dataset.size()];
+            score = new double[hierarchicalResult.getDataset().size()];
             Cluster clust;
             int k;
             double value;
-            for (int i = 0; i < dataset.size(); i++) {
-                k = clustering.assignedCluster(i);
+            int instId;
+            for (int i = 0; i < score.length; i++) {
+                instId = hierarchicalResult.getMappedIndex(i);
+                k = clustering.assignedCluster(instId);
                 //if k == -1 (not assigned to any cluster yet) there's no point to count the score
                 if (clustering.hasAt(k - 1)) {
                     clust = clustering.get(k - 1);
-                    value = silhouette.instanceScore(clust, clustering, i, dataset.get(i));
+                    value = silhouette.instanceScore(clust, clustering, k - 1, hierarchicalResult.getDataset().get(instId));
                     if (hierarchicalResult != null) {
-                        score[hierarchicalResult.getMappedIndex(i)] = value;
+                        score[instId] = value;
                     } else {
                         score[i] = value;
                     }
@@ -210,7 +210,6 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     }
 
     public void setDendrogramData(DendrogramMapping dendroData) {
-        dataset = dendroData.getDataset();
         hierarchicalResult = dendroData.getRowsResult();
         setClustering(dendroData.getRowsClustering());
         resetCache();
