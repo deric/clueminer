@@ -14,14 +14,15 @@ import org.clueminer.dataset.api.Instance;
 public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Serializable, Set<E> {
 
     /**
-     * Set cluster identification number
+     * Set cluster identification number. Starts from 0, although cluster names
+     * (for humans) should always start from 1.
      *
      * @param id
      */
     public void setClusterId(int id);
 
     /**
-     * Returns ID of the cluster
+     * Returns ID of the cluster (starts from 0)
      *
      * @return id
      */

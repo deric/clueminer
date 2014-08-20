@@ -2,11 +2,14 @@ package org.clueminer.clustering.struct;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
@@ -68,6 +71,8 @@ public class ClusterListTest {
         clusters.createCluster();
         clusters.createCluster();
         assertEquals(3, clusters.size());
+        assertEquals(0, clusters.get(0).getClusterId());
+        assertEquals(2, clusters.get(2).getClusterId());
     }
 
     @Test
@@ -85,11 +90,21 @@ public class ClusterListTest {
     }
 
     @Test
-    public void testPut_Cluster() {
+    public void testPut_int_Cluster() {
+        Clustering<Cluster> clusters = new ClusterList(5);
+        Cluster clus = new BaseCluster(5);
+        clusters.put(3, clus);
+        assertEquals(clus, clusters.get(3));
     }
 
     @Test
-    public void testPut_int_Cluster() {
+    public void testPut_int_0_Cluster() {
+        ClusterList list = new ClusterList(10);
+        assertEquals(0, list.size());
+        assertEquals(10, list.getCapacity());
+
+        list.put(0, new BaseCluster(1));
+        assertEquals(1, list.size());
     }
 
     @Test
@@ -111,6 +126,26 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesIterator() {
+        Clustering<Cluster> clusters = new ClusterList(5);
+        instanceIter(clusters);
+        Cluster clust = clusters.createCluster();
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 1.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
+        assertEquals(3, clust.size());
+        assertEquals(3, clusters.instancesCount());
+    }
+
+    private void instanceIter(Clustering<Cluster> clusters) {
+        Iterator<Instance> iter = clusters.instancesIterator();
+        Instance elem;
+        int i = 0;
+        while (iter.hasNext()) {
+            elem = iter.next();
+            assertNotNull(elem);
+            i++;
+        }
+        assertEquals(clusters.instancesCount(), i);
     }
 
     @Test
@@ -129,8 +164,31 @@ public class ClusterListTest {
     public void testGet() {
     }
 
+    /**
+     * Test of iterator method, of class ClusterList.
+     */
     @Test
     public void testIterator() {
+        Clustering<Cluster> clusters = new ClusterList(10);
+        //create 6 empty clusters
+        for (int i = 0; i < 6; i++) {
+            clusters.createCluster(i + 1);
+        }
+        assertEquals(6, clusters.size());
+
+        int i = 0;
+        for (Cluster c : clusters) {
+            i++;
+        }
+        assertEquals(6, i);
+
+        Iterator<Cluster> iter = clusters.iterator();
+        i = 0;
+        while (iter.hasNext()) {
+            iter.next();
+            i++;
+        }
+        assertEquals(6, i);
     }
 
     @Test
@@ -138,7 +196,7 @@ public class ClusterListTest {
         assertEquals(false, subject.isEmpty());
 
         //empty clusters
-        ClusterList clusters = new ClusterList(3);
+        Clustering<Cluster> clusters = new ClusterList(3);
         assertEquals(true, clusters.isEmpty());
     }
 
@@ -183,14 +241,16 @@ public class ClusterListTest {
         ClusterList list = new ClusterList(3);
         //create cluster with given ID
         Cluster c = list.createCluster(0);
-        assertEquals(1, c.getClusterId());
+        assertEquals(0, c.getClusterId());
+        assertEquals("cluster 1", c.getName());
         assertEquals(1, list.size());
 
         //start from non-zero index
         list = new ClusterList(5);
         //create cluster with given ID
         c = list.createCluster(2);
-        assertEquals(3, c.getClusterId());
+        assertEquals(2, c.getClusterId());
+        assertEquals("cluster 3", c.getName());
         assertEquals(1, list.size());
 
     }
@@ -200,7 +260,7 @@ public class ClusterListTest {
         ClusterList list = new ClusterList(3);
         //create cluster with given ID
         Cluster c = list.createCluster();
-        assertEquals(1, c.getClusterId());
+        assertEquals(0, c.getClusterId());
         assertEquals(1, list.size());
     }
 
@@ -221,7 +281,8 @@ public class ClusterListTest {
         //create cluster with given ID
         Cluster c = list.createCluster(0, 5);
 
-        assertEquals(1, c.getClusterId());
+        //ID for programmers should start from 0
+        assertEquals(0, c.getClusterId());
         assertEquals(1, list.size());
         assertEquals(5, c.getCapacity());
     }

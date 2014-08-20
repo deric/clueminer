@@ -111,8 +111,8 @@ public class BaseClusterTest {
      */
     @Test
     public void testGetClusterId() {
-        //cluster ID start from 1 (human readable)
-        assertEquals(1, irisClusters.get(0).getClusterId());
+        //cluster ID start from 0 (programmers readable)
+        assertEquals(0, irisClusters.get(0).getClusterId());
     }
 
     /**

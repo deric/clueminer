@@ -88,22 +88,7 @@ public class ClusterListTest {
     /**
      * Test of put method, of class ClusterList.
      */
-    @Test
-    public void testPut_int_Cluster() {
-        Cluster clus = new BaseCluster(5);
-        clusters.put(3, clus);
-        assertEquals(clus, clusters.get(3));
-    }
 
-    @Test
-    public void testPut_int_0_Cluster() {
-        ClusterList subject = new ClusterList(10);
-        assertEquals(0, subject.size());
-        assertEquals(10, subject.getCapacity());
-
-        subject.put(0, new BaseCluster(1));
-        assertEquals(1, subject.size());
-    }
 
     @Test
     public void testPut_rand_idx() {
@@ -178,22 +163,6 @@ public class ClusterListTest {
     }
 
     /**
-     * Test of instancesIterator method, of class ClusterList.
-     */
-    @Test
-    public void testInstancesIterator() {
-        Iterator<Instance> iter = clusters.instancesIterator();
-        Instance elem;
-        int i = 0;
-        while (iter.hasNext()) {
-            elem = iter.next();
-            assertNotNull(elem);
-            i++;
-        }
-        assertEquals(clusters.instancesCount(), i);
-    }
-
-    /**
      * Test of ensureCapacity method, of class ClusterList.
      */
     @Test
@@ -244,45 +213,11 @@ public class ClusterListTest {
     }
 
     /**
-     * Test of iterator method, of class ClusterList.
-     */
-    @Test
-    public void testIterator() {
-        clusters = new ClusterList(10);
-        //create 6 empty clusters
-        for (int i = 0; i < 6; i++) {
-            clusters.createCluster(i + 1);
-        }
-        assertEquals(6, clusters.size());
-
-        int i = 0;
-        for (Cluster c : clusters) {
-            i++;
-        }
-        assertEquals(6, i);
-
-        Iterator<Cluster> iter = clusters.iterator();
-        i = 0;
-        while (iter.hasNext()) {
-            iter.next();
-            i++;
-        }
-        assertEquals(6, i);
-    }
-
-    /**
      * Test of isEmpty method, of class ClusterList.
      */
     @Test
     public void testIsEmpty() {
         assertEquals(false, clusters.isEmpty());
-    }
-
-    /**
-     * Test of contains method, of class ClusterList.
-     */
-    @Test
-    public void testContains() {
     }
 
     /**
