@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
@@ -50,9 +51,9 @@ public abstract class AbstractAnnotation extends JPanel {
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.isAntiAliasing) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -94,9 +95,9 @@ public abstract class AbstractAnnotation extends JPanel {
         }
         if (bufferedImage != null) {
             g2.drawImage(bufferedImage,
-                         0, 0,
-                         size.width, size.height,
-                         null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         }
     }
 
@@ -114,8 +115,15 @@ public abstract class AbstractAnnotation extends JPanel {
 
     public void resetCache() {
         updateSize();
-        createBufferedGraphics();
-        repaint();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                createBufferedGraphics();
+                repaint();
+            }
+        });
+
     }
 
     protected abstract void updateSize();

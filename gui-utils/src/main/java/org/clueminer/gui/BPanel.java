@@ -9,6 +9,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 /**
  * Buffered panel
@@ -141,10 +142,17 @@ public abstract class BPanel extends JPanel {
 
     public void resetCache() {
         recalculate();
-        createBufferedGraphics();
-        validate();
-        revalidate();
-        repaint();
+
+        //invoke painting from EDT thread
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                createBufferedGraphics();
+                validate();
+                revalidate();
+                repaint();
+            }
+        });
     }
 
 }
