@@ -14,8 +14,6 @@ import org.clueminer.utils.Dump;
  */
 public class MOLO implements OptimalTreeOrder {
 
-    private int[] order;
-    private double[][] opt;
     private Matrix similarity;
     public static final String name = "MOLO";
 
@@ -50,7 +48,7 @@ public class MOLO implements OptimalTreeOrder {
         Dump.array(tree.getMapping(), "tree mapping");
         System.out.println("score after = " + score(tree, similarity));
         tree.print();
-        optOrder(tree.first(), clustering.getProximityMatrix());
+
         System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.createMapping(n, tree.getRoot());
         tree.updatePositions(tree.getRoot());
@@ -174,16 +172,5 @@ public class MOLO implements OptimalTreeOrder {
             score += similarity.get(mapping[i], mapping[i + 1]);
         }
         return score;
-    }
-
-    public int optOrder(DendroNode node, Matrix similarity) {
-        if (node.isLeaf()) {
-            return optOrder(node.getParent(), similarity);
-        }
-        return 0;
-    }
-
-    public void treeOrder(DendroNode v, DendroNode u, DendroNode r) {
-
     }
 }

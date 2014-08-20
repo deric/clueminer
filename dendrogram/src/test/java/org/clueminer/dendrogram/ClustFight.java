@@ -45,9 +45,12 @@ public class ClustFight extends JFrame {
 
                 //order.optimize(res1.getRowsResult());
                 order.optimize(res1.getColsResult());
+                panel1.viewer.fireColumnsMappingChanged(order, res1.getColsResult());
 
                 order.optimize(res2.getRowsResult(), false);
                 order.optimize(res2.getColsResult());
+                panel2.viewer.fireColumnsMappingChanged(order, res2.getColsResult());
+                panel2.viewer.fireRowMappingChanged(order, res2.getRowsResult());
             }
         });
 
