@@ -3,6 +3,7 @@ package org.clueminer.dendrogram.tree;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.algorithm.HCLResult;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -101,4 +102,5 @@ public class HorizontalTree extends AbstractTree {
         g2.rotate(-Math.PI / 2.0);
         sign = -1;
     }
+
 }

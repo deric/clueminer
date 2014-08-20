@@ -297,4 +297,8 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
         }
 
     }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+    }
 }

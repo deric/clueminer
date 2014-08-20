@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
@@ -672,6 +673,11 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     @Override
     public ColorScheme getScheme() {
         return colorScheme;
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        resetCache();
     }
 
     /**

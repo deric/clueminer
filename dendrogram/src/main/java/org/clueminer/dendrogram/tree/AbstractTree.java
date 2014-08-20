@@ -7,6 +7,7 @@ import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -755,14 +756,23 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
      */
     public void fireTreeUpdated() {
         TreeListener[] listeners;
-        System.out.println("tree updated");
 
         if (treeListeners != null) {
-
             listeners = treeListeners.getListeners(TreeListener.class);
-            System.out.println("listeners size " + listeners.length);
             for (TreeListener listener : listeners) {
                 listener.treeUpdated(this, size.width, size.height);
+            }
+        }
+    }
+
+    @Override
+    public void fireLeafOrderUpdated(Object source, HierarchicalResult result) {
+        TreeListener[] listeners;
+
+        if (treeListeners != null) {
+            listeners = treeListeners.getListeners(TreeListener.class);
+            for (TreeListener listener : listeners) {
+                listener.leafOrderUpdated(source, result);
             }
         }
     }

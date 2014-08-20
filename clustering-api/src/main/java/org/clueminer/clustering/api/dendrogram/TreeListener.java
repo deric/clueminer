@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api.dendrogram;
 
 import java.util.EventListener;
+import org.clueminer.clustering.api.HierarchicalResult;
 
 public interface TreeListener extends EventListener {
 
@@ -21,4 +22,12 @@ public interface TreeListener extends EventListener {
      * @param height
      */
     void treeUpdated(DendrogramTree source, int width, int height);
+
+    /**
+     * Triggered when tree order optimization finishes
+     *
+     * @param source
+     * @param mapping
+     */
+    void leafOrderUpdated(Object source, HierarchicalResult mapping);
 }

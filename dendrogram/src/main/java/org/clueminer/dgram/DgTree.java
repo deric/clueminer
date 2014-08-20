@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -116,9 +117,9 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         Graphics2D g2 = (Graphics2D) g;
         if (buffGr != null) {
             g2.drawImage(buffImg,
-                         insets.left, insets.top,
-                         size.width, size.height,
-                         null);
+                    insets.left, insets.top,
+                    size.width, size.height,
+                    null);
         }
         g2.dispose();
     }
@@ -134,9 +135,9 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         buffGr.setColor(treeColor);
 
         buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         buffGr.setRenderingHint(RenderingHints.KEY_RENDERING,
-                                RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         DendroNode root = treeData.getRoot();
         //System.out.println("tree has " + root.childCnt() + " nodes");
@@ -274,5 +275,17 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     @Override
     public int getTreeHeight() {
         return treeHeight;
+    }
+
+    @Override
+    public void fireLeafOrderUpdated(Object source, HierarchicalResult result) {
+        TreeListener[] listeners;
+
+        if (treeListeners != null) {
+            listeners = treeListeners.getListeners(TreeListener.class);
+            for (TreeListener listener : listeners) {
+                listener.leafOrderUpdated(source, result);
+            }
+        }
     }
 }

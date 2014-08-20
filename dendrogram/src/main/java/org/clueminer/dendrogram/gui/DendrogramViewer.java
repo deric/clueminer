@@ -341,6 +341,16 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public void fireRowMappingChanged(Object source, HierarchicalResult rows) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void fireColumnsMappingChanged(Object source, HierarchicalResult columns) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DendrogramViewer viewer;

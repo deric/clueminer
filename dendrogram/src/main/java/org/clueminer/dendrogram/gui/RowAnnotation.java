@@ -2,6 +2,7 @@ package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -162,6 +163,14 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         this.dendroData = dendroData;
         if (dendroData.hasRowsClustering()) {
             rowsOrder = dendroData.getRowsResult().getMapping();
+            resetCache();
+        }
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        if (source != this) {
+            rowsOrder = mapping.getMapping();
             resetCache();
         }
     }

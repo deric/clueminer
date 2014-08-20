@@ -364,6 +364,16 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         dendrogramPanel.setShowEvalPlot(show);
     }
 
+    @Override
+    public void fireRowMappingChanged(Object source, HierarchicalResult rows) {
+        dendrogramPanel.fireRowsOrderUpdated(source, rows);
+    }
+
+    @Override
+    public void fireColumnsMappingChanged(Object source, HierarchicalResult columns) {
+        dendrogramPanel.fireColsOrderUpdated(source, columns);
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DgViewer viewer;

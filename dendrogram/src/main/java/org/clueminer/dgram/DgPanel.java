@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
@@ -534,6 +535,18 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         slider.updatePosition();
         //@TODO probably call repaint
         repaint();
+    }
+
+    public void fireRowsOrderUpdated(Object source, HierarchicalResult rows) {
+        if (rowsTree != null) {
+            rowsTree.fireTreeUpdated();
+        }
+    }
+
+    public void fireColsOrderUpdated(Object source, HierarchicalResult cols) {
+        if (columnsTree != null) {
+            columnsTree.fireTreeUpdated();
+        }
     }
 
     private void updateWidth(int elemWidth) {

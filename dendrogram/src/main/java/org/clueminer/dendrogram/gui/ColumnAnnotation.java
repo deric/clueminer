@@ -3,6 +3,7 @@ package org.clueminer.dendrogram.gui;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -144,6 +145,14 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         this.dendroData = dendroData;
         if (dendroData.hasColumnsClustering()) {
             columnsOrder = dendroData.getColsResult().getMapping();
+            resetCache();
+        }
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        if (source != this) {
+            columnsOrder = mapping.getMapping();
             resetCache();
         }
     }

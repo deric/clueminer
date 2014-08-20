@@ -168,4 +168,9 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
             slider.setInverted(inverted);
         }
     }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        //nothing to do
+    }
 }

@@ -2,6 +2,7 @@ package org.clueminer.clustering.api.dendrogram;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import org.clueminer.clustering.api.HierarchicalResult;
 
 /**
  * Dendrogram tree renderer interface
@@ -10,41 +11,41 @@ import java.awt.Graphics;
  */
 public interface DendrogramTree extends DendrogramDataListener {
 
-    public void paint(Graphics g);
+     void paint(Graphics g);
 
-    public void updateSize();
+     void updateSize();
 
     /**
      * Distance in pixels from one side of tree to another
      *
      * @return
      */
-    public int getTreeWidth();
+     int getTreeWidth();
 
     /**
      * Height of rendered tree in pixels
      *
      * @return
      */
-    public int getTreeHeight();
+     int getTreeHeight();
 
-    public void setTreeData(DendroTreeData treeData);
+     void setTreeData(DendroTreeData treeData);
 
-    public DendroTreeData getTreeData();
+     DendroTreeData getTreeData();
 
-    public Dimension getSize();
+     Dimension getSize();
 
-    public void addTreeListener(TreeListener listener);
+     void addTreeListener(TreeListener listener);
 
-    public void removeTreeListener(TreeListener listener);
+     void removeTreeListener(TreeListener listener);
 
-    public boolean hasData();
+     boolean hasData();
 
-    public void fireTreeUpdated();
+     void fireTreeUpdated();
 
-    public int getWidth();
+     int getWidth();
 
-    public int getHeight();
+     int getHeight();
 
     /**
      * Moves and resizes this component. The new location of the top-left corner
@@ -59,22 +60,30 @@ public interface DendrogramTree extends DendrogramDataListener {
      * @param width  the new <code>width</code> of this component
      * @param height the new <code>height</code> of this component
      */
-    public void setBounds(int x, int y, int width, int height);
+     void setBounds(int x, int y, int width, int height);
 
     /**
      * Zero tree height
      *
      * @return minimal tree distance
      */
-    public double getMinTreeHeight();
+     double getMinTreeHeight();
 
-    public double getMidTreeHeight();
+     double getMidTreeHeight();
 
     /**
      * Distance which represents root of the tree
      *
      * @return
      */
-    public double getMaxTreeHeight();
+     double getMaxTreeHeight();
+
+    /**
+     * Triggered when leaf order was optimized
+     *
+     * @param source
+     * @param result
+     */
+     void fireLeafOrderUpdated(Object source, HierarchicalResult result);
 
 }

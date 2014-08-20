@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -62,14 +63,14 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
 
         g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (this.isAntiAliasing) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                               RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 
         //we draw strings in rows and then we rotate the whole image
@@ -205,5 +206,13 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
     @Override
     public void treeUpdated(DendrogramTree source, int width, int height) {
         //nothing to do
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        if (source != this) {
+            columnsOrder = mapping.getMapping();
+            repaint();
+        }
     }
 }

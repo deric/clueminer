@@ -97,4 +97,8 @@ public abstract class DendroPanel extends JPanel {
 
     public abstract String[] getDatasets();
 
+    public void fireTreeUpdated() {
+
+    }
+
 }

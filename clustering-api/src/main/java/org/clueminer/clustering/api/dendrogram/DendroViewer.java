@@ -3,6 +3,7 @@ package org.clueminer.clustering.api.dendrogram;
 import java.awt.Dimension;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.utils.Exportable;
 
 /**
@@ -17,43 +18,43 @@ public interface DendroViewer extends Exportable {
      *
      * @return size of one heatmap cell
      */
-    public Dimension getElementSize();
+    Dimension getElementSize();
 
-    public void addDendrogramDataListener(DendrogramDataListener listener);
+    void addDendrogramDataListener(DendrogramDataListener listener);
 
-    public void removeDendrogramDataListener(DendrogramDataListener listener);
+    void removeDendrogramDataListener(DendrogramDataListener listener);
 
-    public void addClusteringListener(ClusteringListener listener);
+    void addClusteringListener(ClusteringListener listener);
 
     /**
      * Fire an event when user modifies clustering (changing cutoff)
      *
      * @param clust
      */
-    public void fireClusteringChanged(Clustering clust);
+    void fireClusteringChanged(Clustering clust);
 
-    public boolean isHorizontalTreeVisible();
+    boolean isHorizontalTreeVisible();
 
-    public boolean isVerticalTreeVisible();
+    boolean isVerticalTreeVisible();
 
-    public boolean isLegendVisible();
+    boolean isLegendVisible();
 
-    public void setHorizontalTreeVisible(boolean show);
+    void setHorizontalTreeVisible(boolean show);
 
-    public void setVerticalTreeVisible(boolean show);
+    void setVerticalTreeVisible(boolean show);
 
-    public void setLegendVisible(boolean show);
+    void setLegendVisible(boolean show);
 
-    public void setLabelsVisible(boolean show);
+    void setLabelsVisible(boolean show);
 
     /**
      * Show Silhoulette evaluation
      *
      * @param show
      */
-    public void setEvaluationVisible(boolean show);
+    void setEvaluationVisible(boolean show);
 
-    public boolean isLabelVisible();
+    boolean isLabelVisible();
 
     /**
      * Set width of heatmap cell in pixels.
@@ -62,14 +63,14 @@ public interface DendroViewer extends Exportable {
      * @param isAdjusting true when value is continously changing
      * @param source
      */
-    public void setCellWidth(int width, boolean isAdjusting, Object source);
+    void setCellWidth(int width, boolean isAdjusting, Object source);
 
     /**
      * When true dendrogram size will be auto-computed according to window size
      *
      * @param fitToPanel
      */
-    public void setFitToPanel(boolean fitToPanel);
+    void setFitToPanel(boolean fitToPanel);
 
     /**
      * Set height of heatmap cell in pixels.
@@ -78,16 +79,32 @@ public interface DendroViewer extends Exportable {
      * @param isAdjusting
      * @param source
      */
-    public void setCellHeight(int height, boolean isAdjusting, Object source);
+    void setCellHeight(int height, boolean isAdjusting, Object source);
 
-    public boolean isFitToPanel();
+    boolean isFitToPanel();
 
-    public void setDataset(DendrogramMapping dataset);
+    void setDataset(DendrogramMapping dataset);
 
     /**
      *
      * @param clustering
      */
-    public void setClustering(Clustering clustering);
+    void setClustering(Clustering clustering);
+
+    /**
+     * Fired after optimization of dendrogram rows tree order
+     *
+     * @param source
+     * @param rows
+     */
+    void fireRowMappingChanged(Object source, HierarchicalResult rows);
+
+    /**
+     * Fired after optimization of dendrogram columns tree order
+     *
+     * @param source
+     * @param columns
+     */
+    void fireColumnsMappingChanged(Object source, HierarchicalResult columns);
 
 }
