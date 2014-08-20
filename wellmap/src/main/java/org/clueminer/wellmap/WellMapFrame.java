@@ -5,6 +5,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.Serializable;
 import javax.swing.JLayeredPane;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -154,5 +155,10 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
 
     public String numberToRowLabel(int row) {
         return grid.numberToRowLabel(row);
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        //nothing to do
     }
 }

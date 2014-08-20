@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -40,7 +41,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
 
     private void initialize() {
         this.setLayout(new GridBagLayout());
-        //wells        
+        //wells
         frame = new WellMapFrame();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -148,11 +149,7 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
             return true;
         }
 
-        if (!ignoredRows.isEmpty() && ignoredRows.contains(row)) {
-            return true;
-        }
-
-        return false;
+        return !ignoredRows.isEmpty() && ignoredRows.contains(row);
     }
 
     public void setMetric(String method, HtsPlate<HtsInstance> p) {
@@ -187,8 +184,13 @@ public class WellMapExtended extends JPanel implements DatasetListener, Serializ
     public int wellPosToId(int row, int column) {
         return frame.wellPosToId(row, column);
     }
-    
+
     public String numberToRowLabel(int row){
         return frame.numberToRowLabel(row);
+    }
+
+    @Override
+    public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+        //nothing to do
     }
 }
