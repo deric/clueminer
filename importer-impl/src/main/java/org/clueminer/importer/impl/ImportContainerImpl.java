@@ -43,6 +43,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     private Class<?> defaultNumericType = Double.class;
     private String dataType = "discrete";
     private String md5 = null;
+    private String name;
 
     public ImportContainerImpl() {
         report = new Report();
@@ -344,6 +345,16 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public void setMD5(String md5) {
         this.md5 = md5;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
