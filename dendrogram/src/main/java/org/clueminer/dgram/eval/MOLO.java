@@ -7,11 +7,20 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * A heuristic algorithm for dendrogram leaf ordering with low computing
+ * complexity (basically O(n/2))
+ *
+ * Sakai R, Winand R, Verbeiren T et al. dendsort: modular leaf ordering methods
+ * for dendrogram representations in R [v1; ref status: awaiting peer review,
+ * http://f1000r.es/3xw] F1000Research 2014, 3:177 (doi:
+ * 10.12688/f1000research.4784.1)
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = OptimalTreeOrder.class)
 public class MOLO implements OptimalTreeOrder {
 
     private Matrix similarity;
