@@ -1,6 +1,8 @@
 package org.clueminer.importer.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -24,6 +26,7 @@ import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -140,6 +143,11 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     @Override
     public boolean execute(Container container, Reader reader) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
+        return execute(container, lineReader);
+    }
+
+    public boolean execute(Container container, File file) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(new BufferedReader(new FileReader(file)));
         return execute(container, lineReader);
     }
 

@@ -52,9 +52,14 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
      */
     private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern klassAttr = Pattern.compile("^@attribute class \\{(.*)\\}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern klassAttr = Pattern.compile("^@attribute class\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
     private ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
     private int numInstances;
+
+    /**
+     * if line starts with following string, it will be ignored
+     */
+    private String comment = "%";
 
     @Override
 
@@ -178,7 +183,6 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
         int prev = -1;
         boolean reading = true;
 
-        logger.log(Level.INFO, "reader ready? {0}", reader.ready());
         while (reader.ready() && reading) {
             String line = reader.readLine();
             count = reader.getLineNumber();
@@ -200,10 +204,9 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     }
 
     protected void lineRead(ContainerLoader loader, int num, String line) throws IOException {
-        String[] columns = parseLine(line);
-
-        addInstance(loader, num, columns);
-
+        if (!line.startsWith(comment)) {
+            addInstance(loader, num, parseLine(line));
+        }
     }
 
     private void addInstance(ContainerLoader loader, int num, String[] columns) {
@@ -215,7 +218,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
             try {
                 attr = loader.getAttribute(i);
                 if (attr == null) {
-                    report.logIssue(new Issue("Missing " + i + "-th attribute definition", Issue.Level.CRITICAL));
+                    report.logIssue(new Issue("Missing " + i + "-th attribute definition", Issue.Level.WARNING));
                     return;
                 }
                 role = attr.getRole();

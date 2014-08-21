@@ -68,16 +68,28 @@ public class ArffImporterTest {
 
     @Test
     public void testExecute_Container_Reader() throws Exception {
-        File banana = fixtures.bananaArff();
+        File insect = fixtures.insectArff();
         Container container = new ImportContainerImpl();
-        BufferedReader reader = new BufferedReader(new FileReader(banana));
-        subject.execute(container, reader);
+        subject.execute(container, insect);
         ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
-        assertEquals("banana1", loader.getName());
+        assertEquals("insect", loader.getName());
         //two attributes and class
-        assertEquals(3, loader.getAttributeCount());
-        assertEquals(4811, loader.getInstanceCount());
+        assertEquals(4, loader.getAttributeCount());
+        assertEquals(30, loader.getInstanceCount());
+    }
+
+    @Test
+    public void testIris() throws IOException {
+        File iris = fixtures.irisArff();
+        Container container = new ImportContainerImpl();
+        subject.execute(container, iris);
+        ContainerLoader loader = container.getLoader();
+        //name of relation from ARFF
+        assertEquals("iris", loader.getName());
+        //two attributes and class
+        assertEquals(5, loader.getAttributeCount());
+        assertEquals(150, loader.getInstanceCount());
     }
 
     @Test

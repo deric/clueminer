@@ -598,7 +598,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void importerChanged(final Importer importer, final ImporterUI importerUI) {
-        final ContainerLoader loader = importer.getContainer().getLoader();
+        Container cont = importer.getContainer();
+        if (cont == null) {
+            logger.severe("container is null!");
+            return;
+        }
+        final ContainerLoader loader = cont.getLoader();
         final FileImporter fi = (FileImporter) importer;
         if (currentFile != null) {
             RP.post(new Runnable() {
