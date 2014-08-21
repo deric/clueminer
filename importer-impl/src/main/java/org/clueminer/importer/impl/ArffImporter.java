@@ -53,7 +53,6 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern klassAttr = Pattern.compile("^@attribute class \\{(.*)\\}", Pattern.CASE_INSENSITIVE);
-    private String separator = ",";
     private ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
     private int numInstances;
 
@@ -240,13 +239,12 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
         numInstances++;
     }
 
-    public String getSeparator() {
-        return separator;
+    public void setSeparator(char separator) {
+        if (this.separator != separator) {
+            this.separator = separator;
+        }
     }
 
-    public void setSeparator(String separator) {
-        this.separator = separator;
-    }
 
     public ArrayList<Integer> getSkippedIndexes() {
         return skippedIndexes;

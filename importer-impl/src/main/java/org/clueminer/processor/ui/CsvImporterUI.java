@@ -1,9 +1,7 @@
 package org.clueminer.processor.ui;
 
 import javax.swing.JPanel;
-import javax.swing.event.EventListenerList;
 import org.clueminer.importer.impl.CsvImporter;
-import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
 import org.openide.util.NbBundle;
@@ -14,11 +12,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ImporterUI.class)
-public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
+public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
 
     private static final long serialVersionUID = -1117775885334856126L;
     private CsvImporter importer;
-    private final transient EventListenerList importListeners = new EventListenerList();
 
     /**
      * Creates new form CsvImporterUI
@@ -30,7 +27,6 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
     @Override
     public void setup(Importer importer) {
         this.importer = (CsvImporter) importer;
-
     }
 
     @Override
@@ -183,22 +179,8 @@ public class CsvImporterUI extends javax.swing.JPanel implements ImporterUI {
     private javax.swing.JLabel lbSeparator;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void addListener(ImportListener listener) {
-        importListeners.add(ImportListener.class, listener);
-    }
-
-    @Override
-    public void removeListener(ImportListener listener) {
-        importListeners.remove(ImportListener.class, listener);
-    }
-
-    @Override
-    public void fireImporterChanged() {
-        //importer.reload();
-        for (ImportListener im : importListeners.getListeners(ImportListener.class)) {
-            im.importerChanged(importer, this);
-        }
+    public Importer getImporter() {
+        return importer;
     }
 
 }
