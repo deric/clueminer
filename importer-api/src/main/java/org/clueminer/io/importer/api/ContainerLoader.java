@@ -13,6 +13,24 @@ import org.openide.filesystems.FileObject;
  */
 public interface ContainerLoader {
 
+    /**
+     * Set name for this dataset
+     *
+     * @param name
+     */
+    void setName(String name);
+
+    /**
+     *
+     * @return the name of loaded dataset
+     */
+    String getName();
+
+    /**
+     * Number of parsed data lines (instances)
+     *
+     * @return
+     */
     int getInstanceCount();
 
     Iterable<InstanceDraft> getInstances();
