@@ -42,21 +42,16 @@ public class ImportControllerImpl implements ImportController {
 
     private final List<FileImporter> fileImporters;
     private final ImporterUI[] uis;
-    private final MimeUtil2 mimeUtil = new MimeUtil2();
+    private MimeHelper helper;
     private static final Logger log = Logger.getLogger(ImportControllerImpl.class.getName());
     private final HashMap<String, Container> containers;
 
     public ImportControllerImpl() {
         this.containers = new HashMap<String, Container>();
         fileImporters = FileImporterFactory.getInstance().getAll();
-
+        helper = new MimeHelper();
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
-
-        //MIME type detection
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.ExtensionMimeDetector");
-        mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
         log.info("creating new ImportController");
     }
 
@@ -68,7 +63,7 @@ public class ImportControllerImpl implements ImportController {
             FileImporter importer = getMatchingImporter(fileObject);
             if (importer == null) {
                 //try to find importer by MIME type
-                importer = getMatchingImporter(detectMIME(file));
+                importer = getMatchingImporter(helper.detectMIME(file));
             }
             if (fileObject != null && importer != null) {
                 Container c = importFile(fileObject, fileObject.getInputStream(), importer, false);
@@ -161,7 +156,7 @@ public class ImportControllerImpl implements ImportController {
         FileImporter fi = getMatchingImporter(fileObject);
         if (fi == null) {
             //try to find importer by MIME type
-            fi = getMatchingImporter(detectMIME(file));
+            fi = getMatchingImporter(helper.detectMIME(file));
         }
         if (fileObject != null && fi != null) {
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
@@ -226,7 +221,7 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public boolean isAccepting(File file) {
-        Collection mimeTypes = detectMIME(file);
+        Collection mimeTypes = helper.detectMIME(file);
         for (FileImporter im : fileImporters) {
             if (im.isAccepting(mimeTypes)) {
                 return true;
@@ -344,21 +339,4 @@ public class ImportControllerImpl implements ImportController {
         }
         return null;
     }
-
-    protected Collection detectMIME(File file) {
-        Collection mimeTypes = null;
-        try {
-            byte[] data;
-            InputStream in = new FileInputStream(file);
-            int bytes = 1024;
-            data = new byte[bytes];
-            in.read(data, 0, bytes);
-            in.close();
-            mimeTypes = mimeUtil.getMimeTypes(data);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return mimeTypes;
-    }
-
 }
