@@ -95,6 +95,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         params.put("cutoff-score", evaluator.getName());
         rowsResult.findCutoff(strategy);
         clustering = rowsResult.getClustering();
+        clustering.setParams(params);
 
         DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
         clustering.lookupAdd(mapping);
