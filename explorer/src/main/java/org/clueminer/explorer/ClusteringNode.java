@@ -54,10 +54,14 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     @Override
     public Image getIcon(int type) {
         if (image == null) {
-            Clustering<? extends Cluster> clustering = getLookup().lookup(Clustering.class);
+            Clustering<? extends Cluster> clustering = getClustering();
             image = DGramVis.generate(clustering, 64, 64, this);
         }
         return image;
+    }
+
+    public Clustering<? extends Cluster> getClustering() {
+        return getLookup().lookup(Clustering.class);
     }
 
     @Override
@@ -138,7 +142,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         if (set == null) {
             set = Sheet.createPropertiesSet();
         }
-        Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
+        Clustering<? extends Cluster> clustering = getClustering();
         if (clustering != null) {
             try {
                 set.setDisplayName("Clustering (" + clustering.size() + ")");
@@ -162,7 +166,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         return sheet;
     }
 
-    private EvaluationTable evaluationTable(Clustering<Cluster> clustering) {
+    protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
         EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
@@ -172,7 +176,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         return evalTable;
     }
 
-    private void internalSheet(Clustering<Cluster> clustering, Sheet sheet) {
+    private void internalSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
         EvaluationTable evalTable = evaluationTable(clustering);
         set.setName("Internal Evaluation");
@@ -184,7 +188,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         sheet.put(set);
     }
 
-    private void externalSheet(Clustering<Cluster> clustering, Sheet sheet) {
+    private void externalSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
         EvaluationTable evalTable = evaluationTable(clustering);
         set.setName("External Evaluation");
@@ -198,7 +202,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         sheet.put(set);
     }
 
-    private void algorithmSheet(Clustering<Cluster> clustering, Sheet sheet) {
+    private void algorithmSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
         try {
             final Preferences params = clustering.getParams();
             if (params == null) {

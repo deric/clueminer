@@ -15,6 +15,7 @@ import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.AICScore;
 import org.clueminer.evolution.EvolutionFactory;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -70,6 +71,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private ExplorerToolbar toolbar;
     private javax.swing.JScrollPane explorerPane;
     private IconView iconView;
+    private ClustComparator comparator;
 
     public ExplorerTopComponent() {
         initComponents();
@@ -130,8 +132,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         //result.addLookupListener(this);
         //resultChanged(new LookupEvent(result));
 
-        ClustGlobal children = new ClustGlobal(result);
+        //ClustGlobal children = new ClustGlobal(result);
+        comparator = new ClustComparator(new AICScore());
+        ClustSorted children = new ClustSorted(result);
+        children.setComparator(comparator);
         root = new AbstractNode(children);
+
         root.setDisplayName("root node");
         mgr.setRootContext(root);
     }
