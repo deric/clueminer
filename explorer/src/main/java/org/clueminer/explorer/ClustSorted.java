@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.openide.nodes.Children;
@@ -56,12 +57,19 @@ public class ClustSorted extends Children.SortedArray {
             Collection<? extends Clustering> coll = result.allInstances();
             if (coll != null && coll.size() > 0) {
                 all.addAll(coll);
-                ClusteringNode[] nodesAry = new ClusteringNode[coll.size()];
+                final ClusteringNode[] nodesAry = new ClusteringNode[coll.size()];
                 int i = 0;
                 for (Clustering c : coll) {
                     nodesAry[i++] = new ClusteringNode(c);
                 }
-                add(nodesAry);
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        add(nodesAry);
+                    }
+                });
+
                 //setKeys(all);
             }
         } else {
