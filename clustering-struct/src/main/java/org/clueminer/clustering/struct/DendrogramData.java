@@ -99,7 +99,7 @@ public class DendrogramData implements DendrogramMapping {
      */
     @Override
     public int getNumberOfRows() {
-        return matrix.rowsCount();
+        return dataset.size();
     }
 
     /**
@@ -109,7 +109,7 @@ public class DendrogramData implements DendrogramMapping {
      */
     @Override
     public int getNumberOfColumns() {
-        return matrix.columnsCount();
+        return dataset.attributeCount();
     }
 
     /**
