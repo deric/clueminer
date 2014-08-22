@@ -136,7 +136,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         comparator = new ClustComparator(new AICScore());
         ClustSorted children = new ClustSorted(result);
         children.setComparator(comparator);
-        //mgr.getRootContext().
         root = new AbstractNode(children);
 
         root.setDisplayName("root node");
@@ -230,6 +229,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 ClustSorted children = new ClustSorted(alg);
                 children.setComparator(comparator);
 
+                //children = Children.create(new MyChildFactory(myModels), true);
                 root = new AbstractNode(children);
                 root.setDisplayName("root node");
                 mgr.setRootContext(root);

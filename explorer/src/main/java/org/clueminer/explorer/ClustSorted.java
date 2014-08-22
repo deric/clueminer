@@ -56,6 +56,12 @@ public class ClustSorted extends Children.SortedArray {
             Collection<? extends Clustering> coll = result.allInstances();
             if (coll != null && coll.size() > 0) {
                 all.addAll(coll);
+                ClusteringNode[] nodesAry = new ClusteringNode[coll.size()];
+                int i = 0;
+                for (Clustering c : coll) {
+                    nodesAry[i++] = new ClusteringNode(c);
+                }
+                add(nodesAry);
                 //setKeys(all);
             }
         } else {
