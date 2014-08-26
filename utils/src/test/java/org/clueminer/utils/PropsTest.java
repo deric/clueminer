@@ -53,6 +53,8 @@ public class PropsTest {
 
     @Test
     public void testGetBoolean_String_boolean() {
+        assertEquals(false, subject.getBoolean("some_bool", false));
+        assertEquals(true, subject.getBoolean("some_bool", true));
     }
 
     @Test
@@ -73,6 +75,17 @@ public class PropsTest {
 
     @Test
     public void testToProperties() {
+    }
+
+    @Test
+    public void testPutBoolean() {
+        String key = "boolean-key";
+        subject.putBoolean(key, true);
+        assertEquals(true, subject.getBoolean(key));
+        //overwrite key
+        subject.putBoolean(key, false);
+        assertEquals(false, subject.getBoolean(key));
+
     }
 
 }

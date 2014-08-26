@@ -75,6 +75,10 @@ public class Props extends HashMap<String, String> {
         return Boolean.parseBoolean(val);
     }
 
+    public void putBoolean(String key, boolean value) {
+        put(key, String.valueOf(value));
+    }
+
     public boolean getBoolean(String key, boolean def) {
         String val = getString(key, "" + def);
         return Boolean.parseBoolean(val);
