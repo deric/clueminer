@@ -160,13 +160,13 @@ public class AdjustedRand extends ExternalEvaluator {
     }
 
     @Override
-    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         return countScore(table);
     }
 
     @Override
-    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
+    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
         return score(clusters, dataset);
     }
 

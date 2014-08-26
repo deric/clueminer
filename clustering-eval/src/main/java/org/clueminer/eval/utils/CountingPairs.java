@@ -46,7 +46,7 @@ public class CountingPairs {
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> clustering) {
+    public static Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 

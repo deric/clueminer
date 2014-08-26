@@ -103,7 +103,7 @@ public class NMI extends ExternalEvaluator {
      * @return
      */
     @Override
-    public double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
         double nmi = 0.0;
         if (clusters.size() == 0) {
             return nmi;

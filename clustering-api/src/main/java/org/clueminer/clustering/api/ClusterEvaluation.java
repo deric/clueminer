@@ -24,7 +24,7 @@ public interface ClusterEvaluation {
      * @param dataset - the original dataset
      * @return the score the clusterer obtained on this particular dataset
      */
-    double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset);
+    double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset);
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
@@ -35,7 +35,7 @@ public interface ClusterEvaluation {
      * @param proximity matrix of distances between all points
      * @return
      */
-    double score(Clustering<Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity);
+    double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity);
 
     /**
      * Compares the two scores according to the criterion in the implementation.
