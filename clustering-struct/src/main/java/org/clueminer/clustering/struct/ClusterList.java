@@ -220,7 +220,22 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public boolean contains(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (o instanceof Cluster) {
+            for (Cluster c : this) {
+                if (c.equals(o)) {
+                    return true;
+                }
+            }
+        } else if (o instanceof Instance) {
+            Instance inst;
+            for (Iterator<Instance> iter = this.instancesIterator(); iter.hasNext();) {
+                inst = iter.next();
+                if (inst.equals(o)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -240,7 +255,12 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Object elem : c) {
+            if (!contains(elem)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

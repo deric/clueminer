@@ -237,6 +237,12 @@ public class ClusterListTest {
 
     @Test
     public void testContains() {
+        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c2 = createClustersDifferentOrder();
+
+        for (int i = 0; i < c2.size(); i++) {
+            assertEquals(true, c1.contains(c2.get(i)));
+        }
     }
 
     @Test
@@ -253,6 +259,12 @@ public class ClusterListTest {
 
     @Test
     public void testContainsAll() {
+        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        assertEquals(true, c1.containsAll(c2));
+
+        Clustering<Cluster> c3 = createClusters2();
+        assertEquals(false, c1.containsAll(c3));
     }
 
     @Test
