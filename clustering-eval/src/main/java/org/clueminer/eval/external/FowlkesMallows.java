@@ -22,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class FowlkesMallows extends ExternalEvaluator {
+public class FowlkesMallows extends AbstractExternalEval {
 
     private static final long serialVersionUID = 101045082257039885L;
     private static final String name = "Fowlkes-Mallows";

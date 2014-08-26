@@ -3,6 +3,7 @@ package org.clueminer.eval.external;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.NMI;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
@@ -16,21 +17,21 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class NMITest {
+public class NMIextTest {
 
-    private static NMI test;
+    private static NMIext test;
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
     private static final double delta = 1e-9;
 
-    public NMITest() throws FileNotFoundException, IOException {
+    public NMIextTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
     }
 
     @BeforeClass
     public static void setUpClass() {
-        test = new NMI();
+        test = new NMIext();
     }
 
     @AfterClass

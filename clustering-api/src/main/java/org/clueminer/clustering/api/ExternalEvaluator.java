@@ -11,14 +11,9 @@ import org.clueminer.distance.api.DistanceMeasure;
  *
  * @author Tomas Barton
  */
-public abstract class ExternalEvaluator implements ClusterEvaluation, Serializable {
+public interface ExternalEvaluator extends ClusterEvaluation, Serializable {
 
-    private static final long serialVersionUID = 7854838110957041190L;
-    protected DistanceMeasure dm;
-
-    public void setDistanceMeasure(DistanceMeasure dm) {
-        this.dm = dm;
-    }
+    void setDistanceMeasure(DistanceMeasure dm);
 
     /**
      * We want to compare two clusterings to evaluate how similar they are
@@ -27,15 +22,6 @@ public abstract class ExternalEvaluator implements ClusterEvaluation, Serializab
      * @param c2
      * @return
      */
-    public abstract double score(Clustering<Cluster> c1, Clustering<Cluster> c2);
+    double score(Clustering<Cluster> c1, Clustering<Cluster> c2);
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return
-     */
-    @Override
-    public boolean isExternal() {
-        return true;
-    }
 }

@@ -16,7 +16,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class Precision extends ExternalEvaluator {
+public class Precision extends AbstractExternalEval {
 
     private static final long serialVersionUID = -1547620533572167033L;
     private static final String name = "Precision";

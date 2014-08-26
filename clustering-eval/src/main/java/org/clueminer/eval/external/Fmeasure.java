@@ -19,7 +19,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class Fmeasure extends ExternalEvaluator {
+public class Fmeasure extends AbstractExternalEval {
 
     private static final String name = "F-measure";
     private static final long serialVersionUID = 5075558180348805172L;
