@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -31,12 +32,14 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
 
     private static final String name = "Normalizations";
     private AgglomerativeClustering algorithm;
+    private int gen;
 
     public NormalizationEvolution() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
         algorithm = new HAC();
+        gen = 0;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
      * @param i
      */
     protected void makeClusters(String std, boolean logscale, Preferences params, int i) {
-        Clustering clustering;
+        Clustering<? extends Cluster> clustering;
         Matrix input = standartize(dataset, std, logscale);
         params.put("algorithm", algorithm.getName());
         params.putBoolean("logscale", logscale);
@@ -96,10 +99,9 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         rowsResult.findCutoff(strategy);
         clustering = rowsResult.getClustering();
         clustering.setParams(params);
-
         DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
         clustering.lookupAdd(mapping);
-        instanceContent.add(clustering);
+        individualCreated(clustering);
         if (ph != null) {
             ph.progress(i++);
         }
@@ -113,6 +115,11 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         if (ph != null) {
             ph.finish();
         }
+    }
+
+    protected void individualCreated(Clustering<? extends Cluster> clustering) {
+        instanceContent.add(clustering);
+        fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
     }
 
 }

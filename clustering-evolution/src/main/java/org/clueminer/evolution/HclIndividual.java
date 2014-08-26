@@ -6,15 +6,11 @@ import java.util.Random;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.eval.hclust.CopheneticCorrelation;
 import org.clueminer.eval.hclust.NaiveCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -32,6 +28,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     private double[] weights;
     private Preferences params;
     private boolean debug = true;
+    private Clustering clustering;
 
     public HclIndividual(AttrEvolution evolution) {
         this.evolution = evolution;
@@ -129,60 +126,21 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         String cutoffAlg = params.get("cutoff", "NaiveCutoff");
 
         // if (!cutoffAlg.equals("-- naive --")) {
-        ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+        //ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
         NaiveCutoff strategy = new NaiveCutoff();
         rowsResult.findCutoff(strategy);
 
         // }// else we use a naive approach
-        Clustering clust = rowsResult.getClustering();
+        clustering = rowsResult.getClustering();
 
         DendrogramData dendroData = new DendrogramData(evolution.getDataset(), input, rowsResult);
 
-        clust.setParams(params);
+        clustering.setParams(params);
         //clust.lookupAdd(evolution.getDataset());
-        clust.lookupAdd(dendroData);
+        clustering.lookupAdd(dendroData);
 
-        String linkage = null;
-        switch (params.getInt("method-linkage", 1)) {
-            case -1:
-                linkage = "single";
-                break;
-            case 1:
-                linkage = "complete";
-                break;
-            case 0:
-                linkage = "average";
-                break;
-        }
+        fitness = evolution.getEvaluator().score(clustering, evolution.getDataset());
 
-        double s;
-        StringBuilder scores = new StringBuilder();
-        StringBuilder evaluators = new StringBuilder();
-
-        evaluators.append("Distance function").append("\t");
-        scores.append(algorithm.getDistanceFunction().getName()).append("\t");
-
-        evaluators.append("Standartization").append("\t");
-        scores.append(params.get("std", "None")).append("\t");
-
-        evaluators.append("Linkage").append("\t");
-        scores.append(linkage).append("\t");
-
-        evaluators.append("Number of clusters").append("\t");
-        scores.append(rowsResult.getNumClusters()).append("\t");
-
-        evaluators.append("Cutoff").append("\t");
-        scores.append(cutoffAlg).append("\t");
-
-        HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
-        evaluators.append("CPCC").append("\t");
-        scores.append(cophenetic.score(rowsResult)).append("\t");
-
-        System.out.println(evaluators);
-        System.out.println(scores);
-
-        fitness = evolution.getEvaluator().score(clust, evolution.getDataset());
-        System.out.println("fitness = " + fitness);
     }
 
     @Override
@@ -223,7 +181,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
      }*/
     @Override
     public Clustering<Cluster> getClustering() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return clustering;
     }
 
     @Override

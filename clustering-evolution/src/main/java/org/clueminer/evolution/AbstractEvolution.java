@@ -5,6 +5,8 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
@@ -168,6 +170,29 @@ public abstract class AbstractEvolution implements Evolution {
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
         maximizedFitness = evaluator.compareScore(1.0, 0.0);
+    }
+
+    protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
+        for (EvolutionListener listener : evoListeners.getListeners(EvolutionListener.class)) {
+            listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
+        }
+    }
+
+    protected double externalValidation(Individual best) {
+        if (external != null) {
+            return external.score(best.getClustering(), dataset);
+        }
+        return Double.NaN;
+    }
+
+    protected void fireFinalResult(int g, Individual best, Pair<Long, Long> time,
+            Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
+
+        if (evoListeners != null) {
+            for (EvolutionListener listener : evoListeners.getListeners(EvolutionListener.class)) {
+                listener.finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
+            }
+        }
     }
 
 }
