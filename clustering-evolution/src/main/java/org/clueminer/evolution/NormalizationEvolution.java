@@ -2,6 +2,7 @@ package org.clueminer.evolution;
 
 import java.util.List;
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -93,6 +94,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         params.put("algorithm", algorithm.getName());
         params.putBoolean("logscale", logscale);
         params.put("std", std);
+        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         HillClimbCutoff strategy = new HillClimbCutoff((ClusterEvaluator) evaluator);
         params.put("cutoff-score", evaluator.getName());
