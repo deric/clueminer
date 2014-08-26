@@ -259,7 +259,9 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int capacity = getCapacity();
+        data = new Cluster[capacity];
+        n = 0;
     }
 
     /**

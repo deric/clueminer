@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
@@ -124,14 +123,20 @@ public class ClusterListTest {
     public void testGetCentroid() {
     }
 
-    @Test
-    public void testInstancesIterator() {
+    private Clustering<Cluster> createClusters() {
         Clustering<Cluster> clusters = new ClusterList(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 1.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
+        return clusters;
+    }
+
+    @Test
+    public void testInstancesIterator() {
+        Clustering<Cluster> clusters = createClusters();
+        Cluster clust = clusters.get(0);
         assertEquals(3, clust.size());
         assertEquals(3, clusters.instancesCount());
     }
@@ -198,6 +203,8 @@ public class ClusterListTest {
         //empty clusters
         Clustering<Cluster> clusters = new ClusterList(3);
         assertEquals(true, clusters.isEmpty());
+        clusters.add(new BaseCluster(1));
+        assertEquals(false, clusters.isEmpty());
     }
 
     @Test
@@ -234,6 +241,10 @@ public class ClusterListTest {
 
     @Test
     public void testClear() {
+        Clustering<Cluster> clust = createClusters();
+        assertEquals(1, clust.size());
+        clust.clear();
+        assertEquals(0, clust.size());
     }
 
     @Test
