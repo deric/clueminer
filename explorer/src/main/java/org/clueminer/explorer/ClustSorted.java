@@ -1,81 +1,62 @@
 package org.clueminer.explorer;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.EvolutionListener;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 
 /**
+ * Doesn't work with Children.SortedMap<>
  *
  * @author Tomas Barton
  */
-public class ClustSorted extends Children.SortedArray {
+public class ClustSorted extends Children.SortedArray implements EvolutionListener {
 
     private Lookup.Result<Clustering> result;
-    private static final Logger logger = Logger.getLogger(ClustGlobal.class.getName());
-    private Set<Clustering> all = new HashSet<Clustering>(5);
+    private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
+    //private Set<Clustering> all = new HashSet<Clustering>(5);
 
     public ClustSorted() {
 
     }
 
-    public ClustSorted(Evolution alg) {
-        result = alg.getLookup().lookupResult(Clustering.class);
-        result.addLookupListener(new LookupListener() {
-            @Override
-            public void resultChanged(LookupEvent evt) {
-                logger.log(Level.INFO, "clust child lookup event! {0}", evt);
-                addNotify();
-            }
-        });
+    @Override
+    protected void addNotify() {
 
     }
 
-    public ClustSorted(Lookup.Result<Clustering> result) {
-        this.result = result;
-        this.result.addLookupListener(new LookupListener() {
+    /**
+     *
+     * @param generationNum
+     * @param best
+     * @param avgFitness
+     * @param external
+     */
+    @Override
+    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
+        logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, avgFitness, external});
+        final ClusteringNode[] nodesAry = new ClusteringNode[1];
+        nodesAry[0] = new ClusteringNode(best.getClustering());
+
+        SwingUtilities.invokeLater(new Runnable() {
+
             @Override
-            public void resultChanged(LookupEvent evt) {
-                //logger.log(Level.INFO, "clust child lookup event! {0}", evt);
-                addNotify();
+            public void run() {
+                add(nodesAry);
             }
         });
 
     }
 
     @Override
-    protected void addNotify() {
-        if (result != null) {
-            Collection<? extends Clustering> coll = result.allInstances();
-            if (coll != null && coll.size() > 0) {
-                all.addAll(coll);
-                final ClusteringNode[] nodesAry = new ClusteringNode[coll.size()];
-                int i = 0;
-                for (Clustering c : coll) {
-                    c.hashCode();
-                    nodesAry[i++] = new ClusteringNode(c);
-                }
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        add(nodesAry);
-                    }
-                });
-
-                //setKeys(all);
-            }
-        } else {
-            logger.log(Level.SEVERE, "clustering result is null!");
-        }
+    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

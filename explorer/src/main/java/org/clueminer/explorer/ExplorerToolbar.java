@@ -38,6 +38,7 @@ public class ExplorerToolbar extends JToolBar {
         comboEvolution.setModel(new DefaultComboBoxModel(initEvolution()));
 
         comboEvolution.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
                     listener.evolutionAlgorithmChanged(evt);
@@ -61,6 +62,7 @@ public class ExplorerToolbar extends JToolBar {
         btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnStart.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
                     listener.startEvolution(evt, (String) comboEvolution.getSelectedItem());

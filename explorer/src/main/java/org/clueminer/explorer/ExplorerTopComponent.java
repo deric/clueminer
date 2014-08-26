@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
@@ -16,7 +17,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AICScore;
-import org.clueminer.clustering.api.evolution.EvolutionFactory;
+import org.clueminer.eval.NMI;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -58,7 +59,7 @@ import org.openide.windows.TopComponent;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, EvolutionListener, ToolbarListener {
+public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, ToolbarListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
     private final transient ExplorerManager mgr = new ExplorerManager();
@@ -72,6 +73,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private javax.swing.JScrollPane explorerPane;
     private IconView iconView;
     private ClustComparator comparator;
+    private ClustSorted children;
 
     public ExplorerTopComponent() {
         initComponents();
@@ -129,17 +131,27 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
-        //result.addLookupListener(this);
-        //resultChanged(new LookupEvent(result));
 
-        //ClustGlobal children = new ClustGlobal(result);
-        comparator = new ClustComparator(new AICScore());
-        ClustSorted children = new ClustSorted(result);
+        comparator = new ClustComparator(new NMI());
+        children = new ClustSorted();
         children.setComparator(comparator);
-        root = new AbstractNode(children);
 
+                //alg.addEvolutionListener(this);
+        //children = Children.create(new MyChildFactory(myModels), true);
+        root = new AbstractNode(children);
         root.setDisplayName("root node");
         mgr.setRootContext(root);
+
+        //result.addLookupListener(this);
+        //resultChanged(new LookupEvent(result));
+        //ClustGlobal children = new ClustGlobal(result);
+    /*    comparator = new ClustComparator(new AICScore());
+         ClustSorted children = new ClustSorted(result);
+         children.setComparator(comparator);
+         root = new AbstractNode(children);
+
+         root.setDisplayName("root node");
+         mgr.setRootContext(root);*/
     }
 
     @Override
@@ -168,16 +180,17 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        Collection<? extends Clustering> allClusterings = result.allInstances();
-        ClusteringNode node;
-        for (Clustering c : allClusterings) {
-            //System.out.println("clustring size" + c.size());
-            //System.out.println(c.toString());
-            //root = new ClusteringNode(c);
-            node = new ClusteringNode(c);
-            //
-        }
-        //mgr.setRootContext(root);
+        /*  Collection<? extends Clustering> allClusterings = result.allInstances();
+         ClusteringNode node;
+         for (Clustering c : allClusterings) {
+         //System.out.println("clustring size" + c.size());
+         //System.out.println(c.toString());
+         //root = new ClusteringNode(c);
+         logger.log(Level.INFO, "created node in top component {0}", c.size());
+         node = new ClusteringNode(c);
+         //
+         }
+         mgr.setRootContext(root);*/
     }
 
     public void setDataset(Dataset<? extends Instance> dataset) {
@@ -188,16 +201,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
         toolbar.evolutionFinished();
-    }
-
-    @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
-        logger.log(Level.INFO, "best in generation, fitness: {0}", avgFitness);
-    }
-
-    @Override
-    public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        logger.log(Level.INFO, "final result of the evolution, generation: {0} best fitness: {1}", new Object[]{g, bestFitness});
     }
 
     @Override
@@ -219,20 +222,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
                 InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
-                alg.addEvolutionListener(this);
+
                 final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");
                 alg.setProgressHandle(ph);
-
+                alg.addEvolutionListener(children);
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);
-                comparator = new ClustComparator(new AICScore());
-                ClustSorted children = new ClustSorted(alg);
-                children.setComparator(comparator);
-
-                //children = Children.create(new MyChildFactory(myModels), true);
-                root = new AbstractNode(children);
-                root.setDisplayName("root node");
-                mgr.setRootContext(root);
                 logger.log(Level.INFO, "starting evolution...");
                 task = RP.create(alg);
                 task.addTaskListener(this);
