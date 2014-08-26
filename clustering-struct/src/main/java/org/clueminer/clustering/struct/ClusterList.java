@@ -1,5 +1,6 @@
 package org.clueminer.clustering.struct;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
@@ -350,6 +351,31 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public void setParams(Preferences params) {
         this.params = params;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (Cluster<E> elem : this) {
+            hash += elem.hashCode();
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final ClusterList<?> other = (ClusterList<?>) obj;
+        if (this.size() != other.size()) {
+            return false;
+        }
+        return Arrays.deepEquals(this.data, other.data);
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

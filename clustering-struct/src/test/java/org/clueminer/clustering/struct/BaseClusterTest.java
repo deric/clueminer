@@ -93,6 +93,7 @@ public class BaseClusterTest {
      */
     @Test
     public void testContains() {
+        //assertEquals(true, irisClusters.contains(irisClusters.get(0)));
     }
 
     /**
@@ -168,6 +169,20 @@ public class BaseClusterTest {
     @Test
     public void testGetSize() {
         assertEquals(50, irisClusters.get(0).size());
+    }
+
+    @Test
+    public void testHashCode() {
+        int hash = irisClusters.hashCode();
+        assertEquals(true, hash > 0);
+        assertEquals(false, irisClusters.get(0).hashCode() == irisClusters.get(1).hashCode());
+        assertEquals(false, irisClusters.get(0).hashCode() == irisClusters.get(2).hashCode());
+        assertEquals(false, irisClusters.get(1).hashCode() == irisClusters.get(2).hashCode());
+    }
+
+    @Test
+    public void testEquals() {
+        assertEquals(false, irisClusters.get(0).equals(irisClusters.get(1)));
     }
 
 }

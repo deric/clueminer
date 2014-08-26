@@ -133,6 +133,26 @@ public class ClusterListTest {
         return clusters;
     }
 
+    private Clustering<Cluster> createClustersDifferentOrder() {
+        Clustering<Cluster> clusters = new ClusterList(5);
+        instanceIter(clusters);
+        Cluster clust = clusters.createCluster();
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 1.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
+        return clusters;
+    }
+
+    private Clustering<Cluster> createClusters2() {
+        Clustering<Cluster> clusters = new ClusterList(5);
+        instanceIter(clusters);
+        Cluster clust = clusters.createCluster();
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{5.0, 1.0}));
+        clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
+        return clusters;
+    }
+
     @Test
     public void testInstancesIterator() {
         Clustering<Cluster> clusters = createClusters();
@@ -194,6 +214,14 @@ public class ClusterListTest {
             i++;
         }
         assertEquals(6, i);
+    }
+
+    @Test
+    public void testShortForEach() {
+        Clustering<Cluster> clust = createClusters();
+        for (Cluster elem : clust) {
+            assertNotNull(elem);
+        }
     }
 
     @Test
@@ -320,6 +348,31 @@ public class ClusterListTest {
 
     @Test
     public void testSetParams() {
+    }
+
+    @Test
+    public void testPut_Cluster() {
+    }
+
+    @Test
+    public void testHashCode() {
+        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        assertEquals(c1.hashCode(), c2.hashCode());
+
+        Clustering<Cluster> c3 = createClusters2();
+        assertNotSame(c2.hashCode(), c3.hashCode());
+    }
+
+    @Test
+    public void testEquals() {
+        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        assertEquals(true, c1.equals(c2));
+        assertEquals(true, c2.equals(c1));
+
+        Clustering<Cluster> c3 = createClusters2();
+        assertEquals(false, c3.equals(c1));
     }
 
 }
