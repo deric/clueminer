@@ -16,7 +16,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AICScore;
-import org.clueminer.evolution.EvolutionFactory;
+import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;

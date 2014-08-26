@@ -60,6 +60,7 @@ public class ClustSorted extends Children.SortedArray {
                 final ClusteringNode[] nodesAry = new ClusteringNode[coll.size()];
                 int i = 0;
                 for (Clustering c : coll) {
+                    c.hashCode();
                     nodesAry[i++] = new ClusteringNode(c);
                 }
                 SwingUtilities.invokeLater(new Runnable() {

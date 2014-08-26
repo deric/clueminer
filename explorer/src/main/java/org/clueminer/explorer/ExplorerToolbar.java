@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-import org.clueminer.evolution.EvolutionFactory;
+import org.clueminer.clustering.api.evolution.EvolutionFactory;
 
 /**
  *
