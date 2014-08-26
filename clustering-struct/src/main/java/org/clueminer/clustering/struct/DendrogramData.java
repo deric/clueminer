@@ -99,7 +99,11 @@ public class DendrogramData implements DendrogramMapping {
      */
     @Override
     public int getNumberOfRows() {
-        return dataset.size();
+        if (dataset != null) {
+            return dataset.size();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -109,7 +113,11 @@ public class DendrogramData implements DendrogramMapping {
      */
     @Override
     public int getNumberOfColumns() {
-        return dataset.attributeCount();
+        if (dataset != null) {
+            return dataset.attributeCount();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -195,6 +203,7 @@ public class DendrogramData implements DendrogramMapping {
         return rowsResult;
     }
 
+    @Override
     public void setRowsResult(HierarchicalResult rowsResult) {
         this.rowsResult = rowsResult;
     }
@@ -204,6 +213,7 @@ public class DendrogramData implements DendrogramMapping {
         return colsResult;
     }
 
+    @Override
     public void setColsResult(HierarchicalResult colsResult) {
         this.colsResult = colsResult;
     }
