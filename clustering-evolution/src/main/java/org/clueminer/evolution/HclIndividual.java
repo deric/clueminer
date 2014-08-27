@@ -1,13 +1,12 @@
 package org.clueminer.evolution;
 
-import org.clueminer.clustering.api.evolution.Individual;
 import java.util.List;
 import java.util.Random;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -15,7 +14,7 @@ import org.clueminer.eval.hclust.NaiveCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;
-import org.openide.util.NbPreferences;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -26,7 +25,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     private double fitness = 0;
     private static Random rand = new Random();
     private double[] weights;
-    private Preferences params;
+    private Props params;
     private boolean debug = true;
     private Clustering clustering;
 
@@ -41,7 +40,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
         for (int i = 0; i < weights.length; i++) {
             weights[i] = rand.nextDouble();
         }
-        params = NbPreferences.forModule(HclIndividual.class);
+        params = new Props();
         params.put("name", "HCL");
         // alg type
         params.put("alg-type", "cluster");

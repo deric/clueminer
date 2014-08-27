@@ -1,9 +1,9 @@
 package org.clueminer.clustering.api;
 
-import java.util.prefs.Preferences;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -18,7 +18,7 @@ public interface AgglomerativeClustering extends ClusteringAlgorithm {
      * @param pref
      * @return
      */
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences pref);
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref);
 
     /**
      *
@@ -27,8 +27,8 @@ public interface AgglomerativeClustering extends ClusteringAlgorithm {
      * @param pref
      * @return
      */
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref);
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref);
 
-    public HierarchicalResult hierarchy(Matrix matrix, Preferences props);
+    public HierarchicalResult hierarchy(Matrix matrix, Props props);
 
 }

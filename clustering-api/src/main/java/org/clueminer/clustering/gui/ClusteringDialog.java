@@ -1,8 +1,8 @@
 package org.clueminer.clustering.gui;
 
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -15,7 +15,7 @@ public abstract class ClusteringDialog extends JPanel {
     @Override
     public abstract String getName();
 
-    public abstract Preferences getParams();
+    public abstract Props getParams();
 
     public abstract void setParent(ClusterAnalysis clust);
 

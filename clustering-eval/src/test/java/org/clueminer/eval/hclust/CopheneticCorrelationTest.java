@@ -1,11 +1,9 @@
 package org.clueminer.eval.hclust;
 
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.math.matrix.JMatrix;
-import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.algorithm.HCLResult;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -15,6 +13,8 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.hclust.linkage.CompleteLinkage;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openide.util.NbPreferences;
 
 /**
  * This test was inspired by example here:
@@ -35,7 +34,7 @@ public class CopheneticCorrelationTest {
 
     private static Dataset<Instance> dataset;
     private static CopheneticCorrelation test;
-    private static Preferences params;
+    private static Props params;
     private static HierarchicalResult rowsResult;
     private static Matrix input;
 
@@ -91,8 +90,8 @@ public class CopheneticCorrelationTest {
     public void tearDown() throws Exception {
     }
 
-    private static Preferences getParams() {
-        Preferences p = NbPreferences.forModule(CopheneticCorrelationTest.class);
+    private static Props getParams() {
+        Props p = new Props();
         // alg name
         p.put("name", "HCL");
         p.putDouble("distance-factor", 1.0);

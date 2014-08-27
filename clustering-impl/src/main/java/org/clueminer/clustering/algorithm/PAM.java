@@ -1,7 +1,6 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
@@ -11,6 +10,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
+import org.clueminer.utils.Props;
 
 /**
  * Partitioning Around Medoids (PAM) - the most common realization of k-medoid
@@ -112,7 +112,7 @@ public class PAM extends KClustererBase implements PartitioningClustering {
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

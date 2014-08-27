@@ -2,11 +2,11 @@ package org.clueminer.clustering.gui;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
@@ -35,7 +35,7 @@ public class ClusteringRunner implements Runnable {
     @Override
     public void run() {
         Dataset<? extends Instance> dataset;
-        Preferences params = config.getParams();
+        Props params = config.getParams();
 
         String datasetTransform = params.get("transformations", "");
         String[] trans = null;

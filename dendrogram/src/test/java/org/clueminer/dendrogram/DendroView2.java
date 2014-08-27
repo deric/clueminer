@@ -15,7 +15,7 @@ import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.openide.util.NbPreferences;
+import org.clueminer.utils.Props;
 
 /**
  * Should serve for testing DendroView component
@@ -38,7 +38,7 @@ public class DendroView2 extends JFrame {
         DistanceMeasure dm = new EuclideanDistance();
 
         //cluster both rows and columns
-        DendrogramMapping mapping = exec.clusterAll(data, dm, NbPreferences.forModule(DendroView2.class));
+        DendrogramMapping mapping = exec.clusterAll(data, dm, new Props());
         frame.setDataset(mapping);
 
     }

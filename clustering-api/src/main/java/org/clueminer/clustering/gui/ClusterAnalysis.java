@@ -1,7 +1,6 @@
 package org.clueminer.clustering.gui;
 
 import java.io.Serializable;
-import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -9,6 +8,7 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Exportable;
+import org.clueminer.utils.Props;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 
@@ -58,7 +58,7 @@ public abstract class ClusterAnalysis extends JPanel implements Serializable, Ta
      * @param map
      * @param dataset
      */
-    public abstract void execute(Preferences map, Dataset<? extends Instance> dataset);
+    public abstract void execute(Props map, Dataset<? extends Instance> dataset);
 
     public abstract void zoomIn();
 

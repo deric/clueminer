@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 public class PropsTest {
 
     private Props subject;
+    private static final double delta = 1e-9;
 
     public PropsTest() {
     }
@@ -37,6 +38,7 @@ public class PropsTest {
 
     @Test
     public void testGetString_String_String() {
+        assertEquals("value", subject.get("some-missing key", "value"));
     }
 
     @Test
@@ -86,6 +88,30 @@ public class PropsTest {
         subject.putBoolean(key, false);
         assertEquals(false, subject.getBoolean(key));
 
+    }
+
+    @Test
+    public void testGetString() {
+    }
+
+    @Test
+    public void testGet() {
+    }
+
+    @Test
+    public void testPutInt() {
+        int i = 42;
+        String key = "some integer";
+        subject.putInt(key, i);
+        assertEquals(subject.getInt(key), i);
+    }
+
+    @Test
+    public void testPutDouble() {
+        double d = 3.14159;
+        String key = "some double";
+        subject.putDouble(key, d);
+        assertEquals(subject.getDouble(key), d, delta);
     }
 
 }

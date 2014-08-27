@@ -6,8 +6,6 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -17,6 +15,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
+import org.clueminer.utils.Props;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
 import org.openide.nodes.AbstractNode;
@@ -203,29 +202,24 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     private void algorithmSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
-        try {
-            final Preferences params = clustering.getParams();
-            if (params == null) {
-                return;
-            }
-            Sheet.Set set = new Sheet.Set();
-            set.setName("Algorithm");
-            set.setDisplayName("Algorithm");
-            for (final String key : params.keys()) {
-                Property evalProp = new PropertySupport.ReadOnly<String>(key, String.class, "", "") {
-                    @Override
-                    public String getValue() throws IllegalAccessException, InvocationTargetException {
-                        return params.get(key, "");
-                    }
-                };
-                evalProp.setDisplayName(key);
-                set.put(evalProp);
-            }
-
-            sheet.put(set);
-        } catch (BackingStoreException ex) {
-            Exceptions.printStackTrace(ex);
+        final Props params = clustering.getParams();
+        if (params == null) {
+            return;
         }
+        Sheet.Set set = new Sheet.Set();
+        set.setName("Algorithm");
+        set.setDisplayName("Algorithm");
+        for (final String key : params.keySet()) {
+            Property evalProp = new PropertySupport.ReadOnly<String>(key, String.class, "", "") {
+                @Override
+                public String getValue() throws IllegalAccessException, InvocationTargetException {
+                    return params.get(key, "");
+                }
+            };
+            evalProp.setDisplayName(key);
+            set.put(evalProp);
+        }
+        sheet.put(set);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.clueminer.clustering;
 
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -18,6 +17,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.Props;
 
 /**
  * Executor should be responsible of converting dataset into appropriate input
@@ -34,7 +34,7 @@ public class ClusteringExecutor {
         algorithm = new HAC();
     }
 
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -46,7 +46,7 @@ public class ClusteringExecutor {
         return rowsResult;
     }
 
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -58,7 +58,7 @@ public class ClusteringExecutor {
         return columnsResult;
     }
 
-    private CutoffStrategy getCutoffStrategy(Preferences params) {
+    private CutoffStrategy getCutoffStrategy(Props params) {
         CutoffStrategy strategy;
         String cutoffAlg = params.get("cutoff", "-- naive --");
 
@@ -72,7 +72,7 @@ public class ClusteringExecutor {
         return strategy;
     }
 
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
 
@@ -89,7 +89,7 @@ public class ClusteringExecutor {
      * @param params
      * @return
      */
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Preferences params) {
+    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
 

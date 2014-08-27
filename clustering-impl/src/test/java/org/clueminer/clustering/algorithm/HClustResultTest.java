@@ -1,7 +1,6 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.HashSet;
-import java.util.prefs.Preferences;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -11,13 +10,13 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -39,7 +38,7 @@ public class HClustResultTest {
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
-        Preferences pref = NbPreferences.forModule(HClustResultTest.class);
+        Props pref = new Props();
         Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
         rowsResult = algorithm.hierarchy(input, dataset, pref);
     }

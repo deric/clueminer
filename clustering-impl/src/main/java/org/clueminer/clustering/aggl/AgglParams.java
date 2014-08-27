@@ -1,10 +1,10 @@
 package org.clueminer.clustering.aggl;
 
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -27,11 +27,11 @@ public class AgglParams {
      */
     public static final String CLUSTER_ROWS = "cluster_rows";
 
-    private Preferences pref;
+    private Props pref;
 
     private DistanceMeasure distance;
 
-    public AgglParams(Preferences props) {
+    public AgglParams(Props props) {
         this.pref = props;
         init();
     }
@@ -40,11 +40,11 @@ public class AgglParams {
         distance = getDistanceMeasure();
     }
 
-    public Preferences getPref() {
+    public Props getPref() {
         return pref;
     }
 
-    public void setPref(Preferences pref) {
+    public void setPref(Props pref) {
         this.pref = pref;
     }
 

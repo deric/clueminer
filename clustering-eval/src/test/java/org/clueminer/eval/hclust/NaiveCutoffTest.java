@@ -1,6 +1,5 @@
 package org.clueminer.eval.hclust;
 
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -10,13 +9,13 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -24,7 +23,7 @@ import org.openide.util.NbPreferences;
  */
 public class NaiveCutoffTest {
 
-    private NaiveCutoff subject = new NaiveCutoff();
+    private final NaiveCutoff subject = new NaiveCutoff();
 
     public NaiveCutoffTest() {
     }
@@ -50,7 +49,7 @@ public class NaiveCutoffTest {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         Matrix input = new JMatrix(dataset.arrayCopy());
         HAC alg = new HAC();
-        Preferences pref = NbPreferences.forModule(NaiveCutoffTest.class);
+        Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult result = alg.hierarchy(input, dataset, pref);

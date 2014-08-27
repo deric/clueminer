@@ -46,16 +46,20 @@ public class Props extends HashMap<String, String> {
         if (!containsKey(key)) {
             throw new IllegalArgumentException("Map key not found: " + key);
         }
-        String result = get(key);
+        String result = this.get(key);
         return result;
     }
 
-    public String getString(String key, String def) {
-        String result = get(key);
+    public String get(String key, String def) {
+        String result = this.get(key);
         if (result == null) {
             result = def;
         }
         return result;
+    }
+
+    public void putInt(String key, int i) {
+        put(key, String.valueOf(i));
     }
 
     public int getInt(String key) {
@@ -65,7 +69,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public int getInt(String key, int def) {
-        String val = getString(key, "" + def);
+        String val = get(key, "" + def);
         int ret = Integer.parseInt(val);
         return ret;
     }
@@ -80,7 +84,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public boolean getBoolean(String key, boolean def) {
-        String val = getString(key, "" + def);
+        String val = get(key, "" + def);
         return Boolean.parseBoolean(val);
     }
 
@@ -91,9 +95,13 @@ public class Props extends HashMap<String, String> {
     }
 
     public long getLong(String key, long def) {
-        String val = getString(key, "" + def);
+        String val = get(key, "" + def);
         long ret = Long.parseLong(val);
         return ret;
+    }
+
+    public void putDouble(String key, double d) {
+        put(key, String.valueOf(d));
     }
 
     public double getDouble(String key) {
@@ -103,7 +111,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public double getDouble(String key, double def) {
-        String val = getString(key, "" + def);
+        String val = get(key, "" + def);
         double ret = Double.parseDouble(val);
         return ret;
     }

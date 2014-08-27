@@ -1,13 +1,12 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Random;
-import java.util.prefs.Preferences;
-import org.clueminer.clustering.struct.BaseCluster;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
@@ -16,6 +15,7 @@ import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.AlgorithmParameters;
 import org.clueminer.utils.DatasetTools;
+import org.clueminer.utils.Props;
 
 /**
  * Implements the K-means algorithms as described by Mac Queen in 1967.
@@ -77,7 +77,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * current system time. For the distance we use the Euclidean n-space
      * distance.
      *
-     * @param clusters - the number of clusters
+     * @param clusters   - the number of clusters
      * @param iterations - the number of iterations
      */
     public KMeans(int clusters, int iterations) {
@@ -89,10 +89,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * iterations. Also the Random Generator for the clusterer is given as
      * parameter.
      *
-     * @param clusters - the number of clusters
+     * @param clusters   - the number of clusters
      * @param iterations - the number of iterations
      *
-     * @param dm - the distance measure to use
+     * @param dm         - the distance measure to use
      */
     public KMeans(int clusters, int iterations, DistanceMeasure dm) {
         this.numberOfClusters = clusters;
@@ -117,7 +117,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

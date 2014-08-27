@@ -1,6 +1,5 @@
 package org.clueminer.dendrogram.gui;
 
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,19 +7,20 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.*;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringToolbar;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Exportable;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Task;
@@ -129,7 +129,7 @@ public class DendrogramComponent extends ClusterAnalysis {
     }
 
     @Override
-    public void execute(Preferences params, Dataset<? extends Instance> data) {
+    public void execute(Props params, Dataset<? extends Instance> data) {
         //      Listener listener = new Listener();
         // AlgorithmParameters params = data.getParams();
         // Experiment experiment = data.getExperiment();
@@ -226,7 +226,6 @@ public class DendrogramComponent extends ClusterAnalysis {
         evaluators.append("Cutoff").append("\t");
         scores.append(cutoffAlg).append("\t");
 
-
         //this would introduce extra dependency
         //HierarchicalClusterEvaluator cophenetic = new CopheneticCorrelation();
         //evaluators.append("CPCC").append("\t");
@@ -239,9 +238,9 @@ public class DendrogramComponent extends ClusterAnalysis {
 
     public String formatTime(long millis) {
         return String.format("%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis)
-                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                             TimeUnit.MILLISECONDS.toMinutes(millis),
+                             TimeUnit.MILLISECONDS.toSeconds(millis)
+                             - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
         );
     }
 

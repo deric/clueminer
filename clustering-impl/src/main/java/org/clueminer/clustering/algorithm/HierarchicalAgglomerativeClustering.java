@@ -20,16 +20,13 @@
  */
 package org.clueminer.clustering.algorithm;
 
-import org.clueminer.math.matrix.JMatrix;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.Pairing;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -44,8 +41,10 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.exec.WorkQueue;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.Props;
 
 /**
  * A utility class for performing <a
@@ -185,13 +184,13 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences params) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props params) {
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", "None"), params.getBoolean("log-scale", false));
         return hierarchy(input, params);
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences params) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props params) {
         return hierarchy(input, params);
     }
 
@@ -207,7 +206,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         this.linkage = linkage;
     }
 
-    private void parseLinkage(Preferences props) {
+    private void parseLinkage(Props props) {
         String simFuncProp = props.get(DISTANCE_FUNCTION, DEFAULT_DISTANCE_FUNCTION);
         setDistanceFunction(DistanceFactory.getInstance().getProvider(simFuncProp));
 
@@ -225,7 +224,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * @return
      */
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -241,7 +240,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * @return
      */
     @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Preferences props) {
+    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
         parseLinkage(props);
 
         double minSimProp = props.getDouble(MIN_CLUSTER_SIMILARITY, DEFAULT_MIN_CLUSTER_SIMILARITY);
@@ -275,7 +274,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * @param props
      * @return
      */
-    public HierarchicalResult cluster(Matrix data, int numClusters, Preferences props) {
+    public HierarchicalResult cluster(Matrix data, int numClusters, Props props) {
         if (linkage == null || distanceMeasure == null) {
             parseLinkage(props);
         }

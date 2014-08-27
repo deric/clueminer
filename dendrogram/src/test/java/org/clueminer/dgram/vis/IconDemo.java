@@ -2,7 +2,6 @@ package org.clueminer.dgram.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
-import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,7 +19,7 @@ import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
-import org.openide.util.NbPreferences;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -35,7 +34,7 @@ public class IconDemo extends JFrame {
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         Matrix input = new JMatrix(dataset.arrayCopy());
 
-        Preferences params = NbPreferences.forModule(IconDemo.class);
+        Props params = new Props();
         AgglomerativeClustering algorithm = new HAC();
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
 

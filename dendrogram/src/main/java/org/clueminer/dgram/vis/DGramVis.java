@@ -2,7 +2,6 @@ package org.clueminer.dgram.vis;
 
 import java.awt.Image;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -19,6 +18,7 @@ import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.openide.util.RequestProcessor;
 
@@ -59,7 +59,7 @@ public class DGramVis {
                     @Override
                     public void run() {
                         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-                        Preferences params = clustering.getParams();
+                        Props params = clustering.getParams();
                         AgglomerativeClustering algorithm = new HAC();
 
                         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
@@ -96,7 +96,7 @@ public class DGramVis {
 
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-        Preferences params = clustering.getParams();
+        Props params = clustering.getParams();
         AgglomerativeClustering algorithm = new HAC();
 
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));

@@ -3,8 +3,8 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.prefs.Preferences;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
 /**
@@ -131,7 +131,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity  cluster capacity
+     * @param capacity     cluster capacity
      * @return newly created cluster
      */
     Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
@@ -164,12 +164,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return
      */
-    Preferences getParams();
+    Props getParams();
 
     /**
      * Sets parameters which were used to obtain clustering
      *
      * @param params
      */
-    void setParams(Preferences params);
+    void setParams(Props params);
+
+    void mergeParams(Props params);
 }

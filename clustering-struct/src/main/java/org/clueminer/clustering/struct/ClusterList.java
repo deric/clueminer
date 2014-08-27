@@ -3,12 +3,11 @@ package org.clueminer.clustering.struct;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
@@ -21,7 +20,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     private static final long serialVersionUID = 5866077228917808995L;
     private Cluster<E>[] data;
-    private Preferences params;
+    private Props params;
     /**
      * (n - 1) is index of last inserted item, n itself represents current
      * number of instances in this dataset
@@ -35,7 +34,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         data = new Cluster[capacity];
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
-        params = NbPreferences.forModule(ClusterList.class);
+        params = new Props();
     }
 
     @Override
@@ -364,12 +363,12 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     @Override
-    public Preferences getParams() {
+    public Props getParams() {
         return params;
     }
 
     @Override
-    public void setParams(Preferences params) {
+    public void setParams(Props params) {
         this.params = params;
     }
 
@@ -396,6 +395,18 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             return false;
         }
         return Arrays.deepEquals(this.data, other.data);
+    }
+
+    /**
+     * Will overwrite this with other
+     *
+     * @param other
+     */
+    @Override
+    public void mergeParams(Props other) {
+        for (String key : other.keySet()) {
+            params.put(key, other.get(key));
+        }
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

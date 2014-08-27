@@ -1,18 +1,18 @@
 package org.clueminer.clustering.algorithm;
 
-import org.clueminer.math.matrix.JMatrix;
 import java.util.Arrays;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
@@ -41,18 +41,18 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences map) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
         JMatrix input = new JMatrix(dataset.arrayCopy());
         return hierarchy(input, dataset, map);
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Preferences props) {
+    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -62,7 +62,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences map) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props map) {
         System.out.println(map.toString());
         TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
         result = new HCLResult(dataset);

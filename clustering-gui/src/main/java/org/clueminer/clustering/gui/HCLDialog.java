@@ -2,18 +2,17 @@ package org.clueminer.clustering.gui;
 
 import java.util.Enumeration;
 import java.util.List;
-import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.math.StandardisationFactory;
-import org.openide.util.NbPreferences;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -24,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HCLDialog extends ClusteringDialog {
 
     private static final long serialVersionUID = -5755827346014535345L;
-    private Preferences params;
+    private Props params;
     private ClusterAnalysis parent;
     private final ClusteringAlgorithm algorihm;
 
@@ -376,8 +375,8 @@ public class HCLDialog extends ClusteringDialog {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public Preferences getParams() {
-        params = NbPreferences.forModule(HCLDialog.class);
+    public Props getParams() {
+        params = new Props();
         // alg name
         params.put("name", "HCL");
         // alg type
@@ -393,7 +392,6 @@ public class HCLDialog extends ClusteringDialog {
 
         String standard = (String) comboStandardisation.getSelectedItem();
         params.put("std", standard);
-
 
         DefaultListModel lmTo = (DefaultListModel) lstApplyTrans.getModel();
 

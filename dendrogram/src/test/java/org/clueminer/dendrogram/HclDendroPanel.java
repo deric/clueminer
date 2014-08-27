@@ -2,11 +2,9 @@ package org.clueminer.dendrogram;
 
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
@@ -15,12 +13,11 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.eval.hclust.CopheneticCorrelation;
 import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;
-import org.openide.util.NbPreferences;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -29,7 +26,7 @@ import org.openide.util.NbPreferences;
 public class HclDendroPanel extends DendroPanel {
 
     private static final long serialVersionUID = -5113017275195427868L;
-    private Preferences params;
+    private Props params;
     private boolean debug = false;
     private DataProvider dataProvider;
 
@@ -41,7 +38,7 @@ public class HclDendroPanel extends DendroPanel {
         dataProvider = provider;
         setDataset(dataProvider.first());
         options.setDatasets(dataProvider.getDatasetNames());
-        params = NbPreferences.forModule(HclDendroPanel.class);
+        params = new Props();
         params.put("name", "HCL");
         // alg type
         params.put("alg-type", "cluster");

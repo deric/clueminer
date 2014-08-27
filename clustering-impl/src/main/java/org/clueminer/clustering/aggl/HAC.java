@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -22,6 +21,7 @@ import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,17 +51,17 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Preferences props) {
+    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Preferences params) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Preferences pref) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {
         this.dataset = dataset;
         HierarchicalResult result = new HClustResult(dataset);
         result.setInputData(input);
@@ -185,7 +185,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Preferences props) {
+    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

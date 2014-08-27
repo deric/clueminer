@@ -1,24 +1,23 @@
 package org.clueminer.clustering.aggl;
 
 import java.io.IOException;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.io.CsvLoader;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
-import org.openide.util.NbPreferences;
 
 /**
  *
@@ -62,14 +61,14 @@ public class HACTest {
      * Test of cluster method, of class HC1.
      */
     @Test
-    public void testCluster_Matrix_Preferences() {
+    public void testCluster_Matrix_Props() {
     }
 
     /**
      * Test of hierarchy method, of class HC1.
      */
     @Test
-    public void testHierarchy_Dataset_Preferences() {
+    public void testHierarchy_Dataset_Props() {
     }
 
     public static Dataset<? extends Instance> schoolData() {
@@ -100,7 +99,7 @@ public class HACTest {
         assertEquals(4, dataset.attributeCount());
         Matrix input = new JMatrix(dataset.arrayCopy());
         input.print(3, 2);
-        Preferences pref = NbPreferences.forModule(HACTest.class);
+        Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult result = subject.hierarchy(input, dataset, pref);
@@ -118,7 +117,7 @@ public class HACTest {
         Dataset<? extends Instance> dataset = schoolData();
         Matrix input = new JMatrix(dataset.arrayCopy());
         input.print(3, 2);
-        Preferences pref = NbPreferences.forModule(HACTest.class);
+        Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult result = subject.hierarchy(input, dataset, pref);
@@ -135,7 +134,7 @@ public class HACTest {
      * Test of hierarchy method, of class HC1.
      */
     @Test
-    public void testHierarchy_Matrix_Preferences() {
+    public void testHierarchy_Matrix_Props() {
     }
 
     /**

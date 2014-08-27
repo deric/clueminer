@@ -1,7 +1,6 @@
 package org.clueminer.evolution;
 
 import java.util.List;
-import java.util.prefs.Preferences;
 import org.clueminer.clustering.aggl.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -18,8 +17,8 @@ import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
@@ -58,7 +57,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
     public void run() {
         prepare();
 
-        Preferences params;
+        Props params;
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();
 
@@ -70,7 +69,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
         }
         int i = 0;
         for (String std : standartizations) {
-            params = NbPreferences.forModule(NormalizationEvolution.class);
+            params = new Props();
             //no log scale
             makeClusters(std, false, params, i);
             //with log scale
@@ -88,7 +87,7 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
      * @param params
      * @param i
      */
-    protected void makeClusters(String std, boolean logscale, Preferences params, int i) {
+    protected void makeClusters(String std, boolean logscale, Props params, int i) {
         Clustering<? extends Cluster> clustering;
         Matrix input = standartize(dataset, std, logscale);
         params.put("algorithm", algorithm.getName());
