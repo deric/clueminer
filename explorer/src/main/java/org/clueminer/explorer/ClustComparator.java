@@ -33,9 +33,9 @@ public class ClustComparator implements Comparator<Node> {
         }
 
         if (eval.compareScore(s1, s2)) {
-            return 1;
-        } else {
             return -1;
+        } else {
+            return 1;
         }
     }
 
