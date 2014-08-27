@@ -227,6 +227,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
 
         }
         Clustering output = new ClusterList(centroids.length);
+        Props p = output.getParams();
+        p.put("algorithm", getName());
+        p.putInt("k", numberOfClusters);
+        p.putInt("iterations", numberOfIterations);
         BaseCluster cluster;
         if (colorGenerator != null) {
             colorGenerator.reset();

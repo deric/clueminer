@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -39,6 +41,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     private Dataset<? extends Instance> dataset;
     private ClusterLinkage linkage;
     private AgglParams params;
+    private static final Logger logger = Logger.getLogger(HAC.class.getName());
 
     /**
      * number of items to cluster
@@ -75,6 +78,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             //columns clustering
             n = dataset.attributeCount();
         }
+        logger.log(Level.INFO, "clustering rows: {0} size: {1}", new Object[]{params.clusterRows(), n});
         int items = (n - 1) * n / 2;
         PriorityQueue<Element> pq = new PriorityQueue<Element>(items);
 
