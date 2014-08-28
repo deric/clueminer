@@ -96,4 +96,11 @@ public class DatasetFixtureTest {
         assertEquals(34, dataset.attributeCount());
         assertEquals(366, dataset.size());
     }
+
+    @Test
+    public void testYeast() {
+        Dataset<Instance> dataset = DatasetFixture.yeast();
+        assertEquals(8, dataset.attributeCount());
+        assertEquals(1484, dataset.size());
+    }
 }

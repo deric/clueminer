@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.openide.util.Exceptions;
@@ -36,7 +36,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> iris() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(150, 4);
         try {
             String datasetName = "iris";
             ARFFHandler arff = new ARFFHandler();
@@ -49,7 +49,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> wine() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(178, 13);
         try {
             String datasetName = "wine";
             // 1st attribute is class identifier (1-3)
@@ -64,7 +64,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> yeast() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(1484, 8);
         try {
             String datasetName = "yeast";
             // 10th attribute is class identifier
@@ -81,7 +81,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> insect() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(30, 3);
         try {
             String datasetName = "insect";
             ARFFHandler arff = new ARFFHandler();
@@ -94,7 +94,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> vehicle() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(846, 18);
         try {
             String datasetName = "vehicle";
             ARFFHandler arff = new ARFFHandler();
@@ -107,7 +107,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> ionosphere() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(351, 34);
         try {
             String datasetName = "ionosphere";
             ARFFHandler arff = new ARFFHandler();
@@ -120,7 +120,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> glass() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(214, 9);
         try {
             String datasetName = "glass";
             ARFFHandler arff = new ARFFHandler();
@@ -133,7 +133,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> sonar() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(208, 60);
         try {
             String datasetName = "sonar";
             ARFFHandler arff = new ARFFHandler();
@@ -146,7 +146,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> dermatology() {
-        Dataset<Instance> data = new SampleDataset();
+        Dataset<Instance> data = new ArrayDataset<Instance>(366, 34);
         try {
             String datasetName = "dermatology";
             ARFFHandler arff = new ARFFHandler();
