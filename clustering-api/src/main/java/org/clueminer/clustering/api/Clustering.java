@@ -24,6 +24,13 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     String getName();
 
     /**
+     * Sets name for the clustering
+     *
+     * @param name
+     */
+    void setName(String name);
+
+    /**
      * @return number of clusters in clustering
      */
     @Override

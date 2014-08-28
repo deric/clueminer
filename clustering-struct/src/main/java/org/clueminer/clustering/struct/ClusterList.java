@@ -29,6 +29,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     //Lookup
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
+    private String name;
 
     public ClusterList(int capacity) {
         data = new Cluster[capacity];
@@ -37,19 +38,28 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         params = new Props();
     }
 
+    /**
+     * Some identification of clustering doesn't have to be unique, but short
+     *
+     * @return
+     */
     @Override
     public String getName() {
-        StringBuilder sb = new StringBuilder("[");
-        int i = 0;
-        for (Cluster<E> c : this) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(c.size());
-            i++;
+        if (name == null) {
+            name = "|" + size() + "|";
+
         }
-        sb.append("]");
-        return sb.toString();
+        return name;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param name
+     */
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     public final void ensureCapacity(int requested) {
