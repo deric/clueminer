@@ -88,9 +88,9 @@ public class AdjustedRand extends AbstractExternalEval {
 
     /**
      * Based on "Details of the Adjusted Rand index and Clustering algorithms
-     * Supplement to the paper “An empirical study on Principal
-     * Component Analysis for clustering gene expression data” (to
-     * appear in Bioinformatics)"
+     * Supplement to the paper “An empirical study on Principal Component
+     * Analysis for clustering gene expression data” (to appear in
+     * Bioinformatics)"
      *
      * @param table
      * @return
@@ -102,12 +102,13 @@ public class AdjustedRand extends AbstractExternalEval {
 
         String[] rk = new String[rows.size()];
         String[] ck = new String[cols.size()];
-
         int k = 0;
         //we have to order items in set, so that on diagonal will be highest
         //numbers - for corresponding clusters
         for (String c : cols) {
-            rk[k] = matching.get(c);
+            if (k < rk.length) {
+                rk[k] = matching.get(c);
+            }
             ck[k] = c;
             k++;
         }
@@ -126,7 +127,9 @@ public class AdjustedRand extends AbstractExternalEval {
                 Set<String> unmatchedClasses = Sets.symmetricDifference(matching.keySet(), rows);
                 k = rows.size();
                 for (String str : unmatchedClasses) {
-                    ck[k++] = str;
+                    if (k < ck.length) {
+                        ck[k++] = str;
+                    }
                 }
             }
 
