@@ -12,9 +12,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DistanceMeasure.class)
-public class CovarianceDistance extends AbstractDistance {
+public class CovarianceDistance extends AbstractDistance implements DistanceMeasure {
 
-    private static String name = "Covariance";
+    private static final String name = "Covariance";
     private static float similarityFactor = -1.0f;
     private static int offset = -1;
     private static final long serialVersionUID = -7431617150502590047L;
@@ -146,16 +146,21 @@ public class CovarianceDistance extends AbstractDistance {
 
     @Override
     public boolean isSymmetric() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public boolean isSubadditive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
+    /**
+     * For the same vector will return 1.0 not 0.0
+     *
+     * @return
+     */
     @Override
     public boolean isIndiscernible() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 }
