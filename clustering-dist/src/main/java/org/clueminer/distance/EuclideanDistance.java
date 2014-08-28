@@ -1,7 +1,7 @@
 package org.clueminer.distance;
 
 import org.apache.commons.math3.util.FastMath;
-import org.clueminer.distance.api.AbstractDistance;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
@@ -10,7 +10,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = AbstractDistance.class)
+@ServiceProvider(service = DistanceMeasure.class)
 public class EuclideanDistance extends MinkowskiDistance {
 
     private static final String name = "Euclidean";

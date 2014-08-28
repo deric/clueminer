@@ -9,7 +9,7 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-public class DistanceFactory extends ServiceFactory<AbstractDistance> {
+public class DistanceFactory extends ServiceFactory<DistanceMeasure> {
 
     private static DistanceFactory instance;
 
@@ -21,9 +21,9 @@ public class DistanceFactory extends ServiceFactory<AbstractDistance> {
     }
 
     private DistanceFactory() {
-        providers = new LinkedHashMap<String, AbstractDistance>();
-        Collection<? extends AbstractDistance> list = Lookup.getDefault().lookupAll(AbstractDistance.class);
-        for (AbstractDistance c : list) {
+        providers = new LinkedHashMap<String, DistanceMeasure>();
+        Collection<? extends DistanceMeasure> list = Lookup.getDefault().lookupAll(DistanceMeasure.class);
+        for (DistanceMeasure c : list) {
             providers.put(c.getName(), c);
         }
         sort();

@@ -1,6 +1,7 @@
 package org.clueminer.distance;
 
 import org.clueminer.distance.api.AbstractDistance;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
@@ -9,7 +10,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = AbstractDistance.class)
+@ServiceProvider(service = DistanceMeasure.class)
 public class KendalsDistance extends AbstractDistance {
 
     private static final String name = "Kendals Tau";

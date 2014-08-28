@@ -1,6 +1,6 @@
 package org.clueminer.distance;
 
-import org.clueminer.distance.api.AbstractDistance;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.distance.api.SymmetricDistance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
@@ -10,7 +10,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = AbstractDistance.class)
+@ServiceProvider(service = DistanceMeasure.class)
 public class CanberraDistance extends SymmetricDistance {
 
     private static final String name = "Canberra";
