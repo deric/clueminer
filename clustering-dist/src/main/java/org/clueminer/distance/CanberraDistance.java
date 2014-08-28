@@ -69,8 +69,14 @@ public class CanberraDistance extends SymmetricDistance implements DistanceMeasu
     public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
         double sum = 0.0;
+        double numerator;
+        double denominator;
         for (int i = 0; i < x.size(); i++) {
-            sum += Math.abs(x.get(i) - y.get(i)) / (Math.abs(x.get(i)) + Math.abs(y.get(i)));
+            numerator = Math.abs(x.get(i) - y.get(i));
+            denominator = (Math.abs(x.get(i)) + Math.abs(y.get(i)));
+            if (denominator > 0) {
+                sum += numerator / denominator;
+            }
         }
         return sum;
     }

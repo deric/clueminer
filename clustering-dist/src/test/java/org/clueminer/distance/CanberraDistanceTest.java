@@ -13,8 +13,8 @@ import org.junit.Test;
  */
 public class CanberraDistanceTest {
 
-    private static CanberraDistance subject = new CanberraDistance();
-    private static double delta = 1e-9;
+    private static final CanberraDistance subject = new CanberraDistance();
+    private static final double delta = 1e-9;
 
     public CanberraDistanceTest() {
     }
@@ -51,6 +51,18 @@ public class CanberraDistanceTest {
     public void testMeasure_Vector_Vector() {
         double dist = subject.measure(new DoubleArrayDataRow(new double[]{1, 2, 3}), new DoubleArrayDataRow(new double[]{2, 4, 6}));
         assertEquals(1.0, dist, delta);
+
+        Vector x = new DoubleArrayDataRow(new double[]{1, 5, 2, 3, 10});
+        Vector y = new DoubleArrayDataRow(new double[]{4, 15, 20, 5, 5});
+        dist = subject.measure(x, y);
+        assertEquals(2.5015151515151515, dist, delta);
+
+    }
+
+    @Test
+    public void testMeasureZeroDistance() {
+        double dist = subject.measure(new DoubleArrayDataRow(new double[]{0, 0, 0}), new DoubleArrayDataRow(new double[]{0, 0, 0}));
+        assertEquals(0.0, dist, delta);
     }
 
     @Test
