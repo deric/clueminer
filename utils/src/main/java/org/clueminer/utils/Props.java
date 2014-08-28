@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * An advance string map. It's an extension of
@@ -132,5 +133,18 @@ public class Props extends HashMap<String, String> {
         Properties properties = new Properties();
         properties.putAll((Map<String, String>) this.clone());
         return properties;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        Set<Entry<String, String>> col = entrySet();
+        for (Entry<String, String> e : col) {
+            sb.append(e.getKey());
+            sb.append(": ");
+            sb.append(e.getValue());
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

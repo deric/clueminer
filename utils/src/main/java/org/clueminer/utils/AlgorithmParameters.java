@@ -8,6 +8,14 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+/**
+ * Same functionality as @link{Props} here we store data in Properties, there in
+ * HashMap<String,String>
+ *
+ * @author deric
+ * @deprecated
+ */
+@Deprecated
 public class AlgorithmParameters implements Serializable {
 
     private static final long serialVersionUID = 2921695136119710825L;
@@ -35,7 +43,7 @@ public class AlgorithmParameters implements Serializable {
     }
 
     public boolean getBoolean(String key) {
-        return Boolean.valueOf(properties.getProperty(key)).booleanValue();
+        return Boolean.parseBoolean(properties.getProperty(key));
     }
 
     public boolean getBoolean(String key, boolean defValue) {
@@ -43,7 +51,7 @@ public class AlgorithmParameters implements Serializable {
         if (bool == null) {
             return defValue;
         }
-        return Boolean.valueOf(bool).booleanValue();
+        return Boolean.parseBoolean(bool);
     }
 
     public int getInt(String key) {
@@ -54,7 +62,7 @@ public class AlgorithmParameters implements Serializable {
         int value;
         try {
             value = Integer.parseInt(properties.getProperty(key));
-        } catch (Exception nfe) {
+        } catch (NumberFormatException nfe) {
             return defValue;
         }
         return value;
@@ -68,7 +76,7 @@ public class AlgorithmParameters implements Serializable {
         long value;
         try {
             value = Long.parseLong(properties.getProperty(key));
-        } catch (Exception nfe) {
+        } catch (NumberFormatException nfe) {
             return defValue;
         }
         return value;
@@ -86,7 +94,7 @@ public class AlgorithmParameters implements Serializable {
         float value;
         try {
             value = Float.parseFloat(properties.getProperty(key));
-        } catch (Exception nfe) {
+        } catch (NumberFormatException nfe) {
             return defValue;
         }
         return value;
@@ -96,7 +104,7 @@ public class AlgorithmParameters implements Serializable {
         return new URL(properties.getProperty(key));
     }
 
-    // util methods 
+    // util methods
     public Map getMap() {
         return properties;
     }
@@ -108,7 +116,7 @@ public class AlgorithmParameters implements Serializable {
     public Properties getProperty() {
         return properties;
     }
-    
+
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
