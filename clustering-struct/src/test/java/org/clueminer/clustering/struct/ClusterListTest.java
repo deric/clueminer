@@ -11,6 +11,7 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -25,7 +26,7 @@ import org.junit.Test;
 public class ClusterListTest {
 
     private static ClusterList subject;
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
 
     public ClusterListTest() {
     }
@@ -356,6 +357,7 @@ public class ClusterListTest {
 
     @Test
     public void testGetParams() {
+        assertNotNull(subject.getParams());
     }
 
     @Test
@@ -387,4 +389,16 @@ public class ClusterListTest {
         assertEquals(false, c3.equals(c1));
     }
 
+    @Test
+    public void testMergeParams() {
+        Props p = subject.getParams();
+        p.put("foo", "foo");
+        Props other = new Props();
+        other.put("bar", "bar");
+        subject.mergeParams(other);
+
+        assertEquals(2, subject.getParams().size());
+        assertEquals("bar", subject.getParams().get("bar"));
+        assertEquals("foo", subject.getParams().get("foo"));
+    }
 }
