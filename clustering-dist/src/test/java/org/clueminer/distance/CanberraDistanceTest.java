@@ -85,14 +85,30 @@ public class CanberraDistanceTest {
 
     @Test
     public void testIsSubadditive() {
+        Vector x = new DoubleArrayDataRow(new double[]{1, 2, 3});
+        Vector y = new DoubleArrayDataRow(new double[]{2, 4, 6});
+        Vector z = new DoubleArrayDataRow(new double[]{3, 6, 9});
+
+        double xy = subject.measure(x, y);
+        double yz = subject.measure(y, z);
+        double xz = subject.measure(x, z);
+
+        assertEquals(subject.isSubadditive(), xz <= (xy + yz));
+    }
+
+    @Test
+    public void testIsSymmetric() {
+        Vector x = new DoubleArrayDataRow(new double[]{1, 2, 3});
+        Vector y = new DoubleArrayDataRow(new double[]{2, 4, 6});
+        assertEquals(subject.isSymmetric(), subject.measure(x, y) == subject.measure(y, x));
     }
 
     @Test
     public void testIsIndiscernible() {
         Vector x = new DoubleArrayDataRow(new double[]{1, 2, 3});
-        Vector y = new DoubleArrayDataRow(new double[]{2, 4, 6});
-        double dist = subject.measure(x, y);
-        assertEquals(dist, subject.measure(y, x), delta);
+        Vector y = new DoubleArrayDataRow(new double[]{1, 2, 3});
+
+        assertEquals(subject.isIndiscernible(), 0.0 == subject.measure(x, y));
     }
 
 }
