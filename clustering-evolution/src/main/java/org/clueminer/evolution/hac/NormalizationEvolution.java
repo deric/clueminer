@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.hac;
 
 import java.util.List;
 import org.clueminer.clustering.aggl.AgglParams;
@@ -14,6 +14,7 @@ import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.hclust.HillClimbCutoff;
+import org.clueminer.evolution.AbstractEvolution;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;

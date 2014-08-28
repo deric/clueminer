@@ -85,7 +85,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
         Clustering<? extends Cluster> result = ((PartitioningClustering) algorithm).partition(data);
         Props p = result.getParams();
         for (int i = 0; i < weights.length; i++) {
-            p.putDouble("w(" + data.getAttribute(i).getName() + ")", weights[i]);
+            p.put("w(" + data.getAttribute(i).getName() + ")", String.format("%1$,.2f", weights[i]));
         }
         return result;
     }

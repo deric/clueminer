@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.hac;
 
 import java.util.List;
 import java.util.Random;
@@ -12,6 +12,7 @@ import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.eval.hclust.NaiveCutoff;
+import org.clueminer.evolution.AbstractIndividual;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;

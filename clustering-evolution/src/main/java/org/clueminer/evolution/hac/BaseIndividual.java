@@ -1,9 +1,10 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.hac;
 
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.evolution.AbstractIndividual;
 
 /**
  *
