@@ -1,5 +1,6 @@
 package org.clueminer.clustering.aggl;
 
+import org.clueminer.clustering.api.AgglParams;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

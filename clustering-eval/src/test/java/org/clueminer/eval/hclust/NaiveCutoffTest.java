@@ -1,6 +1,6 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;

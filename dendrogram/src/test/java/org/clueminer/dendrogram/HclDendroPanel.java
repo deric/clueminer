@@ -2,7 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.util.List;
 import java.util.Map;
-import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;

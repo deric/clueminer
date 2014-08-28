@@ -1,6 +1,6 @@
 package org.clueminer.clustering;
 
-import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -38,11 +38,12 @@ public class ClusteringExecutor {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         CutoffStrategy strategy = getCutoffStrategy(params);
         rowsResult.findCutoff(strategy);
+        params.putDouble(AgglParams.CUTOFF, rowsResult.getCutoff());
         return rowsResult;
     }
 
@@ -50,7 +51,7 @@ public class ClusteringExecutor {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
         //CutoffStrategy strategy = getCutoffStrategy(params);
@@ -60,7 +61,7 @@ public class ClusteringExecutor {
 
     private CutoffStrategy getCutoffStrategy(Props params) {
         CutoffStrategy strategy;
-        String cutoffAlg = params.get("cutoff", "-- naive --");
+        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
 
         if (!cutoffAlg.equals("-- naive --")) {
             ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
@@ -77,6 +78,7 @@ public class ClusteringExecutor {
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
+        clustering.mergeParams(params);
         clustering.lookupAdd(mapping);
         return clustering;
     }

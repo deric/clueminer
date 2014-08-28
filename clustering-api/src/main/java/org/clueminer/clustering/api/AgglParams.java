@@ -1,4 +1,4 @@
-package org.clueminer.clustering.aggl;
+package org.clueminer.clustering.api;
 
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.LinkageFactory;
@@ -26,6 +26,30 @@ public class AgglParams {
      * either we are clustering rows or columns
      */
     public static final String CLUSTER_ROWS = "cluster_rows";
+
+    /**
+     * Input matrix standardization method
+     */
+    public static final String STD = "std";
+
+    /**
+     * Whether to use logarithmic scaling - boolean parameter
+     */
+    public static final String LOG = "log-scale";
+
+    /**
+     * Algorithm name
+     */
+    public static final String ALG = "algorithm";
+
+    public static final String DIST = "distance";
+
+    /**
+     * Cutoff value
+     */
+    public static final String CUTOFF = "cutoff";
+    public static final String CUTOFF_STRATEGY = "cutoff-strategy";
+    public static final String CUTOFF_SCORE = "cutoff-score";
 
     private Props pref;
 

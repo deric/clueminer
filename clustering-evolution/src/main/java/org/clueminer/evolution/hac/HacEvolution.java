@@ -1,19 +1,16 @@
 package org.clueminer.evolution.hac;
 
 import java.util.List;
-import org.clueminer.clustering.aggl.AgglParams;
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.hclust.HillClimbCutoff;
+import org.clueminer.distance.api.AbstractDistance;
+import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.AbstractEvolution;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
@@ -25,21 +22,24 @@ import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Not really evolution, pretty much enumeration of all possible settings of
+ * hierarchical agglomerative clustering
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class NormalizationEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class HacEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
-    private static final String name = "Normalizations";
-    private AgglomerativeClustering algorithm;
+    private static final String name = "HAC";
+    private final ClusteringExecutor exec;
     private int gen;
+    private List<AbstractDistance> dist;
 
-    public NormalizationEvolution() {
+    public HacEvolution() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        algorithm = new HAC();
+        exec = new ClusteringExecutor();
         gen = 0;
     }
 
@@ -57,24 +57,23 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
     @Override
     public void run() {
         prepare();
-
-        Props params;
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();
+        DistanceFactory df = DistanceFactory.getInstance();
+        dist = df.getAll();
 
         int stdMethods = standartizations.size();
 
         if (ph != null) {
-            ph.start(stdMethods * 2);
+            ph.start(stdMethods * 2 * dist.size());
             ph.progress("starting evolution...");
         }
         int i = 0;
         for (String std : standartizations) {
-            params = new Props();
             //no log scale
-            makeClusters(std, false, params, i);
+            makeClusters(std, false, i);
             //with log scale
-            makeClusters(std, true, params, i);
+            makeClusters(std, true, i);
         }
 
         finish();
@@ -88,25 +87,24 @@ public class NormalizationEvolution extends AbstractEvolution implements Runnabl
      * @param params
      * @param i
      */
-    protected void makeClusters(String std, boolean logscale, Props params, int i) {
+    protected void makeClusters(String std, boolean logscale, int i) {
+        Props params = new Props();
         Clustering<? extends Cluster> clustering;
-        Matrix input = standartize(dataset, std, logscale);
-        params.put("algorithm", algorithm.getName());
-        params.putBoolean("logscale", logscale);
-        params.put("std", std);
+        params.put(AgglParams.ALG, algorithm.getName());
+        params.putBoolean(AgglParams.LOG, logscale);
+        params.put(AgglParams.STD, std);
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
-        HillClimbCutoff strategy = new HillClimbCutoff((ClusterEvaluator) evaluator);
-        params.put("cutoff-score", evaluator.getName());
-        rowsResult.findCutoff(strategy);
-        clustering = rowsResult.getClustering();
-        clustering.mergeParams(params);
-        DendrogramMapping mapping = new DendrogramData(dataset, input, rowsResult);
-        clustering.lookupAdd(mapping);
-        individualCreated(clustering);
-        if (ph != null) {
-            ph.progress(i++);
+        params.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
+        params.put(AgglParams.CUTOFF_SCORE, evaluator.getName());
+        for (DistanceMeasure dm : dist) {
+            params.put(AgglParams.DIST, dm.getName());
+            clustering = exec.clusterRows(dataset, dm, params);
+            individualCreated(clustering);
+            if (ph != null) {
+                ph.progress(i++);
+            }
         }
+
     }
 
     public Matrix standartize(Dataset<? extends Instance> data, String method, boolean logScale) {

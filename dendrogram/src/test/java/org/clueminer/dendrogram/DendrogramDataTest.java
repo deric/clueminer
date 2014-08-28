@@ -2,7 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;

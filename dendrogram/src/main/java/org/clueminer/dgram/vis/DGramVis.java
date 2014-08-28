@@ -2,7 +2,7 @@ package org.clueminer.dgram.vis;
 
 import java.awt.Image;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.AgglParams;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
