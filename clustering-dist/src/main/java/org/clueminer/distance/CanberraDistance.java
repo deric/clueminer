@@ -11,7 +11,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DistanceMeasure.class)
-public class CanberraDistance extends SymmetricDistance {
+public class CanberraDistance extends SymmetricDistance implements DistanceMeasure {
 
     private static final String name = "Canberra";
     private static float similarityFactor = 1.0f;
@@ -67,7 +67,12 @@ public class CanberraDistance extends SymmetricDistance {
 
     @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkInput(x, y);
+        double sum = 0.0;
+        for (int i = 0; i < x.size(); i++) {
+            sum += Math.abs(x.get(i) - y.get(i)) / (Math.abs(x.get(i)) + Math.abs(y.get(i)));
+        }
+        return sum;
     }
 
     @Override
@@ -75,19 +80,26 @@ public class CanberraDistance extends SymmetricDistance {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * We try to minimize distance, the closer vectors are, the better
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return x < y;
     }
 
     @Override
     public double getMinValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 0.0;
     }
 
     @Override
     public double getMaxValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Double.MAX_VALUE;
     }
 
     @Override
@@ -97,6 +109,6 @@ public class CanberraDistance extends SymmetricDistance {
 
     @Override
     public boolean isIndiscernible() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 }
