@@ -1,6 +1,5 @@
 package org.clueminer.evolution.attr;
 
-import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,10 +7,11 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.AbstractIndividual;
-import org.clueminer.utils.AlgorithmParameters;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -22,7 +22,6 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private double fitness = 0;
     private static Random rand = new Random();
     private double[] weights;
-    private AlgorithmParameters params;
     private Clustering<? extends Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
@@ -83,7 +82,12 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
             }
             data.add(copy);
         }
-        return ((PartitioningClustering) algorithm).partition(data);
+        Clustering<? extends Cluster> result = ((PartitioningClustering) algorithm).partition(data);
+        Props p = result.getParams();
+        for (int i = 0; i < weights.length; i++) {
+            p.putDouble("w(" + data.getAttribute(i).getName() + ")", weights[i]);
+        }
+        return result;
     }
 
     @Override
