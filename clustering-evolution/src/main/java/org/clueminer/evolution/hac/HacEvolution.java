@@ -4,11 +4,12 @@ import java.util.List;
 import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.AbstractEvolution;
@@ -33,7 +34,8 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     private static final String name = "HAC";
     private final ClusteringExecutor exec;
     private int gen;
-    private List<AbstractDistance> dist;
+    private List<DistanceMeasure> dist;
+    private List<ClusterLinkage> linkage;
 
     public HacEvolution() {
         instanceContent = new InstanceContent();
@@ -61,19 +63,23 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         List<String> standartizations = sf.getProviders();
         DistanceFactory df = DistanceFactory.getInstance();
         dist = df.getAll();
+        LinkageFactory lf = LinkageFactory.getInstance();
+        linkage = lf.getAll();
 
         int stdMethods = standartizations.size();
 
         if (ph != null) {
-            ph.start(stdMethods * 2 * dist.size());
+            ph.start(stdMethods * 2 * dist.size() * linkage.size());
             ph.progress("starting evolution...");
         }
         int i = 0;
         for (String std : standartizations) {
-            //no log scale
-            makeClusters(std, false, i);
-            //with log scale
-            makeClusters(std, true, i);
+            for (ClusterLinkage link : linkage) {
+                //no log scale
+                makeClusters(std, false, i, link);
+                //with log scale
+                makeClusters(std, true, i, link);
+            }
         }
 
         finish();
@@ -87,7 +93,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
      * @param params
      * @param i
      */
-    protected void makeClusters(String std, boolean logscale, int i) {
+    protected void makeClusters(String std, boolean logscale, int i, ClusterLinkage link) {
         Props params = new Props();
         Clustering<? extends Cluster> clustering;
         params.put(AgglParams.ALG, algorithm.getName());
@@ -96,6 +102,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         params.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         params.put(AgglParams.CUTOFF_SCORE, evaluator.getName());
+        params.put(AgglParams.LINKAGE, link.getName());
         for (DistanceMeasure dm : dist) {
             params.put(AgglParams.DIST, dm.getName());
             clustering = exec.clusterRows(dataset, dm, params);

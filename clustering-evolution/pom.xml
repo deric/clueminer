@@ -135,6 +135,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.evolution</publicPackage>
+                        <publicPackage>org.clueminer.evolution.attr</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

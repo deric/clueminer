@@ -1,7 +1,5 @@
 package org.clueminer.clustering.api;
 
-import org.clueminer.clustering.api.ClusterLinkage;
-import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
@@ -11,14 +9,9 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  */
 public class AgglParams {
-
-    private static final String PREFIX = "org.clueminer.clustering.aggl";
-
-    public static final String LINKAGE = PREFIX + ".clusterLinkage";
+    public static final String LINKAGE = "hac-linkage";
 
     private static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
-
-    public static final String DISTANCE_FUNCTION = PREFIX + ".distanceMeasure";
 
     public static final String DEFAULT_LINKAGE = "Complete Linkage";
 
@@ -73,7 +66,7 @@ public class AgglParams {
     }
 
     public DistanceMeasure getDistanceMeasure() {
-        String simFuncProp = pref.get(DISTANCE_FUNCTION, DEFAULT_DISTANCE_FUNCTION);
+        String simFuncProp = pref.get(DIST, DEFAULT_DISTANCE_FUNCTION);
         return DistanceFactory.getInstance().getProvider(simFuncProp);
     }
 

@@ -11,8 +11,8 @@ import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -84,7 +84,7 @@ public class HclDendroPanel extends DendroPanel {
     public DendrogramData execute() {
 
         DistanceFactory df = DistanceFactory.getInstance();
-        AbstractDistance func = df.getProvider("Euclidean");
+        DistanceMeasure func = df.getProvider("Euclidean");
         if (algorithm == null) {
             throw new RuntimeException("no algorithm was set");
         }

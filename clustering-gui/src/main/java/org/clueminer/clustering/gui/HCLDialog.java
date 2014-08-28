@@ -7,10 +7,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -387,11 +388,11 @@ public class HCLDialog extends ClusteringDialog {
         params.putBoolean("hcl-distance-absolute", true);
 
         DistanceFactory df = DistanceFactory.getInstance();
-        AbstractDistance func = df.getProvider((String) comboDistance.getSelectedItem());
+        DistanceMeasure func = df.getProvider((String) comboDistance.getSelectedItem());
         algorihm.setDistanceFunction(func);
 
         String standard = (String) comboStandardisation.getSelectedItem();
-        params.put("std", standard);
+        params.put(AgglParams.STD, standard);
 
         DefaultListModel lmTo = (DefaultListModel) lstApplyTrans.getModel();
 
