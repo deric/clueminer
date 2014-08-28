@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class EuclideanDistanceTest {
 
-    private static EuclideanDistance test;
+    private static EuclideanDistance subject;
     private static Instance x, y;
     private static double delta = 1e-9;
 
@@ -24,7 +24,7 @@ public class EuclideanDistanceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        test = new EuclideanDistance();
+        subject = new EuclideanDistance();
     }
 
     @AfterClass
@@ -83,12 +83,18 @@ public class EuclideanDistanceTest {
     public void testGetNodeOffset() {
     }
 
+    @Test
+    public void testMeasureZeroDistance() {
+        double dist = subject.measure(new DoubleArrayDataRow(new double[]{0, 0, 0}), new DoubleArrayDataRow(new double[]{0, 0, 0}));
+        assertEquals(0.0, dist, delta);
+    }
+
     /**
      * Test of measure method, of class EuclideanDistance.
      */
     @Test
     public void testMeasure_Instance_Instance() {
-        assertEquals(5.0, test.measure(x, y), delta);
+        assertEquals(5.0, subject.measure(x, y), delta);
     }
 
     /**
@@ -97,10 +103,10 @@ public class EuclideanDistanceTest {
     @Test
     public void testMeasure_3args() {
         double[] weights = new double[]{1.0, 1.0};
-        assertEquals(5.0, test.measure(x, y, weights), delta);
+        assertEquals(5.0, subject.measure(x, y, weights), delta);
         weights = new double[]{0.0, 0.0};
-        assertEquals(0.0, test.measure(x, y, weights), delta);
+        assertEquals(0.0, subject.measure(x, y, weights), delta);
         weights = new double[]{0.5, 0.5};
-        assertEquals(2.5, test.measure(x, y, weights), delta);
+        assertEquals(2.5, subject.measure(x, y, weights), delta);
     }
 }

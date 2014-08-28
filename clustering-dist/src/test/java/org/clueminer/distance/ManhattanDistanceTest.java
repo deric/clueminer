@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
  */
 public class ManhattanDistanceTest {
 
-    private static ManhattanDistance subject = new ManhattanDistance();
-    private static double delta = 1e-9;
+    private static final ManhattanDistance subject = new ManhattanDistance();
+    private static final double delta = 1e-9;
 
     public ManhattanDistanceTest() {
     }
@@ -57,6 +57,12 @@ public class ManhattanDistanceTest {
     }
 
     @Test
+    public void testMeasureZeroDistance() {
+        double dist = subject.measure(new DoubleArrayDataRow(new double[]{0, 0, 0}), new DoubleArrayDataRow(new double[]{0, 0, 0}));
+        assertEquals(0.0, dist, delta);
+    }
+
+    @Test
     public void testMeasure_3args() {
     }
 
@@ -70,6 +76,7 @@ public class ManhattanDistanceTest {
 
     @Test
     public void testCompare() {
+        assertEquals(true, subject.compare(1, 5));
     }
 
     @Test

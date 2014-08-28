@@ -66,7 +66,7 @@ public class ManhattanDistance extends MinkowskiDistance implements DistanceMeas
 
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return x < y;
     }
 
     @Override

@@ -71,10 +71,12 @@ public class CanberraDistanceTest {
 
     @Test
     public void testCompare() {
+        assertEquals(true, subject.compare(1, 5));
     }
 
     @Test
     public void testGetMinValue() {
+        assertEquals(0.0, subject.getMinValue(), delta);
     }
 
     @Test
