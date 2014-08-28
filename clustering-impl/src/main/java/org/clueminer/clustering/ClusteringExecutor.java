@@ -64,7 +64,8 @@ public class ClusteringExecutor {
         String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
 
         if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "NMI");
+            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
             strategy = CutoffStrategyFactory.getInstance().getDefault();
             strategy.setEvaluator(eval);
         } else {

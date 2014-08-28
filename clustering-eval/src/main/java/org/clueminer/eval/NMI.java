@@ -1,10 +1,8 @@
 package org.clueminer.eval;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusterEvaluator;
