@@ -20,7 +20,7 @@ import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.external.JaccardIndex;
-import org.clueminer.evolution.AttrEvolution;
+import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.utils.FileUtils;
 import org.openide.util.NbBundle;
 

@@ -54,7 +54,7 @@ public abstract class AbstractIndividual<T extends Individual> implements Indivi
      * @param clustering
      * @return
      */
-    protected EvaluationTable evaluationTable(Clustering<Cluster> clustering) {
+    protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
         EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {

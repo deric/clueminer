@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.attr;
 
 import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.AbstractIndividual;
 import org.clueminer.utils.AlgorithmParameters;
 
 /**
@@ -22,7 +23,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private static Random rand = new Random();
     private double[] weights;
     private AlgorithmParameters params;
-    private Clustering<Cluster> clustering;
+    private Clustering<? extends Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
         this.evolution = evolution;
@@ -52,7 +53,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     }
 
     @Override
-    public Clustering<Cluster> getClustering() {
+    public Clustering<? extends Cluster> getClustering() {
         return clustering;
     }
 
@@ -69,7 +70,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
      *
      * @return clustering according to current parameters
      */
-    private Clustering<Cluster> updateCustering() {
+    private Clustering<? extends Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
         Instance copy;
         for (Instance inst : evolution.getDataset()) {

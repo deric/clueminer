@@ -1,9 +1,10 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.attr;
 
 import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.AbstractPopulation;
 
 /**
  *
@@ -11,7 +12,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
  */
 public class Population extends AbstractPopulation<WeightsIndividual> {
 
-    private Evolution evolution;
+    private final Evolution evolution;
 
     public Population(Evolution evolve, int size) {
         this.evolution = evolve;

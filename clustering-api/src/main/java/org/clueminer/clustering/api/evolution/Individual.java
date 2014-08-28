@@ -19,7 +19,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return final clustering
      */
-    public Clustering<Cluster> getClustering();
+    public Clustering<? extends Cluster> getClustering();
 
     /**
      * Update fitness function value (counting fitness could be quite expensive)

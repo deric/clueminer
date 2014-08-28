@@ -1,4 +1,4 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.attr;
 
 import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.clustering.api.evolution.Individual;
@@ -15,6 +15,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.AbstractEvolution;
+import org.clueminer.evolution.AbstractIndividual;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;

@@ -1,5 +1,6 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.attr;
 
+import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.dataset.benchmark.ConsoleDump;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.dataset.benchmark.GnuplotWriter;

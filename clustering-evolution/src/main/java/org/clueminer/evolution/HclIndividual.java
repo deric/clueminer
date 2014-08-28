@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.distance.api.AbstractDistance;
@@ -29,7 +30,7 @@ public class HclIndividual extends AbstractIndividual<HclIndividual> {
     private boolean debug = true;
     private Clustering clustering;
 
-    public HclIndividual(AttrEvolution evolution) {
+    public HclIndividual(Evolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         init();

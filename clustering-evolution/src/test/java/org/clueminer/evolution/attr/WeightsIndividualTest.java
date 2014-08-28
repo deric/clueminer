@@ -1,5 +1,7 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.attr;
 
+import org.clueminer.evolution.attr.WeightsIndividual;
+import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.evolution.Evolution;
