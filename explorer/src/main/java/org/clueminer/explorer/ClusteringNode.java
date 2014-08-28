@@ -86,20 +86,9 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     private String generateName() {
         Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
         if (clustering != null) {
-            StringBuilder sb = new StringBuilder("(" + clustering.size() + ")");
-            sb.append("[");
-            int i = 0;
-            for (int s : clustering.clusterSizes()) {
-                if (i > 0) {
-                    sb.append(',');
-                }
-                sb.append(s);
-                i++;
-            }
-            sb.append("]");
-            return sb.toString();
+            return clustering.getName();
         }
-        return "(empty)";
+        return "(missing)";
     }
 
     @Override
