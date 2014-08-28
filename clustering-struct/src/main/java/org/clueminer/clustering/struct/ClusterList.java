@@ -47,7 +47,6 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     public String getName() {
         if (name == null) {
             name = "|" + size() + "|";
-
         }
         return name;
     }
