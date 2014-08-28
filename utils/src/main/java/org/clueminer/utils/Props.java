@@ -51,10 +51,22 @@ public class Props extends HashMap<String, String> {
         return result;
     }
 
+    /**
+     * This might be a get operation which modifies HashMap, however in context
+     * of algorithms parameters it makes sense.
+     *
+     * @param key
+     * @param def
+     * @return
+     */
     public String get(String key, String def) {
         String result = this.get(key);
         if (result == null) {
             result = def;
+            /**
+             * store the value, so that we know which default value was used
+             */
+            put(key, result);
         }
         return result;
     }
@@ -70,7 +82,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public int getInt(String key, int def) {
-        String val = get(key, "" + def);
+        String val = get(key, String.valueOf(def));
         int ret = Integer.parseInt(val);
         return ret;
     }
@@ -85,7 +97,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public boolean getBoolean(String key, boolean def) {
-        String val = get(key, "" + def);
+        String val = get(key, String.valueOf(def));
         return Boolean.parseBoolean(val);
     }
 
@@ -96,7 +108,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public long getLong(String key, long def) {
-        String val = get(key, "" + def);
+        String val = get(key, String.valueOf(def));
         long ret = Long.parseLong(val);
         return ret;
     }
@@ -112,7 +124,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public double getDouble(String key, double def) {
-        String val = get(key, "" + def);
+        String val = get(key, String.valueOf(def));
         double ret = Double.parseDouble(val);
         return ret;
     }

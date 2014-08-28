@@ -56,7 +56,8 @@ public class PropsTest {
     @Test
     public void testGetBoolean_String_boolean() {
         assertEquals(false, subject.getBoolean("some_bool", false));
-        assertEquals(true, subject.getBoolean("some_bool", true));
+        //intentionally
+        assertEquals(false, subject.getBoolean("some_bool"));
     }
 
     @Test
