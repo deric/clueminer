@@ -150,11 +150,10 @@ public class Props extends HashMap<String, String> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Set<Entry<String, String>> col = entrySet();
-        for (Entry<String, String> e : col) {
-            sb.append(e.getKey());
+        for (String key : this.keySet()) {
+            sb.append(key);
             sb.append(": ");
-            sb.append(e.getValue());
+            sb.append(get(key));
             sb.append("\n");
         }
         return sb.toString();

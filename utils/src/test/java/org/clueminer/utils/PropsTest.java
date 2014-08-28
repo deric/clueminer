@@ -115,4 +115,11 @@ public class PropsTest {
         assertEquals(subject.getDouble(key), d, delta);
     }
 
+    @Test
+    public void testToString() {
+        subject.put("some keeeey", "value");
+        String str = subject.toString();
+        System.out.println("toString: " + str);
+    }
+
 }
