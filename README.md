@@ -1,6 +1,7 @@
 # Clueminer
 
 [![Build Status](https://travis-ci.org/deric/clueminer.png?branch=master)](https://travis-ci.org/deric/clueminer)
+[![Codeship Status](https://www.codeship.io/projects/8b9aab80-b984-0131-5ab2-4202456fde48/status?branch=master)](https://www.codeship.io/projects/20807)
 
 Clueminer is a platform for interactive data-mining with special focus on clustering algorithms.
 
