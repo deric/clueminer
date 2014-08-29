@@ -5,6 +5,7 @@
         <artifactId>clueminer-parent</artifactId>
         <groupId>org.clueminer</groupId>
         <version>0.1-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.clueminer</groupId>
