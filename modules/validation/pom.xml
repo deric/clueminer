@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>clueminer-parent</artifactId>
-    <groupId>org.clueminer</groupId>
-    <version>0.1-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
-  </parent>
+        <artifactId>clueminer-parent</artifactId>
+        <groupId>org.clueminer</groupId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
 
     <groupId>org.netbeans</groupId>
     <artifactId>validation</artifactId>
@@ -59,7 +59,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.11</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
@@ -75,8 +74,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
 
