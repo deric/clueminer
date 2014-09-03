@@ -1,22 +1,19 @@
 package org.clueminer.explorer;
 
+import org.clueminer.explorer.gui.ExplorerToolbar;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AICScore;
 import org.clueminer.eval.NMI;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -74,6 +71,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private IconView iconView;
     private ClustComparator comparator;
     private ClustSorted children;
+    private Evolution alg;
 
     public ExplorerTopComponent() {
         initComponents();
@@ -136,7 +134,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         children = new ClustSorted();
         children.setComparator(comparator);
 
-                //alg.addEvolutionListener(this);
+        //alg.addEvolutionListener(this);
         //children = Children.create(new MyChildFactory(myModels), true);
         root = new AbstractNode(children);
         root.setDisplayName("root node");
@@ -213,7 +211,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         if (dataset != null) {
             //start evolution
             EvolutionFactory ef = EvolutionFactory.getInstance();
-            Evolution alg = ef.getProvider(evolution);
+            alg = ef.getProvider(evolution);
             if (alg != null) {
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
@@ -234,6 +232,11 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 task.schedule(0);
             }
         }
+    }
+
+    @Override
+    public void evaluatorChanged(ExternalEvaluator eval) {
+        //TODO implement
     }
 
 }

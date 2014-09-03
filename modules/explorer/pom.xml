@@ -126,6 +126,11 @@
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>RELEASE80</version>
+        </dependency>
     </dependencies>
 
     <build>

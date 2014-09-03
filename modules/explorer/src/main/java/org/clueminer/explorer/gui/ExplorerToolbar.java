@@ -1,5 +1,7 @@
-package org.clueminer.explorer;
+package org.clueminer.explorer.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -8,7 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
+import org.clueminer.explorer.ToolbarListener;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -20,6 +29,8 @@ public class ExplorerToolbar extends JToolBar {
     private javax.swing.JSlider sliderGenerations;
     private ToolbarListener listener;
     private JButton btnStart;
+    private JButton btnFunction;
+    private EvalFuncPanel functionPanel;
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
@@ -71,7 +82,27 @@ public class ExplorerToolbar extends JToolBar {
             }
         });
         add(btnStart);
+        btnFunction = new JButton(ImageUtilities.loadImageIcon("org/clueminer/clueminer/explorer/function16.png", false));
+        btnFunction.setToolTipText("Choose evaluation function");
+        btnFunction.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (functionPanel == null) {
+                    functionPanel = new EvalFuncPanel();
+                }
+                DialogDescriptor dd = new DialogDescriptor(functionPanel, NbBundle.getMessage(ExplorerToolbar.class, "FunctionPanel.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    ExternalEvaluator eval = functionPanel.getEvaluator();
+                    if (eval != null) {
+                        if (listener != null) {
+                            listener.evaluatorChanged(eval);
+                        }
+                    }
+                }
+            }
+        });
+        add(btnFunction);
     }
 
     private String[] initEvolution() {
