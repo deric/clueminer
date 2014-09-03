@@ -62,9 +62,9 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         isFinished = false;
-        avgFitness = new Pair<Double, Double>();
-        bestFitness = new Pair<Double, Double>();
-        time = new Pair<Long, Long>();
+        avgFitness = new Pair<>();
+        bestFitness = new Pair<>();
+        time = new Pair<>();
     }
 
     @Override
@@ -75,12 +75,12 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
     @Override
     public void run() {
         time.a = System.currentTimeMillis();
-        LinkedList<Individual> children = new LinkedList<Individual>();
+        LinkedList<Individual> children = new LinkedList<>();
         Population pop = new Population(this, populationSize);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
-        ArrayList<Individual> selected = new ArrayList<Individual>(populationSize);
+        ArrayList<Individual> selected = new ArrayList<>(populationSize);
         //System.out.println(pop);
         if (ph != null) {
             ph.start(generations);

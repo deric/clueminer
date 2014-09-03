@@ -38,7 +38,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     private int gen;
     private List<DistanceMeasure> dist;
     private List<ClusterLinkage> linkage;
-    private Logger logger = Logger.getLogger(HacEvolution.class.getName());
+    private static final Logger logger = Logger.getLogger(HacEvolution.class.getName());
     private int cnt;
 
     public HacEvolution() {

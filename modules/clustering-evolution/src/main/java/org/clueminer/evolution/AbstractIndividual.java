@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.eval.utils.HashEvaluationTable;
-import org.openide.util.Lookup;
 
 /**
  * @param <T>

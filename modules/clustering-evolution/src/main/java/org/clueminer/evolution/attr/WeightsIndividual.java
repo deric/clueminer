@@ -115,7 +115,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
 
     @Override
     public List<WeightsIndividual> cross(Individual i) {
-        List<WeightsIndividual> offsprings = new ArrayList<WeightsIndividual>();
+        List<WeightsIndividual> offsprings = new ArrayList<>();
         // we'll work with copies
         WeightsIndividual thisOne = this.deepCopy();
         WeightsIndividual secondOne = ((WeightsIndividual) i).deepCopy();

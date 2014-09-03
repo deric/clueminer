@@ -31,7 +31,7 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
      * @return List<Individual> of selected individuals
      */
     public List<? extends Individual> selectIndividuals(int count) {
-        ArrayList<WeightsIndividual> selected = new ArrayList<WeightsIndividual>(count);
+        ArrayList<WeightsIndividual> selected = new ArrayList<>(count);
         //tournament selection
         int rand_cnt = getIndividuals().length / 10;
         int rand[] = new int[rand_cnt];
