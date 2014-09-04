@@ -105,7 +105,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
         Clustering<? extends Cluster> clustering;
-        params.put(AgglParams.ALG, algorithm.getName());
+        params.put(AgglParams.ALG, exec.getAlgorithm().getName());
         params.putBoolean(AgglParams.LOG, logscale);
         params.put(AgglParams.STD, std);
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);

@@ -218,7 +218,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
                 alg.setGenerations(toolbar.getGenerations());
-                alg.setAlgorithm(new KMeans(3, 100));
 
                 InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
