@@ -1,7 +1,7 @@
 package org.clueminer.explorer;
 
 import java.util.Comparator;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.openide.nodes.Node;
 
@@ -11,9 +11,9 @@ import org.openide.nodes.Node;
  */
 public class ClustComparator implements Comparator<Node> {
 
-    private ClusterEvaluator eval;
+    private ClusterEvaluation eval;
 
-    public ClustComparator(ClusterEvaluator eval) {
+    public ClustComparator(ClusterEvaluation eval) {
         this.eval = eval;
     }
 
@@ -37,6 +37,10 @@ public class ClustComparator implements Comparator<Node> {
         } else {
             return 1;
         }
+    }
+
+    public void setEvaluator(ClusterEvaluation eval) {
+        this.eval = eval;
     }
 
 }

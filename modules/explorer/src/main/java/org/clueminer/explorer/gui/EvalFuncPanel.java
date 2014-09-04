@@ -2,8 +2,9 @@ package org.clueminer.explorer.gui;
 
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 
 /**
  *
@@ -16,25 +17,34 @@ public class EvalFuncPanel extends javax.swing.JPanel {
      */
     public EvalFuncPanel() {
         initComponents();
+        cbEval.setSelectedItem("NMI");
     }
 
     private String[] initEvaluator() {
         ExternalEvaluatorFactory ef = ExternalEvaluatorFactory.getInstance();
         List<String> list = ef.getProviders();
-        String[] res = new String[list.size()];
-        int i = 0;
-        for (String s : list) {
-            res[i++] = s;
-        }
-        return res;
+        return list.toArray(new String[list.size()]);
     }
 
-    public ExternalEvaluator getEvaluator() {
-        String eval = (String) cbEval.getSelectedItem();
-        ExternalEvaluator evaluator = ExternalEvaluatorFactory.getInstance().getProvider(eval);
+    public ClusterEvaluation getEvaluator() {
+        String eval;
+        ClusterEvaluation evaluator;
+        if (rbExternal.isSelected()) {
+            eval = (String) cbEval.getSelectedItem();
+            evaluator = ExternalEvaluatorFactory.getInstance().getProvider(eval);
+        } else {
+            eval = (String) cbInternal.getSelectedItem();
+            evaluator = InternalEvaluatorFactory.getInstance().getProvider(eval);
+        }
+
         return evaluator;
     }
 
+    private String[] initInternalEvaluator() {
+        InternalEvaluatorFactory ef = InternalEvaluatorFactory.getInstance();
+        List<String> list = ef.getProviders();
+        return list.toArray(new String[list.size()]);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,12 +55,31 @@ public class EvalFuncPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         lbFunc = new javax.swing.JLabel();
         cbEval = new javax.swing.JComboBox();
+        rbExternal = new javax.swing.JRadioButton();
+        rbInternal = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        cbInternal = new javax.swing.JComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbFunc, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbFunc.text")); // NOI18N
 
         cbEval.setModel(new DefaultComboBoxModel(initEvaluator()));
+
+        buttonGroup1.add(rbExternal);
+        rbExternal.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(rbExternal, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.rbExternal.text")); // NOI18N
+
+        buttonGroup1.add(rbInternal);
+        org.openide.awt.Mnemonics.setLocalizedText(rbInternal, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.rbInternal.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.jLabel1.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.jLabel2.text")); // NOI18N
+
+        cbInternal.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -58,25 +87,52 @@ public class EvalFuncPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lbFunc)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(rbExternal)
+                    .addComponent(rbInternal)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(lbFunc))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbExternal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbFunc)
                     .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(260, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbInternal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cbEval;
+    private javax.swing.JComboBox cbInternal;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lbFunc;
+    private javax.swing.JRadioButton rbExternal;
+    private javax.swing.JRadioButton rbInternal;
     // End of variables declaration//GEN-END:variables
+
 }

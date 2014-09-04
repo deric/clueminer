@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.explorer.ToolbarListener;
@@ -82,7 +83,7 @@ public class ExplorerToolbar extends JToolBar {
             }
         });
         add(btnStart);
-        btnFunction = new JButton(ImageUtilities.loadImageIcon("org/clueminer/clueminer/explorer/function16.png", false));
+        btnFunction = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/function16.png", false));
         btnFunction.setToolTipText("Choose evaluation function");
         btnFunction.addActionListener(new ActionListener() {
 
@@ -93,7 +94,7 @@ public class ExplorerToolbar extends JToolBar {
                 }
                 DialogDescriptor dd = new DialogDescriptor(functionPanel, NbBundle.getMessage(ExplorerToolbar.class, "FunctionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    ExternalEvaluator eval = functionPanel.getEvaluator();
+                    ClusterEvaluation eval = functionPanel.getEvaluator();
                     if (eval != null) {
                         if (listener != null) {
                             listener.evaluatorChanged(eval);

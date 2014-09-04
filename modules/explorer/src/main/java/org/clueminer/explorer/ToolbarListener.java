@@ -1,7 +1,7 @@
 package org.clueminer.explorer;
 
 import java.awt.event.ActionEvent;
-import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ClusterEvaluation;
 
 /**
  *
@@ -13,5 +13,5 @@ public interface ToolbarListener {
 
     void startEvolution(ActionEvent evt, String evolution);
 
-    void evaluatorChanged(ExternalEvaluator eval);
+    void evaluatorChanged(ClusterEvaluation eval);
 }

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.evolution.Evolution;
@@ -235,8 +237,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     @Override
-    public void evaluatorChanged(ExternalEvaluator eval) {
+    public void evaluatorChanged(ClusterEvaluation eval) {
         //TODO implement
+        if(comparator!= null){
+            comparator.setEvaluator(eval);
+            children.setComparator(comparator);
+        }
     }
 
 }
