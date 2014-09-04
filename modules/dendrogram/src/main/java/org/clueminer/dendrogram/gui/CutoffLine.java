@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.std.StdScale;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -34,14 +35,23 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                               10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
     private int sliderDiameter = 6;
+    private StdScale scale;
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
         this.tree = tree;
         this.sliderDiameter = p.getSliderDiameter();
         this.setOpaque(false); //don't paint background (parent component is responsible for that)
+        this.scale = new StdScale();
     }
 
+    /**
+     * Draws dashed line, position is translated into interval where minimum is
+     * slider diameter (however it's mirrored, so it becomes maximum). The other
+     * side of interval is defined by the width of the component.
+      *
+     * @param g2
+     */
     private void drawLine(Graphics2D g2) {
         g2.setColor(Color.RED);
 
@@ -49,12 +59,13 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         if (hclust == null) {
             return;
         }
-
-        linepos = computePosition(hclust.getCutoff(), hclust);
+        //there's a gap on tree root side which is equal to sliderDiameter
+        //nice trick how to "inverse" scale
+        linepos = computePosition(hclust, getWidth() - sliderDiameter, sliderDiameter);
         g2.setStroke(dashed);
         //draw dashed line across whole tree width
         // x1, y1, x2, y2
-        g2.drawLine(linepos, 0, linepos, tree.getTreeWidth());
+        g2.drawLine(linepos, 0, linepos, getHeight());
     }
 
     @Override
@@ -71,15 +82,14 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     /**
      * Computes position of line on the dendrogram tree
      *
-     * @param cutoff
-     * @param clustering
+     * @param hres
+     * @param min  target interval minimum
+     * @param max  target interval maximum
      *
      * @return
      */
-    protected int computePosition(double cutoff, HierarchicalResult clustering) {
-        //there's a gap on tree root side which is equal to sliderDiameter
-        int treeHeight = tree.getTreeHeight() - sliderDiameter;
-        return (int) (treeHeight - (cutoff / clustering.getMaxTreeHeight() * treeHeight)) + sliderDiameter;
+    protected int computePosition(HierarchicalResult hres, int min, int max) {
+        return (int) scale.scaleToRange(hres.getCutoff(), 0, hres.getMaxTreeHeight(), min, max);
     }
 
     /**
