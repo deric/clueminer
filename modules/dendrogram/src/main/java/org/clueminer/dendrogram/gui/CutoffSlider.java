@@ -117,6 +117,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         hclust = dataset.getRowsResult();
+        updatePosition();
     }
 
     @Override

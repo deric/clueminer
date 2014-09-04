@@ -12,19 +12,21 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.TreeCluster;
-import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.TreeCluster;
+import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
+import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
 /**
@@ -349,7 +351,6 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      */
     @Override
     public void setClustering(Clustering clustering) {
-        logger.log(Level.INFO, "got clustering size: {0}", clustering.size());
         Lookup lookup = clustering.getLookup();
         if (lookup != null) {
             DendrogramMapping mapping = lookup.lookup(DendrogramMapping.class);

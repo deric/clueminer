@@ -23,7 +23,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private static final long serialVersionUID = -8874221664051165124L;
     private final DendroPane panel;
     private final DendrogramTree tree;
-    private HierarchicalResult clustering;
+    private HierarchicalResult hclust;
     final static float dash1[] = {10.0f};
     //start at tree root
     private int linepos = 100;
@@ -46,11 +46,11 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         g2.setColor(Color.RED);
 
         //no data available
-        if (clustering == null) {
+        if (hclust == null) {
             return;
         }
 
-        linepos = computePosition(clustering.getCutoff(), clustering);
+        linepos = computePosition(hclust.getCutoff(), hclust);
         g2.setStroke(dashed);
         //draw dashed line across whole tree width
         // x1, y1, x2, y2
@@ -91,7 +91,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private double computeCutoff(int pos) {
         //min tree distance is distance of lowest level, not leaves!
         if (tree != null && tree.hasData()) {
-            double cut = (pos * clustering.getMaxTreeHeight() / 100.0);
+            double cut = (pos * hclust.getMaxTreeHeight() / 100.0);
             //inverse value (slider min is on left)
             return cut;
         } else {
@@ -119,13 +119,13 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
      */
     public void setCutoff(int pos, boolean isAdjusting) {
         final double cut = computeCutoff(pos);
-        if (!isAdjusting && clustering != null) {
+        if (!isAdjusting && hclust != null) {
             RequestProcessor.Task task = RP.create(new Runnable() {
 
                 @Override
                 public void run() {
                     //quite expensive to compute
-                    Clustering c = clustering.updateCutoff(cut);
+                    Clustering c = hclust.updateCutoff(cut);
                     if (c != null) {
                         //@TODO depending on horizontal or vertical position we shoud choose rows or columns
                         panel.fireClusteringChanged(c);
@@ -139,7 +139,7 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        this.clustering = dataset.getRowsResult();
+        this.hclust = dataset.getRowsResult();
         updateSize();
         repaint();
     }

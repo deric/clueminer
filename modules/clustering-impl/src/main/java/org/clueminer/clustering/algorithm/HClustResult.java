@@ -49,7 +49,7 @@ public class HClustResult implements HierarchicalResult {
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy;
-    private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
+    private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
 
@@ -207,7 +207,6 @@ public class HClustResult implements HierarchicalResult {
                 mapping = assign;
             }
         }
-        logger.info(clusters.toString());
         //add input dataset to clustering lookup
         clusters.lookupAdd(dataset);
         clusters.lookupAdd(this);
@@ -332,7 +331,7 @@ public class HClustResult implements HierarchicalResult {
         if (this.scores.containsKey(evaluator)) {
             this.scores.get(evaluator).put(clustNum, sc);
         } else {
-            Map<Integer, Double> hm = new HashMap<Integer, Double>();
+            Map<Integer, Double> hm = new HashMap<>();
             hm.put(clustNum, sc);
             this.scores.put(evaluator, hm);
         }

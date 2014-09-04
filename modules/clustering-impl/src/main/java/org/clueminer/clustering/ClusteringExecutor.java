@@ -1,5 +1,7 @@
 package org.clueminer.clustering;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -29,6 +31,7 @@ import org.clueminer.utils.Props;
 public class ClusteringExecutor {
 
     private AgglomerativeClustering algorithm;
+    private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
 
     public ClusteringExecutor() {
         algorithm = new HAC();
@@ -42,8 +45,9 @@ public class ClusteringExecutor {
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         CutoffStrategy strategy = getCutoffStrategy(params);
-        rowsResult.findCutoff(strategy);
-        params.putDouble(AgglParams.CUTOFF, rowsResult.getCutoff());
+        double cut = rowsResult.findCutoff(strategy);
+        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        params.putDouble(AgglParams.CUTOFF, cut);
         return rowsResult;
     }
 
@@ -69,7 +73,7 @@ public class ClusteringExecutor {
             strategy = CutoffStrategyFactory.getInstance().getDefault();
             strategy.setEvaluator(eval);
         } else {
-            strategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
+            strategy = CutoffStrategyFactory.getInstance().getProvider("hill-climb cutoff");
         }
         return strategy;
     }
