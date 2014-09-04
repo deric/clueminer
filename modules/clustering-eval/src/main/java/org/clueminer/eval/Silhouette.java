@@ -76,7 +76,7 @@ public class Silhouette extends ClusterEvaluator {
      */
     public double instanceScore(Cluster clust, Clustering clusters, int i, Instance x) {
         Instance y;
-        double a, b, dist;
+        double a, b, dist, denom;
         a = 0;
         for (int k = 0; k < clust.size(); k++) {
             y = clust.instance(k);
@@ -90,7 +90,16 @@ public class Silhouette extends ClusterEvaluator {
 
         //find minimal distance to other clusters
         b = minDistance(x, clusters, i);
-        return (b - a) / Math.max(b, a);
+        denom = Math.max(b, a);
+        //avoid NaN, if possible
+        if (denom == 0.0 || a == b) {
+            return 0.0;
+        }
+        if (a < b) {
+            return 1 - a / b;
+        }
+        return (b / a) - 1;
+        //return (b - a) / denom;
     }
 
     /**

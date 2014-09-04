@@ -1,6 +1,5 @@
 package org.clueminer.eval;
 
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -8,7 +7,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.AlgorithmParameters;
+import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -24,7 +24,7 @@ public class SilhouetteTest {
     private static Dataset<? extends Instance> dataset;
     private static Clustering clustering;
     private static Clustering clusters;
-    private static AlgorithmParameters params;
+    private static Props params;
     private static HierarchicalResult rowsResult;
     private static Matrix input;
     private static double delta = 1e-9;
@@ -47,18 +47,18 @@ public class SilhouetteTest {
         ///clustering = rowsResult.getClustering(dendroData.getRowsMapping(), dataset);
     }
 
-    private static AlgorithmParameters getParams() {
-        AlgorithmParameters p = new AlgorithmParameters();
+    private static Props getParams() {
+        Props p = new Props();
         // alg name
-        p.setProperty("name", "HCL");
-        p.setProperty("distance-factor", "1.0");
-        p.setProperty("hcl-distance-absolute", "1.0");
+        p.put("name", "HCL");
+        p.putDouble("distance-factor", 1.0);
+        p.putDouble("hcl-distance-absolute", 1.0);
 
-        p.setProperty("calculate-experiments", String.valueOf(true));
-        p.setProperty("optimize-rows-ordering", String.valueOf(true));
-        p.setProperty("optimize-cols-ordering", String.valueOf(true));
-        p.setProperty("optimize-sample-ordering", String.valueOf(true));
-        p.setProperty("calculate-rows", String.valueOf(true));
+        p.putBoolean("calculate-experiments", true);
+        p.putBoolean("optimize-rows-ordering", true);
+        p.putBoolean("optimize-cols-ordering", true);
+        p.putBoolean("optimize-sample-ordering", true);
+        p.putBoolean("calculate-rows", true);
         return p;
     }
 
@@ -102,7 +102,7 @@ public class SilhouetteTest {
         /**
          * @TODO fix this
          */
-        // assertEquals(matlab, score, delta);
+        //assertEquals(matlab, score, delta);
         System.out.println("computing took = " + (end - start) + " ms");
     }
 
