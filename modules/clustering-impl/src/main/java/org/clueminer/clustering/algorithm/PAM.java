@@ -9,7 +9,6 @@ import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.AlgorithmParameters;
 import org.clueminer.utils.Props;
 
 /**
@@ -104,7 +103,7 @@ public class PAM extends KClustererBase implements PartitioningClustering {
     }
 
     @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
+    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, Props params) {
         Assignment assignments = new HardAssignment(dataset.size());
         int[] medioids = selectMedioids(dataset);
 

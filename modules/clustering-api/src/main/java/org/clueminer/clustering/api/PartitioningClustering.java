@@ -2,7 +2,7 @@ package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.AlgorithmParameters;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -26,6 +26,6 @@ public interface PartitioningClustering extends ClusteringAlgorithm {
      * @param params
      * @return
      */
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, AlgorithmParameters params);
+    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, Props params);
 
 }

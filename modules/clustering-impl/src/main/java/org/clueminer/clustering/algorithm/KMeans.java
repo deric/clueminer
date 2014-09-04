@@ -13,7 +13,6 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.AlgorithmParameters;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 
@@ -127,7 +126,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     }
 
     @Override
-    public Clustering partition(Dataset<? extends Instance> dataset, AlgorithmParameters params) {
+    public Clustering partition(Dataset<? extends Instance> dataset, Props params) {
         //@TODO parse algorithm parameters
         return partition(dataset);
     }
