@@ -12,11 +12,27 @@ import org.openide.nodes.Node;
 public class ClustComparator implements Comparator<Node> {
 
     private ClusterEvaluation eval;
+    private boolean ascOrder = false;
 
     public ClustComparator(ClusterEvaluation eval) {
         this.eval = eval;
     }
 
+    public ClustComparator(ClusterEvaluation eval, boolean ascendingOrder) {
+        this.eval = eval;
+        this.ascOrder = ascendingOrder;
+    }
+
+    /**
+     * Compare two clustering nodes. We use descending order, therefore better
+     * score gets -1 instead of 1.
+     *
+     * @TODO consider parameter for inverting the ordering
+     *
+     * @param o1
+     * @param o2
+     * @return
+     */
     @Override
     public int compare(Node o1, Node o2) {
         ClusteringNode c1 = (ClusteringNode) o1;
@@ -32,15 +48,33 @@ public class ClustComparator implements Comparator<Node> {
             return 0;
         }
 
-        if (eval.compareScore(s1, s2)) {
-            return -1;
+        // "best" solution is at the end
+        if (ascOrder) {
+            if (eval.compareScore(s1, s2)) {
+                return 1;
+            } else {
+                return -1;
+            }
         } else {
-            return 1;
+            if (eval.compareScore(s1, s2)) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
+
     }
 
     public void setEvaluator(ClusterEvaluation eval) {
         this.eval = eval;
+    }
+
+    public boolean isAscOrder() {
+        return ascOrder;
+    }
+
+    public void setAscOrder(boolean ascOrder) {
+        this.ascOrder = ascOrder;
     }
 
 }
