@@ -43,26 +43,22 @@ public class ClustComparator implements Comparator<Node> {
 
         double s1 = t1.getScore(eval);
         double s2 = t2.getScore(eval);
+        boolean bigger;
 
         if (s1 == s2) {
             return 0;
         }
+        bigger = eval.compareScore(s1, s2);
 
-        // "best" solution is at the end
-        if (ascOrder) {
-            if (eval.compareScore(s1, s2)) {
-                return 1;
-            } else {
-                return -1;
-            }
-        } else {
-            if (eval.compareScore(s1, s2)) {
-                return -1;
-            } else {
-                return 1;
-            }
+        if (!ascOrder) {
+            bigger = !bigger;
         }
-
+        // "best" solution is at the end
+        if (bigger) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
     public void setEvaluator(ClusterEvaluation eval) {
