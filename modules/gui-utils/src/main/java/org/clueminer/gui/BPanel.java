@@ -66,7 +66,7 @@ public abstract class BPanel extends JPanel {
     public abstract boolean hasData();
 
     /**
-     * Recalculate dimension of component
+     * Recalculate dimension of component. YOU MUST UPDATE realSize variable
      */
     public abstract void recalculate();
 
@@ -82,9 +82,13 @@ public abstract class BPanel extends JPanel {
         //this.setOpaque(false);
         // clear the panel
         //g.setColor(getBackground());
-        g.fillRect(0, 0, realSize.width, realSize.height);
+        if (preserveAlpha) {
+            g.setComposite(AlphaComposite.Clear);
+        } else {
+            g.setComposite(AlphaComposite.Src);
+            g.fillRect(0, 0, realSize.width, realSize.width);
+        }
 
-        g.setComposite(AlphaComposite.Src);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
@@ -96,7 +100,6 @@ public abstract class BPanel extends JPanel {
         }
 
         render(g);
-
         g.dispose();
     }
 
@@ -115,11 +118,12 @@ public abstract class BPanel extends JPanel {
             //requested size is different from buffered one, resize it
             if (dx > 1 || dy > 1) {
                 if (fitToSpace) {
-                    int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-                    BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, imageType);
+                    BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, BufferedImage.TYPE_INT_ARGB);
                     Graphics2D gr = scaledBI.createGraphics();
                     if (preserveAlpha) {
-                        gr.setComposite(AlphaComposite.Src);
+                        gr.setComposite(AlphaComposite.Clear);
+                        gr.fillRect(0, 0, dx, dy);
+                        //gr.setComposite(AlphaComposite.Src);
                     }
                     //AffineTransform at = AffineTransform.getScaleInstance(fWidth, fHeight);
                     //gr.drawRenderedImage(scaledBI, at);
@@ -147,6 +151,7 @@ public abstract class BPanel extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                bufferedImage = null;
                 createBufferedGraphics();
                 validate();
                 revalidate();
