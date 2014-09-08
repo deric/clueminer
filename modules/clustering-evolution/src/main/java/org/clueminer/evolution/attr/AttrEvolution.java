@@ -1,7 +1,5 @@
 package org.clueminer.evolution.attr;
 
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,9 +8,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.AbstractEvolution;
@@ -55,6 +56,8 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
     public AttrEvolution(Dataset<Instance> dataset, int generations) {
         this.dataset = dataset;
         this.generations = generations;
+        //@TODO fetch number of clusters
+        algorithm = new KMeans(3, 100);
         initEvolution();
     }
 
