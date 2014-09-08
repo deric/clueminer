@@ -1,10 +1,10 @@
 package org.clueminer.dendrogram.gui;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
-import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
 import org.openide.util.RequestProcessor;
 
@@ -19,7 +20,7 @@ import org.openide.util.RequestProcessor;
  *
  * @author Tomas Barton
  */
-public class CutoffLine extends JPanel implements DendrogramDataListener {
+public class CutoffLine extends BPanel implements DendrogramDataListener {
 
     private static final long serialVersionUID = -8874221664051165124L;
     private final DendroPane panel;
@@ -30,12 +31,13 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
     private int linepos = 100;
     final static BasicStroke dashed
             = new BasicStroke(1.0f,
-                              BasicStroke.CAP_BUTT,
-                              BasicStroke.JOIN_MITER,
-                              10.0f, dash1, 0.0f);
+                    BasicStroke.CAP_BUTT,
+                    BasicStroke.JOIN_MITER,
+                    10.0f, dash1, 0.0f);
     private static final RequestProcessor RP = new RequestProcessor("computing new cutoff");
     private int sliderDiameter = 6;
-    private StdScale scale;
+    private final StdScale scale;
+    private final boolean antialiasing = true;
 
     public CutoffLine(DendroPane p, DendrogramTree tree) {
         this.panel = p;
@@ -43,22 +45,19 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         this.sliderDiameter = p.getSliderDiameter();
         this.setOpaque(false); //don't paint background (parent component is responsible for that)
         this.scale = new StdScale();
+        this.preserveAlpha = true;
     }
 
     /**
      * Draws dashed line, position is translated into interval where minimum is
      * slider diameter (however it's mirrored, so it becomes maximum). The other
      * side of interval is defined by the width of the component.
-      *
+     *
      * @param g2
      */
     private void drawLine(Graphics2D g2) {
+        g2.setComposite(AlphaComposite.Src);
         g2.setColor(Color.RED);
-
-        //no data available
-        if (hclust == null) {
-            return;
-        }
         //there's a gap on tree root side which is equal to sliderDiameter
         //nice trick how to "inverse" scale
         linepos = computePosition(hclust, getWidth() - sliderDiameter, sliderDiameter);
@@ -66,17 +65,6 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
         //draw dashed line across whole tree width
         // x1, y1, x2, y2
         g2.drawLine(linepos, 0, linepos, getHeight());
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2 = (Graphics2D) g;
-        //@TODO use cached graphics
-        if (tree != null && tree.hasData()) {
-            drawLine(g2);
-        }
-        g2.dispose();
     }
 
     /**
@@ -140,33 +128,57 @@ public class CutoffLine extends JPanel implements DendrogramDataListener {
                         //@TODO depending on horizontal or vertical position we shoud choose rows or columns
                         panel.fireClusteringChanged(c);
                     }
+                    resetCache();
                 }
             });
             RP.post(task);
-            repaint();
         }
     }
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.hclust = dataset.getRowsResult();
-        updateSize();
-        repaint();
+        //updateSize();
+        resetCache();
     }
 
     @Override
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
-        //we don't care
+        //we don't care, but other components are repainting and this layer would otherwise disappear
+        resetCache();
     }
 
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        updateSize();
+        //   updateSize();
+        resetCache();
     }
 
-    protected void updateSize() {
-        setPreferredSize(tree.getSize());
-        setMinimumSize(tree.getSize());
-        setSize(tree.getSize());
+    @Override
+    public void render(Graphics2D g) {
+        if (tree != null && tree.hasData()) {
+            drawLine(g);
+        }
+        g.dispose();
+    }
+
+    @Override
+    public void sizeUpdated(Dimension size) {
+        this.realSize = size;
+    }
+
+    @Override
+    public boolean hasData() {
+        return hclust != null;
+    }
+
+    @Override
+    public void recalculate() {
+        //not much to do, realSize is already updated
+    }
+
+    @Override
+    public boolean isAntiAliasing() {
+        return antialiasing;
     }
 }
