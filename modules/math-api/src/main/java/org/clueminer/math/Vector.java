@@ -110,4 +110,18 @@ public interface Vector<T extends Number> {
      * @return
      */
     public Vector<T> subtract(double num);
+
+    /**
+     * Will return the same underlying Vector structure without any values.
+     *
+     * @return empty Vector structure with the same length.
+     */
+    public Vector<T> duplicate();
+
+    /**
+     * Cloned Vector must have the same hashcode and equals.
+     *
+     * @return identical copy of Vector
+     */
+    public Vector<T> clone();
 }
