@@ -86,10 +86,28 @@ public interface Vector<T extends Number> {
     public void set(int index, Number value);
 
     /**
-     * Adds other to this and return a new vecor with the result
+     * Adds other to this and return a new instance of Vector with the result
      *
      * @param other
      * @return
      */
     public Vector<T> add(Vector<T> other);
+
+    /**
+     * Adds scalar num to each member of the Vector and returns new Vector
+     * instance
+     *
+     * @param num
+     * @return
+     */
+    public Vector<T> add(double num);
+
+    /**
+     * Subtract scalar num form each member of this Vector and return a new
+     * instance of Vector
+     *
+     * @param num
+     * @return
+     */
+    public Vector<T> subtract(double num);
 }
