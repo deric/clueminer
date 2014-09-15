@@ -1,15 +1,19 @@
 package org.clueminer.distance;
 
+import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.SymmetricDistance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * FIXME cause problems with optimizing leaves order
  *
+ * BrayCurtisDistance[u,v] is equivalent to Total[Abs[u-v]]/Total[Abs[u+v]].
+ *
+ * @see http://reference.wolfram.com/language/ref/BrayCurtisDistance.html
  * @author Tomas Barton
  */
-//@ServiceProvider(service = AbstractDistance.class)
+@ServiceProvider(service = AbstractDistance.class)
 public class BrayCurtisDistance extends SymmetricDistance {
 
     private static final long serialVersionUID = -9160673893231083803L;
@@ -68,6 +72,10 @@ public class BrayCurtisDistance extends SymmetricDistance {
                 denominator += x.get(i) + y.get(i);
             }
         }
+        //avoid division by zero
+        if (denominator == 0.0) {
+            return 0.0;
+        }
         return (numerator / denominator);
     }
 
@@ -108,11 +116,11 @@ public class BrayCurtisDistance extends SymmetricDistance {
 
     @Override
     public boolean isSubadditive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public boolean isIndiscernible() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 }
