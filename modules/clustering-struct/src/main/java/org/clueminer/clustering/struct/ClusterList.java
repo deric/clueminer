@@ -223,7 +223,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     @Override
     public boolean isEmpty() {
-        return (size() == 0);
+        return (data == null || size() == 0);
     }
 
     @Override
@@ -301,11 +301,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public Cluster<? extends Instance> createCluster(int clusterId) {
-        int attrSize = 5; //some default value
-        if (!isEmpty()) {
-            //take number of attributes from first cluster
-            attrSize = first().attributeCount();
-        }
+        int attrSize = guessAttrCnt();
         Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
@@ -318,10 +314,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public Cluster<? extends Instance> createCluster() {
-        int attrSize = 5; //some default value
-        if (!isEmpty()) {
-            attrSize = data[0].attributeCount();
-        }
+        int attrSize = guessAttrCnt();
         Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         int clusterId = size();
         c.setClusterId(clusterId);
@@ -339,15 +332,22 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public Cluster<? extends Instance> createCluster(int clusterId, int capacity) {
-        int attrSize = 5; //some default value
-        if (!isEmpty()) {
-            attrSize = data[0].attributeCount();
-        }
+        int attrSize = guessAttrCnt();
         Cluster<? extends Instance> c = new BaseCluster(capacity, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
         put(clusterId, c);
         return c;
+    }
+
+    private int guessAttrCnt() {
+        int attrCnt = 5; //some default value
+        if (data != null && !isEmpty()) {
+            if (data[0] != null) {
+                attrCnt = data[0].attributeCount();
+            }
+        }
+        return attrCnt;
     }
 
     @Override
