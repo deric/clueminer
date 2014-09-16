@@ -81,11 +81,12 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
         /**
          * TODO cutoff is probably being updated somewhere else
          */
-
         double cut = hres.getCutoff();
         if (hres.hasClustering()) {
             double c = hres.getClustering().getParams().getDouble(AgglParams.CUTOFF, hres.getCutoff());
-            System.out.println("different cut: " + cut + ", props: " + c);
+            if (c != cut) {
+                System.out.println("different cut: " + cut + ", props: " + c);
+            }
         }
         return (int) scale.scaleToRange(cut, 0, hres.getMaxTreeHeight(), min, max);
     }
