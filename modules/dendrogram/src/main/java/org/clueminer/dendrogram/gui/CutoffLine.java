@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -60,7 +61,6 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
         g2.setColor(Color.RED);
         //there's a gap on tree root side which is equal to sliderDiameter
         //nice trick how to "inverse" scale
-        System.out.println("cutoff line: " + hclust.getCutoff());
         linepos = computePosition(hclust, getWidth() - sliderDiameter, sliderDiameter);
         g2.setStroke(dashed);
         //draw dashed line across whole tree width
@@ -78,7 +78,16 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
      * @return
      */
     protected int computePosition(HierarchicalResult hres, int min, int max) {
-        return (int) scale.scaleToRange(hres.getCutoff(), 0, hres.getMaxTreeHeight(), min, max);
+        /**
+         * TODO cutoff is probably being updated somewhere else
+         */
+
+        double cut = hres.getCutoff();
+        if (hres.hasClustering()) {
+            double c = hres.getClustering().getParams().getDouble(AgglParams.CUTOFF, hres.getCutoff());
+            System.out.println("different cut: " + cut + ", props: " + c);
+        }
+        return (int) scale.scaleToRange(cut, 0, hres.getMaxTreeHeight(), min, max);
     }
 
     /**

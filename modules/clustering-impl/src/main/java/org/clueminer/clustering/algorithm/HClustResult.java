@@ -152,10 +152,15 @@ public class HClustResult implements HierarchicalResult {
 
     @Override
     public Clustering getClustering() {
-        if (clustering == null) {
+        if (!hasClustering()) {
             clustering = getClustering(dataset);
         }
         return clustering;
+    }
+
+    @Override
+    public boolean hasClustering() {
+        return (clustering != null);
     }
 
     @Override
@@ -173,7 +178,7 @@ public class HClustResult implements HierarchicalResult {
             Cluster clust;
             for (int i = 0; i < assign.length; i++) {
                 id = assign[i];
-                clust = result.createCluster(id);
+                clust = result.createCluster(id, perCluster);
                 clust.add(dataset.get(i));
             }
         } else {

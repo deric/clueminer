@@ -367,4 +367,9 @@ public class HCLResult implements HierarchicalResult {
         return proximity.rowsCount();
     }
 
+    @Override
+    public boolean hasClustering() {
+        return (clustering != null);
+    }
+
 }
