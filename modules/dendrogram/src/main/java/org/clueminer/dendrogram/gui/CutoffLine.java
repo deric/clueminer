@@ -60,6 +60,7 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
         g2.setColor(Color.RED);
         //there's a gap on tree root side which is equal to sliderDiameter
         //nice trick how to "inverse" scale
+        System.out.println("cutoff line: " + hclust.getCutoff());
         linepos = computePosition(hclust, getWidth() - sliderDiameter, sliderDiameter);
         g2.setStroke(dashed);
         //draw dashed line across whole tree width

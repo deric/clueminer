@@ -6,14 +6,14 @@ import org.clueminer.math.Vector;
 import org.clueminer.math.impl.AbstractDoubleVector;
 
 /**
- * A proxy to matrix row
+ * A proxy to matrix row to allow row based operations in a matrix.
  *
  * @author Tomas Barton
  */
 public class MatrixRowVector extends AbstractDoubleVector implements MatrixVector {
 
-    private Matrix matrix;
-    private int row;
+    private final Matrix matrix;
+    private final int row;
 
     public MatrixRowVector(Matrix mat, int i) {
         this.matrix = mat;
@@ -73,5 +73,10 @@ public class MatrixRowVector extends AbstractDoubleVector implements MatrixVecto
     @Override
     public Matrix getMatrix() {
         return matrix;
+    }
+
+    @Override
+    public Vector<Double> duplicate() {
+        return new MatrixRowVector(matrix, row);
     }
 }

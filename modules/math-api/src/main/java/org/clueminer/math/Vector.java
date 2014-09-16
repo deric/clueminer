@@ -118,10 +118,4 @@ public interface Vector<T extends Number> {
      */
     public Vector<T> duplicate();
 
-    /**
-     * Cloned Vector must have the same hashcode and equals.
-     *
-     * @return identical copy of Vector
-     */
-    public Vector<T> clone();
 }

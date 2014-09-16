@@ -7,7 +7,6 @@ import org.clueminer.math.Vector;
  * A decorator for {@link DoubleVector}s that scales every value in a given
  * {@link DoubleVector} by some non zero scale.
  *
- * </p>
  *
  * Note that this automatically computes the scaling of a {@link
  * ScaledDoubleVector} so that backing vector is scaled only once, thus
@@ -29,6 +28,8 @@ public class ScaledDoubleVector implements DoubleVector {
     /**
      * Creates a new {@link ScaledDoubleVector} that decorates a given {@link
      * DoubleVector} by scaling each value in {@code vector} by {@code scale}.
+     * @param vector
+     * @param scale
      */
     public ScaledDoubleVector(DoubleVector vector, double scale) {
         if (scale == 0d) {
@@ -72,6 +73,7 @@ public class ScaledDoubleVector implements DoubleVector {
 
     /**
      * Returns the vector whose values are scaled by this instance
+     * @return
      */
     public DoubleVector getBackingVector() {
         return vector;
@@ -80,6 +82,7 @@ public class ScaledDoubleVector implements DoubleVector {
     /**
      * Returns the scalar multiple used by this instance to change the values of
      * the backing vector
+     * @return
      */
     public double getScalar() {
         return scale;
@@ -146,12 +149,18 @@ public class ScaledDoubleVector implements DoubleVector {
         return values;
     }
 
+    /**
+     * @TODO this is modification of this vector!
+     *
+     * @param other
+     * @return
+     */
     @Override
     public Vector<Double> add(Vector<Double> other) {
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.get(i);
+            v = other.getValue(i) + this.get(i);
             this.set(i, v);
         }
         return this;
@@ -165,5 +174,34 @@ public class ScaledDoubleVector implements DoubleVector {
         }
 
         return Math.pow(norm, 1.0 / p);
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<Double> add(double num) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) + num);
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<Double> subtract(double num) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) - num);
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<Double> duplicate() {
+        return new ScaledDoubleVector(vector, scale);
     }
 }

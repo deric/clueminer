@@ -349,6 +349,11 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public org.clueminer.math.Vector duplicate() {
+        return new SparseInstance(this.size());
+    }
+
     class SparseInstanceIterator implements Iterator<Double> {
 
         private final Iterator<Integer> it;

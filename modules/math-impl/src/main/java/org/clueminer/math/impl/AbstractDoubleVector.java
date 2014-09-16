@@ -10,7 +10,7 @@ import org.clueminer.math.Vector;
  * read-only vectors.
  */
 public abstract class AbstractDoubleVector extends AbstractVector<Double>
-        implements DoubleVector {
+        implements DoubleVector, Vector<Double> {
 
     public AbstractDoubleVector() {
     }

@@ -6,13 +6,15 @@ import org.clueminer.math.Vector;
 import org.clueminer.math.impl.AbstractDoubleVector;
 
 /**
+ * A reference to column in a matrix to allow abstraction on column based matrix
+ * operations.
  *
  * @author Tomas Barton
  */
 public class MatrixColumnVector extends AbstractDoubleVector implements MatrixVector {
 
-    private Matrix matrix;
-    private int column;
+    private final Matrix matrix;
+    private final int column;
 
     public MatrixColumnVector(Matrix mat, int j) {
         this.matrix = mat;
@@ -72,5 +74,10 @@ public class MatrixColumnVector extends AbstractDoubleVector implements MatrixVe
     @Override
     public Vector<Double> add(Vector<Double> other) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector<Double> duplicate() {
+        return new MatrixColumnVector(matrix, column);
     }
 }

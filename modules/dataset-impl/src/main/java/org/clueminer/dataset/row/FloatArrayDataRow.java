@@ -180,17 +180,28 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
 
     @Override
     public double magnitude() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double m = 0;
+        int length = size();
+        for (int i = 0; i < length; ++i) {
+            double d = value(i);
+            m += d * d;
+        }
+        return Math.sqrt(m);
     }
 
     @Override
     public void set(int index, Number value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        set(index, value.floatValue());
     }
 
     @Override
     public Vector<Float> add(Vector<Float> other) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector<Float> duplicate() {
+        return new FloatArrayDataRow(this.size());
     }
 
     class InstanceValueIterator implements Iterator<Float> {

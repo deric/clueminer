@@ -12,6 +12,7 @@ import org.clueminer.math.Vector;
  * implementation is simply an array of doubles. <p>
  *
  * @author Keith Stevens
+ * @author Tomas Barton
  */
 public class DenseVector extends AbstractDoubleVector implements Serializable {
 
@@ -19,7 +20,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
     /**
      * The values of this {@code DenseVector}.
      */
-    private double[] vector;
+    private final double[] vector;
     /**
      * The magnitude of the vector or -1 if the value is currently invalid and
      * needs to be recomputed
@@ -53,7 +54,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
      * Create a {@code DenseVector} by copying the values from another {@code
      * Vector}.
      *
-     * @param vector The {@code Vector} to copy from.
+     * @param v The {@code Vector} to copy from.
      */
     @SuppressWarnings("unchecked")
     public DenseVector(DoubleVector v) {
@@ -76,6 +77,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
     public double add(int index, double delta) {
@@ -86,6 +88,8 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     * @param index
+     * @return
      */
     @Override
     public double get(int index) {
@@ -99,6 +103,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
     public double magnitude() {
@@ -123,6 +128,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
     public double[] toArray() {
@@ -131,6 +137,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
     public int size() {
@@ -142,9 +149,14 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.getValue(i).doubleValue();
+            v = other.getValue(i) + this.getValue(i);
             this.set(i, v);
         }
         return this;
+    }
+
+    @Override
+    public Vector<Double> duplicate() {
+        return new DenseVector(this.size());
     }
 }

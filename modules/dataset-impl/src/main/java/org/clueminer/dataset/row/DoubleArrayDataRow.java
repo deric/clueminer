@@ -275,9 +275,9 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         if (this.size() != other.size()) {
             throw new IllegalArgumentException("Vectors of different sizes cannot be added");
         }
-        Vector<Double> res = new DoubleArrayDataRow(this.size());
+        Vector<Double> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
-            res.set(i, getDouble(i).doubleValue() + other.getValue(i).doubleValue());
+            res.set(i, getDouble(i) + other.getValue(i));
         }
         return res;
     }
@@ -289,6 +289,14 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     public double[] toArray() {
         double[] copy = Arrays.copyOf(data, size());
         return copy;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<Double> duplicate() {
+        return new DoubleArrayDataRow(this.size());
     }
 
     class InstanceValueIterator implements Iterator<Double> {

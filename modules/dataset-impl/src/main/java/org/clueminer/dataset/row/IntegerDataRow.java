@@ -52,7 +52,7 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
      */
     public int put(int value) {
         if (last >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (last * 1.5));
         }
@@ -235,7 +235,7 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
         if (this.size() != other.size()) {
             throw new IllegalArgumentException("Vectors of different sizes cannot be added");
         }
-        Vector<Integer> res = new IntegerDataRow(this.size());
+        Vector<Integer> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
             res.set(i, getValue(i).doubleValue() + other.getValue(i).doubleValue());
         }
@@ -245,12 +245,17 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     @Override
     public int put(double value) {
         if (last >= size()) {
-            //extending array is rather expensive on 
+            //extending array is rather expensive on
             //reallocation of array, so we rather make bigger space
             setCapacity((int) (last * 1.5));
         }
         data[last] = (int) value;
         return last++;
+    }
+
+    @Override
+    public Vector<Integer> duplicate() {
+        return new IntegerDataRow(this.size());
     }
 
     class InstanceValueIterator implements Iterator<Integer> {

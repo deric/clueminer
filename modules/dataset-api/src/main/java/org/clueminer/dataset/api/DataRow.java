@@ -115,6 +115,30 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
     }
 
     /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<T> add(double num) {
+        Vector<T> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) + num);
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<T> subtract(double num) {
+        Vector<T> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) - num);
+        }
+        return res;
+    }
+
+    /**
      * When preprocessing data sometimes we need to display reference to
      * original data
      *

@@ -13,7 +13,7 @@ import org.clueminer.math.Vector;
  * @author Tomas Barton
  * @param <E>
  */
-public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E> {
+public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E>, Vector<E> {
 
     private static final long serialVersionUID = 7144673261130372477L;
     protected Timeseries<? extends ContinuousInstance> parent;
@@ -142,6 +142,30 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
         }
 
         return Math.pow(norm, 1.0 / p);
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<E> add(double num) {
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) + num);
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<E> subtract(double num) {
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) - num);
+        }
+        return res;
     }
 
     @Override

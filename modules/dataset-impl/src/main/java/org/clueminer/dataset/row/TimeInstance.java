@@ -296,4 +296,9 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     public double getStdDev() {
         return statistics(AttrNumStats.STD_DEV);
     }
+
+    @Override
+    public Vector<E> duplicate() {
+        return new TimeInstance(this.size());
+    }
 }

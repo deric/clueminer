@@ -272,6 +272,11 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     }
 
     @Override
+    public Vector<E> duplicate() {
+        return new TimeRow(this.klass, this.size());
+    }
+
+    @Override
     public String toString() {
         return "TimeRow[" + size() + "] " + toString(",");
     }

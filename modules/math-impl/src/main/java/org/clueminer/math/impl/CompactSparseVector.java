@@ -16,7 +16,7 @@ import org.clueminer.math.Vector;
  * @author Keith Stevens
  */
 public class CompactSparseVector extends AbstractDoubleVector
-        implements SparseDoubleVector, Serializable, Iterable<DoubleEntry> {
+        implements SparseDoubleVector, Serializable, Iterable<DoubleEntry>, Vector<Double> {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -65,7 +65,7 @@ public class CompactSparseVector extends AbstractDoubleVector
      * Create a {@code CompactSparseVector} from an array, saving only the non
      * zero entries.
      *
-     * @param array The double array to produce a sparse vector from.
+     * @param v The double array to produce a sparse vector from.
      */
     public CompactSparseVector(SparseDoubleVector v) {
         int length = v.size();
@@ -82,8 +82,8 @@ public class CompactSparseVector extends AbstractDoubleVector
      * Create a {@code CompactSparseVector} using the indices and their
      * respecitve values.
      *
-     * @param indices an sorted array of positive values representing the
-     * non-zero indices of the array
+     * @param nonZeroIndices an sorted array of positive values representing the
+     *                       non-zero indices of the array
      * @param values an array of values that correspond their respective indices
      * @param length the total length of the array
      *
@@ -153,6 +153,7 @@ public class CompactSparseVector extends AbstractDoubleVector
 
     /**
      * {@inheritDoc}
+     * @param values
      */
     public void set(double[] values) {
         vector = new SparseDoubleArray(values);
@@ -162,6 +163,7 @@ public class CompactSparseVector extends AbstractDoubleVector
     /**
      * {@inheritDoc}
      */
+    @Override
     public void set(int index, double value) {
         vector.setPrimitive(index, value);
         magnitude = -1;
@@ -170,6 +172,7 @@ public class CompactSparseVector extends AbstractDoubleVector
     /**
      * {@inheritDoc}
      */
+    @Override
     public double[] toArray() {
         double[] array = new double[vector.length()];
         return vector.toPrimitiveArray(array);
@@ -185,9 +188,14 @@ public class CompactSparseVector extends AbstractDoubleVector
         double v;
         int length = other.size();
         for (int i = 0; i < length; ++i) {
-            v = other.getValue(i).doubleValue() + this.getValue(i).doubleValue();
+            v = other.getValue(i) + this.getValue(i);
             this.set(i, v);
         }
         return this;
+    }
+
+    @Override
+    public Vector<Double> duplicate() {
+        return new CompactSparseVector(this.size());
     }
 }

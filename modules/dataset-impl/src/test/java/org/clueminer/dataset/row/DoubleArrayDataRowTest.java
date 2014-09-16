@@ -60,11 +60,11 @@ public class DoubleArrayDataRowTest {
         Vector<Double> vec = new DoubleArrayDataRow(new double[]{10.5, 24.5, 30.5, 10.0, 50.4});
         Vector<Double> res = t2.add(vec);
 
-        assertEquals(21, res.getValue(0).doubleValue(), delta);
-        assertEquals(49, res.getValue(1).doubleValue(), delta);
-        assertEquals(61, res.getValue(2).doubleValue(), delta);
-        assertEquals(20, res.getValue(3).doubleValue(), delta);
-        assertEquals(100.8, res.getValue(4).doubleValue(), delta);
+        assertEquals(21, res.getValue(0), delta);
+        assertEquals(49, res.getValue(1), delta);
+        assertEquals(61, res.getValue(2), delta);
+        assertEquals(20, res.getValue(3), delta);
+        assertEquals(100.8, res.getValue(4), delta);
     }
 
     /**
@@ -388,6 +388,32 @@ public class DoubleArrayDataRowTest {
     public void testAdd_Vector() {
     }
 
+    @Test
+    public void testAdd_double() {
+        Vector<Double> orig = new DoubleArrayDataRow(new double[]{0, 0, 0});
+        Vector<Double> upd = orig.add(1);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(0.0, orig.get(i), delta);
+            //new one should be updated
+            assertEquals(1.0, upd.get(i), delta);
+        }
+    }
+
+    @Test
+    public void testSubtract_double() {
+        Vector<Double> orig = new DoubleArrayDataRow(new double[]{5, 5, 5});
+        Vector<Double> upd = orig.subtract(1);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(5.0, orig.get(i), delta);
+            //new one should be updated
+            assertEquals(4.0, upd.get(i), delta);
+        }
+    }
+
     /**
      * Test of add method, of class DoubleArrayDataRow.
      */
@@ -400,5 +426,17 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testToArray() {
+    }
+
+    @Test
+    public void testDuplicate() {
+    }
+
+    @Test
+    public void testGetUnknown() {
+    }
+
+    @Test
+    public void testSetUnknown() {
     }
 }
