@@ -1,9 +1,11 @@
 package org.clueminer.dgram.vis;
 
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -16,6 +18,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dgram.eval.MOLO;
+import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
@@ -32,6 +35,8 @@ public class DGramVis {
 
     private static final Logger log = Logger.getLogger(DGramVis.class.getName());
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
+    private static Heatmap heatmap;
+    private static SilhouettePlot silhoulette;
 
     public static Image generate(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
@@ -54,24 +59,27 @@ public class DGramVis {
                 //computing still in progress
                 return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
             }
-            if (!mapping.hasColumnsClustering()) {
-                RP.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-                        Props params = clustering.getParams();
-                        AgglomerativeClustering algorithm = new HAC();
 
-                        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-                        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-                        HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
-                        mapping.setColsResult(colsResult);
-                        mapping.setDataset(dataset);
-                        generateImage(clustering, width, height, listener, mapping);
-                    }
-                });
+            //don't generate columns mapping
+            /*
+             if (!mapping.hasColumnsClustering()) {
+             RP.post(new Runnable() {
+             @Override
+             public void run() {
+             Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+             Props params = clustering.getParams();
+             AgglomerativeClustering algorithm = new HAC();
 
-            }
+             Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+             params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+             HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
+             mapping.setColsResult(colsResult);
+             mapping.setDataset(dataset);
+             generateImage(clustering, width, height, listener, mapping);
+             }
+             });
+
+             }*/
             return generateImage(clustering, width, height, listener, mapping);
         }
 
@@ -84,14 +92,33 @@ public class DGramVis {
     }
 
     private static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
-        Heatmap heatmap = new Heatmap();
+        if (heatmap == null) {
+            heatmap = new Heatmap();
+        }
+        if (silhoulette == null) {
+            silhoulette = new SilhouettePlot(true);
+        }
         heatmap.setData(mapping);
-        Image img = heatmap.generate(width, height);
+        silhoulette.setClustering(clustering);
+
+        int silWidth = (int) (0.3 * width);
+        int dendroWidth = width - silWidth;
+        System.out.println("sil width = " + silWidth + ", dendro " + dendroWidth);
+
+        Image img = heatmap.generate(dendroWidth, height);
+
+        Image imgSil = silhoulette.generate(silWidth, height);
+        BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = combined.getGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.drawImage(imgSil, dendroWidth, 0, null);
+        System.out.println("image size: " + width + " x " + height);
+
         if (listener != null) {
             listener.clusteringFinished(clustering);
-            listener.previewUpdated(img);
+            listener.previewUpdated(combined);
         }
-        return img;
+        return combined;
     }
 
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {

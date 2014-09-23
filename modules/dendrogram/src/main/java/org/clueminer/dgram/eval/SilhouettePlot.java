@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -14,6 +16,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
+import org.clueminer.utils.Dump;
+import org.imgscalr.Scalr;
 
 /**
  *
@@ -24,8 +28,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     private static final long serialVersionUID = 4887302917255522954L;
     private Clustering<? extends Cluster> clustering;
     private Dimension element = new Dimension(5, 5);
-    private Silhouette silhouette;
-    private StdScale scale;
+    private final Silhouette silhouette;
+    private final StdScale scale;
     private double[] score;
     private HierarchicalResult hierarchicalResult;
 
@@ -40,10 +44,10 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     public void render(Graphics2D g) {
         if (hasData()) {
             //Dump.array(score, "sil score");
-            FontMetrics fm = g.getFontMetrics();
+            //FontMetrics fm = g.getFontMetrics();
             Cluster clust = null;
             // float y;
-            int x = 0, k = 0, prev = -1;
+            int x = 0, k, prev = -1;
             double value, s;
             // String str;
             if (hierarchicalResult != null) {
@@ -143,7 +147,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         return true;
     }
 
-    void setClustering(Clustering<? extends Cluster> data) {
+    public void setClustering(Clustering<? extends Cluster> data) {
         this.clustering = data;
         DendrogramMapping d = data.getLookup().lookup(DendrogramMapping.class);
         if (d != null) {
@@ -228,6 +232,35 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             hierarchicalResult = hclust;
             setClustering(hclust.getClustering());
         }
+    }
+
+    /**
+     * Generate image of given size
+     *
+     * @param width
+     * @param height
+     * @return
+     */
+    public Image generate(int width, int height) {
+        double fHeight = height / (double) clustering.instancesCount();
+        reqSize.width = width;
+        reqSize.height = height;
+        realSize.width = width;
+        realSize.height = height;
+
+        //element size can't be smaller than 1px
+        element.height = (int) Math.ceil(fHeight);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        g = image.createGraphics();
+        render(g);
+        if (image.getHeight() != height || image.getWidth() != width) {
+            image = Scalr.resize(image, Scalr.Method.SPEED,
+                    Scalr.Mode.AUTOMATIC,
+                    width, height, Scalr.OP_ANTIALIAS);
+        }
+
+        return image;
     }
 
 }
