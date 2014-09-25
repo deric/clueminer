@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -26,7 +25,6 @@ import org.clueminer.clustering.gui.ClusterPreviewer;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
-import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
 /**
@@ -66,7 +64,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
         updateLayout();
-        fireDatasetChanged(new DendrogramDataEvent(this));
+        fireDatasetChanged(new DendrogramDataEvent(this), data);
     }
 
     public DendrogramMapping getDendrogramData() {
@@ -121,8 +119,8 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         //update size of scrollbars
         scroller.getViewport().revalidate();
         setPreferredSize(dendrogramPanel.getSize());
-        /*  validate();
-         revalidate();*/
+        validate();
+        revalidate();
         repaint();
     }
 
@@ -200,13 +198,27 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         return dendrogramPanel.isLabelVisible();
     }
 
-    public boolean fireDatasetChanged(DendrogramDataEvent evt) {
+    /**
+     * Triggered e.g. when user selects a clustering
+     *
+     * @param evt
+     * @param dataset
+     * @return
+     */
+    public boolean fireDatasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         DendrogramDataListener[] listeners;
 
         if (datasetListeners != null) {
             listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (DendrogramDataListener listener : listeners) {
-                listener.datasetChanged(evt, data);
+            /*for (DendrogramDataListener listener : listeners) {                System.out.println("dataset changed: " + listener.getClass().toString());
+                listener.datasetChanged(evt, dataset);
+            }*/
+            //reverse the order of notifications (most important componets goes first)
+            DendrogramDataListener dendrogramDataListener;
+            for (int i = listeners.length - 1; i >= 0; i--) {
+                dendrogramDataListener = listeners[i];
+                System.out.println("dataset changed: " + dendrogramDataListener.getClass().toString());
+                dendrogramDataListener.datasetChanged(evt, dataset);
             }
         }
         return true;

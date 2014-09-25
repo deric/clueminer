@@ -102,9 +102,7 @@ public class DGramVis {
         silhoulette.setClustering(clustering);
 
         int silWidth = (int) (0.3 * width);
-        int dendroWidth = width - silWidth;
-        System.out.println("sil width = " + silWidth + ", dendro " + dendroWidth);
-
+        int dendroWidth = width - silWidth;        
         Image img = heatmap.generate(dendroWidth, height);
 
         Image imgSil = silhoulette.generate(silWidth, height);
@@ -112,7 +110,6 @@ public class DGramVis {
         Graphics g = combined.getGraphics();
         g.drawImage(img, 0, 0, null);
         g.drawImage(imgSil, dendroWidth, 0, null);
-        System.out.println("image size: " + width + " x " + height);
 
         if (listener != null) {
             listener.clusteringFinished(clustering);

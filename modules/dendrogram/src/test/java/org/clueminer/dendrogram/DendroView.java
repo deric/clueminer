@@ -40,7 +40,6 @@ public class DendroView extends JFrame {
         Clustering clust = exec.clusterRows(data, dm, new Props());
         System.out.println("clustering size: " + clust.size());
         frame.setClustering(clust);
-
     }
 
     // this function will be run from the EDT
@@ -85,6 +84,7 @@ public class DendroView extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;
         add(toolbar, c);
+        pack();
     }
 
 }
