@@ -1,5 +1,6 @@
-package org.clueminer.gui;
+package org.clueminer.events;
 
+import org.clueminer.events.ListenerList;
 import java.util.Iterator;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

@@ -1,8 +1,11 @@
-package org.clueminer.gui;
+package org.clueminer.events;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A swing implementation of listeners list does not consider ordering of
@@ -68,7 +71,9 @@ public class ListenerList<T> implements Iterable<T> {
      */
     public void add(T listner, T[] requires) {
         map.put(listner, requires);
-        hasConstraints = true;
+        if (requires != null) {
+            hasConstraints = true;
+        }
         clearCache();
     }
 
@@ -101,6 +106,16 @@ public class ListenerList<T> implements Iterable<T> {
             for (T obj : map.keySet()) {
                 data[i++] = obj;
             }
+        } else {
+            Set<T> tmp = new LinkedHashSet<>();
+            for (Entry<T, T[]> entry : map.entrySet()) {
+                //no constraints specified
+                if (entry.getValue() == null) {
+                    tmp.add(entry.getKey());
+                }
+
+            }
+
         }
     }
 
