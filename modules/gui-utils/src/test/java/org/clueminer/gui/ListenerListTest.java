@@ -1,0 +1,75 @@
+package org.clueminer.gui;
+
+import java.util.Iterator;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+/**
+ *
+ * @author deric
+ */
+public class ListenerListTest {
+
+    private ListenerList subject = new ListenerList();
+
+    public ListenerListTest() {
+    }
+
+    @Test
+    public void testSize() {
+        assertEquals(0, subject.size());
+    }
+
+    private ListenerList<String> trivialSet() {
+        ListenerList<String> list = new ListenerList<>();
+        list.add("first");
+        list.add("second");
+        list.add("third");
+        return list;
+    }
+
+    /**
+     * We want to get listeners in the very same order as they were inserted.
+     */
+    @Test
+    public void testTrivialListeners() {
+        ListenerList<String> list = trivialSet();
+
+        assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
+    }
+
+    @Test
+    public void testEnsureCapacity() {
+    }
+
+    @Test
+    public void testGetCapacity() {
+    }
+
+    @Test
+    public void testAdd_GenericType() {
+    }
+
+    @Test
+    public void testAdd_GenericType_GenericType() {
+    }
+
+    @Test
+    public void testBuild() {
+    }
+
+    @Test
+    public void testGetListeners() {
+    }
+
+    @Test
+    public void testIterator() {
+        ListenerList<String> list = trivialSet();
+        Iterator<String> it = list.iterator();
+        assertEquals("first", it.next());
+        assertEquals("second", it.next());
+        assertEquals("third", it.next());
+    }
+
+}
