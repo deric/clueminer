@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterPreviewer;
+import org.clueminer.gui.ListenerList;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
@@ -40,7 +41,7 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     protected Dimension elementSize;
     protected DendrogramMapping data;
     private boolean fitToPanel = false;
-    private final transient EventListenerList datasetListeners = new EventListenerList();
+    private final transient ListenerList<DendrogramDataListener> datasetListeners = new ListenerList<>();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
     private static final Logger logger = Logger.getLogger(DgViewer.class.getName());
 
@@ -206,30 +207,19 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      * @return
      */
     public boolean fireDatasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        DendrogramDataListener[] listeners;
-
-        if (datasetListeners != null) {
-            listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            /*for (DendrogramDataListener listener : listeners) {                System.out.println("dataset changed: " + listener.getClass().toString());
+        if (!datasetListeners.isEmpty()) {
+            for (DendrogramDataListener listener : datasetListeners) {
+                //for (int i = listeners.length - 1; i >= 0; i--) {
+                System.out.println("dataset changed: " + listener.getClass().toString());
                 listener.datasetChanged(evt, dataset);
-            }*/
-            //reverse the order of notifications (most important componets goes first)
-            DendrogramDataListener dendrogramDataListener;
-            for (int i = listeners.length - 1; i >= 0; i--) {
-                dendrogramDataListener = listeners[i];
-                System.out.println("dataset changed: " + dendrogramDataListener.getClass().toString());
-                dendrogramDataListener.datasetChanged(evt, dataset);
             }
         }
         return true;
     }
 
     public boolean fireCellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting, Object source) {
-        DendrogramDataListener[] listeners;
-
-        if (datasetListeners != null) {
-            listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (DendrogramDataListener listener : listeners) {
+        if (!datasetListeners.isEmpty()) {
+            for (DendrogramDataListener listener : datasetListeners) {
                 if (source != listener) {
                     listener.cellWidthChanged(evt, width, isAdjusting);
                 }
@@ -239,11 +229,8 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     }
 
     protected boolean fireCellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting, Object source) {
-        DendrogramDataListener[] listeners;
-
-        if (datasetListeners != null) {
-            listeners = datasetListeners.getListeners(DendrogramDataListener.class);
-            for (DendrogramDataListener listener : listeners) {
+        if (!datasetListeners.isEmpty()) {
+            for (DendrogramDataListener listener : datasetListeners) {
                 if (listener != source) {
                     listener.cellHeightChanged(evt, height, isAdjusting);
                 }
@@ -252,18 +239,25 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         return true;
     }
 
+    @Override
     public void addDendrogramDataListener(DendrogramDataListener listener) {
-        datasetListeners.add(DendrogramDataListener.class, listener);
+        datasetListeners.add(listener);
     }
 
+    @Override
     public void removeDendrogramDataListener(DendrogramDataListener listener) {
-        datasetListeners.remove(DendrogramDataListener.class, listener);
+        datasetListeners.remove(listener);
     }
 
     public void addRowsTreeListener(TreeListener listener) {
         dendrogramPanel.addRowsTreeListener(listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
+    @Override
     public void addClusteringListener(ClusteringListener listener) {
         clusteringListeners.add(ClusteringListener.class, listener);
     }

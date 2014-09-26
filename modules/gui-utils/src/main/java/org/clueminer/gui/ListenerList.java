@@ -73,6 +73,16 @@ public class ListenerList<T> implements Iterable<T> {
     }
 
     /**
+     * Removes listener from list
+     *
+     * @param listener
+     */
+    public void remove(T listener) {
+        map.remove(listener);
+        clearCache();
+    }
+
+    /**
      * Clears created DAG
      */
     private void clearCache() {
@@ -108,8 +118,15 @@ public class ListenerList<T> implements Iterable<T> {
         return data;
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     @Override
     public Iterator<T> iterator() {
+        if (data == null) {
+            build();
+        }
         return new ListenerIterator();
     }
 

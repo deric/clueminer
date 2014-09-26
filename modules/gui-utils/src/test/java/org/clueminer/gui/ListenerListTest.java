@@ -21,22 +21,17 @@ public class ListenerListTest {
         assertEquals(0, subject.size());
     }
 
+    @Test
+    public void testIsEmpty() {
+        assertEquals(true, subject.isEmpty());
+    }
+
     private ListenerList<String> trivialSet() {
         ListenerList<String> list = new ListenerList<>();
         list.add("first");
         list.add("second");
         list.add("third");
         return list;
-    }
-
-    /**
-     * We want to get listeners in the very same order as they were inserted.
-     */
-    @Test
-    public void testTrivialListeners() {
-        ListenerList<String> list = trivialSet();
-
-        assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
     }
 
     @Test
@@ -59,8 +54,13 @@ public class ListenerListTest {
     public void testBuild() {
     }
 
+    /**
+     * We want to get listeners in the very same order as they were inserted.
+     */
     @Test
     public void testGetListeners() {
+        ListenerList<String> list = trivialSet();
+        assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
     }
 
     @Test
@@ -68,6 +68,16 @@ public class ListenerListTest {
         ListenerList<String> list = trivialSet();
         Iterator<String> it = list.iterator();
         assertEquals("first", it.next());
+        assertEquals("second", it.next());
+        assertEquals("third", it.next());
+    }
+
+    @Test
+    public void testRemove() {
+        ListenerList<String> list = trivialSet();
+        list.remove(list.get(0));
+        assertEquals(2, list.size());
+        Iterator<String> it = list.iterator();
         assertEquals("second", it.next());
         assertEquals("third", it.next());
     }
