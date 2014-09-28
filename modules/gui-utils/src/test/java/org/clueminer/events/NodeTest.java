@@ -26,16 +26,16 @@ public class NodeTest {
         Node<String> n1 = new Node<>("one");
         Node<String> n2 = new Node<>("two");
         Node<String> n3 = new Node<>("three");
-        root.addEdge(n1);
-        n1.addEdge(n2);
-        n2.addEdge(n3);
+        root.addOutEdge(n1);
+        n1.addOutEdge(n2);
+        n2.addOutEdge(n3);
         return root;
     }
 
     @Test
     public void testAddEdge() {
         Node<String> root = simpleGraph();
-        assertEquals(1, root.edgesCnt());
+        assertEquals(1, root.outEdgesCnt());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class NodeTest {
     @Test
     public void testContains() {
         Node<String> root = simpleGraph();
-        assertEquals(true, root.contains(root));
+        assertEquals(true, root.containsSucc(root));
     }
 
 }

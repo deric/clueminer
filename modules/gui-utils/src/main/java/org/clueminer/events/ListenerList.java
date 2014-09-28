@@ -1,9 +1,11 @@
 package org.clueminer.events;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A swing implementation of listeners list does not consider ordering of
@@ -105,32 +107,54 @@ public class ListenerList<T> implements Iterable<T> {
                 data[i++] = obj;
             }
         } else {
-            Map<T, Node<T>> tmp = new LinkedHashMap<>();
-            for (Entry<T, T[]> entry : map.entrySet()) {
-                //no constraints specified
-                if (entry.getValue() == null) {
-                    tmp.put(entry.getKey(), new Node<>(entry.getKey()));
+            Map<T, Node<T>> tmp = buildGraph();
+            Set<Node<T>> isolated = new HashSet<>();
+            //find components with more than one node
+            for (Node<T> curr : tmp.values()) {
+                if (curr.outEdgesCnt() == 0 && curr.inEdgesCnt() == 0) {
+                    isolated.add(curr);
                 } else {
-                    Node<T> curr;
-                    T key = entry.getKey();
-                    if (tmp.containsKey(key)) {
-                        curr = tmp.get(key);
-                    } else {
-                        curr = new Node<>(entry.getKey());
-                        tmp.put(key, curr);
-                    }
-                    T[] requires = entry.getValue();
-                    Node<T> dep;
-                    for (T req : requires) {
-                        if (tmp.containsKey(req)) {
-                            dep = tmp.get(req);
-                            curr.addEdge(dep);
-                        }
-                    }
+                    //part of connected component
+
                 }
             }
-
         }
+    }
+
+    /**
+     * Create graph of dependencies between listeners
+     *
+     * @return
+     */
+    private Map<T, Node<T>> buildGraph() {
+        Map<T, Node<T>> tmp = new LinkedHashMap<>();
+        for (Entry<T, T[]> entry : map.entrySet()) {
+            //no constraints specified
+            if (entry.getValue() == null) {
+                tmp.put(entry.getKey(), new Node<>(entry.getKey()));
+            } else {
+                Node<T> curr;
+                T key = entry.getKey();
+                if (tmp.containsKey(key)) {
+                    curr = tmp.get(key);
+                } else {
+                    curr = new Node<>(entry.getKey());
+                    tmp.put(key, curr);
+                }
+                T[] requires = entry.getValue();
+                Node<T> dep;
+                for (T req : requires) {
+                    if (tmp.containsKey(req)) {
+                        dep = tmp.get(req);
+                    } else {
+                        dep = new Node<>(entry.getKey());
+                        tmp.put(req, dep);
+                    }
+                    curr.addOutEdge(dep);
+                }
+            }
+        }
+        return tmp;
     }
 
     protected T get(int index) {

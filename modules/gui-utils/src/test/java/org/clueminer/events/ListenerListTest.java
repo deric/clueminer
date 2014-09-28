@@ -1,6 +1,5 @@
 package org.clueminer.events;
 
-import org.clueminer.events.ListenerList;
 import java.util.Iterator;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -43,8 +42,16 @@ public class ListenerListTest {
     public void testGetCapacity() {
     }
 
-    @Test
+    //@Test
     public void testAdd_GenericType() {
+        ListenerList<String> list = new ListenerList<>();
+        String a = "first";
+        String b = "second";
+        String c = "third";
+        list.add(c, new String[]{b});
+        list.add(b, new String[]{a});
+        list.add(a);
+        assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
     }
 
     @Test

@@ -5,13 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * A node structure for DAG (directed acyclic graph)
  *
  * @author Tomas Barton
  */
 public class Node<T> implements Iterable<Node<T>> {
 
     private final T value;
-    private final List<Node<T>> edges = new LinkedList<>();
+    private final List<Node<T>> outEdges = new LinkedList<>();
+    private final List<Node<T>> inEdges = new LinkedList<>();
 
     public Node(T value) {
         this.value = value;
@@ -21,33 +23,52 @@ public class Node<T> implements Iterable<Node<T>> {
         return value;
     }
 
-    public void addEdge(Node<T> otherNode) {
-        if (this.contains(otherNode)) {
+    /**
+     * Add outgoing edge
+     *
+     * @param otherNode
+     */
+    public void addOutEdge(Node<T> otherNode) {
+        if (this.containsSucc(otherNode)) {
             throw new RuntimeException("cycle detected");
         }
-        edges.add(otherNode);
+        outEdges.add(otherNode);
+        otherNode.addInEdge(this);
     }
 
-    public void removeEdge(Node<T> otherNode) {
-        edges.remove(otherNode);
+    public void addInEdge(Node<T> parentNode) {
+        inEdges.add(parentNode);
     }
 
-    public int edgesCnt() {
-        return edges.size();
+    public void removeOutEdge(Node<T> otherNode) {
+        outEdges.remove(otherNode);
+        otherNode.removeInEdge(this);
+    }
+
+    public void removeInEdge(Node<T> node) {
+        inEdges.remove(node);
+    }
+
+    public int outEdgesCnt() {
+        return outEdges.size();
+    }
+
+    public int inEdgesCnt() {
+        return inEdges.size();
     }
 
     /**
      *
      * @param node
-     * @return true if any connected node contains given node
+     * @return true if any connected node containsSucc given node
      */
-    public boolean contains(Node<T> node) {
+    public boolean containsSucc(Node<T> node) {
         if (node.equals(this)) {
             return true;
         }
-        for (Node<T> other : edges) {
+        for (Node<T> other : outEdges) {
             //recursive
-            if (other.equals(node) || other.contains(node)) {
+            if (other.equals(node) || other.containsSucc(node)) {
                 return true;
             }
         }
@@ -65,12 +86,12 @@ public class Node<T> implements Iterable<Node<T>> {
 
         @Override
         public boolean hasNext() {
-            return index < edgesCnt();
+            return index < outEdgesCnt();
         }
 
         @Override
         public Node<T> next() {
-            return edges.get(index++);
+            return outEdges.get(index++);
         }
 
         @Override
