@@ -150,7 +150,7 @@ public class ListenerList<T> implements Iterable<T> {
             Set<Node<T>> isolated = new HashSet<>();
             //find components with more than one node
             for (Node<T> curr : tmp.values()) {
-                //System.out.println("curr = " + curr.toString());
+                //System.out.println("curr" + curr.toString());
                 if (curr.outEdgesCnt() == 0 && curr.inEdgesCnt() == 0) {
                     isolated.add(curr);
                 } else {
@@ -161,8 +161,7 @@ public class ListenerList<T> implements Iterable<T> {
                         writeNode(data, root, i++);
                         i = writeTreeToAnArray(root, data, i);
                     }
-                    if (i == blacklist.size()) {
-                        //all elements have been written
+                    if (i == n) {    //all elements have been written
                         return;
                     }
                 }
@@ -184,7 +183,7 @@ public class ListenerList<T> implements Iterable<T> {
      */
     private void writeNode(T[] data, Node<T> node, int i) {
         data[i++] = node.getValue();
-        //System.out.println((i - 1) + ": " + node.getValue());
+        //System.out.println("[" + (i - 1) + "] : " + node.getValue().getClass().toString());
         blacklist.add(node);
     }
 
@@ -203,7 +202,9 @@ public class ListenerList<T> implements Iterable<T> {
         //process node's children which are on the same level
         while (it.hasNext()) {
             curr = it.next();
-            writeNode(data, curr, i++);
+            if (!blacklist.contains(curr)) {
+                writeNode(data, curr, i++);
+            }
             if (curr.inEdgesCnt() > 0) {
                 queue.add(curr);
             }
