@@ -36,6 +36,7 @@ import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
 import org.clueminer.dendrogram.tree.VerticalScale;
 import org.clueminer.dgram.eval.SilhouettePlot;
+import org.clueminer.events.ListenerList;
 import org.clueminer.gui.BPanel;
 
 /**
@@ -87,6 +88,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected Dimension elementSize;
     protected Insets insets = new Insets(5, 5, 40, 5);
     private int cutoffSliderSize = 6;
+    private final transient ListenerList<DendrogramDataListener> dataListeners = new ListenerList<>();
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -784,6 +786,18 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     @Override
     public boolean hasData() {
         return dendroData != null;
+    }
+
+    public void addDendrogramDataListener(DendrogramDataListener listener) {
+        dataListeners.add(listener);
+    }
+
+    public void removeDendrogramDataListener(DendrogramDataListener listener) {
+        dataListeners.remove(listener);
+    }
+
+    public ListenerList<DendrogramDataListener> getDataListeners() {
+        return dataListeners;
     }
 
 }

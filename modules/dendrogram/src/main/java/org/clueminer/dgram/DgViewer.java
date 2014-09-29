@@ -22,7 +22,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterPreviewer;
-import org.clueminer.events.ListenerList;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
@@ -41,7 +40,6 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     protected Dimension elementSize;
     protected DendrogramMapping data;
     private boolean fitToPanel = false;
-    private final transient ListenerList<DendrogramDataListener> datasetListeners = new ListenerList<>();
     private final transient EventListenerList clusteringListeners = new EventListenerList();
     private static final Logger logger = Logger.getLogger(DgViewer.class.getName());
 
@@ -207,33 +205,27 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      * @return
      */
     public boolean fireDatasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        if (!datasetListeners.isEmpty()) {
-            for (DendrogramDataListener listener : datasetListeners) {
-                //for (int i = listeners.length - 1; i >= 0; i--) {
-                System.out.println("dataset changed: " + listener.getClass().toString());
-                listener.datasetChanged(evt, dataset);
-            }
+        for (DendrogramDataListener listener : dendrogramPanel.getDataListeners()) {
+            System.out.println("dataset changed: " + listener.getClass().toString());
+            listener.datasetChanged(evt, dataset);
         }
+
         return true;
     }
 
     public boolean fireCellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting, Object source) {
-        if (!datasetListeners.isEmpty()) {
-            for (DendrogramDataListener listener : datasetListeners) {
-                if (source != listener) {
-                    listener.cellWidthChanged(evt, width, isAdjusting);
-                }
+        for (DendrogramDataListener listener : dendrogramPanel.getDataListeners()) {
+            if (source != listener) {
+                listener.cellWidthChanged(evt, width, isAdjusting);
             }
         }
         return true;
     }
 
     protected boolean fireCellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting, Object source) {
-        if (!datasetListeners.isEmpty()) {
-            for (DendrogramDataListener listener : datasetListeners) {
-                if (listener != source) {
-                    listener.cellHeightChanged(evt, height, isAdjusting);
-                }
+        for (DendrogramDataListener listener : dendrogramPanel.getDataListeners()) {
+            if (listener != source) {
+                listener.cellHeightChanged(evt, height, isAdjusting);
             }
         }
         return true;
@@ -241,12 +233,12 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
 
     @Override
     public void addDendrogramDataListener(DendrogramDataListener listener) {
-        datasetListeners.add(listener);
+        dendrogramPanel.addDendrogramDataListener(listener);
     }
 
     @Override
     public void removeDendrogramDataListener(DendrogramDataListener listener) {
-        datasetListeners.remove(listener);
+        dendrogramPanel.removeDendrogramDataListener(listener);
     }
 
     public void addRowsTreeListener(TreeListener listener) {
