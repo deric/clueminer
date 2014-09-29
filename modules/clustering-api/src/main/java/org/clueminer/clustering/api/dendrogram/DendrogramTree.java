@@ -1,7 +1,6 @@
 package org.clueminer.clustering.api.dendrogram;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import org.clueminer.clustering.api.HierarchicalResult;
 
 /**
@@ -11,10 +10,10 @@ import org.clueminer.clustering.api.HierarchicalResult;
  */
 public interface DendrogramTree extends DendrogramDataListener {
 
-     void paint(Graphics g);
-
-     void updateSize();
-
+    /**
+     * Calculate component size
+     */
+    void recalculate();
     /**
      * Distance in pixels from one side of tree to another
      *

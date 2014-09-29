@@ -1,5 +1,6 @@
 package org.clueminer.dgram;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,18 +16,19 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class DgTree extends JPanel implements DendrogramDataListener, DendrogramTree {
+public abstract class DgTree extends BPanel implements DendrogramDataListener, DendrogramTree {
 
     protected DendroTreeData treeData;
     protected DendrogramMapping dendroData;
@@ -44,8 +46,6 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     protected Dimension size = new Dimension(0, 0);
     private static final Logger logger = Logger.getLogger(DgTree.class.getName());
     private final StdScale scale = new StdScale();
-    private BufferedImage buffImg;
-    private Graphics2D buffGr;
     protected final Insets insets = new Insets(0, 0, 0, 0);
     /**
      * mark nodes in dendrogram with a circle
@@ -55,10 +55,11 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
 
     public DgTree(DendroPane panel) {
         this.panel = panel;
-        setOpaque(false);
         Dimension elem = panel.getElementSize();
         elementWidth = elem.width;
         elementHeight = elem.height;
+        this.fitToSpace = true;
+        this.preserveAlpha = true;
     }
 
     @Override
@@ -70,17 +71,46 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     @Override
     public abstract void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting);
 
-    /**
-     * For horizontal tree (left-to-right or right-to-left)
-     */
     @Override
-    public void updateSize() {
+    public void render(Graphics2D g) {
+        g.setComposite(AlphaComposite.Src);
+        g.setColor(treeColor);
+        DendroNode root = treeData.getRoot();
+        drawSubTree(g, root);
+    }
+
+    @Override
+    public void sizeUpdated(Dimension size) {
+        if (hasData()) {
+            realSize.width = size.width;
+            realSize.height = size.height;
+            if (bufferedImage != null) {
+                System.out.println("bi " + bufferedImage.getWidth() + " x " + bufferedImage.getHeight());
+            }
+            resetCache();
+        }
+    }
+
+    @Override
+    public void recalculate() {
         width = insets.left + treeHeight + insets.right + panel.getSliderDiameter();
         height = insets.top + dendroData.getNumberOfRows() * elementHeight + insets.bottom;
+        System.out.println("tree " + width + " x " + height);
         halfElem = elementHeight / 2;
+        realSize.width = width;
+        reqSize.width = width;
+        realSize.height = height;
+        reqSize.height = height;
         //nodes on right, 90 deg rot
-        setSizes(width, height);
-        invalidateCache();
+        //setSizes(width, height);
+        setMinimumSize(reqSize);
+        setSize(reqSize);
+        //setPreferredSize(realSize);
+    }
+
+    @Override
+    public boolean isAntiAliasing() {
+        return true;
     }
 
     /**
@@ -95,62 +125,6 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         setPreferredSize(size);
         setSize(size);
         setMinimumSize(size);
-    }
-
-    /**
-     * We try to avoid complete repainting as much as possible
-     */
-    public void invalidateCache() {
-        //invalidate cache
-        buffImg = null;
-        repaint();
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        if (buffImg == null) {
-            drawTree();
-        }
-
-        Graphics2D g2 = (Graphics2D) g;
-        if (buffGr != null) {
-            g2.drawImage(buffImg,
-                    insets.left, insets.top,
-                    size.width, size.height,
-                    null);
-        }
-        g2.dispose();
-    }
-
-    public void drawTree() {
-        if (!hasData() || size.width == 0 || size.height == 0) {
-            //no data
-            return;
-        }
-        buffImg = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-        buffGr = buffImg.createGraphics();
-
-        buffGr.setColor(treeColor);
-
-        buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        buffGr.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
-
-        DendroNode root = treeData.getRoot();
-        //System.out.println("tree has " + root.childCnt() + " nodes");
-        //System.out.println("root level is: " + root.level() + " height: " + root.getHeight());
-
-        //DendroNode current = treeData.first();
-        drawSubTree(buffGr, root);
-        buffGr.dispose();
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
     }
 
     protected abstract void drawSubTree(Graphics2D g2, DendroNode node);
@@ -195,8 +169,9 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     @Override
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
-        updateSize();
+        recalculate();
         fireTreeUpdated();
+        resetCache();
     }
 
     @Override
@@ -205,12 +180,14 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
     }
 
     @Override
-    public void addTreeListener(TreeListener listener) {
+    public
+            void addTreeListener(TreeListener listener) {
         treeListeners.add(TreeListener.class, listener);
     }
 
     @Override
-    public void removeTreeListener(TreeListener listener) {
+    public
+            void removeTreeListener(TreeListener listener) {
         treeListeners.remove(TreeListener.class, listener);
     }
 
@@ -224,7 +201,8 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         TreeListener[] listeners;
 
         if (treeListeners != null) {
-            listeners = treeListeners.getListeners(TreeListener.class);
+            listeners = treeListeners.getListeners(TreeListener.class
+            );
             for (TreeListener listener : listeners) {
                 listener.treeUpdated(this, size.width, size.height);
             }
@@ -282,7 +260,8 @@ public abstract class DgTree extends JPanel implements DendrogramDataListener, D
         TreeListener[] listeners;
 
         if (treeListeners != null) {
-            listeners = treeListeners.getListeners(TreeListener.class);
+            listeners = treeListeners.getListeners(TreeListener.class
+            );
             for (TreeListener listener : listeners) {
                 listener.leafOrderUpdated(source, result);
             }

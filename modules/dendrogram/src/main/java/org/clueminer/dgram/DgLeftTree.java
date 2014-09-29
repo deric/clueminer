@@ -64,7 +64,7 @@ public class DgLeftTree extends DgTree {
         }
         if (elementHeight != height) {
             elementHeight = height;
-            updateSize();
+            recalculate();
         }
     }
 

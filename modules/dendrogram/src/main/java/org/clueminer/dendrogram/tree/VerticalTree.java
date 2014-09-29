@@ -99,4 +99,9 @@ public class VerticalTree extends AbstractTree {
     protected void setOrientation(Graphics2D g2) {
         //nothing to do in here
     }
+
+    @Override
+    public void recalculate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

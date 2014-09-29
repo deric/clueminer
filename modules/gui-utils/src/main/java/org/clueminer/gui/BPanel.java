@@ -83,6 +83,7 @@ public abstract class BPanel extends JPanel {
         // clear the panel
         //g.setColor(getBackground());
         if (preserveAlpha) {
+            this.setOpaque(false);
             g.setComposite(AlphaComposite.Clear);
         } else {
             g.setComposite(AlphaComposite.Src);

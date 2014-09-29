@@ -99,7 +99,7 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
      */
     private double computeCutoff(int pos) {
         //min tree distance is distance of lowest level, not leaves!
-        if (tree != null && tree.hasData()) {
+        if (hasData()) {
             double cut = (pos * hclust.getMaxTreeHeight() / 100.0);
             //inverse value (slider min is on left)
             return cut;
@@ -167,7 +167,7 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
 
     @Override
     public void render(Graphics2D g) {
-        if (tree != null && tree.hasData()) {
+        if (hasData()) {
             drawLine(g);
         }
         g.dispose();

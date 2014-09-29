@@ -608,7 +608,6 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     /**
      * Updates the tree size with specified element size.
      */
-    @Override
     public void updateSize() {
         if (treeData == null) {
             return;

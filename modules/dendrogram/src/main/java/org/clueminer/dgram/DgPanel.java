@@ -109,7 +109,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      * shown or hidden
      *
      */
-    private void updateLayout() {
+    protected final void updateLayout() {
         this.removeAll(); //clean the component
 
         if (dendroData != null) {
@@ -122,15 +122,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             }
         }
         prepareComputedLayout();
-
-        if (fitToPanel) {
-            this.reqSize = getSize();
-            if (!hasData()) {
-                return;
-            }
-            recalculate();
-        }
-        computeLayout();
+        sizeUpdated(getSize());
         validate();
         revalidate();
         repaint();
@@ -139,12 +131,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     }
 
     @Override
-    public void sizeUpdated(Dimension reqSize) {
+    public void sizeUpdated(Dimension req) {
         if (!hasData()) {
             return;
         }
+
         if (fitToPanel) {
-            this.reqSize = reqSize;
+            System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
+            this.reqSize = req; //necessary
             recalculate();
         }
         computeLayout();
@@ -172,7 +166,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (showColumnsTree) {
             heatmapHeight -= colsTreeDim;
-            columnsTree.updateSize();
+            columnsTree.recalculate();
         } else {
             if (slider != null) {
                 heatmapHeight -= slider.getSize().height;
@@ -273,6 +267,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
         if (showRowsTree) {
             dim = rowsTree.getSize();
+            System.out.println("rows tree: " + dim.width + " x " + dim.height);
             if (showSlider) {
                 //slider height is constant
                 slider.setSize(dim.width, 15);
@@ -370,7 +365,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (heatmap == null) {
             heatmap = new Heatmap(this);
             heatmap.setOffset(0);
-            dendroViewer.addDendrogramDataListener(heatmap);
+            dataListeners.add(heatmap);
         }
     }
 
@@ -380,11 +375,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             columnsTree = new DgBottomTree(this);
             //columnsTree.setHorizontalOffset(0);
             //@TODO we should remove listener if component is not displayed
-            dendroViewer.addDendrogramDataListener(columnsTree);
+            dataListeners.add(columnsTree, heatmap);
         }
         if (columnsScale == null) {
             columnsScale = new HorizontalScale(columnsTree, this);
-            dendroViewer.addDendrogramDataListener(columnsScale);
+            dataListeners.add(columnsScale, columnsTree);
         }
     }
 
@@ -392,15 +387,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (rowsTree == null) {
             rowsTree = new DgRightTree(this);
-            dendroViewer.addDendrogramDataListener(rowsTree);
+            dataListeners.add(rowsTree);
             //listen to cluster selection
             rowsTree.addTreeListener(heatmap);
             cutoff = new CutoffLine(this, rowsTree);
-            dendroViewer.addDendrogramDataListener(cutoff);
+            dataListeners.add(cutoff);
         }
         if (rowsScale == null) {
             rowsScale = new VerticalScale(rowsTree, this);
-            dendroViewer.addDendrogramDataListener(rowsScale);
+            dataListeners.add(rowsScale);
         }
         if (rowTreeLayered == null) {
             rowTreeLayered = new JLayeredPane();
@@ -441,7 +436,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private void createRowSlider() {
         if (slider == null) {
             slider = new CutoffSlider(this, SwingConstants.HORIZONTAL, cutoff, cutoffSliderSize);
-            dendroViewer.addDendrogramDataListener(slider);
+            dataListeners.add(slider, cutoff);
             rowsTree.addTreeListener(slider);
         }
     }
@@ -451,7 +446,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (rowAnnotationBar == null) {
             //heatmap annotations
             rowAnnotationBar = new RowAnnotation(this);
-            dendroViewer.addDendrogramDataListener(rowAnnotationBar);
+            dataListeners.add(rowAnnotationBar);
             if (rowsTree != null) {
                 rowsTree.addTreeListener(rowAnnotationBar);
             }
@@ -467,7 +462,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             //heatmap annotations
             silhouettePlot = new SilhouettePlot(false);
             silhouettePlot.setElementSize(elementSize.width, elementSize.height);
-            dendroViewer.addDendrogramDataListener(silhouettePlot);
+            dataListeners.add(silhouettePlot);
             dendroViewer.addClusteringListener(silhouettePlot);
         }
         if (dendroData != null) {
@@ -479,7 +474,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (legend == null) {
             legend = new Legend(this);
-            dendroViewer.addDendrogramDataListener(legend);
+            dataListeners.add(legend);
             if (dendroData != null) {
                 legend.setData(dendroData);
             }
@@ -490,7 +485,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (columnAnnotationBar == null) {
             columnAnnotationBar = new ColumnAnnotation(this);
-            dendroViewer.addDendrogramDataListener(columnAnnotationBar);
+            dataListeners.add(columnAnnotationBar);
             rowsTree.addTreeListener(columnAnnotationBar);
         }
     }
@@ -499,7 +494,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (statistics == null) {
             statistics = new ColumnStatistics(this);
-            dendroViewer.addDendrogramDataListener(statistics);
+            dataListeners.add(statistics);
             rowsTree.addTreeListener(statistics);
         }
         GridBagConstraints c = new GridBagConstraints();
@@ -518,7 +513,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (clusterAssignment == null) {
             //heatmap annotations
             clusterAssignment = new ClusterAssignment(this);
-            dendroViewer.addDendrogramDataListener(clusterAssignment);
+            dataListeners.add(clusterAssignment);
             dendroViewer.addClusteringListener(clusterAssignment);
         }
     }
@@ -526,7 +521,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        updateLayout();
+        //updateLayout();
         //sizeUpdated(getSize());
         if (rowsTree != null) {
             rowsTree.fireTreeUpdated();
@@ -536,7 +531,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         slider.updatePosition();
         //@TODO probably call repaint
-        repaint();
+        //repaint();
     }
 
     public void fireRowsOrderUpdated(Object source, HierarchicalResult rows) {

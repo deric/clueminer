@@ -205,11 +205,20 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      * @return
      */
     public boolean fireDatasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
+        System.out.println("listeners isze: " + dendrogramPanel.getDataListeners().size());
+        //first notify panel itself
+        //dendrogramPanel.datasetChanged(evt, dataset);
+        int i = 0;
         for (DendrogramDataListener listener : dendrogramPanel.getDataListeners()) {
-            System.out.println("dataset changed: " + listener.getClass().toString());
-            listener.datasetChanged(evt, dataset);
-        }
 
+            if (listener != null) {
+                System.out.println("dataset changed [" + (i++) + "]: " + listener.getClass().toString());
+                listener.datasetChanged(evt, dataset);
+            } else {
+                System.out.println("listener is null");
+            }
+        }
+        //updateLayout();
         return true;
     }
 

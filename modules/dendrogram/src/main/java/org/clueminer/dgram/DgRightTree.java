@@ -1,5 +1,6 @@
 package org.clueminer.dgram;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -54,9 +55,9 @@ public class DgRightTree extends DgTree {
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        this.dendroData = dataset;
-        HierarchicalResult clustering = dataset.getRowsResult();
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping mapping) {
+        this.dendroData = mapping;
+        HierarchicalResult clustering = mapping.getRowsResult();
         setTreeData(clustering.getTreeData());
     }
 
@@ -72,7 +73,7 @@ public class DgRightTree extends DgTree {
         }
         if (elementHeight != height) {
             elementHeight = height;
-            updateSize();
+            recalculate();
         }
     }
 
