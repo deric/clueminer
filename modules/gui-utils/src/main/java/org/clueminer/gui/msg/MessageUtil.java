@@ -1,7 +1,10 @@
 package org.clueminer.gui.msg;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -38,7 +41,9 @@ public class MessageUtil {
      * @param exception
      */
     public static void showException(String message, Throwable exception) {
-        getDialogDisplayer().notify(new NotifyDescriptor.Exception(exception, message));
+        Logger.getGlobal().log(Level.WARNING, "Exception: {0}", message);
+        Exceptions.printStackTrace(exception);
+        getDialogDisplayer().notify(new NotifyDescriptor.Message(message));
     }
 
     /**
