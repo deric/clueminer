@@ -42,7 +42,7 @@ public class ListenerListTest {
     public void testGetCapacity() {
     }
 
-    //@Test
+    @Test
     public void testAdd_GenericType() {
         ListenerList<String> list = new ListenerList<>();
         String a = "first";

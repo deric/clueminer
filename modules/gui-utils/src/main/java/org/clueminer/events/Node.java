@@ -8,6 +8,7 @@ import java.util.List;
  * A node structure for DAG (directed acyclic graph)
  *
  * @author Tomas Barton
+ * @param <T>
  */
 public class Node<T> implements Iterable<Node<T>> {
 
@@ -75,12 +76,26 @@ public class Node<T> implements Iterable<Node<T>> {
         return false;
     }
 
+    /**
+     * Iterator over outgoing edges
+     *
+     * @return outgoing edges iterator
+     */
     @Override
     public Iterator<Node<T>> iterator() {
-        return new NodeIterator();
+        return new NodeOutIterator();
     }
 
-    class NodeIterator implements Iterator<Node<T>> {
+    /**
+     * Iterator over incoming edges (node's successors)
+     *
+     * @return incoming edges iterator
+     */
+    public Iterator<Node<T>> inIterator() {
+        return new NodeInIterator();
+    }
+
+    class NodeOutIterator implements Iterator<Node<T>> {
 
         private int index = 0;
 
@@ -99,5 +114,48 @@ public class Node<T> implements Iterable<Node<T>> {
             throw new UnsupportedOperationException("Cannot remove from nodes using the iterator.");
 
         }
+    }
+
+    class NodeInIterator implements Iterator<Node<T>> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < inEdgesCnt();
+        }
+
+        @Override
+        public Node<T> next() {
+            return inEdges.get(index++);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from nodes using the iterator.");
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Node(->(").append(inEdgesCnt()).append("), <-(").append(outEdgesCnt()).append("))");
+        sb.append("[").append(getValue()).append("]");
+        sb.append("in: ");
+        for (int i = 0; i < inEdgesCnt(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(inEdges.get(i).getValue());
+        }
+        sb.append("; out: ");
+        for (int i = 0; i < outEdgesCnt(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(outEdges.get(i).getValue());
+        }
+        return sb.toString();
     }
 }

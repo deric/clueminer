@@ -1,10 +1,12 @@
 package org.clueminer.events;
 
+import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -109,15 +111,75 @@ public class ListenerList<T> implements Iterable<T> {
         } else {
             Map<T, Node<T>> tmp = buildGraph();
             Set<Node<T>> isolated = new HashSet<>();
+            System.out.println("graph size: " + tmp.size());
             //find components with more than one node
             for (Node<T> curr : tmp.values()) {
+                System.out.println("curr = " + curr.toString());
                 if (curr.outEdgesCnt() == 0 && curr.inEdgesCnt() == 0) {
                     isolated.add(curr);
                 } else {
                     //part of connected component
-
+                    Node<T> root = findComponentRoot(curr);
+                    System.out.println("root = " + root.getValue().toString());
+                    data[i++] = root.getValue();
+                    i = writeTreeToAnArray(root, data, i);
+                    if (i == n) {
+                        //all elements have been written
+                        return;
+                    }
                 }
             }
+            //write isolated nodes (in any order)
+            for (Node<T> curr : isolated) {
+                System.out.println("isolated: " + curr.toString());
+                data[i++] = curr.getValue();
+            }
+        }
+    }
+
+    /**
+     * Writes root's successors into an array, root itself is not processed
+     *
+     * @param root
+     * @param data
+     * @param i
+     * @return last written position in the array
+     */
+    private int writeTreeToAnArray(Node<T> root, T[] data, int i) {
+        Iterator<Node<T>> it = root.inIterator();
+        Node<T> curr;
+        Queue<Node<T>> queue = new ArrayDeque<>();
+        //process node's children which are on the same level
+        while (it.hasNext()) {
+            curr = it.next();
+            data[i++] = curr.getValue();
+            if (curr.inEdgesCnt() > 0) {
+                queue.add(curr);
+            }
+        }
+        // process next level
+        if (!queue.isEmpty()) {
+            i = writeTreeToAnArray(queue.poll(), data, i);
+        }
+        return i;
+    }
+
+    /**
+     * Component is expected to look like a tree (not necessarily binary), root
+     * is the node which is only required by other but by itself doesn't have
+     * any requirements
+     *
+     * @param node
+     * @return
+     */
+    private Node<T> findComponentRoot(Node<T> node) {
+        //node is the root
+        if (node.outEdgesCnt() == 0) {
+            return node;
+        } else if (node.outEdgesCnt() == 1) {
+            return findComponentRoot(node.iterator().next());
+        } else {
+            throw new RuntimeException("outCnt > 1 is not supported yet");
         }
     }
 
@@ -138,7 +200,7 @@ public class ListenerList<T> implements Iterable<T> {
                 if (tmp.containsKey(key)) {
                     curr = tmp.get(key);
                 } else {
-                    curr = new Node<>(entry.getKey());
+                    curr = new Node<>(key);
                     tmp.put(key, curr);
                 }
                 T[] requires = entry.getValue();
@@ -147,7 +209,7 @@ public class ListenerList<T> implements Iterable<T> {
                     if (tmp.containsKey(req)) {
                         dep = tmp.get(req);
                     } else {
-                        dep = new Node<>(entry.getKey());
+                        dep = new Node<>(req);
                         tmp.put(req, dep);
                     }
                     curr.addOutEdge(dep);
