@@ -126,9 +126,11 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     @Override
     public void setCellHeight(int height, boolean isAdjusting, Object source) {
         if (height > 0) {
-            elementSize.height = height;
-            fireCellHeightChanged(new DendrogramDataEvent(this), height, isAdjusting, source);
-            updateLayout();
+            if (elementSize.height != height) {
+                elementSize.height = height;
+                fireCellHeightChanged(new DendrogramDataEvent(this), height, isAdjusting, source);
+                updateLayout();
+            }
         }
     }
 
@@ -151,9 +153,11 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     @Override
     public void setCellWidth(int width, boolean isAdjusting, Object source) {
         if (width > 0) {
-            elementSize.width = width;
-            fireCellWidthChanged(new DendrogramDataEvent(this), width, isAdjusting, source);
-            updateLayout();
+            if (elementSize.width != width) {
+                elementSize.width = width;
+                fireCellWidthChanged(new DendrogramDataEvent(this), width, isAdjusting, source);
+                updateLayout();
+            }
         }
     }
 

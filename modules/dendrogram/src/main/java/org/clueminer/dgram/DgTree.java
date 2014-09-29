@@ -3,14 +3,11 @@ package org.clueminer.dgram;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -106,6 +103,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         setMinimumSize(reqSize);
         setSize(reqSize);
         //setPreferredSize(realSize);
+        logger.log(Level.FINER, "recalculate");
     }
 
     @Override
