@@ -93,6 +93,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.colors</publicPackage>
+                        <publicPackage>org.clueminer.events</publicPackage>
                         <publicPackage>org.clueminer.gui</publicPackage>
                         <publicPackage>org.clueminer.gui.msg</publicPackage>
                     </publicPackages>
