@@ -14,6 +14,13 @@ import java.util.Set;
  * A swing implementation of listeners list does not consider ordering of
  * listeners. This is a proof of concept of "better listeners" mechanism.
  *
+ * Currently only simple linear requirements graphs are supported, hopefully
+ * this could be extended in the future to handle more complex cases.
+ *
+ * Note: Requirements graph MUST be DAG!
+ *
+ * e.g. (a) -> (b) -> (c)
+ *
  * @author Tomas Barton
  * @param <T> listener type
  */
@@ -82,6 +89,25 @@ public class ListenerList<T> implements Iterable<T> {
         if (requires != null) {
             hasConstraints = true;
         }
+        clearCache();
+    }
+
+    /**
+     * First argument is always listener, other are instances which needs to be
+     * notified before the first one
+     *
+     * Syntactic sugar interface
+     *
+     * @param requires (listener, req1, req2, req3, ... )
+     */
+    public void add(T... requires) {
+        if (requires.length < 2) {
+            throw new RuntimeException("invalid number of arguments " + requires.length + ". At least 2 arguments are required");
+        }
+        hasConstraints = true;
+        T[] req = (T[]) new Object[requires.length - 1];
+        System.arraycopy(requires, 1, req, 0, requires.length - 1);
+        map.put(requires[0], req);
         clearCache();
     }
 

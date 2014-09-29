@@ -96,11 +96,11 @@ public class ListenerListTest {
     }
 
     @Test
-    public void testAdd_GenericType_GenericType() {
-    }
-
-    @Test
-    public void testBuild() {
+    public void testSyntacticSugar() {
+        ListenerList<String> list = new ListenerList<>();
+        list.add("A", "B");
+        String[] res = list.toArray(new String[list.size()]);
+        assertEquals(2, res.length);
     }
 
     /**
