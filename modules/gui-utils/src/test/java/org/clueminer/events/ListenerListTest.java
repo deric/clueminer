@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class ListenerListTest {
 
-    private ListenerList subject = new ListenerList();
+    private final ListenerList subject = new ListenerList();
 
     public ListenerListTest() {
     }
@@ -42,16 +42,57 @@ public class ListenerListTest {
     public void testGetCapacity() {
     }
 
+    /**
+     * (third) -> (second) -> first
+     */
     @Test
     public void testAdd_GenericType() {
         ListenerList<String> list = new ListenerList<>();
-        String a = "first";
-        String b = "second";
-        String c = "third";
-        list.add(c, new String[]{b});
-        list.add(b, new String[]{a});
-        list.add(a);
+        //create nodes in reverse order
+        list.add("third", new String[]{"second"});
+        list.add("second", new String[]{"first"});
+        list.add("first");
+        //expect sorted nodes
         assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
+    }
+
+    /**
+     * (third) -> (second) -> first
+     */
+    @Test
+    public void testAdd_GenericType_order() {
+        ListenerList<String> list = new ListenerList<>();
+        //should work in any order
+        list.add("second", new String[]{"first"});
+        list.add("first");
+        list.add("third", new String[]{"second"});
+        //expect sorted nodes
+        assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
+    }
+
+    @Test
+    public void testSimpleConstraints() {
+        ListenerList<String> list = new ListenerList<>();
+        list.add("A", new String[]{"B"});
+        list.add("C", new String[]{"B"});
+        list.add("B");
+        String[] res = list.toArray(new String[list.size()]);
+        assertEquals("B", res[0]);
+        //A and C might be in any order
+        assertEquals(3, res.length);
+    }
+
+    @Test
+    public void testMissingRequiredInstance() {
+        ListenerList<String> list = new ListenerList<>();
+        //B is not added to list of listeners, but will be included automatically
+        //because is in requirements
+        list.add("A", new String[]{"B"});
+        list.add("C", new String[]{"B"});
+        String[] res = list.toArray(new String[list.size()]);
+        assertEquals("B", res[0]);
+        //A and C might be in any order
+        assertEquals(3, res.length);
     }
 
     @Test

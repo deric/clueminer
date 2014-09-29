@@ -1,6 +1,7 @@
 package org.clueminer.events;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -21,6 +22,8 @@ public class ListenerList<T> implements Iterable<T> {
     private T[] data;
     private final Map<T, T[]> map;
     private boolean hasConstraints = false;
+    private Set<Node<T>> blacklist;
+    private int n = -1;
 
     /**
      * A list of listeners with consistent order
@@ -34,7 +37,10 @@ public class ListenerList<T> implements Iterable<T> {
     }
 
     public int size() {
-        return map.size();
+        if (n < 0) {
+            return map.size();
+        }
+        return n;
     }
 
     public final void ensureCapacity(int requested) {
@@ -100,30 +106,36 @@ public class ListenerList<T> implements Iterable<T> {
      * Create ordering of listeners which respects constraints
      */
     protected void build() {
-        int n = size();
-        data = (T[]) new Object[n];
         int i = 0;
+        n = -1;
         if (!hasConstraints) {
+            data = (T[]) new Object[size()];
             //most trivial case (no constraints at all)
             for (T obj : map.keySet()) {
                 data[i++] = obj;
             }
         } else {
             Map<T, Node<T>> tmp = buildGraph();
+            n = tmp.size();
+            //initialize blacklist
+            blacklist = new HashSet<>();
+            //graph might be bigger than list size
+            data = (T[]) new Object[tmp.size()];
             Set<Node<T>> isolated = new HashSet<>();
-            System.out.println("graph size: " + tmp.size());
             //find components with more than one node
             for (Node<T> curr : tmp.values()) {
-                System.out.println("curr = " + curr.toString());
+                //System.out.println("curr = " + curr.toString());
                 if (curr.outEdgesCnt() == 0 && curr.inEdgesCnt() == 0) {
                     isolated.add(curr);
                 } else {
                     //part of connected component
                     Node<T> root = findComponentRoot(curr);
-                    System.out.println("root = " + root.getValue().toString());
-                    data[i++] = root.getValue();
-                    i = writeTreeToAnArray(root, data, i);
-                    if (i == n) {
+                    if (!blacklist.contains(root)) {
+                        //System.out.println("root = " + root.getValue().toString());
+                        writeNode(data, root, i++);
+                        i = writeTreeToAnArray(root, data, i);
+                    }
+                    if (i == blacklist.size()) {
                         //all elements have been written
                         return;
                     }
@@ -131,10 +143,23 @@ public class ListenerList<T> implements Iterable<T> {
             }
             //write isolated nodes (in any order)
             for (Node<T> curr : isolated) {
-                System.out.println("isolated: " + curr.toString());
-                data[i++] = curr.getValue();
+                //System.out.println("isolated: " + curr.toString());
+                writeNode(data, curr, i++);
             }
         }
+    }
+
+    /**
+     * Writes node to result array
+     *
+     * @param data
+     * @param node
+     * @param i
+     */
+    private void writeNode(T[] data, Node<T> node, int i) {
+        data[i++] = node.getValue();
+        //System.out.println((i - 1) + ": " + node.getValue());
+        blacklist.add(node);
     }
 
     /**
@@ -152,7 +177,7 @@ public class ListenerList<T> implements Iterable<T> {
         //process node's children which are on the same level
         while (it.hasNext()) {
             curr = it.next();
-            data[i++] = curr.getValue();
+            writeNode(data, curr, i++);
             if (curr.inEdgesCnt() > 0) {
                 queue.add(curr);
             }
@@ -231,6 +256,19 @@ public class ListenerList<T> implements Iterable<T> {
             build();
         }
         return data;
+    }
+
+    public <T> T[] toArray(T[] a) {
+        getListeners(); //make sure graph is built
+        if (a.length < size()) // Make a new array of a's runtime type, but my contents:
+        {
+            return (T[]) Arrays.copyOf(data, size(), a.getClass());
+        }
+        System.arraycopy(data, 0, a, 0, size());
+        if (a.length > size()) {
+            a[size()] = null;
+        }
+        return a;
     }
 
     public boolean isEmpty() {
