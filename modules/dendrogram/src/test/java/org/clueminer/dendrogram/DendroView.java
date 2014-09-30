@@ -4,6 +4,12 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.InputStream;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.ClusteringExecutor;
@@ -26,10 +32,21 @@ public class DendroView extends JFrame {
 
     private DendroViewer frame;
     private DendroToolbar toolbar;
+    private static final Logger logger = Logger.getLogger(DendroView.class.getName());
 
     public DendroView() {
         setLayout(new GridBagLayout());
-        initComponents();
+        Logger.getGlobal().setLevel(Level.FINEST);
+
+        // Log a FINE tracing message
+        logger.fine("doing stuff");
+        try {
+            initComponents();
+        } catch (Exception ex) {
+            // Log the exception
+            logger.log(Level.WARNING, "trouble sneezing", ex);
+        }
+        logger.fine("done");
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
 
@@ -44,6 +61,14 @@ public class DendroView extends JFrame {
 
     // this function will be run from the EDT
     private static void createAndShowGUI() throws Exception {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classLoader.getResourceAsStream("logging.properties");
+        LogManager.getLogManager().readConfiguration(is);
+
+        Handler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.FINER);
+        Logger.getAnonymousLogger().addHandler(consoleHandler);
+
         DendroView hmf = new DendroView();
         hmf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         hmf.setSize(500, 500);

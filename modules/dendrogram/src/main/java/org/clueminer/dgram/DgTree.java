@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.geom.Ellipse2D;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -40,7 +39,6 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     private Color treeColor = Color.blue;
     private static final long serialVersionUID = -6201677645559622330L;
     protected EventListenerList treeListeners = new EventListenerList();
-    protected Dimension size = new Dimension(0, 0);
     private static final Logger logger = Logger.getLogger(DgTree.class.getName());
     private final StdScale scale = new StdScale();
     protected final Insets insets = new Insets(0, 0, 0, 0);
@@ -79,50 +77,33 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     @Override
     public void sizeUpdated(Dimension size) {
         if (hasData()) {
-            realSize.width = size.width;
-            realSize.height = size.height;
-            if (bufferedImage != null) {
-                System.out.println("bi " + bufferedImage.getWidth() + " x " + bufferedImage.getHeight());
+            if (size.width > 0 && size.height > 0) {
+                reqSize = size;
+                resetCache(); //calls recalculate
             }
-            resetCache();
         }
     }
 
     @Override
     public void recalculate() {
-        width = insets.left + treeHeight + insets.right + panel.getSliderDiameter();
-        height = insets.top + dendroData.getNumberOfRows() * elementHeight + insets.bottom;
-        System.out.println("tree " + width + " x " + height);
-        halfElem = elementHeight / 2;
-        realSize.width = width;
-        reqSize.width = width;
-        realSize.height = height;
-        reqSize.height = height;
-        //nodes on right, 90 deg rot
-        //setSizes(width, height);
-        setMinimumSize(reqSize);
-        setSize(reqSize);
-        //setPreferredSize(realSize);
-        logger.log(Level.FINER, "recalculate");
+        if (hasData()) {
+            width = insets.left + treeHeight + insets.right + panel.getSliderDiameter();
+            height = insets.top + dendroData.getNumberOfRows() * elementHeight + insets.bottom;
+            halfElem = elementHeight / 2;
+            if (width > 0 && height > 0) {
+                realSize.width = width;
+                //reqSize.width = width;
+                realSize.height = height;
+                setSize(realSize);
+                setPreferredSize(realSize);
+                setMinimumSize(realSize);
+            }
+        }
     }
 
     @Override
     public boolean isAntiAliasing() {
         return true;
-    }
-
-    /**
-     * Set component size
-     *
-     * @param width
-     * @param height
-     */
-    public void setSizes(int width, int height) {
-        size.width = width;
-        size.height = height;
-        setPreferredSize(size);
-        setSize(size);
-        setMinimumSize(size);
     }
 
     protected abstract void drawSubTree(Graphics2D g2, DendroNode node);
@@ -167,9 +148,9 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     @Override
     public void setTreeData(DendroTreeData treeData) {
         this.treeData = treeData;
-        recalculate();
-        fireTreeUpdated();
         resetCache();
+        fireTreeUpdated();
+
     }
 
     @Override
@@ -178,14 +159,12 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     }
 
     @Override
-    public
-            void addTreeListener(TreeListener listener) {
+    public void addTreeListener(TreeListener listener) {
         treeListeners.add(TreeListener.class, listener);
     }
 
     @Override
-    public
-            void removeTreeListener(TreeListener listener) {
+    public void removeTreeListener(TreeListener listener) {
         treeListeners.remove(TreeListener.class, listener);
     }
 
@@ -199,10 +178,9 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         TreeListener[] listeners;
 
         if (treeListeners != null) {
-            listeners = treeListeners.getListeners(TreeListener.class
-            );
+            listeners = treeListeners.getListeners(TreeListener.class);
             for (TreeListener listener : listeners) {
-                listener.treeUpdated(this, size.width, size.height);
+                listener.treeUpdated(this, realSize.width, realSize.height);
             }
         }
     }
@@ -240,7 +218,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
      */
     @Override
     public int getTreeWidth() {
-        return size.height;
+        return realSize.height;
     }
 
     /**
@@ -258,8 +236,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         TreeListener[] listeners;
 
         if (treeListeners != null) {
-            listeners = treeListeners.getListeners(TreeListener.class
-            );
+            listeners = treeListeners.getListeners(TreeListener.class);
             for (TreeListener listener : listeners) {
                 listener.leafOrderUpdated(source, result);
             }

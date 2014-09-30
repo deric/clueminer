@@ -1,6 +1,5 @@
 package org.clueminer.dgram;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;

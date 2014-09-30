@@ -26,7 +26,8 @@ public class DgBottomTree extends DgTree {
             height = insets.top + treeHeight + insets.bottom;
             halfElem = elementWidth / 2;
             //nodes on right, 90 deg rot
-            setSizes(width, height);
+            realSize.width = width;
+            realSize.height = height;
             resetCache();
         }
     }
@@ -94,7 +95,7 @@ public class DgBottomTree extends DgTree {
      */
     @Override
     public int getTreeWidth() {
-        return size.width;
+        return realSize.width;
     }
 
     /**

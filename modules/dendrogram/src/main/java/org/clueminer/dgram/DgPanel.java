@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.text.DecimalFormat;
+import java.util.logging.Logger;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
@@ -89,6 +90,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected Insets insets = new Insets(5, 5, 40, 5);
     private int cutoffSliderSize = 6;
     private final transient ListenerList<DendrogramDataListener> dataListeners = new ListenerList<>();
+    private static final Logger logger = Logger.getLogger(DgPanel.class.getName());
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -137,7 +139,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
 
         if (fitToPanel) {
-            System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
+            //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
             this.reqSize = req; //necessary
             recalculate();
         }
@@ -259,15 +261,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int totalWidth, totalHeight;
 
         //X, Y position of heatmap's top left corner
-        heatmapXoffset = insets.left + rowsTree.getSize().width;
+        heatmapXoffset = insets.left + rowsTree.getRealSize().width;
         heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
 
         dimHeatmap = heatmap.getSize();
         totalHeight = dimHeatmap.height;
 
         if (showRowsTree) {
-            dim = rowsTree.getSize();
-            System.out.println("rows tree: " + dim.width + " x " + dim.height);
+            dim = rowsTree.getRealSize();
+            //System.out.println("rows tree: " + dim.width + " x " + dim.height);
             if (showSlider) {
                 //slider height is constant
                 slider.setSize(dim.width, 15);
@@ -323,7 +325,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     }
 
     private void updateColumnTreePosition(Dimension dim, int heatmapXoffset) {
-        dim = columnsTree.getSize();
+        dim = columnsTree.getRealSize();
         columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
         if (showScale) {
             //columnsScale.setSize(scaleHeight, dim.height);
@@ -352,7 +354,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private int updateHeatmapYoffset(int heatmapXoffset) {
         int heatmapYoffset;
         if (showColumnsTree) {
-            Dimension dim = columnsTree.getSize();
+            Dimension dim = columnsTree.getRealSize();
             heatmapYoffset = insets.top + dim.height;
             updateColumnTreePosition(dim, heatmapXoffset);
         } else {
@@ -410,12 +412,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
                 @Override
                 public Dimension preferredLayoutSize(Container parent) {
-                    return rowsTree.getSize();
+                    return rowsTree.getRealSize();
                 }
 
                 @Override
                 public Dimension minimumLayoutSize(Container parent) {
-                    return rowsTree.getSize();
+                    return rowsTree.getRealSize();
                 }
 
                 @Override
@@ -573,13 +575,13 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int heatmapXoffset, heatmapYoffset;
         int height = dendroData.getNumberOfRows() * elemHeight;
         //X, Y position of heatmap's top left corner
-        heatmapXoffset = insets.left + rowsTree.getSize().width;
+        heatmapXoffset = insets.left + rowsTree.getRealSize().width;
         if (showColumnsTree && columnsTree != null) {
             height += columnsTree.getHeight();
         }
         heatmapYoffset = updateHeatmapYoffset(heatmapXoffset);
         height += heatmapYoffset;
-        Dimension dim = rowsTree.getSize();
+        Dimension dim = rowsTree.getRealSize();
         Dimension dimSlider = null;
         if (showSlider) {
             //slider height is constant
@@ -610,7 +612,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
      * @return
      */
     public Dimension getVerticalTreeSize() {
-        return columnsTree.getSize();
+        return columnsTree.getRealSize();
     }
 
     public Dimension getHeatmapSize() {

@@ -797,4 +797,8 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
             selectNode(e.getX(), e.getY());
         }
     }
+
+    public Dimension getRealSize() {
+        return this.getSize();
+    }
 }

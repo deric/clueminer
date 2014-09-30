@@ -14,37 +14,38 @@ public interface DendrogramTree extends DendrogramDataListener {
      * Calculate component size
      */
     void recalculate();
+
     /**
      * Distance in pixels from one side of tree to another
      *
      * @return
      */
-     int getTreeWidth();
+    int getTreeWidth();
 
     /**
      * Height of rendered tree in pixels
      *
      * @return
      */
-     int getTreeHeight();
+    int getTreeHeight();
 
-     void setTreeData(DendroTreeData treeData);
+    void setTreeData(DendroTreeData treeData);
 
-     DendroTreeData getTreeData();
+    DendroTreeData getTreeData();
 
-     Dimension getSize();
+    Dimension getRealSize();
 
-     void addTreeListener(TreeListener listener);
+    void addTreeListener(TreeListener listener);
 
-     void removeTreeListener(TreeListener listener);
+    void removeTreeListener(TreeListener listener);
 
-     boolean hasData();
+    boolean hasData();
 
-     void fireTreeUpdated();
+    void fireTreeUpdated();
 
-     int getWidth();
+    int getWidth();
 
-     int getHeight();
+    int getHeight();
 
     /**
      * Moves and resizes this component. The new location of the top-left corner
@@ -59,23 +60,23 @@ public interface DendrogramTree extends DendrogramDataListener {
      * @param width  the new <code>width</code> of this component
      * @param height the new <code>height</code> of this component
      */
-     void setBounds(int x, int y, int width, int height);
+    void setBounds(int x, int y, int width, int height);
 
     /**
      * Zero tree height
      *
      * @return minimal tree distance
      */
-     double getMinTreeHeight();
+    double getMinTreeHeight();
 
-     double getMidTreeHeight();
+    double getMidTreeHeight();
 
     /**
      * Distance which represents root of the tree
      *
      * @return
      */
-     double getMaxTreeHeight();
+    double getMaxTreeHeight();
 
     /**
      * Triggered when leaf order was optimized
@@ -83,6 +84,6 @@ public interface DendrogramTree extends DendrogramDataListener {
      * @param source
      * @param result
      */
-     void fireLeafOrderUpdated(Object source, HierarchicalResult result);
+    void fireLeafOrderUpdated(Object source, HierarchicalResult result);
 
 }
