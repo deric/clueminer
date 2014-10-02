@@ -5,13 +5,13 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Standard deviation
- * 
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Standardisation.class)
 public class StdDev extends Standardisation {
 
-    private static String name = "z-score";
+    public static final String name = "z-score";
 
     @Override
     public String getName() {

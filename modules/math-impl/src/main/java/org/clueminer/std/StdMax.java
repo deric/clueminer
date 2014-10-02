@@ -4,16 +4,16 @@ import org.clueminer.math.Standardisation;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Divide each attribute value of a row by maximum value of that attribute. 
+ * Divide each attribute value of a row by maximum value of that attribute.
  * This will put all values to an interval between −1 and 1.
- * 
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = Standardisation.class)
 public class StdMax extends Standardisation {
-    
-    private static String name = "Maximum";
-    
+
+    public static final String name = "Maximum";
+
     @Override
     public String getName(){
         return name;
@@ -36,7 +36,7 @@ public class StdMax extends Standardisation {
                 }
             }
         }
-        
+
         for (i = 0; i < m; i++) {
             for (j = 0; j < n; j++) {
                 res[i][j] = A[i][j] / maxVal[j];
@@ -44,5 +44,5 @@ public class StdMax extends Standardisation {
         }
         return res;
     }
-    
+
 }

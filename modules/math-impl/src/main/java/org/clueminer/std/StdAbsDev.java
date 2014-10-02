@@ -9,13 +9,13 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Standardisation.class)
 public class StdAbsDev extends StdDev {
-    private static String name = "Standardised measurement";
-    
+    public static final String name = "Standardised measurement";
+
     @Override
     public String getName(){
         return name;
     }
-    
+
     @Override
    protected void computeDev(double[][] a, double[] avg, double[] dev, int m, int n){
         int i, j;

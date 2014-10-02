@@ -11,7 +11,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Standardisation.class)
 public class StdScale extends Standardisation {
 
-    private static final String name = "Min-Max";
+    public static final String name = "Min-Max";
     private double targetMin = -10;
     private double targetMax = 10;
 
