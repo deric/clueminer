@@ -5,7 +5,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -82,12 +81,6 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
          * TODO cutoff is probably being updated somewhere else
          */
         double cut = hres.getCutoff();
-        if (hres.hasClustering()) {
-            double c = hres.getClustering().getParams().getDouble(AgglParams.CUTOFF, hres.getCutoff());
-            if (c != cut) {
-                System.out.println("different cut: " + cut + ", props: " + c);
-            }
-        }
         return (int) scale.scaleToRange(cut, 0, hres.getMaxTreeHeight(), min, max);
     }
 
