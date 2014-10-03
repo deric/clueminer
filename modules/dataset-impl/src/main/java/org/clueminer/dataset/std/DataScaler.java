@@ -21,11 +21,11 @@ public class DataScaler {
             throw new RuntimeException("Standartization method " + std + " was not found");
         }
 
-        Matrix stdarr = std.optimize(dataset);
+        Dataset<? extends Instance> stdarr = std.optimize(dataset);
         if (logScale) {
             //stdarr = logScale(stdarr, m, n);
         }
-        return stdarr;
+        return null;
     }
 
 }

@@ -123,6 +123,11 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testSet_3args() {
+        DoubleArrayDataRow test = new DoubleArrayDataRow(3);
+        for (int i = 0; i < 3; i++) {
+            test.set(i, i);
+            assertEquals(i, test.get(i), delta);
+        }
     }
 
     /**

@@ -118,7 +118,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * one. This reference is used to track back to the original dataset (which
      * parent is null).
      *
-     * @return Dataset<E> original dataset from which was created this one
+     * @return Dataset original dataset from which was created this one
      */
     public Dataset<? extends Instance> getParent();
 
@@ -207,7 +207,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
 
     public double getAttributeValue(Attribute attribute, int instanceIdx);
 
-    public double getAttributeValue(int attributeIndex, int instanceIdx);
+    /**
+     * Get the value of an attribute in given instance (accessing data like in
+     * matrix)
+     *
+     * @param instanceIdx    row index
+     * @param attributeIndex column index
+     * @return
+     */
+    public double get(int instanceIdx, int attributeIndex);
 
     /**
      * Set attribute value by its name and index in the dataset
@@ -221,11 +229,11 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     /**
      * Set attribute value by its index and position in dataset
      *
-     * @param attrIdx     attribute index - starts from 0
      * @param instanceIdx instance index - starts from 0
+     * @param attrIdx     attribute index - starts from 0
      * @param value
      */
-    public void setAttributeValue(int attrIdx, int instanceIdx, double value);
+    public void set(int instanceIdx, int attrIdx, double value);
 
     /**
      * Set i-th attribute (column)

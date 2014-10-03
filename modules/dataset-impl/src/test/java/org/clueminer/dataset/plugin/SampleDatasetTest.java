@@ -292,8 +292,22 @@ public class SampleDatasetTest {
     @Test
     public void testSetAttributeValueIntInt() {
         double value = 1.23;
-        dataset.setAttributeValue(0, 0, value);
-        assertEquals(value, dataset.getAttributeValue(0, 0), delta);
+        dataset.set(0, 1, value);
+        assertEquals(value, dataset.get(0, 1), delta);
+    }
+
+    @Test
+    public void testGet() {
+        Dataset<? extends Instance> test = new SampleDataset<>(3, 3);
+        double[][] data = new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+        //test matrix-like approach to accessing data
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                test.set(i, j, data[i][j]);
+                assertEquals(data[i][j], test.get(i, j), delta);
+            }
+        }
     }
 
     /**

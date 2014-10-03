@@ -16,7 +16,7 @@ import org.clueminer.dataset.api.Instance;
 public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = -240111429000747905L;
-    protected HashMap<String, Integer> attrNames = new HashMap<String, Integer>();
+    protected HashMap<String, Integer> attrNames = new HashMap<>();
 
     public AttrHashDataset(int capacity) {
         //some default number of attributes
@@ -55,8 +55,8 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
     @Override
     public double getAttributeValue(String attributeName, int instanceIdx) {
         if (attrNames.containsKey(attributeName)) {
-            int index = attrNames.get(attributeName).intValue();
-            return getAttributeValue(index, instanceIdx);
+            int index = attrNames.get(attributeName);
+            return get(instanceIdx, index);
         }
         throw new RuntimeException("attribute " + attributeName + " not found");
     }
@@ -64,9 +64,9 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
     @Override
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
         if (attrNames.containsKey(attributeName)) {
-            int index = attrNames.get(attributeName).intValue();
+            int index = attrNames.get(attributeName);
             //instance method should create new instace (row) if does not exist
-            instance(instanceIdx).set(index, value);
+            set(instanceIdx, index, value);
         } else {
             throw new RuntimeException("attribute " + attributeName + " not found");
         }
@@ -80,9 +80,9 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
 
     @Override
     public Dataset<E> duplicate() {
-        AttrHashDataset<E> copy = new AttrHashDataset<E>(this.size());
+        AttrHashDataset<E> copy = new AttrHashDataset<>(this.size());
         copy.attrNames = this.attrNames;
-        Map<Integer, Attribute> attrs = new HashMap<Integer, Attribute>(this.attributeCount());
+        Map<Integer, Attribute> attrs = new HashMap<>(this.attributeCount());
         for (int i = 0; i < this.attributeCount(); i++) {
             attrs.put(i, (Attribute) attributes[i].clone());
         }

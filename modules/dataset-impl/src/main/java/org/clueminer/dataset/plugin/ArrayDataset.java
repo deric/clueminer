@@ -27,7 +27,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     private Instance[] data;
     private InstanceBuilder builder;
     private AttributeBuilder attributeBuilder;
-    private final TreeSet<Object> classes = new TreeSet<Object>();
+    private final TreeSet<Object> classes = new TreeSet<>();
     protected Attribute[] attributes;
     private int attrCnt = 0;
     /**
@@ -78,7 +78,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         if (hasIndex(index)) {
             return get(index);
         } else if (index == size()) {
-            E inst = (E) builder().create(this.attributeCount());
+            //doesn't make sense to create instance with 0 attributes
+            int attrs = attributeCount() == 0 ? attributes.length : attributeCount();
+            E inst = (E) builder().create(attrs);
             add(inst);
             return inst;
         }
@@ -228,7 +230,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        Map<Integer, Attribute> res = new HashMap<Integer, Attribute>();
+        Map<Integer, Attribute> res = new HashMap<>();
         for (int i = 0; i < attrCnt; i++) {
             res.put(i, attributes[i]);
         }
@@ -297,8 +299,15 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return data[instanceIdx].value(attribute.getIndex());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param instanceIdx
+     * @param attributeIndex
+     * @return
+     */
     @Override
-    public double getAttributeValue(int attributeIndex, int instanceIdx) {
+    public double get(int instanceIdx, int attributeIndex) {
         return data[instanceIdx].value(attributeIndex);
     }
 
@@ -325,13 +334,13 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         // Dump.printMatrix(data.length,data[0].length,data,2,5);
         int k = 5;
         for (int j = 0; j < this.size(); j++) {
-            x[j] = getAttributeValue(k, j);
+            x[j] = get(j, k);
         }
 
         k = 0;
         for (int j = 0; j < this.size(); j++) {
             //Attribute ta =  dataset.getAttribute(j);
-            y[j] = getAttributeValue(k, j);
+            y[j] = get(j, k);
 
         }
         plot.addScatterPlot(getName(), x, y);
@@ -345,7 +354,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Dataset<E> duplicate() {
-        ArrayDataset<E> copy = new ArrayDataset<E>(this.size(), this.attributeCount());
+        ArrayDataset<E> copy = new ArrayDataset<>(this.size(), this.attributeCount());
         copy.attributes = this.attributes;
         copy.attrCnt = this.attrCnt;
         return copy;

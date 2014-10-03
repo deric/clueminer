@@ -32,7 +32,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     private double[] timepointPosition;
     protected InstanceBuilder builder;
     protected AttributeFactoryImpl attributeBuilder;
-    protected TreeSet<Object> classes = new TreeSet<Object>();
+    protected TreeSet<Object> classes = new TreeSet<>();
     private static final Logger logger = Logger.getLogger(TimeseriesDataset.class.getName());
 
     /**
@@ -450,7 +450,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
-    public double getAttributeValue(int attributeIndex, int instanceIdx) {
+    public double get(int attributeIndex, int instanceIdx) {
         return get(instanceIdx).value(attributeIndex);
     }
 

@@ -25,17 +25,23 @@ import org.openide.util.lookup.ServiceProvider;
 public class SampleDataset<E extends Instance> extends AbstractDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = -6412010424414577127L;
-    protected Map<Integer, Attribute> attributes = new HashMap<Integer, Attribute>();
+    protected Map<Integer, Attribute> attributes = new HashMap<>();
     protected InstanceBuilder builder;
     protected AttributeBuilder attributeBuilder;
-    protected TreeSet<Object> classes = new TreeSet<Object>();
+    protected TreeSet<Object> classes = new TreeSet<>();
     private static final Logger logger = Logger.getLogger(SampleDataset.class.getName());
+    private int attrCapacity = -1;
 
     /**
      * Creates an empty data set with capacity of ten
      */
     public SampleDataset() {
         super(10);
+    }
+
+    public SampleDataset(int capacity, int numAttrs) {
+        attributes = new HashMap<>(numAttrs);
+        attrCapacity = numAttrs;
     }
 
     /**
@@ -139,7 +145,16 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public E instance(int index) {
-        return get(index);
+        if (hasIndex(index)) {
+            return get(index);
+        } else if (index == size()) {
+            //doesn't make sense to create instance with 0 attributes
+            int attrs = attributeCount() == 0 ? attrCapacity : attributeCount();
+            E inst = (E) builder().create(attrs);
+            add(inst);
+            return inst;
+        }
+        throw new ArrayIndexOutOfBoundsException("can't get instance at position: " + index);
     }
 
     @Override
@@ -301,7 +316,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         int i = 0;
         while (i < attributeCount()) {
             if (attributes.get(i).getName().equals(attributeName)) {
-                return getAttributeValue(i, instanceIdx);
+                return get(instanceIdx, i);
             }
             i++;
         }
@@ -313,8 +328,15 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         return get(instanceIdx).value(attribute.getIndex());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param instanceIdx
+     * @param attributeIndex
+     * @return
+     */
     @Override
-    public double getAttributeValue(int attributeIndex, int instanceIdx) {
+    public double get(int instanceIdx, int attributeIndex) {
         return get(instanceIdx).value(attributeIndex);
     }
 
@@ -343,13 +365,13 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         // Dump.printMatrix(data.length,data[0].length,data,2,5);
         int k = 5;
         for (int j = 0; j < this.size(); j++) {
-            x[j] = getAttributeValue(k, j);
+            x[j] = get(j, k);
         }
 
         k = 0;
         for (int j = 0; j < this.size(); j++) {
             //Attribute ta =  dataset.getAttribute(j);
-            y[j] = getAttributeValue(k, j);
+            y[j] = get(j, k);
 
         }
         plot.addScatterPlot(getName(), x, y);
@@ -368,7 +390,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public Dataset<E> duplicate() {
-        SampleDataset<E> copy = new SampleDataset<E>(this.size());
+        SampleDataset<E> copy = new SampleDataset<>(this.size());
         copy.setAttributes(attributes);
         return copy;
     }

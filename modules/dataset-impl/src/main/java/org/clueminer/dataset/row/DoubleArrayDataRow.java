@@ -6,6 +6,7 @@ import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
+import org.clueminer.utils.Dump;
 
 /**
  *
@@ -349,10 +350,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
             return false;
         }
         final DoubleArrayDataRow other = (DoubleArrayDataRow) obj;
-        if (!Arrays.equals(data, other.data)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(data, other.data);
     }
 
     /**
@@ -380,10 +378,11 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public String toString(String separator) {
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder("DoubleArrayData").append("(").append(getCapacity()).append(")[");
         for (int i = 0; i < data.length; i++) {
             result.append(i == 0 ? "" : ",").append(data[i]);
         }
+        result.append("]");
         return result.toString();
     }
 }

@@ -96,8 +96,14 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
         eventListenerList().add(DatasetListener.class, listener);
     }
 
+    /**
+     * @{@inheritDoc }
+     * @param instanceIdx
+     * @param attrIdx
+     * @param value
+     */
     @Override
-    public void setAttributeValue(int attrIdx, int instanceIdx, double value) {
+    public void set(int instanceIdx, int attrIdx, double value) {
         if (attrIdx > -1) {
             instance(instanceIdx).set(attrIdx, value);
         } else {
@@ -124,7 +130,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     @Override
     public void addChild(String key, Dataset<Instance> dataset) {
         if (children == null) {
-            children = new HashMap<String, Dataset<Instance>>(5);
+            children = new HashMap<>(5);
         }
         children.put(key, dataset);
     }
@@ -139,7 +145,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
 
     @Override
     public Attribute[] attributeByRole(AttributeRole role) {
-        List<Attribute> list = new LinkedList<Attribute>();
+        List<Attribute> list = new LinkedList<>();
 
         for (Attribute attr : getAttributes().values()) {
             if (attr.getRole() == role) {

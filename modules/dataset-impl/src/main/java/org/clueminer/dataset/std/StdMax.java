@@ -68,7 +68,7 @@ public class StdMax implements DataStandardization {
 
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
-                opt.setAttributeValue(j, i, dataset.getAttributeValue(j, i) / maxVal[j]);
+                opt.set(j, i, dataset.get(i, j) / maxVal[j]);
             }
         }
 
