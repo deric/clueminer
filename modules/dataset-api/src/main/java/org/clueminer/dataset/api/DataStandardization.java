@@ -1,7 +1,5 @@
 package org.clueminer.dataset.api;
 
-import org.clueminer.math.Matrix;
-
 /**
  * Same as @link{org.clueminer.math.Standardisation} but operates on top of
  * Datasets
@@ -23,6 +21,6 @@ public interface DataStandardization {
      * @param dataset
      * @return
      */
-    Matrix optimize(Dataset<? extends Instance> dataset);
+    Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset);
 
 }

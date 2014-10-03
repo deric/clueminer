@@ -30,7 +30,7 @@ public class StdMax extends Standardisation {
          */
         for (j = 0; j < n; j++) {
             for (i = 0; i < m; i++) {
-                value = Math.abs(A[i][j]);
+                value = Math.abs(A[i][j]); //intetionally
                 if (value > maxVal[j]) {
                     maxVal[j] = value;
                 }

@@ -1,13 +1,10 @@
-package org.clueminer.utils;
+package org.clueminer.dataset.std;
 
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.DataStandardizationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.Standardisation;
-import org.clueminer.math.StandardisationFactory;
-import org.clueminer.math.matrix.JMatrix;
 import static org.clueminer.std.Scaler.logScale;
 
 /**
