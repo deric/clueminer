@@ -93,10 +93,6 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public double getAttributeValue(int attributeIndex, int instanceIdx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
@@ -175,6 +171,11 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public double[] getTimestampsArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double get(int instanceIdx, int attributeIndex) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
