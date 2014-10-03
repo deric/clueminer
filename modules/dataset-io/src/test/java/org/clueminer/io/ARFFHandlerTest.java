@@ -54,6 +54,7 @@ public class ARFFHandlerTest {
 
     /**
      * Test of load method, of class ARFFHandler.
+     * @throws java.lang.Exception
      */
     @Test
     public void testLoad_File_Dataset() throws Exception {
@@ -71,7 +72,7 @@ public class ARFFHandlerTest {
 
         //load yeast
         data = new SampleDataset();
-        ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> skippedIndexes = new ArrayList<>();
         skippedIndexes.add(0); //we skip instance name
         arff.load(tf.yeastData(), data, 9, "\\s+", skippedIndexes);
         assertEquals(8, data.attributeCount());

@@ -138,7 +138,7 @@ public class ARFFHandler implements DatasetLoader {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
                         //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
-                        out.setAttribute(attrNum, out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase())));
+                        out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase()));
                         attrNum++;
                     }
                     headerLine++;
