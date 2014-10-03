@@ -57,6 +57,19 @@ public class ArrayDatasetTest {
     public void tearDown() {
     }
 
+    @Test
+    public void testArrayConstructor() {
+        double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
+        Dataset<? extends Instance> test = new ArrayDataset<>(data);
+
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                test.set(i, j, data[i][j]);
+                assertEquals(data[i][j], test.get(i, j), delta);
+            }
+        }
+    }
+
     /**
      * Test of getClasses method, of class ArrayDataset.
      */

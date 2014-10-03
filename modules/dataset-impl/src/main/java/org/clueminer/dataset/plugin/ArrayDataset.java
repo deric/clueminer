@@ -41,6 +41,22 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         attributes = new Attribute[attributesCnt];
     }
 
+    /**
+     * Construct dataset from a 2D array
+     *
+     * @param inputData
+     */
+    public ArrayDataset(double[][] inputData) {
+        data = new Instance[inputData.length];
+        attributes = new Attribute[inputData[0].length];
+
+        for (int i = 0; i < inputData.length; i++) {
+            for (int j = 0; j < inputData[0].length; j++) {
+                set(i, j, inputData[i][j]);
+            }
+        }
+    }
+
     @Override
     public SortedSet<Object> getClasses() {
         return classes;
