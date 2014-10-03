@@ -5,7 +5,6 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.math.Matrix;
 import org.clueminer.stats.AttrNumStats;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -23,31 +22,6 @@ public class StdMax implements DataStandardization {
     @Override
     public String getName() {
         return name;
-    }
-
-    public double[][] optimize(double[][] data, int m, int n) {
-        double[] maxVal = new double[n];
-        int i, j;
-        double[][] res = new double[m][n];
-        double value;
-        /**
-         * finds max in each column
-         */
-        for (j = 0; j < n; j++) {
-            for (i = 0; i < m; i++) {
-                value = Math.abs(data[i][j]);
-                if (value > maxVal[j]) {
-                    maxVal[j] = value;
-                }
-            }
-        }
-
-        for (i = 0; i < m; i++) {
-            for (j = 0; j < n; j++) {
-                res[i][j] = data[i][j] / maxVal[j];
-            }
-        }
-        return res;
     }
 
     @Override
