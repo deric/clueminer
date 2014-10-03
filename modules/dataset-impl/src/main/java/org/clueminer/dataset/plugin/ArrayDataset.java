@@ -79,6 +79,22 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return true;
     }
 
+    /**
+     * @{@inheritDoc }
+     * @param instanceIdx
+     * @param attrIdx
+     * @param value
+     */
+    @Override
+    public final void set(int instanceIdx, int attrIdx, double value) {
+        super.set(instanceIdx, attrIdx, value);
+        if (attributes[attrIdx] != null) {
+            //update statistics
+            //TODO might be outdated if we're rewriting same index
+            attributes[attrIdx].updateStatistics(value);
+        }
+    }
+
 
     /*
      * public boolean addAll(Collection<? extends Instance> c) { throw new

@@ -42,16 +42,12 @@ public class StdMaxTest {
 
         Dataset<? extends Instance> dataset = new ArrayDataset(data2);
         Dataset<? extends Instance> out = subject.optimize(dataset);
-        System.out.println("dataset size: " + dataset.size());
-        System.out.println("dataset attr: " + dataset.attributeCount());
+
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
-                System.out.println(res.get(i, j) + " vs. " + out.get(i, j));
                 assertEquals(res.get(i, j), out.get(i, j), delta);
             }
         }
-        res.print(2, 2);
-        System.out.println(dataset.toString());
     }
 
 }

@@ -6,7 +6,6 @@ import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
-import org.clueminer.utils.Dump;
 
 /**
  *
