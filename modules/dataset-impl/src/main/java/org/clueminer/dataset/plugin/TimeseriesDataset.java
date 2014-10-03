@@ -505,4 +505,21 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     public void addAttribute(Attribute attr) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public double min() {
+        return getMin();
+    }
+
+    @Override
+    public double max() {
+        return getMax();
+    }
+
+    @Override
+    public void resetStats() {
+        for (TimePointAttribute t : timePoints) {
+            t.resetStats();
+        }
+    }
 }

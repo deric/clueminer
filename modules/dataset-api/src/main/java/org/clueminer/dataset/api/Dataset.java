@@ -344,4 +344,23 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      */
     Matrix asMatrix();
 
+    /**
+     * Minimum value form all attributes
+     *
+     * @return minimum value in whole dataset
+     */
+    double min();
+
+    /**
+     * Maximum value from all attributes
+     *
+     * @return maximum value in whole dataset
+     */
+    double max();
+
+    /**
+     * Annulate all precomputed statistics
+     */
+    void resetStats();
+
 }

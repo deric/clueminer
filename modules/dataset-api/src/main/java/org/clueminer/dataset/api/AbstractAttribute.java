@@ -160,6 +160,13 @@ public abstract class AbstractAttribute implements Attribute {
     @Override
     public abstract Object clone();
 
+    @Override
+    public void resetStats() {
+        for (Statistics stats : statisticsProviders.values()) {
+            stats.reset();
+        }
+    }
+
     /**
      * Returns true if the given attribute has the same name and the same table
      * index.

@@ -30,6 +30,7 @@ public class ArrayDatasetTest {
     private static final int attributesCnt = 2;
     private static Random rand;
     private static final double delta = 1e-7;
+    private double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
     public ArrayDatasetTest() {
     }
@@ -58,17 +59,29 @@ public class ArrayDatasetTest {
     public void tearDown() {
     }
 
+    private Dataset<? extends Instance> data2x5() {
+        Dataset<? extends Instance> test = new ArrayDataset<>(data2x5);
+        return test;
+    }
+
     @Test
     public void testArrayConstructor() {
-        double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
-        Dataset<? extends Instance> test = new ArrayDataset<>(data);
-        assertEquals(data[0].length, test.attributeCount());
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                test.set(i, j, data[i][j]);
-                assertEquals(data[i][j], test.get(i, j), delta);
+        Dataset<? extends Instance> test = data2x5();
+        assertEquals(data2x5[0].length, test.attributeCount());
+        for (int i = 0; i < data2x5.length; i++) {
+            for (int j = 0; j < data2x5[0].length; j++) {
+                test.set(i, j, data2x5[i][j]);
+                assertEquals(data2x5[i][j], test.get(i, j), delta);
             }
         }
+    }
+
+    @Test
+    public void testMinMax() {
+        Dataset<? extends Instance> test = data2x5();
+
+        assertEquals(1, test.min(), delta);
+        assertEquals(10, test.max(), delta);
     }
 
     /**

@@ -77,6 +77,11 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
     public double statistics(IStats name);
 
     /**
+     * Invoke reset on all registered statistics
+     */
+    public void resetStats();
+
+    /**
      * Triggered when a new value is added to a dataset The type of a value
      * should be determined by the Attribute itself
      *

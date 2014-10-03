@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.stats.AttrNumStats;
 import org.math.plot.Plot2DPanel;
 
 /**
@@ -515,6 +516,37 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double min() {
+        double min = Double.POSITIVE_INFINITY, curr;
+        for (Attribute attribute : attributes) {
+            curr = attribute.statistics(AttrNumStats.MIN);
+            if (curr < min) {
+                min = curr;
+            }
+        }
+        return min;
+    }
+
+    @Override
+    public double max() {
+        double max = Double.NEGATIVE_INFINITY, curr;
+        for (Attribute attribute : attributes) {
+            curr = attribute.statistics(AttrNumStats.MAX);
+            if (curr > max) {
+                max = curr;
+            }
+        }
+        return max;
+    }
+
+    @Override
+    public void resetStats() {
+        for (Attribute attribute : attributes) {
+            attribute.resetStats();
+        }
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {
