@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.attributes.NumericalAttribute;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -61,7 +62,7 @@ public class ArrayDatasetTest {
     public void testArrayConstructor() {
         double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
         Dataset<? extends Instance> test = new ArrayDataset<>(data);
-
+        assertEquals(data[0].length, test.attributeCount());
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 test.set(i, j, data[i][j]);
@@ -199,7 +200,8 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testSetAttribute() {
-        dataset.setAttribute(0, dataset.attributeBuilder().create("b1", "NUMERIC"));
+        Attribute attr = new NumericalAttribute("b1");
+        dataset.setAttribute(0, attr);
         assertEquals("b1", dataset.getAttribute(0).getName());
         assertEquals(2, dataset.attributeCount());
     }
@@ -208,10 +210,11 @@ public class ArrayDatasetTest {
     public void testSetAttributeReallocation() {
         Dataset<? extends Instance> test = new ArrayDataset<>(5, 2);
         int attrNewCnt = 10;
+        int expected = test.attributeCount() + attrNewCnt;
         for (int i = 0; i < attrNewCnt; i++) {
-            test.setAttribute(i, dataset.attributeBuilder().create("attr" + i, "NUMERIC"));
+            test.attributeBuilder().create("attr" + i, "NUMERIC");
         }
-        assertEquals(attrNewCnt, test.attributeCount());
+        assertEquals(expected, test.attributeCount());
     }
 
     @Test
@@ -226,6 +229,16 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testGetAttributes() {
+        int attrCnt = 3;
+        Dataset<? extends Instance> test = new ArrayDataset<>(3, attrCnt);
+        String name;
+        for (int i = 0; i < attrCnt; i++) {
+            name = "attr" + i;
+            System.out.println(name);
+            test.addAttribute(new NumericalAttribute(name));
+        }
+        assertEquals(attrCnt, test.attributeCount());
+        //assertEquals(attrCnt, test.getAttributes().size());
     }
 
     /**

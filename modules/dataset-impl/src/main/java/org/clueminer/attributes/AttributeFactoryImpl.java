@@ -4,12 +4,19 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.AttributeType;
+import org.clueminer.dataset.api.Dataset;
 
 /**
  *
  * @author Tomas Barton
  */
-public class AttributeFactoryImpl implements AttributeBuilder {
+public class AttributeFactoryImpl<E> implements AttributeBuilder {
+
+    private Dataset<? extends E> target;
+
+    public AttributeFactoryImpl(Dataset<? extends E> target) {
+        this.target = target;
+    }
 
     /**
      * Creates a simple single attribute depending on the given value type.
@@ -28,17 +35,32 @@ public class AttributeFactoryImpl implements AttributeBuilder {
         return create(name, BasicAttrType.valueOf(type));
     }
 
+    /**
+     * Create attribute and add it to the dataset (if target is not null)
+     *
+     * @param name
+     * @param type
+     * @param role
+     * @return
+     */
     @Override
     public Attribute create(String name, AttributeType type, AttributeRole role) {
+        Attribute ret;
         switch ((BasicAttrType) type) {
             case NUMERICAL:
             case NUMERIC:
             case INTEGER:
             case REAL: //right now it's handled the very same way
-                return new NumericalAttribute(name, role);
+                ret = new NumericalAttribute(name, role);
+                break;
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
+        if (target != null) {
+            target.addAttribute(ret);
+        }
+
+        return ret;
     }
 
     @Override

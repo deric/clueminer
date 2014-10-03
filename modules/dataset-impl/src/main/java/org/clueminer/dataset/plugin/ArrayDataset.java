@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import javax.swing.JComponent;
 import org.clueminer.attributes.AttributeFactoryImpl;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
@@ -49,6 +50,10 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public ArrayDataset(double[][] inputData) {
         data = new Instance[inputData.length];
         attributes = new Attribute[inputData[0].length];
+        //create atributes for input data
+        for (int j = 0; j < inputData[0].length; j++) {
+            attributeBuilder().create("attr_" + j, BasicAttrType.NUMERIC);
+        }
 
         for (int i = 0; i < inputData.length; i++) {
             for (int j = 0; j < inputData[0].length; j++) {
@@ -166,9 +171,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public AttributeBuilder attributeBuilder() {
+    public final AttributeBuilder attributeBuilder() {
         if (attributeBuilder == null) {
-            attributeBuilder = new AttributeFactoryImpl();
+            attributeBuilder = new AttributeFactoryImpl<>(this);
         }
         return attributeBuilder;
     }
@@ -224,6 +229,19 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
             attrCnt++;
         }
         attributes[i] = attr;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param attr
+     */
+    @Override
+    public void addAttribute(Attribute attr) {
+        int i = attributeCount();
+        ensureAttrSize(i);
+        attributes[i] = attr;
+        attrCnt++;
     }
 
     public final void ensureAttrSize(int reqAttrSize) {

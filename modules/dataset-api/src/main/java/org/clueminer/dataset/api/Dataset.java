@@ -188,6 +188,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     public Attribute getAttribute(int index);
 
     /**
+     * Add attributes after last attribute
+     *
+     * @param attr
+     */
+    public void addAttribute(Attribute attr);
+
+    /**
      * Return attribute at position specified by name of an attribute
      *
      * @param attributeName

@@ -11,7 +11,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Standardisation.class)
 public class StdNone extends Standardisation {
 
-    private static final String name = "None";
+    public static final String name = "None";
 
     @Override
     public String getName() {

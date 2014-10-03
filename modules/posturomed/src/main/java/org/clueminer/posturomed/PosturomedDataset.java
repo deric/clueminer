@@ -178,4 +178,9 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
     public double get(int instanceIdx, int attributeIndex) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void addAttribute(Attribute attr) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

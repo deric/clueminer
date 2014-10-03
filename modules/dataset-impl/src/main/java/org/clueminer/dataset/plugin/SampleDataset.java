@@ -273,7 +273,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     @Override
     public AttributeBuilder attributeBuilder() {
         if (attributeBuilder == null) {
-            attributeBuilder = new AttributeFactoryImpl();
+            attributeBuilder = new AttributeFactoryImpl<>(this);
         }
         return attributeBuilder;
     }
@@ -393,5 +393,10 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         SampleDataset<E> copy = new SampleDataset<>(this.size());
         copy.setAttributes(attributes);
         return copy;
+    }
+
+    @Override
+    public void addAttribute(Attribute attr) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

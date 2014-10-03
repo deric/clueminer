@@ -21,7 +21,7 @@ public class NumericalAttribute extends AbstractAttribute {
         registerStatistics(new NumericalStats(this));
     }
 
-    protected NumericalAttribute(String name) {
+    public NumericalAttribute(String name) {
         super(name, BasicAttrType.NUMERICAL, BasicAttrRole.INPUT);
         registerStatistics(new NumericalStats(this));
     }

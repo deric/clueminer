@@ -399,7 +399,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public AttributeFactoryImpl attributeBuilder() {
         if (attributeBuilder == null) {
-            attributeBuilder = new AttributeFactoryImpl();
+            attributeBuilder = new AttributeFactoryImpl<>(this);
         }
         return attributeBuilder;
     }
@@ -498,6 +498,11 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public double[] getTimestampsArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addAttribute(Attribute attr) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
