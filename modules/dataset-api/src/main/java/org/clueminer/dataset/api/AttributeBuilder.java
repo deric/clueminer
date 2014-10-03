@@ -44,4 +44,18 @@ public interface AttributeBuilder {
      * @return
      */
     public Attribute create(String name, String type, String role);
+
+    /**
+     * Creates new instance of an attribute, but does not add it to the dataset;
+     *
+     * @param name
+     * @param type
+     * @param role
+     * @return
+     */
+    public Attribute build(String name, String type, String role);
+
+    public Attribute build(String name, AttributeType type, AttributeRole role);
+
+    public Attribute build(String name, String type);
 }

@@ -76,7 +76,7 @@ public class CurveParameters extends LegendreTransformation implements DataTrans
                 if (segment > 0) {
                     attribute = segment + "_" + attribute;
                 }
-                output.setAttribute(offset + j, output.attributeBuilder().create(attribute, "NUMERIC"));
+                output.setAttribute(offset + j, output.attributeBuilder().build(attribute, "NUMERIC"));
                 j++;
             }
         }

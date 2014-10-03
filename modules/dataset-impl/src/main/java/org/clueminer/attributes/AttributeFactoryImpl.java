@@ -45,6 +45,24 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
      */
     @Override
     public Attribute create(String name, AttributeType type, AttributeRole role) {
+        Attribute ret = build(name, type, role);
+        add(ret);
+        return ret;
+    }
+
+    private void add(Attribute attr) {
+        if (target != null) {
+            target.addAttribute(attr);
+        }
+    }
+
+    @Override
+    public Attribute create(String name, String type, String role) {
+        return create(name, BasicAttrType.valueOf(type), BasicAttrRole.valueOf(role));
+    }
+
+    @Override
+    public Attribute build(String name, AttributeType type, AttributeRole role) {
         Attribute ret;
         switch ((BasicAttrType) type) {
             case NUMERICAL:
@@ -56,15 +74,16 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
-        if (target != null) {
-            target.addAttribute(ret);
-        }
-
         return ret;
     }
 
     @Override
-    public Attribute create(String name, String type, String role) {
-        return create(name, BasicAttrType.valueOf(type), BasicAttrRole.valueOf(role));
+    public Attribute build(String name, String type, String role) {
+        return build(name, BasicAttrType.valueOf(type), BasicAttrRole.valueOf(role));
+    }
+
+    @Override
+    public Attribute build(String name, String type) {
+        return build(name, BasicAttrType.valueOf(type), BasicAttrRole.INPUT);
     }
 }
