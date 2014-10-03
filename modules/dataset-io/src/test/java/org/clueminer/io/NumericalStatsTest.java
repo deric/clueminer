@@ -6,11 +6,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
-import org.clueminer.io.ARFFHandler;
 import org.clueminer.stats.AttrNumStats;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -100,17 +97,24 @@ public class NumericalStatsTest {
         assertEquals(0.763, attr.statistics(AttrNumStats.STD_DEV), precision);
     }
 
+    /**
+     * abs dev with bessel's correction
+     */
     @Test
     public void testAbsoluteDeviation() {
         Attribute attr = dataset.getAttribute(0); //sepallength
         System.out.println("0:" + attr.getName());
-        assertEquals(0.829, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        //assertEquals(0.829, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        assertEquals(0.831, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(1); //sepallwidth
         System.out.println("1:" + attr.getName());
-        assertEquals(0.577, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        //assertEquals(0.577, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        assertEquals(0.579, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(2); //petallength
-        assertEquals(1.249, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        //assertEquals(1.249, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        assertEquals(1.254, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(3); //petalwidth
-        assertEquals(0.811, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        //assertEquals(0.811, attr.statistics(AttrNumStats.ABS_DEV), precision);
+        assertEquals(0.814, attr.statistics(AttrNumStats.ABS_DEV), precision);
     }
 }
