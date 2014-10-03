@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import javax.swing.JComponent;
+import org.clueminer.math.Matrix;
 
 /**
  * Universal interface for a numerical dataset (something like spreadsheet).
@@ -22,23 +23,23 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return usually it is a number, however to make it more universal, we use
      *         string
      */
-    public String getId();
+    String getId();
 
-    public void setId(String id);
+    void setId(String id);
 
     /**
      * Returns the name of Dataset
      *
      * @return should be unique name of the dataset
      */
-    public String getName();
+    String getName();
 
     /**
      * Set name of this dataset, which doesn't have to be an unique identifier
      *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Returns a set containing all different classes in this data set. If no
@@ -46,7 +47,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return
      */
-    public SortedSet<Object> getClasses();
+    SortedSet<Object> getClasses();
 
     /**
      * Add an instance to this data set. The compatibility of the new item with
@@ -57,12 +58,12 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return true if the instance was added, otherwise false
      */
     @Override
-    public boolean add(E i);
+    boolean add(E i);
 
     @Override
-    public boolean addAll(Collection<? extends E> c);
+    boolean addAll(Collection<? extends E> c);
 
-    public boolean addAll(Dataset<E> d);
+    boolean addAll(Dataset<E> d);
 
     /**
      * Get the instance with a certain index. In order to keep readability of
@@ -73,7 +74,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param index - the index of the instance you want to retrieve.
      * @return
      */
-    public E instance(int index);
+    E instance(int index);
 
     /**
      * as in array list
@@ -81,7 +82,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param index
      * @return
      */
-    public E get(int index);
+    E get(int index);
 
     /**
      * Return true if dataset contains Instance at index idx
@@ -89,13 +90,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param idx
      * @return true if instance exists at given index
      */
-    public boolean hasIndex(int idx);
+    boolean hasIndex(int idx);
 
     /**
      * @param rand seed
      * @return Random instance from the dataset
      */
-    public E getRandom(Random rand);
+    E getRandom(Random rand);
 
     /**
      * Actual number of instances in dataset
@@ -103,14 +104,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return dataset size
      */
     @Override
-    public int size();
+    int size();
 
     /**
      *
      * @return true when dataset does not contain any instance
      */
     @Override
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * During data preprocessing it is quite common to try different ways of
@@ -120,15 +121,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return Dataset original dataset from which was created this one
      */
-    public Dataset<? extends Instance> getParent();
+    Dataset<? extends Instance> getParent();
 
-    public void setParent(Dataset<? extends Instance> parent);
+    void setParent(Dataset<? extends Instance> parent);
 
     /**
      *
      * @return true when parent Dataset exists
      */
-    public boolean hasParent();
+    boolean hasParent();
 
     /**
      * The maximum number of attributes in each instance. Generally instances
@@ -137,7 +138,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return
      */
-    public int attributeCount();
+    int attributeCount();
 
     /**
      * Returns the index of the class value in the supplied data set. This
@@ -146,7 +147,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param clazz class we are looking for (e.g. as a String)
      * @return the index of the class value
      */
-    public int classIndex(Object clazz);
+    int classIndex(Object clazz);
 
     /**
      * Returns the class value of the supplied class index.
@@ -154,14 +155,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param index - the index to give the class value for
      * @return the class value of the index
      */
-    public Object classValue(int index);
+    Object classValue(int index);
 
     /**
      * Get a copy of attributes
      *
      * @return
      */
-    public Attribute[] copyAttributes();
+    Attribute[] copyAttributes();
 
     /**
      * Array of attributes matching given role
@@ -169,7 +170,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param role input or meta data
      * @return
      */
-    public Attribute[] attributeByRole(AttributeRole role);
+    Attribute[] attributeByRole(AttributeRole role);
 
     /**
      * Reference to attributes (when we construct clusters we can use reference
@@ -177,7 +178,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return
      */
-    public Map<Integer, Attribute> getAttributes();
+    Map<Integer, Attribute> getAttributes();
 
     /**
      * Return attribute at position specified by index
@@ -185,14 +186,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param index
      * @return
      */
-    public Attribute getAttribute(int index);
+    Attribute getAttribute(int index);
 
     /**
      * Add attributes after last attribute
      *
      * @param attr
      */
-    public void addAttribute(Attribute attr);
+    void addAttribute(Attribute attr);
 
     /**
      * Return attribute at position specified by name of an attribute
@@ -200,7 +201,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param attributeName
      * @return
      */
-    public Attribute getAttribute(String attributeName);
+    Attribute getAttribute(String attributeName);
 
     /**
      * Method for direct access to instance values directly by attribute name
@@ -210,9 +211,9 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param instanceIdx
      * @return
      */
-    public double getAttributeValue(String attributeName, int instanceIdx);
+    double getAttributeValue(String attributeName, int instanceIdx);
 
-    public double getAttributeValue(Attribute attribute, int instanceIdx);
+    double getAttributeValue(Attribute attribute, int instanceIdx);
 
     /**
      * Get the value of an attribute in given instance (accessing data like in
@@ -222,7 +223,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param attributeIndex column index
      * @return
      */
-    public double get(int instanceIdx, int attributeIndex);
+    double get(int instanceIdx, int attributeIndex);
 
     /**
      * Set attribute value by its name and index in the dataset
@@ -231,7 +232,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param instanceIdx
      * @param value
      */
-    public void setAttributeValue(String attributeName, int instanceIdx, double value);
+    void setAttributeValue(String attributeName, int instanceIdx, double value);
 
     /**
      * Set attribute value by its index and position in dataset
@@ -240,7 +241,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param attrIdx     attribute index - starts from 0
      * @param value
      */
-    public void set(int instanceIdx, int attrIdx, double value);
+    void set(int instanceIdx, int attrIdx, double value);
 
     /**
      * Set i-th attribute (column)
@@ -248,28 +249,28 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param index
      * @param attr
      */
-    public void setAttribute(int index, Attribute attr);
+    void setAttribute(int index, Attribute attr);
 
     /**
      * Set attributes
      *
      * @param attributes
      */
-    public void setAttributes(Map<Integer, Attribute> attributes);
+    void setAttributes(Map<Integer, Attribute> attributes);
 
     /**
      * Builder help to create instances of preferred type
      *
      * @return factory for building instances
      */
-    public InstanceBuilder builder();
+    InstanceBuilder builder();
 
     /**
      * Builder create supported attributes types
      *
      * @return factory for building attributes
      */
-    public AttributeBuilder attributeBuilder();
+    AttributeBuilder attributeBuilder();
 
     /**
      * Create a deep copy of the data set. This method should also create deep
@@ -277,47 +278,47 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return deep copy of this data set.
      */
-    public Dataset<? extends E> copy();
+    Dataset<? extends E> copy();
 
     /**
      * Copies common structure common to all instances but not instances itself
      *
      * @return Skeleton of dataset
      */
-    public Dataset<? extends E> duplicate();
+    Dataset<? extends E> duplicate();
 
     /**
      * Return copy of data as an array of double
      *
      * @return dataset as 2D array
      */
-    public double[][] arrayCopy();
+    double[][] arrayCopy();
 
-    public void setColorGenerator(ColorGenerator cg);
+    void setColorGenerator(ColorGenerator cg);
 
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Return component for default data visualization
      *
      * @return
      */
-    public JComponent getPlotter();
+    JComponent getPlotter();
 
     /**
      * Make sure that dataset will be able to store given number of elements
      *
      * @param size
      */
-    public void ensureCapacity(int size);
+    void ensureCapacity(int size);
 
     /**
      * Current capacity of dataset structure
      *
      * @return
      */
-    public int getCapacity();
+    int getCapacity();
 
     /**
      * Add reference to a dataset which was usually created by transformation of
@@ -326,7 +327,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param key     must be unique
      * @param dataset
      */
-    public void addChild(String key, Dataset<Instance> dataset);
+    void addChild(String key, Dataset<Instance> dataset);
 
     /**
      * Return dataset if exists, otherwise null
@@ -334,5 +335,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param key
      * @return
      */
-    public Dataset<Instance> getChild(String key);
+    Dataset<Instance> getChild(String key);
+
+    /**
+     * Should provide matrix-like facade to access values of the dataset
+     *
+     * @return matrix interface access to the dataset
+     */
+    Matrix asMatrix();
+
 }
