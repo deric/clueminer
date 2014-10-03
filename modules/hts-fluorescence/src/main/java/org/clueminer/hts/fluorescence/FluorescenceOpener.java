@@ -159,49 +159,55 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
 
         try {
             System.out.println("writing to " + filename);
-            FileWriter writer = new FileWriter(filename);
             //header
-                /*    writer.append(separator);
+            /*    writer.append(separator);
              for (String s : paramNames) {
              writer.append(s).append(separator);
              }
              writer.append(eol);*/
             //content
-            HtsInstance current;
-            String sampleName;
-            logger.log(Level.INFO, "export size {0}", plate.size());
+            try (FileWriter writer = new FileWriter(filename)) {
+                //header
+                /*    writer.append(separator);
+                 for (String s : paramNames) {
+                 writer.append(s).append(separator);
+                 }
+                 writer.append(eol);*/
+                //content
+                HtsInstance current;
+                String sampleName;
+                logger.log(Level.INFO, "export size {0}", plate.size());
 
-            if (normalized) {
-                for (int i = 0; i < plate.size(); i++) {
-                    current = plate.instance(i);
-                    if (current.getColumn() < 46) {
+                if (normalized) {
+                    for (int i = 0; i < plate.size(); i++) {
+                        current = plate.instance(i);
+                        if (current.getColumn() < 46) {
+                            sampleName = current.getName();
+                            writer.append(sampleName).append(separator);
+
+                            for (int j = 0; j < plate.attributeCount(); j++) {
+                                value = plate.get(i, j);
+                                writer.append(String.valueOf(value)).append(separator);
+                            }
+                            writer.append(eol);
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < plate.size(); i++) {
+                        current = plate.instance(i);
                         sampleName = current.getName();
                         writer.append(sampleName).append(separator);
-
                         for (int j = 0; j < plate.attributeCount(); j++) {
-                            value = plate.getAttributeValue(j, i);
+                            value = plate.get(i, j);
                             writer.append(String.valueOf(value)).append(separator);
                         }
                         writer.append(eol);
                     }
-                }
-            } else {
-                for (int i = 0; i < plate.size(); i++) {
-                    current = plate.instance(i);
-                    sampleName = current.getName();
-                    writer.append(sampleName).append(separator);
-                    for (int j = 0; j < plate.attributeCount(); j++) {
-                        value = plate.getAttributeValue(j, i);
-                        writer.append(String.valueOf(value)).append(separator);
-                    }
-                    writer.append(eol);
+
                 }
 
+                writer.flush();
             }
-
-
-            writer.flush();
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
