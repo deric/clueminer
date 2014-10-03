@@ -357,6 +357,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         ArrayDataset<E> copy = new ArrayDataset<>(this.size(), this.attributeCount());
         copy.attributes = this.attributes;
         copy.attrCnt = this.attrCnt;
+        copy.setParent(this);
         return copy;
     }
 

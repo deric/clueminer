@@ -315,6 +315,11 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testDuplicate() {
+        Dataset<? extends Instance> dup = dataset.duplicate();
+        //should not contain instances
+        assertEquals(0, dup.size());
+        assertEquals(dataset.attributeCount(), dup.attributeCount());
+        assertEquals(dataset, dup.getParent());
     }
 
     /**
