@@ -5,7 +5,6 @@ import org.clueminer.dataset.api.DataStandardizationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.std.StdNone;
-import org.clueminer.std.StdScale;
 
 /**
  *
@@ -18,31 +17,28 @@ public class DataScaler {
         Dataset<? extends Instance> res;
         if (method.equals(StdNone.name)) {
             //nothing to optimize
-            return dataset;
+            res = dataset;
+        } else {
+            DataStandardization std = sf.getProvider(method);
+            if (std == null) {
+                throw new RuntimeException("Standartization method " + std + " was not found");
+            }
+            res = std.optimize(dataset);
         }
-
-        DataStandardization std = sf.getProvider(method);
-
-        if (std == null) {
-            throw new RuntimeException("Standartization method " + std + " was not found");
-        }
-
-        res = std.optimize(dataset);
         if (logScale) {
-            StdScale scale = new StdScale();
+            StdMinMax scale = new StdMinMax();
             scale.setTargetMin(1);
-
-            //double min = ;
-            double max = 0.0;
-            double min = 0.0;
+            double max = res.max();
+            double min = res.min();
             scale.setTargetMax(-min + max + 1);
+            //normalize values, so that we can apply logarithm
+            res = scale.optimize(res);
 
             for (int i = 0; i < res.size(); i++) {
                 for (int j = 0; j < res.attributeCount(); j++) {
                     res.set(i, j, Math.log(res.get(i, j)));
                 }
             }
-            //stdarr = logScale(stdarr, m, n);
         }
         return res;
     }

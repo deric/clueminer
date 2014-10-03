@@ -404,8 +404,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public Dataset<E> duplicate() {
         ArrayDataset<E> copy = new ArrayDataset<>(this.size(), this.attributeCount());
-        copy.attributes = this.attributes;
-        copy.attrCnt = this.attrCnt;
+        for (Attribute attribute : attributes) {
+            copy.attributeBuilder().create(attribute.getName(), BasicAttrType.NUMERIC, attribute.getRole());
+        }
         copy.setParent(this);
         return copy;
     }

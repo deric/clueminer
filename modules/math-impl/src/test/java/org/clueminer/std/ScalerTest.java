@@ -2,7 +2,6 @@ package org.clueminer.std;
 
 import org.clueminer.math.Matrix;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class ScalerTest {
     public void tearDown() {
     }
 
-    @Test
+    //@Test
     public void testStandartize() {
         Matrix res;
         res = run(data1, StdDev.name, false);
@@ -41,7 +40,7 @@ public class ScalerTest {
         res = run(data1, StdAbsDev.name, false);
     }
 
-    @Test
+    //@Test
     public void testStandartize2() {
         Matrix res;
         res = run(data2, StdDev.name, false);

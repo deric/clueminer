@@ -117,12 +117,14 @@ public class NumericalStats implements Statistics {
     public double statistics(IStats name) {
         switch ((AttrNumStats) name) {
             case MAX:
-                if (maximum == Double.NEGATIVE_INFINITY) {
+
+                if (Double.isInfinite(maximum)) {
+                    System.out.println("recalculate max: " + data.toString());
                     recalculate();
                 }
                 return maximum;
             case MIN:
-                if (minimum == Double.POSITIVE_INFINITY) {
+                if (Double.isInfinite(minimum)) {
                     recalculate();
                 }
                 return minimum;
