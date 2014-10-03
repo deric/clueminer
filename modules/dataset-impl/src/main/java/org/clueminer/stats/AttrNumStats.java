@@ -28,6 +28,6 @@ public enum AttrNumStats implements IStats {
      * @return sample standard deviation
      */
     STD_DEV, //standard deviation
-    ABS_DEV, //mean absolute deviation
+    ABS_DEV, //mean absolute deviation (with correction -- n-1)
     STD_X, //without correction
 }

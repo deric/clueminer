@@ -230,7 +230,7 @@ public class NumericalStats implements Statistics {
             value = (Double) it.next();
             asum += Math.abs(value - mean);
         }
-        return Math.sqrt(asum / data.size());
+        return Math.sqrt(asum / (data.size() - 1));
     }
 
     @Override
