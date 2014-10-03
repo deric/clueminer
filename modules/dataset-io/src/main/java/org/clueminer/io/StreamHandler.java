@@ -126,7 +126,7 @@ public class StreamHandler {
         int i = 0;
         for (String attr : row) {
             if (i != classIndex) {
-                dataset.setAttribute(i, dataset.attributeBuilder().create(attr, "NUMERICAL"));
+                dataset.attributeBuilder().create(attr, "NUMERICAL");
             }
             i++;
 

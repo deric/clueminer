@@ -93,7 +93,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (dataType == DatasetType.DISCRETE) {
             for (AttributeDraft attrd : inputAttr) {
                 //create just input attributes
-                Attribute attr = dataset.attributeBuilder().create(attrd.getName(), getType(attrd.getType()), attrd.getRole());
+                Attribute attr = dataset.attributeBuilder().build(attrd.getName(), getType(attrd.getType()), attrd.getRole());
                 attr.setIndex(index);
                 dataset.setAttribute(index, attr);
                 logger.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});

@@ -51,10 +51,10 @@ public class KMeansTest {
              */
             CommonFixture tf = new CommonFixture();
             Dataset data = new SampleDataset();
-            data.setAttribute(0, data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL));
-            data.setAttribute(1, data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL));
-            data.setAttribute(2, data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL));
-            data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
+            data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
+            data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
+            data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+            data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
             FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
             PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
@@ -105,8 +105,8 @@ public class KMeansTest {
                 //current implementation is not thread safe!!!
                 //however this test sometimes passes
                 Dataset dataset = new SampleDataset(2);
-                dataset.setAttribute(0, dataset.attributeBuilder().create("a", "NUMERIC"));
-                dataset.setAttribute(1, dataset.attributeBuilder().create("b", "NUMERIC"));
+                dataset.attributeBuilder().create("a", "NUMERIC");
+                dataset.attributeBuilder().create("b", "NUMERIC");
                 dataset.add(i1);
                 dataset.add(i2);
                 KMeans cluster = new KMeans(2, 1);

@@ -103,7 +103,7 @@ public class DatasetTransformation implements DataTransform {
         for (Approximator a : approx) {
             String[] attrs = a.getParamNames();
             for (String attribute : attrs) {
-                output.setAttribute(j++, output.attributeBuilder().create(attribute, "NUMERIC"));
+                output.attributeBuilder().create(attribute, "NUMERIC");
             }
         }
         for (int i = 0; i < dataset.size(); i++) {

@@ -49,7 +49,7 @@ public class SymbolicAggregateApproximation {
         //   ExampleSet params = ExampleSetFactory.createExampleSet(p);
         //   SAXParametersOutputPort.deliver(params);
 
-        Attribute SAXAttributes[] = {input.attributeBuilder().create("SAX_Value", BasicAttrType.NOMINAL)};
+        Attribute SAXAttributes[] = {input.attributeBuilder().build("SAX_Value", "nominal")};
 
         //    MemoryExampleTable table = new MemoryExampleTable(SAXAttributes);
         Map<Integer, Attribute> attributes = input.getAttributes();

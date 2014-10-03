@@ -24,10 +24,10 @@ public class DatasetConvertorTest {
     public static void setUpClass() throws Exception {
         CommonFixture tf = new CommonFixture();
         data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL));
-        data.setAttribute(1, data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL));
-        data.setAttribute(2, data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL));
-        data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
+        data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
 
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
     }
@@ -41,7 +41,9 @@ public class DatasetConvertorTest {
      */
     @Test
     public void testConvert() {
+        assertEquals(4, data.attributeCount());
     }
+
 
     /**
      * Test of toARFF method, of class DatasetConvertor.

@@ -172,9 +172,9 @@ public class CsvLoader implements DatasetLoader {
             if (i != classIndex && !skipIndex.contains(i)) {
                 if (!detectTypes) {
                     if (metaAttr.contains(i)) {
-                        dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], defaultDataType, "META"));
+                        dataset.attributeBuilder().create(line[i], defaultDataType, "META");
                     } else {
-                        dataset.setAttribute(j++, dataset.attributeBuilder().create(line[i], defaultDataType));
+                        dataset.attributeBuilder().create(line[i], defaultDataType);
                     }
                 } else {
                     //TODO: try to parse double from string

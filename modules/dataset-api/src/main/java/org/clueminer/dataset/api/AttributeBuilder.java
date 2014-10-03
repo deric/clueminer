@@ -58,4 +58,6 @@ public interface AttributeBuilder {
     public Attribute build(String name, AttributeType type, AttributeRole role);
 
     public Attribute build(String name, String type);
+
+    public Attribute build(String name, AttributeType type);
 }

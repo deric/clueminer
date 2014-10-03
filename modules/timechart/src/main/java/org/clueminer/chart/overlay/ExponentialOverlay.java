@@ -182,7 +182,7 @@ public class ExponentialOverlay extends AbstractOverlay implements Overlay {
         approxData = new AttrHashDataset<Instance>(dataset.size());
         int i = 0;
         for (String attr : approximator.getParamNames()) {
-            approxData.setAttribute(i++, approxData.attributeBuilder().create(attr, "NUMERIC"));
+            approxData.attributeBuilder().create(attr, "NUMERIC");
         }
     }
 

@@ -86,4 +86,9 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
     public Attribute build(String name, String type) {
         return build(name, BasicAttrType.valueOf(type), BasicAttrRole.INPUT);
     }
+
+    @Override
+    public Attribute build(String name, AttributeType type) {
+        return create(name, type, BasicAttrRole.INPUT);
+    }
 }

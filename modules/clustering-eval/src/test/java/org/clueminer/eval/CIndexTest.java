@@ -128,6 +128,7 @@ public class CIndexTest {
         data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
 
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
+        assertEquals(4, data.attributeCount());
         int evalNum = 9;
         ClusterEvaluation[] eval = new ClusterEvaluation[evalNum];
         int j = 0;

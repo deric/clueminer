@@ -1035,7 +1035,7 @@ public final class SAXFactory {
         // get the timestamps and data attributes
         //
         Attribute dataAttribute = null;
-        dataAttribute = tsData.attributeBuilder().create(dataAttributeName, "double");
+        dataAttribute = tsData.attributeBuilder().build(dataAttributeName, "double");
 
         double[] distances = new double[controls.length];
         int[] maxPos = new int[controls.length];

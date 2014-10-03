@@ -47,8 +47,8 @@ public class ArrayDatasetTest {
     public void setUp() {
         dataset = new ArrayDataset<>(dataCapacity, attributesCnt);
         dataset.builder().create(new double[]{1, 2});
-        dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
-        dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
+        dataset.attributeBuilder().create("a1", "NUMERIC");
+        dataset.attributeBuilder().create("a2", "NUMERIC");
         rand = new Random();
         //before each testing method we add an instance to the dataset
         dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
@@ -313,9 +313,9 @@ public class ArrayDatasetTest {
     @Test
     public void testSetAttributes() {
         Map<Integer, Attribute> map = new HashMap();
-        map.put(0, dataset.attributeBuilder().create("attr0", "NUMERIC"));
-        map.put(1, dataset.attributeBuilder().create("attr1", "NUMERIC"));
-        map.put(2, dataset.attributeBuilder().create("attr2", "NUMERIC"));
+        map.put(0, dataset.attributeBuilder().build("attr0", "NUMERIC"));
+        map.put(1, dataset.attributeBuilder().build("attr1", "NUMERIC"));
+        map.put(2, dataset.attributeBuilder().build("attr2", "NUMERIC"));
 
         Dataset<? extends Instance> test = new ArrayDataset<>(5, 2);
         test.setAttributes(map);

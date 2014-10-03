@@ -152,7 +152,7 @@ public class FakeClustering {
     public static Dataset<Instance> wine() {
         if (wine == null) {
             wine = new SampleDataset(27);
-            wine.setAttribute(0, wine.attributeBuilder().create("x", BasicAttrType.INTEGER));
+            wine.attributeBuilder().create("x", BasicAttrType.INTEGER);
 
             String klass = "cabernet";
             for (int i = 0; i < 13; i++) {
@@ -179,13 +179,13 @@ public class FakeClustering {
             simpleClustering = new ClusterList(3);
             Cluster a = new BaseCluster(12);
             a.setName("cabernet");
-            a.setAttribute(0, a.attributeBuilder().create("x", BasicAttrType.INTEGER));
+            a.attributeBuilder().create("x", BasicAttrType.INTEGER);
             Cluster b = new BaseCluster(9);
             b.setName("syrah");
-            b.setAttribute(0, b.attributeBuilder().create("x", BasicAttrType.INTEGER));
+            b.attributeBuilder().create("x", BasicAttrType.INTEGER);
             Cluster c = new BaseCluster(6);
             c.setName("pinot");
-            c.setAttribute(0, c.attributeBuilder().create("x", BasicAttrType.INTEGER));
+            c.attributeBuilder().create("x", BasicAttrType.INTEGER);
 
             Dataset<Instance> data = wine();
             for (int i = 0; i < 13; i++) {
