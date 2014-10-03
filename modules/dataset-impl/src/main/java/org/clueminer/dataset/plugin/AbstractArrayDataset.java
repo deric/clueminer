@@ -11,6 +11,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
+import org.clueminer.math.Matrix;
+import org.clueminer.utils.DMatrix;
 
 /**
  * Until java will have mix-ins we need this sort of code duplication:
@@ -29,6 +31,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     protected ColorGenerator colorGenerator;
     protected Dataset<? extends Instance> parent = null;
     protected HashMap<String, Dataset<Instance>> children;
+    protected Matrix matrix;
 
     public AbstractArrayDataset() {
         //do nothing
@@ -158,5 +161,18 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
         } else {
             return new Attribute[0];
         }
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public Matrix asMatrix() {
+        if (matrix == null) {
+            matrix = new DMatrix(this);
+        }
+        return matrix;
     }
 }

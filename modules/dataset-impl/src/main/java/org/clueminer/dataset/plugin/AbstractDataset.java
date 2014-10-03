@@ -12,6 +12,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
+import org.clueminer.math.Matrix;
+import org.clueminer.utils.DMatrix;
 
 /**
  *
@@ -29,6 +31,7 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     //default capacity same as with ArrayList
     private int capacity = 10;
     protected HashMap<String, Dataset<Instance>> children;
+    protected Matrix matrix;
 
     public AbstractDataset() {
         //do nothing
@@ -180,5 +183,18 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
         } else {
             return new Attribute[0];
         }
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public Matrix asMatrix() {
+        if (matrix == null) {
+            matrix = new DMatrix(this);
+        }
+        return matrix;
     }
 }

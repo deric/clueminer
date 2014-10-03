@@ -399,4 +399,5 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public void addAttribute(Attribute attr) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }
