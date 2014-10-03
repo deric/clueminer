@@ -46,8 +46,8 @@ public class CIndexTest {
     public void testScore() throws IOException, FileNotFoundException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("x", BasicAttrType.NUMERICAL));
-        data.setAttribute(0, data.attributeBuilder().create("y", BasicAttrType.NUMERICAL));
+        data.attributeBuilder().create("x", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERICAL);
         ARFFHandler arff = new ARFFHandler();
         assertTrue(arff.load(tf.simpleCluster(), data, 2));
 
@@ -121,10 +121,10 @@ public class CIndexTest {
     public void testIris() throws IOException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
-        data.setAttribute(0, data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL));
-        data.setAttribute(1, data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL));
-        data.setAttribute(2, data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL));
-        data.setAttribute(3, data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL));
+        data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
 
         assertTrue(FileHandler.loadDataset(tf.irisData(), data, 4, ","));
         int evalNum = 9;

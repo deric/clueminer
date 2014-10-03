@@ -31,6 +31,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     protected TreeSet<Object> classes = new TreeSet<>();
     private static final Logger logger = Logger.getLogger(SampleDataset.class.getName());
     private int attrCapacity = -1;
+    private int lastAttr = 0;
 
     /**
      * Creates an empty data set with capacity of ten
@@ -172,7 +173,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public int attributeCount() {
-        return attributes.size();
+        return lastAttr;
     }
 
     /**
@@ -194,6 +195,9 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
      */
     @Override
     public void setAttribute(int i, Attribute attr) {
+        if (i > lastAttr) {
+            lastAttr = i;
+        }
         attr.setIndex(i);
         attr.setDataset(this);
         attributes.put(i, attr);
@@ -205,6 +209,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         for (Attribute a : attr.values()) {
             a.setDataset(this);
         }
+        lastAttr = attr.size();
     }
 
     /**
@@ -287,6 +292,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public Dataset<E> copy() {
         SampleDataset out = new SampleDataset();
         out.attributes = this.attributes;
+        out.lastAttr = attributes.size();
         for (Instance i : this) {
             out.add(i.copy());
         }
@@ -397,8 +403,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public void addAttribute(Attribute attr) {
-        int i = attributeCount();
-        attributes.put(i, attr);
+        attributes.put(lastAttr++, attr);
     }
 
 }
