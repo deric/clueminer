@@ -5,22 +5,22 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class StdMaxTest {
+public class StdMinMaxTest {
 
     private static final double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
     private static final double[][] data2 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, -10}, {-5, -2, 19, 1, 5}};
     private static final double delta = 1e-9;
-    private static final StdMax subject = new StdMax();
-    private static final String method = StdMax.name;
+    private static final StdMinMax subject = new StdMinMax();
+    private static final String method = StdMinMax.name;
 
-    public StdMaxTest() {
+    public StdMinMaxTest() {
     }
 
     @Test
