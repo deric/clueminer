@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.TimeInstance;
@@ -35,7 +36,7 @@ public class TimeseriesDatasetTest {
 
     @Before
     public void setUp() {
-        dataset = new TimeseriesDataset<ContinuousInstance>(5);
+        dataset = new TimeseriesDataset<>(5);
         TimePoint tp[] = new TimePointAttribute[6];
         for (int i = 0; i < tp.length; i++) {
             tp[i] = new TimePointAttribute(i, i + 100, Math.pow(i, 2));
@@ -275,11 +276,22 @@ public class TimeseriesDatasetTest {
     public void testGetRandom() {
     }
 
-    /**
-     * Test of getAttributeValue method, of class TimeseriesDataset.
-     */
     @Test
-    public void testGetAttributeValue_String_int() {
+    public void testGet() {
+        TimePoint tp[] = new TimePointAttribute[3];
+        for (int i = 0; i < tp.length; i++) {
+            tp[i] = new TimePointAttribute(i, i + 100, Math.pow(i, 2));
+        }
+        Dataset<? extends Instance> test = new TimeseriesDataset<>(3, (TimePointAttribute[]) tp);
+        double[][] data = new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+
+        //test matrix-like approach to accessing data
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                test.set(i, j, data[i][j]);
+                assertEquals(data[i][j], test.get(i, j), delta);
+            }
+        }
     }
 
     /**

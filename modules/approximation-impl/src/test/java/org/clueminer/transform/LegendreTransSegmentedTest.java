@@ -45,17 +45,19 @@ public class LegendreTransSegmentedTest {
     public static void setUpClass() throws IOException {
         File f = fixtures.data01();
 
-        CSVReader csv = new CSVReader(new FileReader(f));
-        TimeRow inst = new TimeRow(Double.class, 15);
-        int i = 0;
-        String[] row;
-        double value;
-        while ((row = csv.readNext()) != null) {
-            value = Double.valueOf(row[0]);
-            inst.put(value);
-            i++;
+        TimeRow inst;
+        int i;
+        try (CSVReader csv = new CSVReader(new FileReader(f))) {
+            inst = new TimeRow(Double.class, 15);
+            i = 0;
+            String[] row;
+            double value;
+            while ((row = csv.readNext()) != null) {
+                value = Double.valueOf(row[0]);
+                inst.put(value);
+                i++;
+            }
         }
-        csv.close();
 
         simple = generateDataset(1, i);
         simple.add(inst);
@@ -67,7 +69,7 @@ public class LegendreTransSegmentedTest {
             tp[j] = new TimePointAttribute(j, j, j);
         }
 
-        return new TimeseriesDataset<ContinuousInstance>(capacity, tp);
+        return new TimeseriesDataset<>(capacity, tp);
     }
 
     private static ContinuousInstance generateInstance(int attrCnt) {
@@ -121,15 +123,15 @@ public class LegendreTransSegmentedTest {
         int segments = 3;
         int degree = 7;
         // 7 is the default degree of Legendre
-        Dataset<Instance> output = new ArrayDataset<Instance>(10, segments * degree);
+        Dataset<Instance> output = new ArrayDataset<>(10, segments * degree);
         //analyze data
         ph.start(segments * simple.size());
         subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());
         for (int i = 0; i < output.attributeCount(); i++) {
             //check that all attributes were assigned some value
-            System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
-            assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
+            System.out.println("attr [" + i + "] = " + output.get(0, i));
+            assertEquals(true, output.get(0, i) != 0.0);
         }
         ph.finish();
     }
@@ -140,15 +142,15 @@ public class LegendreTransSegmentedTest {
         int segments = 3;
         int degree = 7;
         // 7 is the default degree of Legendre
-        Dataset<Instance> output = new AttrHashDataset<Instance>(10);
+        Dataset<Instance> output = new AttrHashDataset<>(10);
         //analyze data
         ph.start(segments * simple.size());
         subject.analyze(simple, output, ph, segments, degree);
         assertEquals(1, output.size());
         for (int i = 0; i < output.attributeCount(); i++) {
             //check that all attributes were assigned some value
-            System.out.println("attr [" + i + "] = " + output.getAttributeValue(i, 0));
-            assertEquals(true, output.getAttributeValue(i, 0) != 0.0);
+            System.out.println("attr [" + i + "] = " + output.get(0, i));
+            assertEquals(true, output.get(0, i) != 0.0);
         }
         ph.finish();
     }
@@ -186,9 +188,9 @@ public class LegendreTransSegmentedTest {
         char separator = ',';
         TimeseriesFixture tf = new TimeseriesFixture();
         File file = tf.ts01();
-        Timeseries<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        Timeseries<ContinuousInstance> dataset = new TimeseriesDataset<>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+        ArrayList<Integer> metaAttr = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             metaAttr.add(i);
         }

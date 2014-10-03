@@ -146,7 +146,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        Map<Integer, Attribute> map = new HashMap<Integer, Attribute>(timePoints.length);
+        Map<Integer, Attribute> map = new HashMap<>(timePoints.length);
         for (int i = 0; i < timePoints.length; i++) {
             map.put(i, timePoints[i]);
         }
@@ -406,7 +406,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public Dataset<E> copy() {
-        TimeseriesDataset<ContinuousInstance> out = new TimeseriesDataset<ContinuousInstance>(this.size());
+        TimeseriesDataset<ContinuousInstance> out = new TimeseriesDataset<>(this.size());
         out.setTimePoints(timePoints);
         for (ContinuousInstance i : this) {
             out.add(i.copy());
@@ -419,7 +419,8 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         if (hasIndex(index)) {
             return get(index);
         } else if (index == size()) {
-            E inst = (E) builder().create(this.attributeCount());
+            int attrs = attributeCount() == 0 ? timePoints.length : attributeCount();
+            E inst = (E) builder().create(attrs);
             add(inst);
             return inst;
         }
@@ -449,9 +450,16 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         return get(instanceIdx).value(attribute.getIndex());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param instanceIdx
+     * @param attributeIndex
+     * @return
+     */
     @Override
-    public double get(int attributeIndex, int instanceIdx) {
-        return get(instanceIdx).value(attributeIndex);
+    public double get(int instanceIdx, int attributeIndex) {
+        return instance(instanceIdx).value(attributeIndex);
     }
 
     @Override
@@ -483,7 +491,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public Dataset<E> duplicate() {
-        TimeseriesDataset<E> copy = new TimeseriesDataset<E>(this.size());
+        TimeseriesDataset<E> copy = new TimeseriesDataset<>(this.size());
         copy.timePoints = this.timePoints;
         return copy;
     }

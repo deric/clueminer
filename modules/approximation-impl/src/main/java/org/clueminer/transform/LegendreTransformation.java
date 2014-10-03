@@ -84,7 +84,7 @@ public class LegendreTransformation implements DataTransform {
             //segment start
 
         //create attribute for each parameter
-        List<Approximator> approx = new ArrayList<Approximator>();
+        List<Approximator> approx = new ArrayList<>();
         approx.add(new LegendreApproximator(degree));
         int offset = totalAttributes(approx) * segment;
         for (Approximator a : approx) {
@@ -137,11 +137,11 @@ public class LegendreTransformation implements DataTransform {
                 output.add(instance);
             }
             for (Approximator a : approx) {
-                coefficients = new HashMap<String, Double>();
+                coefficients = new HashMap<>();
                 a.estimate(xAxis, input, coefficients);
                 idx = offset;
                 for (Map.Entry<String, Double> item : coefficients.entrySet()) {
-                    output.setAttributeValue(idx++, i, item.getValue());
+                    output.set(i, idx++, item.getValue());
                 }
             }
         }
@@ -151,7 +151,7 @@ public class LegendreTransformation implements DataTransform {
     public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
         //number of attributes is some default, could be expanded
         logger.log(Level.INFO, "input size: {0} attrs {1}", new Object[]{input.size(), input.attributeCount()});
-        return new AttrHashDataset<Instance>(input.size());
+        return new AttrHashDataset<>(input.size());
     }
 
     public int getDegree() {

@@ -2,6 +2,7 @@ package org.clueminer.dataset.row;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
+import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -9,7 +10,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plot.TimePlot;
-import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
@@ -40,6 +40,10 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public E item(int index) {
+        if (data[index] == null) {
+            Number num = defaultValue;
+            return (E) num;
+        }
         return data[index];
     }
 

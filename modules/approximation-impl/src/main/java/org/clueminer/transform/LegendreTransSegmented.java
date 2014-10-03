@@ -98,7 +98,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         logger.log(Level.INFO, "splitting: {0} size= {1} attr cnt = {2}", new Object[]{source.getClass().getName(), source.size(), source.attributeCount()});
         for (int i = 0; i < n; i++) {
             //res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
-            res[i] = new TimeseriesDataset<ContinuousInstance>(source.size());
+            res[i] = new TimeseriesDataset<>(source.size());
             res[i].setName(source.getName() + " segment " + i);
             int pos = offset;
             //if remaining attributes won't fill next segment, just make longer one
@@ -124,23 +124,23 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             max = Double.MIN_VALUE;
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
-                    value = source.getAttributeValue(offset + k, j);
+                    value = source.get(j, offset + k);
                     if (value < min) {
                         min = value;
                     }
                     if (value > max) {
                         max = value;
                     }
-                    res[i].setAttributeValue(k, j, value);
+                    res[i].set(j, k, value);
                     //System.out.println(res[i].instance(j).toString());
                 }
             }
             //   Dump.matrix(res[i].arrayCopy(), "not scaled-" + i, 2);
             for (int j = 0; j < source.size(); j++) {
                 for (int k = 0; k < res[i].attributeCount(); k++) {
-                    value = source.getAttributeValue(offset + k, j);
+                    value = source.get(j, offset + k);
                     value = scale.scaleToRange(value, min, max, -1.0, 1.0);
-                    res[i].setAttributeValue(k, j, value);
+                    res[i].set(j, k, value);
                 }
                 res[i].instance(j).setAncestor(source.instance(j));
                 res[i].instance(j).setName(source.instance(j).getName());
