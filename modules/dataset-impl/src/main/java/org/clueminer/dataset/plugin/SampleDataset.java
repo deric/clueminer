@@ -403,6 +403,8 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public void addAttribute(Attribute attr) {
+        attr.setDataset(this);
+        attr.setIndex(lastAttr);
         attributes.put(lastAttr++, attr);
     }
 

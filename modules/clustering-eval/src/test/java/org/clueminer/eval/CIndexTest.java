@@ -8,6 +8,8 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -15,6 +17,8 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.FileHandler;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,7 +49,7 @@ public class CIndexTest {
     @Test
     public void testScore() throws IOException, FileNotFoundException {
         CommonFixture tf = new CommonFixture();
-        Dataset data = new SampleDataset();
+        Dataset data = new ArrayDataset(10, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("y", BasicAttrType.NUMERICAL);
         ARFFHandler arff = new ARFFHandler();

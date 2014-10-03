@@ -1,4 +1,4 @@
-package org.clueminer.io;
+package org.clueminer.stats;
 
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -6,21 +6,22 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
-import org.clueminer.stats.AttrNumStats;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
 public class NumericalStatsTest {
 
-    private static Dataset<Instance> dataset;
+    private static Dataset<? extends Instance> dataset;
     private static CommonFixture tf = new CommonFixture();
-    private static double precision = 0.001;
+    private static final double precision = 0.001;
 
     public NumericalStatsTest() {
     }
@@ -100,48 +101,14 @@ public class NumericalStatsTest {
     @Test
     public void testAbsoluteDeviation() {
         Attribute attr = dataset.getAttribute(0); //sepallength
+        System.out.println("0:" + attr.getName());
         assertEquals(0.829, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(1); //sepallwidth
+        System.out.println("1:" + attr.getName());
         assertEquals(0.577, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(2); //petallength
         assertEquals(1.249, attr.statistics(AttrNumStats.ABS_DEV), precision);
         attr = dataset.getAttribute(3); //petalwidth
         assertEquals(0.811, attr.statistics(AttrNumStats.ABS_DEV), precision);
-    }
-
-    /**
-     * Test of clone method, of class NumericalStats.
-     */
-    @Test
-    public void testClone() {
-    }
-
-    /**
-     * Test of reset method, of class NumericalStats.
-     */
-    @Test
-    public void testReset() {
-    }
-
-    /**
-     * Test of update method, of class NumericalStats.
-     */
-    @Test
-    public void testUpdate() {
-    }
-
-    /**
-     * Test of value method, of class NumericalStats.
-     */
-    @Test
-    public void testValue() {
-
-    }
-
-    /**
-     * Test of provides method, of class NumericalStats.
-     */
-    @Test
-    public void testProvides() {
     }
 }

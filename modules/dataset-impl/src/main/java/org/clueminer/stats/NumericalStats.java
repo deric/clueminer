@@ -199,7 +199,9 @@ public class NumericalStats implements Statistics {
      */
     private double absDev() {
         double mean = statistics(AttrNumStats.AVG);
+        System.out.println("mean: " + mean);
         Iterator<? extends Object> it = data.values();
+        System.out.println("data size: " + data.size());
         double value;
         double asum = 0.0;
         while (it.hasNext()) {

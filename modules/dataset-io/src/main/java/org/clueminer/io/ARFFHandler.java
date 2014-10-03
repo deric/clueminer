@@ -88,8 +88,6 @@ public class ARFFHandler implements DatasetLoader {
         Matcher rmatch;
         Matcher amatch;
 
-        //number of attributes
-        int attrNum = 0;
         int headerLine = 0;
         /*
          * Indicates whether we are reading data
@@ -139,7 +137,6 @@ public class ARFFHandler implements DatasetLoader {
                         //exception
                         //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
                         out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase()));
-                        attrNum++;
                     }
                     headerLine++;
 
