@@ -6,6 +6,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import static org.clueminer.std.Scaler.logScale;
+import org.clueminer.std.StdNone;
 
 /**
  *
@@ -13,8 +14,13 @@ import static org.clueminer.std.Scaler.logScale;
  */
 public class DataScaler {
 
-    public static Matrix standartize(Dataset<? extends Instance> dataset, String method, boolean logScale) {
+    public static Dataset<? extends Instance> standartize(Dataset<? extends Instance> dataset, String method, boolean logScale) {
         DataStandardizationFactory sf = DataStandardizationFactory.getInstance();
+        if (method.equals(StdNone.name)) {
+            //nothing to optimize
+            return dataset;
+        }
+
         DataStandardization std = sf.getProvider(method);
 
         if (std == null) {
