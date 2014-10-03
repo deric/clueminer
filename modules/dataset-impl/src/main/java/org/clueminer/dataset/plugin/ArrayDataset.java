@@ -240,6 +240,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public void setAttribute(int i, Attribute attr) {
         attr.setIndex(i);
+        attr.setDataset(this);
         ensureAttrSize(i);
         if (attributes[i] == null) {
             attrCnt++;
@@ -254,10 +255,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public void addAttribute(Attribute attr) {
-        int i = attributeCount();
-        ensureAttrSize(i);
-        attributes[i] = attr;
-        attrCnt++;
+        setAttribute(attributeCount(), attr);
     }
 
     public final void ensureAttrSize(int reqAttrSize) {
