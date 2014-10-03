@@ -21,7 +21,7 @@ public class StandardisationFactory extends ServiceFactory<Standardisation> {
     }
 
     private StandardisationFactory() {
-        providers = new LinkedHashMap<String, Standardisation>();
+        providers = new LinkedHashMap<>();
         Collection<? extends Standardisation> list = Lookup.getDefault().lookupAll(Standardisation.class);
         for (Standardisation c : list) {
             providers.put(c.getName(), c);
