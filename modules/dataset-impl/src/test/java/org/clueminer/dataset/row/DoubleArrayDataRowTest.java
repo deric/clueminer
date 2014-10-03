@@ -353,7 +353,7 @@ public class DoubleArrayDataRowTest {
     @Test
     public void testToString_String() {
         System.out.println(t1.toString());
-        assertEquals("1.0,2.0,3.0,4.0,5.0", t1.toString());
+        assertEquals("DoubleArrayData(5)[1.0,2.0,3.0,4.0,5.0]", t1.toString());
     }
 
     @Test
