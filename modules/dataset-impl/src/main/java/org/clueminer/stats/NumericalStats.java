@@ -48,6 +48,17 @@ public class NumericalStats implements Statistics {
         absdev = Double.NaN;
     }
 
+    /**
+     * Recompute statistics for the vector
+     */
+    public void recalculate() {
+        reset();
+        Iterator<? extends Object> it = data.values();
+        while (it.hasNext()) {
+            valueAdded((Double) it.next());
+        }
+    }
+
     @Override
     public void valueAdded(double value) {
         if (!Double.isNaN(value)) {
@@ -84,8 +95,14 @@ public class NumericalStats implements Statistics {
     public double statistics(IStats name) {
         switch ((AttrNumStats) name) {
             case MAX:
+                if (maximum == Double.NEGATIVE_INFINITY) {
+                    recalculate();
+                }
                 return maximum;
             case MIN:
+                if (minimum == Double.POSITIVE_INFINITY) {
+                    recalculate();
+                }
                 return minimum;
             case AVG:
                 return avg();
