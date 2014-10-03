@@ -7,6 +7,7 @@ import org.clueminer.dataset.api.IStats;
  * @author deric
  */
 public enum AttrNumStats implements IStats {
+
     MIN,
     MAX,
     AVG,
@@ -28,4 +29,5 @@ public enum AttrNumStats implements IStats {
      */
     STD_DEV, //standard deviation
     ABS_DEV, //mean absolute deviation
+    STD_X, //without correction
 }

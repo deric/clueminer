@@ -6,6 +6,17 @@ import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Statistics;
 
 /**
+ * Running statistics
+ *
+ * Chan, Tony F.; Golub, Gene H.; LeVeque, Randall J. (1983). Algorithms for
+ * Computing the Sample Variance: Analysis and Recommendations. The American
+ * Statistician 37, 242-247.
+ *
+ * Ling, Robert F. (1974). Comparison of Several Algorithms for Computing Sample
+ * Means and Variances. Journal of the American Statistical Association, Vol.
+ * 69, No. 348, 859-866.
+ *
+ * @see http://www.johndcook.com/standard_deviation.html
  *
  * @author Tomas Barton
  */
@@ -17,10 +28,8 @@ public class NumericalStats implements Statistics {
     private double sum = 0.0d;
     private double squaredSum = 0.0d;
     private int valueCounter = 0;
-    private double variance = Double.NaN;
-    private double avg = Double.NaN;
-    private double stddev = Double.NaN;
     private double absdev = Double.NaN;
+    private double mOld, mNew, sOld, sNew;
     private final DataVector data;
 
     public NumericalStats(DataVector attribute) {
@@ -42,9 +51,6 @@ public class NumericalStats implements Statistics {
     }
 
     private void annulateCache() {
-        variance = Double.NaN;
-        avg = Double.NaN;
-        stddev = Double.NaN;
         absdev = Double.NaN;
     }
 
@@ -68,10 +74,26 @@ public class NumericalStats implements Statistics {
             if (value > maximum) {
                 maximum = value;
             }
+
+            valueCounter++;
+
+            if (valueCounter == 1) {
+                mOld = value;
+                mNew = value;
+                sOld = 0.0;
+            } else {
+                mNew = mOld + (value - mOld) / valueCounter;
+                sNew = sOld + (value - mOld) * (value - mNew);
+
+                // set up for next iteration
+                mOld = mNew;
+                sOld = sNew;
+                annulateCache();
+            }
+
             sum += value;
             squaredSum += value * value;
-            valueCounter++;
-            annulateCache();
+
         }
     }
 
@@ -84,9 +106,9 @@ public class NumericalStats implements Statistics {
             if (maximum == value) {
                 resetMax();
             }
-            sum += value;
-            squaredSum += value * value;
-            valueCounter++;
+            sum -= value;
+            squaredSum -= value * value;
+            valueCounter--;
             annulateCache();
         }
     }
@@ -110,14 +132,12 @@ public class NumericalStats implements Statistics {
                 return variance();
             case SUM:
                 return sum;
+            case STD_X:
+                return stdx();
             case SQSUM:
                 return squaredSum;
             case STD_DEV:
-                if (Double.isNaN(stddev)) {
-                    //std dev is just square root of variance
-                    stddev = Math.sqrt(statistics(AttrNumStats.VARIANCE));
-                }
-                return stddev;
+                return Math.sqrt(variance());
             case ABS_DEV:
                 if (Double.isNaN(absdev)) {
                     absdev = absDev();
@@ -127,11 +147,23 @@ public class NumericalStats implements Statistics {
         throw new RuntimeException("unknown statistics " + name);
     }
 
+    /**
+     * From Donald Knuth's Art of Computer Programming, Vol 2, page 232, 3rd
+     * edition
+     *
+     * @return average (mean)
+     */
     private double avg() {
-        if (Double.isNaN(avg)) {
-            avg = sum / valueCounter;
-        }
-        return avg;
+        return (valueCounter > 0) ? mNew : 0.0;
+    }
+
+    /**
+     * Without -1 -- SQRT(1/N * variance)
+     *
+     * @return
+     */
+    private double stdx() {
+        return Math.sqrt(((valueCounter > 1) ? sNew / valueCounter : 0.0));
     }
 
     @Override
@@ -165,20 +197,12 @@ public class NumericalStats implements Statistics {
 
     /**
      * Pretty fast way how to compute variance, we don't have to recount sums
-     * from begining each time we add or remove one element
+     * from beginning each time we add or remove one element
      *
      * @return variance of an attribute
      */
     private double variance() {
-        if (Double.isNaN(variance)) {
-            //if the average is cached, we reduce number of divisions
-            variance = (squaredSum - avg() * avg() * valueCounter) / (valueCounter - 1);
-            if (variance < 0) // this is due to rounding errors above
-            {
-                variance = 0;
-            }
-        }
-        return variance;
+        return ((valueCounter > 1) ? sNew / (valueCounter - 1) : 0.0);
     }
 
     /**
@@ -191,7 +215,7 @@ public class NumericalStats implements Statistics {
      */
     /**
      * Since absolute value is a bit tricky for counting we can't avoid
-     * recounting all elements each time we change the set. Computionally less
+     * recounting all elements each time we change the set. Computationally less
      * expensive would be using some estimate of the mean. However this work
      * with reasonable precision only in case of a big set
      *
@@ -199,9 +223,7 @@ public class NumericalStats implements Statistics {
      */
     private double absDev() {
         double mean = statistics(AttrNumStats.AVG);
-        System.out.println("mean: " + mean);
         Iterator<? extends Object> it = data.values();
-        System.out.println("data size: " + data.size());
         double value;
         double asum = 0.0;
         while (it.hasNext()) {
