@@ -61,7 +61,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return hierarchy(dataset.asMatrix(), dataset, params);
     }
 
     @Override

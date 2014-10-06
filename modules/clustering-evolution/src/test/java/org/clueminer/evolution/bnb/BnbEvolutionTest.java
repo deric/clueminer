@@ -1,19 +1,10 @@
 package org.clueminer.evolution.bnb;
 
-import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.eval.BICScore;
 import org.clueminer.eval.NMI;
-import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.eval.external.Precision;
-import org.clueminer.evolution.attr.AttrEvolution;
-import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +17,7 @@ public class BnbEvolutionTest {
     private BnbEvolution subject;
     private static final long MEGABYTE = 1024L * 1024L;
     private long startTime;
+    private long startMemory;
     private ConsoleReporter report;
 
     public static long bytesToMegabytes(long bytes) {
@@ -51,7 +43,13 @@ public class BnbEvolutionTest {
     }
 
     private void startClock() {
+        // Get the Java runtime
+        Runtime runtime = Runtime.getRuntime();
+        // Run the garbage collector
+        runtime.gc();
+        startMemory = runtime.totalMemory() - runtime.freeMemory();
         startTime = System.currentTimeMillis();
+
     }
 
     private void stopClock() {
@@ -102,8 +100,8 @@ public class BnbEvolutionTest {
         // Calculate the used memory
         long memory = runtime.totalMemory() - runtime.freeMemory();
         System.out.println("Used memory: " + memory + " bytes");
-        System.out.println("Used memory: "
-                + bytesToMegabytes(memory) + " MB");
+        System.out.println("Used memory: " + bytesToMegabytes(memory) + " MB");
+        System.out.println("Inc memory: " + bytesToMegabytes(memory - startMemory) + " MB");
     }
 
 }

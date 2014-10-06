@@ -5,7 +5,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.clueminer.stats.AttrNumStats;
 import org.junit.AfterClass;
 import org.junit.Test;

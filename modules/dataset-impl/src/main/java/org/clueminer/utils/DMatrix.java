@@ -41,7 +41,6 @@ public class DMatrix extends AbstractMatrix implements Matrix {
         return dataset.attributeCount();
     }
 
-
     @Override
     public double get(int i, int j) {
         return dataset.get(i, j);
@@ -89,7 +88,7 @@ public class DMatrix extends AbstractMatrix implements Matrix {
 
     @Override
     public void set(int i, int j, double s) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        dataset.set(i, j, s);
     }
 
     @Override
@@ -196,6 +195,5 @@ public class DMatrix extends AbstractMatrix implements Matrix {
     public double trace() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }
