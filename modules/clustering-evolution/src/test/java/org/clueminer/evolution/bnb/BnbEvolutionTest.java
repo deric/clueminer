@@ -1,5 +1,6 @@
 package org.clueminer.evolution.bnb;
 
+import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.NMI;
 import org.clueminer.eval.external.Precision;
@@ -14,11 +15,11 @@ import org.junit.Test;
  */
 public class BnbEvolutionTest {
 
-    private BnbEvolution subject;
+    protected BnbEvolution subject;
     private static final long MEGABYTE = 1024L * 1024L;
-    private long startTime;
-    private long startMemory;
-    private ConsoleReporter report;
+    protected long startTime;
+    protected long startMemory;
+    protected ConsoleReporter report;
 
     public static long bytesToMegabytes(long bytes) {
         return bytes / MEGABYTE;
@@ -29,7 +30,7 @@ public class BnbEvolutionTest {
 
     @Before
     public void setUp() {
-        subject = new BnbEvolution();
+        subject = new BnbEvolution(new ClusteringExecutor());
         report = new ConsoleReporter();
         subject.addEvolutionListener(report);
     }

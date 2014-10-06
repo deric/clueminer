@@ -3,12 +3,12 @@ package org.clueminer.evolution.bnb;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
@@ -32,18 +32,18 @@ import org.openide.util.lookup.InstanceContent;
 public class BnbEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "BnB";
-    private final ClusteringExecutor exec;
+    private final Executor exec;
     private int gen;
     private List<DistanceMeasure> dist;
     private List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(BnbEvolution.class.getName());
     private int cnt;
 
-    public BnbEvolution() {
+    public BnbEvolution(Executor executor) {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        exec = new ClusteringExecutor();
+        this.exec = executor;
         gen = 0;
     }
 
