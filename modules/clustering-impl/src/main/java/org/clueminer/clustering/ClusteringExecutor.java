@@ -2,17 +2,14 @@ package org.clueminer.clustering;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -28,15 +25,15 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
-public class ClusteringExecutor {
+public class ClusteringExecutor extends AbstractExecutor implements Executor {
 
-    private AgglomerativeClustering algorithm;
     private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
 
     public ClusteringExecutor() {
         algorithm = new HAC();
     }
 
+    @Override
     public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
@@ -51,6 +48,7 @@ public class ClusteringExecutor {
         return rowsResult;
     }
 
+    @Override
     public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
@@ -63,21 +61,7 @@ public class ClusteringExecutor {
         return columnsResult;
     }
 
-    private CutoffStrategy getCutoffStrategy(Props params) {
-        CutoffStrategy strategy;
-        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
-
-        if (!cutoffAlg.equals("-- naive --")) {
-            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "NMI");
-            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
-            strategy = CutoffStrategyFactory.getInstance().getDefault();
-            strategy.setEvaluator(eval);
-        } else {
-            strategy = CutoffStrategyFactory.getInstance().getProvider("hill-climb cutoff");
-        }
-        return strategy;
-    }
-
+    @Override
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
@@ -96,6 +80,7 @@ public class ClusteringExecutor {
      * @param params
      * @return
      */
+    @Override
     public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
@@ -103,13 +88,4 @@ public class ClusteringExecutor {
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
         return mapping;
     }
-
-    public AgglomerativeClustering getAlgorithm() {
-        return algorithm;
-    }
-
-    public void setAlgorithm(AgglomerativeClustering algorithm) {
-        this.algorithm = algorithm;
-    }
-
 }
