@@ -81,6 +81,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         }
         logger.log(Level.INFO, "clustering rows: {0} size: {1}", new Object[]{params.clusterRows(), n});
         int items = (n - 1) * n / 2;
+        //TODO: we might track clustering by estimated time (instead of counters)
         PriorityQueue<Element> pq = new PriorityQueue<Element>(items);
 
         if (params.clusterRows()) {

@@ -7,8 +7,6 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  * Agglomerative clustering methods
@@ -41,11 +39,7 @@ public class AgglClustering {
      */
     public static Matrix rowSimilarityMatrix(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
-        int n = 0;
         double dist;
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Computing row similarity matrix (" + m.rowsCount() + " x " + m.rowsCount() + ")");
-        int total = (m.rowsCount() - 1) * m.rowsCount() / 2;
-        ph.start(total);
         if (dm.isSymmetric()) {
 
             similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
@@ -57,7 +51,6 @@ public class AgglClustering {
                     if (queue != null) {
                         queue.add(new Element(dist, i, j));
                     }
-                    ph.progress(n++);
                 }
             }
         } else {
@@ -80,11 +73,9 @@ public class AgglClustering {
                         queue.add(new Element(dist, i, j));
                         queue.add(new Element(dist2, j, i));
                     }
-                    ph.progress(n++);
                 }
             }
         }
-        ph.finish();
         return similarityMatrix;
     }
 
@@ -103,9 +94,6 @@ public class AgglClustering {
         Matrix similarityMatrix;
         int n = 0;
         double dist;
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Computing column similarity matrix (" + m.columnsCount() + " x " + m.columnsCount() + ")");
-        int total = (m.columnsCount() - 1) * m.columnsCount() / 2;
-        ph.start(total);
         if (dm.isSymmetric()) {
             similarityMatrix = new SymmetricMatrix(m.columnsCount(), m.columnsCount());
             for (int i = 0; i < m.columnsCount(); ++i) {
@@ -116,7 +104,6 @@ public class AgglClustering {
                         // when printing lower part of matrix this indexes should match
                         queue.add(new Element(dist, i, j));
                     }
-                    ph.progress(n++);
                 }
             }
         } else {
@@ -140,11 +127,9 @@ public class AgglClustering {
                         queue.add(new Element(dist, i, j));
                         queue.add(new Element(dist2, j, i));
                     }
-                    ph.progress(n++);
                 }
             }
         }
-        ph.finish();
         return similarityMatrix;
     }
 
