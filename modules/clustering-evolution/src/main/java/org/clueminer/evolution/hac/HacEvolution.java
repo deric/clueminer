@@ -77,9 +77,8 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
             logger.log(Level.INFO, "stds: {0}", stdMethods);
             logger.log(Level.INFO, "distances: {0}", dist.size());
             logger.log(Level.INFO, "linkages: {0}", linkage.size());
-            logger.log(Level.INFO, "evolution combinations: {0}", workunits);
+            logger.log(Level.INFO, "evolution workunits: {0}", workunits);
             ph.start(workunits);
-            ph.progress("starting evolution...");
         }
         cnt = 0;
         for (String std : standartizations) {

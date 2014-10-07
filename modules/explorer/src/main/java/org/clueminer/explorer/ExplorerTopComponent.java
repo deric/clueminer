@@ -1,22 +1,19 @@
 package org.clueminer.explorer;
 
-import org.clueminer.explorer.gui.ExplorerToolbar;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.NMI;
+import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -26,6 +23,7 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.IconView;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -65,11 +63,10 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private Lookup.Result<Clustering> result = null;
     private AbstractNode root;
     private Dataset<? extends Instance> dataset;
-    private static final RequestProcessor RP = new RequestProcessor("Evolution");
-    private RequestProcessor.Task task;
+    private static final RequestProcessor RP = new RequestProcessor("Evolution", 100, false, true);
+    private volatile RequestProcessor.Task task;
     private static final Logger logger = Logger.getLogger(ExplorerTopComponent.class.getName());
     private ExplorerToolbar toolbar;
-    private javax.swing.JScrollPane explorerPane;
     private IconView iconView;
     private ClustComparator comparator;
     private ClustSorted children;
@@ -200,6 +197,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "evolution finished");
+        if (!task.isFinished()) {
+            logger.warning("task should have been already finished");
+        }
         toolbar.evolutionFinished();
     }
 
@@ -209,7 +209,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     @Override
-    public void startEvolution(ActionEvent evt, String evolution) {
+    public void startEvolution(ActionEvent evt, final String evolution) {
         if (dataset != null) {
             //start evolution
             EvolutionFactory ef = EvolutionFactory.getInstance();
@@ -222,7 +222,13 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
 
-                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution");
+                    final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
+
+                    @Override
+                    public boolean cancel() {
+                        return handleCancel();
+                    }
+                });
                 alg.setProgressHandle(ph);
                 alg.addEvolutionListener(children);
                 //childern node will get all clustering results
@@ -233,12 +239,19 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 task.schedule(0);
             }
         }
+
+    }
+
+    private boolean handleCancel() {
+        logger.info("Evolution task was canceled");
+        toolbar.evolutionFinished();
+        return true;
     }
 
     @Override
     public void evaluatorChanged(ClusterEvaluation eval) {
         //TODO implement
-        if(comparator!= null){
+        if (comparator != null) {
             comparator.setEvaluator(eval);
             children.setComparator(comparator);
         }
