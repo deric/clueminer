@@ -13,7 +13,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
@@ -23,22 +22,24 @@ import org.clueminer.utils.Props;
  * (e.g. a dense matrix) and then joining the original inputs with appropriate
  * clustering result
  *
+ * Should reduce circa 50% of memory during evolution (trying all combinations
+ * of standardizations)
+ *
  * @author Tomas Barton
  */
-public class ClusteringExecutor2 extends AbstractExecutor implements Executor {
+public class ClusteringExecutorCached extends AbstractExecutor implements Executor {
 
-    private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
+    private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
+    private StdStorage storage;
 
-    public ClusteringExecutor2() {
+    public ClusteringExecutorCached() {
         algorithm = new HAC();
     }
 
     @Override
     public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        if (dataset == null || dataset.isEmpty()) {
-            throw new NullPointerException("no data to process");
-        }
-        Dataset<? extends Instance> norm = DataScaler.standartize(dataset, params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        checkInput(dataset);
+        Dataset<? extends Instance> norm = storage.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
         CutoffStrategy strategy = getCutoffStrategy(params);
@@ -50,15 +51,22 @@ public class ClusteringExecutor2 extends AbstractExecutor implements Executor {
 
     @Override
     public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        if (dataset == null || dataset.isEmpty()) {
-            throw new NullPointerException("no data to process");
-        }
-        Dataset<? extends Instance> norm = DataScaler.standartize(dataset, params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        checkInput(dataset);
+        Dataset<? extends Instance> norm = storage.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;
+    }
+
+    private void checkInput(Dataset<? extends Instance> dataset) {
+        if (dataset == null || dataset.isEmpty()) {
+            throw new NullPointerException("no data to process");
+        }
+        if (storage == null) {
+            storage = new StdStorage(dataset);
+        }
     }
 
     @Override
