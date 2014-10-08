@@ -48,6 +48,7 @@ public class ClusteringExecutor2 extends AbstractExecutor implements Executor {
         return rowsResult;
     }
 
+    @Override
     public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
@@ -60,6 +61,7 @@ public class ClusteringExecutor2 extends AbstractExecutor implements Executor {
         return columnsResult;
     }
 
+    @Override
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
@@ -78,6 +80,7 @@ public class ClusteringExecutor2 extends AbstractExecutor implements Executor {
      * @param params
      * @return
      */
+    @Override
     public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
