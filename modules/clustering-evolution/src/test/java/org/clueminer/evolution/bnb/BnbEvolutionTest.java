@@ -5,6 +5,7 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.NMI;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.report.MemInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +17,8 @@ import org.junit.Test;
 public class BnbEvolutionTest {
 
     protected BnbEvolution subject;
-    private static final long MEGABYTE = 1024L * 1024L;
-    protected long startTime;
-    protected long startMemory;
     protected ConsoleReporter report;
-
-    public static long bytesToMegabytes(long bytes) {
-        return bytes / MEGABYTE;
-    }
+    protected MemInfo mem;
 
     public BnbEvolutionTest() {
     }
@@ -33,6 +28,7 @@ public class BnbEvolutionTest {
         subject = new BnbEvolution(new ClusteringExecutor());
         report = new ConsoleReporter();
         subject.addEvolutionListener(report);
+        mem = new MemInfo();
     }
 
     @After
@@ -41,22 +37,6 @@ public class BnbEvolutionTest {
 
     @Test
     public void testGetName() {
-    }
-
-    private void startClock() {
-        // Get the Java runtime
-        Runtime runtime = Runtime.getRuntime();
-        // Run the garbage collector
-        runtime.gc();
-        startMemory = runtime.totalMemory() - runtime.freeMemory();
-        startTime = System.currentTimeMillis();
-
-    }
-
-    private void stopClock() {
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        System.out.println("time: " + elapsedTime / 1000 + "s");
     }
 
     /**
@@ -70,11 +50,11 @@ public class BnbEvolutionTest {
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 
-        startClock();
+        mem.startClock();
         subject.run();
-        stopClock();
+        mem.stopClock();
 
-        reportMemory();
+        mem.report();
     }
 
     @Test
@@ -92,17 +72,4 @@ public class BnbEvolutionTest {
     @Test
     public void testIndividualCreated() {
     }
-
-    private void reportMemory() {
-        // Get the Java runtime
-        Runtime runtime = Runtime.getRuntime();
-        // Run the garbage collector
-        runtime.gc();
-        // Calculate the used memory
-        long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory: " + memory + " bytes");
-        System.out.println("Used memory: " + bytesToMegabytes(memory) + " MB");
-        System.out.println("Inc memory: " + bytesToMegabytes(memory - startMemory) + " MB");
-    }
-
 }

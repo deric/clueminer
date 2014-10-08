@@ -1,6 +1,7 @@
 package org.clueminer.evolution.bnb;
 
 import org.clueminer.clustering.ClusteringExecutor2;
+import org.clueminer.report.MemInfo;
 import org.junit.Before;
 
 /**
@@ -14,6 +15,7 @@ public class BnbEvolutionTest2 extends BnbEvolutionTest {
         subject = new BnbEvolution(new ClusteringExecutor2());
         report = new ConsoleReporter();
         subject.addEvolutionListener(report);
+        mem = new MemInfo();
     }
 
 }
