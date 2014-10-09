@@ -1,8 +1,6 @@
 package org.clueminer.importer.impl;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.Container;
@@ -90,6 +88,22 @@ public class ArffImporterTest {
         //two attributes and class
         assertEquals(5, loader.getAttributeCount());
         assertEquals(150, loader.getInstanceCount());
+    }
+
+    @Test
+    public void testVehicle() throws IOException {
+        File vehicle = fixtures.vehicleArff();
+        Container container = new ImportContainerImpl();
+        subject.execute(container, vehicle);
+        ContainerLoader loader = container.getLoader();
+        //name of relation from ARFF
+        assertEquals("vehicle", loader.getName());
+        //two attributes and class
+        assertEquals(19, loader.getAttributeCount());
+        assertEquals(846, loader.getInstanceCount());
+        //there are 4 classes in the dataset
+        //assertNotNull(loader.getDataset());
+        //assertEquals(4, loader.getDataset().getClasses().size());
     }
 
     @Test
