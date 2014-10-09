@@ -215,6 +215,8 @@
         <module>modules/clustering-eval</module>
         <module>modules/clustering-dist</module>
         <module>modules/clustering-struct</module>
+        <module>modules/graph-api</module>
+        <module>modules/graph-impl</module>
     </modules>
     <reporting>
         <plugins>
