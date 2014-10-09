@@ -4,9 +4,7 @@ package org.clueminer.graph.api;
  *
  * @author Tomas Barton
  */
-public interface Edge {
-
-    Object getId();
+public interface Edge extends Element {
 
     /**
      * True when edge is directed
