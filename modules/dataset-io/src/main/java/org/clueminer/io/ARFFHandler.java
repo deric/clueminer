@@ -34,7 +34,7 @@ public class ARFFHandler implements DatasetLoader {
      *
      * @ATTRIBUTE sepallength	REAL"
      */
-    private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\d+),]+\\})", Pattern.CASE_INSENSITIVE);
+    private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the

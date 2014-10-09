@@ -50,10 +50,12 @@ public class ARFFHandlerTest {
         assertTrue(arff.isValidAttributeDefinition("@attribute 'MAX.LENGTH ASPECT RATIO' real"));
         assertTrue(arff.isValidAttributeDefinition("@attribute definite_borders {0,1,2,3}"));
         assertTrue(arff.isValidAttributeDefinition("@attribute OD280/OD315_of_diluted_wines REAL"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute F22 {0,1}"));
     }
 
     /**
      * Test of load method, of class ARFFHandler.
+     *
      * @throws java.lang.Exception
      */
     @Test
@@ -79,11 +81,15 @@ public class ARFFHandlerTest {
         assertEquals(1484, data.size());
     }
 
-    /**
-     * Test of load method, of class ARFFHandler.
-     */
     @Test
     public void testLoad_3args() throws Exception {
+    }
+
+    @Test
+    public void testClassAttrDefinition() {
+        //from vehicle dataset
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Class' {opel,saab,bus,van}"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute class {east,west}"));
     }
 
     /**
