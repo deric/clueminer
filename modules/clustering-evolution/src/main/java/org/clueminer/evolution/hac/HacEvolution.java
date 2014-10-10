@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -136,6 +137,11 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     protected void individualCreated(Clustering<? extends Cluster> clustering) {
         instanceContent.add(clustering);
         fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
+    }
+
+    @Override
+    public Individual createIndividual() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -18,10 +18,11 @@ import org.openide.util.lookup.InstanceContent;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public abstract class AbstractEvolution implements Evolution {
+public abstract class AbstractEvolution<T extends Individual> implements Evolution<T> {
 
-    protected int generations = 100;
+    protected int generations = 10;
     protected ColorGenerator cg = new ColorBrewer();
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
@@ -31,7 +32,7 @@ public abstract class AbstractEvolution implements Evolution {
     protected transient Lookup lookup;
     protected Dataset<? extends Instance> dataset;
     protected ClusterEvaluation evaluator;
-    protected int populationSize = 100;
+    protected int populationSize = 10;
     /**
      * Probability of mutation
      */

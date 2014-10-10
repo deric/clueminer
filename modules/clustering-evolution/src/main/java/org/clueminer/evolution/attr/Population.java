@@ -1,24 +1,27 @@
 package org.clueminer.evolution.attr;
 
+import java.lang.reflect.Array;
 import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
 import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.AbstractIndividual;
 import org.clueminer.evolution.AbstractPopulation;
 
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public class Population extends AbstractPopulation<WeightsIndividual> {
+public class Population<T extends AbstractIndividual> extends AbstractPopulation<T> {
 
-    private final Evolution evolution;
+    private final Evolution<T> evolution;
 
-    public Population(Evolution evolve, int size) {
+    public Population(Evolution evolve, int size, Class<?> klass) {
         this.evolution = evolve;
-        individuals = new WeightsIndividual[size];
+        individuals = (T[]) Array.newInstance(klass, size);
         for (int i = 0; i < individuals.length; i++) {
-            individuals[i] = new WeightsIndividual(evolution);
+            individuals[i] = evolution.createIndividual();
             individuals[i].countFitness();
         }
         getAvgFitness();
@@ -28,10 +31,10 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
      * Method to select individuals from population
      *
      * @param count how many individuals would be selected
-     * @return List<Individual> of selected individuals
+     * @return List<> of selected individuals
      */
     public List<? extends Individual> selectIndividuals(int count) {
-        ArrayList<WeightsIndividual> selected = new ArrayList<>(count);
+        ArrayList<T> selected = new ArrayList<>(count);
         //tournament selection
         int rand_cnt = getIndividuals().length / 10;
         int rand[] = new int[rand_cnt];
@@ -69,7 +72,7 @@ public class Population extends AbstractPopulation<WeightsIndividual> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== POPULATION ===\n");
-        for (WeightsIndividual individual : individuals) {
+        for (T individual : individuals) {
             sb.append(individual.toString());
             sb.append("\n");
         }

@@ -26,6 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
 @ServiceProvider(service = Evolution.class)
 public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
@@ -79,7 +80,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
     public void run() {
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
-        Population pop = new Population(this, populationSize);
+        Population pop = new Population(this, populationSize, WeightsIndividual.class);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
@@ -188,6 +189,11 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
         if (ph != null) {
             ph.finish();
         }
+    }
+
+    @Override
+    public Individual createIndividual() {
+        return new WeightsIndividual(this);
     }
 
 }

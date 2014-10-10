@@ -72,7 +72,8 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private Clustering<? extends Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
         Instance copy;
-        for (Instance inst : evolution.getDataset()) {
+        Dataset<? extends Instance> orig = evolution.getDataset();
+        for (Instance inst : orig) {
             copy = data.builder().createCopyOf(inst, data);
             copy.setId(inst.getId());
             copy.setIndex(inst.getIndex());

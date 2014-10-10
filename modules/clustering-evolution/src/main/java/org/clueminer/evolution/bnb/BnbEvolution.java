@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
@@ -73,6 +74,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     }
 
     public BnbEvolution(Executor executor) {
+        algorithm = new HAC();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
@@ -99,6 +101,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
         avgFitness = new Pair<>();
         bestFitness = new Pair<>();
         time = new Pair<>();
+        tabu = new HashSet<>();
     }
 
     @Override
@@ -118,7 +121,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
-        Population pop = new Population(this, populationSize);
+        Population<BnbIndividual> pop = new Population(this, populationSize, BnbIndividual.class);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
@@ -237,5 +240,10 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         throw new UnsupportedOperationException("not supported yet");
+    }
+
+    @Override
+    public Individual createIndividual() {
+        return new BnbIndividual(this);
     }
 }

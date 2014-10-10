@@ -11,8 +11,9 @@ import org.openide.util.Lookup;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public interface Evolution extends Runnable, Lookup.Provider {
+public interface Evolution<T extends Individual> extends Runnable, Lookup.Provider {
 
     /**
      *
@@ -88,4 +89,11 @@ public interface Evolution extends Runnable, Lookup.Provider {
      * @param ph
      */
     void setProgressHandle(ProgressHandle ph);
+
+    /**
+     * Randomly initialized individuals for creating population
+     *
+     * @return new individual
+     */
+    T createIndividual();
 }
