@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author Tomas Barton
  * @param <E>
  */
-public class AbstractPopulation<E extends AbstractIndividual> {
+public abstract class AbstractPopulation<E extends AbstractIndividual> {
 
     protected E[] individuals = null;
     protected double avgFitness = 0;
@@ -55,7 +55,7 @@ public class AbstractPopulation<E extends AbstractIndividual> {
         return individuals;
     }
 
-    public int individualsLength() {
+    public int size() {
         return individuals.length;
     }
 

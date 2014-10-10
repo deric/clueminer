@@ -21,7 +21,7 @@ import org.openide.util.lookup.InstanceContent;
  */
 public abstract class AbstractEvolution implements Evolution {
 
-    protected int generations;
+    protected int generations = 100;
     protected ColorGenerator cg = new ColorBrewer();
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;

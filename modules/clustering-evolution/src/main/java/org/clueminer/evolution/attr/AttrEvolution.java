@@ -123,7 +123,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
             }
             selected.clear();
             // merge new and old individuals
-            for (int i = children.size(); i < pop.individualsLength(); i++) {
+            for (int i = children.size(); i < pop.size(); i++) {
                 Individual tmpi = pop.getIndividual(i).deepCopy();
                 tmpi.countFitness();
                 selected.add(tmpi);
@@ -149,8 +149,8 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
             }
 
             int indsToCopy;
-            if (newIndsArr.length > pop.individualsLength()) {
-                indsToCopy = pop.individualsLength();
+            if (newIndsArr.length > pop.size()) {
+                indsToCopy = pop.size();
             } else {
                 indsToCopy = newIndsArr.length;
             }

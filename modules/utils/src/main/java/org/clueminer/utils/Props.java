@@ -33,7 +33,7 @@ public class Props extends HashMap<String, String> {
     }
 
     public List<String> getGroupKeys(String groupKey) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (String key : keySet()) {
             if (key.startsWith(groupKey)) {
                 result.add(key);
@@ -146,14 +146,24 @@ public class Props extends HashMap<String, String> {
         return properties;
     }
 
+    public Props copy() {
+        Props c = new Props();
+        c.putAll((Map<String, String>) this.clone());
+        return c;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        int i = 0;
         for (String key : this.keySet()) {
+            if (i > 0) {
+                sb.append(", ");
+            }
             sb.append(key);
             sb.append(": ");
             sb.append(get(key));
-            sb.append("\n");
+            i++;
         }
         return sb.toString();
     }

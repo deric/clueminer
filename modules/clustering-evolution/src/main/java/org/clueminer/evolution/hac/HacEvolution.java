@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Evolution.class)
 public class HacEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
-    private static final String name = "HAC";
+    private static final String name = "Brute-force HAC";
     private final ClusteringExecutor exec;
     private int gen;
     private List<DistanceMeasure> dist;
