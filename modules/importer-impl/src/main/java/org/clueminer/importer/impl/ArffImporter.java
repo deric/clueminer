@@ -52,14 +52,17 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
      */
     private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern klassAttr = Pattern.compile("^@attribute class\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
-    private ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
+    private static final Pattern klassAttr = Pattern.compile("^@attribute ['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
+    private ArrayList<Integer> skippedIndexes = new ArrayList<>();
     private int numInstances;
 
     /**
      * if line starts with following string, it will be ignored
      */
     private String comment = "%";
+
+    private Matcher rmatch;
+    private Matcher amatch;
 
     @Override
 
@@ -124,9 +127,6 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
      * @throws IOException
      */
     protected void parseHeader(ContainerLoader loader, LineNumberReader reader) throws IOException {
-        Matcher rmatch;
-        Matcher amatch;
-
         //number of attributes
         int attrNum = 0;
         int headerLine = 0;
@@ -148,7 +148,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
                     attrNum++;
                 }
                 headerLine++;
-            } else if ((amatch = klassAttr.matcher(line)).matches()) {
+            } else if (isClassDefinition(line)) {
                 //at which index we have the class attribute
                 attrd = loader.createAttribute(attrNum, amatch.group(1));
                 //convertType(amatch.group(2).toUpperCase()))
@@ -158,6 +158,17 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
                 return;
             }
         }
+    }
+
+    /**
+     * amatch variable is later used
+     *
+     * @param line
+     * @return
+     */
+    public boolean isClassDefinition(String line) {
+        amatch = klassAttr.matcher(line);
+        return amatch.matches();
     }
 
     protected String convertType(String type) {

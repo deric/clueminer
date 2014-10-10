@@ -107,7 +107,10 @@ public class ArffImporterTest {
     }
 
     @Test
-    public void testExecute_Container_FileObject() throws Exception {
+    public void testClassDefinition() {
+        assertEquals(true, subject.isClassDefinition("@attribute class {1,2,3,4,5,6,7,8,9,10}"));
+        assertEquals(true, subject.isClassDefinition("@attribute class {not_recom,recommend,very_recom,priority,spec_prior}"));
+        assertEquals(true, subject.isClassDefinition("@attribute 'Class' {opel,saab,bus,van}"));
     }
 
     @Test
