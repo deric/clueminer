@@ -56,7 +56,13 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
+        run();
+    }
 
+    /**
+     * Method which can be run during tests without workspace
+     */
+    protected void run() {
         //basic numeric dataset
         logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), container.getAttributeCount()});
 
@@ -70,7 +76,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             NotifyUtil.error("Error", "dataset type " + container.getDataType() + " is not supported by this processor", false);
         }
 
-        ArrayList<AttributeDraft> inputAttr = new ArrayList<AttributeDraft>(container.getAttributeCount());
+        ArrayList<AttributeDraft> inputAttr = new ArrayList<>(container.getAttributeCount());
         //scan attributes
         int metaCnt = 0;
         for (AttributeDraft attrd : container.getAttributes()) {
@@ -87,7 +93,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
 
         //set attributes
         int index = 0;
-        Map<Integer, Integer> inputMap = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> inputMap = new HashMap<>();
 
         //TODO move this to separate processor
         if (dataType == DatasetType.DISCRETE) {
