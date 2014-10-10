@@ -27,14 +27,15 @@ public class ARFFHandler implements DatasetLoader {
      *
      * @RELATION iris"
      */
-    private static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
+
     /**
      * matches eg. "
      *
      * @ATTRIBUTE sepallength	REAL"
      */
-    private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
+    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -156,7 +157,6 @@ public class ARFFHandler implements DatasetLoader {
     }
 
     protected boolean isValidAttributeDefinition(String line) {
-        Matcher amatch;
-        return (amatch = attribute.matcher(line)).matches();
+        return attribute.matcher(line).matches();
     }
 }

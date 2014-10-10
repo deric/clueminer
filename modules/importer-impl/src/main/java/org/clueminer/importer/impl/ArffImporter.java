@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
+import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -38,19 +39,6 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
 
     public static final String name = "ARFF";
     private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());
-    /**
-     * matches eg. "
-     *
-     * @RELATION iris"
-     */
-    private static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
-    /**
-     * matches eg. "
-     *
-     * @ATTRIBUTE sepallength	REAL"
-     */
-    private static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern klassAttr = Pattern.compile("^@attribute ['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
     private ArrayList<Integer> skippedIndexes = new ArrayList<>();
@@ -134,9 +122,9 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
         AttributeDraft attrd;
         while (reader.ready()) {
             line = reader.readLine();
-            if ((rmatch = relation.matcher(line)).matches()) {
+            if ((rmatch = ARFFHandler.relation.matcher(line)).matches()) {
                 loader.setName(rmatch.group(1));
-            } else if ((amatch = attribute.matcher(line)).matches()) {
+            } else if ((amatch = ARFFHandler.attribute.matcher(line)).matches()) {
                 //System.out.println(line);
                 if (!skippedIndexes.contains(headerLine)) {
                     //tries to convert string to enum, at top level we should catch the
@@ -172,7 +160,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     }
 
     protected String convertType(String type) {
-        if ((attrTypes.matcher(type)).matches()) {
+        if ((ARFFHandler.attrTypes.matcher(type)).matches()) {
             return "REAL";
         }
         return type;
