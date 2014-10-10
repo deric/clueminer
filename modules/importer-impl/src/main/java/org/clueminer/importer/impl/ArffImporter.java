@@ -124,6 +124,13 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
             line = reader.readLine();
             if ((rmatch = ARFFHandler.relation.matcher(line)).matches()) {
                 loader.setName(rmatch.group(1));
+            } else if ((amatch = klassAttr.matcher(line)).matches()) {
+                //at which index we have the class attribute
+                attrd = loader.createAttribute(attrNum, amatch.group(1));
+                //convertType(amatch.group(2).toUpperCase()))
+                attrd.setRole(BasicAttrRole.CLASS);
+                attrd.setType(String.class);
+                attrNum++;
             } else if ((amatch = ARFFHandler.attribute.matcher(line)).matches()) {
                 //System.out.println(line);
                 if (!skippedIndexes.contains(headerLine)) {
@@ -136,12 +143,6 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
                     attrNum++;
                 }
                 headerLine++;
-            } else if (isClassDefinition(line)) {
-                //at which index we have the class attribute
-                attrd = loader.createAttribute(attrNum, amatch.group(1));
-                //convertType(amatch.group(2).toUpperCase()))
-                attrd.setRole(BasicAttrRole.CLASS);
-                attrNum++;
             } else if (line.equalsIgnoreCase("@data")) {
                 return;
             }
@@ -155,8 +156,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
      * @return
      */
     public boolean isClassDefinition(String line) {
-        amatch = klassAttr.matcher(line);
-        return amatch.matches();
+        return klassAttr.matcher(line).matches();
     }
 
     protected String convertType(String type) {
