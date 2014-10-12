@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -326,5 +327,10 @@ public class GnuplotWriter implements EvolutionListener {
      */
     public void setPlotDumpMod(int plotDumpMod) {
         this.plotDumpMod = plotDumpMod;
+    }
+
+    @Override
+    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+
     }
 }

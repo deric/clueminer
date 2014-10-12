@@ -1,12 +1,17 @@
 package org.clueminer.clustering.api.evolution;
 
+import java.util.Collection;
 import java.util.EventListener;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 
 /**
  *
  * @author Tomas Barton
  */
 public interface EvolutionListener extends EventListener {
+
+    void resultUpdate(Collection<Clustering<? extends Cluster>> result);
 
     /**
      * Best individual found in a generation
