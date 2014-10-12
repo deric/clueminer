@@ -1,6 +1,5 @@
 package org.clueminer.evolution;
 
-import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
@@ -11,6 +10,7 @@ import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.events.ListenerList;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.InstanceContent;
@@ -42,7 +42,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
      */
     protected double crossoverProbability = 0.3;
 
-    protected final transient EventListenerList evoListeners = new EventListenerList();
+    protected final transient ListenerList<EvolutionListener> evoListeners = new ListenerList<>();
 
     @Override
     public boolean isMaximizedFitness() {
@@ -154,7 +154,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
 
     @Override
     public void addEvolutionListener(EvolutionListener listener) {
-        evoListeners.add(EvolutionListener.class, listener);
+        evoListeners.add(listener);
     }
 
     @Override
@@ -174,7 +174,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     }
 
     protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
-        for (EvolutionListener listener : evoListeners.getListeners(EvolutionListener.class)) {
+        for (EvolutionListener listener : evoListeners) {
             listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
         }
     }
@@ -190,7 +190,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
 
         if (evoListeners != null) {
-            for (EvolutionListener listener : evoListeners.getListeners(EvolutionListener.class)) {
+            for (EvolutionListener listener : evoListeners) {
                 listener.finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
             }
         }
