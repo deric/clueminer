@@ -145,4 +145,10 @@ public class HACTest {
     public void testCluster_Dataset() {
     }
 
+    @Test
+    public void testTriangleSize() {
+        assertEquals(3, subject.triangleSize(3));
+        assertEquals(6, subject.triangleSize(4));
+    }
+
 }

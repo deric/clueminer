@@ -80,9 +80,9 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             n = dataset.attributeCount();
         }
         logger.log(Level.INFO, "clustering rows: {0} size: {1}", new Object[]{params.clusterRows(), n});
-        int items = (n - 1) * n / 2;
+        int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
-        PriorityQueue<Element> pq = new PriorityQueue<Element>(items);
+        PriorityQueue<Element> pq = new PriorityQueue<>(items);
 
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
@@ -109,7 +109,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         Map<Integer, Set<Integer>> assignments = initialAssignment(n);
 
         Element curr;
-        HashSet<Integer> blacklist = new HashSet<Integer>();
+        HashSet<Integer> blacklist = new HashSet<>();
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
@@ -143,6 +143,16 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
         return treeData;
+    }
+
+    /**
+     * Compute size of triangular matrix (n x n) minus diagonal
+     *
+     * @param n
+     * @return
+     */
+    protected int triangleSize(int n) {
+        return ((n - 1) * n) >>> 1;
     }
 
     private DendroNode getOrCreate(int id) {
