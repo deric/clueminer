@@ -1,5 +1,8 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
@@ -11,6 +14,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
+import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.Props;
 
 /**
@@ -45,7 +50,6 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         AgglParams params = new AgglParams(pref);
-        Integer minclusters = null;
         int[] processed = new int[dataset.size()];
         //storage for distances
         double[] m = new double[dataset.size()];
@@ -53,7 +57,8 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         //pi = new HashMap<>(dataset.size());
         //lambda = new HashMap<>(dataset.size());
         int[] pi = new int[dataset.size()];
-        double[] lambda = new double[dataset.size()];
+        //we need to sort indexes by lambdas, it's better to have it in a map
+        Map<Integer, Double> lambda = new HashMap<>(dataset.size());
         DistanceMeasure dm = params.getDistanceMeasure();
 
         int i = 0, id;
@@ -70,11 +75,13 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         //we don't need m anymore
         m = null;
 
-        // Build clusters identified by their target object
-        int minc = minclusters != null ? minclusters : dataset.size();
+        Dump.array(pi, "pi");
+        Dump.array(processed, "processed");
+        Dump.map(lambda, "lambda");
+
+        extractClusters(dataset, lambda, pi);
 
         HierarchicalResult result = new HClustResult(dataset);
-
 
         return result;
     }
@@ -89,13 +96,13 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void step1(int id, double[] lambda, int[] pi) {
+    private void step1(int id, Map<Integer, Double> lambda, int[] pi) {
         //pi.put(id, id);
         //lambda.put(id, Double.POSITIVE_INFINITY);
         // P(n+1) = n+1:
         pi[id] = id;
         // L(n+1) = infinity
-        lambda[id] = Double.POSITIVE_INFINITY;
+        lambda.put(id, Double.POSITIVE_INFINITY);
     }
 
     private void step2(int newId, int[] processed, int i, DistanceMeasure dm, double[] m, Dataset<? extends Instance> dataset) {
@@ -106,12 +113,13 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
 
     }
 
-    private void step3(int newId, int[] processed, int i, DistanceMeasure dm, double[] lambda, int[] pi, double[] m) {
+    private void step3(int newId, int[] processed, int i, DistanceMeasure dm,
+            Map<Integer, Double> lambda, int[] pi, double[] m) {
         double l_i, m_i, mp_i;
         int p_i, id;
         for (int j = 0; j < i; j++) {
             id = processed[j];
-            l_i = lambda[id];
+            l_i = lambda.get(id);
             m_i = m[id];
             p_i = pi[id];
             mp_i = m[p_i];
@@ -123,7 +131,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
                 m[p_i] = Math.min(mp_i, l_i);
 
                 // L(i) = M(i)
-                lambda[id] = m_i;
+                lambda.put(id, m_i);
 
                 // P(i) = n+1;
                 pi[id] = newId;
@@ -143,13 +151,13 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
      * @param lambda
      * @param pi
      */
-    private void step4(int newId, int[] processed, int i, double[] lambda, int[] pi) {
+    private void step4(int newId, int[] processed, int i, Map<Integer, Double> lambda, int[] pi) {
         int id;
         double l_i, lp_i;
         for (int j = 0; j < i; j++) {
             id = processed[j];
-            l_i = lambda[id];
-            lp_i = lambda[pi[id]];
+            l_i = lambda.get(id);
+            lp_i = lambda.get(pi[id]);
             // if L(i) >= L(P(i))
             if (l_i >= lp_i) {
                 // P(i) = n+1
@@ -158,10 +166,18 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         }
     }
 
-    private void extractClusters(Dataset<? extends Instance> dataset, double[] lambda, int[] pi, int minclusters) {
-        int[] order;
+    private void extractClusters(Dataset<? extends Instance> dataset, Map<Integer, Double> lambda, int[] pi) {
 
+        // extract the child clusters
+        Map<Integer, Set<Integer>> cluster_ids = new HashMap<>();
+        Map<Integer, Double> cluster_distances = new HashMap<>();
 
+        int id, lastObjectInCluster;
+        for (Instance inst : dataset) {
+            id = inst.getIndex();
+            lastObjectInCluster = id;
+
+        }
     }
 
 }

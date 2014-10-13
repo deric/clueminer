@@ -40,6 +40,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         }
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        logger.log(Level.INFO, "clustering {0}", params.toString());
         HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
         CutoffStrategy strategy = getCutoffStrategy(params);
         double cut = rowsResult.findCutoff(strategy);

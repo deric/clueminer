@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
@@ -21,6 +22,8 @@ import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
 
 /**
@@ -53,9 +56,13 @@ public class DendroView extends JFrame {
         ClusteringExecutor exec = new ClusteringExecutor();
 
         DistanceMeasure dm = new EuclideanDistance();
-
-        Clustering clust = exec.clusterRows(data, dm, new Props());
-        System.out.println("clustering size: " + clust.size());
+        Props prop = new Props();
+        prop.put(AgglParams.LINKAGE, SingleLinkage.name);
+        MemInfo mem = new MemInfo();
+        mem.startClock();
+        Clustering clust = exec.clusterRows(data, dm, prop);
+        mem.stopClock();
+        mem.report();
         frame.setClustering(clust);
     }
 
