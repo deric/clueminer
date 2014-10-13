@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -64,6 +66,24 @@ public class Dump {
         System.out.println(sb.toString());
     }
 
+    public static void map(Map<? extends Object, ? extends Object> map, String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(name).append(" [ ");
+        if (map != null) {
+            int i = 0;
+            for (Entry e : map.entrySet()) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(e.getKey().toString()).append(": ")
+                        .append(e.getValue().toString());
+                i++;
+            }
+        }
+        sb.append(" ]");
+        System.out.println(sb.toString());
+    }
+
     /**
      * Method printVect for printing a vector <br> Based on ER Harold, "Java
      * I/O", O'Reilly, around p. 473.
@@ -105,7 +125,7 @@ public class Dump {
      *
      * @param output the output stream.
      * @param format A formatting object to format the matrix elements
-     * @param width Column width.
+     * @param width  Column width.
      */
     public static void printMatrix(PrintWriter output, NumberFormat format, float[][] A, int m, int n, int width) {
         output.println();  // start on new line.
@@ -161,9 +181,9 @@ public class Dump {
      *
      * @param n1 row dimension of matrix
      * @param n2 column dimension of matrix
-     * @param m input matrix values
-     * @param d display precision, number of decimal places
-     * @param w display precision, total width of floating value
+     * @param m  input matrix values
+     * @param d  display precision, number of decimal places
+     * @param w  display precision, total width of floating value
      */
     public static void printMatrix(int n1, int n2, double[][] m, int d, int w) {
         // Some definitions for handling output formating
