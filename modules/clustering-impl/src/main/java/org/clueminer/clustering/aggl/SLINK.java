@@ -1,6 +1,8 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -167,17 +169,52 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     }
 
     private void extractClusters(Dataset<? extends Instance> dataset, Map<Integer, Double> lambda, int[] pi) {
+        Map<Integer, Double> order = MapUtils.sortByValue(lambda);
+        Dump.map(order, "order");
 
-        // extract the child clusters
-        Map<Integer, Set<Integer>> cluster_ids = new HashMap<>();
-        Map<Integer, Double> cluster_distances = new HashMap<>();
+        int expcnum = dataset.size();
+        int[] cluster_map = new int[dataset.size()];
+        Arrays.fill(cluster_map, 0, dataset.size(), -1);
+        Map<Integer, Set<Integer>> cluster_dbids = new HashMap<>(expcnum);
+        double[] cluster_dist = new double[expcnum];
+        int[] cluster_leads = new int[expcnum];
 
-        int id, lastObjectInCluster;
-        for (Instance inst : dataset) {
-            id = inst.getIndex();
-            lastObjectInCluster = id;
+        int clustNum = 0;
+        int succ;
+        // Go backwards on the lower part.
+        for (int i = 0; i < order.size(); i++) {
+            double dist = order.get(i); // Distance to successor
+            succ = pi[i];
+            int clusterid = cluster_map[succ];
+            // Successor cluster has already been created:
+            if (clusterid >= 0) {
+                cluster_dbids.get(clusterid).add(i);
+                cluster_map[i] = clusterid;
+                // Update distance to maximum encountered:
+                if (cluster_dist[clusterid] < dist) {
+                    cluster_dist[clusterid] = dist;
+                }
+            } else {
+                // Need to start a new cluster:
+                clusterid = clustNum++; // next cluster number.
+                Set<Integer> cids = new LinkedHashSet<>();
+                // Add element and successor as initial members:
+                cids.add(succ);
+                cluster_map[succ] = clusterid;
+                cids.add(i);
+                cluster_map[i] = clusterid;
+                // Store new cluster.
+                cluster_dbids.put(clusterid, cids);
+                cluster_leads[clusterid] = succ;
+                cluster_dist[clusterid] = dist;
+            }
 
         }
+
+        Dump.array(cluster_dist, "cluster_dist");
+        Dump.array(cluster_map, "cluster_map");
+        Dump.array(cluster_leads, "cluster_leads");
+
     }
 
 }
