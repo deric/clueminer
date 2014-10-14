@@ -100,6 +100,9 @@ public abstract class BPanel extends JPanel {
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 
+        if (preserveAlpha) {
+            g.setComposite(AlphaComposite.Src);
+        }
         render(g);
         g.dispose();
     }
