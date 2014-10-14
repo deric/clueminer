@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.DendrogramTopComponent;
 import org.clueminer.explorer.ExplorerTopComponent;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportControllerUI;
@@ -142,16 +141,16 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         project.add(dataset);
                         pc.openProject(project);
 
-                        DendrogramTopComponent tc = new DendrogramTopComponent();
-
-                        tc.setDataset(container.getDataset());
-                        //tc.setProject(project);
-                        tc.setDisplayName(getTitle(filename));
-                        tc.open();
-                        tc.requestActive();
-
+                        //old dendrogram component
+                        /*DendrogramTopComponent tc = new DendrogramTopComponent();
+                         tc.setDataset(container.getDataset());
+                         //tc.setProject(project);
+                         tc.setDisplayName(getTitle(filename));
+                         tc.open();
+                         tc.requestActive();*/
                         ExplorerTopComponent explorer = new ExplorerTopComponent();
                         explorer.setDataset(dataset);
+                        explorer.setDisplayName(getTitle(filename));
                         explorer.open();
                         explorer.requestActive();
 

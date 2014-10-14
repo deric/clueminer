@@ -38,6 +38,9 @@ import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
+ *
+ * @deprecated should be replaced by
+ * {@link org.clueminer.explorer.ExplorerTopComponent}
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.dendrogram.gui//Dendrogram//EN",
@@ -57,6 +60,7 @@ import org.openide.windows.WindowManager;
     "CTL_DendrogramTopComponent=Dendrogram Window",
     "HINT_DendrogramTopComponent=This is a Dendrogram window"
 })
+@Deprecated
 public final class DendrogramTopComponent extends CloneableTopComponent implements LookupListener, TreeListener, ClusteringListener {
 
     private static final long serialVersionUID = -7289618311057427489L;
