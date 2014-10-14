@@ -7,6 +7,9 @@ import org.clueminer.math.Matrix;
  * This matrix should be used for saving memory in case when you compute
  * frequently symmetrical similarity matrices it could make quite a difference.
  *
+ * Space used: n * (n - 1) / 2 ~ O(n^2)
+ * (all values are stored in one dimensional array)
+ *
  * It pretends to be normal matrix, so you can perform all operations as with
  * normal matrix. We don't even consider assigning number to diagonal elements
  * because diagonal should be equal to 1
@@ -35,10 +38,9 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
     /**
      * Initialize square matrix with
      *
-     * @param{value} at diagonal
      * @param rows
      * @param cols
-     * @param value
+     * @param value default value in whole matrix
      */
     public SymmetricMatrix(int rows, int cols, double value) {
         initMatrix(rows, cols);
@@ -59,8 +61,17 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
         /**
          * actual needed space is n * (n / 2 - 1) instead of n^2
          */
-        int total = (n - 1) * n / 2;
-        A = new double[total];
+        A = new double[triangleSize(n)];
+    }
+
+    /**
+     * Compute size of triangular matrix (n x n) minus diagonal
+     *
+     * @param n number of rows (or columns) for square matrix
+     * @return
+     */
+    protected int triangleSize(int n) {
+        return ((n - 1) * n) >>> 1;
     }
 
     /**
@@ -89,7 +100,7 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
          * it's basically a sum of arithmetic row (we need to know how many
          * numbers could be allocated before given position [x,y])
          */
-        return (i - 1) * i / 2 + j;
+        return triangleSize(i) + j;
     }
 
     @Override
@@ -305,7 +316,7 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
      * Generate matrix with random elements
      *
      * @param m Number of rows.
-     * @param n Number of colums.
+     * @param n Number of columns.
      * @return An m-by-n matrix with uniformly distributed random elements.
      */
     public static SymmetricMatrix random(int m, int n) {

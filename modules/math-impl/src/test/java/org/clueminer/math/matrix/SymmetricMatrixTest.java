@@ -16,9 +16,9 @@ public class SymmetricMatrixTest {
 
     private SymmetricMatrix A, B, C;
     private static double eps = Math.pow(2.0, -52.0);
-    
+
     private org.clueminer.math.Matrix Z, O, I, R, S, X, SUB, M, T, SQ, DEF, SOL;
-    
+
     private double tmp, s;
     private double[] columnwise = {1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12.};
     private double[] rowwise = {1., 4., 7., 10., 2., 5., 8., 11., 3., 6., 9., 12.};
@@ -64,7 +64,6 @@ public class SymmetricMatrixTest {
     double sumofdiagonals = 15;
     double sumofsquares = 650;
 
-
     public SymmetricMatrixTest() {
     }
 
@@ -88,33 +87,26 @@ public class SymmetricMatrixTest {
     }
 
     /**
-     * Test of copy method, of class SymmetricMatrix.
-     */
-    @Test
-    public void testCopy() {
-    }
-
-    /**
      * Test of getArray method, of class SymmetricMatrix.
      */
     @Test
     public void testGetArray() {
-        double[][] m = {{1, 2, 3}, {2, 1, 4}, {3, 4, 1}};
+        double[][] m = {{0, 2, 3}, {2, 0, 4}, {3, 4, 0}};
         A = new SymmetricMatrix(3, 3);
-        //A.set(0, 0, 1);
-        A.set(1, 0, 2);
-        A.set(2, 0, 3);
-        A.set(2, 1, 4);
-        
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < i; j++) {
+                A.set(i, j, m[i][j]);
+            }
+        }
+        A.printLower(2, 1);
         double[][] copy = A.getArray();
         Dump.matrix(copy, "copy", 3);
-        
+
         for (int i = 0; i < m.length; i++) {
             for (int j = 0; j < m[0].length; j++) {
-                System.out.println("getting ["+i+","+j+"]: "+copy[i][j]+" ex. "+m[i][j]);
-             //   assertEquals(m[i][j], copy[i][j], eps);                
+                assertEquals(m[i][j], copy[i][j], eps);
             }
-            
+
         }
     }
 
@@ -178,7 +170,6 @@ public class SymmetricMatrixTest {
         //assertEquals(A.minus(R).norm1(), 0.0, eps);
     }
 
-
     /**
      * Test of get method, of class SymmetricMatrix.
      */
@@ -222,7 +213,7 @@ public class SymmetricMatrixTest {
         int k = 0;
         for (int i = 0; i < A.rowsCount(); i++) {
             for (int j = 0; j < i; j++) {
-                A.set(i,j, k);
+                A.set(i, j, k);
                 assertEquals(A.get(i, j), k, eps);
                 k++;
             }
