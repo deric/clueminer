@@ -38,10 +38,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
     private final static String name = "HAC";
-    private DendroNode nodes[];
-    private Dataset<? extends Instance> dataset;
-    private ClusterLinkage linkage;
-    private AgglParams params;
     private static final Logger logger = Logger.getLogger(HAC.class.getName());
 
     /**
@@ -56,12 +52,10 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
-        this.dataset = dataset;
         HierarchicalResult result = new HClustResult(dataset);
-        params = new AgglParams(pref);
+        AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
-        linkage = params.getLinkage();
         if (params.clusterRows()) {
             n = dataset.size();
         } else {
@@ -82,7 +76,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         }
         result.setProximityMatrix(similarityMatrix);
 
-        DendroTreeData treeData = computeLinkage(pq, similarityMatrix);
+        DendroTreeData treeData = computeLinkage(pq, similarityMatrix, dataset, params);
         treeData.createMapping(n, treeData.getRoot());
         result.setTreeData(treeData);
         return result;
@@ -95,9 +89,11 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @param similarityMatrix
      * @return
      */
-    private DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix) {
+    private DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params) {
+        //binary tree, we know how many nodes we have
+        DendroNode[] nodes = new DendroNode[(2 * n - 1)];
         //each instance will form a cluster
-        Map<Integer, Set<Integer>> assignments = initialAssignment(n);
+        Map<Integer, Set<Integer>> assignments = initialAssignment(n, dataset, params, nodes);
 
         Element curr;
         HashSet<Integer> blacklist = new HashSet<>();
@@ -112,7 +108,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             curr = pq.poll();
             //System.out.println(curr.toString() + " remain: " + pq.size());
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
-                node = getOrCreate(nodeId++);
+                node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
@@ -126,7 +122,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 right = assignments.remove(curr.getColumn());
                 //merge together and add as a new cluster
                 left.addAll(right);
-                updateDistances(node.getId(), left, similarityMatrix, assignments, pq);
+                updateDistances(node.getId(), left, similarityMatrix, assignments, pq, params.getLinkage());
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
@@ -146,7 +142,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         return ((n - 1) * n) >>> 1;
     }
 
-    private DendroNode getOrCreate(int id) {
+    private DendroNode getOrCreate(int id, DendroNode[] nodes) {
         if (nodes[id] == null) {
             DendroNode node = new DTreeNode(id);
             nodes[id] = node;
@@ -154,7 +150,9 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         return nodes[id];
     }
 
-    private void updateDistances(int mergedId, Set<Integer> mergedCluster, Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments, PriorityQueue<Element> pq) {
+    private void updateDistances(int mergedId, Set<Integer> mergedCluster,
+            Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
+            PriorityQueue<Element> pq, ClusterLinkage linkage) {
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
@@ -169,15 +167,17 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     /**
      * Each data point forms an individual cluster
      *
-     * @param n the number of data points
+     * @param n       the number of data points
+     * @param dataset
+     * @param params
+     * @param nodes
      * @return
      */
-    protected Map<Integer, Set<Integer>> initialAssignment(int n) {
-        //binary tree, we know how many nodes we have
-        nodes = new DendroNode[(2 * n - 1)];
-        Map<Integer, Set<Integer>> clusterAssignment = new HashMap<Integer, Set<Integer>>(n);
+    protected Map<Integer, Set<Integer>> initialAssignment(int n, Dataset<? extends Instance> dataset,
+            AgglParams params, DendroNode[] nodes) {
+        Map<Integer, Set<Integer>> clusterAssignment = new HashMap<>(n);
         for (int i = 0; i < n; i++) {
-            HashSet<Integer> cluster = new HashSet<Integer>();
+            HashSet<Integer> cluster = new HashSet<>();
             cluster.add(i);
             clusterAssignment.put(i, cluster);
             //each cluster is also a dendrogram leaf
