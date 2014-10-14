@@ -24,6 +24,7 @@ public class DataScaler {
                 throw new RuntimeException("Standartization method " + std + " was not found");
             }
             res = std.optimize(dataset);
+            res.setParent(dataset);
         }
         if (logScale) {
             StdMinMax scale = new StdMinMax();
