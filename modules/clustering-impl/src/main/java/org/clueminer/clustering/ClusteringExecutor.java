@@ -13,6 +13,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -23,8 +24,10 @@ import org.clueminer.utils.Props;
  * (e.g. a dense matrix) and then joining the original inputs with appropriate
  * clustering result
  *
+ * @deprecated use cached executor @link{ClusteringExecutorCached}
  * @author Tomas Barton
  */
+@Deprecated
 public class ClusteringExecutor extends AbstractExecutor implements Executor {
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
@@ -39,9 +42,11 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
             throw new NullPointerException("no data to process");
         }
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        //not very efficient
+        Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         logger.log(Level.INFO, "clustering {0}", params.toString());
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
+        HierarchicalResult rowsResult = algorithm.hierarchy(inData, params);
         CutoffStrategy strategy = getCutoffStrategy(params);
         double cut = rowsResult.findCutoff(strategy);
         logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
@@ -56,7 +61,8 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         }
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
+        Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
+        HierarchicalResult columnsResult = algorithm.hierarchy(inData, params);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;

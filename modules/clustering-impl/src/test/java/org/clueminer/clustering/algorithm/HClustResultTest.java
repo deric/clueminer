@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.std.Scaler;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
 import org.junit.After;
@@ -39,8 +38,7 @@ public class HClustResultTest {
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
-        rowsResult = algorithm.hierarchy(input, dataset, pref);
+        rowsResult = algorithm.hierarchy(dataset, pref);
     }
 
     @AfterClass
@@ -277,7 +275,7 @@ public class HClustResultTest {
         int max = Integer.MIN_VALUE;
 
         //check that each mapped number is there just once
-        HashSet<Integer> hash = new HashSet<Integer>();
+        HashSet<Integer> hash = new HashSet<>();
 
         for (int i = 0; i < mapping.length; i++) {
             assertEquals(false, hash.contains(mapping[i]));

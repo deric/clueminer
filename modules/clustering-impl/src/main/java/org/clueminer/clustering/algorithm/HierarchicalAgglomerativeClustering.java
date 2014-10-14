@@ -189,11 +189,6 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         return hierarchy(input, params);
     }
 
-    @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props params) {
-        return hierarchy(input, params);
-    }
-
     public HierarchicalAgglomerativeClustering() {
         this.workQueue = WorkQueue.getWorkQueue();
     }
@@ -215,19 +210,6 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         getLinkage().setDistanceMeasure(distanceMeasure);
     }
 
-    /**
-     * Automated clustering (with default parameters - just produce some
-     * clustering)
-     *
-     * @param matrix
-     * @param props
-     * @return
-     */
-    @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -239,7 +221,6 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * @param props
      * @return
      */
-    @Override
     public HierarchicalResult hierarchy(Matrix matrix, Props props) {
         parseLinkage(props);
 
@@ -761,6 +742,11 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
         }
         return similarityMatrix;
 
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

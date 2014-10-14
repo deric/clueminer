@@ -15,7 +15,6 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.Props;
@@ -37,11 +36,6 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -86,16 +80,6 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         HierarchicalResult result = new HClustResult(dataset);
 
         return result;
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void step1(int id, Map<Integer, Double> lambda, int[] pi) {
@@ -215,6 +199,11 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         Dump.array(cluster_map, "cluster_map");
         Dump.array(cluster_leads, "cluster_leads");
 
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

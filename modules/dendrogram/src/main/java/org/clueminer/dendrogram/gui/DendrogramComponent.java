@@ -16,6 +16,7 @@ import org.clueminer.clustering.gui.ClusteringToolbar;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -154,13 +155,14 @@ public class DendrogramComponent extends ClusterAnalysis {
         params.putBoolean("calculate-rows", true);
         final ProgressHandle ph1 = ProgressHandleFactory.createHandle("Clustering columns");
         algorithm.setProgressHandle(ph1);
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, data, params);
+        Dataset<? extends Instance> normData = new ArrayDataset<>(input.getArray());
+        HierarchicalResult rowsResult = algorithm.hierarchy(normData, params);
 
         //   progress.setTitle("Clustering by columns");
         final ProgressHandle ph2 = ProgressHandleFactory.createHandle("Clustering rows");
         algorithm.setProgressHandle(ph2);
         params.putBoolean("calculate-rows", false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, data, params);
+        HierarchicalResult columnsResult = algorithm.hierarchy(normData, params);
         // validate(columnsResult);
 
         //System.out.println("params: " + params.toString());

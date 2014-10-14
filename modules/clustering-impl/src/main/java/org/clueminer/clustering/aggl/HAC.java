@@ -55,20 +55,9 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props params) {
-        return hierarchy(dataset.asMatrix(), dataset, params);
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         this.dataset = dataset;
         HierarchicalResult result = new HClustResult(dataset);
-        result.setInputData(input);
         params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
@@ -84,6 +73,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         //TODO: we might track clustering by estimated time (instead of counters)
         PriorityQueue<Element> pq = new PriorityQueue<>(items);
 
+        Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
         } else {
@@ -201,12 +191,12 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

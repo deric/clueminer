@@ -36,10 +36,10 @@ public class IconDemo extends JFrame {
 
         Props params = new Props();
         AgglomerativeClustering algorithm = new HAC();
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
+        HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, dataset, params);
+        HierarchicalResult columnsResult = algorithm.hierarchy(dataset, params);
 
         DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);
 

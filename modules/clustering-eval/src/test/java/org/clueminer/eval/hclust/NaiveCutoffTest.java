@@ -7,8 +7,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.hclust.linkage.SingleLinkage;
-import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,12 +45,11 @@ public class NaiveCutoffTest {
     @Test
     public void testFindCutoff() {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
-        Matrix input = new JMatrix(dataset.arrayCopy());
         HAC alg = new HAC();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = alg.hierarchy(input, dataset, pref);
+        HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         result.getTreeData().print();
 

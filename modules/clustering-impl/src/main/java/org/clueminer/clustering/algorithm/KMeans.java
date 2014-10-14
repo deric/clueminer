@@ -12,7 +12,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 
@@ -26,6 +25,7 @@ import org.clueminer.utils.Props;
  *
  *
  * @author Thomas Abeel
+ * @author Tomas Barton
  *
  */
 public class KMeans extends AbstractClusteringAlgorithm implements PartitioningClustering {
@@ -113,11 +113,6 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
         this.distanceMeasure = dm;
-    }
-
-    @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -264,6 +259,11 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
          */
         output.lookupAdd(data);
         return output;
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

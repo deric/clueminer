@@ -41,32 +41,16 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
-        JMatrix input = new JMatrix(dataset.arrayCopy());
-        return hierarchy(input, dataset, map);
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props map) {
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
         System.out.println(map.toString());
         TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
         result = new HCLResult(dataset);
-
+        Matrix input = dataset.asMatrix();
         if (input == null) {
             throw new RuntimeException("Input data is absent.");
         }
@@ -884,6 +868,11 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 }
             }
         }
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

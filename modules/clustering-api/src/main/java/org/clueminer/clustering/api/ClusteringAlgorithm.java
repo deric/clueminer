@@ -4,7 +4,6 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -18,11 +17,11 @@ public interface ClusteringAlgorithm {
 
     /**
      *
-     * @param matrix
+     * @param dataset
      * @param props
      * @return
      */
-    public Clustering<Cluster> cluster(Matrix matrix, Props props);
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
 
     /**
      *

@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
 /**
@@ -111,16 +110,16 @@ public class PAM extends KClustererBase implements PartitioningClustering {
     }
 
     @Override
-    public Clustering<Cluster> cluster(Matrix matrix, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private int[] selectMedioids(Dataset<? extends Instance> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

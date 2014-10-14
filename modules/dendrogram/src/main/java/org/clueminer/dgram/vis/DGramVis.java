@@ -19,8 +19,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.dgram.eval.SilhouettePlot;
-import org.clueminer.math.Matrix;
-import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.openide.util.RequestProcessor;
@@ -102,7 +100,7 @@ public class DGramVis {
         silhoulette.setClustering(clustering);
 
         int silWidth = (int) (0.3 * width);
-        int dendroWidth = width - silWidth;        
+        int dendroWidth = width - silWidth;
         Image img = heatmap.generate(dendroWidth, height);
 
         Image imgSil = silhoulette.generate(silWidth, height);
@@ -123,16 +121,13 @@ public class DGramVis {
         Props params = clustering.getParams();
         AgglomerativeClustering algorithm = new HAC();
 
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, params);
+        HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
+        HierarchicalResult colsResult = algorithm.hierarchy(dataset, params);
 
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         mapping.setDataset(dataset);
-        mapping.setMatrix(input);
 
         OptimalTreeOrder treeOrder = new MOLO();
         treeOrder.optimize(rowsResult, true);

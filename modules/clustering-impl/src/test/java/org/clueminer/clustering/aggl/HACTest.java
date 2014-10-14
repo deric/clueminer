@@ -10,7 +10,6 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -98,12 +97,10 @@ public class HACTest {
         Dataset<? extends Instance> dataset = schoolData();
         assertEquals(17, dataset.size());
         assertEquals(4, dataset.attributeCount());
-        Matrix input = new JMatrix(dataset.arrayCopy());
-        input.print(3, 2);
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = subject.hierarchy(input, dataset, pref);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.size());
@@ -116,12 +113,10 @@ public class HACTest {
     @Test
     public void testColumnClustering() throws IOException {
         Dataset<? extends Instance> dataset = schoolData();
-        Matrix input = new JMatrix(dataset.arrayCopy());
-        input.print(3, 2);
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult result = subject.hierarchy(input, dataset, pref);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.attributeCount());

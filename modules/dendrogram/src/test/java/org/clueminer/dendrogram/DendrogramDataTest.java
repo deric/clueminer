@@ -12,8 +12,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
-import org.clueminer.math.Matrix;
-import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,14 +51,13 @@ public class DendrogramDataTest {
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), pref.get("std", "None"), pref.getBoolean("log-scale", false));
 
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, dataset, pref);
+        HierarchicalResult rowsResult = algorithm.hierarchy(dataset, pref);
 
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult colResuls = algorithm.hierarchy(input, dataset, pref);
+        HierarchicalResult colResuls = algorithm.hierarchy(dataset, pref);
 
-        dendroData = new DendrogramData(dataset, input, rowsResult, colResuls);
+        dendroData = new DendrogramData(dataset, dataset.asMatrix(), rowsResult, colResuls);
     }
 
     @AfterClass

@@ -13,7 +13,6 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.hclust.linkage.CompleteLinkage;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,7 +35,6 @@ public class CopheneticCorrelationTest {
     private static CopheneticCorrelation test;
     private static Props params;
     private static HierarchicalResult rowsResult;
-    private static Matrix input;
 
     public CopheneticCorrelationTest() {
     }
@@ -55,7 +53,7 @@ public class CopheneticCorrelationTest {
         test = new CopheneticCorrelation();
 
         int instanceCnt = 10;
-        dataset = new SampleDataset<Instance>(instanceCnt);
+        dataset = new SampleDataset<>(instanceCnt);
         dataset.setName("test");
         dataset.setAttribute(0, dataset.attributeBuilder().create("X", "NUMERIC"));
         dataset.setAttribute(1, dataset.attributeBuilder().create("Y", "NUMERIC"));
@@ -83,7 +81,6 @@ public class CopheneticCorrelationTest {
         System.out.println("dataset size " + dataset.size());
 
         params = getParams();
-        input = new JMatrix(dataset.arrayCopy());
     }
 
     @After
@@ -121,7 +118,7 @@ public class CopheneticCorrelationTest {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.putInt("method-linkage", -1); //-1=single, 0=complete, 1/2=average
-        rowsResult = algorithm.hierarchy(input, dataset, params);
+        rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
         System.out.println("cophenetic= " + cpcc);
@@ -139,7 +136,7 @@ public class CopheneticCorrelationTest {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.putInt("method-linkage", 0); //-1=single, 0=complete, 1/2=average
-        rowsResult = algorithm.hierarchy(input, dataset, params);
+        rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
         System.out.println("cophenetic= " + cpcc);
@@ -156,7 +153,7 @@ public class CopheneticCorrelationTest {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.putInt("method-linkage", 1); //-1=single, 0=complete, 1/2=average
-        rowsResult = algorithm.hierarchy(input, dataset, params);
+        rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = test.score(rowsResult);
         System.out.println("cophenetic= " + cpcc);
@@ -175,7 +172,7 @@ public class CopheneticCorrelationTest {
         AgglomerativeClustering algorithm = new HCL();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.putInt("method-linkage", -1); //-1=single, 0=complete, 1/2=average
-        rowsResult = algorithm.hierarchy(input, dataset, params);
+        rowsResult = algorithm.hierarchy(dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
         HCLResult r = (HCLResult) rowsResult;
@@ -211,7 +208,7 @@ public class CopheneticCorrelationTest {
         AgglomerativeClustering algorithm = new HAC();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        rowsResult = algorithm.hierarchy(input, dataset, params);
+        rowsResult = algorithm.hierarchy(dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
         assertNotNull(rowsResult);

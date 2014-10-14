@@ -101,13 +101,13 @@ public class HclDendroPanel extends DendroPanel {
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult rowsResult = algorithm.hierarchy(input, getDataset(), params);
+        HierarchicalResult rowsResult = algorithm.hierarchy(getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
         //   progress.setTitle("Clustering by columns");
         params.putBoolean("calculate-rows", false);
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(input, getDataset(), params);
+        HierarchicalResult columnsResult = algorithm.hierarchy(getDataset(), params);
         Dump.array(columnsResult.getMapping(), "col mapping: ");
         // validate(columnsResult);
 
