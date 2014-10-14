@@ -9,6 +9,12 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  */
 public class AgglParams {
+
+    /**
+     * Linkage method, see classes implementing
+     * {@link org.clueminer.clustering.api.ClusterLinkage}
+     * for available values
+     */
     public static final String LINKAGE = "hac-linkage";
 
     private static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";

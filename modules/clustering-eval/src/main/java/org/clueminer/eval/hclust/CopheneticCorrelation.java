@@ -38,17 +38,26 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
     @Override
     public double score(HierarchicalResult result) {
         Matrix proximity = result.getProximityMatrix();
-
         DendroTreeData treeData = result.getTreeData();
-        double[][] copheneticMatrix;
 
+        return copheneticCoefficient(proximity.getArray(), copheneticMatrix(proximity, treeData));
+    }
+
+    /**
+     * Computes Cophenetic matrix
+     *
+     * @param proximity matrix
+     * @param treeData  dendrogram tree structure
+     * @return
+     */
+    protected double[][] copheneticMatrix(Matrix proximity, DendroTreeData treeData) {
+        double[][] copheneticMatrix;
         if (treeData instanceof DendroTreeDataOld) {
             copheneticMatrix = getCopheneticMatrixOld((DendroTreeDataOld) treeData, proximity.rowsCount(), proximity.columnsCount());
         } else {
             copheneticMatrix = getCopheneticMatrix(treeData, proximity.rowsCount(), proximity.columnsCount());
         }
-
-        return copheneticCoefficient(proximity.getArray(), copheneticMatrix);
+        return copheneticMatrix;
     }
 
     /**
@@ -93,7 +102,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
     public double[][] getCopheneticMatrix(DendroTreeData treeData, int rowsCount, int columnsCount) {
         Matrix treeMatrix = new SymmetricMatrix(rowsCount, columnsCount);
         DendroNode node;
-        Stack<DendroNode> stack = new Stack<DendroNode>();
+        Stack<DendroNode> stack = new Stack<>();
         stack.push(treeData.getRoot());
         DendroNode left, right;
         while (!stack.isEmpty()) {
