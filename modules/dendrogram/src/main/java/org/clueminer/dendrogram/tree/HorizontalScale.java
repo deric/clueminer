@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
@@ -26,7 +24,6 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
     @Override
     protected void drawScale(Graphics2D g2) {
         distToScale = scaleLabelDistance;
-        setBackground(panel.getBackground());
         g2.rotate(-Math.PI / 2.0);
 
         g2.setColor(Color.black);
@@ -75,25 +72,16 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        updateSize();
-        bufferedImage = null;
-        repaint();
-    }
+    public void recalculate() {
+        if (hasData()) {
+            height = tree.getHeight();
+            width = maxScaleDimension + treeScaleSpace;
 
-    @Override
-    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
-    }
-
-    @Override
-    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        //do nothing, we don't care about height change
-    }
-
-    @Override
-    public void updateSize() {
-        int width = maxScaleDimension + treeScaleSpace;
-        int height = tree.getHeight();
-        setDimension(width, height);
+            realSize.width = insets.left + width + insets.right;
+            realSize.height = insets.top + height + insets.bottom;
+            setSize(realSize);
+            setPreferredSize(realSize);
+            setMinimumSize(realSize);
+        }
     }
 }

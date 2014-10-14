@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
@@ -26,7 +24,6 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
     @Override
     protected void drawScale(Graphics2D g2) {
         distToScale = 5;
-        setBackground(panel.getBackground());
         g2.setColor(Color.black);
         // total tree size minus offset, which is (negative) transition from top
         int yStart = treeScaleSpace;
@@ -71,26 +68,16 @@ public class VerticalScale extends AbstractScale implements DendrogramDataListen
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        updateSize();
-        bufferedImage = null;
-        repaint();
-    }
+    public void recalculate() {
+        if (hasData()) {
+            width = tree.getWidth();
+            height = maxScaleDimension + treeScaleSpace;
 
-    @Override
-    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
-        //do nothing, we don't care about width change
-    }
-
-    @Override
-    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        //not important right now, as long as the tree scale doesn't change
-    }
-
-    @Override
-    public void updateSize() {
-        int width = tree.getWidth();
-        int height = maxScaleDimension + treeScaleSpace;
-        setDimension(width, height);
+            realSize.width = insets.left + width + insets.right;
+            realSize.height = insets.top + height + insets.bottom;
+            setPreferredSize(realSize);
+            setMinimumSize(reqSize);
+            setSize(realSize.width, realSize.height);
+        }
     }
 }

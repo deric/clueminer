@@ -329,7 +329,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
         if (showScale) {
             //columnsScale.setSize(scaleHeight, dim.height);
-            columnsScale.updateSize();
+            columnsScale.recalculate();
             columnsScale.setBounds(heatmapXoffset + dim.width, insets.top, columnsScale.getSize().width, dim.height);
         }
     }
@@ -346,7 +346,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             if (dimSlider != null) {
                 scaleYoffset += dimSlider.height;
             }
-            rowsScale.updateSize();
+            rowsScale.recalculate();
             rowsScale.setBounds(insets.left, scaleYoffset, dim.width, rowsScale.getSize().height);
         }
     }

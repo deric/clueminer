@@ -1,19 +1,24 @@
 package org.clueminer.dendrogram.tree;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import javax.swing.JPanel;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.gui.BPanel;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class AbstractScale extends JPanel implements DendrogramDataListener, Serializable {
+public abstract class AbstractScale extends BPanel implements DendrogramDataListener, Serializable {
 
     private static final long serialVersionUID = 7723360865480072319L;
     //distance between tree and scale
@@ -25,80 +30,69 @@ public abstract class AbstractScale extends JPanel implements DendrogramDataList
     protected int maxScaleDimension = 30;
     protected int scaleLabelDistance = 10;
     protected int distToScale = 0;
-    protected BufferedImage bufferedImage;
-    protected Graphics2D g2;
-    protected Dimension size = new Dimension(5, 5);
     protected DendrogramTree tree;
     protected Font defaultFont = new Font("verdana", Font.PLAIN, 10);
     protected DendroPane panel;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    protected Insets insets = new Insets(0, 0, 0, 0);
+    protected int width = 0;
+    protected int height = 0;
 
     protected abstract void drawScale(Graphics2D g2);
-
-    public abstract void updateSize();
 
     public AbstractScale(DendroPane panel) {
         setDoubleBuffered(false);
         this.panel = panel;
-    }
-
-    protected void setDimension(int width, int height) {
-        //if there is some change
-        if (width != this.size.width || height != this.size.height) {
-            this.size.width = width;
-            this.size.height = height;
-            /**
-             * we want exactly this size, when windows is enlarged the heatmap
-             * should be bigger
-             */
-            setPreferredSize(this.size);
-            setMinimumSize(this.size);
-            setSize(this.size);
-        }
-    }
-
-    private void createBufferedGraphics() {
-        if (!tree.hasData()) {
-            return;
-        }
-        bufferedImage = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB);
-        g2 = bufferedImage.createGraphics();
-        this.setOpaque(true);
-
-        g2.setFont(defaultFont);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        updateSize();
-        drawScale(g2);
+        this.fitToSpace = false;
+        this.preserveAlpha = true;
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        setMinimumSize(this.size);
-        if (tree != null) {
-            if (bufferedImage == null) {
-                int max = maxScaleDimension;
-                createBufferedGraphics(); //cached image
-                if (maxScaleDimension != max) {
-                    //repaint if size of text has changed
-                    updateSize();
-                    createBufferedGraphics();
-                }
-            }
-            g.drawImage(bufferedImage, 0, 0, size.width, size.height, null);
+    public void render(Graphics2D g) {
+        if (!hasData()) {
+            return;
         }
+        //g.setComposite(AlphaComposite.Src);
+        g.setFont(defaultFont);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        drawScale(g);
         g.dispose();
     }
 
     @Override
-    public int getHeight() {
-        return size.height;
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
+        resetCache();
     }
 
     @Override
-    public int getWidth() {
-        return size.width;
+    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
     }
+
+    @Override
+    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
+        //do nothing, we don't care about height change
+    }
+
+    @Override
+    public boolean hasData() {
+        return (tree != null && tree.hasData());
+    }
+
+    @Override
+    public boolean isAntiAliasing() {
+        return true;
+    }
+
+    @Override
+    public void sizeUpdated(Dimension size) {
+        if (hasData()) {
+            if (size.width > 0 && size.height > 0) {
+                reqSize = size;
+                resetCache(); //calls recalculate
+            }
+        }
+    }
+
 }
