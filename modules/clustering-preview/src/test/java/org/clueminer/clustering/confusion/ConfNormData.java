@@ -5,23 +5,35 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
 import javax.swing.JFrame;
-import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.std.DataScaler;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author deric
  */
-public class ConfSingleDataset extends JFrame {
+public class ConfNormData extends JFrame {
 
     private static final long serialVersionUID = 861272115283587449L;
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
     private ConfusionMatrix confMatrix;
 
-    public ConfSingleDataset() throws IOException {
+    public ConfNormData() throws IOException {
         initComponents();
 
-        confMatrix.setClustering(FakeClustering.irisWrong4());
+        Dataset<? extends Instance> out = DataScaler.standartize(FakeDatasets.irisDataset(), "z-score", false);
+        ClusteringExecutorCached executor = new ClusteringExecutorCached();
+        Clustering<Cluster> clustering = executor.clusterRows(out, new EuclideanDistance(), new Props());
+
+        confMatrix.setClustering(clustering);
 
     }
 
