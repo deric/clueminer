@@ -3,11 +3,12 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
@@ -35,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HacEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "Brute-force HAC";
-    private final ClusteringExecutor exec;
+    private final Executor exec;
     private int gen;
     private List<DistanceMeasure> dist;
     private List<ClusterLinkage> linkage;
@@ -46,7 +47,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        exec = new ClusteringExecutor();
+        exec = new ClusteringExecutorCached();
         gen = 0;
     }
 

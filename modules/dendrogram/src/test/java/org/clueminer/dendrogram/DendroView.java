@@ -12,9 +12,10 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -53,7 +54,7 @@ public class DendroView extends JFrame {
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
 
-        ClusteringExecutor exec = new ClusteringExecutor();
+        Executor exec = new ClusteringExecutorCached();
 
         DistanceMeasure dm = new EuclideanDistance();
         Props prop = new Props();
