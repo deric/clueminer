@@ -33,6 +33,10 @@ public class DataScaler {
             scale.setTargetMax(-min + max + 1);
             //normalize values, so that we can apply logarithm
             res = scale.optimize(res);
+            // min-max normalized dataset is just intermediate step (shifted
+            // so that values are bigger than 1.0), we'll set as parent
+            // the dataset from previous step (the intermediate is never used)
+            res.setParent(dataset);
 
             for (int i = 0; i < res.size(); i++) {
                 for (int j = 0; j < res.attributeCount(); j++) {

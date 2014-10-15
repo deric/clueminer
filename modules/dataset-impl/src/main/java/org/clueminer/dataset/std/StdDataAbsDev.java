@@ -29,7 +29,6 @@ public class StdDataAbsDev extends StdAbsDev implements DataStandardization {
                 }
             }
         }
-        opt.setParent(dataset);
 
         return opt;
     }

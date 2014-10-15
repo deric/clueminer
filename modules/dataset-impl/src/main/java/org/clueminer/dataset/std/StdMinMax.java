@@ -29,7 +29,6 @@ public class StdMinMax extends StdScale implements DataStandardization {
                 }
             }
         }
-        opt.setParent(dataset);
 
         return opt;
     }

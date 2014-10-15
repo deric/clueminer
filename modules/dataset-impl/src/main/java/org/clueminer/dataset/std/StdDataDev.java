@@ -31,7 +31,6 @@ public class StdDataDev extends StdDev implements DataStandardization {
                 }
             }
         }
-        opt.setParent(dataset);
 
         return opt;
     }

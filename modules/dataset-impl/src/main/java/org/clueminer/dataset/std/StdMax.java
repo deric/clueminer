@@ -50,7 +50,6 @@ public class StdMax implements DataStandardization {
             }
             opt.get(i).setClassValue(dataset.get(i).classValue());
         }
-        opt.setParent(dataset);
 
         return opt;
     }

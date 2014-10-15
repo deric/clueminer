@@ -9,6 +9,7 @@ import org.clueminer.std.StdAbsDev;
 import org.clueminer.std.StdDev;
 import org.clueminer.std.StdScale;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -48,6 +49,8 @@ public class DataScalerTest {
                 assertEquals(res.get(i, j), out.get(i, j), delta);
             }
         }
+        assertNotNull(out.getParent());
+        assertEquals(dataset, out.getParent());
 
     }
 
