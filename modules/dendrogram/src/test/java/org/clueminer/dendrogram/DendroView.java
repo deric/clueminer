@@ -60,9 +60,7 @@ public class DendroView extends JFrame {
         Props prop = new Props();
         prop.put(AgglParams.LINKAGE, SingleLinkage.name);
         MemInfo mem = new MemInfo();
-        mem.startClock();
         Clustering clust = exec.clusterRows(data, dm, prop);
-        mem.stopClock();
         mem.report();
         frame.setClustering(clust);
     }

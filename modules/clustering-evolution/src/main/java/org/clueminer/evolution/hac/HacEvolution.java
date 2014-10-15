@@ -3,7 +3,7 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -47,7 +47,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        exec = new ClusteringExecutorCached();
+        exec = new ClusteringExecutor();
         gen = 0;
     }
 

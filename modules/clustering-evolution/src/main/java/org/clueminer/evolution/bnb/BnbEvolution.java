@@ -71,14 +71,18 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     public BnbEvolution() {
         //cache normalized datasets
         this.exec = new ClusteringExecutorCached();
+        init();
     }
 
     public BnbEvolution(Executor executor) {
+        this.exec = executor;
+        init();
+    }
+
+    private void init() {
         algorithm = new HAC();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
-        //TODO allow changing algorithm used
-        this.exec = executor;
         gen = 0;
     }
 

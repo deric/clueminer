@@ -44,7 +44,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
     }
 
     private void init() {
-        genom.put(AgglParams.ALG, evolution.getAlgorithm().getName());
+        genom.put(AgglParams.ALG, algorithm.getName());
         genom.putBoolean(AgglParams.LOG, logscale(rand));
         genom.put(AgglParams.STD, std(rand));
         genom.putBoolean(AgglParams.CLUSTER_ROWS, true);
