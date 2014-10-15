@@ -27,6 +27,8 @@ public class StdDataAbsDevTest {
         Dataset<? extends Instance> dataset = new ArrayDataset(data);
         Dataset<? extends Instance> out = subject.optimize(dataset);
 
+        assertEquals(dataset, out.getParent());
+
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 assertEquals(res.get(i, j), out.get(i, j), delta);

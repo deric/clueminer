@@ -26,8 +26,12 @@ public class StdDataDev extends StdDev implements DataStandardization {
             dev = dataset.getAttribute(j).statistics(AttrNumStats.STD_X);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, (dataset.get(i, j) - avg) / dev);
+                if (j == 0) {
+                    opt.get(i).setClassValue(dataset.get(i).classValue());
+                }
             }
         }
+        opt.setParent(dataset);
 
         return opt;
     }

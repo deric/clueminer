@@ -24,8 +24,12 @@ public class StdMinMax extends StdScale implements DataStandardization {
             max = dataset.getAttribute(j).statistics(AttrNumStats.MAX);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, scaleToRange(dataset.get(i, j), min, max, getTargetMin(), getTargetMax()));
+                if (j == 0) {
+                    opt.get(i).setClassValue(dataset.get(i).classValue());
+                }
             }
         }
+        opt.setParent(dataset);
 
         return opt;
     }
