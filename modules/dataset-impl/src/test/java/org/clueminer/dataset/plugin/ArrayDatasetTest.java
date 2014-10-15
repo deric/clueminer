@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.junit.After;
@@ -361,11 +362,39 @@ public class ArrayDatasetTest {
         assertEquals(dataset, dup.getParent());
     }
 
+    @Test
+    public void testNormalize() {
+        Dataset<? extends Instance> out = DataScaler.standartize(dataset, "z-score", false);
+
+        //make sure normalized data are not written to original dataset
+        for (int i = 0; i < dataset.size(); i++) {
+            for (int j = 0; j < dataset.attributeCount(); j++) {
+                assertNotSame(dataset.get(i, j), out.get(i, j));
+            }
+        }
+        assertEquals(dataset, out.getParent());
+    }
+
+    @Test
+    public void testNormalize2() {
+        Dataset<? extends Instance> test = data2x5();
+        Dataset<? extends Instance> out = DataScaler.standartize(test, "z-score", false);
+
+        //make sure normalized data are not written to original dataset
+        for (int i = 0; i < test.size(); i++) {
+            for (int j = 0; j < test.attributeCount(); j++) {
+                assertNotSame(test.get(i, j), out.get(i, j));
+            }
+        }
+        assertEquals(test, out.getParent());
+    }
+
     /**
      * Test of getCapacity method, of class ArrayDataset.
      */
     @Test
     public void testGetCapacity() {
+        assertTrue(dataset.getCapacity() > dataset.size());
     }
 
     /**
