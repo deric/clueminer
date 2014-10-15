@@ -65,8 +65,8 @@ public class DendrogramData2 implements DendrogramMapping {
     public final void setDataset(Dataset<? extends Instance> dataset) {
         this.normData = dataset;
         Dataset<? extends Instance> current = normData;
-        while (normData.getParent() != null) {
-            current = dataset.getParent();
+        while (current.getParent() != null) {
+            current = current.getParent();
         }
         origData = current;
         //in case of negative min, we add it again
