@@ -222,7 +222,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
 
-                    final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
+                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
 
                     @Override
                     public boolean cancel() {

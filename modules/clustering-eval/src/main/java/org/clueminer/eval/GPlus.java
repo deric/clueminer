@@ -87,9 +87,21 @@ public class GPlus extends ClusterEvaluator {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Should be minimized
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
         // should be minimized: range = [0,x] with x= fb/nd
         return score1 < score2;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
     }
 }

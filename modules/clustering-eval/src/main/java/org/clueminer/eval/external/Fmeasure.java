@@ -70,23 +70,16 @@ public class Fmeasure extends AbstractExternalEval {
         return score(clusters, dataset);
     }
 
-    /**
-     * Should be maximized
-     *
-     * @param score1
-     * @param score2
-     * @return true if score1 is better than score2
-     */
-    @Override
-    public boolean compareScore(double score1, double score2) {
-        return score1 > score2;
-    }
-
     public double getBeta() {
         return beta;
     }
 
     public void setBeta(double beta) {
         this.beta = beta;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
     }
 }

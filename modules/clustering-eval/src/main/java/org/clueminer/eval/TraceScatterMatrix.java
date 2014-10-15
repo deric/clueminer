@@ -84,4 +84,9 @@ public class TraceScatterMatrix extends ClusterEvaluator {
     public void setDistanceMeasure(DistanceMeasure dm) {
         throw new UnsupportedOperationException("Should use cosine distance.");
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

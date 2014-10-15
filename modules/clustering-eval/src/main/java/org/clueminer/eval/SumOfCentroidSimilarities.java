@@ -61,4 +61,9 @@ public class SumOfCentroidSimilarities extends ClusterEvaluator {
         // should be minimized -- probably not, doesnt work
         return score1 > score2;
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

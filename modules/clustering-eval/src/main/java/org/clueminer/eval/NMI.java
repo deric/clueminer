@@ -31,7 +31,7 @@ public class NMI extends ClusterEvaluator implements ClusterEvaluation {
 
     /**
      *
-     * @param count total number of elements N (in whole dataset)
+     * @param count    total number of elements N (in whole dataset)
      * @param elements
      * @return
      */
@@ -68,7 +68,6 @@ public class NMI extends ClusterEvaluator implements ClusterEvaluation {
         Map<String, Integer> res;
         double c1entropy = entropy(clusters.instancesCount(), clusters.clusterSizes());
 
-
         Map<String, Integer> klassSizes = new HashMap<String, Integer>(table.columnKeySet().size());
 
         double mutualInformation = 0;
@@ -96,7 +95,7 @@ public class NMI extends ClusterEvaluator implements ClusterEvaluation {
                     if (common > 0) {
                         mutualInformation += (common / (double) instancesCnt)
                                 * Math.log(instancesCnt
-                                * common / (double) (klassSize * clusterSize));
+                                        * common / (double) (klassSize * clusterSize));
                     }
                 }
 
@@ -130,5 +129,10 @@ public class NMI extends ClusterEvaluator implements ClusterEvaluation {
     @Override
     public boolean compareScore(double score1, double score2) {
         return score1 > score2;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
     }
 }

@@ -64,21 +64,14 @@ public class FowlkesMallows extends AbstractExternalEval {
         return index / table.columnKeySet().size();
     }
 
-    /**
-     * Should be maximized
-     *
-     * @param score1
-     * @param score2
-     * @return
-     */
-    @Override
-    public boolean compareScore(double score1, double score2) {
-        return (score1 > score2);
-    }
-
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
         return countScore(table);
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
     }
 }

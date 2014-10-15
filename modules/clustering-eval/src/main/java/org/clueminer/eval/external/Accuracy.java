@@ -73,7 +73,7 @@ public class Accuracy extends AbstractExternalEval {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
-        return score1 > score2;
+    public boolean isMaximized() {
+        return true;
     }
 }

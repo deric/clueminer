@@ -105,4 +105,9 @@ public class DunnIndex extends ClusterEvaluator {
     public boolean compareScore(double score1, double score2) {
         return (score1 > score2);
     }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
+    }
 }

@@ -92,10 +92,22 @@ public class Gamma extends ClusterEvaluator {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Should be maximized
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
         // should be maximized. range = [-1,1]
         return score1 > score2;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
     }
 
 }

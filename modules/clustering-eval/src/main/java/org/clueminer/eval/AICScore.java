@@ -55,4 +55,9 @@ public class AICScore extends ClusterEvaluator {
         // should be minimalized
         return Math.abs(score1) < Math.abs(score2);
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

@@ -82,4 +82,9 @@ public class CIndex extends ClusterEvaluator {
         // should be minimized ( smallest intra cluster distances)
         return score1 < score2;
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

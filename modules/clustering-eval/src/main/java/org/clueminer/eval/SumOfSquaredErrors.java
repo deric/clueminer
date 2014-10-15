@@ -65,4 +65,9 @@ public class SumOfSquaredErrors extends ClusterEvaluator {
         return score1 < score2;
     }
 
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
+
 }

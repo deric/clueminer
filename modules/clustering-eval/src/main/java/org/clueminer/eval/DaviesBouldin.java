@@ -99,8 +99,20 @@ public class DaviesBouldin extends ClusterEvaluator {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Should be minimized
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean compareScore(double score1, double score2) {
         return score1 < score2;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
     }
 }

@@ -59,21 +59,19 @@ public class RandIndex extends AbstractExternalEval {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Should be maximized, lies in interval <0.0 ; 1.0> where 1.0 is the best
      * value
      *
-     * @param score1
-     * @param score2
-     * @return true if score1 is better than score2
+     * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
-        return score1 > score2;
-    }
-
-    @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean isMaximized() {
+        return true;
     }
 }

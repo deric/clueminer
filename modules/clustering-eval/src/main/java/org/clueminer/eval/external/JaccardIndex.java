@@ -52,7 +52,7 @@ public class JaccardIndex extends AbstractExternalEval {
      * @param clusters
      * @param dataset
      * @return Jaccard index which should be between 0.0 and 1.0 (bigger is
-     * better)
+     *         better)
      */
     @Override
     public double score(Clustering clusters, Dataset dataset) {
@@ -66,13 +66,13 @@ public class JaccardIndex extends AbstractExternalEval {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
-        return score1 > score2;
-    }
-
-    @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
         return countScore(table);
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return true;
     }
 }

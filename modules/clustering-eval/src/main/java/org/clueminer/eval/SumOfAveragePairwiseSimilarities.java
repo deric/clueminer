@@ -66,4 +66,9 @@ public class SumOfAveragePairwiseSimilarities extends ClusterEvaluator {
         //should be minimized; in paper: maxed!!
         return score1 < score2;
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

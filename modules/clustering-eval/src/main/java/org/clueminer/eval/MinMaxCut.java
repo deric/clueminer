@@ -67,4 +67,9 @@ public class MinMaxCut extends ClusterEvaluator {
         // should be minimized
         return score1 < score2;
     }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
 }

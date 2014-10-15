@@ -21,7 +21,7 @@ public interface ClusterEvaluation {
      * Returns the score the current clusterer obtains on the dataset.
      *
      * @param clusters - clustering to be evaluated
-     * @param dataset - the original dataset
+     * @param dataset  - the original dataset
      * @return the score the clusterer obtained on this particular dataset
      */
     double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset);
@@ -31,7 +31,7 @@ public interface ClusterEvaluation {
      * scores, especially if multiple scores are evaluated
      *
      * @param clusters
-     * @param dataset - the original dataset
+     * @param dataset   - the original dataset
      * @param proximity matrix of distances between all points
      * @return
      */
@@ -45,7 +45,7 @@ public interface ClusterEvaluation {
      * @param score1 - the first score
      * @param score2 - the second score
      * @return true if the first score is better than the second, false in all
-     * other cases
+     *         other cases
      */
     boolean compareScore(double score1, double score2);
 
@@ -55,4 +55,11 @@ public interface ClusterEvaluation {
      * @return true when class labels are required in order to evaluate score
      */
     boolean isExternal();
+
+    /**
+     * Value is used for sorting results
+     *
+     * @return true when bigger is better
+     */
+    boolean isMaximized();
 }
