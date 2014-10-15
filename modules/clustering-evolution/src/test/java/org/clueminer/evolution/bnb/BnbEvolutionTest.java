@@ -1,6 +1,6 @@
 package org.clueminer.evolution.bnb;
 
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.NMI;
 import org.clueminer.eval.external.Precision;
@@ -25,7 +25,7 @@ public class BnbEvolutionTest {
 
     @Before
     public void setUp() {
-        subject = new BnbEvolution(new ClusteringExecutor());
+        subject = new BnbEvolution(new ClusteringExecutorCached());
         report = new ConsoleReporter();
         subject.addEvolutionListener(report);
         mem = new MemInfo();
@@ -52,8 +52,6 @@ public class BnbEvolutionTest {
 
         mem.startClock();
         subject.run();
-        mem.stopClock();
-
         mem.report();
     }
 

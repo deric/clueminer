@@ -10,7 +10,7 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -72,7 +72,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     @Override
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
-        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
+        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
         clustering.mergeParams(params);
@@ -93,7 +93,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
 
-        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
+        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult, columnsResult);
         return mapping;
     }
 
