@@ -6,6 +6,7 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -13,6 +14,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.utils.Props;
@@ -36,6 +38,7 @@ import org.openide.util.lookup.Lookups;
 public class ClusteringNode extends AbstractNode implements DendrogramVisualizationListener {
 
     private Image image;
+    private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
 
     public ClusteringNode(Clustering<Cluster> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -158,7 +161,11 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
+            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            if (dataset == null) {
+                logger.warning("no dataset in lookup");
+            }
+            evalTable = new HashEvaluationTable(clustering, dataset);
             clustering.lookupAdd(evalTable);
         }
         return evalTable;

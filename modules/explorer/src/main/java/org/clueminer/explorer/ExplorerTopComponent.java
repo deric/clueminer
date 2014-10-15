@@ -253,6 +253,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         //TODO implement
         if (comparator != null) {
             comparator.setEvaluator(eval);
+            comparator.setAscOrder(!eval.isMaximized());
             children.setComparator(comparator);
         }
     }
