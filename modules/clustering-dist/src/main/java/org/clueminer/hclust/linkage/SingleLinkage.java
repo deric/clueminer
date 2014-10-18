@@ -70,4 +70,24 @@ public class SingleLinkage extends AbstractLinkage {
         }
         return highestSimilarity;
     }
+
+    @Override
+    public double alphaA() {
+        return 0.5;
+    }
+
+    @Override
+    public double alphaB() {
+        return 0.5;
+    }
+
+    @Override
+    public double beta() {
+        return 0;
+    }
+
+    @Override
+    public double gamma() {
+        return -0.5;
+    }
 }

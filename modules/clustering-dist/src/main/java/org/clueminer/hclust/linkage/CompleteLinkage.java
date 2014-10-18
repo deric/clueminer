@@ -54,4 +54,24 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
         }
         return lowestSimilarity;
     }
+
+    @Override
+    public double alphaA() {
+        return 0.5;
+    }
+
+    @Override
+    public double alphaB() {
+        return 0.5;
+    }
+
+    @Override
+    public double beta() {
+        return 0.0;
+    }
+
+    @Override
+    public double gamma() {
+        return 0.5;
+    }
 }

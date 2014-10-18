@@ -84,7 +84,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, false)) {
+        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 
@@ -189,6 +189,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             AgglParams params, DendroNode[] nodes) {
         Map<Integer, Set<Integer>> clusterAssignment = new HashMap<>(n);
         for (int i = 0; i < n; i++) {
+            //TODO: hashset might be replaced by a pair (binary tree)
             HashSet<Integer> cluster = new HashSet<>();
             cluster.add(i);
             clusterAssignment.put(i, cluster);

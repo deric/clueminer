@@ -18,14 +18,14 @@ public interface ClusterLinkage extends Serializable {
      *
      * @return name of linkage
      */
-    public String getName();
+    String getName();
 
     /**
      * Sets distance function which is used for computing similarity
      *
      * @param distanceMeasure
      */
-    public void setDistanceMeasure(DistanceMeasure distanceMeasure);
+    void setDistanceMeasure(DistanceMeasure distanceMeasure);
 
     /**
      * Calculates distance between two clusters
@@ -34,18 +34,26 @@ public interface ClusterLinkage extends Serializable {
      * @param cluster2
      * @return
      */
-    public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2);
+    double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2);
 
     /**
      * Returns the similarity of two clusters according the specified linkage
      * function.
      *
      * @param similarityMatrix a matrix containing pair-wise similarity of each
-     * data point in the entire set
-     * @param cluster the first cluster to be considered
-     * @param toAdd the second cluster to be considered
+     *                         data point in the entire set
+     * @param cluster          the first cluster to be considered
+     * @param toAdd            the second cluster to be considered
      *
      * @return the similarity of the two clusters
      */
-    public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd);
+    double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd);
+
+    double alphaA();
+
+    double alphaB();
+
+    double beta();
+
+    double gamma();
 }
