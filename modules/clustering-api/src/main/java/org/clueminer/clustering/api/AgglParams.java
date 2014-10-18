@@ -49,6 +49,11 @@ public class AgglParams {
     public static final String CUTOFF = "cutoff";
     public static final String CUTOFF_STRATEGY = "cutoff-strategy";
     public static final String CUTOFF_SCORE = "cutoff-score";
+    /**
+     * Boolean - whether to keep precomputed proximity matrix for further
+     * computations
+     */
+    public static final String KEEP_PROXIMITY = "keep-proximity-matrix";
 
     private Props pref;
 

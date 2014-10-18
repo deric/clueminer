@@ -50,6 +50,15 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         return name;
     }
 
+    /**
+     * Computes hierarchical clustering with specified linkage and stores
+     * dendrogram tree structure. However final clustering is not computed yet,
+     * it will be formed later based on cut-off function.
+     *
+     * @param dataset
+     * @param pref
+     * @return
+     */
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         HierarchicalResult result = new HClustResult(dataset);
@@ -74,7 +83,10 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         } else {
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
         }
-        result.setProximityMatrix(similarityMatrix);
+        //whether to keep reference to proximity matrix (could be memory exhausting)
+        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, false)) {
+            result.setProximityMatrix(similarityMatrix);
+        }
 
         DendroTreeData treeData = computeLinkage(pq, similarityMatrix, dataset, params);
         treeData.createMapping(n, treeData.getRoot());
@@ -150,7 +162,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         return nodes[id];
     }
 
-    private void updateDistances(int mergedId, Set<Integer> mergedCluster,
+    protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             PriorityQueue<Element> pq, ClusterLinkage linkage) {
         Element current;
