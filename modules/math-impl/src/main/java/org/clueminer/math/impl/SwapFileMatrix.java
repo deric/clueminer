@@ -1,6 +1,5 @@
 package org.clueminer.math.impl;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,11 +15,12 @@ import org.clueminer.math.SingularValueDecomposition;
 
 /**
  * A matrix that is stored in a file on disk.
- * 
+ *
  * @author Thomas Abeel
- * 
+ *
  */
 final class SwapFileMatrix implements Matrix {
+
     private static final long serialVersionUID = -715479394793667312L;
 
     private RandomAccessFile matrix;
@@ -62,7 +62,7 @@ final class SwapFileMatrix implements Matrix {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
     }
 
     @Override
@@ -327,6 +327,11 @@ final class SwapFileMatrix implements Matrix {
 
     @Override
     public void printLower(int w, int d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean has(int i, int j) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

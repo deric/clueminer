@@ -8,7 +8,8 @@ import org.clueminer.math.MatrixVector;
  * Jama = Java Matrix class.
  *
  *
- * <P> The Java JMatrix Class provides the fundamental operations of numerical
+ * <P>
+ * The Java JMatrix Class provides the fundamental operations of numerical
  * linear algebra. Various constructors create Matrices from two dimensional
  * arrays of double precision floating point numbers. Various "gets" and "sets"
  * provide access to submatrices and matrix elements. Several methods implement
@@ -19,14 +20,16 @@ import org.clueminer.math.MatrixVector;
  * future version.
  *
  *
- * <P> Five fundamental matrix decompositions, which consist of pairs or triples
+ * <P>
+ * Five fundamental matrix decompositions, which consist of pairs or triples
  * of matrices, permutation vectors, and the like, produce results in five
  * decomposition classes. These decompositions are accessed by the JMatrix class
  * to compute solutions of simultaneous linear equations, determinants, inverses
  * and other matrix functions. The five decompositions are:
  *
  *
- * <P><UL> <LI>Cholesky Decomposition of symmetric, positive definite matrices.
+ * <P>
+ * <UL> <LI>Cholesky Decomposition of symmetric, positive definite matrices.
  *
  * <LI>LU Decomposition of rectangular matrices.
  *
@@ -37,8 +40,13 @@ import org.clueminer.math.MatrixVector;
  * <LI>Eigenvalue Decomposition of both symmetric and nonsymmetric square
  * matrices. </UL>
  *
- * <DL> <DT><B>Example of use:</B></DT> <P> <DD>Solve a linear system A x = b
- * and compute the residual norm, ||b - A x||. <P><PRE>
+ * <DL> <DT><B>Example of use:</B></DT>
+ * <P>
+ * <DD>Solve a linear system A x = b
+ * and compute the residual norm, ||b - A x||.
+ * <P>
+ * <
+ * PRE>
  * double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}};
  * JMatrix A = new JMatrix(vals);
  * JMatrix b = JMatrix.random(3,1);
@@ -132,8 +140,8 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
      * Construct a matrix from a one-dimensional packed array
      *
      * @param vals One-dimensional array of doubles, packed by columns (ala
-     * Fortran).
-     * @param m Number of rows.
+     *             Fortran).
+     * @param m    Number of rows.
      * @exception IllegalArgumentException Array length must be a multiple of m.
      */
     public JMatrix(double vals[], int m) {
@@ -333,7 +341,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c Array of column indices.
+     * @param c  Array of column indices.
      * @return A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
@@ -356,7 +364,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     /**
      * Get a submatrix.
      *
-     * @param r Array of row indices.
+     * @param r  Array of row indices.
      * @param i0 Initial column index
      * @param i1 Final column index
      * @return A(r(:),j0:j1)
@@ -398,7 +406,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X A(i0:i1,j0:j1)
+     * @param X  A(i0:i1,j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -438,10 +446,10 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     /**
      * Set a submatrix.
      *
-     * @param r Array of row indices.
+     * @param r  Array of row indices.
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X A(r(:),j0:j1)
+     * @param X  A(r(:),j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -462,8 +470,8 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c Array of column indices.
-     * @param X A(i0:i1,c(:))
+     * @param c  Array of column indices.
+     * @param X  A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     @Override
@@ -513,7 +521,6 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         }
         return f;
     }
-
 
     /**
      * Infinity norm
@@ -577,7 +584,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         checkMatrixDimensions(B);
         Matrix X = new JMatrix(m, n);
         double[][] C = X.getArray();
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] + Barray[i][j];
@@ -595,7 +602,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix plusEquals(Matrix B) {
         checkMatrixDimensions(B);
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 A[i][j] = A[i][j] + Barray[i][j];
@@ -615,7 +622,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         checkMatrixDimensions(B);
         Matrix X = new JMatrix(m, n);
         double[][] C = X.getArray();
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] - Barray[i][j];
@@ -633,7 +640,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix minusEquals(Matrix B) {
         checkMatrixDimensions(B);
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 A[i][j] = A[i][j] - Barray[i][j];
@@ -653,7 +660,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         checkMatrixDimensions(B);
         Matrix X = new JMatrix(m, n);
         double[][] C = X.getArray();
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] * Barray[i][j];
@@ -671,7 +678,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix arrayTimesEquals(Matrix B) {
         checkMatrixDimensions(B);
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 A[i][j] = A[i][j] * Barray[i][j];
@@ -691,7 +698,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         checkMatrixDimensions(B);
         Matrix X = new JMatrix(m, n);
         double[][] C = X.getArray();
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = A[i][j] / Barray[i][j];
@@ -709,7 +716,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix arrayRightDivideEquals(Matrix B) {
         checkMatrixDimensions(B);
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 A[i][j] = A[i][j] / Barray[i][j];
@@ -729,7 +736,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         checkMatrixDimensions(B);
         Matrix X = new JMatrix(m, n);
         double[][] C = X.getArray();
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 C[i][j] = Barray[i][j] / A[i][j];
@@ -747,7 +754,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix arrayLeftDivideEquals(Matrix B) {
         checkMatrixDimensions(B);
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 A[i][j] = Barray[i][j] / A[i][j];
@@ -805,7 +812,7 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
         Matrix X = new JMatrix(m, B.columnsCount());
         double[][] C = X.getArray();
         double[] Bcolj = new double[n];
-        double [][] Barray = B.getArray();
+        double[][] Barray = B.getArray();
         for (int j = 0; j < B.columnsCount(); j++) {
             for (int k = 0; k < n; k++) {
                 Bcolj[k] = Barray[k][j];
@@ -844,5 +851,17 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public MatrixVector getColumnVector(int j) {
         return new MatrixColumnVector(this, j);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param i
+     * @param j
+     * @return
+     */
+    @Override
+    public boolean has(int i, int j) {
+        return i < m && j < n && i >= 0 && j >= 0;
     }
 }
