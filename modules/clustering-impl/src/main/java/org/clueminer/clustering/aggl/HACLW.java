@@ -1,5 +1,6 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -17,6 +18,7 @@ import org.clueminer.math.Matrix;
 public class HACLW extends HAC implements AgglomerativeClustering {
 
     private final static String name = "HAC-LW";
+    private HashMap<Integer, Double> cache = new HashMap<>();
 
     @Override
     public String getName() {
@@ -59,8 +61,18 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      */
     public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage) {
         System.out.println("aq(" + a + ", " + q + ") = ");
-        System.out.println(sim.get(a, q));
-        double dist = linkage.alphaA() * sim.get(a, q) + linkage.alphaB() * sim.get(b, q);
+        double aq;
+        if (!sim.has(a, q)) {
+            aq = cache.get(map(a, q));
+        } else {
+            aq = sim.get(a, q);
+        }
+
+        System.out.println(aq);
+        double dist = linkage.alphaA() * aq + linkage.alphaB() * sim.get(b, q);
+        if (!sim.has(a, q)) {
+            cache.put(map(a, q), dist);
+        }
         if (linkage.beta() != 0) {
             dist += sim.get(a, b);
         }
@@ -68,6 +80,23 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             dist += Math.abs(sim.get(a, q) - sim.get(b, q));
         }
         return dist;
+    }
+
+    private int map(int i, int j) {
+        if (i < j) {
+            /**
+             * swap variables, matrix is symmetrical, we work with lower
+             * triangular matrix
+             */
+            int tmp = i;
+            i = j;
+            j = tmp;
+        }
+        /**
+         * it's basically a sum of arithmetic row (we need to know how many
+         * numbers could be allocated before given position [x,y])
+         */
+        return triangleSize(i) + j;
     }
 
 }
