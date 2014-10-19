@@ -263,7 +263,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return factory for building instances
      */
-    InstanceBuilder builder();
+    InstanceBuilder<E> builder();
 
     /**
      * Builder create supported attributes types

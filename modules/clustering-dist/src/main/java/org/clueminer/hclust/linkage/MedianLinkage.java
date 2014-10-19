@@ -26,7 +26,7 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
     private static final long serialVersionUID = 7942079385178130303L;
     public static final String name = "Median Linkage";
 
-    public MedianLinkage(){
+    public MedianLinkage() {
         super(new EuclideanDistance());
     }
 
@@ -63,5 +63,25 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
         }
         Arrays.sort(similarities);
         return similarities[similarities.length / 2];
+    }
+
+    @Override
+    public double alphaA() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double alphaB() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double beta() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double gamma() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

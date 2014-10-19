@@ -15,6 +15,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.Props;
@@ -43,8 +44,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+    public PointerHierarchy run(Dataset<? extends Instance> dataset, Props pref) {
         AgglParams params = new AgglParams(pref);
         int[] processed = new int[dataset.size()];
         //storage for distances
@@ -70,14 +70,17 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
 
         //we don't need m anymore
         m = null;
+        return new PointerHierarchy(dataset, lambda, pi);
+    }
 
-        Dump.array(pi, "pi");
-        Dump.array(processed, "processed");
-        Dump.map(lambda, "lambda");
-
-        extractClusters(dataset, lambda, pi);
+    @Override
+    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
 
         HierarchicalResult result = new HClustResult(dataset);
+
+        PointerHierarchy pointers = run(dataset, pref);
+
+        extractClusters(pointers);
 
         return result;
     }
@@ -152,7 +155,10 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         }
     }
 
-    private void extractClusters(Dataset<? extends Instance> dataset, Map<Integer, Double> lambda, int[] pi) {
+    private void extractClusters(PointerHierarchy pointers) {
+        Dataset<? extends Instance> dataset = pointers.getDataset();
+        Map<Integer, Double> lambda = pointers.getLambda();
+        int[] pi = pointers.getPi();
         Map<Integer, Double> order = MapUtils.sortByValue(lambda);
         Dump.map(order, "order");
 

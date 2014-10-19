@@ -22,8 +22,8 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
 
     private static final long serialVersionUID = 1357290267936276833L;
     private static String name = "Average Linkage";
-    
-    public AverageLinkage(){
+
+    public AverageLinkage() {
         super(new EuclideanDistance());
     }
 
@@ -50,5 +50,25 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
             }
         }
         return similaritySum / (cluster.size() * toAdd.size());
+    }
+
+    @Override
+    public double alphaA() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double alphaB() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double beta() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double gamma() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

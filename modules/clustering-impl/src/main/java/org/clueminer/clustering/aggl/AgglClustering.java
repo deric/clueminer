@@ -32,6 +32,8 @@ public class AgglClustering {
      * specified similarity function. Moreover matrix values will be stored in
      * queue.
      *
+     * @TODO: consider parallel computation of distances
+     *
      * @param m
      * @param dm
      * @param queue queue to store computed number
