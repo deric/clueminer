@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.FloatArrayDataRow;
 import org.clueminer.dataset.row.Tools;
@@ -13,69 +14,111 @@ import org.clueminer.exception.EscapeException;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
+public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E> {
 
-    private static int DEFAULT_CAPACITY = 50;
+    private static final int DEFAULT_CAPACITY = 5;
     /**
      * The decimal point character.
      */
     private char decimalPointCharacter = '.';
+    private Dataset<Instance> dataset;
+
+    public FloatArrayFactory(Dataset<? extends Instance> dataset) {
+        this.dataset = (Dataset<Instance>) dataset;
+    }
 
     /**
+     * @param dataset
      * @param decimalPointCharacter the letter for decimal points, usually '.'
      */
-    public FloatArrayFactory(char decimalPointCharacter) {
+    public FloatArrayFactory(Dataset<? extends Instance> dataset, char decimalPointCharacter) {
         this.decimalPointCharacter = decimalPointCharacter;
     }
 
     @Override
-    public FloatArrayDataRow create(double[] values) {
+    public E create(double[] values) {
+        E inst = build(values);
+        dataset.add(inst);
+        return inst;
+    }
+
+    @Override
+    public E build(double[] values) {
         FloatArrayDataRow row = new FloatArrayDataRow(values.length);
         for (int i = 0; i < values.length; i++) {
             row.set(i, (float) values[i]);
         }
-        return row;
+        return (E) row;
     }
 
     @Override
-    public FloatArrayDataRow create(double[] values, Object classValue) {
-        FloatArrayDataRow row = create(values);
+    public E create(double[] values, Object classValue) {
+        E inst = build(values, (String) classValue);
+        dataset.add(inst);
+        return inst;
+    }
+
+    @Override
+    public E create(double[] values, String classValue) {
+        E inst = build(values, classValue);
+        dataset.add(inst);
+        return inst;
+    }
+
+    @Override
+    public E build(double[] values, String classValue) {
+        E row = build(values);
         row.setClassValue(classValue);
         return row;
     }
 
     @Override
-    public FloatArrayDataRow create() {
-        return new FloatArrayDataRow(DEFAULT_CAPACITY);
+    public E create() {
+        E inst = build();
+        dataset.add(inst);
+        return inst;
+    }
+
+    @Override
+    public E build() {
+        return (E) new FloatArrayDataRow(DEFAULT_CAPACITY);
     }
 
     /**
      * Creates a new DataRow with the given initial capacity.
+     *
      * @param size
      */
     @Override
-    public FloatArrayDataRow create(int size) {
-        return new FloatArrayDataRow(size);
+    public E create(int size) {
+        E inst = build(size);
+        dataset.add(inst);
+        return inst;
     }
 
     @Override
-    public FloatArrayDataRow createCopyOf(FloatArrayDataRow orig) {
+    public E build(int capacity) {
+        return (E) new FloatArrayDataRow(capacity);
+    }
+
+    @Override
+    public E createCopyOf(E orig) {
         FloatArrayDataRow row = new FloatArrayDataRow(orig.size());
         row.setClassValue(orig.classValue());
-        return row;
+        return (E) row;
     }
 
     @Override
-    public FloatArrayDataRow createCopyOf(FloatArrayDataRow orig, Dataset<FloatArrayDataRow> parent) {
+    public E createCopyOf(E orig, Dataset<E> parent) {
         return createCopyOf(orig);
     }
 
     /**
      * Creates a data row from an array of Strings. If the corresponding
      * attribute is nominal, the string is mapped to its index, otherwise it is
-     * parsed using
-     * <code>Double.parseDouble(String)</code> .
+     * parsed using <code>Double.parseDouble(String)</code> .
      *
      * @param strings
      * @param attributes
@@ -83,8 +126,8 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
      * @see FileDataRowReader
      */
     @Override
-    public FloatArrayDataRow create(String[] strings, Attribute[] attributes) {
-        FloatArrayDataRow dataRow = create(strings.length);
+    public E create(String[] strings, Attribute[] attributes) {
+        FloatArrayDataRow dataRow = (FloatArrayDataRow) create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();
@@ -105,21 +148,23 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
             }
         }
         dataRow.trim();
-        return dataRow;
+        return (E) dataRow;
     }
 
     /**
      * Creates a data row from an Object array. The classes of the object must
      * match the value type of the corresponding {@link Attribute}. If the
-     * corresponding attribute is nominal,
-     * <code>data[i]</code> will be cast to String. If it is numerical, it will
-     * be cast to Number.
+     * corresponding attribute is nominal, <code>data[i]</code> will be cast to
+     * String. If it is numerical, it will be cast to Number.
      *
+     * @param data
+     * @param attributes
+     * @return
      * @throws ClassCastException if data class does not match attribute type
      * @see DatabaseDataRowReader
      */
     public DataRow create(Object[] data, Attribute[] attributes) {
-        DataRow dataRow = create(data.length);
+        DataRow dataRow = (DataRow) create(data.length);
         for (int i = 0; i < data.length; i++) {
             if (data[i] != null) {
                 if (attributes[i].isNominal()) {
@@ -138,15 +183,16 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
     /**
      * Creates a data row from an Object array. The classes of the object must
      * match the value type of the corresponding {@link Attribute}. If the
-     * corresponding attribute is nominal,
-     * <code>data[i]</code> will be cast to String. If it is numerical, it will
-     * be cast to Number.
+     * corresponding attribute is nominal, <code>data[i]</code> will be cast to
+     * String. If it is numerical, it will be cast to Number.
      *
+     * @param data
+     * @param attributes
+     * @return
      * @throws ClassCastException if data class does not match attribute type
-     * @see DatabaseDataRowReader
      */
     public DataRow create(Double[] data, Attribute[] attributes) {
-        DataRow dataRow = create(data.length);
+        DataRow dataRow = (DataRow) create(data.length);
         for (int i = 0; i < data.length; i++) {
             if (data[i] != null) {
                 if (attributes[i].isNominal()) {
@@ -175,4 +221,5 @@ public class FloatArrayFactory implements InstanceBuilder<FloatArrayDataRow> {
             return Float.NaN;
         }
     }
+
 }

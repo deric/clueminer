@@ -36,21 +36,17 @@ public class AttrHashDatasetTest {
 
     @Before
     public void setUp() {
-        dataset = new AttrHashDataset<Instance>(10);
+        dataset = new AttrHashDataset<>(10);
         this.builder = dataset.attributeBuilder();
         builder.create("first", BasicAttrType.NUMERICAL);
         builder.create("second", BasicAttrType.NUMERICAL);
         builder.create("third", BasicAttrType.NUMERICAL);
         //dataset.attributeBuilder().create("class", DataTypes.CLASS_VALUE);
 
-        Instance inst = dataset.builder().create(new double[]{0.1, 0.8, 3});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.5, 3.0, 8});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.3, 3.2, 12});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.1, 4.0, 15});
-        dataset.add(inst);
+        dataset.builder().create(new double[]{0.1, 0.8, 3});
+        dataset.builder().create(new double[]{0.5, 3.0, 8});
+        dataset.builder().create(new double[]{0.3, 3.2, 12});
+        dataset.builder().create(new double[]{0.1, 4.0, 15});
 
         dataset.setName("test dataset");
     }

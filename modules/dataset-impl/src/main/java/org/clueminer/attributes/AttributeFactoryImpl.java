@@ -9,10 +9,11 @@ import org.clueminer.dataset.api.Dataset;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public class AttributeFactoryImpl<E> implements AttributeBuilder {
 
-    private Dataset<? extends E> target;
+    private final Dataset<? extends E> target;
 
     public AttributeFactoryImpl(Dataset<? extends E> target) {
         this.target = target;
@@ -89,6 +90,6 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
 
     @Override
     public Attribute build(String name, AttributeType type) {
-        return create(name, type, BasicAttrRole.INPUT);
+        return build(name, type, BasicAttrRole.INPUT);
     }
 }

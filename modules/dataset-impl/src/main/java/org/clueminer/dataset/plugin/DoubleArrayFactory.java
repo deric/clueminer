@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.row.Tools;
@@ -13,54 +14,96 @@ import org.clueminer.exception.EscapeException;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
+public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E> {
 
-    private static int DEFAULT_CAPACITY = 5;
+    private static final int DEFAULT_CAPACITY = 5;
+    private final Dataset<Instance> dataset;
     /**
      * The decimal point character.
      */
     private char decimalPointCharacter = '.';
 
+    public DoubleArrayFactory(Dataset<? extends Instance> dataset) {
+        this.dataset = (Dataset<Instance>) dataset;
+    }
+
     /**
-     * @param decimalPointCharacter the letter for decimal points, usually '.'
+     * @param dataset               parent dataset
+     * @param decimalPointCharacter the character for decimal points, usually
+     *                              '.'
      */
-    public DoubleArrayFactory(char decimalPointCharacter) {
+    public DoubleArrayFactory(Dataset<? extends Instance> dataset, char decimalPointCharacter) {
+        this.dataset = (Dataset<Instance>) dataset;
         this.decimalPointCharacter = decimalPointCharacter;
     }
 
     @Override
-    public DoubleArrayDataRow create(double[] values) {
-        DoubleArrayDataRow row = new DoubleArrayDataRow(values.length);
-        for (int i = 0; i < values.length; i++) {
-            row.set(i, values[i]);
-        }
+    public E create(double[] values) {
+        E row = build(values);
+        dataset.add(row);
         return row;
     }
 
     @Override
-    public DoubleArrayDataRow create(double[] values, Object classValue) {
-        DoubleArrayDataRow row = create(values);
+    public E build(double[] values) {
+        DoubleArrayDataRow row = new DoubleArrayDataRow(values.length);
+        for (int i = 0; i < values.length; i++) {
+            row.set(i, values[i]);
+        }
+        return (E) row;
+    }
+
+    @Override
+    public E create(double[] values, Object classValue) {
+        E row = create(values);
         row.setClassValue(classValue);
         return row;
     }
 
     @Override
-    public DoubleArrayDataRow create() {
-        return new DoubleArrayDataRow(DEFAULT_CAPACITY);
-    }
-
-    @Override
-    public DoubleArrayDataRow createCopyOf(DoubleArrayDataRow orig) {
-        DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
-        row.setId(orig.getId());
-        row.setIndex(orig.getIndex());
-        row.setClassValue(orig.classValue());
+    public E create(double[] values, String classValue) {
+        E row = build(values, classValue);
+        dataset.add(row);
         return row;
     }
 
     @Override
-    public DoubleArrayDataRow createCopyOf(DoubleArrayDataRow orig, Dataset<DoubleArrayDataRow> parent) {
+    public E build(double[] values, String classValue) {
+        E row = build(values);
+        row.setClassValue(classValue);
+        return row;
+    }
+
+    /**
+     * Build and add Instance to Dataset
+     *
+     * @return
+     */
+    @Override
+    public E create() {
+        E row = build();
+        dataset.add(row);
+        return row;
+    }
+
+    @Override
+    public E build() {
+        return (E) new DoubleArrayDataRow(DEFAULT_CAPACITY);
+    }
+
+    @Override
+    public E createCopyOf(E orig) {
+        DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
+        row.setId(orig.getId());
+        row.setIndex(orig.getIndex());
+        row.setClassValue(orig.classValue());
+        return (E) row;
+    }
+
+    @Override
+    public E createCopyOf(E orig, Dataset<E> parent) {
         return createCopyOf(orig);
     }
 
@@ -70,15 +113,22 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * @param size
      */
     @Override
-    public DoubleArrayDataRow create(int size) {
-        return new DoubleArrayDataRow(size);
+    public E create(int size) {
+        E row = build(size);
+        dataset.add(row);
+        return row;
+
+    }
+
+    @Override
+    public E build(int capacity) {
+        return (E) new DoubleArrayDataRow(capacity);
     }
 
     /**
      * Creates a data row from an array of Strings. If the corresponding
      * attribute is nominal, the string is mapped to its index, otherwise it is
-     * parsed using
-     * <code>Double.parseDouble(String)</code> .
+     * parsed using <code>Double.parseDouble(String)</code> .
      *
      * @param strings
      * @param attributes
@@ -86,8 +136,8 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * @see FileDataRowReader
      */
     @Override
-    public DoubleArrayDataRow create(String[] strings, Attribute[] attributes) {
-        DoubleArrayDataRow dataRow = create(strings.length);
+    public E create(String[] strings, Attribute[] attributes) {
+        DoubleArrayDataRow dataRow = (DoubleArrayDataRow) create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();
@@ -108,15 +158,14 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
             }
         }
         dataRow.trim();
-        return dataRow;
+        return (E) dataRow;
     }
 
     /**
      * Creates a data row from an Object array. The classes of the object must
      * match the value type of the corresponding {@link Attribute}. If the
-     * corresponding attribute is nominal,
-     * <code>data[i]</code> will be cast to String. If it is numerical, it will
-     * be cast to Number.
+     * corresponding attribute is nominal, <code>data[i]</code> will be cast to
+     * String. If it is numerical, it will be cast to Number.
      *
      * @param data
      * @param attributes
@@ -125,7 +174,7 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * @see DatabaseDataRowReader
      */
     public DataRow create(Object[] data, Attribute[] attributes) {
-        DataRow dataRow = create(data.length);
+        DataRow dataRow = (DataRow) create(data.length);
         for (int i = 0; i < data.length; i++) {
             if (data[i] != null) {
                 if (attributes[i].isNominal()) {
@@ -144,9 +193,8 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
     /**
      * Creates a data row from an Object array. The classes of the object must
      * match the value type of the corresponding {@link Attribute}. If the
-     * corresponding attribute is nominal,
-     * <code>data[i]</code> will be cast to String. If it is numerical, it will
-     * be cast to Number.
+     * corresponding attribute is nominal, <code>data[i]</code> will be cast to
+     * String. If it is numerical, it will be cast to Number.
      *
      * @param data
      * @param attributes
@@ -155,7 +203,7 @@ public class DoubleArrayFactory implements InstanceBuilder<DoubleArrayDataRow> {
      * @see DatabaseDataRowReader
      */
     public DataRow create(Double[] data, Attribute[] attributes) {
-        DataRow dataRow = create(data.length);
+        DataRow dataRow = (DataRow) create(data.length);
         for (int i = 0; i < data.length; i++) {
             if (data[i] != null) {
                 if (attributes[i].isNominal()) {

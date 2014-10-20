@@ -391,7 +391,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public InstanceBuilder builder() {
         if (builder == null) {
-            builder = new TimeRowFactory(attributeCount());
+            builder = new TimeRowFactory(this, attributeCount());
         }
         return builder;
     }
@@ -421,7 +421,6 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         } else if (index == size()) {
             int attrs = attributeCount() == 0 ? timePoints.length : attributeCount();
             E inst = (E) builder().create(attrs);
-            add(inst);
             return inst;
         }
         throw new ArrayIndexOutOfBoundsException("can't get instance at position: " + index);
