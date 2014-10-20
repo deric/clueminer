@@ -30,19 +30,24 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             PriorityQueue<Element> pq, ClusterLinkage linkage) {
         Element current;
-        double distance;
+        double distance, expDist;
         similarityMatrix.printLower(2, 2);
         System.out.println("triangle size: " + triangleSize(similarityMatrix.rowsCount()));
         System.out.println("merging " + mergedCluster.toString() + " -> " + mergedId);
-        System.out.println("to: " + assignments.entrySet().toString());
+        System.out.println("other: " + assignments.entrySet().toString());
         Iterator<Integer> it = mergedCluster.iterator();
         int a = it.next();
         int b = it.next();
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
-            //distance = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
-            System.out.println("cluster: " + cluster.getKey() + ", a = " + a + ", b = " + b);
+            //expDist = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
+
+            System.out.println("update(" + mergedId + ", " + cluster.getKey() + "): a = " + a + ", b = " + b);
             distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage);
+            //System.out.println("expDist:" + expDist);
+            System.out.println("distanc:" + distance);
+            //assert (distance == expDist);
             current = new Element(distance, mergedId, cluster.getKey());
+            System.out.println("new node @" + map(mergedId, cluster.getKey()) + ": " + current.toString());
             pq.add(current);
         }
         //finaly add merged cluster
@@ -60,25 +65,34 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * @return
      */
     public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage) {
-        System.out.println("aq(" + a + ", " + q + ") = ");
-        double aq;
+        double aq, bq;
         if (!sim.has(a, q)) {
+            System.out.println("getting: a= " + a + ", q= " + q);
             aq = cache.get(map(a, q));
         } else {
             aq = sim.get(a, q);
         }
-
-        System.out.println(aq);
-        double dist = linkage.alphaA() * aq + linkage.alphaB() * sim.get(b, q);
-        if (!sim.has(a, q)) {
-            cache.put(map(a, q), dist);
+        if (!sim.has(b, q)) {
+            System.out.println("cache: " + cache);
+            System.out.println("getting: b= " + b + ", q= " + q + " -> " + map(b, q));
+            bq = cache.get(map(b, q));
+        } else {
+            bq = sim.get(b, q);
         }
+
+        System.out.println("aq(" + a + ", " + q + ") = " + String.format("%.2f", aq));
+        double dist = linkage.alphaA() * aq + linkage.alphaB() * bq;
+        //if (!sim.has(a, q)) {
+
+        //}
         if (linkage.beta() != 0) {
             dist += sim.get(a, b);
         }
         if (linkage.gamma() != 0) {
-            dist += Math.abs(sim.get(a, q) - sim.get(b, q));
+            dist += Math.abs(aq - bq);
         }
+        System.out.println(map(r, q) + " <- (" + r + ", " + q + ") =" + dist);
+        cache.put(map(r, q), dist);
         return dist;
     }
 

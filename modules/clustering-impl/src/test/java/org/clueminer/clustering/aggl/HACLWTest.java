@@ -79,7 +79,7 @@ public class HACLWTest {
         result.getTreeData().print();
     }
 
-//    @Test
+    //@Test
     public void testSingleLinkage() {
         Dataset<? extends Instance> dataset = kumarData();
         assertEquals(6, dataset.size());
