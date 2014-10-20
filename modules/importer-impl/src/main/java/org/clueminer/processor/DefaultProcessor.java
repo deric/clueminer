@@ -128,7 +128,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         AttributeDraft attr;
         for (InstanceDraft instd : container.getInstances()) {
             //TODO allocate only numerical attributes
-            inst = dataset.builder().create(dataset.attributeCount());
+            inst = dataset.builder().build(dataset.attributeCount());
             /**
              * attribute count in container might differ some attributes
              * (class/label/id) are treated specially

@@ -120,8 +120,13 @@ public class ClusterListTest {
     public void testInstancesCount() {
     }
 
-    @Test
+    //@Test
     public void testGetCentroid() {
+        Clustering<Cluster> clusters = createClusters();
+        assertEquals(3, clusters.get(0).size());
+        Instance inst = clusters.getCentroid();
+        System.out.println("centroid: " + inst.toString());
+        assertEquals(3, clusters.get(0).size());
     }
 
     private Clustering<Cluster> createClusters() {

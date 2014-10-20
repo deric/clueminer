@@ -161,7 +161,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public E getCentroid() {
         Cluster<E> first = get(0);
-        Instance centroid = first.builder().create(first.attributeCount());
+        Instance centroid = first.builder().build(first.attributeCount());
 
         for (Cluster<E> c : this) {
             for (Instance inst : c) {

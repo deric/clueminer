@@ -62,7 +62,7 @@ public class BaseClusterTest {
     public static Dataset<? extends Instance> irisDataset() {
         if (irisData == null) {
             CommonFixture tf = new CommonFixture();
-            irisData = new ArrayDataset<Instance>(150, 4);
+            irisData = new ArrayDataset<>(150, 4);
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(tf.irisArff(), irisData, 4);

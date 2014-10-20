@@ -127,7 +127,7 @@ public class ARFFHandler implements DatasetLoader {
                         }
                     }
                 }
-                out.add(out.builder().create(values, classValue));
+                out.builder().create(values, classValue);
             } else {
                 if ((rmatch = relation.matcher(line)).matches()) {
                     out.setName(rmatch.group(1));

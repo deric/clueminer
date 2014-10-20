@@ -130,7 +130,7 @@ public class LegendreTransformation implements DataTransform {
         if (input.size() > 0) {
             InstanceBuilder builder = output.builder();
             if (output.size() <= i) {
-                Instance instance = builder.create(output.attributeCount());
+                Instance instance = builder.build(output.attributeCount());
                 instance.setName(input.getName());
                 instance.setId(input.getId());
                 instance.setAncestor(input);

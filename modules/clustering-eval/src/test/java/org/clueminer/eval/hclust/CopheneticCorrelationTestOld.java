@@ -58,27 +58,12 @@ public class CopheneticCorrelationTestOld {
         dataset.setAttribute(0, dataset.attributeBuilder().create("X", "NUMERIC"));
         dataset.setAttribute(1, dataset.attributeBuilder().create("Y", "NUMERIC"));
 
-        Instance i;
-        i = dataset.builder().create(new double[]{1, 1});
-        i.setName("A");
-        dataset.add(i);
-        i = dataset.builder().create(new double[]{1.5, 1.5});
-        i.setName("B");
-        dataset.add(i);
-        i = dataset.builder().create(new double[]{5, 5});
-        i.setName("C");
-        dataset.add(i);
-        i = dataset.builder().create(new double[]{3, 4});
-        i.setName("D");
-        dataset.add(i);
-        i = dataset.builder().create(new double[]{4, 4});
-        i.setName("E");
-        dataset.add(i);
-        i = dataset.builder().create(new double[]{3, 3.5});
-        i.setName("F");
-        dataset.add(i);
-
-        System.out.println("dataset size " + dataset.size());
+        dataset.builder().create(new double[]{1, 1}, "A");
+        dataset.builder().create(new double[]{1.5, 1.5}, "B");
+        dataset.builder().create(new double[]{5, 5}, "C");
+        dataset.builder().create(new double[]{3, 4}, "D");
+        dataset.builder().create(new double[]{4, 4}, "C");
+        dataset.builder().create(new double[]{3, 3.5}, "F");
 
         params = getParams();
     }

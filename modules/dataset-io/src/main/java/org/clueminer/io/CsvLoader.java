@@ -27,9 +27,9 @@ public class CsvLoader implements DatasetLoader {
     private char separator = ',';
     private char quotechar = '"';
     private int classIndex = -1;
-    private ArrayList<Integer> skipIndex = new ArrayList<Integer>();
-    private ArrayList<Integer> nameAttr = new ArrayList<Integer>();
-    private ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+    private ArrayList<Integer> skipIndex = new ArrayList<>();
+    private ArrayList<Integer> nameAttr = new ArrayList<>();
+    private ArrayList<Integer> metaAttr = new ArrayList<>();
     private Dataset<Instance> dataset;
     private String nameJoinChar = " ";
     private String defaultDataType = "NUMERICAL";
@@ -154,7 +154,6 @@ public class CsvLoader implements DatasetLoader {
                 if (metaAttr.size() > 0) {
                     inst.setMetaNum(meta);
                 }
-                dataset.add(inst);
                 num++;
             }
         }
@@ -167,7 +166,6 @@ public class CsvLoader implements DatasetLoader {
     }
 
     private void createAttributes(String[] line, boolean detectTypes) {
-        int j = 0;
         for (int i = 0; i < line.length; i++) {
             if (i != classIndex && !skipIndex.contains(i)) {
                 if (!detectTypes) {

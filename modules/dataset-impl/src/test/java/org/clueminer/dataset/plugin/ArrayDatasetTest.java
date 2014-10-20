@@ -553,7 +553,6 @@ public class ArrayDatasetTest {
     @Test
     public void testZeroCapacity() {
         dataset = new ArrayDataset<>(0, attributesCnt);
-        dataset.builder().create(new double[]{1, 2});
         dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
         dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
         rand = new Random();

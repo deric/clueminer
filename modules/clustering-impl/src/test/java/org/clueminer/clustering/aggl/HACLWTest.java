@@ -38,10 +38,10 @@ public class HACLWTest {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-        data.add(data.builder().create(new double[]{0, 0}));
-        data.add(data.builder().create(new double[]{1, 3}));
-        data.add(data.builder().create(new double[]{2, 2}));
-        data.add(data.builder().create(new double[]{2, 1}));
+        data.builder().create(new double[]{0, 0});
+        data.builder().create(new double[]{1, 3});
+        data.builder().create(new double[]{2, 2});
+        data.builder().create(new double[]{2, 1});
         return data;
     }
 
@@ -54,12 +54,12 @@ public class HACLWTest {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-        data.add(data.builder().create(new double[]{0.40, 0.53}));
-        data.add(data.builder().create(new double[]{0.22, 0.38}));
-        data.add(data.builder().create(new double[]{0.35, 0.32}));
-        data.add(data.builder().create(new double[]{0.26, 0.19}));
-        data.add(data.builder().create(new double[]{0.08, 0.41}));
-        data.add(data.builder().create(new double[]{0.45, 0.30}));
+        data.builder().create(new double[]{0.40, 0.53}, "1");
+        data.builder().create(new double[]{0.22, 0.38}, "2");
+        data.builder().create(new double[]{0.35, 0.32}, "3");
+        data.builder().create(new double[]{0.26, 0.19}, "4");
+        data.builder().create(new double[]{0.08, 0.41}, "5");
+        data.builder().create(new double[]{0.45, 0.30}, "6");
         return data;
     }
 
