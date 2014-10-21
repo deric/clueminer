@@ -3,6 +3,8 @@ package org.clueminer.clustering.aggl;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -22,6 +24,7 @@ import org.junit.Test;
 public class HACLWTest {
 
     private final HACLW subject = new HACLW();
+    private static double delta = 1e-9;
 
     public HACLWTest() {
     }
@@ -92,8 +95,11 @@ public class HACLWTest {
         assertEquals(similarityMatrix.rowsCount(), dataset.size());
         assertEquals(similarityMatrix.columnsCount(), dataset.size());
         System.out.println("kumar - single");
-        similarityMatrix.printLower(5, 2);
-        result.getTreeData().print();
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(0.215870331449522, root.getHeight(), delta);
     }
 
 }
