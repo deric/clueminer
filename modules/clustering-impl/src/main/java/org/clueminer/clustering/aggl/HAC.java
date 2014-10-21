@@ -71,7 +71,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             //columns clustering
             n = dataset.attributeCount();
         }
-        logger.log(Level.INFO, "clustering rows: {0} size: {1}", new Object[]{params.clusterRows(), n});
         logger.log(Level.INFO, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
