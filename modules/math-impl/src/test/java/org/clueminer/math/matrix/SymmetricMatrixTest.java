@@ -1,5 +1,6 @@
 package org.clueminer.math.matrix;
 
+import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -366,5 +367,16 @@ public class SymmetricMatrixTest {
      */
     @Test
     public void testTrace() {
+    }
+
+    @Test
+    public void testHas() {
+        Matrix m = new SymmetricMatrix(2, 2);
+        //check whether number could be stored in matrix on given indexes
+        assertEquals(true, m.has(0, 0));
+        assertEquals(false, m.has(-1, 0));
+        assertEquals(false, m.has(2, 0));
+        assertEquals(false, m.has(0, 2));
+        assertEquals(false, m.has(1, 6));
     }
 }

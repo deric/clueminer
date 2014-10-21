@@ -48,7 +48,6 @@ public class ArrayDatasetTest {
     @Before
     public void setUp() {
         dataset = new ArrayDataset<>(dataCapacity, attributesCnt);
-        dataset.builder().create(new double[]{1, 2});
         dataset.attributeBuilder().create("a1", "NUMERIC");
         dataset.attributeBuilder().create("a2", "NUMERIC");
         rand = new Random();
@@ -554,7 +553,6 @@ public class ArrayDatasetTest {
     @Test
     public void testZeroCapacity() {
         dataset = new ArrayDataset<>(0, attributesCnt);
-        dataset.builder().create(new double[]{1, 2});
         dataset.setAttribute(0, dataset.attributeBuilder().create("a1", "NUMERIC"));
         dataset.setAttribute(1, dataset.attributeBuilder().create("a2", "NUMERIC"));
         rand = new Random();
@@ -566,7 +564,7 @@ public class ArrayDatasetTest {
     public void testInstanceIndex() {
         Instance inst = dataset.get(0);
         assertEquals(0, inst.getIndex());
-        dataset.add(dataset.builder().create(new double[]{1.0, 2.0}));
+        dataset.builder().create(new double[]{1.0, 2.0});
         int index = dataset.size() - 1;
         inst = dataset.get(index);
         assertEquals(index, inst.getIndex());

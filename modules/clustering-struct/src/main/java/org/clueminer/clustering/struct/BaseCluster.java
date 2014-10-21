@@ -89,7 +89,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
             tmpOut[i] = sum / this.size();
 
         }
-        Instance avg = this.builder().create(tmpOut);
+        Instance avg = this.builder().build(tmpOut);
         centroid = (E) avg;
         //   }
 

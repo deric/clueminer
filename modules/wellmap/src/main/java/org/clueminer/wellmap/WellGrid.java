@@ -101,7 +101,7 @@ public class WellGrid extends JPanel {
         int transX = (int) Math.floor(pos);
         square = r + vgap;
         pos = (y - insets.top - legendHspace) / square;
-        int transY = (int) Math.floor(pos);        
+        int transY = (int) Math.floor(pos);
         return wellPosToId(transX, transY);
     }
 
@@ -109,7 +109,7 @@ public class WellGrid extends JPanel {
         int id = cols * row + column;
         if (id < 0 || id > maxId) {
             return -1;
-        }        
+        }
         return id;
     }
 
@@ -219,7 +219,7 @@ public class WellGrid extends JPanel {
      */
     public String numberToRowLabel(int row) {
         char sym;
-        // number of symbols in alphabet 
+        // number of symbols in alphabet
 
         if (row < alphCnt) {
             sym = (char) (charA + row);

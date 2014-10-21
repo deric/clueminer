@@ -16,70 +16,70 @@ public interface Matrix extends Serializable {
      *
      * @return
      */
-    public Matrix copy();
+    Matrix copy();
 
     /**
      * Access the internal two-dimensional array.
      *
      * @return Pointer to the two-dimensional array of matrix elements.
      */
-    public double[][] getArray();
+    double[][] getArray();
 
     /**
      * Deep copy the internal two-dimensional array.
      *
      * @return Two-dimensional array copy of matrix elements.
      */
-    public double[][] getArrayCopy();
+    double[][] getArrayCopy();
 
     /**
      * Get row dimension.
      *
      * @return m, the number of rows.
      */
-    public int rowsCount();
+    int rowsCount();
 
     /**
      * Get column dimension.
      *
      * @return n, the number of columns.
      */
-    public int columnsCount();
+    int columnsCount();
 
     /**
      * Make a one-dimensional column packed copy of the internal array.
      *
      * @return Matrix elements packed in a one-dimensional array by columns.
      */
-    public double[] getColumnPackedCopy();
+    double[] getColumnPackedCopy();
 
     /**
      * Make a one-dimensional row packed copy of the internal array.
      *
      * @return Matrix elements packed in a one-dimensional array by rows.
      */
-    public double[] getRowPackedCopy();
+    double[] getRowPackedCopy();
 
     /**
      * Matrix transpose.
      *
      * @return A'
      */
-    public Matrix transpose();
+    Matrix transpose();
 
     /**
      * One norm
      *
      * @return maximum column sum.
      */
-    public double norm1();
+    double norm1();
 
     /**
      * Two norm
      *
      * @return maximum singular value.
      */
-    public double norm2();
+    double norm2();
 
     /**
      * Get a single element.
@@ -89,21 +89,31 @@ public interface Matrix extends Serializable {
      * @return A(i,j)
      * @exception ArrayIndexOutOfBoundsException
      */
-    public double get(int i, int j);
+    double get(int i, int j);
+
+    /**
+     * Should check whether number with given row, column number could be stored
+     * in the matrix
+     *
+     * @param i
+     * @param j
+     * @return true when number is stored in matrix
+     */
+    boolean has(int i, int j);
 
     /**
      *
      * @param i
      * @return vector referencing Matrix row
      */
-    public MatrixVector getRowVector(int i);
+    MatrixVector getRowVector(int i);
 
     /**
      *
      * @param j
      * @return vector referencing Matrix column
      */
-    public MatrixVector getColumnVector(int j);
+    MatrixVector getColumnVector(int j);
 
     /**
      * Get a submatrix.
@@ -115,7 +125,7 @@ public interface Matrix extends Serializable {
      * @return A(i0:i1,j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public Matrix getMatrix(int i0, int i1, int j0, int j1);
+    Matrix getMatrix(int i0, int i1, int j0, int j1);
 
     /**
      * Get a submatrix.
@@ -125,29 +135,29 @@ public interface Matrix extends Serializable {
      * @return A(r(:),c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public Matrix getMatrix(int[] r, int[] c);
+    Matrix getMatrix(int[] r, int[] c);
 
     /**
      * Get a submatrix.
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c Array of column indices.
+     * @param c  Array of column indices.
      * @return A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public Matrix getMatrix(int i0, int i1, int[] c);
+    Matrix getMatrix(int i0, int i1, int[] c);
 
     /**
      * Get a submatrix.
      *
-     * @param r Array of row indices.
+     * @param r  Array of row indices.
      * @param i0 Initial column index
      * @param i1 Final column index
      * @return A(r(:),j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public Matrix getMatrix(int[] r, int j0, int j1);
+    Matrix getMatrix(int[] r, int j0, int j1);
 
     /**
      * Set a single element.
@@ -157,7 +167,7 @@ public interface Matrix extends Serializable {
      * @param s A(i,j).
      * @exception ArrayIndexOutOfBoundsException
      */
-    public void set(int i, int j, double s);
+    void set(int i, int j, double s);
 
     /**
      * Set a submatrix.
@@ -166,10 +176,10 @@ public interface Matrix extends Serializable {
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X A(i0:i1,j0:j1)
+     * @param X  A(i0:i1,j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public void setMatrix(int i0, int i1, int j0, int j1, Matrix X);
+    void setMatrix(int i0, int i1, int j0, int j1, Matrix X);
 
     /**
      * Set a submatrix.
@@ -179,50 +189,50 @@ public interface Matrix extends Serializable {
      * @param X A(r(:),c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public void setMatrix(int[] r, int[] c, Matrix X);
+    void setMatrix(int[] r, int[] c, Matrix X);
 
     /**
      * Set a submatrix.
      *
-     * @param r Array of row indices.
+     * @param r  Array of row indices.
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X A(r(:),j0:j1)
+     * @param X  A(r(:),j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public void setMatrix(int[] r, int j0, int j1, Matrix X);
+    void setMatrix(int[] r, int j0, int j1, Matrix X);
 
     /**
      * Set a submatrix.
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c Array of column indices.
-     * @param X A(i0:i1,c(:))
+     * @param c  Array of column indices.
+     * @param X  A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    public void setMatrix(int i0, int i1, int[] c, Matrix X);
+    void setMatrix(int i0, int i1, int[] c, Matrix X);
 
     /**
      * Infinity norm
      *
      * @return maximum row sum.
      */
-    public double normInf();
+    double normInf();
 
     /**
      * Frobenius norm
      *
      * @return sqrt of sum of squares of all elements.
      */
-    public double normF();
+    double normF();
 
     /**
      * Unary minus
      *
      * @return -A
      */
-    public Matrix uminus();
+    Matrix uminus();
 
     /**
      * C = A + B
@@ -230,7 +240,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A + B
      */
-    public Matrix plus(Matrix B);
+    Matrix plus(Matrix B);
 
     /**
      * A = A + B
@@ -238,7 +248,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A + B
      */
-    public Matrix plusEquals(Matrix B);
+    Matrix plusEquals(Matrix B);
 
     /**
      * C = A - B
@@ -246,7 +256,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A - B
      */
-    public Matrix minus(Matrix B);
+    Matrix minus(Matrix B);
 
     /**
      * A = A - B
@@ -254,7 +264,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A - B
      */
-    public Matrix minusEquals(Matrix B);
+    Matrix minusEquals(Matrix B);
 
     /**
      * Element-by-element multiplication, C = A.*B
@@ -262,7 +272,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A.*B
      */
-    public Matrix arrayTimes(Matrix B);
+    Matrix arrayTimes(Matrix B);
 
     /**
      * Element-by-element multiplication in place, A = A.*B
@@ -270,7 +280,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A.*B
      */
-    public Matrix arrayTimesEquals(Matrix B);
+    Matrix arrayTimesEquals(Matrix B);
 
     /**
      * Element-by-element right division, C = A./B
@@ -278,7 +288,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A./B
      */
-    public Matrix arrayRightDivide(Matrix B);
+    Matrix arrayRightDivide(Matrix B);
 
     /**
      * Element-by-element right division in place, A = A./B
@@ -286,7 +296,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A./B
      */
-    public Matrix arrayRightDivideEquals(Matrix B);
+    Matrix arrayRightDivideEquals(Matrix B);
 
     /**
      * Element-by-element left division, C = A.\B
@@ -294,7 +304,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A.\B
      */
-    public Matrix arrayLeftDivide(Matrix B);
+    Matrix arrayLeftDivide(Matrix B);
 
     /**
      * Element-by-element left division in place, A = A.\B
@@ -302,7 +312,7 @@ public interface Matrix extends Serializable {
      * @param B another matrix
      * @return A.\B
      */
-    public Matrix arrayLeftDivideEquals(Matrix B);
+    Matrix arrayLeftDivideEquals(Matrix B);
 
     /**
      * Multiply a matrix by a scalar, C = s*A
@@ -310,7 +320,7 @@ public interface Matrix extends Serializable {
      * @param s scalar
      * @return s*A
      */
-    public Matrix times(double s);
+    Matrix times(double s);
 
     /**
      * Multiply a matrix by a scalar in place, A = s*A
@@ -318,7 +328,7 @@ public interface Matrix extends Serializable {
      * @param s scalar
      * @return replace A by s*A
      */
-    public Matrix timesEquals(double s);
+    Matrix timesEquals(double s);
 
     /**
      * Linear algebraic matrix multiplication, A * B
@@ -327,7 +337,7 @@ public interface Matrix extends Serializable {
      * @return Matrix product, A * B
      * @exception IllegalArgumentException Matrix inner dimensions must agree.
      */
-    public Matrix times(Matrix B);
+    Matrix times(Matrix B);
 
     /**
      * LU Decomposition
@@ -335,7 +345,7 @@ public interface Matrix extends Serializable {
      * @return LUDecomposition
      * @see LUDecomposition
      */
-    public LUDecomposition lu();
+    LUDecomposition lu();
 
     /**
      * QR Decomposition
@@ -343,7 +353,7 @@ public interface Matrix extends Serializable {
      * @return QRDecomposition
      * @see QRDecomposition
      */
-    public QRDecomposition qr();
+    QRDecomposition qr();
 
     /**
      * Cholesky Decomposition
@@ -351,7 +361,7 @@ public interface Matrix extends Serializable {
      * @return CholeskyDecomposition
      * @see CholeskyDecomposition
      */
-    public CholeskyDecomposition chol();
+    CholeskyDecomposition chol();
 
     /**
      * Singular Value Decomposition
@@ -359,7 +369,7 @@ public interface Matrix extends Serializable {
      * @return SingularValueDecompositionImpl
      * @see SingularValueDecompositionImpl
      */
-    public SingularValueDecomposition svd();
+    SingularValueDecomposition svd();
 
     /**
      * Eigenvalue Decomposition
@@ -367,7 +377,7 @@ public interface Matrix extends Serializable {
      * @return EigenvalueDecomposition
      * @see EigenvalueDecomposition
      */
-    public EigenvalueDecomposition eig();
+    EigenvalueDecomposition eig();
 
     /**
      * Solve A*X = B
@@ -375,7 +385,7 @@ public interface Matrix extends Serializable {
      * @param B right hand side
      * @return solution if A is square, least squares solution otherwise
      */
-    public Matrix solve(Matrix B);
+    Matrix solve(Matrix B);
 
     /**
      * Solve X*A = B, which is also A'*X' = B'
@@ -383,42 +393,42 @@ public interface Matrix extends Serializable {
      * @param B right hand side
      * @return solution if A is square, least squares solution otherwise.
      */
-    public Matrix solveTranspose(Matrix B);
+    Matrix solveTranspose(Matrix B);
 
     /**
      * Matrix inverse or pseudoinverse
      *
      * @return inverse(A) if A is square, pseudoinverse otherwise.
      */
-    public Matrix inverse();
+    Matrix inverse();
 
     /**
      * Matrix determinant
      *
      * @return determinant
      */
-    public double det();
+    double det();
 
     /**
      * Matrix rank
      *
      * @return effective numerical rank, obtained from SVD.
      */
-    public int rank();
+    int rank();
 
     /**
      * Matrix condition (2 norm)
      *
      * @return ratio of largest to smallest singular value.
      */
-    public double cond();
+    double cond();
 
     /**
      * Matrix trace.
      *
      * @return sum of the diagonal elements.
      */
-    public double trace();
+    double trace();
 
     /**
      * Print the matrix to stdout. Line the elements up in columns with a
@@ -427,7 +437,7 @@ public interface Matrix extends Serializable {
      * @param w Column width.
      * @param d Number of digits after the decimal.
      */
-    public void print(int w, int d);
+    void print(int w, int d);
 
     /**
      * Print upper matrix without numbers on diagonal
@@ -435,7 +445,7 @@ public interface Matrix extends Serializable {
      * @param w column width
      * @param d number of decimal digits
      */
-    public void printUpper(int w, int d);
+    void printUpper(int w, int d);
 
     /**
      * Print lower matrix without numbers on diagonal
@@ -443,17 +453,17 @@ public interface Matrix extends Serializable {
      * @param w column width
      * @param d number of decimal digits
      */
-    public void printLower(int w, int d);
+    void printLower(int w, int d);
 
     /**
      * Print the matrix to the output stream. Line the elements up in columns
      * with a Fortran-like 'Fw.d' style format.
      *
      * @param output Output stream.
-     * @param w Column width.
-     * @param d Number of digits after the decimal.
+     * @param w      Column width.
+     * @param d      Number of digits after the decimal.
      */
-    public void print(PrintWriter output, int w, int d);
+    void print(PrintWriter output, int w, int d);
 
     /**
      * Print the matrix to stdout. Line the elements up in columns. Use the
@@ -462,10 +472,10 @@ public interface Matrix extends Serializable {
      * NumberFormat that is set to US Locale.
      *
      * @param format A Formatting object for individual elements.
-     * @param width Field width for each column.
+     * @param width  Field width for each column.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
-    public void print(NumberFormat format, int width);
+    void print(NumberFormat format, int width);
 
     // DecimalFormat is a little disappointing coming from Fortran or C's printf.
     // Since it doesn't pad on the left, the elements will come out different
@@ -479,8 +489,8 @@ public interface Matrix extends Serializable {
      *
      * @param output the output stream.
      * @param format A formatting object to format the matrix elements
-     * @param width Column width.
+     * @param width  Column width.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
-    public void print(PrintWriter output, NumberFormat format, int width);
+    void print(PrintWriter output, NumberFormat format, int width);
 }

@@ -50,7 +50,7 @@ public class TimeseriesDatasetTest {
             for (int j = 0; j < data.length; j++) {
                 data[j] = Math.random();
             }
-            dataset.add((ContinuousInstance) builder.create(data));
+            builder.create(data);
         }
     }
 
@@ -163,7 +163,7 @@ public class TimeseriesDatasetTest {
         }
         double max = Math.random() * 100000;
         data[0] = max;
-        dataset.add((ContinuousInstance) dataset.builder().create(data));
+        dataset.builder().create(data);
         assertEquals(max, dataset.getMax(), delta);
     }
 

@@ -55,7 +55,7 @@ public class Element implements Comparable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Element [ ");
-        sb.append(value).append(" (").append(row).append(", ").append(column);
+        sb.append(String.format("%.2f", value)).append(" (").append(row).append(", ").append(column);
         sb.append(")]");
         return sb.toString();
     }

@@ -14,18 +14,21 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.*;
 
 /**
  * TestMatrix tests the functionality of the Jama Matrix class and associated
- * decompositions. <P> Run the test from the command line using <BLOCKQUOTE><PRE><CODE>
+ * decompositions.
+ * <P>
+ * Run the test from the command line using <BLOCKQUOTE><PRE><CODE>
  * java Jama.test.TestMatrix
  * </CODE></PRE></BLOCKQUOTE>
  *
  *
  * Detailed output is provided indicating the functionality being tested and
  * whether the functionality is correctly implemented. Exception handling is
- * also tested. <P> The test is designed to run to completion and give a summary
+ * also tested.
+ * <P>
+ * The test is designed to run to completion and give a summary
  * of any implementation errors encountered. The final output should be:
  *
  *
@@ -142,10 +145,10 @@ public class JMatrixTest {
              */
             A = new JMatrix(columnwise, invalidld);
             errorCount = try_failure(errorCount, "Catch invalid length in packed constructor... ",
-                    "exception not thrown for invalid input");
+                                     "exception not thrown for invalid input");
         } catch (IllegalArgumentException e) {
             try_success("Catch invalid length in packed constructor... ",
-                    e.getMessage());
+                        e.getMessage());
         }
         try {
             /**
@@ -156,10 +159,10 @@ public class JMatrixTest {
             tmp = A.get(raggedr, raggedc);
         } catch (IllegalArgumentException e) {
             try_success("Catch ragged input to default constructor... ",
-                    e.getMessage());
+                        e.getMessage());
         } catch (java.lang.ArrayIndexOutOfBoundsException e) {
             errorCount = try_failure(errorCount, "Catch ragged input to constructor... ",
-                    "exception not thrown in construction...ArrayIndexOutOfBoundsException thrown later");
+                                     "exception not thrown in construction...ArrayIndexOutOfBoundsException thrown later");
         }
         try {
             /**
@@ -648,7 +651,6 @@ public class JMatrixTest {
         } catch (java.lang.RuntimeException e) {
             errorCount = try_failure(errorCount, "arrayTimesEquals... ", "(A = R, A = A.*B, but A./B != R)");
         }
-
 
         /**
          * LA methods: transpose times cond rank det trace norm1 norm2 normF
@@ -1184,6 +1186,16 @@ public class JMatrixTest {
      */
     @Test
     public void testDet() {
+    }
+
+    @Test
+    public void testHas() {
+        Matrix a = new JMatrix(2, 2);
+        //check whether number could be stored in matrix on given indexes
+        assertEquals(true, a.has(0, 0));
+        assertEquals(false, a.has(-1, 0));
+        assertEquals(false, a.has(2, 0));
+        assertEquals(false, a.has(0, 2));
     }
 
     /**

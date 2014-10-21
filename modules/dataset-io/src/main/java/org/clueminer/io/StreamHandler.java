@@ -5,7 +5,6 @@ import be.abeel.io.LineIterator;
 import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.openide.util.Exceptions;
 
 /**
  * Simple dataset parser
@@ -103,7 +102,7 @@ public class StreamHandler {
                 }
             }
             //creates an Instance of preferred type (dense, sparse, array based etc.)
-            out.add(out.builder().create(values, classValue));
+            out.builder().create(values, classValue);
 
         }
         return true;

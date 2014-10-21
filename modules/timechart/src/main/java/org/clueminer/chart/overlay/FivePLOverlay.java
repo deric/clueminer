@@ -174,7 +174,7 @@ public class FivePLOverlay extends AbstractOverlay implements Overlay {
         //TODO: deal with different types of datasets
         TimeseriesDataset<? extends Instance> ts = (TimeseriesDataset<? extends Instance>) dataset;
         xAxis = ts.getTimePointsArray();
-        approxData = new AttrHashDataset<Instance>(dataset.size());
+        approxData = new AttrHashDataset<>(dataset.size());
         int i = 0;
         for (String attr : approximator.getParamNames()) {
             approxData.attributeBuilder().create(attr, "NUMERIC");

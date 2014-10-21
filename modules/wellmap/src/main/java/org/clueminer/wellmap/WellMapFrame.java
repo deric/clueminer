@@ -150,7 +150,7 @@ public class WellMapFrame extends JLayeredPane implements DatasetListener, Seria
     }
 
     public int wellPosToId(int row, int column) {
-        return grid.wellPosToId(row, column);
+        return grid.wellPosToId(column, row);
     }
 
     public String numberToRowLabel(int row) {

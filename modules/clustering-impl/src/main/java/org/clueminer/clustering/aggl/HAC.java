@@ -118,14 +118,14 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size());
+            System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.2f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
 
-                //System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
+                System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
                 blacklist.add(curr.getRow());
                 blacklist.add(curr.getColumn());
 

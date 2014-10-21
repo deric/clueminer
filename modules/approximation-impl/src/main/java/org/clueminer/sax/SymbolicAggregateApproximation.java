@@ -69,9 +69,7 @@ public class SymbolicAggregateApproximation {
                 // perform the transformation
                 String[] SAXValue = {new String(TSUtils.ts2String(TSUtils.paa(timeSeries, PAASize), normalAlphabet, alphabetSize))};
 
-                Instance row = output.builder().create(SAXValue, SAXAttributes);
-                output.add(row);
-
+                output.builder().create(SAXValue, SAXAttributes);
                 //                System.out.println(SAXValue);
             } catch (Exception e) {
                 System.err.println(e);

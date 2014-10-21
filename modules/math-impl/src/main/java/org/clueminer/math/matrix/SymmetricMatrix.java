@@ -328,4 +328,10 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
         }
         return A;
     }
+
+    @Override
+    public boolean has(int i, int j) {
+        int mapped = map(i, j);
+        return mapped < A.length && mapped >= 0;
+    }
 }

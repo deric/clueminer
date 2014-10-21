@@ -156,17 +156,17 @@ public class FakeClustering {
 
             String klass = "cabernet";
             for (int i = 0; i < 13; i++) {
-                wine.add(wine.builder().create(new double[]{i}, klass));
+                wine.builder().create(new double[]{i}, klass);
             }
 
             String klass2 = "syrah";
             for (int i = 0; i < 9; i++) {
-                wine.add(wine.builder().create(new double[]{i * 3 + 13}, klass2));
+                wine.builder().create(new double[]{i * 3 + 13}, klass2);
             }
 
             String klass3 = "pinot";
             for (int i = 0; i < 5; i++) {
-                wine.add(wine.builder().create(new double[]{i * 4 + 50}, klass3));
+                wine.builder().create(new double[]{i * 4 + 50}, klass3);
             }
         }
 

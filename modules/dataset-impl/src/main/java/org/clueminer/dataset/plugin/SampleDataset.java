@@ -153,7 +153,6 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
             //doesn't make sense to create instance with 0 attributes
             int attrs = attributeCount() == 0 ? attrCapacity : attributeCount();
             E inst = (E) builder().create(attrs);
-            add(inst);
             return inst;
         }
         throw new ArrayIndexOutOfBoundsException("can't get instance at position: " + index);
@@ -271,7 +270,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     @Override
     public InstanceBuilder builder() {
         if (builder == null) {
-            builder = new DoubleArrayFactory('.');
+            builder = new DoubleArrayFactory(this, '.');
         }
         return builder;
     }

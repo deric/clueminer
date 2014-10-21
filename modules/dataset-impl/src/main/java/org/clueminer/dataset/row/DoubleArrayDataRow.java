@@ -11,7 +11,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Double>, Vector<Double> {
+public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Double>, Vector<Double>, Instance<Double> {
 
     private static final long serialVersionUID = -4054619137644952331L;
     /**

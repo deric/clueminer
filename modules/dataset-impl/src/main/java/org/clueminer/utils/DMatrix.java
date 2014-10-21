@@ -196,4 +196,9 @@ public class DMatrix extends AbstractMatrix implements Matrix {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean has(int i, int j) {
+        return i < dataset.size() && j < dataset.attributeCount() && i >= 0 && j >= 0;
+    }
+
 }

@@ -38,13 +38,13 @@ public class OnDiskMatrix implements Matrix {
      * The number of bytes in a double.
      */
     private static final int BYTES_PER_DOUBLE = 8;
-    private static final int MAX_ELEMENTS_PER_REGION =
-            Integer.MAX_VALUE / BYTES_PER_DOUBLE;
+    private static final int MAX_ELEMENTS_PER_REGION
+            = Integer.MAX_VALUE / BYTES_PER_DOUBLE;
     private static final long serialVersionUID = -4602524593724901641L;
     /**
      * The on-disk storage space for the matrix
      */
-    //private final RandomAccessFile matrix; 
+    //private final RandomAccessFile matrix;
     private final DoubleBuffer[] matrixRegions;
     /**
      * The {@code File} instances that back the matrix regions
@@ -74,12 +74,11 @@ public class OnDiskMatrix implements Matrix {
         this.cols = cols;
 
         // Determine how big the array will need to be
-
         // Note that to map the array into memory, we have to avoid the case
         // where any mapped part of the array is larger than Integer.MAX_VALUE.
         // Therefore, divide the array up into regions less than this size.
-        int numRegions =
-                (int) (((long) rows * cols) / MAX_ELEMENTS_PER_REGION) + 1;
+        int numRegions
+                = (int) (((long) rows * cols) / MAX_ELEMENTS_PER_REGION) + 1;
         matrixRegions = new DoubleBuffer[numRegions];
         backingFiles = new File[numRegions];
         for (int region = 0; region < numRegions; ++region) {
@@ -105,8 +104,8 @@ public class OnDiskMatrix implements Matrix {
             f.deleteOnExit();
             RandomAccessFile raf = new RandomAccessFile(f, "rw");
             FileChannel fc = raf.getChannel();
-            DoubleBuffer contextBuffer =
-                    fc.map(FileChannel.MapMode.READ_WRITE, 0, size).asDoubleBuffer();
+            DoubleBuffer contextBuffer
+                    = fc.map(FileChannel.MapMode.READ_WRITE, 0, size).asDoubleBuffer();
             fc.close();
             return new Duple<DoubleBuffer, File>(contextBuffer, f);
         } catch (IOException ioe) {
@@ -569,6 +568,11 @@ public class OnDiskMatrix implements Matrix {
 
     @Override
     public void printLower(int w, int d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean has(int i, int j) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

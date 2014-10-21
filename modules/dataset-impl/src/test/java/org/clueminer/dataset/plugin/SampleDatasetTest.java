@@ -19,7 +19,7 @@ import org.junit.Test;
 public class SampleDatasetTest {
 
     private static SampleDataset<Instance> dataset;
-    private static final double delta = 1e-7;
+    private static final double delta = 1e-9;
 
     public SampleDatasetTest() {
     }
@@ -41,14 +41,10 @@ public class SampleDatasetTest {
         dataset.setAttribute(2, builder.create("third", BasicAttrType.NUMERICAL));
         //dataset.attributeBuilder().create("class", DataTypes.CLASS_VALUE);
 
-        Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.5, 3.0, 8});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.3, 3.2, 8});
-        dataset.add(inst);
-        inst = dataset.builder().create(new double[]{0.1, 4.0, 15});
-        dataset.add(inst);
+        dataset.builder().create(new double[]{0.1, 0.5, 3});
+        dataset.builder().create(new double[]{0.5, 3.0, 8});
+        dataset.builder().create(new double[]{0.3, 3.2, 8});
+        dataset.builder().create(new double[]{0.1, 4.0, 15});
 
         dataset.setName("test dataset");
     }
@@ -82,10 +78,10 @@ public class SampleDatasetTest {
      */
     @Test
     public void testCheck_Instance() {
-        Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});
+        Instance inst = dataset.builder().build(new double[]{0.1, 0.5, 3});
         assertEquals(3, inst.size());
         dataset.check(inst);
-        Instance inst2 = dataset.builder().create(new double[]{1, 5});
+        Instance inst2 = dataset.builder().build(new double[]{1, 5});
         //adding less attributes should be OK
         dataset.check(inst2);
     }
@@ -107,10 +103,10 @@ public class SampleDatasetTest {
     public void testAdd_int_Instance() {
         int datasetSizeBefore = dataset.size();
         //we add instance at first position
-        Instance inst = dataset.builder().create(new double[]{0.1, 0.5, 3});
+        Instance inst = dataset.builder().build(new double[]{0.1, 0.5, 3});
         dataset.add(0, inst);
         //inserting instance at the same position should cause shifting
-        Instance inst2 = dataset.builder().create(new double[]{1, 5});
+        Instance inst2 = dataset.builder().build(new double[]{1, 5});
         dataset.add(0, inst2);
 
         //so second is first
@@ -150,7 +146,7 @@ public class SampleDatasetTest {
         int sizeBefore = dataset.size();
         int max = 10;
         for (int i = 0; i < max; i++) {
-            Instance inst = dataset.builder().create(dataset.attributeCount());
+            Instance inst = dataset.builder().build(dataset.attributeCount());
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 inst.set(j, rand.nextDouble());
                 //System.out.println(inst);
@@ -254,8 +250,7 @@ public class SampleDatasetTest {
         Dataset<Instance> copy = dataset.copy();
         assertEquals(dataset.size(), copy.size());
         assertEquals(dataset.attributeCount(), copy.attributeCount());
-        Instance inst = copy.builder().create(new double[]{0.1, 0.5, 3});
-        copy.add(inst);
+        copy.builder().create(new double[]{0.1, 0.5, 3});
         assertEquals(dataset.size() + 1, copy.size());
     }
 
@@ -268,8 +263,7 @@ public class SampleDatasetTest {
         //should copy only structure of dataset but not data itself
         assertEquals(0, dupl.size());
         assertEquals(dataset.attributeCount(), dupl.attributeCount());
-        Instance inst = dupl.builder().create(new double[]{0.1, 0.5, 3});
-        dupl.add(inst);
+        dupl.builder().create(new double[]{0.1, 0.5, 3});
         assertEquals(1, dupl.size());
     }
 

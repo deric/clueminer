@@ -21,10 +21,19 @@ public class QuadruplicateNormalization extends Normalization implements DataTra
 
     private static final String name = "David's normalization";
     private static final Logger logger = Logger.getLogger(QuadruplicateNormalization.class.getName());
+    //background column
+    private int backPos = 44;
+    //top column
+    private int topPos = 45;
 
     @Override
     public String getName() {
         return name;
+    }
+
+    public void setNormCols(int top, int back) {
+        this.backPos = back;
+        this.topPos = top;
     }
 
     @Override
@@ -51,7 +60,7 @@ public class QuadruplicateNormalization extends Normalization implements DataTra
             for (int j = 0; j < 4; j++) {
                 pos = i + j;
 
-                control2 = plate.instance(translatePosition(pos, 45, colCnt));
+                control2 = plate.instance(translatePosition(pos, topPos, colCnt));
                 posCtrl += control2.value(positiveTimepoint);
 
             }
@@ -62,7 +71,7 @@ public class QuadruplicateNormalization extends Normalization implements DataTra
 
                 for (int j = 0; j < 4; j++) {
                     pos = i + j;
-                    control1 = plate.instance(translatePosition(pos, 44, colCnt));
+                    control1 = plate.instance(translatePosition(pos, backPos, colCnt));
                     //  System.out.println("control: " + control1.getFullName() + " - " + control1.toString());
                     sum += control1.value(k);
                     //System.out.println("well " + control1.getName() + " = " + control1.value(k));
