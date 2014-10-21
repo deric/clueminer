@@ -14,7 +14,7 @@ public class KNN {
     /**
      * Number of neighbours for each item
      */
-    private int numberOfNeighbours;
+    private int k;
 
     /**
      * storage for neighbours of each node
@@ -23,7 +23,7 @@ public class KNN {
 
     Dataset<? extends Instance> input;
 
-    private DistanceMeasure distanceMeasure;
+    private DistanceMeasure dm;
 
     public KNN() {
         this(3);
@@ -34,25 +34,25 @@ public class KNN {
     }
 
     public KNN(int k, DistanceMeasure dm) {
-        numberOfNeighbours = k;
-        distanceMeasure = dm;
+        this.k = k;
+        this.dm = dm;
     }
 
     /**
      * Find k neighbours of all items in the dataset
-     * 
+     *
      * @param dataset input dataset
-     * @return 
+     * @return
      */
     public int[][] findNeighbours(Dataset<? extends Instance> dataset) {
         input = dataset;
-        if (numberOfNeighbours >= input.size()) {
+        if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
-        nearests = new int[input.size()][numberOfNeighbours];
+        nearests = new int[input.size()][k];
         for (int i = 0; i < input.size(); i++) {
             //put first k neighbours into array and sort them
-            int firsts = numberOfNeighbours;
+            int firsts = k;
             int index = 0;
             for (int j = 0; j < firsts; j++) {
                 //skip self as neighbour 
@@ -64,16 +64,18 @@ public class KNN {
                 insert(index, i);
                 index++;
             }
-            //neigbour array full, find closer neighbours from the rest of the dataset
-            for (int j = index; j < input.size(); j++) {
+            double maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
+            //neighbour array full, find closer neighbours from the rest of the dataset
+            for (int j = firsts; j < input.size(); j++) {
                 //skip self as neighbour
                 if (i == j) {
                     continue;
                 }
                 //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
-                if (distanceMeasure.measure(input.instance(i), input.instance(j)) < distanceMeasure.measure(input.instance(i), input.instance(nearests[i][numberOfNeighbours - 1]))) {
-                    nearests[i][numberOfNeighbours - 1] = j;
-                    insert(numberOfNeighbours - 1, i);
+                if (dm.measure(input.instance(i), input.instance(j)) < maxMinimalDistance ) {
+                    nearests[i][k - 1] = j;
+                    insert(k - 1, i);
+                    maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
                 }
             }
         }
@@ -82,12 +84,13 @@ public class KNN {
 
     /**
      * Sort neighbours in ascending order by distance to central node
-     * 
+     *
      * @param pos Position of the last element in array with neighbours
      * @param i Number of central cluster to which neighbours are assigned
      */
     private void insert(int pos, int i) {
-        while (pos > 0 && distanceMeasure.measure(input.instance(i), input.instance(nearests[i][pos])) < distanceMeasure.measure(input.instance(i), input.instance(nearests[i][pos - 1]))) {
+        while (pos > 0 && dm.measure(input.instance(i), input.instance(nearests[i][pos]))
+                < dm.measure(input.instance(i), input.instance(nearests[i][pos - 1]))) {
             int temp = nearests[i][pos];
             nearests[i][pos] = nearests[i][pos - 1];
             nearests[i][pos - 1] = temp;
