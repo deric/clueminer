@@ -32,8 +32,8 @@ public class Run {
 
     private Evolution test;
     //table for keeping results from experiments
-    private Table<String, String, Double> table;
-    private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets = new HashMap<String, Map.Entry<Dataset<Instance>, Integer>>();
+    private final Table<String, String, Double> table;
+    private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets = new HashMap<>();
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
@@ -43,16 +43,16 @@ public class Run {
         table = Tables.newCustomTable(
                 Maps.<String, Map<String, Double>>newHashMap(),
                 new Supplier<Map<String, Double>>() {
-            @Override
-            public Map<String, Double> get() {
-                return Maps.newHashMap();
-            }
-        });
+                    @Override
+                    public Map<String, Double> get() {
+                        return Maps.newHashMap();
+                    }
+                });
 
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         createFolder(home);
         benchmarkFolder = home + File.separatorChar + "benchmark";
         createFolder(benchmarkFolder);
@@ -92,39 +92,43 @@ public class Run {
             arg = args[i++];
 
             // use this type of check for "wordy" arguments
-            if (arg.equals("-verbose")) {
-                System.out.println("verbose mode on");
-                vflag = true;
-            } // use this type of check for arguments that require arguments
-            else if (arg.equals("-dataset")) {
-                if (i < args.length) {
-                    datasetName = args[i++];
-                } else {
-                    System.err.println("-dataset requires a name");
-                }
-                if (vflag) {
-                    System.out.println("dataset = " + datasetName);
-                }
-            } // use this type of check for a series of flag arguments
-            else {
-                for (j = 1; j < arg.length(); j++) {
-                    flag = arg.charAt(j);
-                    switch (flag) {
-                        case 'x':
-                            if (vflag) {
-                                System.out.println("Option x");
-                            }
-                            break;
-                        case 'n':
-                            if (vflag) {
-                                System.out.println("Option n");
-                            }
-                            break;
-                        default:
-                            System.err.println("Run: illegal option " + flag);
-                            break;
+            switch (arg) {
+                // use this type of check for arguments that require arguments
+                case "-verbose":
+                    System.out.println("verbose mode on");
+                    vflag = true;
+                    break;
+                // use this type of check for a series of flag arguments
+                case "-dataset":
+                    if (i < args.length) {
+                        datasetName = args[i++];
+                    } else {
+                        System.err.println("-dataset requires a name");
                     }
-                }
+                    if (vflag) {
+                        System.out.println("dataset = " + datasetName);
+                    }
+                    break;
+                default:
+                    for (j = 1; j < arg.length(); j++) {
+                        flag = arg.charAt(j);
+                        switch (flag) {
+                            case 'x':
+                                if (vflag) {
+                                    System.out.println("Option x");
+                                }
+                                break;
+                            case 'n':
+                                if (vflag) {
+                                    System.out.println("Option n");
+                                }
+                                break;
+                            default:
+                                System.err.println("Run: illegal option " + flag);
+                                break;
+                        }
+                    }
+                    break;
             }
         }
         if (i == args.length) {
@@ -136,7 +140,7 @@ public class Run {
     }
 
     public void execute(String datasetName) {
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
         if (availableDatasets.containsKey(datasetName)) {
             Map.Entry<Dataset<Instance>, Integer> entry = availableDatasets.get(datasetName);
             datasets.put(entry.getKey(), entry.getValue());
