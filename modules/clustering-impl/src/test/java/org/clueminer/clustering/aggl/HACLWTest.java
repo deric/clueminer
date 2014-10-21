@@ -102,4 +102,22 @@ public class HACLWTest {
         assertEquals(0.215870331449522, root.getHeight(), delta);
     }
 
+    @Test
+    public void testSingleLinkageSchool() {
+        Dataset<? extends Instance> dataset = HACTest.schoolData();
+        assertEquals(17, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        System.out.println("school - single");
+        DendroTreeData tree = result.getTreeData();
+        Matrix similarityMatrix = result.getProximityMatrix();
+        similarityMatrix.printLower(5, 2);
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(47.18370587395614, root.getHeight(), delta);
+    }
+
 }

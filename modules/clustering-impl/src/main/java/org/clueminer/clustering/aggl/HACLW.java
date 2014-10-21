@@ -49,10 +49,20 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         Iterator<Integer> it = mergedCluster.iterator();
         int a = it.next();
         int b = it.next();
+        Set<Integer> clusterMembers;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage, cache);
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
+            clusterMembers = cluster.getValue();
+            //each item is at the begining cluster by itself
+            if (clusterMembers.size() > 1) {
+                for (Integer id : clusterMembers) {
+                    distance = updateProximity(mergedId, id, a, b, similarityMatrix, linkage, cache);
+                    current = new Element(distance, mergedId, cluster.getKey());
+                    pq.add(current);
+                }
+            }
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
@@ -102,7 +112,8 @@ public class HACLW extends HAC implements AgglomerativeClustering {
     private double fetchDist(int x, int y, Matrix sim, HashMap<Integer, Double> cache) {
         double res;
         if (!sim.has(x, y)) {
-            res = cache.get(map(x, y));
+            int mapped = map(x, y);
+            res = cache.get(mapped);
         } else {
             res = sim.get(x, y);
         }
