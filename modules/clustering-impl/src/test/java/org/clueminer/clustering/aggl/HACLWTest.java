@@ -38,10 +38,10 @@ public class HACLWTest {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-        data.builder().create(new double[]{0, 0});
-        data.builder().create(new double[]{1, 3});
-        data.builder().create(new double[]{2, 2});
-        data.builder().create(new double[]{2, 1});
+        data.builder().create(new double[]{0, 0}, "A");
+        data.builder().create(new double[]{1, 3}, "B");
+        data.builder().create(new double[]{2, 2}, "C");
+        data.builder().create(new double[]{2, 1}, "D");
         return data;
     }
 
@@ -74,12 +74,12 @@ public class HACLWTest {
         assertNotNull(similarityMatrix);
         assertEquals(similarityMatrix.rowsCount(), dataset.size());
         assertEquals(similarityMatrix.columnsCount(), dataset.size());
-
+        System.out.println("simple data - 4 points");
         similarityMatrix.printLower(5, 2);
         result.getTreeData().print();
     }
 
-    //@Test
+    @Test
     public void testSingleLinkage() {
         Dataset<? extends Instance> dataset = kumarData();
         assertEquals(6, dataset.size());
