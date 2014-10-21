@@ -42,6 +42,7 @@ public class KNN {
      * Find k neighbours of all items in the dataset
      * 
      * @param dataset input dataset
+     * @return 
      */
     public int[][] findNeighbours(Dataset<? extends Instance> dataset) {
         input = dataset;
@@ -82,7 +83,7 @@ public class KNN {
     /**
      * Sort neighbours in ascending order by distance to central node
      * 
-     * @param pos Position of the last element in array with results
+     * @param pos Position of the last element in array with neighbours
      * @param i Number of central cluster to which neighbours are assigned
      */
     private void insert(int pos, int i) {
