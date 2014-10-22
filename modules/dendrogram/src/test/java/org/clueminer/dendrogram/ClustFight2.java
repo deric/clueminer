@@ -7,7 +7,7 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
@@ -19,25 +19,24 @@ import org.openide.util.RequestProcessor;
 
 /**
  *
- * @author deric
+ * @author Tomas Barton
  */
-public class ClustFight extends JFrame {
+public class ClustFight2 extends JFrame {
 
     private static final long serialVersionUID = -8137741651924993813L;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private DendroPanel panel1;
     private DendroPanel panel2;
 
-    public ClustFight() throws Exception {
+    public ClustFight2() throws Exception {
         super("ClustFight Frame");
         initComponents();
 
         RP.execute(new Runnable() {
             @Override
             public void run() {
-                panel1.setAlgorithm(new HCL());
-                //panel2.setAlgorithm(new HACLW());
-                panel2.setAlgorithm(new HAC());
+                panel1.setAlgorithm(new HAC());
+                panel2.setAlgorithm(new HACLW());
                 DendrogramMapping res1 = panel1.execute();
                 DendrogramMapping res2 = panel2.execute();
                 OptimalTreeOrder order = new MOLO();
@@ -45,6 +44,7 @@ public class ClustFight extends JFrame {
                 order.optimize(res1.getRowsResult());
                 order.optimize(res1.getColsResult());
                 panel1.viewer.fireColumnsMappingChanged(order, res1.getColsResult());
+                panel1.viewer.fireRowMappingChanged(order, res1.getRowsResult());
 
                 //order.optimize(res2.getRowsResult(), false);
                 order.optimize(res2.getRowsResult());
@@ -69,8 +69,8 @@ public class ClustFight extends JFrame {
                 .put("US arrests", FakeDatasets.usArrestData())
                 .build();
 
-        panel1 = new HclDendroPanel2(map);
-        panel2 = new HclDendroPanel(map);
+        panel1 = new HacDendroPanel(map);
+        panel2 = new HacDendroPanel(map);
 
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
@@ -90,7 +90,7 @@ public class ClustFight extends JFrame {
 
     // this function will be run from the EDT
     private static void createAndShowGUI() throws Exception {
-        ClustFight hmf = new ClustFight();
+        ClustFight2 hmf = new ClustFight2();
         hmf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         hmf.setSize(500, 500);
         hmf.setVisible(true);

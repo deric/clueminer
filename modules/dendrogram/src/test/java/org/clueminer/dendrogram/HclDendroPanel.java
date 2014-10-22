@@ -39,7 +39,7 @@ public class HclDendroPanel extends DendroPanel {
         setDataset(dataProvider.first());
         options.setDatasets(dataProvider.getDatasetNames());
         params = new Props();
-        params.put("name", "HCL");
+        params.put("name", "hierarchical clustering");
         // alg type
         params.put("alg-type", "cluster");
         // output class
