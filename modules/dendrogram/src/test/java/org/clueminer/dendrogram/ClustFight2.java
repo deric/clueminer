@@ -8,12 +8,15 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 
@@ -35,6 +38,12 @@ public class ClustFight2 extends JFrame {
         RP.execute(new Runnable() {
             @Override
             public void run() {
+                Props props = new Props();
+                props.put(AgglParams.LINKAGE, SingleLinkage.name);
+
+                panel1.setProperties(props);
+                panel2.setProperties(props);
+
                 panel1.setAlgorithm(new HAC());
                 panel2.setAlgorithm(new HACLW());
                 DendrogramMapping res1 = panel1.execute();

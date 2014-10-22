@@ -40,7 +40,7 @@ public class HacDendroPanel extends DendroPanel {
 
     @Override
     public DendrogramMapping execute() {
-        Props params = new Props();
+        Props params = getProperties().copy();
         MemInfo memInfo = new MemInfo();
 
         DistanceFactory df = DistanceFactory.getInstance();
