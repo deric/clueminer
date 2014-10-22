@@ -7,7 +7,9 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Hierarchical clustering - updating distances using Lance-Williams update
@@ -19,6 +21,7 @@ import org.clueminer.math.Matrix;
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class HACLW extends HAC implements AgglomerativeClustering {
 
     private final static String name = "HAC-LW";
