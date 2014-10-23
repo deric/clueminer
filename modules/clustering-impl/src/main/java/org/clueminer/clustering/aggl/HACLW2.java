@@ -22,9 +22,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLW extends HAC implements AgglomerativeClustering {
+public class HACLW2 extends HACLW implements AgglomerativeClustering {
 
-    private final static String name = "HAC-LW";
+    private final static String name = "HAC-LW2";
 
     @Override
     public String getName() {
@@ -49,10 +49,16 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             PriorityQueue<Element> pq, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
         Element current;
         double distance;
+
         Iterator<Integer> it = mergedCluster.iterator();
         int a = it.next();
         int b = it.next();
         Set<Integer> clusterMembers;
+
+        similarityMatrix.printLower(5, 2);
+        System.out.println("merge [" + a + ", " + b + "] -> " + mergedId);
+        System.out.println("assign: " + assignments.entrySet().toString());
+
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage, cache);
             current = new Element(distance, mergedId, cluster.getKey());
@@ -69,6 +75,17 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
+
+        for (int k : cache.keySet()) {
+            System.out.println(k + " = " + String.format("%.2f", cache.get(k)));
+        }
+    }
+
+    protected void createNode(int mergedId, int other, int key, Matrix similarityMatrix,
+            PriorityQueue<Element> pq, ClusterLinkage linkage, HashMap<Integer, Double> cache, int a, int b) {
+        double distance = updateProximity(mergedId, other, a, b, similarityMatrix, linkage, cache);
+        Element current = new Element(distance, mergedId, key);
+        pq.add(current);
     }
 
     /**
@@ -91,6 +108,7 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
 
+        System.out.println("p(" + r + ", " + q + ") = 0.5 * p(" + a + ", " + q + ") + 0.5*p(" + b + ", " + q + ") - 0.5*| p(" + a + ", " + q + ") - p(" + b + ", " + q + ")|");
         double dist = linkage.alphaA() * aq + linkage.alphaB() * bq;
         if (linkage.beta() != 0) {
             dist += linkage.beta() * sim.get(a, b);
@@ -98,6 +116,11 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
+        System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
+        /*        if (r != q) {
+         sim.set(r, q, dist);
+         }*/
+
         cache.put(map(r, q), dist);
         return dist;
     }
@@ -121,31 +144,6 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             res = sim.get(x, y);
         }
         return res;
-    }
-
-    /**
-     * Mapping function to assign a unique number to each combination of
-     * coordinates in matrix
-     *
-     * @param i
-     * @param j
-     * @return
-     */
-    protected int map(int i, int j) {
-        if (i < j) {
-            /**
-             * swap variables, matrix is symmetrical, we work with lower
-             * triangular matrix
-             */
-            int tmp = i;
-            i = j;
-            j = tmp;
-        }
-        /**
-         * it's basically a sum of arithmetic row (we need to know how many
-         * numbers could be allocated before given position [x,y])
-         */
-        return triangleSize(i) + j;
     }
 
 }
