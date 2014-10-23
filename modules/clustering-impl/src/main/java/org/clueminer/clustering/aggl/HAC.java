@@ -71,7 +71,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             //columns clustering
             n = dataset.attributeCount();
         }
-        logger.log(Level.INFO, "clustering rows: {0} size: {1}", new Object[]{params.clusterRows(), n});
         logger.log(Level.INFO, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
@@ -109,6 +108,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
         Element curr;
         HashSet<Integer> blacklist = new HashSet<>();
+        HashMap<Integer, Double> cache = new HashMap<>();
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
@@ -118,14 +118,14 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.2f", curr.getValue()));
+            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.2f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
 
-                System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
+                //System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
                 blacklist.add(curr.getRow());
                 blacklist.add(curr.getColumn());
 
@@ -134,7 +134,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 right = assignments.remove(curr.getColumn());
                 //merge together and add as a new cluster
                 left.addAll(right);
-                updateDistances(node.getId(), left, similarityMatrix, assignments, pq, params.getLinkage());
+                updateDistances(node.getId(), left, similarityMatrix, assignments, pq, params.getLinkage(), cache);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
@@ -162,9 +162,19 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         return nodes[id];
     }
 
+    /**
+     *
+     * @param mergedId         id of newly created cluster
+     * @param mergedCluster    id of all items in merged cluster
+     * @param similarityMatrix matrix of distances
+     * @param assignments
+     * @param pq
+     * @param linkage
+     * @param cache
+     */
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage) {
+            PriorityQueue<Element> pq, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {

@@ -7,54 +7,76 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Hierarchical clustering - updating distances using Lance-Williams update
  * formula
  *
+ * Lance, G. N. and Williams, W. T.. "A general theory of classificatory sorting
+ * strategies 1. Hierarchical systems." The Computer Journal 9 , no. 4 (1967):
+ * 373-380.
+ *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class HACLW extends HAC implements AgglomerativeClustering {
 
     private final static String name = "HAC-LW";
-    private HashMap<Integer, Double> cache = new HashMap<>();
 
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * When we merge two items and create a new dendrogram node, we have to
+     * update distances to all other nodes (clusters)
+     *
+     * @param mergedId
+     * @param mergedCluster
+     * @param similarityMatrix
+     * @param assignments
+     * @param pq
+     * @param linkage
+     * @param cache
+     */
     @Override
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage) {
+            PriorityQueue<Element> pq, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
         Element current;
-        double distance, expDist;
-        similarityMatrix.printLower(2, 2);
-        System.out.println("triangle size: " + triangleSize(similarityMatrix.rowsCount()));
-        System.out.println("merging " + mergedCluster.toString() + " -> " + mergedId);
-        System.out.println("other: " + assignments.entrySet().toString());
+        double distance;
         Iterator<Integer> it = mergedCluster.iterator();
         int a = it.next();
         int b = it.next();
+        Set<Integer> clusterMembers;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
-            //expDist = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
-
-            System.out.println("update(" + mergedId + ", " + cluster.getKey() + "): a = " + a + ", b = " + b);
-            distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage);
-            //System.out.println("expDist:" + expDist);
-            System.out.println("distanc:" + distance);
-            //assert (distance == expDist);
+            distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage, cache);
             current = new Element(distance, mergedId, cluster.getKey());
-            System.out.println("new node @" + map(mergedId, cluster.getKey()) + ": " + current.toString());
             pq.add(current);
+            clusterMembers = cluster.getValue();
+            //each item is at the begining cluster by itself
+            if (clusterMembers.size() > 1) {
+                for (Integer id : clusterMembers) {
+                    distance = updateProximity(mergedId, id, a, b, similarityMatrix, linkage, cache);
+                    current = new Element(distance, mergedId, cluster.getKey());
+                    pq.add(current);
+                }
+            }
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
     }
 
     /**
+     * Lance-Williams update formula
+     *
+     * p(r,q) = alpha_a * p(a,q) + alpha_b * p(b,q) + beta * p(a,b) + gamma *
+     * |p(a,q) - p(b,q)|
+     *
      *
      * @param r       existing cluster
      * @param q       cluster R is created after merging A and B
@@ -62,40 +84,53 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * @param b       a cluster that is being merged
      * @param sim     similarity matrix
      * @param linkage cluster linkage method
+     * @param cache
      * @return
      */
-    public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage) {
-        double aq, bq;
-        if (!sim.has(a, q)) {
-            System.out.println("getting: a= " + a + ", q= " + q);
-            aq = cache.get(map(a, q));
-        } else {
-            aq = sim.get(a, q);
-        }
-        if (!sim.has(b, q)) {
-            System.out.println("cache: " + cache);
-            System.out.println("getting: b= " + b + ", q= " + q + " -> " + map(b, q));
-            bq = cache.get(map(b, q));
-        } else {
-            bq = sim.get(b, q);
-        }
+    public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
+        double aq = fetchDist(a, q, sim, cache);
+        double bq = fetchDist(b, q, sim, cache);
 
-        System.out.println("aq(" + a + ", " + q + ") = " + String.format("%.2f", aq));
         double dist = linkage.alphaA() * aq + linkage.alphaB() * bq;
-        //if (!sim.has(a, q)) {
-
-        //}
         if (linkage.beta() != 0) {
-            dist += sim.get(a, b);
+            dist += linkage.beta() * sim.get(a, b);
         }
         if (linkage.gamma() != 0) {
-            dist += Math.abs(aq - bq);
+            dist += linkage.gamma() * Math.abs(aq - bq);
         }
-        System.out.println(map(r, q) + " <- (" + r + ", " + q + ") =" + dist);
         cache.put(map(r, q), dist);
         return dist;
     }
 
+    /**
+     * Updating original proximity matrix would be too expensive, we rather use
+     * a HashMap
+     *
+     * @param x
+     * @param y
+     * @param sim
+     * @param cache
+     * @return
+     */
+    private double fetchDist(int x, int y, Matrix sim, HashMap<Integer, Double> cache) {
+        double res;
+        if (!sim.has(x, y)) {
+            int mapped = map(x, y);
+            res = cache.get(mapped);
+        } else {
+            res = sim.get(x, y);
+        }
+        return res;
+    }
+
+    /**
+     * Mapping function to assign a unique number to each combination of
+     * coordinates in matrix
+     *
+     * @param i
+     * @param j
+     * @return
+     */
     private int map(int i, int j) {
         if (i < j) {
             /**

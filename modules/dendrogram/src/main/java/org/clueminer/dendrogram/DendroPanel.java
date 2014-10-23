@@ -8,10 +8,11 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.SettingsPanel;
+import org.clueminer.utils.Props;
 
 /**
  * Simple dendrogram panel for demo and testing purposes
@@ -27,6 +28,7 @@ public abstract class DendroPanel extends JPanel {
     private Dataset<? extends Instance> dataset;
     private SettingsPanel panel;
     protected OptionsPanel options;
+    protected Props properties;
 
     public DendroPanel() {
         initComponents();
@@ -87,7 +89,7 @@ public abstract class DendroPanel extends JPanel {
         this.dataset = dataset;
     }
 
-    public abstract DendrogramData execute();
+    public abstract DendrogramMapping execute();
 
     public DendroViewer getViewer() {
         return viewer;
@@ -99,6 +101,14 @@ public abstract class DendroPanel extends JPanel {
 
     public void fireTreeUpdated() {
 
+    }
+
+    public void setProperties(Props props) {
+        this.properties = props;
+    }
+
+    public Props getProperties() {
+        return properties;
     }
 
 }

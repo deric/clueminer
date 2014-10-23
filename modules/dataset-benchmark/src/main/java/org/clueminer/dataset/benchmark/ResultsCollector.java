@@ -22,7 +22,7 @@ import org.openide.util.Exceptions;
 public class ResultsCollector implements EvolutionListener {
 
     //reference to results table
-    private Table<String, String, Double> table;
+    private final Table<String, String, Double> table;
 
     public ResultsCollector(Table<String, String, Double> table) {
         this.table = table;
@@ -40,11 +40,7 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     public void writeToCsv(String filename) {
-        PrintWriter writer = null;
-        try {
-
-            writer = new PrintWriter(filename, "UTF-8");
-            CSVWriter csv = new CSVWriter(writer, ',');
+        try (PrintWriter writer = new PrintWriter(filename, "UTF-8"); CSVWriter csv = new CSVWriter(writer, ',')) {
 
             String[] header = new String[table.columnKeySet().size() + 1];
             int i = 1;
@@ -62,17 +58,12 @@ public class ResultsCollector implements EvolutionListener {
                 }
                 csv.writeNext(line);
             }
-            csv.close();
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
         }
     }
 

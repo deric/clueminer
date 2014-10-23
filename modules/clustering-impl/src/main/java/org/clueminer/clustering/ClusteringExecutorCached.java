@@ -1,5 +1,7 @@
 package org.clueminer.clustering;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
@@ -30,7 +32,7 @@ import org.clueminer.utils.Props;
 public class ClusteringExecutorCached extends AbstractExecutor implements Executor {
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
-    private StdStorage storage;
+    private Map<Dataset<? extends Instance>, StdStorage> storage;
 
     public ClusteringExecutorCached() {
         algorithm = new HAC();
@@ -38,21 +40,17 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
 
     @Override
     public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        checkInput(dataset);
-        Dataset<? extends Instance> norm = storage.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        StdStorage store = getStorage(dataset);
+        Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
-        CutoffStrategy strategy = getCutoffStrategy(params);
-        double cut = rowsResult.findCutoff(strategy);
-        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
-        params.putDouble(AgglParams.CUTOFF, cut);
         return rowsResult;
     }
 
     @Override
     public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        checkInput(dataset);
-        Dataset<? extends Instance> norm = storage.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        StdStorage store = getStorage(dataset);
+        Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
         //CutoffStrategy strategy = getCutoffStrategy(params);
@@ -64,14 +62,33 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
+    }
+
+    private StdStorage getStorage(Dataset<? extends Instance> dataset) {
+        checkInput(dataset);
+        StdStorage stdStore;
+
         if (storage == null) {
-            storage = new StdStorage(dataset);
+            storage = new HashMap<>(2);
         }
+        if (storage.containsKey(dataset)) {
+            stdStore = storage.get(dataset);
+        } else {
+            stdStore = new StdStorage(dataset);
+            storage.put(dataset, stdStore);
+        }
+        return stdStore;
     }
 
     @Override
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+
+        CutoffStrategy strategy = getCutoffStrategy(params);
+        double cut = rowsResult.findCutoff(strategy);
+        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        params.putDouble(AgglParams.CUTOFF, cut);
+
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
