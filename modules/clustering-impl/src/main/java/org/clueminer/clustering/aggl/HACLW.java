@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -46,22 +45,22 @@ public class HACLW extends HAC implements AgglomerativeClustering {
     @Override
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
+            PriorityQueue<Element> pq, ClusterLinkage linkage,
+            HashMap<Integer, Double> cache, int leftId, int rightId) {
         Element current;
         double distance;
-        Iterator<Integer> it = mergedCluster.iterator();
-        int a = it.next();
-        int b = it.next();
+        //System.out.println("merged cluster: " + mergedCluster.toString());
+        //System.out.println("merging: [" + leftId + ", " + rightId + "] -> " + mergedId);
         Set<Integer> clusterMembers;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
-            distance = updateProximity(mergedId, cluster.getKey(), a, b, similarityMatrix, linkage, cache);
+            distance = updateProximity(mergedId, cluster.getKey(), leftId, rightId, similarityMatrix, linkage, cache);
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
             clusterMembers = cluster.getValue();
             //each item is at the begining cluster by itself
             if (clusterMembers.size() > 1) {
                 for (Integer id : clusterMembers) {
-                    distance = updateProximity(mergedId, id, a, b, similarityMatrix, linkage, cache);
+                    distance = updateProximity(mergedId, id, leftId, rightId, similarityMatrix, linkage, cache);
                     current = new Element(distance, mergedId, cluster.getKey());
                     pq.add(current);
                 }
@@ -78,8 +77,8 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r       existing cluster
-     * @param q       cluster R is created after merging A and B
+     * @param r       cluster R is created after merging A and B
+     * @param q       existing cluster
      * @param a       a cluster that is being merged
      * @param b       a cluster that is being merged
      * @param sim     similarity matrix

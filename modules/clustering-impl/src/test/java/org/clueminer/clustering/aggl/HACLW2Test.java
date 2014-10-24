@@ -66,7 +66,7 @@ public class HACLW2Test {
         return data;
     }
 
-    //@Test
+    @Test
     public void testUpdateProximity() {
         Dataset<? extends Instance> dataset = simpleData();
         Props pref = new Props();
@@ -100,10 +100,10 @@ public class HACLW2Test {
         tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-//        assertEquals(0.215870331449522, root.getHeight(), delta);
+        assertEquals(0.215870331449522, root.getHeight(), delta);
     }
 
-    //@Test
+    @Test
     public void testSingleLinkageSchool() {
         Dataset<? extends Instance> dataset = HACTest.schoolData();
         assertEquals(17, dataset.size());
@@ -118,7 +118,8 @@ public class HACLW2Test {
         tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(47.18370587395614, root.getHeight(), delta);
+        //assertEquals(47.18370587395614, root.getHeight(), delta);
+        assertEquals(32.54273498033004, root.getHeight(), delta);
     }
 
 }

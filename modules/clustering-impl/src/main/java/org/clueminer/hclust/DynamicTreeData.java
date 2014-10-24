@@ -192,7 +192,7 @@ public class DynamicTreeData implements DendroTreeData {
      */
     @Override
     public int[] createMapping(int n, DendroNode node) {
-        Stack<DendroNode> stack = new Stack<DendroNode>();
+        Stack<DendroNode> stack = new Stack<>();
         int i = 0;
         mapping = new int[n];
         leaves = new DendroNode[n];
