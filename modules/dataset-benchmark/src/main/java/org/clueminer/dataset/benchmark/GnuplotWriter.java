@@ -308,8 +308,8 @@ public class GnuplotWriter implements EvolutionListener {
         template.write("#!/bin/bash\n"
                 + "cd data\n");
         template.write("TERM=\"" + term + "\"\n");
-        for (int j = 0; j < plots.length; j++) {
-            template.write("gnuplot -e \"${TERM}\" " + plots[j] + gnuplotExtension + " > ../" + plots[j] + "." + ext + "\n");
+        for (String plot : plots) {
+            template.write("gnuplot -e \"${TERM}\" " + plot + gnuplotExtension + " > ../" + plot + "." + ext + "\n");
         }
 
         template.close();

@@ -17,13 +17,15 @@ import org.clueminer.report.NanoBench;
  */
 public class Experiment implements Runnable {
 
-    private Random rand;
-    private BenchParams params;
+    private final Random rand;
+    private final BenchParams params;
     private final AgglomerativeClustering[] algorithms;
+    private final String results;
 
-    public Experiment(BenchParams params) {
+    public Experiment(BenchParams params, String results) {
         rand = new Random();
         this.params = params;
+        this.results = results;
         algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HCL(), new HACLWMS()};
     }
 
@@ -31,11 +33,13 @@ public class Experiment implements Runnable {
     public void run() {
         int inc = (params.n - params.nSmall) / params.steps;
 
+        GnuplotReporter reporter = new GnuplotReporter(results);
         System.out.println("increment = " + inc);
         for (int i = params.nSmall; i <= params.n; i += inc) {
             Dataset<? extends Instance> dataset = generateData(i, params.dimension);
             for (AgglomerativeClustering alg : algorithms) {
-                NanoBench.create().measurements(params.repeat).cpuAndMemory().measure(
+                String[] opts = new String[]{alg.getName(), params.linkage, String.valueOf(dataset.size())};
+                NanoBench.create().measurements(params.repeat).collect(reporter, opts).measure(
                         alg.getName() + " - " + params.linkage + " - " + dataset.size(),
                         new HclustBenchmark().hclust(alg, dataset, params.linkage)
                 );
@@ -51,9 +55,13 @@ public class Experiment implements Runnable {
      * @return
      */
     protected Dataset<? extends Instance> generateData(int size, int dim) {
+        System.out.println("generating data: " + size + " x " + dim);
         Dataset<? extends Instance> dataset = new ArrayDataset<>(size, dim);
+        for (int i = 0; i < dim; i++) {
+            dataset.attributeBuilder().create("attr-" + i, "NUMERIC");
+        }
         for (int i = 0; i < size; i++) {
-            dataset.get(i).setName(String.valueOf(i));
+            dataset.instance(i).setName(String.valueOf(i));
             for (int j = 0; j < dim; j++) {
                 dataset.set(i, j, rand.nextDouble());
             }

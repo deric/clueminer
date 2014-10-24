@@ -28,7 +28,7 @@ import org.openide.util.NbBundle;
  *
  * @author tombart
  */
-public class Run {
+public class Run extends Bench {
 
     private Evolution test;
     //table for keeping results from experiments
@@ -53,9 +53,9 @@ public class Run {
                 + NbBundle.getMessage(
                         FileUtils.class,
                         "FOLDER_Home");
-        createFolder(home);
+        ensureFolder(home);
         benchmarkFolder = home + File.separatorChar + "benchmark";
-        createFolder(benchmarkFolder);
+        ensureFolder(benchmarkFolder);
         rc = new ResultsCollector(table);
         csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
 
@@ -67,16 +67,6 @@ public class Run {
         }
     }
 
-    private void createFolder(String folder) {
-        File file = new File(folder);
-        if (!file.exists()) {
-            if (file.mkdir()) {
-                System.out.println("Directory " + folder + " created!");
-            } else {
-                System.out.println("Failed to create " + folder + "directory!");
-            }
-        }
-    }
 
     /**
      * @param args the command line arguments
