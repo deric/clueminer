@@ -26,8 +26,7 @@ public class Complexity extends Bench {
         Experiment exp = new Experiment(params, csvOutput);
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
-        exp.run();
-        System.out.println("=== experiment finished");
+        execService.shutdown();
     }
 
     /**
