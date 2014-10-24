@@ -33,7 +33,7 @@ public class Experiment implements Runnable {
     public void run() {
         int inc = (params.n - params.nSmall) / params.steps;
 
-        GnuplotReporter reporter = new GnuplotReporter(results);
+        GnuplotReporter reporter = new GnuplotReporter(results, new String[]{"algorithm", "linkage", "n"}, algorithms);
         System.out.println("increment = " + inc);
         for (int i = params.nSmall; i <= params.n; i += inc) {
             Dataset<? extends Instance> dataset = generateData(i, params.dimension);

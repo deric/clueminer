@@ -19,11 +19,10 @@ public class Complexity extends Bench {
 
         benchmarkFolder = params.home + File.separatorChar + "benchmark" + File.separatorChar + "hclust";
         ensureFolder(benchmarkFolder);
-        String csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
 
         System.out.println("# n = " + params.n);
         System.out.println("=== starting experiment:");
-        Experiment exp = new Experiment(params, csvOutput);
+        Experiment exp = new Experiment(params, benchmarkFolder);
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();
