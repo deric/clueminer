@@ -2,9 +2,10 @@ package org.clueminer.clustering.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.ObjectArrays;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import org.clueminer.report.BigORes;
 import org.clueminer.report.Reporter;
 import org.openide.util.Exceptions;
@@ -37,13 +38,15 @@ public class GnuplotReporter implements Reporter {
     }
 
     protected void writeLine(String[] columns) {
-        try (PrintWriter writer = new PrintWriter(filePath, "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(
+                new FileOutputStream(new File(filePath), true)
+        )) {
 
             CSVWriter csv = new CSVWriter(writer, separator);
             csv.writeNext(columns);
             writer.close();
 
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
