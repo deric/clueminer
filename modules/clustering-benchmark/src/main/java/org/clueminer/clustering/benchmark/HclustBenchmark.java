@@ -14,6 +14,20 @@ import org.clueminer.utils.Props;
  */
 public class HclustBenchmark {
 
+    public Runnable hclust(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset, final String linkage) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Props params = new Props();
+                params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+                params.put(AgglParams.LINKAGE, linkage);
+
+                algorithm.hierarchy(dataset, params);
+            }
+        };
+        return runnable;
+    }
+
     public Runnable singleLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
         final Runnable runnable = new Runnable() {
             @Override
