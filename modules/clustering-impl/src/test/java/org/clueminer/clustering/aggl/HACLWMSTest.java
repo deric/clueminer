@@ -21,12 +21,12 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class HACLW2Test {
+public class HACLWMSTest {
 
-    private final HACLW2 subject = new HACLW2();
+    private final HACLWMS subject = new HACLWMS();
     private static double delta = 1e-9;
 
-    public HACLW2Test() {
+    public HACLWMSTest() {
     }
 
     @Before
