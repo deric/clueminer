@@ -152,7 +152,7 @@
                     <target>1.7</target>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Complexity</mainClass>
                             <packageName>org.clueminer.clustering.benchmark</packageName>
                             <addClasspath>true</addClasspath>
                         </manifest>
@@ -169,7 +169,7 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Complexity</mainClass>
                             <packageName>org.clueminer.clustering.benchmark</packageName>
                             <addClasspath>true</addClasspath>
                         </manifest>
@@ -184,7 +184,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Complexity</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
