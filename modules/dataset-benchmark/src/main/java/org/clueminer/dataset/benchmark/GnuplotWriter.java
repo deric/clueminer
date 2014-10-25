@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
@@ -29,19 +28,19 @@ import org.openide.util.Exceptions;
  */
 public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
-    private Evolution evolution;
+    private final Evolution evolution;
     private Dataset<? extends Instance> dataset;
     private String benchmarkFolder;
     private String outputDir;
     private String dataDir;
-    private LinkedList<String> results = new LinkedList<>();
+    private final LinkedList<String> results;
     //each 10 generations plot data
     private int plotDumpMod = 10;
-    private ArrayList<String> plots;
-    private char separator = ',';
+    private final LinkedList<String> plots;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
-        this.plots = new ArrayList<>(10);
+        this.results = new LinkedList<>();
+        this.plots = new LinkedList<>();
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
         this.outputDir = subDirectory;
@@ -90,37 +89,34 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         String strn = String.format("%02d", n);
         String dataFile = "data-" + strn + ".csv";
         try {
-
             writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
             toCsv(csv, clusters, dataset);
             writer.close();
 
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
-            writer.close();
+            if (writer != null) {
+                writer.close();
+            }
         }
         return dataFile;
     }
 
     private String plotIndividual(int n, int x, int y, String dataDir, String dataFile, Individual best, double external) {
-        PrintWriter template = null;
+        PrintWriter template;
         String strn = String.format("%02d", n);
         //filename without extension
         String scriptFile = "plot-" + strn + String.format("-x%02d", x) + String.format("-y%02d", y);
 
         try {
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (UnsupportedEncodingException ex) {
+            template.write(plotTemplate(n, x, y, best, dataFile, external));
+            template.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
-        template.write(plotTemplate(n, x, y, best, dataFile, external));
-        template.close();
         return scriptFile;
     }
 
@@ -132,8 +128,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         String scriptFile = "fitness-" + safeName(validator.getName());
         String scriptExtern = "external-" + safeName(evolution.getExternal().getName());
 
-        try {
-            PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
+        try (PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8")) {
             CSVWriter csv = new CSVWriter(writer, ',');
             String[] header = new String[4];
             header[0] = "generation";
@@ -145,8 +140,11 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
                 csv.writeLine(row);
 
             }
-            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
+        try {
             template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
             template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
             plots.add(scriptFile);

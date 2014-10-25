@@ -1,13 +1,14 @@
 package org.clueminer.clustering.benchmark;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.ObjectArrays;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.dataset.benchmark.GnuplotHelper;
 import org.clueminer.dataset.benchmark.PointTypeIterator;
 import org.clueminer.report.BigORes;
 import org.clueminer.report.Reporter;
@@ -17,29 +18,35 @@ import org.openide.util.Exceptions;
  *
  * @author Tomas Barton
  */
-public class GnuplotReporter implements Reporter {
+public class GnuplotReporter extends GnuplotHelper implements Reporter {
 
-    private String dataFile;
-    private String folder;
-    private char separator = ',';
-    private AgglomerativeClustering[] algorithms;
+    private final String dataDir;
+    private final File dataFile;
+    private final String folder;
+    private final AgglomerativeClustering[] algorithms;
+    private final LinkedList<String> plots;
 
-    public GnuplotReporter(String folder, String[] opts, AgglomerativeClustering[] algorithms) {
-        this.dataFile = folder + File.separatorChar + "results.csv";
+    public GnuplotReporter(String folder, String[] opts, AgglomerativeClustering[] algorithms, String suffix) {
+        this.dataDir = folder + File.separatorChar + "data";
+        mkdir(dataDir);
+        this.dataFile = new File(dataDir + File.separatorChar + "results-" + suffix + ".csv");
         this.algorithms = algorithms;
+        this.folder = folder;
+        this.plots = new LinkedList<>();
         writeHeader(opts);
 
-        String memPath = folder + File.separatorChar + "mem.gpt";
-        String cpuPath = folder + File.separatorChar + "cpu.gpt";
+        String memPath = dataDir + File.separatorChar + "mem" + suffix + ".gpt";
+        String cpuPath = dataDir + File.separatorChar + "cpu" + suffix + ".gpt";
 
-        writePlotScript(memPath, dataFile, 7, "memory", 2, 3);
-        writePlotScript(cpuPath, dataFile, 7, "CPU", 2, 4);
+        writePlotScript(new File(memPath), dataFile, 7, "memory", 2, 3);
+        writePlotScript(new File(cpuPath), dataFile, 7, "CPU", 2, 4);
+
     }
 
     private void writeHeader(String[] opts) {
         String[] head = new String[]{"label", "avg time (ms)", "memory (MB)", "total time (s)", "tps", "repeats"};
         String[] line = ObjectArrays.concat(head, opts, String.class);
-        writeLine(line, false);
+        writeCsvLine(dataFile, line, false);
     }
 
     /**
@@ -53,42 +60,28 @@ public class GnuplotReporter implements Reporter {
             result.measurements()
         };
         String[] line = ObjectArrays.concat(res, result.getOpts(), String.class);
-        writeLine(line, true);
-    }
-
-    protected void writeLine(String[] columns, boolean apend) {
-        try (PrintWriter writer = new PrintWriter(
-                new FileOutputStream(new File(dataFile), apend)
-        )) {
-
-            CSVWriter csv = new CSVWriter(writer, separator);
-            csv.writeNext(columns, false);
-            writer.close();
-
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        writeCsvLine(dataFile, line, true);
     }
 
     /**
      *
-     * @param filename
+     * @param file     to write Gnuplot script
      * @param dataFile
      * @param labelPos column of label which is used for data rows in chart
      * @param type
      * @param x
      * @param y
      */
-    private void writePlotScript(String filename, String dataFile, int labelPos, String type, int x, int y) {
-        PrintWriter template = null;
+    private void writePlotScript(File file, File dataFile, int labelPos, String type, int x, int y) {
+        PrintWriter template;
         try {
-            template = new PrintWriter(filename, "UTF-8");
-            template.write(plotComplexity(labelPos, type, x, y, dataFile, algorithms));
+            template = new PrintWriter(file, "UTF-8");
+            template.write(plotComplexity(labelPos, type, x, y, dataFile.getName(), algorithms));
             template.close();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
-
+        plots.add(withoutExtension(file));
     }
 
     private String plotComplexity(int labelPos, String yLabel, int x, int y, String dataFile, AgglomerativeClustering[] algorithms) {
@@ -120,6 +113,27 @@ public class GnuplotReporter implements Reporter {
             i++;
         }
         return res;
+    }
+
+    /**
+     * Should be called when all plot files are written
+     */
+    public void finish() {
+        writePlotScript(folder);
+    }
+
+    private void writePlotScript(String dataDir) {
+        try {
+            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set terminal pngcairo size 1024,768 enhanced font 'Verdana,10'", "png");
+
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
 }
