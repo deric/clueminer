@@ -37,11 +37,17 @@ public class GnuplotReporter extends GnuplotHelper implements Reporter {
 
         String memPath = dataDir + File.separatorChar + "mem" + suffix + ".gpt";
         String cpuPath = dataDir + File.separatorChar + "cpu" + suffix + ".gpt";
+        String cpu2Path = dataDir + File.separatorChar + "cpu2" + suffix + ".gpt";
         String tpsPath = dataDir + File.separatorChar + "tps" + suffix + ".gpt";
 
-        writePlotScript(new File(memPath), dataFile, 8, "memory (kB)", 10, 7, "Memory usage of hierarchical clustering algorithms - " + opts[1], false);
-        writePlotScript(new File(cpuPath), dataFile, 8, "CPU", 10, 2, "CPU usage of hierarchical clustering algorithms - " + opts[1], true);
-        writePlotScript(new File(tpsPath), dataFile, 8, "tps", 10, 5, "Time per run of hierarchical clustering algorithms - " + opts[1], true);
+        writePlotScript(new File(memPath),
+                        plotComplexity(8, "memory (kB)", 10, 7, dataFile.getName(), algorithms, "Memory usage of hierarchical clustering algorithms - " + opts[1], false));
+        writePlotScript(new File(cpuPath),
+                        plotCpu(8, "CPU", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
+        writePlotScript(new File(cpuPath),
+                        plotComplexity(8, "CPU", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
+        writePlotScript(new File(tpsPath),
+                        plotComplexity(8, "tps", 10, 5, dataFile.getName(), algorithms, "Time per run of hierarchical clustering algorithms - " + opts[1], true));
     }
 
     private void writeHeader(String[] opts) {
@@ -73,16 +79,48 @@ public class GnuplotReporter extends GnuplotHelper implements Reporter {
      * @param x
      * @param y
      */
-    private void writePlotScript(File file, File dataFile, int labelPos, String type, int x, int y, String title, boolean logscale) {
+    private void writePlotScript(File file, String script) {
         PrintWriter template;
         try {
             template = new PrintWriter(file, "UTF-8");
-            template.write(plotComplexity(labelPos, type, x, y, dataFile.getName(), algorithms, title, logscale));
+            template.write(script);
             template.close();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
         plots.add(withoutExtension(file));
+    }
+
+    private String plotCpu(int labelPos, String yLabel, int x, int y, String dataFile, AgglomerativeClustering[] algorithms, String title, boolean logscale) {
+        String res = "set datafile separator \",\"\n"
+                + "set key outside bottom horizontal box\n"
+                + "set title \"" + title + "\"\n"
+                + "set xlabel \"data size\" font \"Times,12\"\n"
+                + "set ylabel \"" + yLabel + "\" font \"Times,12\"\n"
+                //   + "set xtics 0,0.5 nomirror\n"
+                //   + "set ytics 0,0.5 nomirror\n"
+                + "set mytics 2\n"
+                + "set mx2tics 2\n"
+                + "set grid\n"
+                + "set pointsize 0.5\n"
+                + "f(x) = 0.5 * x**2\n";
+        if (logscale) {
+            res += "set logscale y 2\n";
+        }
+        int i = 0;
+        PointTypeIterator pti = new PointTypeIterator();
+        for (AgglomerativeClustering alg : algorithms) {
+            if (i == 0) {
+                res += "plot ";
+            }
+            res += "\"< awk -F\\\",\\\" '{if($" + labelPos + " == \\\"" + alg.getName()
+                    + "\\\") print}' " + dataFile + "\" u " + x + ":" + y
+                    + " t \"" + alg.getName() + "\" w linespoints pt " + pti.next();
+            res += ", \\\n";
+            i++;
+        }
+        res += "f(x) title 'x^2' with lines linestyle 18\n";
+        return res;
     }
 
     private String plotComplexity(int labelPos, String yLabel, int x, int y, String dataFile, AgglomerativeClustering[] algorithms, String title, boolean logscale) {
