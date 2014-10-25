@@ -27,36 +27,27 @@ import org.openide.util.Exceptions;
  *
  * @author Tomas Barton
  */
-public class GnuplotWriter implements EvolutionListener {
+public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     private Evolution evolution;
     private Dataset<? extends Instance> dataset;
     private String benchmarkFolder;
     private String outputDir;
     private String dataDir;
-    private LinkedList<String> results = new LinkedList<String>();
-    private static String gnuplotExtension = ".gpt";
+    private LinkedList<String> results = new LinkedList<>();
     //each 10 generations plot data
     private int plotDumpMod = 10;
-    private ArrayList<String> plots = new ArrayList<String>(10);
+    private ArrayList<String> plots;
     private char separator = ',';
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
+        this.plots = new ArrayList<>(10);
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
         this.outputDir = subDirectory;
         benchmarkFolder = benchmarkDir;
         dataDir = getDataDir(subDirectory);
         mkdir(dataDir);
-    }
-
-    private void mkdir(String folder) {
-        File file = new File(folder);
-        if (!file.exists()) {
-            if (!file.mkdirs()) {
-                throw new RuntimeException("Failed to create " + folder + " !");
-            }
-        }
     }
 
     @Override
@@ -164,9 +155,7 @@ public class GnuplotWriter implements EvolutionListener {
             template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
             plots.add(scriptExtern);
 
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             if (template != null) {
@@ -177,10 +166,6 @@ public class GnuplotWriter implements EvolutionListener {
             }
         }
 
-    }
-
-    private String safeName(String name) {
-        return name.toLowerCase().replace(" ", "_");
     }
 
     private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
@@ -262,16 +247,7 @@ public class GnuplotWriter implements EvolutionListener {
     }
 
     private String getDataDir(String dir) {
-        return createFolder(dir) + "data" + File.separatorChar;
-    }
-
-    private String createFolder(String name) {
-        String dir = benchmarkFolder + File.separatorChar + name + File.separatorChar;
-        boolean success = (new File(dir)).mkdirs();
-        if (success) {
-            System.out.println("Directory: " + dir + " created");
-        }
-        return dir;
+        return mkdir(dir) + "data" + File.separatorChar;
     }
 
     public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
@@ -299,21 +275,6 @@ public class GnuplotWriter implements EvolutionListener {
             res.append(inst.value(i));
         }
         return res.append(separator).append(klass).append(separator).append(inst.classValue());
-    }
-
-    private void bashPlotScript(String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        //bash script to generate results
-        String shFile = dir + File.separatorChar + "plot-" + ext;
-        PrintWriter template = new PrintWriter(shFile, "UTF-8");
-        template.write("#!/bin/bash\n"
-                + "cd data\n");
-        template.write("TERM=\"" + term + "\"\n");
-        for (String plot : plots) {
-            template.write("gnuplot -e \"${TERM}\" " + plot + gnuplotExtension + " > ../" + plot + "." + ext + "\n");
-        }
-
-        template.close();
-        Runtime.getRuntime().exec("chmod u+x " + shFile);
     }
 
     public int getPlotDumpMod() {

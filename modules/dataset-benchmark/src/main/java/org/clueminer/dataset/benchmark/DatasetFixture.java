@@ -22,7 +22,7 @@ public class DatasetFixture {
 
     public static Map<Dataset<Instance>, Integer> allDatasets() {
         //dataset, num_true_classes
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
         datasets.put(DatasetFixture.dermatology(), 6);
         datasets.put(DatasetFixture.glass(), 7);
         datasets.put(DatasetFixture.insect(), 3);
@@ -36,20 +36,20 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> iris() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(150, 4);
+        Dataset<Instance> data = new ArrayDataset<>(150, 4);
         try {
             String datasetName = "iris";
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.irisArff(), data, 4);
             data.setName(datasetName);
-        }  catch (IOException ex) {
+        } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
     }
 
     public static Dataset<Instance> wine() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(178, 13);
+        Dataset<Instance> data = new ArrayDataset<>(178, 13);
         try {
             String datasetName = "wine";
             // 1st attribute is class identifier (1-3)
@@ -64,11 +64,11 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> yeast() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(1484, 8);
+        Dataset<Instance> data = new ArrayDataset<>(1484, 8);
         try {
             String datasetName = "yeast";
             // 10th attribute is class identifier
-            ArrayList<Integer> skippedIndexes = new ArrayList<Integer>();
+            ArrayList<Integer> skippedIndexes = new ArrayList<>();
             skippedIndexes.add(0); //we skip instance name
             File file = tf.yeastData();
             data.setName(datasetName);
@@ -81,7 +81,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> insect() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(30, 3);
+        Dataset<Instance> data = new ArrayDataset<>(30, 3);
         try {
             String datasetName = "insect";
             ARFFHandler arff = new ARFFHandler();
@@ -94,7 +94,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> vehicle() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(846, 18);
+        Dataset<Instance> data = new ArrayDataset<>(846, 18);
         try {
             String datasetName = "vehicle";
             ARFFHandler arff = new ARFFHandler();
@@ -107,20 +107,20 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> ionosphere() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(351, 34);
+        Dataset<Instance> data = new ArrayDataset<>(351, 34);
         try {
             String datasetName = "ionosphere";
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.ionosphereArff(), data, 34);
             data.setName(datasetName);
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
     }
 
     public static Dataset<Instance> glass() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(214, 9);
+        Dataset<Instance> data = new ArrayDataset<>(214, 9);
         try {
             String datasetName = "glass";
             ARFFHandler arff = new ARFFHandler();
@@ -133,7 +133,7 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> sonar() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(208, 60);
+        Dataset<Instance> data = new ArrayDataset<>(208, 60);
         try {
             String datasetName = "sonar";
             ARFFHandler arff = new ARFFHandler();
@@ -146,13 +146,13 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> dermatology() {
-        Dataset<Instance> data = new ArrayDataset<Instance>(366, 34);
+        Dataset<Instance> data = new ArrayDataset<>(366, 34);
         try {
             String datasetName = "dermatology";
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.dermatologyArff(), data, 34);
             data.setName(datasetName);
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
