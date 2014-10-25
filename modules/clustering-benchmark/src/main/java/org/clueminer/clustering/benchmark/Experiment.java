@@ -26,7 +26,7 @@ public class Experiment implements Runnable {
         rand = new Random();
         this.params = params;
         this.results = results;
-        algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HCL(), new HACLWMS()};
+        algorithms = new AgglomerativeClustering[]{new HCL(), new HAC(), new HACLW(), new HACLWMS()};
     }
 
     @Override
