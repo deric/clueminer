@@ -6,7 +6,11 @@ import java.io.File;
  *
  * @author Tomas Barton
  */
-public class Bench {
+public abstract class Bench {
+
+    public Bench() {
+        //constructor without arguments
+    }
 
     public static void ensureFolder(String folder) {
         File file = new File(folder);
@@ -18,5 +22,7 @@ public class Bench {
             }
         }
     }
+
+    public abstract void main(String[] args);
 
 }

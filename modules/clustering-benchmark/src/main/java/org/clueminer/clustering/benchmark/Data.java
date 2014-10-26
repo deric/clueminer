@@ -28,50 +28,21 @@ import org.openide.util.NbBundle;
  *
  * @author tombart
  */
-public class Run extends Bench {
+public class Data extends Bench {
 
     private Evolution test;
     //table for keeping results from experiments
-    private final Table<String, String, Double> table;
+    private Table<String, String, Double> table;
     private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets = new HashMap<>();
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
-    private static Run instance;
-
-    public Run() {
-        table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
-                    @Override
-                    public Map<String, Double> get() {
-                        return Maps.newHashMap();
-                    }
-                });
-
-        String home = System.getProperty("user.home") + File.separatorChar
-                + NbBundle.getMessage(
-                        FileUtils.class,
-                        "FOLDER_Home");
-        ensureFolder(home);
-        benchmarkFolder = home + File.separatorChar + "benchmark";
-        ensureFolder(benchmarkFolder);
-        rc = new ResultsCollector(table);
-        csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
-
-        //preload dataset names
-        Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
-        for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
-            Dataset<Instance> d = entry.getKey();
-            availableDatasets.put(d.getName(), entry);
-        }
-    }
-
+    private static Data instance;
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public void main(String[] args) {
         int i = 0, j;
         String arg;
         char flag;
@@ -125,8 +96,36 @@ public class Run extends Bench {
             System.err.println("Usage: Benchmark [-verbose] [-xn] [-dataset name]");
         }
 
-        instance = new Run();
-        instance.execute(datasetName);
+        init();
+        execute(datasetName);
+    }
+
+    private void init() {
+        table = Tables.newCustomTable(
+                Maps.<String, Map<String, Double>>newHashMap(),
+                new Supplier<Map<String, Double>>() {
+                    @Override
+                    public Map<String, Double> get() {
+                        return Maps.newHashMap();
+                    }
+                });
+
+        String home = System.getProperty("user.home") + File.separatorChar
+                + NbBundle.getMessage(
+                        FileUtils.class,
+                        "FOLDER_Home");
+        ensureFolder(home);
+        benchmarkFolder = home + File.separatorChar + "benchmark";
+        ensureFolder(benchmarkFolder);
+        rc = new ResultsCollector(table);
+        csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
+
+        //preload dataset names
+        Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
+        for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
+            Dataset<Instance> d = entry.getKey();
+            availableDatasets.put(d.getName(), entry);
+        }
     }
 
     public void execute(String datasetName) {

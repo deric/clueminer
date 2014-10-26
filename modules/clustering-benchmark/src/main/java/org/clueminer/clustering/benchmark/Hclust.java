@@ -10,12 +10,16 @@ import java.util.concurrent.Executors;
  *
  * @author deric
  */
-public class Complexity extends Bench {
+public class Hclust extends Bench {
 
-    protected static Complexity instance;
+    protected static Hclust instance;
     private static String benchmarkFolder;
 
-    public Complexity(BenchParams params) {
+    /**
+     * @param args the command line arguments
+     */
+    public void main(String[] args) {
+        BenchParams params = parseArguments(args);
 
         benchmarkFolder = params.home + File.separatorChar + "benchmark" + File.separatorChar + "hclust";
         ensureFolder(benchmarkFolder);
@@ -26,14 +30,7 @@ public class Complexity extends Bench {
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();
-    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        BenchParams params = parseArguments(args);
-        instance = new Complexity(params);
     }
 
     private static BenchParams parseArguments(String[] args) {

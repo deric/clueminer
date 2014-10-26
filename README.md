@@ -43,6 +43,21 @@ On Unix systems you can find out your memory size with this command:
 echo $(( $(awk '/MemTotal/{print $2}' /proc/meminfo) >> 10 ))m
 ```
 
+## Benchmarks
+
+Benchmarks of clustering algorithms are located in `modules/clustering-benchmark`
+
+In order to run benchmarks build an asssembly with Maven:
+
+```
+$ cd modules/clustering-benchmark
+$ mvn mvn assembly:assembly
+```
+
+and run benchmarks (might be computationally expensive)
+``
+$ java -jar target/*-jar-with-dependencies.jar
+``
 
 ## OpenGL support
 
