@@ -152,7 +152,16 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public EdgeIterable getEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //for undirected edges only
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < nodeCounter; i++) {
+            for (int j = i; j < nodeCounter; j++) {
+                if (adjMatrix[i][j] != null) {
+                    edges.add(adjMatrix[i][j]);
+                }
+            }
+        }
+        return new AdjMatrixEdgeIterable(edges);
     }
 
     @Override
@@ -180,7 +189,16 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public EdgeIterable getEdges(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //for undirected edges only
+        AdjMatrixNode n = (AdjMatrixNode) node;
+        int nodeNumber = n.getNumber();
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < nodeCounter; i++) {
+            if (adjMatrix[i][nodeNumber]!=null) {
+                edges.add(adjMatrix[i][nodeNumber]);
+            }
+        }
+        return new AdjMatrixEdgeIterable(edges);
     }
 
     @Override

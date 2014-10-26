@@ -9,53 +9,52 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import org.clueminer.graph.api.Node;
-import org.clueminer.graph.api.NodeIterable;
+import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.EdgeIterable;
 
 /**
  *
  * @author tomas
  */
-public class AdjMatrixNodeIterable implements NodeIterable {
+public class AdjMatrixEdgeIterable implements EdgeIterable {
 
-    private final ArrayList<Node> nodes;
+    private final ArrayList<Edge> edges;
 
-
-    public AdjMatrixNodeIterable(Node[] nodes) {
-        this.nodes = new ArrayList<>(Arrays.asList(nodes));
+    public AdjMatrixEdgeIterable(Edge[] edges) {
+        this.edges = new ArrayList<>(Arrays.asList(edges));
     }
-    
-    public AdjMatrixNodeIterable(ArrayList<Node> nodes) {
-        this.nodes = nodes;
+
+    public AdjMatrixEdgeIterable(ArrayList<Edge> edges) {
+        this.edges = edges;
     }
 
     @Override
-    public Iterator<Node> iterator() {
-        Iterator<Node> it = new Iterator<Node>() {
-            
+    public Iterator<Edge> iterator() {
+        Iterator<Edge> it = new Iterator<Edge>() {
+
             private int currentIndex = 0;
 
             @Override
             public boolean hasNext() {
-                return currentIndex < nodes.size();
+                return currentIndex < edges.size();
             }
 
             @Override
-            public Node next() {
-                return nodes.get(currentIndex++);
+            public Edge next() {
+                return edges.get(currentIndex++);
             }
         };
         return it;
     }
 
     @Override
-    public Node[] toArray() {
+    public Edge[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Collection<Node> toCollection() {
-        return nodes;
+    public Collection<Edge> toCollection() {
+        return edges;
     }
 
     @Override
