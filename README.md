@@ -54,7 +54,8 @@ $ cd modules/clustering-benchmark
 $ mvn mvn assembly:assembly
 ```
 
-and run benchmarks (might be computationally expensive)
+and run benchmarks (might be computationally expensive):
+
 ``
 $ java -jar target/*-jar-with-dependencies.jar
 ``
