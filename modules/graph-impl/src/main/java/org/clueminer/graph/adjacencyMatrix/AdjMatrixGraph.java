@@ -31,12 +31,11 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         AdjMatrixEdge e = (AdjMatrixEdge) edge;
         int source = e.getSource().getNumber();
         int target = e.getTarget().getNumber();
-        if ( source == -1 || target == -1 || source >= nodeCounter || target  >= nodeCounter) {
+        if (source == -1 || target == -1 || source >= nodeCounter || target >= nodeCounter) {
             return false;
         }
         adjMatrix[source][target] = e;
         adjMatrix[target][source] = e;
-        System.out.println(adjMatrix[0][1]);
         return true;
     }
 
@@ -74,8 +73,8 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     @Override
     public boolean removeEdge(Edge edge) {
         AdjMatrixEdge e = (AdjMatrixEdge) edge;
-        int source =  e.getSource().getNumber();
-        int target =  e.getTarget().getNumber();
+        int source = e.getSource().getNumber();
+        int target = e.getTarget().getNumber();
         adjMatrix[source][target] = adjMatrix[target][source] = null;
         return true;
     }
@@ -104,9 +103,9 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     @Override
     public boolean contains(Edge edge) {
         AdjMatrixEdge e = (AdjMatrixEdge) edge;
-        int source =  e.getSource().getNumber();
-        int target =  e.getTarget().getNumber();
-        if ( source >= size || target  >= size) {
+        int source = e.getSource().getNumber();
+        int target = e.getTarget().getNumber();
+        if (source >= size || target >= size) {
             return false;
         }
         return adjMatrix[source][target] != null;
@@ -114,7 +113,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public Node getNode(Object id) {
-        for (int i =0;i<nodeCounter;i++) {
+        for (int i = 0; i < nodeCounter; i++) {
             if (nodes[i].getId() == id) {
                 return nodes[i];
             }
@@ -124,8 +123,8 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public Edge getEdge(Object id) {
-        for (int i = 0; i<size;i++) {
-            for (int j = 0; j<size;j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 if (adjMatrix[i][j] != null && id == adjMatrix[i][j].getId()) {
                     return adjMatrix[i][j];
                 }
@@ -148,7 +147,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public NodeIterable getNodes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AdjMatrixNodeIterable(nodes);
     }
 
     @Override
@@ -163,7 +162,15 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        AdjMatrixNode n = (AdjMatrixNode) node;
+        int nodeNumber = n.getNumber();
+        ArrayList<Node> neighbours = new ArrayList<>();
+        for (int i = 0; i < nodeCounter; i++) {
+            if (adjMatrix[i][nodeNumber] != null) {
+                neighbours.add(nodes[i]);
+            }
+        }
+        return new AdjMatrixNodeIterable(neighbours);
     }
 
     @Override

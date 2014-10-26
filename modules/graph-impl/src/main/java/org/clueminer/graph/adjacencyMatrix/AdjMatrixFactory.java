@@ -14,19 +14,19 @@ import org.clueminer.graph.api.Node;
  *
  * @author tomas
  */
-public class adjMatrixFactory implements GraphFactory {
+public class AdjMatrixFactory implements GraphFactory {
 
-    private static adjMatrixFactory instance;
+    private static AdjMatrixFactory instance;
     
 
-    public static adjMatrixFactory getInstance() {
+    public static AdjMatrixFactory getInstance() {
         if (instance == null) {
-            instance = new adjMatrixFactory();
+            instance = new AdjMatrixFactory();
         }
         return instance;
     }
 
-    protected adjMatrixFactory() {
+    protected AdjMatrixFactory() {
         
     }
 
@@ -48,7 +48,6 @@ public class adjMatrixFactory implements GraphFactory {
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
         Edge edge = new AdjMatrixEdge(source, target, weight);
-        System.out.println(edge.getWeight());
         return edge;
     }
 
