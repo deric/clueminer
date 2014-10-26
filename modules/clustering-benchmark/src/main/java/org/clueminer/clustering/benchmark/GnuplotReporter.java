@@ -44,10 +44,10 @@ public class GnuplotReporter extends GnuplotHelper implements Reporter {
                         plotComplexity(8, "memory (kB)", 10, 7, dataFile.getName(), algorithms, "Memory usage of hierarchical clustering algorithms - " + opts[1], false));
         writePlotScript(new File(cpuPath),
                         plotCpu(8, "CPU", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
-        writePlotScript(new File(cpuPath),
-                        plotComplexity(8, "CPU", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
+        writePlotScript(new File(cpu2Path),
+                        plotComplexity(8, "CPU time", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
         writePlotScript(new File(tpsPath),
-                        plotComplexity(8, "tps", 10, 5, dataFile.getName(), algorithms, "Time per run of hierarchical clustering algorithms - " + opts[1], true));
+                        plotComplexity(8, "tps", 10, 5, dataFile.getName(), algorithms, "Transactuion per second - " + opts[1], true));
     }
 
     private void writeHeader(String[] opts) {

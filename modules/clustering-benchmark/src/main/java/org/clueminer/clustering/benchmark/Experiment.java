@@ -43,6 +43,10 @@ public class Experiment implements Runnable {
                         alg.getName() + " - " + params.linkage + " - " + dataset.size(),
                         new HclustBenchmark().hclust(alg, dataset, params.linkage)
                 );
+                // Get the Java runtime
+                Runtime runtime = Runtime.getRuntime();
+                // Run the garbage collector
+                runtime.gc();
             }
         }
         reporter.finish();
