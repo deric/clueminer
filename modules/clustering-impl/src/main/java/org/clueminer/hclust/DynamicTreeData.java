@@ -22,6 +22,18 @@ public class DynamicTreeData implements DendroTreeData {
 
     }
 
+    /**
+     * When given expected size we might avoid reallocation of memory
+     *
+     * @param root
+     * @param hintSize estimated number number of nodes (doesn't have to be
+     *                 accurate)
+     */
+    public DynamicTreeData(DendroNode root, int hintSize) {
+        this.root = root;
+        ensureCapacity(hintSize);
+    }
+
     public DynamicTreeData(DendroNode root) {
         this.root = root;
     }
@@ -30,10 +42,12 @@ public class DynamicTreeData implements DendroTreeData {
     public int numLeaves() {
         if (root != null) {
             //avoid recursive computations if possible
-            if (mapping != null) {
-                return mapping.length;
+            if (mapping == null) {
+                //some reasonable default, array will be shrinked to needed size
+                //when we know how many nodes we actually have
+                createMapping(5, root);
             }
-            return root.childCnt();
+            return mapping.length;
         }
         return 0;
     }
@@ -194,8 +208,7 @@ public class DynamicTreeData implements DendroTreeData {
     public int[] createMapping(int n, DendroNode node) {
         Stack<DendroNode> stack = new Stack<>();
         int i = 0;
-        mapping = new int[n];
-        leaves = new DendroNode[n];
+        ensureCapacity(n);
         while (!stack.isEmpty() || node != null) {
             if (node != null) {
                 stack.push(node);
@@ -204,6 +217,13 @@ public class DynamicTreeData implements DendroTreeData {
                 node = stack.pop();
                 if (node.isLeaf()) {
                     node.setPosition(i);
+                    if (i >= mapping.length) {
+                        int req = (int) (i * 1.618);
+                        if (req <= i) {
+                            req = i + 1;
+                        }
+                        ensureCapacity(req);
+                    }
                     leaves[i] = node;
                     mapping[i] = node.getIndex();
                     i++;
@@ -211,9 +231,40 @@ public class DynamicTreeData implements DendroTreeData {
                 }
                 node = node.getRight();
             }
-
         }
+        //trim arrays only to required capacity
+        ensureCapacity(i);
         return mapping;
+    }
+
+    /**
+     * Creates mapping and leaves of required capacity
+     *
+     * @param capacity
+     */
+    private void ensureCapacity(int capacity) {
+        if (mapping == null) {
+            mapping = new int[capacity];
+            leaves = new DendroNode[capacity];
+            return;
+        }
+        if (capacity == mapping.length) {
+            return;
+        }
+        int toCopy;
+        if (capacity < mapping.length) {
+            toCopy = capacity;
+        } else {
+            toCopy = mapping.length;
+        }
+        //mapping
+        int[] newData = new int[capacity];
+        System.arraycopy(mapping, 0, newData, 0, toCopy);
+        mapping = newData;
+        //nodes
+        DendroNode[] newNodes = new DendroNode[capacity];
+        System.arraycopy(leaves, 0, newNodes, 0, toCopy);
+        leaves = newNodes;
     }
 
     @Override
