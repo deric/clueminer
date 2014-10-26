@@ -16,6 +16,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * <math>D(X,Y)=\min_{x\in X, y\in Y} d(x,y)</math>
  *
+ * Single Link or MIN
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusterLinkage.class)
@@ -57,18 +59,28 @@ public class SingleLinkage extends AbstractLinkage {
         return distance;
     }
 
+    /**
+     * Proximity of two clusters is defined as the minimum of the distance
+     * (maximum of the similarity) between any two points in the two different
+     * clusters
+     *
+     * @param similarityMatrix
+     * @param cluster
+     * @param toAdd
+     * @return
+     */
     @Override
     public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd) {
-        double highestSimilarity = -1;
+        double closest = Double.MAX_VALUE;
         for (int i : cluster) {
             for (int j : toAdd) {
                 double s = similarityMatrix.get(i, j);
-                if (s > highestSimilarity) {
-                    highestSimilarity = s;
+                if (distanceMeasure.compare(s, closest)) {
+                    closest = s;
                 }
             }
         }
-        return highestSimilarity;
+        return closest;
     }
 
     @Override

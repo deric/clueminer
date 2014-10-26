@@ -15,6 +15,8 @@ import org.openide.util.lookup.ServiceProvider;
  * greatest distance from any member of first cluster to any member of second
  * cluster. Sometimes it's called the maximum method or the diameter method.
  *
+ * Complete Link or MAX or CLIQUE
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusterLinkage.class)
@@ -41,18 +43,29 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * For the complete link or MAX version of hierarchical clustering, the
+     * proximity of two clusters is defined as the maximum of the distance
+     * (minimum of the similarity) between any two points in the two different
+     * clusters.
+     *
+     * @param similarityMatrix
+     * @param cluster
+     * @param toAdd
+     * @return
+     */
     @Override
     public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd) {
-        double lowestSimilarity = Double.MAX_VALUE;
+        double maximumDistance = Double.MIN_VALUE;
         for (int i : cluster) {
             for (int j : toAdd) {
                 double s = similarityMatrix.get(i, j);
-                if (s < lowestSimilarity) {
-                    lowestSimilarity = s;
+                if (distanceMeasure.compare(maximumDistance, s)) {
+                    maximumDistance = s;
                 }
             }
         }
-        return lowestSimilarity;
+        return maximumDistance;
     }
 
     @Override
