@@ -4,14 +4,13 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.aggl.HACLWMS;
-import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.NanoBench;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,7 +23,8 @@ public class HclustBenchmarkTest {
     private final AgglomerativeClustering[] algorithms;
 
     public HclustBenchmarkTest() {
-        algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HCL(), new HACLWMS()};
+        //algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HCL(), new HACLWMS()};
+        algorithms = new AgglomerativeClustering[]{new HAC(), new HACLWMS()};
     }
 
     @BeforeClass
@@ -54,6 +54,27 @@ public class HclustBenchmarkTest {
                     alg.getName() + " complete link - " + dataset.getName(),
                     new HclustBenchmark().completeLinkage(alg, dataset)
             );
+        }
+    }
+
+    /**
+     * TODO: implement full tree diff
+     */
+    //@Test
+    public void testSingleLinkageSameResult() {
+        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        //use one algorithm as reference one
+        Container ref = new HclustBenchmark().singleLinkage(algorithms[0], dataset);
+        ref.run();
+        Container other;
+
+        //compare result to others
+        for (int i = 1; i < algorithms.length; i++) {
+            AgglomerativeClustering algorithm = algorithms[i];
+            other = new HclustBenchmark().singleLinkage(algorithm, dataset);
+            other.run();
+            System.out.println("comparing " + algorithms[0].getName() + " vs " + algorithm.getName());
+            assertEquals(true, ref.equals(other));
         }
     }
 
