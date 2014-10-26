@@ -1,13 +1,12 @@
 package org.clueminer.clustering.aggl;
 
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -23,7 +22,7 @@ public class SLINKTest {
 
     @Before
     public void setUp() {
-        school = HACTest.schoolData();
+        school = FakeClustering.schoolData();
     }
 
     @After

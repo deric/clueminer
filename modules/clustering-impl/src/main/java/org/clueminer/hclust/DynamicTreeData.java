@@ -48,7 +48,7 @@ public class DynamicTreeData implements DendroTreeData {
 
     @Override
     public int numNodes() {
-        return root.childCnt();
+        return root.childCnt() + 1;
     }
 
     @Override

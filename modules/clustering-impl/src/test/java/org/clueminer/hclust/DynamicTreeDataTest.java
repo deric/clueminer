@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -53,7 +54,8 @@ public class DynamicTreeDataTest {
 
     @Test
     public void testNumNodes() {
-        assertEquals(2, subject.numNodes());
+        //total number of nodes in the tree
+        assertEquals(3, subject.numNodes());
     }
 
     @Test
@@ -82,7 +84,7 @@ public class DynamicTreeDataTest {
             out.flush();
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 

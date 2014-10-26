@@ -2,13 +2,15 @@ package org.clueminer.clustering.aggl;
 
 import org.clueminer.clustering.api.AgglParams;
 import java.io.IOException;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.hclust.linkage.AverageLinkage;
+import org.clueminer.hclust.linkage.CompleteLinkage;
 import org.clueminer.hclust.linkage.SingleLinkage;
-import org.clueminer.io.CsvLoader;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
@@ -17,7 +19,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -26,8 +27,7 @@ import org.openide.util.Exceptions;
 public class HACTest {
 
     private static final HAC subject = new HAC();
-    private static Dataset<? extends Instance> school;
-    private static final CommonFixture fixture = new CommonFixture();
+    private static final double delta = 1e-9;
 
     public HACTest() {
     }
@@ -71,48 +71,9 @@ public class HACTest {
     public void testHierarchy_Dataset_Props() {
     }
 
-    public static Dataset<? extends Instance> schoolData() {
-        if (school == null) {
-            CsvLoader loader = new CsvLoader();
-            school = new ArrayDataset(17, 4);
-            loader.setClassIndex(4);
-            loader.setSeparator(' ');
-            try {
-                loader.load(fixture.schoolData(), school);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return school;
-
-    }
-
-    /**
-     * Test of hierarchy method, of class HC1.
-     *
-     * @throws java.io.IOException
-     */
-    @Test
-    public void testHierarchy_3args() throws IOException {
-        Dataset<? extends Instance> dataset = schoolData();
-        assertEquals(17, dataset.size());
-        assertEquals(4, dataset.attributeCount());
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = subject.hierarchy(dataset, pref);
-        Matrix similarityMatrix = result.getProximityMatrix();
-        assertNotNull(similarityMatrix);
-        assertEquals(similarityMatrix.rowsCount(), dataset.size());
-        assertEquals(similarityMatrix.columnsCount(), dataset.size());
-
-        similarityMatrix.printLower(5, 2);
-        result.getTreeData().print();
-    }
-
     @Test
     public void testColumnClustering() throws IOException {
-        Dataset<? extends Instance> dataset = schoolData();
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
@@ -144,6 +105,57 @@ public class HACTest {
     public void testTriangleSize() {
         assertEquals(3, subject.triangleSize(3));
         assertEquals(6, subject.triangleSize(4));
+    }
+
+    @Test
+    public void testSingleLinkageSchool() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        System.out.println("school - single");
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(121.11422748793802, root.getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+    }
+
+    @Test
+    public void testCompleteLinkageSchool() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        System.out.println("school - complete");
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(32.542734980330046, root.getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+    }
+
+    @Test
+    public void testAverageLinkageSchool() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        System.out.println("school - average");
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(64.62613681177399, root.getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
     }
 
 }

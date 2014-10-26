@@ -1,6 +1,7 @@
 package org.clueminer.clustering.aggl;
 
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -24,7 +25,7 @@ import org.junit.Test;
 public class HACLWTest {
 
     private final HACLW subject = new HACLW();
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public HACLWTest() {
     }
@@ -104,7 +105,7 @@ public class HACLWTest {
 
     @Test
     public void testSingleLinkageSchool() {
-        Dataset<? extends Instance> dataset = HACTest.schoolData();
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
