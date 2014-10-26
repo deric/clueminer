@@ -2,6 +2,7 @@ package org.clueminer.clustering.benchmark;
 
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.linkage.CompleteLinkage;
@@ -14,48 +15,27 @@ import org.clueminer.utils.Props;
  */
 public class HclustBenchmark {
 
-    public Runnable hclust(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset, final String linkage) {
-        final Runnable runnable = new Runnable() {
+    public Container hclust(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset, final String linkage) {
+
+        final Container runnable = new Container(algorithm, dataset) {
+
             @Override
-            public void run() {
-                Props params = new Props();
+            public HierarchicalResult hierarchical(AgglomerativeClustering algorithm, Dataset<? extends Instance> dataset, Props params) {
                 params.putBoolean(AgglParams.CLUSTER_ROWS, true);
                 params.put(AgglParams.LINKAGE, linkage);
 
-                algorithm.hierarchy(dataset, params);
+                return algorithm.hierarchy(dataset, params);
             }
         };
         return runnable;
     }
 
-    public Runnable singleLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                Props params = new Props();
-                params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-                params.put(AgglParams.LINKAGE, SingleLinkage.name);
-
-                algorithm.hierarchy(dataset, params);
-            }
-        };
-        return runnable;
+    public Container singleLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
+        return hclust(algorithm, dataset, SingleLinkage.name);
     }
 
     public Runnable completeLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
-
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                Props params = new Props();
-                params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-                params.put(AgglParams.LINKAGE, CompleteLinkage.name);
-
-                algorithm.hierarchy(dataset, params);
-            }
-        };
-        return runnable;
+        return hclust(algorithm, dataset, CompleteLinkage.name);
     }
 
 }

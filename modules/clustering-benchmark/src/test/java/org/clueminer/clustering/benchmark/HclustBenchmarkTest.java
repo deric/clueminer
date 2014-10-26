@@ -39,7 +39,7 @@ public class HclustBenchmarkTest {
     public void testSingleLinkage() {
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         for (AgglomerativeClustering alg : algorithms) {
-            NanoBench.create().measurements(4).cpuAndMemory().measure(
+            NanoBench.create().measurements(2).cpuAndMemory().measure(
                     alg.getName() + " single link - " + dataset.getName(),
                     new HclustBenchmark().singleLinkage(alg, dataset)
             );
@@ -50,7 +50,7 @@ public class HclustBenchmarkTest {
     public void testCompleteLinkage() {
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         for (AgglomerativeClustering alg : algorithms) {
-            NanoBench.create().cpuAndMemory().measurements(4).measure(
+            NanoBench.create().cpuAndMemory().measurements(2).measure(
                     alg.getName() + " complete link - " + dataset.getName(),
                     new HclustBenchmark().completeLinkage(alg, dataset)
             );
