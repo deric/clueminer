@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
-import java.util.PriorityQueue;
 import java.util.concurrent.CyclicBarrier;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
@@ -108,7 +107,6 @@ public class AgglClustering {
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
-
         return similarityMatrix;
     }
 
@@ -123,7 +121,7 @@ public class AgglClustering {
         return columnSimilarityMatrix(m, dm, null);
     }
 
-    static Matrix columnSimilarityMatrix(Matrix m, DistanceMeasure dm, PriorityQueue<Element> queue) {
+    static Matrix columnSimilarityMatrix(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
         int n = 0;
         double dist;

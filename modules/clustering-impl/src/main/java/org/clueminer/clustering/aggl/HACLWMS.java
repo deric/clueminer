@@ -1,5 +1,6 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -54,7 +55,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      * @return
      */
     @Override
-    protected DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
         //binary tree, however we store at most n nodes (then rewrite references)
         DendroNode[] nodes = new DendroNode[n];
         //each instance will form a cluster
@@ -114,7 +115,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      */
     protected void updateDistances(Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage,
+            AbstractQueue<Element> pq, ClusterLinkage linkage,
             int leftId, int rightId) {
         Element current;
         double distance;
@@ -173,6 +174,8 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
+        //System.out.println("[" + a + ", " + q + "] -> " + map(a, q));
+        //System.out.println("[" + b + ", " + q + "] -> " + map(b, q));
         //System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
         //update proximity matrix
         //we rewrite proximity matrix values in order to match new distances between items

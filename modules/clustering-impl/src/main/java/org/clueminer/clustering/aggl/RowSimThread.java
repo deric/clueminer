@@ -55,7 +55,9 @@ public class RowSimThread implements Runnable {
             }
         }
         try {
+            //System.out.println("thread " + threadId + " at barrier");
             barrier.await();
+            //System.out.println("thread " + threadId + " after barrier");
         } catch (InterruptedException | BrokenBarrierException ex) {
             Exceptions.printStackTrace(ex);
         }

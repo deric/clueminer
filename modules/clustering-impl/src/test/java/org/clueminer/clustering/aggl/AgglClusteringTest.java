@@ -29,7 +29,7 @@ public class AgglClusteringTest {
         Matrix input = dataset.asMatrix();
         int triangle = ((dataset.size() - 1) * dataset.size()) >>> 1;
         PriorityQueue<Element> pq = new PriorityQueue<>(triangle);
-        int threads = 4;
+        int threads = 8;
         Matrix parSim = AgglClustering.rowSimilarityMatrixParSym(input, dm, pq, threads);
         //parSim.printLower(5, 2);
         pq = new PriorityQueue<>(triangle);
