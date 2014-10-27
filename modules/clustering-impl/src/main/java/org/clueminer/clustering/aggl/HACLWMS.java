@@ -4,6 +4,8 @@ import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -39,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HACLWMS extends HACLW implements AgglomerativeClustering {
 
     private final static String name = "HAC-LW-MS";
+    private static final Logger logger = Logger.getLogger(HACLWMS.class.getName());
 
     @Override
     public String getName() {
@@ -95,6 +98,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
+        logger.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
         //System.out.println("last node: " + node.toString());
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
