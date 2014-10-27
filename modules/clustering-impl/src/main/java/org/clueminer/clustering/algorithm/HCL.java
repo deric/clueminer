@@ -16,7 +16,6 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
-@Deprecated
 public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
     private boolean stop = false;
@@ -32,7 +31,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
     @Override
     public String getName() {
-        return "Hierarchical Clustering";
+        return "HCL";
     }
 
     //@Override

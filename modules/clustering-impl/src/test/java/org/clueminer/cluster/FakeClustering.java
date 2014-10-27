@@ -9,9 +9,11 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.CsvLoader;
 import org.openide.util.Exceptions;
 
 /**
@@ -30,6 +32,29 @@ public class FakeClustering {
     private static Clustering<Cluster> simpleResponse;
     private static Dataset<Instance> irisData;
     private static Dataset<Instance> wine;
+    private static Dataset<Instance> kumar;
+    private static Dataset<? extends Instance> school;
+    private static final CommonFixture fixture = new CommonFixture();
+
+    /**
+     * Testing dataset from Kumar (chapter 8, page 519)
+     *
+     * @return
+     */
+    public static Dataset<? extends Instance> kumarData() {
+        if (kumar == null) {
+            kumar = new ArrayDataset<>(4, 2);
+            kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+            kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+            kumar.builder().create(new double[]{0.40, 0.53}, "1");
+            kumar.builder().create(new double[]{0.22, 0.38}, "2");
+            kumar.builder().create(new double[]{0.35, 0.32}, "3");
+            kumar.builder().create(new double[]{0.26, 0.19}, "4");
+            kumar.builder().create(new double[]{0.08, 0.41}, "5");
+            kumar.builder().create(new double[]{0.45, 0.30}, "6");
+        }
+        return kumar;
+    }
 
     public static Clustering iris() {
         if (irisClusters == null) {
@@ -270,4 +295,21 @@ public class FakeClustering {
 
         return simpleResponse;
     }
+
+    public static Dataset<? extends Instance> schoolData() {
+        if (school == null) {
+            CsvLoader loader = new CsvLoader();
+            school = new ArrayDataset(17, 4);
+            loader.setClassIndex(4);
+            loader.setSeparator(' ');
+            try {
+                loader.load(fixture.schoolData(), school);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return school;
+
+    }
+
 }

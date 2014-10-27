@@ -2,11 +2,13 @@ package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
 import java.util.PriorityQueue;
+import java.util.concurrent.CyclicBarrier;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
+import org.openide.util.Exceptions;
 
 /**
  * Agglomerative clustering methods
@@ -78,6 +80,35 @@ public class AgglClustering {
                 }
             }
         }
+        return similarityMatrix;
+    }
+
+    /**
+     * We expect distance measure to be symmetrical
+     *
+     * @param m
+     * @param dm
+     * @param queue
+     * @param threads
+     * @return
+     */
+    public static Matrix rowSimilarityMatrixParSym(final Matrix m, final DistanceMeasure dm, final AbstractQueue<Element> queue, int threads) {
+        final Matrix similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
+        CyclicBarrier barrier = new CyclicBarrier(threads);
+        Thread[] run = new Thread[threads];
+        for (int t = 0; t < threads; t++) {
+            run[t] = new Thread(new RowSimThread(m, dm, queue, t, threads, similarityMatrix, barrier));
+            run[t].start();
+        }
+
+        try {
+            for (int i = 0; i < threads; i++) {
+                run[i].join();
+            }
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
         return similarityMatrix;
     }
 

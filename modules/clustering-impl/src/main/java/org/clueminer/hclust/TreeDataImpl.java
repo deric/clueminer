@@ -172,9 +172,10 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
      */
     @Override
     public int numLeaves() {
-        return height.length;
+        return height.length / 2;
     }
 
+    @Override
     public boolean isLeaf(int idx) {
         return getLeft(idx) == -1 && getRight(idx) == -1;
     }
@@ -514,6 +515,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
         return root;
     }
 
+    @Override
     public double updatePositions(DendroNode node) {
         if (node.isLeaf()) {
             return node.getPosition();
@@ -564,6 +566,9 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
         Dump.array(height, "height");
         Dump.array(left, "left");
         Dump.array(right, "right");
+        DendroNode node = getRoot();
+        DynamicTreeData data = new DynamicTreeData(node, height.length);
+        data.print();
     }
 
     @Override

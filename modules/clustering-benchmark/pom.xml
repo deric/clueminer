@@ -123,10 +123,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.8</version>
-            <scope>test</scope>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.32</version>
         </dependency>
     </dependencies>
 
@@ -153,7 +152,7 @@
                     <target>1.7</target>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Main</mainClass>
                             <packageName>org.clueminer.clustering.benchmark</packageName>
                             <addClasspath>true</addClasspath>
                         </manifest>
@@ -170,7 +169,7 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Main</mainClass>
                             <packageName>org.clueminer.clustering.benchmark</packageName>
                             <addClasspath>true</addClasspath>
                         </manifest>
@@ -185,7 +184,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.clueminer.clustering.benchmark.Run</mainClass>
+                            <mainClass>org.clueminer.clustering.benchmark.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
