@@ -48,6 +48,8 @@ public class GnuplotReporter extends GnuplotHelper implements Reporter {
                         plotComplexity(8, "CPU time", 10, 2, dataFile.getName(), algorithms, "CPU usage of hierarchical clustering algorithms - " + opts[1], false));
         writePlotScript(new File(tpsPath),
                         plotComplexity(8, "tps", 10, 5, dataFile.getName(), algorithms, "Transactuion per second - " + opts[1], true));
+
+        writeBashScript(folder);
     }
 
     private void writeHeader(String[] opts) {
@@ -163,10 +165,10 @@ public class GnuplotReporter extends GnuplotHelper implements Reporter {
      * Should be called when all plot files are written
      */
     public void finish() {
-        writePlotScript(folder);
+        //TODO maybe some cleanup?
     }
 
-    private void writePlotScript(String dataDir) {
+    private void writeBashScript(String dataDir) {
         try {
             bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
             bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set terminal pngcairo size 1024,768 enhanced font 'Verdana,10'", "png");
