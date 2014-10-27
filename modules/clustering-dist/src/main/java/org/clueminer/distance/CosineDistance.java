@@ -131,14 +131,14 @@ public class CosineDistance extends SymmetricDistance {
 
         /*   double sumTop = 0;
          double sumOne = 0;
-        double sumTwo = 0;
-        for (int i = 0; i < x.size(); i++) {
-            sumTop += x.get(i) * y.get(i);
-            sumOne += x.get(i) * x.get(i);
-            sumTwo += y.get(i) * y.get(i);
-        }
-        double cosSim = sumTop / (Math.sqrt(sumOne) * Math.sqrt(sumTwo));
-        return (1 - cosSim);*/
+         double sumTwo = 0;
+         for (int i = 0; i < x.size(); i++) {
+         sumTop += x.get(i) * y.get(i);
+         sumOne += x.get(i) * x.get(i);
+         sumTwo += y.get(i) * y.get(i);
+         }
+         double cosSim = sumTop / (Math.sqrt(sumOne) * Math.sqrt(sumTwo));
+         return (1 - cosSim);*/
     }
 
     @Override
@@ -148,7 +148,7 @@ public class CosineDistance extends SymmetricDistance {
 
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return x < y;
     }
 
     @Override
