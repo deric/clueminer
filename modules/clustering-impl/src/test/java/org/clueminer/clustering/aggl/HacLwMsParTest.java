@@ -48,11 +48,11 @@ public class HacLwMsParTest {
         Matrix ref = refRes.getProximityMatrix();
         //ref.printLower(5, 2);
         ///TODO: still some concurrency issues
-       /* for (int i = 0; i < ref.rowsCount(); i++) {
-         for (int j = 0; j < ref.columnsCount(); j++) {
-         assertEquals(ref.get(i, j), sim.get(i, j), delta);
-         }
-         }*/
+        for (int i = 0; i < ref.rowsCount(); i++) {
+            for (int j = 0; j < ref.columnsCount(); j++) {
+                assertEquals(ref.get(i, j), sim.get(i, j), delta);
+            }
+        }
     }
 
 }
