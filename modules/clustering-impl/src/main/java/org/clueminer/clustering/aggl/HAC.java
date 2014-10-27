@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * <ul>hash maps O(n^2)</ul>
  * <ul>tree structure (2 * n - 1 objects)</ul>
  * </li>
- * time complexity - O(n^3)
+ * time complexity - omega n^2 * ( log n)
  *
  * Note: In order to avoid concurrency issues, the algorithm shouldn't keep
  * state
@@ -131,7 +131,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.2f", curr.getValue()));
+            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.6f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);

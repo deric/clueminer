@@ -25,7 +25,7 @@ import org.junit.Test;
 public class HACLWMSTest {
 
     private final HACLWMS subject = new HACLWMS();
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public HACLWMSTest() {
     }

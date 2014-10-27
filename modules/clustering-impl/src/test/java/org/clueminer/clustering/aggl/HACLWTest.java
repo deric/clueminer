@@ -49,24 +49,6 @@ public class HACLWTest {
         return data;
     }
 
-    /**
-     * Testing dataset from Kumar (chapter 8, page 519)
-     *
-     * @return
-     */
-    protected Dataset<? extends Instance> kumarData() {
-        Dataset<Instance> data = new ArrayDataset<>(4, 2);
-        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
-        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-        data.builder().create(new double[]{0.40, 0.53}, "1");
-        data.builder().create(new double[]{0.22, 0.38}, "2");
-        data.builder().create(new double[]{0.35, 0.32}, "3");
-        data.builder().create(new double[]{0.26, 0.19}, "4");
-        data.builder().create(new double[]{0.08, 0.41}, "5");
-        data.builder().create(new double[]{0.45, 0.30}, "6");
-        return data;
-    }
-
     @Test
     public void testUpdateProximity() {
         Dataset<? extends Instance> dataset = simpleData();
@@ -85,7 +67,7 @@ public class HACLWTest {
 
     @Test
     public void testSingleLinkage() {
-        Dataset<? extends Instance> dataset = kumarData();
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
@@ -98,9 +80,21 @@ public class HACLWTest {
         System.out.println("kumar - single");
         DendroTreeData tree = result.getTreeData();
         tree.print();
+        //kumar - single
+        //                         /----- #1 - 2
+        //                 /----- #7 (0.14)
+        //                 |       \----- #4 - 5
+        //         /----- #8 (0.14)
+        //         |       |       /----- #2 - 3
+        //         |       \----- #6 (0.10)
+        //         |               \----- #5 - 6
+        // /----- #9 (0.16)
+        // |       \----- #3 - 4
+        //#10 (0.22)
+        // \----- #0 - 1
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.215870331449522, root.getHeight(), delta);
+        assertEquals(0.21587033144922907, root.getHeight(), delta);
     }
 
     @Test
@@ -118,9 +112,7 @@ public class HACLWTest {
         tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-//        assertEquals(47.18370587395614, root.getHeight(), delta);
-        //could we verify this?
-        assertEquals(32.54273498033004, root.getHeight(), delta);
+        assertEquals(32.542734980330046, root.getHeight(), delta);
     }
 
 }

@@ -97,6 +97,7 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
+        //System.out.println("p(" + r + ", " + q + ") = 0.5 * p(" + a + ", " + q + ") + 0.5*p(" + b + ", " + q + ") - 0.5*| p(" + a + ", " + q + ") - p(" + b + ", " + q + ")| = " + String.format("%.2f", dist));
         cache.put(map(r, q), dist);
         return dist;
     }
