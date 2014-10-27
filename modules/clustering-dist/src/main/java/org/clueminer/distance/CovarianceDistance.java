@@ -131,7 +131,7 @@ public class CovarianceDistance extends AbstractDistance implements DistanceMeas
 
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Math.abs(x) < Math.abs(y);
     }
 
     @Override
