@@ -1,15 +1,12 @@
 package org.clueminer.clustering.benchmark;
 
 import java.util.Random;
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.aggl.HACLWMS;
-import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.report.NanoBench;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -17,16 +14,16 @@ import org.clueminer.report.NanoBench;
  */
 public class Experiment implements Runnable {
 
-    private final Random rand;
-    private final BenchParams params;
-    private final AgglomerativeClustering[] algorithms;
-    private final String results;
+    protected final Random rand;
+    protected final BenchParams params;
+    protected final AgglomerativeClustering[] algorithms;
+    protected final String results;
 
-    public Experiment(BenchParams params, String results) {
+    public Experiment(BenchParams params, String results, AgglomerativeClustering[] algorithms) {
         rand = new Random();
         this.params = params;
         this.results = results;
-        algorithms = new AgglomerativeClustering[]{new HCL(), new HAC(), new HACLW(), new HACLWMS()};
+        this.algorithms = algorithms;
     }
 
     @Override
@@ -47,6 +44,11 @@ public class Experiment implements Runnable {
                 Runtime runtime = Runtime.getRuntime();
                 // Run the garbage collector
                 runtime.gc();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         }
         reporter.finish();

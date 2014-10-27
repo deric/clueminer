@@ -5,6 +5,11 @@ import com.beust.jcommander.ParameterException;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HACLWMS;
+import org.clueminer.clustering.algorithm.HCL;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 
 /**
  *
@@ -26,7 +31,8 @@ public class Hclust extends Bench {
 
         System.out.println("# n = " + params.n);
         System.out.println("=== starting experiment:");
-        Experiment exp = new Experiment(params, benchmarkFolder);
+        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HCL(), new HAC(), new HACLW(), new HACLWMS()};
+        Experiment exp = new Experiment(params, benchmarkFolder, algorithms);
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();

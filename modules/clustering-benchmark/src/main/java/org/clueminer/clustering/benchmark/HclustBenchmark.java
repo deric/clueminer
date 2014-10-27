@@ -34,7 +34,7 @@ public class HclustBenchmark {
         return hclust(algorithm, dataset, SingleLinkage.name);
     }
 
-    public Runnable completeLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
+    public Container completeLinkage(final AgglomerativeClustering algorithm, final Dataset<? extends Instance> dataset) {
         return hclust(algorithm, dataset, CompleteLinkage.name);
     }
 
