@@ -29,7 +29,7 @@ public class HacLwMsPar extends HACLWMS {
 
     @Override
     public String getName() {
-        return name;
+        return name + "-" + threads;
     }
 
     /**

@@ -18,7 +18,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 public class Hclust extends Bench {
 
     protected static Hclust instance;
-    private static String benchmarkFolder;
+    protected static String benchmarkFolder;
 
     /**
      * @param args the command line arguments
@@ -36,10 +36,9 @@ public class Hclust extends Bench {
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();
-
     }
 
-    private static BenchParams parseArguments(String[] args) {
+    protected static BenchParams parseArguments(String[] args) {
         BenchParams params = new BenchParams();
         JCommander cmd = new JCommander(params);
         printUsage(args, cmd, params);
