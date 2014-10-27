@@ -65,6 +65,20 @@ public class DynamicTreeDataTest {
 
     @Test
     public void testSetRoot() {
+        DynamicTreeData test = new DynamicTreeData();
+        test.setRoot(new DTreeNode(true));
+        test.getRoot().setId(0);
+        test.getRoot().setLeft(new DTreeNode(1));
+        test.getRoot().setRight(new DTreeNode(2));
+        test.getRoot().getLeft().setLeft(new DTreeNode(3));
+        test.getRoot().getLeft().setRight(new DTreeNode(4));
+        test.getRoot().getRight().setLeft(new DTreeNode(5));
+        //create sufficient number of node to test reallocation of memory
+        test.getRoot().getRight().setRight(new DTreeNode(6));
+        test.getRoot().getRight().getRight().setRight(new DTreeNode(7));
+
+        assertEquals(4, test.numLeaves());
+        assertEquals(8, test.numNodes());
     }
 
     @Test
