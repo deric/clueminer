@@ -45,4 +45,27 @@ public class AgglClusteringTest {
         }
     }
 
+    @Test
+    public void testRowSimilarityMatrixParSymLock() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+
+        Matrix input = dataset.asMatrix();
+        int triangle = ((dataset.size() - 1) * dataset.size()) >>> 1;
+        PriorityQueue<Element> pq = new PriorityQueue<>(triangle);
+        int threads = 16;
+        Matrix parSim = AgglClustering.rowSimilarityMatrixParSymLock(input, dm, pq, threads);
+        //parSim.printLower(5, 2);
+        pq = new PriorityQueue<>(triangle);
+        //make sure paralell version returns same results as the serial one
+        Matrix ref = AgglClustering.rowSimilarityMatrix(input, dm, pq);
+        //ref.printLower(5, 2);
+
+        for (int i = 0; i < ref.rowsCount(); i++) {
+            for (int j = 0; j < ref.columnsCount(); j++) {
+                //System.out.println("[" + i + ", " + j + "] = " + ref.get(i, j) + " vs. " + parSim.get(i, j));
+                assertEquals(ref.get(i, j), parSim.get(i, j), delta);
+            }
+        }
+    }
+
 }

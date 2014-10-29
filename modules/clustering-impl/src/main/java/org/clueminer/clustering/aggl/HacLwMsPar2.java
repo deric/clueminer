@@ -15,16 +15,16 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
-public class HacLwMsPar extends HACLWMS {
+public class HacLwMsPar2 extends HACLWMS {
 
-    private final static String name = "HAC-LW-MS-PAR";
+    private final static String name = "HAC-LW-MS-PAR-lock";
     private int threads = 4;
 
-    public HacLwMsPar() {
+    public HacLwMsPar2() {
 
     }
 
-    public HacLwMsPar(int numThreads) {
+    public HacLwMsPar2(int numThreads) {
         this.threads = numThreads;
     }
 
@@ -63,7 +63,7 @@ public class HacLwMsPar extends HACLWMS {
         Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
             if (distanceMeasure.isSymmetric()) {
-                similarityMatrix = AgglClustering.rowSimilarityMatrixParSym(input, distanceMeasure, pq, threads);
+                similarityMatrix = AgglClustering.rowSimilarityMatrixParSymLock(input, distanceMeasure, pq, threads);
             } else {
                 similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
             }
