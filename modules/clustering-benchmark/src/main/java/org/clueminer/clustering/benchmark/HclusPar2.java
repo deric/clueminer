@@ -28,7 +28,7 @@ public class HclusPar2 extends Hclust {
         System.out.println("# n = " + params.n);
         System.out.println("=== starting experiment:");
         AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{
-            new HACLW(), new HACLWMS(), new HacLwMsPar(2), new HacLwMsPar(4), new HacLwMsPar2(2), new HacLwMsPar(4)
+            new HACLW(), new HACLWMS(), new HacLwMsPar(2), new HacLwMsPar(4), new HacLwMsPar2(2), new HacLwMsPar2(4)
         };
         Experiment exp = new Experiment(params, benchmarkFolder, algorithms);
         ExecutorService execService = Executors.newFixedThreadPool(1);
