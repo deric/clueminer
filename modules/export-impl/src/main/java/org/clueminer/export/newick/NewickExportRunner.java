@@ -2,6 +2,7 @@ package org.clueminer.export.newick;
 
 import java.io.File;
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -26,6 +27,10 @@ public class NewickExportRunner implements Runnable {
     @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void doExport(HierarchicalResult result) {
+
     }
 
 }

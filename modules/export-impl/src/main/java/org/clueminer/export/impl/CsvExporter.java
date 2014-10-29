@@ -1,22 +1,16 @@
 package org.clueminer.export.impl;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
-import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.NbPreferences;
-import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
 
@@ -24,18 +18,14 @@ import org.openide.windows.WindowManager;
  *
  * @author Tomas Barton
  */
-public class CsvExporter implements ActionListener, PropertyChangeListener {
+public class CsvExporter extends AbstractExporter implements ActionListener, PropertyChangeListener {
 
     private static CsvExporter instance;
     private File defaultFolder = null;
     private JFileChooser fileChooser;
     private FileFilter csvFilter;
     private CsvOptions options;
-    private static final String prefKey = "last_folder";
-    private DialogDescriptor d = null;
-    private static final RequestProcessor RP = new RequestProcessor("CSV Export");
-    private RequestProcessor.Task task;
-    private ClusterAnalysis analysis;
+    private static final String title = "Export to CSV";
 
     public static CsvExporter getDefault() {
         if (instance == null) {
@@ -44,6 +34,12 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
         return instance;
     }
 
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
     public JPanel getOptions() {
         if (options == null) {
             options = new CsvOptions();
@@ -54,21 +50,7 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
     private CsvExporter() {
     }
 
-    public void setAnalysis(ClusterAnalysis analysis) {
-        this.analysis = analysis;
-    }
-
-    public void showDialog() {
-
-        d = new DialogDescriptor(getOptions(), "Export to CSV", true, NotifyDescriptor.OK_CANCEL_OPTION,
-                                 NotifyDescriptor.OK_CANCEL_OPTION,
-                                 DialogDescriptor.BOTTOM_ALIGN, null, this);
-
-        d.setClosingOptions(new Object[]{});
-        d.addPropertyChangeListener(this);
-        DialogDisplayer.getDefault().notifyLater(d);
-    }
-
+    @Override
     public void export(Preferences pref) {
         if (analysis != null) {
 
@@ -79,7 +61,7 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
             if (fileChooser == null) {
                 fileChooser = new JFileChooser();
                 fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-                fileChooser.setDialogTitle("Export CSV");
+                fileChooser.setDialogTitle(getTitle());
                 fileChooser.setAcceptAllFileFilterUsed(true);
                 fileChooser.setCurrentDirectory(defaultFolder);
 
@@ -145,21 +127,8 @@ public class CsvExporter implements ActionListener, PropertyChangeListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == DialogDescriptor.OK_OPTION) {
-            Preferences p = NbPreferences.root().node("/clueminer/exporter");
-            options.updatePreferences(p);
-            export(p);
-
-            d.setClosingOptions(null);
-        } else if (event.getSource() == DialogDescriptor.CANCEL_OPTION) {
-            d.setClosingOptions(null);
-        }
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) {
-        //not much to do
+    public void updatePreferences(Preferences p) {
+        options.updatePreferences(p);
     }
 
 }
