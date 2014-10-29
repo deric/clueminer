@@ -74,6 +74,19 @@ public class RowSimThread2 implements Runnable {
                 }
             }
         }
+        //if the cache contains some values, make sure we add them to queue
+        if (!cache.isEmpty()) {
+            //blocking call
+            lock.lock();
+            try {
+                while (!cache.isEmpty()) {
+                    queue.add(cache.remove());
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
         try {
             //System.out.println("thread " + threadId + " at barrier");
             barrier.await();
