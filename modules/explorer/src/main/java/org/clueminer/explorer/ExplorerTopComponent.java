@@ -5,11 +5,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -75,6 +76,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private ClustComparator comparator;
     private ClustSorted children;
     private Evolution alg;
+    private final ClusteringExecutorCached exec = new ClusteringExecutorCached();
 
     public ExplorerTopComponent() {
         initComponents();
@@ -270,8 +272,10 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
             @Override
             public void run() {
-                HierarchicalResult res = aggl.hierarchy(dataset, props);
-                Clustering clust = res.getClustering();
+                exec.setAlgorithm(aggl);
+                DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
+                //HierarchicalResult res = aggl.hierarchy(dataset, props);
+                Clustering clust = mapping.getRowsClustering();
                 children.addClustering(clust);
             }
         });
