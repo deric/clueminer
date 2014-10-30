@@ -296,4 +296,33 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public String graphVizExport() {
+        String result = "Graph G {\n";
+        result += exportNodes();
+        result += exportEdges();
+        result += "}";
+        return result;
+    }
+
+    public String exportNodes() {
+        String result = "";
+        for (int i = 0; i < nodeCounter; i++) {
+            result += "    " + nodes[i].getNumber() + "[fontsize=11 pos=\"" + nodes[i].getCoordinate(0) + ","
+                    + nodes[i].getCoordinate(1) + "!\" width=0.1 height=0.1 shape=point];\n";
+        }
+        return result;
+    }
+
+    public String exportEdges() {
+        String result = "";
+        for (int i = 0; i < nodeCounter; i++) {
+            for (int j = i; j < nodeCounter; j++) {
+                if (adjMatrix[i][j] != null) {
+                    result += "    " + adjMatrix[i][j].getSource().getNumber() + " -- " + adjMatrix[i][j].getTarget().getNumber() + ";\n";
+                }
+            }
+        }
+        return result;
+    }
+    
 }

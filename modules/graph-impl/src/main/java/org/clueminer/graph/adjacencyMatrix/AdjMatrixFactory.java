@@ -67,4 +67,13 @@ public class AdjMatrixFactory implements GraphFactory {
         return node;
     }
 
+    public Node newNode(Object id, int dimension) {
+        Node node = new AdjMatrixNode(id, dimension);
+        return node;
+    }
+
+    public Node newNode(Object id, double[] coordinates) {
+        Node node = new AdjMatrixNode(id, coordinates);
+        return node;
+    }
 }
