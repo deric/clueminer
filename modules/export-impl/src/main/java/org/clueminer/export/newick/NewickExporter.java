@@ -5,28 +5,23 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.AbstractExporter;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-public class NewickExporter extends AbstractExporter {
+@ServiceProvider(service = ClusteringExport.class)
+public class NewickExporter extends AbstractExporter implements ClusteringExport {
 
     public static final String title = "Export to Newick";
     public static final String ext = ".nwk";
-    private static NewickExporter instance;
     private NewickOptions options;
 
-    private NewickExporter() {
-    }
-
-    public static NewickExporter getDefault() {
-        if (instance == null) {
-            instance = new NewickExporter();
-        }
-        return instance;
+    public NewickExporter() {
     }
 
     @Override
@@ -38,7 +33,7 @@ public class NewickExporter extends AbstractExporter {
     }
 
     @Override
-    public String getTitle() {
+    public String getName() {
         return title;
     }
 

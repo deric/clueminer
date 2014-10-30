@@ -1,34 +1,31 @@
 package org.clueminer.export.impl;
 
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-public class CsvExporter extends AbstractExporter implements ActionListener, PropertyChangeListener {
+@ServiceProvider(service = ClusteringExport.class)
+public class CsvExporter extends AbstractExporter implements ActionListener, ClusteringExport {
 
-    private static CsvExporter instance;
     private CsvOptions options;
     public static final String title = "Export to CSV";
     public static final String ext = ".csv";
 
-    public static CsvExporter getDefault() {
-        if (instance == null) {
-            instance = new CsvExporter();
-        }
-        return instance;
+    public CsvExporter() {
     }
 
     @Override
-    public String getTitle() {
+    public String getName() {
         return title;
     }
 
@@ -38,9 +35,6 @@ public class CsvExporter extends AbstractExporter implements ActionListener, Pro
             options = new CsvOptions();
         }
         return options;
-    }
-
-    private CsvExporter() {
     }
 
     @Override

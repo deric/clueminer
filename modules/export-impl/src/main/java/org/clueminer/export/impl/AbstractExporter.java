@@ -2,14 +2,12 @@ package org.clueminer.export.impl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDescriptor;
@@ -24,7 +22,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractExporter implements ActionListener, PropertyChangeListener {
+public abstract class AbstractExporter implements ActionListener, ClusteringExport {
 
     protected static final RequestProcessor RP = new RequestProcessor("Export");
     protected RequestProcessor.Task task;
@@ -38,18 +36,6 @@ public abstract class AbstractExporter implements ActionListener, PropertyChange
         this.analysis = analysis;
     }
 
-    public abstract JPanel getOptions();
-
-    public abstract String getTitle();
-
-    public abstract String getExtension();
-
-    public abstract void updatePreferences(Preferences p);
-
-    public abstract FileFilter getFileFilter();
-
-    public abstract Runnable getRunner(File file, ClusterAnalysis analysis, Preferences pref, final ProgressHandle ph);
-
     public void showDialog() {
 
         dialog = new DialogDescriptor(getOptions(), "Export", true, NotifyDescriptor.OK_CANCEL_OPTION,
@@ -57,7 +43,6 @@ public abstract class AbstractExporter implements ActionListener, PropertyChange
                                       DialogDescriptor.BOTTOM_ALIGN, null, this);
 
         dialog.setClosingOptions(new Object[]{});
-        dialog.addPropertyChangeListener(this);
         DialogDisplayer.getDefault().notifyLater(dialog);
     }
 
@@ -74,15 +59,10 @@ public abstract class AbstractExporter implements ActionListener, PropertyChange
         }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) {
-        //not much to do
-    }
-
     protected JFileChooser getFileChooser() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-        fileChooser.setDialogTitle(getTitle());
+        fileChooser.setDialogTitle(getName());
         fileChooser.setAcceptAllFileFilterUsed(true);
         fileChooser.setCurrentDirectory(defaultFolder);
 
@@ -123,7 +103,7 @@ public abstract class AbstractExporter implements ActionListener, PropertyChange
             }
 
             if (retval.equals(NotifyDescriptor.YES_OPTION)) {
-                final ProgressHandle ph = ProgressHandleFactory.createHandle(getTitle() + ":" + file.getName());
+                final ProgressHandle ph = ProgressHandleFactory.createHandle(getName() + ":" + file.getName());
                 createTask(file, analysis, pref, ph);
             } else {
                 makeExport(pref);
