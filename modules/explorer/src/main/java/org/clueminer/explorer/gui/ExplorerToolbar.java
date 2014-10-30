@@ -11,7 +11,7 @@ import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.explorer.ToolbarListener;
 import org.openide.DialogDescriptor;
@@ -29,9 +29,11 @@ public class ExplorerToolbar extends JToolBar {
     private JComboBox comboEvolution;
     private javax.swing.JSlider sliderGenerations;
     private ToolbarListener listener;
+    private JButton btnSingle;
     private JButton btnStart;
     private JButton btnFunction;
     private EvalFuncPanel functionPanel;
+    private ClusterAlgPanel algPanel;
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
@@ -45,6 +47,25 @@ public class ExplorerToolbar extends JToolBar {
     private void initComponents() {
         this.setFloatable(false);
         this.setRollover(true);
+        btnSingle = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/clustering16.png", false));
+        btnSingle.setToolTipText("Run single clustering");
+        btnSingle.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (algPanel == null) {
+                    algPanel = new ClusterAlgPanel();
+                }
+                DialogDescriptor dd = new DialogDescriptor(algPanel, NbBundle.getMessage(ExplorerToolbar.class, "AlgorithmPanel.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    ClusteringAlgorithm alg = algPanel.getAlgorithm();
+                    if (listener != null) {
+                        listener.runClustering(alg, algPanel.getProps());
+                    }
+                }
+            }
+        });
+        add(btnSingle);
 
         comboEvolution = new javax.swing.JComboBox();
         comboEvolution.setModel(new DefaultComboBoxModel(initEvolution()));

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglParams;
@@ -452,5 +453,21 @@ public class HCLDialog extends ClusteringDialog {
     @Override
     public ClusteringAlgorithm getAlgorithm() {
         return algorihm;
+    }
+
+    @Override
+    public JPanel getPanel() {
+        return this;
+    }
+
+    /**
+     * currently not compatible with new algorithms
+     *
+     * @param algorithm
+     * @return
+     */
+    @Override
+    public boolean isUIfor(ClusteringAlgorithm algorithm) {
+        return false;
     }
 }

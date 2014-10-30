@@ -10,8 +10,7 @@ import org.openide.util.Lookup;
  * @author Tomas Barton
  */
 public class ClusteringDialogFactory extends ServiceFactory<ClusteringDialog> {
-    
-    
+
     private static ClusteringDialogFactory instance;
 
     public static ClusteringDialogFactory getInstance() {
@@ -22,12 +21,12 @@ public class ClusteringDialogFactory extends ServiceFactory<ClusteringDialog> {
     }
 
     private ClusteringDialogFactory() {
-        providers = new LinkedHashMap<String, ClusteringDialog>();
+        providers = new LinkedHashMap<>();
         Collection<? extends ClusteringDialog> list = Lookup.getDefault().lookupAll(ClusteringDialog.class);
         for (ClusteringDialog c : list) {
             providers.put(c.getName(), c);
         }
         sort();
     }
-    
+
 }

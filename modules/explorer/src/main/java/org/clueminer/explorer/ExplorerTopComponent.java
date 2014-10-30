@@ -5,8 +5,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -14,6 +16,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.NMI;
 import org.clueminer.explorer.gui.ExplorerToolbar;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -256,6 +259,21 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             comparator.setAscOrder(!eval.isMaximized());
             children.setComparator(comparator);
         }
+    }
+
+    @Override
+    public void runClustering(final ClusteringAlgorithm alg, final Props props) {
+        logger.log(Level.INFO, "starting clustering {0}", alg.getName());
+        final AgglomerativeClustering aggl = (AgglomerativeClustering) alg;
+        task = RP.create(new Runnable() {
+
+            @Override
+            public void run() {
+                aggl.hierarchy(dataset, props);
+            }
+        });
+        task.addTaskListener(this);
+        task.schedule(0);
     }
 
 }
