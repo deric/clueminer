@@ -32,10 +32,12 @@ public abstract class AbstractExporter implements ActionListener, ClusteringExpo
     protected File defaultFolder = null;
     protected FileFilter fileFilter;
 
+    @Override
     public void setAnalysis(ClusterAnalysis analysis) {
         this.analysis = analysis;
     }
 
+    @Override
     public void showDialog() {
 
         dialog = new DialogDescriptor(getOptions(), "Export", true, NotifyDescriptor.OK_CANCEL_OPTION,

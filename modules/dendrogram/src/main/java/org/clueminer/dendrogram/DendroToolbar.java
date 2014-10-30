@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.ImageExporter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -77,7 +78,18 @@ public class DendroToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                FileExportDialog exportDialog = new FileExportDialog();
+                DialogDescriptor dd = new DialogDescriptor(exportDialog, "Export to...");
+                if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    //exportDialog.destroy();
+                    return;
+                }
+                //exportDialog.destroy();
+
+                if (dd.getValue() == DialogDescriptor.OK_OPTION) {
+                    ClusteringExport exp = exportDialog.getExporter();
+                    exp.showDialog();
+                }
             }
         });
 

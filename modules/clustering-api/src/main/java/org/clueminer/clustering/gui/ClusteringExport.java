@@ -56,4 +56,15 @@ public interface ClusteringExport {
      */
     Runnable getRunner(File file, ClusterAnalysis analysis, Preferences pref, final ProgressHandle ph);
 
+    /**
+     * Display exporting dialog
+     */
+    void showDialog();
+
+    /**
+     * Set graphical component displaying clustering
+     *
+     * @param analysis
+     */
+    void setAnalysis(ClusterAnalysis analysis);
 }
