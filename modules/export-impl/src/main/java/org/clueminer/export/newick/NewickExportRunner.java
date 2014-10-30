@@ -34,6 +34,7 @@ public class NewickExportRunner implements Runnable {
     private ProgressHandle ph;
     private Dataset<? extends Instance> dataset;
     private boolean includeNodeNames;
+    private int cnt;
 
     public NewickExportRunner() {
     }
@@ -66,6 +67,12 @@ public class NewickExportRunner implements Runnable {
         DendroTreeData tree = result.getTreeData();
         DendroNode node = tree.getRoot();
         dataset = result.getDataset();
+
+        if (ph != null) {
+            int todo = 2 * result.getDataset().size() + 1;
+            ph.start(todo);
+            cnt = 0; //TODO: not thread safe
+        }
 
         postOrder(node, sb, false);
         sb.append(";");
@@ -110,6 +117,9 @@ public class NewickExportRunner implements Runnable {
                 sb.append("#").append(node.getId());
             }
             sb.append(":").append(node.getHeight());
+        }
+        if (ph != null) {
+            ph.progress(cnt++);
         }
     }
 
