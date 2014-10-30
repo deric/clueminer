@@ -22,7 +22,7 @@ public class ExternalEvaluatorFactory extends ServiceFactory<ExternalEvaluator> 
     }
 
     private ExternalEvaluatorFactory() {
-        providers = new LinkedHashMap<String, ExternalEvaluator>();
+        providers = new LinkedHashMap<>();
         Collection<? extends ExternalEvaluator> list = Lookup.getDefault().lookupAll(ExternalEvaluator.class);
         for (ExternalEvaluator c : list) {
             providers.put(c.getName(), c);
