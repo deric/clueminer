@@ -21,6 +21,7 @@ public class DendroToolbar extends JToolBar {
     private static final long serialVersionUID = 3796559248116111100L;
     private JButton btnFitToSpace;
     private JButton btnScreenshot;
+    private JButton btnExport;
     private final DendroViewer viewer;
 
     public DendroToolbar(DendroViewer viewer) {
@@ -39,8 +40,11 @@ public class DendroToolbar extends JToolBar {
         btnFitToSpace.setSelected(true);
         btnScreenshot = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/screenshot16.png", false));
         btnScreenshot.setToolTipText("Make a screenshot of this window");
+        btnExport = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/save16.png", false));
+        btnExport.setToolTipText("Export this dendrogram");
         add(btnFitToSpace);
         add(btnScreenshot);
+        add(btnExport);
 
         btnFitToSpace.addActionListener(new ActionListener() {
 
@@ -54,7 +58,7 @@ public class DendroToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ExportDialog exportDialog = new ExportDialog();
+                ImageExportDialog exportDialog = new ImageExportDialog();
                 DialogDescriptor dd = new DialogDescriptor(exportDialog, "Screenshot");
                 if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     //exportDialog.destroy();
@@ -66,6 +70,14 @@ public class DendroToolbar extends JToolBar {
                     ImageExporter.getDefault().export(viewer);
                 }
 
+            }
+        });
+
+        btnExport.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
             }
         });
 

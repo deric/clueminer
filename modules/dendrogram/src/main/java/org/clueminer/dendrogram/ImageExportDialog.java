@@ -4,12 +4,12 @@ package org.clueminer.dendrogram;
  *
  * @author deric
  */
-public class ExportDialog extends javax.swing.JPanel {
+public class ImageExportDialog extends javax.swing.JPanel {
 
     /**
      * Creates new form ExportDialog
      */
-    public ExportDialog() {
+    public ImageExportDialog() {
         initComponents();
     }
 
@@ -28,10 +28,10 @@ public class ExportDialog extends javax.swing.JPanel {
 
         btnGroupExportSize.add(btnCurrent);
         btnCurrent.setSelected(true);
-        org.openide.awt.Mnemonics.setLocalizedText(btnCurrent, org.openide.util.NbBundle.getMessage(ExportDialog.class, "ExportDialog.btnCurrent.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(btnCurrent, org.openide.util.NbBundle.getMessage(ImageExportDialog.class, "ImageExportDialog.btnCurrent.text")); // NOI18N
 
         btnGroupExportSize.add(btnCustom);
-        org.openide.awt.Mnemonics.setLocalizedText(btnCustom, org.openide.util.NbBundle.getMessage(ExportDialog.class, "ExportDialog.btnCustom.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(btnCustom, org.openide.util.NbBundle.getMessage(ImageExportDialog.class, "ImageExportDialog.btnCustom.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
