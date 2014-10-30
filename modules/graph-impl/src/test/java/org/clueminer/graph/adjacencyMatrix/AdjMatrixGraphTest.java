@@ -1,5 +1,6 @@
 package org.clueminer.graph.adjacencyMatrix;
 
+import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
@@ -33,32 +34,48 @@ public class AdjMatrixGraphTest {
     @Test
     public void testIterables() {
         buildSimpleGraph();
-        Iterator<Node> it = g.getNodes().iterator();
-        assertEquals(0, it.next().getId());
-        assertEquals(1, it.next().getId());
-        assertEquals("aa", it.next().getId());
-        assertEquals(false, it.hasNext());
+        Iterator<Node> itN = g.getNodes().iterator();
+        assertEquals(0, itN.next().getId());
+        assertEquals(1, itN.next().getId());
+        assertEquals("aa", itN.next().getId());
+        assertEquals(false, itN.hasNext());
 
-        it = g.getNeighbors(n3).iterator();
-        assertEquals(1, it.next().getId());
-        assertEquals(false, it.hasNext());
+        itN = g.getNeighbors(n3).iterator();
+        assertEquals(1, itN.next().getId());
+        assertEquals(false, itN.hasNext());
 
-        it = g.getNeighbors(n1).iterator();
-        assertEquals(1, it.next().getId());
-        assertEquals(false, it.hasNext());
+        itN = g.getNeighbors(n1).iterator();
+        assertEquals(1, itN.next().getId());
+        assertEquals(false, itN.hasNext());
 
-        it = g.getNeighbors(n2).iterator();
-        assertEquals(0, it.next().getId());
-        assertEquals("aa", it.next().getId());
-        assertEquals(false, it.hasNext());
+        itN = g.getNeighbors(n2).iterator();
+        assertEquals(0, itN.next().getId());
+        assertEquals("aa", itN.next().getId());
+        assertEquals(false, itN.hasNext());
+        
+        Collection<Edge> colE = g.getEdges().toCollection();
+        assertEquals(2,colE.size());
+        
+        colE = g.getEdges(n1).toCollection();
+        assertEquals(1,colE.size());
+        colE = g.getEdges(n2).toCollection();
+        assertEquals(2,colE.size());
+        colE = g.getEdges(n3).toCollection();
+        assertEquals(1,colE.size());
+        
 
     }
 
     private void buildSimpleGraph() {
         f = AdjMatrixFactory.getInstance();
-        n1 = (AdjMatrixNode) f.newNode(0);
-        n2 = (AdjMatrixNode) f.newNode(1);
-        n3 = (AdjMatrixNode) f.newNode("aa");
+        double[] coordinates = {2, 1};
+        n1 = (AdjMatrixNode) f.newNode(0, coordinates);
+        n2 = (AdjMatrixNode) f.newNode(1, 2);
+        n3 = (AdjMatrixNode) f.newNode("aa",2);
+        n2.setCoordinate(0, 1);
+        n2.setCoordinate(1, 1);
+        n3.setCoordinate(0, 2);
+        n3.setCoordinate(1, 0);
         e1 = (AdjMatrixEdge) f.newEdge(n1, n2, 1, 2, false);
         e2 = (AdjMatrixEdge) f.newEdge(n3, n2, 1, 3, false);
         g = new AdjMatrixGraph(3);
@@ -68,4 +85,11 @@ public class AdjMatrixGraphTest {
         g.addEdge(e1);
         g.addEdge(e2);
     }
+    
+    @Test
+    public void printGraph() {
+        buildSimpleGraph();
+        System.out.println(g.graphVizExport());
+    }
+    
 }
