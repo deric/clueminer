@@ -5,7 +5,9 @@
  */
 package org.clueminer.graph.adjacencyMatrix;
 
-
+import java.util.ArrayList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
@@ -17,7 +19,6 @@ import org.clueminer.graph.api.Node;
 public class AdjMatrixFactory implements GraphFactory {
 
     private static AdjMatrixFactory instance;
-    
 
     public static AdjMatrixFactory getInstance() {
         if (instance == null) {
@@ -27,7 +28,7 @@ public class AdjMatrixFactory implements GraphFactory {
     }
 
     protected AdjMatrixFactory() {
-        
+
     }
 
     @Override
@@ -76,4 +77,20 @@ public class AdjMatrixFactory implements GraphFactory {
         Node node = new AdjMatrixNode(id, coordinates);
         return node;
     }
+
+    public ArrayList<AdjMatrixNode> createNodesFromInput(Dataset<? extends Instance> input) {
+        ArrayList<AdjMatrixNode> nodes = new ArrayList<>(input.size());
+        for (Instance ins : input) {
+            String id = ins.getId();
+            double[] coordinates = new double[ins.size()];
+            for (int i = 0; i < ins.size(); i++) {
+                coordinates[i] = ins.get(i);
+            }
+            nodes.add((AdjMatrixNode) newNode(id, coordinates));
+        }
+        return nodes;
+    }
+
+
+
 }

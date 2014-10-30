@@ -194,7 +194,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         int nodeNumber = n.getNumber();
         ArrayList<Edge> edges = new ArrayList<>();
         for (int i = 0; i < nodeCounter; i++) {
-            if (adjMatrix[i][nodeNumber]!=null) {
+            if (adjMatrix[i][nodeNumber] != null) {
                 edges.add(adjMatrix[i][nodeNumber]);
             }
         }
@@ -334,4 +334,23 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         return result;
     }
     
+     /**
+     * Create edges in graph according to array of neighbors
+     *
+     * @param neighbors neighbor array
+     * @param k number of neighbors for each node
+     */
+    public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
+        if (k>nodeCounter) {
+            return false;
+        }
+        AdjMatrixFactory f = AdjMatrixFactory.getInstance();
+        for (int i = 0; i < nodeCounter; i++) {
+            for (int j = 0; j < k; j++) {
+                 addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1, false));
+            }
+        }
+        return true;
+    }
+
 }
