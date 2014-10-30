@@ -13,6 +13,7 @@ import org.openide.util.Task;
 import org.openide.util.TaskListener;
 
 /**
+ * TODO: convert to an interface
  *
  * @author Tomas Barton
  */

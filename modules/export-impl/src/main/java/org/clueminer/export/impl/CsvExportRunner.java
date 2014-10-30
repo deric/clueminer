@@ -8,7 +8,7 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
@@ -20,14 +20,14 @@ import org.openide.util.Exceptions;
 public class CsvExportRunner implements Runnable {
 
     private final File file;
-    private final ClusterAnalysis analysis;
+    private final DendroViewer viewer;
     private final Preferences pref;
     private final ProgressHandle ph;
     private boolean includeClass = false;
 
-    public CsvExportRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
+    public CsvExportRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
-        this.analysis = analysis;
+        this.viewer = analysis;
         this.pref = pref;
         this.ph = ph;
     }
@@ -41,7 +41,8 @@ public class CsvExportRunner implements Runnable {
             String[] line, tmp;
             int size;
             Instance raw;
-            HierarchicalResult result = analysis.getResult();
+            //TODO: allow exporting columns result
+            HierarchicalResult result = viewer.getDendrogramMapping().getRowsResult();
             if (result != null) {
                 //number of items in dataset must be same as number of instances in clusters
                 ph.start(result.getDataset().size());

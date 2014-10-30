@@ -88,7 +88,8 @@ public class DendroToolbar extends JToolBar {
 
                 if (dd.getValue() == DialogDescriptor.OK_OPTION) {
                     ClusteringExport exp = exportDialog.getExporter();
-                    exp.showDialog();
+                    exp.setViewer(viewer);
+                    exp.export();
                 }
             }
         });

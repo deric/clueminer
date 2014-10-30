@@ -279,7 +279,8 @@ public final class ClusterActions {
         @Override
         public void actionPerformed(ActionEvent e) {
             CsvExporter exporter = new CsvExporter();
-            exporter.setAnalysis(clusteringFrame);
+            //TODO: fix implement DendrogramViewer interface
+            //exporter.setAnalysis(clusteringFrame);
             exporter.showDialog();
         }
     }

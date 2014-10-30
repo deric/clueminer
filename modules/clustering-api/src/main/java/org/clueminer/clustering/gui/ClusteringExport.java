@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
@@ -54,10 +55,10 @@ public interface ClusteringExport {
      * @param ph
      * @return
      */
-    Runnable getRunner(File file, ClusterAnalysis analysis, Preferences pref, final ProgressHandle ph);
+    Runnable getRunner(File file, DendroViewer analysis, Preferences pref, final ProgressHandle ph);
 
     /**
-     * Display exporting dialog
+     * Display exporting options
      */
     void showDialog();
 
@@ -66,5 +67,10 @@ public interface ClusteringExport {
      *
      * @param analysis
      */
-    void setAnalysis(ClusterAnalysis analysis);
+    void setViewer(DendroViewer analysis);
+
+    /**
+     * Perform export
+     */
+    void export();
 }

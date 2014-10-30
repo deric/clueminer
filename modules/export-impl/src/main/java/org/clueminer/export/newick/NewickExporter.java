@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.AbstractExporter;
 import org.netbeans.api.progress.ProgressHandle;
@@ -68,7 +68,7 @@ public class NewickExporter extends AbstractExporter implements ClusteringExport
     }
 
     @Override
-    public Runnable getRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
+    public Runnable getRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
         return new NewickExportRunner(file, analysis, pref, ph);
     }
 

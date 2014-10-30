@@ -7,7 +7,7 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.gui.ClusterAnalysis;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.progress.ProgressHandle;
@@ -29,7 +29,7 @@ import org.openide.util.Exceptions;
 public class NewickExportRunner implements Runnable {
 
     private File file;
-    private ClusterAnalysis analysis;
+    private DendroViewer analysis;
     private Preferences pref;
     private ProgressHandle ph;
     private Dataset<? extends Instance> dataset;
@@ -38,7 +38,7 @@ public class NewickExportRunner implements Runnable {
     public NewickExportRunner() {
     }
 
-    public NewickExportRunner(File file, ClusterAnalysis analysis, Preferences pref, ProgressHandle ph) {
+    public NewickExportRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
         this.analysis = analysis;
         this.pref = pref;
@@ -53,7 +53,8 @@ public class NewickExportRunner implements Runnable {
     @Override
     public void run() {
         try (FileWriter fw = new FileWriter(file)) {
-            String newick = doExport(analysis.getResult());
+            //TODO: allow using columns result
+            String newick = doExport(analysis.getDendrogramMapping().getRowsResult());
             fw.write(newick);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
