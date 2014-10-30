@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -269,7 +270,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
             @Override
             public void run() {
-                aggl.hierarchy(dataset, props);
+                HierarchicalResult res = aggl.hierarchy(dataset, props);
+                Clustering clust = res.getClustering();
+                children.addClustering(clust);
             }
         });
         task.addTaskListener(this);

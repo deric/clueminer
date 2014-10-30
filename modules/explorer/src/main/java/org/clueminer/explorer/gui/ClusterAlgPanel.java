@@ -22,6 +22,7 @@ public class ClusterAlgPanel extends JPanel {
     private JComboBox<String> cbType;
     private JPanel optPanel;
     private String selected = null;
+    private ClusteringDialog dialog = null;
 
     public ClusterAlgPanel() {
         initComponents();
@@ -70,8 +71,8 @@ public class ClusterAlgPanel extends JPanel {
 
     private JPanel getUI(ClusteringAlgorithm alg) {
         for (ClusteringDialog dlg : ClusteringDialogFactory.getInstance().getAll()) {
-            System.out.println("testing " + dlg.getName() + " is for: " + dlg.isUIfor(alg));
             if (dlg.isUIfor(alg)) {
+                dialog = dlg;
                 return dlg.getPanel();
             }
         }
@@ -86,7 +87,9 @@ public class ClusterAlgPanel extends JPanel {
     }
 
     public Props getProps() {
-        //TODO: fix this
+        if (dialog != null) {
+            return dialog.getParams();
+        }
         return new Props();
     }
 
