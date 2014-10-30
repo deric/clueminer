@@ -296,11 +296,20 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+        
+     /**
+     * Export graph to Graphviz
+     * 
+     * To build graph run "neato -Tpng -o out.png -Gmode=KK input" 
+     * where input is the output of this function
+     * 
+     * @return Graphviz source code describing this graph
+     */
     public String graphVizExport() {
         String result = "Graph G {\n";
         result += exportNodes();
         result += exportEdges();
-        result += "}";
+        result += "}\n";
         return result;
     }
 
