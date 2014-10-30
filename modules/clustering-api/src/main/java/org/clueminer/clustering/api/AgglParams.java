@@ -22,9 +22,14 @@ public class AgglParams {
     public static final String DEFAULT_LINKAGE = "Complete Linkage";
 
     /**
-     * either we are clustering rows or columns
+     * cluster rows (default)
      */
     public static final String CLUSTER_ROWS = "cluster_rows";
+
+    /**
+     * cluster columns
+     */
+    public static final String CLUSTER_COLUMNS = "cluster_columns";
 
     /**
      * Input matrix standardization method
@@ -47,6 +52,9 @@ public class AgglParams {
      * Cutoff value
      */
     public static final String CUTOFF = "cutoff";
+    /**
+     * Strategy for selecting cutoff, typically dependent on cutoff-score
+     */
     public static final String CUTOFF_STRATEGY = "cutoff-strategy";
     public static final String CUTOFF_SCORE = "cutoff-score";
     /**
@@ -93,7 +101,7 @@ public class AgglParams {
     }
 
     public boolean clusterColumns() {
-        return !clusterRows();
+        return pref.getBoolean(CLUSTER_COLUMNS, false);
     }
 
 }

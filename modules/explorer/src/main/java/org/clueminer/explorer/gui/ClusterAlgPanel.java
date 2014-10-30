@@ -70,6 +70,7 @@ public class ClusterAlgPanel extends JPanel {
 
     private JPanel getUI(ClusteringAlgorithm alg) {
         for (ClusteringDialog dlg : ClusteringDialogFactory.getInstance().getAll()) {
+            System.out.println("testing " + dlg.getName() + " is for: " + dlg.isUIfor(alg));
             if (dlg.isUIfor(alg)) {
                 return dlg.getPanel();
             }
