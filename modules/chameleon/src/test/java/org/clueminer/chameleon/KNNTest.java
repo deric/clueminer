@@ -1,6 +1,8 @@
 package org.clueminer.chameleon;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -12,6 +14,10 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixEdge;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixFactory;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixNode;
 import org.clueminer.io.FileHandler;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
@@ -38,15 +44,15 @@ public class KNNTest {
         KNN knn = new KNN(k);
         int[][] a = knn.findNeighbours(data);
         for (int i = 0; i < data.size(); i++) {
-            System.out.print("Row " + i + ": ");
+          //  System.out.print("Row " + i + ": ");
             for (int j = 0; j < k; j++) {
-                System.out.print(", " + distanceMeasure.measure(data.instance(i), data.instance(a[i][j])));
+            //    System.out.print(", " + distanceMeasure.measure(data.instance(i), data.instance(a[i][j])));
                 if (j > 0) {
                     assertEquals(true, distanceMeasure.measure(data.instance(i), data.instance(a[i][j])) >= distanceMeasure.measure(data.instance(i), data.instance(a[i][j - 1])));
                 }
 
             }
-            System.out.println();
+           // System.out.println();
         }
     }
 
@@ -93,6 +99,21 @@ public class KNNTest {
         assertEquals(1, a[4][1]);
         assertEquals(3, a[4][2]);
         assertEquals(0, a[4][3]);
+    }
+    
+    @Test
+    public void printGraph() {
+        Dataset<? extends Instance> dataset = simpleData();
+        DistanceMeasure dm = new EuclideanDistance();
+        KNN knn = new KNN(4);
+        int[][] a = knn.findNeighbours(dataset);
+        
+        AdjMatrixFactory f = AdjMatrixFactory.getInstance();
+        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
+        ArrayList<AdjMatrixNode> nodes = f.createNodesFromInput(dataset);
+        g.addAllNodes(nodes);
+        g.addEdgesFromNeigborArray(a, 4);
+        System.out.println(g.graphVizExport());
     }
 
 }
