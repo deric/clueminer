@@ -325,10 +325,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     }
 
     private void updateColumnTreePosition(Dimension dim, int heatmapXoffset) {
-        dim = columnsTree.getRealSize();
         columnsTree.setBounds(heatmapXoffset, insets.top, dim.width, dim.height);
         if (showScale) {
-            //columnsScale.setSize(scaleHeight, dim.height);
+            //columnsScale.setSize(50, dim.height);
             columnsScale.recalculate();
             columnsScale.setBounds(heatmapXoffset + dim.width, insets.top, columnsScale.getSize().width, dim.height);
         }
@@ -596,6 +595,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
                 colsize = Math.max(colsize, rowsScale.getHeight());
             }
             height += colsize;
+        }
+        if (showColumnsTree) {
+            Dimension colDim = columnsTree.getRealSize();
+            updateColumnTreePosition(colDim, heatmapXoffset);
         }
         size.height = height;
     }

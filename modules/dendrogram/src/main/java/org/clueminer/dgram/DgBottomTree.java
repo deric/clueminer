@@ -1,5 +1,6 @@
 package org.clueminer.dgram;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -20,15 +21,20 @@ public class DgBottomTree extends DgTree {
         super(panel);
     }
 
-    public void updateSize() {
+    @Override
+    public void recalculate() {
         if (hasData()) {
             width = insets.left + dendroData.getNumberOfColumns() * elementWidth + insets.right;
             height = insets.top + treeHeight + insets.bottom;
             halfElem = elementWidth / 2;
-            //nodes on right, 90 deg rot
-            realSize.width = width;
-            realSize.height = height;
-            resetCache();
+            if (width > 0 && height > 0) {
+                realSize.width = width;
+                //reqSize.width = width;
+                realSize.height = height;
+                setSize(realSize);
+                setPreferredSize(realSize);
+                setMinimumSize(realSize);
+            }
         }
     }
 
@@ -79,7 +85,7 @@ public class DgBottomTree extends DgTree {
     public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting) {
         if (elementWidth != width) {
             elementWidth = width;
-            updateSize();
+            recalculate();
         }
     }
 

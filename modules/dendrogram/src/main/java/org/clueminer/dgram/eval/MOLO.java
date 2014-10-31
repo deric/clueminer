@@ -34,11 +34,11 @@ public class MOLO implements OptimalTreeOrder {
     @Override
     public void optimize(HierarchicalResult clustering, boolean reverse) {
         similarity = clustering.getProximityMatrix();
-        similarity.printLower(2, 2);
+        //similarity.printLower(2, 2);
         DendroTreeData tree = clustering.getTreeData();
         //tree.print();
-        Dump.array(tree.getMapping(), "tree mapping");
-        tree.print();
+        //Dump.array(tree.getMapping(), "tree mapping");
+        //tree.print();
         int n = tree.numLeaves();
         /* order = new int[n];
          opt = new double[n - 1][n - 1];
@@ -54,11 +54,11 @@ public class MOLO implements OptimalTreeOrder {
             sortSmallest(tree.getRoot());
         }
 
-        Dump.array(tree.getMapping(), "tree mapping");
-        System.out.println("score after = " + score(tree, similarity));
-        tree.print();
+        //Dump.array(tree.getMapping(), "tree mapping");
+        //System.out.println("score after = " + score(tree, similarity));
+        //tree.print();
 
-        System.out.println("in order " + inOrderScore(tree.getRoot()));
+        //System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.createMapping(n, tree.getRoot());
         tree.updatePositions(tree.getRoot());
     }

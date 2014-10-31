@@ -8,7 +8,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 
 /**
- * Display scale for dendrogram tree
+ * Display scale for dendrogram tree - vertical tree (for columns)
  *
  * @author Tomas Barton
  */
@@ -29,17 +29,19 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
         g2.setColor(Color.black);
         //verticle line
         // System.out.println("drawing scale at "+distToScale);
+        // drawLine(x1, y1,
+        //          x2, y2)
         g2.drawLine(0, distToScale,
-                    -(tree.getHeight() - 1), distToScale);
+                -(tree.getTreeHeight() - 1), distToScale);
         //top tick
         g2.drawLine(0, distToScale,
                     0, distToScale + scaleTickLength);
         //middle tick
-        g2.drawLine(-(tree.getHeight() - 1) / 2, distToScale,
-                    -(tree.getHeight() - 1) / 2, distToScale + scaleTickLength);
+        g2.drawLine(-(tree.getTreeHeight() - 1) / 2, distToScale,
+                -(tree.getTreeHeight() - 1) / 2, distToScale + scaleTickLength);
         //bottom tick
-        g2.drawLine(-(tree.getHeight() - 1), distToScale,
-                    -(tree.getHeight() - 1), distToScale + scaleTickLength);
+        g2.drawLine(-(tree.getTreeHeight() - 1), distToScale,
+                -(tree.getTreeHeight() - 1), distToScale + scaleTickLength);
 
         g2.rotate(Math.PI / 2.0);
         int textWidth;
@@ -58,14 +60,14 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
             maxTextWidth = textWidth;
         }
         g2.drawString(decimalFormat.format(tree.getMidTreeHeight()),//(this.maxHeight -this.minHeight)/2+this.minHeight),
-                      (distToScale + scaleTickLength), (tree.getHeight() - 1) / 2 + 4);
+                      (distToScale + scaleTickLength), (tree.getTreeHeight() - 1) / 2 + 4);
         //bottom Label
         textWidth = hfm.stringWidth(decimalFormat.format(tree.getMinTreeHeight()));
         if (textWidth > maxTextWidth) {
             maxTextWidth = textWidth;
         }
         g2.drawString(decimalFormat.format(tree.getMinTreeHeight()),//this.minHeight),
-                      (distToScale + scaleTickLength), (tree.getHeight() - 1));
+                      (distToScale + scaleTickLength), (tree.getTreeHeight() - 1));
 
         g2.rotate(-Math.PI / 2.0);
         maxScaleDimension = distToScale + scaleTickLength + maxTextWidth;
@@ -74,7 +76,7 @@ public class HorizontalScale extends AbstractScale implements DendrogramDataList
     @Override
     public void recalculate() {
         if (hasData()) {
-            height = tree.getHeight();
+            height = tree.getTreeHeight();
             width = maxScaleDimension + treeScaleSpace;
 
             realSize.width = insets.left + width + insets.right;

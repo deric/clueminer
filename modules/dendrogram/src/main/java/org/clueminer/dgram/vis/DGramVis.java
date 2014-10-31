@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -13,7 +13,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
@@ -44,7 +44,7 @@ public class DGramVis {
                 @Override
                 public void run() {
                     //add empty mapping
-                    DendrogramMapping map = new DendrogramData();
+                    DendrogramMapping map = new DendrogramData2();
                     clustering.lookupAdd(map);
                     createMapping(clustering);
                     generateImage(clustering, width, height, listener, map);
@@ -119,7 +119,7 @@ public class DGramVis {
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
         Props params = clustering.getParams();
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HACLW();
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
@@ -129,9 +129,9 @@ public class DGramVis {
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         mapping.setDataset(dataset);
 
-        OptimalTreeOrder treeOrder = new MOLO();
-        treeOrder.optimize(rowsResult, true);
-        treeOrder.optimize(colsResult, true);
+        /*OptimalTreeOrder treeOrder = new MOLO();
+         treeOrder.optimize(rowsResult, true);
+        treeOrder.optimize(colsResult, true);*/
 
         mapping.setRowsResult(rowsResult);
         mapping.setColsResult(colsResult);
