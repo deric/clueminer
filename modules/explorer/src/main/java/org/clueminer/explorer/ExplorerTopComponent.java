@@ -268,6 +268,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void runClustering(final ClusteringAlgorithm alg, final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
         final AgglomerativeClustering aggl = (AgglomerativeClustering) alg;
+        if(dataset == null){
+            throw new RuntimeException("missing dataset");
+        }
         task = RP.create(new Runnable() {
 
             @Override

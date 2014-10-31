@@ -32,7 +32,7 @@ import org.openide.windows.TopComponent;
 @TopComponent.Description(preferredID = "InfoPanelTopComponent",
                           iconBase = "org/clueminer/infopanel/info16.png",
                           persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "properties", openAtStartup = true)
+@TopComponent.Registration(mode = "properties", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.infopanel.InfoPanelTopComponent")
 @ActionReference(path = "Menu/Window" /*
  * , position = 333

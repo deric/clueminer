@@ -35,7 +35,7 @@ import org.clueminer.project.api.WorkspaceListener;
         preferredID = "ClusterPreviewTopComponent",
         iconBase = "org/clueminer/clusterpreview/chart16.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "properties", openAtStartup = true)
+@TopComponent.Registration(mode = "properties", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.clusterpreview.ClusterPreviewTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(

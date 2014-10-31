@@ -36,7 +36,7 @@ import org.openide.windows.TopComponent;
 @TopComponent.Description(preferredID = "WellMapTopComponent",
                           iconBase = "org/clueminer/wellmap/well16.png",
                           persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "properties", openAtStartup = true)
+@TopComponent.Registration(mode = "properties", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.wellmap.WellMapTopComponent")
 @ActionReference(path = "Menu/Window" /*
  * , position = 333
