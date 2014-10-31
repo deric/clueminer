@@ -89,8 +89,9 @@ public class ClusterAlgPanel extends JPanel {
     public Props getProps() {
         if (dialog != null) {
             return dialog.getParams();
+        } else {
+            throw new RuntimeException("missing dialog");
         }
-        return new Props();
     }
 
 }

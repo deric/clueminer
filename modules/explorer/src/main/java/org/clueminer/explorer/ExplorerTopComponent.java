@@ -5,11 +5,14 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
@@ -76,7 +79,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private ClustComparator comparator;
     private ClustSorted children;
     private Evolution alg;
-    private final ClusteringExecutorCached exec = new ClusteringExecutorCached();
+    private final Executor exec = new ClusteringExecutorCached();
 
     public ExplorerTopComponent() {
         initComponents();
@@ -268,6 +271,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void runClustering(final ClusteringAlgorithm alg, final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
         final AgglomerativeClustering aggl = (AgglomerativeClustering) alg;
+        props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         if(dataset == null){
             throw new RuntimeException("missing dataset");
         }
@@ -276,13 +280,13 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             @Override
             public void run() {
                 exec.setAlgorithm(aggl);
-                DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
+                Clustering clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
+                //DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
                 //HierarchicalResult res = aggl.hierarchy(dataset, props);
-                Clustering clust = mapping.getRowsClustering();
-                children.addClustering(clust);
+                //Clustering clust = mapping.getRowsClustering();
+                children.addClustering(clustering);
             }
         });
-        task.addTaskListener(this);
         task.schedule(0);
     }
 

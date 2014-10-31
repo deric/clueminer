@@ -155,7 +155,7 @@ public class HacDialog extends ClusteringDialog {
         params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
         params.put(AgglParams.LINKAGE, (String) comboLinkage.getSelectedItem());
         params.put(AgglParams.STD, (String) comboStandardisation.getSelectedItem());
-        params.put(AgglParams.CUTOFF_SCORE, (String) comboStandardisation.getSelectedItem());
+        params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
         if (chkBoxLogScale.isSelected()) {
             params.putBoolean(AgglParams.LOG, true);
         }

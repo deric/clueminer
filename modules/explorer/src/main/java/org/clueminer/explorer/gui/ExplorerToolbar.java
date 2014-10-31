@@ -14,6 +14,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.explorer.ToolbarListener;
+import org.clueminer.utils.Props;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -60,7 +61,9 @@ public class ExplorerToolbar extends JToolBar {
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     ClusteringAlgorithm alg = algPanel.getAlgorithm();
                     if (listener != null) {
-                        listener.runClustering(alg, algPanel.getProps());
+                        Props p = algPanel.getProps();
+                        System.out.println("single clustering: " + p.toString());
+                        listener.runClustering(alg, p);
                     }
                 }
             }
