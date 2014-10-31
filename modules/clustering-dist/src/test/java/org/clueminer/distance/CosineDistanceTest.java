@@ -3,9 +3,6 @@ package org.clueminer.distance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Vector;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,7 +14,7 @@ import static org.junit.Assert.*;
 public class CosineDistanceTest {
 
     private static CosineDistance subject;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public CosineDistanceTest() {
     }
@@ -27,45 +24,9 @@ public class CosineDistanceTest {
         subject = new CosineDistance();
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testGetName() {
         assertNotNull(subject.getName());
-    }
-
-    @Test
-    public void testColumns() {
-    }
-
-    @Test
-    public void testRows() {
-    }
-
-    @Test
-    public void testGetSimilarityFactor() {
-    }
-
-    @Test
-    public void testGetNodeOffset() {
-    }
-
-    @Test
-    public void testUseTreeHeight() {
-    }
-
-    @Test
-    public void testMeasure_Vector_Vector() {
     }
 
     @Test
@@ -105,15 +66,29 @@ public class CosineDistanceTest {
     }
 
     @Test
+    public void testDistance() {
+        Vector x, y;
+
+        x = new DoubleArrayDataRow(new double[]{1, 5, 2, 3, 10});
+        y = new DoubleArrayDataRow(new double[]{4, 15, 20, 5, 5});
+        double dist = subject.measure(x, y);
+
+        assertEquals(0.40629405295727883, dist, delta);
+    }
+
+    @Test
     public void testCompare() {
-    }
+        Vector x, y, z;
 
-    @Test
-    public void testGetMinValue() {
-    }
-
-    @Test
-    public void testGetMaxValue() {
+        x = new DoubleArrayDataRow(new double[]{1, 2, 3});
+        y = new DoubleArrayDataRow(new double[]{3, 5, 7});
+        z = new DoubleArrayDataRow(new double[]{13, 55, 7});
+        double dist = subject.measure(x, y);
+        //@see http://reference.wolfram.com/language/ref/CosineDistance.html
+        assertEquals(1 - 17 * Math.sqrt(2.0 / 581.0), dist, delta);
+        double dist2 = subject.measure(x, z);
+        //dist is better (closer) than dist2
+        assertEquals(true, subject.compare(dist, dist2));
     }
 
     @Test

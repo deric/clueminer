@@ -21,14 +21,13 @@ import org.clueminer.evolution.AbstractIndividual;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  * @param <T>
  */
-@ServiceProvider(service = Evolution.class)
+//@ServiceProvider(service = Evolution.class)
 public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private boolean isFinished = true;

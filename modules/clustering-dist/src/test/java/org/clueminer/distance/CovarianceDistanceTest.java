@@ -2,8 +2,6 @@ package org.clueminer.distance;
 
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Vector;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,25 +13,6 @@ public class CovarianceDistanceTest {
 
     private static final CovarianceDistance subject = new CovarianceDistance();
     private static final double delta = 1e-9;
-
-    public CovarianceDistanceTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testGetName() {
-    }
-
-    @Test
-    public void testColumns() {
-    }
 
     @Test
     public void testRows() {
@@ -67,6 +46,16 @@ public class CovarianceDistanceTest {
 
     @Test
     public void testCompare() {
+        Vector x, y, z;
+
+        x = new DoubleArrayDataRow(new double[]{1, 2, 3});
+        y = new DoubleArrayDataRow(new double[]{3, 5, 10});
+        z = new DoubleArrayDataRow(new double[]{50, 1, 29});
+        double dist = subject.measure(x, y);
+        double dist2 = subject.measure(x, z);
+
+        assertEquals(3.5, dist, delta);
+        assertEquals(true, subject.compare(dist, dist2));
     }
 
     @Test

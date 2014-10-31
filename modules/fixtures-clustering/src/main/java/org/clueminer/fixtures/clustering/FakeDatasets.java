@@ -2,6 +2,7 @@ package org.clueminer.fixtures.clustering;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -86,6 +87,17 @@ public class FakeDatasets {
             }
         }
         return usArrests;
+    }
+
+    public static Dataset<? extends Instance> simpleData() {
+        Dataset<Instance> data = new ArrayDataset<>(4, 2);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+        data.builder().create(new double[]{0, 0}, "A");
+        data.builder().create(new double[]{1, 3}, "B");
+        data.builder().create(new double[]{2, 2}, "C");
+        data.builder().create(new double[]{2, 1}, "D");
+        return data;
     }
 
 }

@@ -1,8 +1,11 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -38,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HACLWMS extends HACLW implements AgglomerativeClustering {
 
     private final static String name = "HAC-LW-MS";
+    private static final Logger logger = Logger.getLogger(HACLWMS.class.getName());
 
     @Override
     public String getName() {
@@ -54,7 +58,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      * @return
      */
     @Override
-    protected DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
         //binary tree, however we store at most n nodes (then rewrite references)
         DendroNode[] nodes = new DendroNode[n];
         //each instance will form a cluster
@@ -94,6 +98,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
+        logger.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
         //System.out.println("last node: " + node.toString());
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
@@ -114,7 +119,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      */
     protected void updateDistances(Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage,
+            AbstractQueue<Element> pq, ClusterLinkage linkage,
             int leftId, int rightId) {
         Element current;
         double distance;
@@ -173,6 +178,8 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
+        //System.out.println("[" + a + ", " + q + "] -> " + map(a, q));
+        //System.out.println("[" + b + ", " + q + "] -> " + map(b, q));
         //System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
         //update proximity matrix
         //we rewrite proximity matrix values in order to match new distances between items

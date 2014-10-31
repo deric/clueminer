@@ -1,5 +1,6 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.AbstractQueue;
 import org.clueminer.clustering.api.AgglParams;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,7 +114,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @param n                number of items to cluster
      * @return
      */
-    protected DendroTreeData computeLinkage(PriorityQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
         //binary tree, we know how many nodes we have
         DendroNode[] nodes = new DendroNode[(2 * n - 1)];
         //each instance will form a cluster
@@ -196,7 +197,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      */
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage,
+            AbstractQueue<Element> pq, ClusterLinkage linkage,
             HashMap<Integer, Double> cache, int leftId, int rightId) {
         Element current;
         double distance;

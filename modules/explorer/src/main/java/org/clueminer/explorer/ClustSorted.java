@@ -56,6 +56,19 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     }
 
+    public void addClustering(Clustering<? extends Cluster> clustering) {
+        final ClusteringNode[] nodesAry = new ClusteringNode[1];
+        nodesAry[0] = new ClusteringNode((Clustering<Cluster>) clustering);
+
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                add(nodesAry);
+            }
+        });
+    }
+
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

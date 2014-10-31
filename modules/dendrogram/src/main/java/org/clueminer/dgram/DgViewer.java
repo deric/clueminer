@@ -382,6 +382,11 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         dendrogramPanel.fireColsOrderUpdated(source, columns);
     }
 
+    @Override
+    public DendrogramMapping getDendrogramMapping() {
+        return data;
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DgViewer viewer;

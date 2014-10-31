@@ -2,6 +2,8 @@ package org.clueminer.explorer;
 
 import java.awt.event.ActionEvent;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -14,4 +16,6 @@ public interface ToolbarListener {
     void startEvolution(ActionEvent evt, String evolution);
 
     void evaluatorChanged(ClusterEvaluation eval);
+
+    void runClustering(ClusteringAlgorithm alg, Props props);
 }

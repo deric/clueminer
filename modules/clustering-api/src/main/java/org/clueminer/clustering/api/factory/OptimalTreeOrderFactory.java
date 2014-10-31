@@ -22,7 +22,7 @@ public class OptimalTreeOrderFactory extends ServiceFactory<OptimalTreeOrder> {
     }
 
     private OptimalTreeOrderFactory() {
-        providers = new LinkedHashMap<String, OptimalTreeOrder>();
+        providers = new LinkedHashMap<>();
         Collection<? extends OptimalTreeOrder> list = Lookup.getDefault().lookupAll(OptimalTreeOrder.class);
         for (OptimalTreeOrder c : list) {
             providers.put(c.getName(), c);

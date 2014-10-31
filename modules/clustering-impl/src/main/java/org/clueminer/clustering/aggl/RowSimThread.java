@@ -47,12 +47,17 @@ public class RowSimThread implements Runnable {
                 similarityMatrix.set(i, j, dist);
                 // when printing lower part of matrix this indexes should match
                 if (queue != null) {
-                    queue.add(new Element(dist, i, j));
+                    synchronized (queue) {
+                        //only one thread is adding at the same time
+                        queue.add(new Element(dist, i, j));
+                    }
                 }
             }
         }
         try {
+            //System.out.println("thread " + threadId + " at barrier");
             barrier.await();
+            //System.out.println("thread " + threadId + " after barrier");
         } catch (InterruptedException | BrokenBarrierException ex) {
             Exceptions.printStackTrace(ex);
         }

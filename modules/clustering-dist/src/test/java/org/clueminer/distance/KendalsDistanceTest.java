@@ -2,8 +2,6 @@ package org.clueminer.distance;
 
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Vector;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,14 +17,6 @@ public class KendalsDistanceTest {
     public KendalsDistanceTest() {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testMeasure_Vector_Vector() {
         double dist = subject.measure(new DoubleArrayDataRow(new double[]{1, 2, 3}), new DoubleArrayDataRow(new double[]{2, 4, 6}));
@@ -39,31 +29,14 @@ public class KendalsDistanceTest {
     }
 
     @Test
-    public void testMeasure_3args() {
-    }
-
-    @Test
-    public void testGetSimilarityFactor() {
-    }
-
-    @Test
-    public void testGetNodeOffset() {
-    }
-
-    @Test
-    public void testUseTreeHeight() {
-    }
-
-    @Test
     public void testCompare() {
-    }
+        Vector x = new DoubleArrayDataRow(new double[]{1, 2, 3});
+        Vector y = new DoubleArrayDataRow(new double[]{1, 4, 6});
+        Vector z = new DoubleArrayDataRow(new double[]{3, 3, 5});
 
-    @Test
-    public void testGetMinValue() {
-    }
-
-    @Test
-    public void testGetMaxValue() {
+        double a = subject.measure(x, y);
+        double b = subject.measure(x, z);
+        assertEquals(true, subject.compare(a, b));
     }
 
     @Test

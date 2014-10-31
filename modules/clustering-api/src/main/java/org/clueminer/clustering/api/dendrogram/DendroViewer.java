@@ -85,6 +85,8 @@ public interface DendroViewer extends Exportable {
 
     void setDataset(DendrogramMapping dataset);
 
+    DendrogramMapping getDendrogramMapping();
+
     /**
      *
      * @param clustering

@@ -11,7 +11,7 @@ import org.openide.util.lookup.ServiceProvider;
  * distance.
  *
  * Chebyshev Distance is the L<sub>&#8734;</sub> norm.
-  *
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = DistanceMeasure.class)
@@ -99,7 +99,7 @@ public class SupremumDistance extends AbstractDistance {
 
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return x < y;
     }
 
     @Override

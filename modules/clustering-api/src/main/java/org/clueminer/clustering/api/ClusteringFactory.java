@@ -21,7 +21,7 @@ public class ClusteringFactory extends ServiceFactory<ClusteringAlgorithm> {
     }
 
     private ClusteringFactory() {
-        providers = new LinkedHashMap<String, ClusteringAlgorithm>();
+        providers = new LinkedHashMap<>();
         Collection<? extends ClusteringAlgorithm> list = Lookup.getDefault().lookupAll(ClusteringAlgorithm.class);
         for (ClusteringAlgorithm c : list) {
             providers.put(c.getName(), c);

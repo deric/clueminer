@@ -22,7 +22,7 @@ public class CutoffStrategyFactory extends ServiceFactory<CutoffStrategy> {
     }
 
     private CutoffStrategyFactory() {
-        providers = new LinkedHashMap<String, CutoffStrategy>();
+        providers = new LinkedHashMap<>();
         Collection<? extends CutoffStrategy> list = Lookup.getDefault().lookupAll(CutoffStrategy.class);
         for (CutoffStrategy c : list) {
             providers.put(c.getName(), c);

@@ -7,6 +7,8 @@ import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The Kendall tau rank distance is a metric that counts the number of pairwise
+ * disagreements between two ranking lists
  *
  * @author Tomas Barton
  */
@@ -151,9 +153,17 @@ public class KendalsDistance extends AbstractDistance {
         return true;
     }
 
+    /**
+     * The larger the distance, the more dissimilar the two lists are
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     @Override
     public boolean compare(double x, double y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //number of disagreements is divided by (n1 * n2)
+        return x > y;
     }
 
     @Override

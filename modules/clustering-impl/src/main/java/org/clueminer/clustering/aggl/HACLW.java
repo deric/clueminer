@@ -1,8 +1,8 @@
 package org.clueminer.clustering.aggl;
 
+import java.util.AbstractQueue;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -45,7 +45,7 @@ public class HACLW extends HAC implements AgglomerativeClustering {
     @Override
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            PriorityQueue<Element> pq, ClusterLinkage linkage,
+            AbstractQueue<Element> pq, ClusterLinkage linkage,
             HashMap<Integer, Double> cache, int leftId, int rightId) {
         Element current;
         double distance;

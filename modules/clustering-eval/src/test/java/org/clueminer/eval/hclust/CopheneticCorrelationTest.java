@@ -1,6 +1,7 @@
 package org.clueminer.eval.hclust;
 
 import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -50,7 +51,7 @@ public class CopheneticCorrelationTest {
         dataset.builder().create(new double[]{3, 4}, "D");
         dataset.builder().create(new double[]{4, 4}, "C");
         dataset.builder().create(new double[]{3, 3.5}, "F");
-        
+
         params = new Props();
     }
 
@@ -123,11 +124,23 @@ public class CopheneticCorrelationTest {
      * @see http://people.revoledu.com/kardi/tutorial/Clustering/Cophenetic.htm
      */
     @Test
-    public void testGetCopheneticMatrix() {
-        AgglomerativeClustering algorithm = new HAC();
+    public void testCopheneticMatrix() {
+        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW()};
+
+        for (AgglomerativeClustering alg : algorithms) {
+            testSingleLink(alg);
+        }
+
+        //TODO: make sure we have same result for all algorithms
+        for (AgglomerativeClustering alg : new AgglomerativeClustering[]{new HACLW()}) {
+            testCompleteLink(alg);
+        }
+    }
+
+    private void testSingleLink(AgglomerativeClustering algorithm) {
         algorithm.setDistanceFunction(new EuclideanDistance());
-        //params.put(AgglParams.LINKAGE, "Single Linkage");
-        params.put(AgglParams.LINKAGE, "Complete Linkage");
+        params.put(AgglParams.LINKAGE, "Single Linkage");
+        //params.put(AgglParams.LINKAGE, "Complete Linkage");
         rowsResult = algorithm.hierarchy(dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
@@ -139,7 +152,7 @@ public class CopheneticCorrelationTest {
             assertEquals(copheneticMatrix[i][i], 0.0, precision);
         }
 
-        Dump.matrix(copheneticMatrix, "cophn", 2);
+        Dump.matrix(copheneticMatrix, "cophn - " + algorithm.getName(), 2);
 
         //we expect this matrix
         //0.00  0.71  2.50  2.50  2.50  2.50
@@ -157,12 +170,7 @@ public class CopheneticCorrelationTest {
         //  Covariance cov = new Covariance();
     }
 
-    /**
-     * New tree structure
-     */
-    @Test
-    public void testGetCopheneticMatrixTreeStuct() {
-        AgglomerativeClustering algorithm = new HAC();
+    private void testCompleteLink(AgglomerativeClustering algorithm) {
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.put(AgglParams.LINKAGE, CompleteLinkage.name);
         rowsResult = algorithm.hierarchy(dataset, params);
@@ -182,18 +190,18 @@ public class CopheneticCorrelationTest {
         }
 
         //we expect this matrix
-        //0.00  0.71  2.50  2.50  2.50  2.50
-        //0.71  0.00  2.50  2.50  2.50  2.50
-        //2.50  2.50  0.00  1.41  1.41  1.41
-        //2.50  2.50  1.41  0.00  1.00  0.50
-        //2.50  2.50  1.41  1.00  0.00  1.00
-        //2.50  2.50  1.41  0.50  1.00  0.00
+        //0.00   0.71   4.95   4.95   4.95   4.95
+        //0.71   0.00   4.95   4.95   4.95   4.95
+        //4.95   4.95   0.00   2.50   2.50   2.50
+        //4.95   4.95   2.50   0.00   1.12   0.50
+        //4.95   4.95   2.50   1.12   0.00   1.12
+        //4.95   4.95   2.50   0.50   1.12   0.00
+        Dump.matrix(copheneticMatrix, "cophn - " + algorithm.getName(), 2);
         assertEquals(0.71, copheneticMatrix[0][1], precision);
-        assertEquals(2.50, copheneticMatrix[0][2], precision);
-        assertEquals(1.41, copheneticMatrix[2][3], precision);
+        assertEquals(4.95, copheneticMatrix[0][2], precision);
+        assertEquals(2.50, copheneticMatrix[2][3], precision);
         assertEquals(0.50, copheneticMatrix[5][3], precision);
-        assertEquals(1.00, copheneticMatrix[5][4], precision);
-
+        assertEquals(1.11803, copheneticMatrix[5][4], precision);
         //  Covariance cov = new Covariance();
     }
 
