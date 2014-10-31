@@ -15,14 +15,17 @@ import static org.junit.Assert.*;
  */
 public class MatrixColumnVectorTest {
 
-    private double[][] array = {{1, 2, 3, 4, 5},
+    private final double[][] array = {
+        {1, 2, 3, 4, 5},
         {0, 1, 2, 3, 4},
         {0, 2, 4, 6, 8},
         {0, 3, 6, 9, 12},
-        {0, 4, 8, 12, 16}};
+        {0, 4, 8, 12, 16},
+        {0, 6, 10, 14, 18}
+    };
     private Matrix matrix;
     private MatrixVector vector;
-    private static double eps = Math.pow(2.0, -52.0);
+    private static final double eps = Math.pow(2.0, -52.0);
 
     public MatrixColumnVectorTest() {
     }
@@ -104,7 +107,9 @@ public class MatrixColumnVectorTest {
      */
     @Test
     public void testSize() {
-        assertEquals(5, vector.size());
+        assertEquals(6, vector.size());
+        assertEquals(6, matrix.getColumnVector(0).size());
+        assertEquals(5, matrix.getRowVector(0).size());
     }
 
     /**
