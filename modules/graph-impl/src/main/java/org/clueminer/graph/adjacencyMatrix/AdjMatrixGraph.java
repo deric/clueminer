@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
+import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 
@@ -340,6 +341,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
      * @param neighbors neighbor array
      * @param k number of neighbors for each node
      */
+    @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
         if (k>nodeCounter) {
             return false;
@@ -351,6 +353,11 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
             }
         }
         return true;
+    }
+    
+    @Override
+    public GraphFactory getFactory() {
+        return AdjMatrixFactory.getInstance();
     }
 
 }

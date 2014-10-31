@@ -316,5 +316,22 @@ public interface Graph {
      * @return true if mixed, false otherwise
      */
     public boolean isMixed();
+    
+    /**
+     * Returns factory for this graph
+     *
+     * @return graph factory
+     */
+    public GraphFactory getFactory();
+
+    
+     /**
+     * Create edges between neighbors according to neighbor array
+     *
+     * @param nearests array with nearests neighbors
+     * @param k number of neighbors for each node
+     * @return true if all nodes were added, false otherwise
+     */
+    public boolean addEdgesFromNeigborArray(int[][] nearests, int k);
 
 }

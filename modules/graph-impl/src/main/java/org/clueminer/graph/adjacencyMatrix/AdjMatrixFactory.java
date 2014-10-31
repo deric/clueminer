@@ -78,8 +78,9 @@ public class AdjMatrixFactory implements GraphFactory {
         return node;
     }
 
-    public ArrayList<AdjMatrixNode> createNodesFromInput(Dataset<? extends Instance> input) {
-        ArrayList<AdjMatrixNode> nodes = new ArrayList<>(input.size());
+    @Override
+    public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
+        ArrayList<Node> nodes = new ArrayList<>(input.size());
         for (Instance ins : input) {
             String id = ins.getId();
             double[] coordinates = new double[ins.size()];
@@ -90,7 +91,5 @@ public class AdjMatrixFactory implements GraphFactory {
         }
         return nodes;
     }
-
-
 
 }
