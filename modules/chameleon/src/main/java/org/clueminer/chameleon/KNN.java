@@ -1,9 +1,16 @@
 package org.clueminer.chameleon;
 
+import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixFactory;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixNode;
+import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphFactory;
+import org.clueminer.graph.api.Node;
 
 /**
  *
@@ -44,7 +51,7 @@ public class KNN {
      * @param dataset input dataset
      * @return
      */
-    public int[][] findNeighbours(Dataset<? extends Instance> dataset) {
+    private int[][] findNeighbors(Dataset<? extends Instance> dataset) {
         input = dataset;
         if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
@@ -97,5 +104,29 @@ public class KNN {
             pos--;
         }
     }
+    
+    
+    public int[][] getNeighborArray(Dataset<? extends Instance> dataset) {
+        return findNeighbors(dataset);
+    }
+    
+    
+     /**
+     * Create graph where connected nodes are neighbors
+     *
+     * @param dataset input dataset
+     * @param g graph where output is be stored
+     * @return neighbor graph
+     */
+    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g) {
+        findNeighbors(dataset);
+        GraphFactory f = g.getFactory();
+        ArrayList<Node> nodes = f.createNodesFromInput(dataset);
+        g.addAllNodes(nodes);
+        g.addEdgesFromNeigborArray(nearests, k);
+        return g;
+    }
+    
+    
 
 }

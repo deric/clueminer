@@ -42,7 +42,7 @@ public class KNNTest {
 
         int k = 5;
         KNN knn = new KNN(k);
-        int[][] a = knn.findNeighbours(data);
+        int[][] a = knn.getNeighborArray(data);
         for (int i = 0; i < data.size(); i++) {
           //  System.out.print("Row " + i + ": ");
             for (int j = 0; j < k; j++) {
@@ -73,7 +73,7 @@ public class KNNTest {
         Dataset<? extends Instance> dataset = simpleData();
         DistanceMeasure dm = new EuclideanDistance();
         KNN knn = new KNN(4);
-        int[][] a = knn.findNeighbours(dataset);
+        int[][] a = knn.getNeighborArray(dataset);
 
         assertEquals(3, a[0][0]);
         assertEquals(2, a[0][1]);
@@ -106,13 +106,10 @@ public class KNNTest {
         Dataset<? extends Instance> dataset = simpleData();
         DistanceMeasure dm = new EuclideanDistance();
         KNN knn = new KNN(4);
-        int[][] a = knn.findNeighbours(dataset);
+        int[][] a = knn.getNeighborArray(dataset);
         
-        AdjMatrixFactory f = AdjMatrixFactory.getInstance();
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        ArrayList<AdjMatrixNode> nodes = f.createNodesFromInput(dataset);
-        g.addAllNodes(nodes);
-        g.addEdgesFromNeigborArray(a, 4);
+        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
         System.out.println(g.graphVizExport());
     }
 
