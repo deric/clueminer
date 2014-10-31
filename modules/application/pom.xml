@@ -165,26 +165,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>hts-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>wellmap</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>hts-fluorescence</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>clustering-preview</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>math-plot</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -213,16 +193,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>explorer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>molecule</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -258,11 +228,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>importer-impl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>scatter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
