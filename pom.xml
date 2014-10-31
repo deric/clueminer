@@ -189,13 +189,8 @@
         <module>modules/dendrogram</module>
         <module>modules/perspective-api</module>
         <module>modules/perspective-impl</module>
-        <module>modules/clustering-preview</module>
         <module>modules/approximation-api</module>
         <module>modules/approximation-impl</module>
-        <module>modules/molecule</module>
-        <module>modules/wellmap</module>
-        <module>modules/hts-api</module>
-        <module>modules/hts-fluorescence</module>
         <module>modules/explorer</module>
         <module>modules/infopanel</module>
         <module>modules/gnuplot</module>
@@ -210,7 +205,6 @@
         <module>modules/chart-base</module>
         <module>modules/curve</module>
         <module>modules/validation</module>
-        <module>modules/scatter</module>
         <module>modules/fixtures-clustering</module>
         <module>modules/clustering-eval</module>
         <module>modules/clustering-dist</module>
