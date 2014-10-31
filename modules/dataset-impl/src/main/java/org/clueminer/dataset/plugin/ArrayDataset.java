@@ -403,8 +403,13 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public Dataset<E> duplicate() {
         ArrayDataset<E> copy = new ArrayDataset<>(this.size(), this.attributeCount());
+        int i = 0;
         for (Attribute attribute : attributes) {
+            if (attribute == null) {
+                throw new RuntimeException("null attribute at position " + i);
+            }
             copy.attributeBuilder().create(attribute.getName(), BasicAttrType.NUMERIC, attribute.getRole());
+            i++;
         }
         copy.setParent(this);
         return copy;
@@ -522,6 +527,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public double min() {
         double min = Double.POSITIVE_INFINITY, curr;
         for (Attribute attribute : attributes) {
+            if (attribute == null) {
+                throw new RuntimeException("got null attribute");
+            }
             curr = attribute.statistics(AttrNumStats.MIN);
             if (curr < min) {
                 min = curr;
@@ -534,6 +542,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public double max() {
         double max = Double.NEGATIVE_INFINITY, curr;
         for (Attribute attribute : attributes) {
+            if (attribute == null) {
+                throw new RuntimeException("got null attribute");
+            }
             curr = attribute.statistics(AttrNumStats.MAX);
             if (curr > max) {
                 max = curr;
