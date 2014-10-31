@@ -64,18 +64,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
      */
     protected void run() {
         //basic numeric dataset
-        logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), container.getAttributeCount()});
 
         DatasetType dataType = DatasetType.valueOf(container.getDataType().toUpperCase());
-
-        if (dataType == DatasetType.DISCRETE) {
-            dataset = new ArrayDataset(container.getInstanceCount(), container.getAttributeCount());
-        } else if (dataType == DatasetType.CONTINUOUS) {
-            dataset = new TimeseriesDataset(container.getInstanceCount());
-        } else {
-            NotifyUtil.error("Error", "dataset type " + container.getDataType() + " is not supported by this processor", false);
-        }
-
         ArrayList<AttributeDraft> inputAttr = new ArrayList<>(container.getAttributeCount());
         //scan attributes
         int metaCnt = 0;
@@ -90,6 +80,15 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         Collections.sort(inputAttr, new AttributeComparator());
 
         logger.log(Level.INFO, "found {0} meta attributes, and input attributes {1}", new Object[]{metaCnt, inputAttr.size()});
+
+        if (dataType == DatasetType.DISCRETE) {
+            dataset = new ArrayDataset(container.getInstanceCount(), inputAttr.size());
+        } else if (dataType == DatasetType.CONTINUOUS) {
+            dataset = new TimeseriesDataset(container.getInstanceCount());
+        } else {
+            NotifyUtil.error("Error", "dataset type " + container.getDataType() + " is not supported by this processor", false);
+        }
+        logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), inputAttr.size()});
 
         //set attributes
         int index = 0;
