@@ -160,7 +160,7 @@ public class HacDialog extends ClusteringDialog {
             params.putBoolean(AgglParams.LOG, true);
         }
         if (chckColumns.isSelected()) {
-            params.putBoolean(AgglParams.LOG, true);
+            params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
         }
 
         return params;
