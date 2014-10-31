@@ -62,7 +62,6 @@ public class ExplorerToolbar extends JToolBar {
                     ClusteringAlgorithm alg = algPanel.getAlgorithm();
                     if (listener != null) {
                         Props p = algPanel.getProps();
-                        System.out.println("single clustering: " + p.toString());
                         listener.runClustering(alg, p);
                     }
                 }

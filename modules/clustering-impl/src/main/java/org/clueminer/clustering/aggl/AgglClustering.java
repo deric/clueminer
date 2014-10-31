@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
+import org.clueminer.math.Vector;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.openide.util.Exceptions;
@@ -144,7 +145,6 @@ public class AgglClustering {
 
     static Matrix columnSimilarityMatrix(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
-        int n = 0;
         double dist;
         if (dm.isSymmetric()) {
             similarityMatrix = new SymmetricMatrix(m.columnsCount(), m.columnsCount());
@@ -162,8 +162,8 @@ public class AgglClustering {
             double dist2;
             MatrixVector vi, vj;
             similarityMatrix = new JMatrix(m.columnsCount(), m.columnsCount());
-            for (int i = 0; i < m.rowsCount(); ++i) {
-                for (int j = i + 1; j < m.rowsCount(); ++j) {
+            for (int i = 0; i < m.columnsCount(); ++i) {
+                for (int j = i + 1; j < m.columnsCount(); ++j) {
                     /**
                      * measure is not symmetrical, we have to compute distance
                      * from A to B and from B to A

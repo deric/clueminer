@@ -161,7 +161,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
         if (hclust != null) {
             int pos = cutoffLine.computePosition(hclust, min, max);
             slider.setValue(pos);
-            System.out.println("slider pos " + pos + " from cutoff " + hclust.getCutoff());
+            //System.out.println("slider pos " + pos + " from cutoff " + hclust.getCutoff());
         }
     }
 

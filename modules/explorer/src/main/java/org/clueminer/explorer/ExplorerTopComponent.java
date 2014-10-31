@@ -79,7 +79,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private ClustComparator comparator;
     private ClustSorted children;
     private Evolution alg;
-    private final Executor exec = new ClusteringExecutorCached();
+    private final Executor exec = new ClusteringExecutor();
 
     public ExplorerTopComponent() {
         initComponents();
@@ -272,7 +272,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
         final AgglomerativeClustering aggl = (AgglomerativeClustering) alg;
         props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
-        if(dataset == null){
+        if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }
         task = RP.create(new Runnable() {
@@ -280,10 +280,15 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             @Override
             public void run() {
                 exec.setAlgorithm(aggl);
-                Clustering clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
-                //DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
-                //HierarchicalResult res = aggl.hierarchy(dataset, props);
-                //Clustering clust = mapping.getRowsClustering();
+                Clustering clustering;
+                if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
+                    dataset.asMatrix().printLower(5, 2);
+                    DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
+                    clustering = mapping.getRowsClustering();
+                } else {
+
+                    clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
+                }
                 children.addClustering(clustering);
             }
         });

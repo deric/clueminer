@@ -68,4 +68,11 @@ public class AgglClusteringTest {
         }
     }
 
+    @Test
+    public void testColumnSimilarityMatrix() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        Matrix sim = AgglClustering.columnSimilarityMatrix(dataset.asMatrix(), dm);
+        assertEquals(4, sim.rowsCount());
+        assertEquals(4, sim.columnsCount());
+    }
 }
