@@ -216,16 +216,23 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             String type = matcher.group(1).toLowerCase();
             AttributeDraft attr;
             Class<?> res;
-            if (type.equals("double")) {
-                res = Double.class;
-            } else if (type.equals("float")) {
-                res = Float.class;
-            } else if (type.equals("int") || type.equals("integer")) {
-                res = Integer.class;
-            } else if (type.equals("long")) {
-                res = Long.class;
-            } else {
-                res = String.class;
+            switch (type) {
+                case "double":
+                    res = Double.class;
+                    break;
+                case "float":
+                    res = Float.class;
+                    break;
+                case "int":
+                case "integer":
+                    res = Integer.class;
+                    break;
+                case "long":
+                    res = Long.class;
+                    break;
+                default:
+                    res = String.class;
+                    break;
             }
             attr = getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
@@ -236,7 +243,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
             return true;
         }
-        logger.log(Level.WARNING, "column ''{0}'' doesn''t seem to contain reasonable type value", column);
+        logger.log(Level.WARNING, "column ''{0}'' can''t be parsed as a Java type", column);
         return false;
     }
 

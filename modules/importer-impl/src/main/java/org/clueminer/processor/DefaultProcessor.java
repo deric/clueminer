@@ -72,7 +72,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         for (AttributeDraft attrd : container.getAttributes()) {
             if (attrd.getRole().equals(BasicAttrRole.INPUT)) {
                 inputAttr.add(attrd);
-            } else if (attrd.getRole().equals(BasicAttrRole.META)) {
+            } else {
                 metaCnt++;
             }
         }
@@ -149,6 +149,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
                         inst.setClassValue(instd.getValue(j));
                         inst.setId((String) instd.getValue(j));
                         inst.setName((String) instd.getValue(j));
+                        logger.log(Level.INFO, "setting class {0}: {1}", new Object[]{i, instd.getValue(j)});
                     } else if (attr.getRole().equals(BasicAttrRole.ID)) {
                         inst.setId((String) instd.getValue(j));
                         inst.setName((String) instd.getValue(j));

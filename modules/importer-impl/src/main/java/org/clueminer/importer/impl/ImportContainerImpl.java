@@ -47,10 +47,10 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
     public ImportContainerImpl() {
         report = new Report();
-        instanceList = new ObjectArrayList<InstanceDraft>();
-        attributeList = new HashMap<Integer, AttributeDraft>();
-        attributeMap = new HashMap<String, AttributeDraft>();
-        instanceMap = new Object2IntOpenHashMap<String>();
+        instanceList = new ObjectArrayList<>();
+        attributeList = new HashMap<>();
+        attributeMap = new HashMap<>();
+        instanceMap = new Object2IntOpenHashMap<>();
         instanceMap.defaultReturnValue(NULL_INDEX);
     }
 
@@ -141,7 +141,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
     @Override
     public Iterable<InstanceDraft> getInstances() {
-        return new NullFilterIterable<InstanceDraft>(instanceList);
+        return new NullFilterIterable<>(instanceList);
     }
 
     /**
@@ -324,10 +324,10 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public void reset() {
         report = new Report();
-        instanceList = new ObjectArrayList<InstanceDraft>();
+        instanceList = new ObjectArrayList<>();
         //we keep attributes from previous iteration
         //reset only instances
-        instanceMap = new Object2IntOpenHashMap<String>();
+        instanceMap = new Object2IntOpenHashMap<>();
         instanceMap.defaultReturnValue(NULL_INDEX);
     }
 
