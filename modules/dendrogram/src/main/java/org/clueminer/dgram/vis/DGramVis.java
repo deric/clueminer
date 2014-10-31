@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -119,7 +120,7 @@ public class DGramVis {
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
         Props params = clustering.getParams();
-        AgglomerativeClustering algorithm = new HACLW();
+        AgglomerativeClustering algorithm = new HAC();
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);

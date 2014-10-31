@@ -110,7 +110,7 @@ public class NewickExportRunner implements Runnable {
         }
 
         if (node.isLeaf()) {
-            Instance inst = dataset.get(node.getIndex());
+            Instance inst = dataset.get(node.getId());
             sb.append(inst.getIndex()).append(":").append(node.getHeight());
         } else {
             if (includeNodeNames) {
