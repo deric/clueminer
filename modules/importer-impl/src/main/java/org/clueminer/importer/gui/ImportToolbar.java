@@ -3,7 +3,6 @@ package org.clueminer.importer.gui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -54,20 +53,12 @@ public class ImportToolbar extends JPanel implements ActionListener {
         } else if (source.equals(comboSpline)) {
             String item = (String) comboSpline.getSelectedItem();
             //control.setSpline(providers.get(item));
-            System.out.println("selected:" + item);
+            //System.out.println("selected importer:" + item);
         }
     }
 
     public String[] getProviders() {
-        Collection<? extends FileImporter> list = FileImporterFactory.getInstance().getAll();
-        String[] res = new String[list.size()];
-        providers = new LinkedHashMap<String, FileImporter>();
-        int i = 0;
-        for (FileImporter importer : list) {
-            providers.put(importer.getName(), importer);
-            res[i++] = importer.getName();
-        }
-        return res;
+        return FileImporterFactory.getInstance().getProvidersArray();
     }
 
 }
