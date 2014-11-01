@@ -1,6 +1,5 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -11,18 +10,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = CutoffStrategy.class)
-public class HillClimbCutoff implements CutoffStrategy {
+public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
 
-    protected ClusterEvaluator evaluator;
-    private static final String name = "hill-climb cutoff";
-
-    public HillClimbCutoff() {
-        //evaluator must be set after calling constructor!
-    }
-
-    public HillClimbCutoff(ClusterEvaluator eval) {
-        this.evaluator = eval;
-    }
+    private static final String name = "hill-climb inc";
 
     @Override
     public String getName() {
@@ -31,10 +21,10 @@ public class HillClimbCutoff implements CutoffStrategy {
 
     @Override
     public double findCutoff(HierarchicalResult hclust) {
-        double cutoff;
         Clustering clust;
+        double cutoff;
         double score, prev = Double.NaN, oldcut = 0;
-        int level = hclust.treeLevels() - 1;
+        int level = 1;
         boolean isClimbing = true;
         String evalName;
         int clustNum;
@@ -63,17 +53,10 @@ public class HillClimbCutoff implements CutoffStrategy {
             hclust.setScores(evaluator.getName(), clust.size(), score);
             prev = score;
             oldcut = cutoff;
-            level--;
+            level++;
 
-        } while (isClimbing && !Double.isNaN(score));
+        } while (level < (hclust.treeLevels() - 1) && isClimbing && !Double.isNaN(score));
         return cutoff;
     }
 
-    public ClusterEvaluator getEvaluator() {
-        return evaluator;
-    }
-
-    public void setEvaluator(ClusterEvaluator evaluator) {
-        this.evaluator = evaluator;
-    }
 }
