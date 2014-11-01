@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -38,6 +39,7 @@ import org.openide.util.lookup.Lookups;
 public class ClusteringNode extends AbstractNode implements DendrogramVisualizationListener {
 
     private Image image;
+    DendrogramMapping mapping;
     private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
 
     public ClusteringNode(Clustering<Cluster> clusters) {
@@ -56,8 +58,10 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     @Override
     public Image getIcon(int type) {
         if (image == null) {
-            Clustering<? extends Cluster> clustering = getClustering();
-            image = DGramVis.generate(clustering, 64, 64, this);
+            Clustering clustering = getClustering();
+            if (mapping == null) {
+                image = DGramVis.generate(clustering, 64, 64, this);
+            }
         }
         return image;
     }
@@ -87,7 +91,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     private String generateName() {
-        Clustering<Cluster> clustering = getLookup().lookup(Clustering.class);
+        Clustering<? extends Cluster> clustering = getClustering();
         if (clustering != null) {
             return clustering.getName();
         }

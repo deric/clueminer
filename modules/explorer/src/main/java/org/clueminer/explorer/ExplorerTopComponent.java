@@ -5,10 +5,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.ClusteringExecutor;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -79,7 +79,8 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     private ClustComparator comparator;
     private ClustSorted children;
     private Evolution alg;
-    private final Executor exec = new ClusteringExecutor();
+    //private final Executor exec = new ClusteringExecutor();
+    private final Executor exec = new ClusteringExecutorCached();
 
     public ExplorerTopComponent() {
         initComponents();
@@ -280,14 +281,17 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             @Override
             public void run() {
                 exec.setAlgorithm(aggl);
-                Clustering clustering;
+                Clustering<? extends Cluster> clustering;
                 if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
                     DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
                     clustering = mapping.getRowsClustering();
+                    children.addClustering(clustering);
                 } else {
                     clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
+                    children.addClustering(clustering);
                 }
-                children.addClustering(clustering);
+                logger.log(Level.INFO, "finished clustering dataset {1} with algorithm {0}",
+                           new Object[]{alg.getName(), dataset.getName()});
             }
         });
         task.schedule(0);
