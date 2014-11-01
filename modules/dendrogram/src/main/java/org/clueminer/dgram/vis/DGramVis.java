@@ -12,12 +12,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
-import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
-import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
-import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
@@ -37,19 +34,21 @@ public class DGramVis {
     private static SilhouettePlot silhoulette;
 
     public static Image generate(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
-        final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
-            log.warning("missing mapping, running clustering");
-            RP.post(new Runnable() {
-                @Override
-                public void run() {
-                    //add empty mapping
-                    DendrogramMapping map = new DendrogramData();
-                    clustering.lookupAdd(map);
-                    createMapping(clustering);
-                    generateImage(clustering, width, height, listener, map);
-                }
-            });
+            log.warning("missing mapping, can't generate preview");
+            //generating clustering does not help
+            /* log.warning("missing mapping, running clustering");
+             RP.post(new Runnable() {
+             @Override
+             public void run() {
+             //add empty mapping
+             DendrogramMapping map = new DendrogramData2();
+             clustering.lookupAdd(map);
+             createMapping(clustering);
+             generateImage(clustering, width, height, listener, map);
+             }
+             });*/
             return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
 
         } else {
@@ -89,7 +88,7 @@ public class DGramVis {
          viewer.setClustering(clustering);*/
     }
 
-    private static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         if (heatmap == null) {
             heatmap = new Heatmap();
         }
@@ -129,10 +128,9 @@ public class DGramVis {
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         mapping.setDataset(dataset);
 
-        OptimalTreeOrder treeOrder = new MOLO();
-        treeOrder.optimize(rowsResult, true);
-        treeOrder.optimize(colsResult, true);
-
+        /*OptimalTreeOrder treeOrder = new MOLO();
+         treeOrder.optimize(rowsResult, true);
+         treeOrder.optimize(colsResult, true);*/
         mapping.setRowsResult(rowsResult);
         mapping.setColsResult(colsResult);
         clustering.lookupAdd(mapping);

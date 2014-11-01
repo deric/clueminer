@@ -26,7 +26,7 @@ public abstract class AbstractImporterUI extends JPanel implements ImporterUI {
 
     @Override
     public void fireImporterChanged() {
-        //importer.reload();
+        //getImporter().reload();
         for (ImportListener im : importListeners.getListeners(ImportListener.class)) {
             im.importerChanged(getImporter(), this);
         }

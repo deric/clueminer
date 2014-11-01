@@ -4,8 +4,10 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -19,7 +21,7 @@ import org.junit.Test;
  */
 public class ClusteringExecutorCachedTest {
 
-    private ClusteringExecutorCached subject = new ClusteringExecutorCached();
+    private final ClusteringExecutorCached subject = new ClusteringExecutorCached();
 
     public ClusteringExecutorCachedTest() {
     }
@@ -54,8 +56,23 @@ public class ClusteringExecutorCachedTest {
     public void testClusterRows() {
     }
 
-    @Test
+    //TODO: move some cutoff strategy to this package
+    //@Test
     public void testClusterAll() {
+        DistanceMeasure dm = new EuclideanDistance();
+        Props pref = new Props();
+        DendrogramMapping mapping = subject.clusterAll(FakeClustering.irisDataset(), dm, pref);
+        assertNotNull(mapping);
+        HierarchicalResult rows = mapping.getRowsResult();
+        Matrix mr = rows.getProximityMatrix();
+        assertEquals(150, mr.rowsCount());
+        assertEquals(150, mr.columnsCount());
+        HierarchicalResult cols = mapping.getColsResult();
+        assertEquals(150, rows.size());
+        assertEquals(4, cols.size());
+        Matrix mc = cols.getProximityMatrix();
+        assertEquals(4, mc.rowsCount());
+        assertEquals(4, mc.columnsCount());
     }
 
 }

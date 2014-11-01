@@ -111,6 +111,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
     @Override
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         //not used
+        logger.info("importer changed " + importer.getName());
     }
 
     @Override

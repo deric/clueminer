@@ -108,9 +108,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                     initProcessorsUI();
                 }
             });
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
+        } catch (InterruptedException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -170,15 +168,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     }
 
     public String[] getImporterProviders() {
-        Collection<? extends FileImporter> list = FileImporterFactory.getInstance().getAll();
-        String[] res = new String[list.size()];
-        providers = new LinkedHashMap<String, FileImporter>();
-        int i = 0;
-        for (FileImporter importer : list) {
-            providers.put(importer.getName(), importer);
-            res[i++] = importer.getName();
-        }
-        return res;
+        return FileImporterFactory.getInstance().getProvidersArray();
     }
 
     private void initImporters() {
@@ -598,35 +588,46 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void importerChanged(final Importer importer, final ImporterUI importerUI) {
+        logger.log(Level.INFO, "current importer: {0}", importer.getName());
         Container cont = importer.getContainer();
+
+        //import is executed asynchronously, we might not have container immediately
         if (cont == null) {
+            triggerReimport((FileImporter) importer, null);
             logger.severe("container is null!");
             return;
+        } else {
+            final ContainerLoader loader = cont.getLoader();
+            triggerReimport((FileImporter) importer, loader);
         }
-        final ContainerLoader loader = cont.getLoader();
-        final FileImporter fi = (FileImporter) importer;
+
+        this.validate();
+        this.revalidate();
+        this.repaint();
+    }
+
+    private void triggerReimport(final FileImporter importer, final ContainerLoader loader) {
         if (currentFile != null) {
             RP.post(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         logger.log(Level.INFO, "importer changed, caused by {0}", importerUI);
-
-                        loader.reset();
-                        Container cont = controller.importFile(currentFile, currentFile.getInputStream(), fi, true);
+                        if (loader != null) {
+                            loader.reset();
+                        }
+                        Container cont = controller.importFile(currentFile, currentFile.getInputStream(), importer, true);
                         logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
                         setData(cont.getReport(), cont);
+                        logger.log(Level.INFO, "finished loading data with {0}", importer.getName());
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);
                     }
                 }
             });
         } else {
-            logger.log(Level.INFO, "current file is null");
+            logger.log(Level.INFO, "ff: current file is null");
         }
-        this.validate();
-        this.revalidate();
-        this.repaint();
     }
 
     @Override

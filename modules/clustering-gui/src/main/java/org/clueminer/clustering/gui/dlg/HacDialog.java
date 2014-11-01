@@ -28,6 +28,7 @@ public class HacDialog extends ClusteringDialog {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
         comboStandardisation.setSelectedItem("Min-Max");
+        comboLinkage.setSelectedItem("Complete Linkage");
     }
 
     /**
@@ -154,12 +155,12 @@ public class HacDialog extends ClusteringDialog {
         params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
         params.put(AgglParams.LINKAGE, (String) comboLinkage.getSelectedItem());
         params.put(AgglParams.STD, (String) comboStandardisation.getSelectedItem());
-        params.put(AgglParams.CUTOFF_SCORE, (String) comboStandardisation.getSelectedItem());
+        params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
         if (chkBoxLogScale.isSelected()) {
             params.putBoolean(AgglParams.LOG, true);
         }
         if (chckColumns.isSelected()) {
-            params.putBoolean(AgglParams.LOG, true);
+            params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
         }
 
         return params;

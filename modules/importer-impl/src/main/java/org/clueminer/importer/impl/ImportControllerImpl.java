@@ -47,7 +47,7 @@ public class ImportControllerImpl implements ImportController {
     private final HashMap<String, Container> containers;
 
     public ImportControllerImpl() {
-        this.containers = new HashMap<String, Container>();
+        this.containers = new HashMap<>();
         fileImporters = FileImporterFactory.getInstance().getAll();
         helper = new MimeHelper();
         //Get UIS

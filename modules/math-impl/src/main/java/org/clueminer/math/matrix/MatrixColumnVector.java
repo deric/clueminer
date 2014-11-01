@@ -56,9 +56,14 @@ public class MatrixColumnVector extends AbstractDoubleVector implements MatrixVe
         return res;
     }
 
+    /**
+     * size of the vector is equal to number of rows in the matrix
+     *
+     * @return
+     */
     @Override
     public int size() {
-        return matrix.columnsCount();
+        return matrix.rowsCount();
     }
 
     @Override

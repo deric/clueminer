@@ -53,7 +53,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         Dimension elem = panel.getElementSize();
         elementWidth = elem.width;
         elementHeight = elem.height;
-        this.fitToSpace = true;
+        this.fitToSpace = false;
         this.preserveAlpha = true;
     }
 
@@ -84,6 +84,9 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         }
     }
 
+    /**
+     * Only for rows (horizontal) trees
+     */
     @Override
     public void recalculate() {
         if (hasData()) {

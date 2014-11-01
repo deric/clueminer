@@ -84,17 +84,20 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
 
-        CutoffStrategy strategy = getCutoffStrategy(params);
-        double cut = rowsResult.findCutoff(strategy);
-        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
-        params.putDouble(AgglParams.CUTOFF, cut);
-
+        findCutoff(rowsResult, params);
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
         clustering.mergeParams(params);
         clustering.lookupAdd(mapping);
         return clustering;
+    }
+
+    public void findCutoff(HierarchicalResult rowsResult, Props params) {
+        CutoffStrategy strategy = getCutoffStrategy(params);
+        double cut = rowsResult.findCutoff(strategy);
+        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        params.putDouble(AgglParams.CUTOFF, cut);
     }
 
     /**
@@ -108,9 +111,15 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     @Override
     public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+        findCutoff(rowsResult, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
 
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult, columnsResult);
+        Clustering clustering = rowsResult.getClustering();
+        clustering.lookupAdd(mapping);
+        clustering.lookupAdd(rowsResult);
+        clustering.lookupAdd(columnsResult);
+        clustering.mergeParams(params);
         return mapping;
     }
 

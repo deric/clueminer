@@ -55,7 +55,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     protected boolean ignoreLeadingWhiteSpace = false;
     protected char separator = ',';
     protected char quotechar = '"';
-    protected List<String> missing = new LinkedList<String>();
+    protected List<String> missing = new LinkedList<>();
 
     public AbstractImporter() {
         errorHandler = new LongTaskErrorHandler() {
@@ -167,7 +167,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     public abstract boolean execute(Container container, LineNumberReader reader) throws IOException;
 
     protected String[] parseLine(String line) throws IOException {
-        List<String> tokensOnThisLine = new ArrayList<String>();
+        List<String> tokensOnThisLine = new ArrayList<>();
         StringBuilder sb = new StringBuilder(INITIAL_READ_SIZE);
         boolean inQuotes = false;
         if (pending != null) {

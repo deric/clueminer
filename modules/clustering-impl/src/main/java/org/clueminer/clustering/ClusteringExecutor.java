@@ -94,6 +94,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
 
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
+        rowsResult.getClustering().lookupAdd(mapping);
         return mapping;
     }
 }
