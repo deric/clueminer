@@ -204,12 +204,12 @@ public class DendrogramData2 implements DendrogramMapping {
 
     @Override
     public Clustering getRowsClustering() {
-        return rowsResult.getClustering(normData);
+        return rowsResult.getClustering();
     }
 
     @Override
     public Clustering getColumnsClustering() {
-        return colsResult.getClustering(normData);
+        return colsResult.getClustering();
     }
 
     /**

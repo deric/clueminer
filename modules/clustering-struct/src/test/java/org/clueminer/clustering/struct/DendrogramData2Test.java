@@ -107,7 +107,7 @@ public class DendrogramData2Test {
     public void testGetMappedValue() {
     }
 
-    // @Test
+    //@Test
     public void testGetDataset() throws IOException {
         DistanceMeasure dm = DistanceFactory.getInstance().getDefault();
         Dataset<? extends Instance> dataset = loadIris();

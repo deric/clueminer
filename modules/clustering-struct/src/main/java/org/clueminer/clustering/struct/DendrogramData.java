@@ -220,12 +220,12 @@ public class DendrogramData implements DendrogramMapping {
 
     @Override
     public Clustering getRowsClustering() {
-        return rowsResult.getClustering(dataset);
+        return rowsResult.getClustering();
     }
 
     @Override
     public Clustering getColumnsClustering() {
-        return colsResult.getClustering(dataset);
+        return colsResult.getClustering();
     }
 
     /**
