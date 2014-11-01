@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.clueminer.chameleon;
+package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +8,14 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Partitioning;
+
 
 /**
  *
  * @author Tomas Bruna
  */
-public class Partitioning {
+public class P2PPartitioning implements Partitioning {
 
     private final Vertex[] nodes;
     private final int nodeCount;
@@ -29,11 +26,11 @@ public class Partitioning {
 
     private final Graph graph;
 
-    private ArrayList<LinkedList<Vertex>> clusters;
+    private ArrayList<LinkedList<Node>> clusters;
     private ArrayList<LinkedList<Vertex>> currentNodes;
     private ArrayList<LinkedList<Vertex>> futureNodes;
 
-    public Partitioning(Graph g, int k) {
+    public P2PPartitioning(Graph g, int k) {
         graph = g;
         this.k = k;
         nodeCount = graph.getNodeCount();
@@ -44,7 +41,8 @@ public class Partitioning {
         }
     }
 
-    public void partition() {
+    @Override
+    public ArrayList<LinkedList<Node>> partition() {
        
         used = new boolean[nodeCount];
         Arrays.fill(used, false);
@@ -59,12 +57,11 @@ public class Partitioning {
             currentNodes = futureNodes;
             prepareFutureNodes();
         }
-        
-        //printClusters();
-        removeUnusedEdges();
+        return clusters;
     }
     
-    private void removeUnusedEdges() {
+    @Override
+    public Graph removeUnusedEdges() {
         for (int i = 0; i < nodeCount; i++) {
             for (int j = 0; j < nodeCount; j++) {
                 if (nodes[i].cluster != nodes[j].cluster) {
@@ -72,17 +69,17 @@ public class Partitioning {
                     if (e!=null) {
                        graph.removeEdge(e);
                     }
-                    
                 }
             }
         } 
+        return graph; // deep copy or new graph needed
     }
     
     private void printClusters() {
         for (int i = 0; i < k; i++) {
             System.out.print("Cluster " + i + ": ");
-            for (Vertex v : clusters.get(i)) {
-                System.out.print(v.index + ", ");
+            for (Node n : clusters.get(i)) {
+                System.out.print(n.getIndex() + ", ");
             }
             System.out.println("");
         }
@@ -121,7 +118,7 @@ public class Partitioning {
             Node neighbor = neighbors.next();
             if (used[neighbor.getIndex()] == false) {
                 used[neighbor.getIndex()] = true;
-                clusters.get(cluster).add(nodes[neighbor.getIndex()]);
+                clusters.get(cluster).add(neighbor);
                 futureNodes.get(cluster).add(nodes[neighbor.getIndex()]);
                 nodes[neighbor.getIndex()].cluster = cluster;
                 usedCount++;
@@ -137,9 +134,9 @@ public class Partitioning {
         clusters = new ArrayList<>(k);
         currentNodes = new ArrayList<>(k);
         for (int i = 0; i < k; i++) {
-            clusters.add(new LinkedList<Vertex>());
+            clusters.add(new LinkedList<Node>());
             currentNodes.add(new LinkedList<Vertex>());
-            clusters.get(i).add(allSorted[i]);
+            clusters.get(i).add(graphNodes[allSorted[i].index]);
             currentNodes.get(i).add(allSorted[i]);
             nodes[allSorted[i].index].cluster = i;
             used[allSorted[i].index] = true;
@@ -170,5 +167,6 @@ public class Partitioning {
         }
         return result;
     }
+
 
 }

@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.clueminer.chameleon;
+package org.clueminer.partitioning.impl;
 
 /**
  *
- * @author tomas
+ * @author Tomas Bruna
  */
 public class Vertex implements Comparable<Vertex> {
     
