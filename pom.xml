@@ -192,11 +192,9 @@
         <module>modules/approximation-api</module>
         <module>modules/approximation-impl</module>
         <module>modules/explorer</module>
-        <module>modules/infopanel</module>
         <module>modules/gnuplot</module>
         <module>modules/clustering-benchmark</module>
         <module>modules/dataset-benchmark</module>
-        <module>modules/posturomed</module>
         <module>modules/mlearn</module>
         <module>modules/importer-impl</module>
         <module>modules/clustering-evolution</module>
