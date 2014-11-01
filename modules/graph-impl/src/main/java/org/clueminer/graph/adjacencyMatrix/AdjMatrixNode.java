@@ -14,12 +14,12 @@ import org.clueminer.graph.api.Node;
 public class AdjMatrixNode implements Node {
 
     private final Object id;
-    private int number;
+    private int index;
     private double[] coordinates;
 
     public AdjMatrixNode(Object id) {
         this.id = id;
-        this.number = -1;
+        this.index = -1;
     }
     
     public AdjMatrixNode(Object id, int dimension) {
@@ -45,12 +45,14 @@ public class AdjMatrixNode implements Node {
         return id;
     }
     
-    public int getNumber() {
-        return number;
+    @Override
+    public int getIndex() {
+        return index;
     }
     
-    public void setNumber(int number) {
-        this.number = number;
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
     }
     
 }

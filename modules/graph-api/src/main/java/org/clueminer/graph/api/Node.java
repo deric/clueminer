@@ -6,4 +6,8 @@ package org.clueminer.graph.api;
  */
 public interface Node extends Element {
 
+    public int getIndex();
+    
+    public void setIndex(int index);
+    
 }

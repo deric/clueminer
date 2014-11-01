@@ -50,7 +50,11 @@ public class AdjMatrixNodeIterable implements NodeIterable {
 
     @Override
     public Node[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Node[] array = new Node[nodes.size()];
+        for (int i = 0;i<nodes.size();i++) {
+            array[i] = nodes.get(i);
+        }
+        return array;
     }
 
     @Override
