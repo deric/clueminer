@@ -218,6 +218,8 @@
         <module>modules/graph-api</module>
         <module>modules/graph-impl</module>
         <module>modules/chameleon</module>
+        <module>modules/partitioning-api</module>
+        <module>modules/partitioning-impl</module>
     </modules>
     <reporting>
         <plugins>

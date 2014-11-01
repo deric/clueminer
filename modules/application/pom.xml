@@ -6,7 +6,7 @@
         <groupId>org.clueminer</groupId>
         <artifactId>clueminer-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
-	<relativePath>../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <artifactId>clueminer-app</artifactId>
@@ -284,6 +284,16 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>chameleon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>partitioning-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>partitioning-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
