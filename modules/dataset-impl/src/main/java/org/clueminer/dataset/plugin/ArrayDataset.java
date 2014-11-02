@@ -311,16 +311,6 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder("ArrayDataset [ size= " + size() + " \n");
-        for (int i = 0; i < size(); i++) {
-            str.append(classValue(i)).append(">> ").append(this.instance(i).toString());
-        }
-        str.append("\n ]");
-        return str.toString();
-    }
-
-    @Override
     public double[][] arrayCopy() {
         double[][] res = new double[this.size()][this.attributeCount()];
         int i = 0;
@@ -558,6 +548,26 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         for (Attribute attribute : attributes) {
             attribute.resetStats();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("ArrayDataset(size= " + size() + ", attrSize= " + attributeCount() + ") [");
+        Instance inst;
+        for (int i = 0; i < size(); i++) {
+            if (i > 0) {
+                str.append(", ");
+            }
+            if (i % 3 == 0) {
+                str.append("\n ");
+            }
+            inst = get(i);
+            str.append(inst.classValue());
+            str.append(" {").append(inst.getIndex()).append("}");
+            str.append(": ").append(inst.toString());
+        }
+        str.append("\n ]");
+        return str.toString();
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {

@@ -299,16 +299,6 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         return out;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder("SampleDataset [ size= " + size() + " \n");
-        for (int i = 0; i < size(); i++) {
-            str.append(classValue(i)).append(">> ").append(this.get(i).toString());
-        }
-        str.append("\n ]");
-        return str.toString();
-    }
-
     /**
      * @TODO consider using hashmap for attribute names. though this dataset is
      * not really meant for this type of operations
@@ -437,6 +427,25 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         for (Attribute attribute : attributes.values()) {
             attribute.resetStats();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("SampleDataset(size= " + size() + ", attrSize= " + attributeCount() + ") [");
+        Instance inst;
+        for (int i = 0; i < size(); i++) {
+            if (i > 0) {
+                str.append(", ");
+            }
+            if (i % 3 == 0) {
+                str.append("\n ");
+            }
+            inst = get(i);
+            str.append("{").append(inst.getIndex()).append("}");
+            str.append(inst.classValue()).append(": ").append(inst.toString());
+        }
+        str.append("\n ]");
+        return str.toString();
     }
 
 }
