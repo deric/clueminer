@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.LinkageFactory;
@@ -39,8 +40,12 @@ public class OptionsPanel extends javax.swing.JPanel {
         algBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panel.setAlgorithm((AgglomerativeClustering) cf.getProvider((String) algBox.getSelectedItem()));
-                panel.execute();
+                String alg = (String) algBox.getSelectedItem();
+                //if algorithm was really changed, trigger execution
+                if (!alg.equals(panel.getAlgorithm().getName())) {
+                    panel.setAlgorithm((AgglomerativeClustering) cf.getProvider(alg));
+                    panel.execute();
+                }
             }
         });
         add(algBox);
@@ -56,6 +61,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         add(dataBox);
 
         linkageBox = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
+        linkageBox.setSelectedItem(AgglParams.DEFAULT_LINKAGE);
         linkageBox.addActionListener(new ActionListener() {
 
             @Override
@@ -70,5 +76,9 @@ public class OptionsPanel extends javax.swing.JPanel {
         for (String str : datasets) {
             dataBox.addItem(str);
         }
+    }
+
+    public void selectAlgorithm(String algorithm) {
+        algBox.setSelectedItem(algorithm);
     }
 }

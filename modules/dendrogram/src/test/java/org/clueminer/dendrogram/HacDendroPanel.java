@@ -61,15 +61,16 @@ public class HacDendroPanel extends DendroPanel {
 
         viewer.setDataset(dendroData);
 
-        repaint();
+        validate();
         revalidate();
+        repaint();
         return dendroData;
     }
 
     @Override
     public void dataChanged(String datasetName) {
         setDataset(dataProvider.getDataset(datasetName));
-        System.out.println("dataset changed to " + datasetName + ": " + System.identityHashCode(this));
+        System.out.println("dataset changed to " + datasetName + ": " + System.identityHashCode(getDataset()));
         if (algorithm != null) {
             execute();
         }

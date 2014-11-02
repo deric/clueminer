@@ -79,6 +79,7 @@ public abstract class DendroPanel extends JPanel {
 
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = (AgglomerativeClustering) algorithm;
+        options.selectAlgorithm(algorithm.getName());
     }
 
     public Dataset<? extends Instance> getDataset() {

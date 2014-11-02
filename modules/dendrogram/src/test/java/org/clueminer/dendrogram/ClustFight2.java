@@ -84,10 +84,11 @@ public class ClustFight2 extends JFrame {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 1;
         c.gridheight = 1;
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.NORTHEAST;
-        c.weightx = c.weighty = 8.0; //ratio for filling the frame space
+        c.weightx = c.weighty = 1.0; //ratio for filling the frame space
         gbl.setConstraints(panel1, c);
         this.add(panel1, c);
 
