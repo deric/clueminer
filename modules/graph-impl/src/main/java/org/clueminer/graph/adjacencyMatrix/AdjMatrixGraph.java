@@ -3,6 +3,7 @@ package org.clueminer.graph.adjacencyMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.GraphFactory;
@@ -314,6 +315,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         return result;
     }
 
+    /* add to parent class */
     public String exportNodes() {
         String result = "";
         for (int i = 0; i < nodeCounter; i++) {
@@ -349,7 +351,13 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         AdjMatrixFactory f = AdjMatrixFactory.getInstance();
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = 0; j < k; j++) {
-                 addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1, false));
+                //todo - support distanceMeasure for nodes
+                double x1 = nodes[i].getCoordinate(0);
+                double y1 = nodes[i].getCoordinate(1);
+                double x2 = nodes[neighbors[i][j]].getCoordinate(0);
+                double y2 = nodes[neighbors[i][j]].getCoordinate(1);
+                //different const needed?
+                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]],1 ,10/Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)) , false)); //max val
             }
         }
         return true;
@@ -359,5 +367,6 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     public GraphFactory getFactory() {
         return AdjMatrixFactory.getInstance();
     }
+
 
 }
