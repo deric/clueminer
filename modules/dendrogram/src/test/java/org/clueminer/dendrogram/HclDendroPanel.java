@@ -211,4 +211,26 @@ public class HclDendroPanel extends DendroPanel {
     public void setDataProvider(DataProvider provider) {
         this.dataProvider = provider;
     }
+
+    @Override
+    public void linkageChanged(String linkage) {
+        int res;
+        switch (linkage) {
+            case "Single Linkage":
+                res = -1;
+                break;
+            case "Complete Linkage":
+                res = 1;
+                break;
+            case "Average Linkage":
+                res = 0;
+                break;
+            default:
+                throw new RuntimeException("linkage " + linkage + " is not supported");
+        }
+        params.putInt("method-linkage", res);
+        if (algorithm != null) {
+            execute();
+        }
+    }
 }

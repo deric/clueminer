@@ -5,9 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import org.clueminer.clustering.api.AgglomerativeClustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
-import org.clueminer.utils.Dump;
+import org.clueminer.clustering.api.LinkageFactory;
 
 /**
  *
@@ -19,10 +18,12 @@ public class OptionsPanel extends javax.swing.JPanel {
     private final DendroPanel panel;
     private JComboBox algBox;
     private JComboBox dataBox;
+    private JComboBox linkageBox;
     private ClusteringFactory cf;
 
     /**
      * Creates new form OptionsPanel
+     *
      * @param panel
      */
     public OptionsPanel(DendroPanel panel) {
@@ -32,12 +33,9 @@ public class OptionsPanel extends javax.swing.JPanel {
 
     private void initComponents() {
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        algBox = new JComboBox();
-
         cf = ClusteringFactory.getInstance();
-        for (ClusteringAlgorithm a : cf.getAll()) {
-            algBox.addItem(a.getName());
-        }
+        algBox = new JComboBox(cf.getProvidersArray());
+
         algBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,6 +54,16 @@ public class OptionsPanel extends javax.swing.JPanel {
             }
         });
         add(dataBox);
+
+        linkageBox = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
+        linkageBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.linkageChanged((String) linkageBox.getSelectedItem());
+            }
+        });
+        add(linkageBox);
     }
 
     public void setDatasets(String[] datasets) {

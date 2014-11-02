@@ -95,7 +95,19 @@ public abstract class DendroPanel extends JPanel {
         return viewer;
     }
 
+    /**
+     * Called when user changes dataset
+     *
+     * @param datasetName
+     */
     public abstract void dataChanged(String datasetName);
+
+    /**
+     * Called when user changes linkage
+     *
+     * @param linkage name of chosen linkage algorithm
+     */
+    public abstract void linkageChanged(String linkage);
 
     public abstract String[] getDatasets();
 
