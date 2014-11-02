@@ -72,6 +72,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private boolean showScale = true;
     private boolean showColorBar = true;
     private boolean showLegend = true;
+    /**
+     * whether to show row labels of instances (class labels)
+     */
     private boolean showLabels = true;
     private boolean showSlider = true;
     private boolean showEvalPlot = false;
@@ -129,7 +132,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         validate();
         revalidate();
         repaint();
-        logger.info("dg panel initialized");
 
         this.updateUI();
     }
@@ -155,6 +157,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     /**
      * Calculate sizes of components in order to fit into given panel size
+     *
+     * Method is called when most of the components are initialized and might
+     * know its size.
      */
     @Override
     public void recalculate() {
@@ -163,10 +168,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
         int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
         int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
+
+        heatmapWidth = reqSize.width - rowsTreeDim - insets.left - insets.right
+                - clusterAssignment.getSize().width;
         if (showEvalPlot) {
-            heatmapWidth = (int) (reqSize.width * 0.4);
-        } else {
-            heatmapWidth = reqSize.width - rowsTreeDim;
+            heatmapWidth = (int) (heatmapWidth * 0.4);
+        }
+
+        if (showLabels) {
+            heatmapWidth -= rowAnnotationBar.getWidth();
         }
 
         if (showColumnsTree) {
@@ -191,11 +201,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //System.out.println("heatmap h diff = " + diff);
 
         //compute element width
-        perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
-        if (perLine < 1) {
-            perLine = 1;// 1px line height
+        double perColumn = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
+        if (perColumn < 1) {
+            perColumn = 1;// 1px line height
         }
-        elementSize.width = (int) perLine;
+        elementSize.width = (int) perColumn;
         // diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
         dendroViewer.setCellHeight(elementSize.height, false, this);
         dendroViewer.setCellWidth(elementSize.width, false, this);

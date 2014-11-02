@@ -42,6 +42,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
         setBackground(panel.getBackground());
+        updateSize();
     }
 
     protected void setDimension(int width, int height) {
