@@ -1,7 +1,12 @@
 package org.clueminer.clustering.aggl;
 
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.AbstractQueue;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -49,25 +54,22 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             HashMap<Integer, Double> cache, int leftId, int rightId) {
         Element current;
         double distance;
+        //System.out.println("merge [" + leftId + ", " + rightId + "] -> " + leftId);
+        //System.out.println("assign: " + assignments.entrySet().toString());
         //System.out.println("merged cluster: " + mergedCluster.toString());
+
         //System.out.println("merging: [" + leftId + ", " + rightId + "] -> " + mergedId);
-        Set<Integer> clusterMembers;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
+            //update distance only to cluster keys (items contained in cluster
+            //were already merged and we can't remerge them again)
             distance = updateProximity(mergedId, cluster.getKey(), leftId, rightId, similarityMatrix, linkage, cache);
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
-            clusterMembers = cluster.getValue();
-            //each item is at the begining cluster by itself
-            if (clusterMembers.size() > 1) {
-                for (Integer id : clusterMembers) {
-                    distance = updateProximity(mergedId, id, leftId, rightId, similarityMatrix, linkage, cache);
-                    current = new Element(distance, mergedId, cluster.getKey());
-                    pq.add(current);
-                }
-            }
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
+        //System.out.println("assiga: " + assignments.entrySet().toString());
+        //print(mergedId + 1, similarityMatrix, cache);
     }
 
     /**
@@ -98,6 +100,9 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
         //System.out.println("p(" + r + ", " + q + ") = 0.5 * p(" + a + ", " + q + ") + 0.5*p(" + b + ", " + q + ") - 0.5*| p(" + a + ", " + q + ") - p(" + b + ", " + q + ")| = " + String.format("%.2f", dist));
+        //System.out.println("[" + a + ", " + q + "] -> " + map(a, q));
+        //System.out.println("[" + b + ", " + q + "] -> " + map(b, q));
+        //System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
         cache.put(map(r, q), dist);
         return dist;
     }
@@ -112,11 +117,16 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * @param cache
      * @return
      */
-    private double fetchDist(int x, int y, Matrix sim, HashMap<Integer, Double> cache) {
+    protected double fetchDist(int x, int y, Matrix sim, HashMap<Integer, Double> cache) {
         double res;
         if (!sim.has(x, y)) {
             int mapped = map(x, y);
-            res = cache.get(mapped);
+            //we don't need diagonal items
+            if (cache.containsKey(mapped) && (x != y)) {
+                res = cache.get(mapped);
+            } else {
+                res = -1;
+            }
         } else {
             res = sim.get(x, y);
         }
@@ -146,6 +156,77 @@ public class HACLW extends HAC implements AgglomerativeClustering {
          * numbers could be allocated before given position [x,y])
          */
         return triangleSize(i) + j;
+    }
+
+    /**
+     * For debugging only
+     *
+     * @param n
+     * @param sim
+     * @param cache
+     */
+    protected void print(int n, Matrix sim, HashMap<Integer, Double> cache) {
+        int d = 2;
+        int w = 5;
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        print(new PrintWriter(System.out, true), format, w + 2, n, sim, cache);
+    }
+
+    /**
+     * Print extended proximity matrix
+     *
+     * @param output
+     * @param format
+     * @param width
+     * @param n
+     * @param sim
+     * @param cache
+     */
+    protected void print(PrintWriter output, NumberFormat format, int width, int n, Matrix sim, HashMap<Integer, Double> cache) {
+        output.println();  // start on new line.
+        int padding;
+        String s;
+        for (int i = 0; i < n; i++) {
+            //print row label
+            s = String.valueOf(i);
+            padding = Math.max(1, width - s.length() - 1);
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+            output.print(" |");
+            for (int j = 0; j < n; j++) {
+                s = format.format(fetchDist(i, j, sim, cache)); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        //footer
+        for (int i = 0; i < width * (n + 1); i++) {
+            output.print('-');
+        }
+        output.println();
+        for (int k = 0; k < width; k++) {
+            output.print(' ');
+        }
+        for (int i = 0; i < n; i++) {
+            s = String.valueOf(i); // format the number
+            padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+        }
+        output.println();
     }
 
 }

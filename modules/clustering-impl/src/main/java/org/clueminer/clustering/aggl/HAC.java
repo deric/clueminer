@@ -72,6 +72,8 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset);
+        pref.put(AgglParams.ALG, getName());
+        checkParams(pref);
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
@@ -105,6 +107,17 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     /**
+     * Could be overridden by inherited method to check where algorithm is
+     * capable of running with requested parameters (otherwise throw an
+     * Exception)
+     *
+     * @param props
+     */
+    protected void checkParams(Props props) {
+
+    }
+
+    /**
      * Find most closest items and merges them into one cluster (subtree)
      *
      * @param pq               queue with sorted distances (lowest distance pops
@@ -133,7 +146,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.6f", curr.getValue()));
+            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.3f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
@@ -207,6 +220,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
         }
+        //System.out.println("adding " + mergedId + " -> " + mergedCluster.toString());
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
     }

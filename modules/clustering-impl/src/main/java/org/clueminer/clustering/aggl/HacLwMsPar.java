@@ -46,6 +46,7 @@ public class HacLwMsPar extends HACLWMS {
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset);
+        pref.put(AgglParams.ALG, getName());
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
