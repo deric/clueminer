@@ -40,7 +40,16 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double maximumDistance = Double.MIN_VALUE;
+        for (Instance i : cluster1) {
+            for (Instance j : cluster2) {
+                double s = distanceMeasure.measure(i, j);
+                if (distanceMeasure.compare(maximumDistance, s)) {
+                    maximumDistance = s;
+                }
+            }
+        }
+        return maximumDistance;
     }
 
     /**
