@@ -43,7 +43,6 @@ public class KernighanLin {
         }
         swapUpToBestIndex();
         return createNodeClusters();
-        //return null;
     }
 
     private ArrayList<LinkedList<Node>> createNodeClusters() {
@@ -102,10 +101,10 @@ public class KernighanLin {
         for (int i = 0; i <= 1; i++) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(nodes[swapPair[i].index]).toCollection();
             for (Node neighbor : neighbors) {
-                if (vertexes[neighbor.getIndex()].cluster == swapPair[i].cluster) {
-                    vertexes[neighbor.getIndex()].difference += 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
+                if (vertexes[graph.getIndex(neighbor)].cluster == swapPair[i].cluster) {
+                    vertexes[graph.getIndex(neighbor)].difference += 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
                 } else {
-                    vertexes[neighbor.getIndex()].difference -= 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
+                    vertexes[graph.getIndex(neighbor)].difference -= 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
                 }
             }
         }
@@ -115,14 +114,14 @@ public class KernighanLin {
         for (Node node : nodes) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(node).toCollection();
             for (Node neighbor : neighbors) {
-                if (vertexes[node.getIndex()].cluster == vertexes[neighbor.getIndex()].cluster) {
-                    vertexes[node.getIndex()].internalCost += graph.getEdge(node, neighbor).getWeight();
+                if (vertexes[graph.getIndex(node)].cluster == vertexes[graph.getIndex(neighbor)].cluster) {
+                    vertexes[graph.getIndex(node)].internalCost += graph.getEdge(node, neighbor).getWeight();
                 } else {
-                    vertexes[node.getIndex()].externalCost += graph.getEdge(node, neighbor).getWeight();
+                    vertexes[graph.getIndex(node)].externalCost += graph.getEdge(node, neighbor).getWeight();
                 }
 
             }
-            vertexes[node.getIndex()].difference = vertexes[node.getIndex()].externalCost - vertexes[node.getIndex()].internalCost;
+            vertexes[graph.getIndex(node)].difference = vertexes[graph.getIndex(node)].externalCost - vertexes[graph.getIndex(node)].internalCost;
         }
     }
 
@@ -154,7 +153,7 @@ public class KernighanLin {
         vertexes = new Vertex[nodeCount];
         for (int i = 0; i < nodeCount; i++) {
             vertexes[i] = new Vertex();
-            vertexes[i].index = nodes[i].getIndex();
+            vertexes[i].index = graph.getIndex(nodes[i]);
         }
         swapPair = new Vertex[2];
         swapHistory = new LinkedList<>();
@@ -180,7 +179,7 @@ public class KernighanLin {
         for (int i = 0; i <= 1; i++) {
             System.out.print("Cluster " + i + ": ");
             for (Node n : clusters.get(i)) {
-                System.out.print(n.getIndex() + ", ");
+                System.out.print(n.getId() + ", ");
             }
             System.out.println("");
         }
