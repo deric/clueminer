@@ -80,10 +80,10 @@ public interface GraphFactory {
     /**
      * Creates and returns a node.
      *
-     * @param id the node id
+     * @param label the node label
      * @return the new node
      */
-    public Node newNode(Object id);
+    public Node newNode(Object label);
     
     
     /**

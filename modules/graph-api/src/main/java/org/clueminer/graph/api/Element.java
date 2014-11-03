@@ -11,6 +11,13 @@ public interface Element {
      *
      * @return
      */
-    Object getId();
+    long getId();
+    
+    /**
+     * Node label
+     *
+     * @return
+     */
+    Object getLabel();
 
 }

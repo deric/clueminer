@@ -93,7 +93,7 @@ public interface Graph {
      * @param id the node id
      * @return the node, or null if not found
      */
-    public Node getNode(Object id);
+    public Node getNode(long id);
 
     /**
      * Gets an edge by its identifier.
@@ -101,7 +101,7 @@ public interface Graph {
      * @param id the edge id
      * @return the edge, or null if not found
      */
-    public Edge getEdge(Object id);
+    public Edge getEdge(long id);
 
     /**
      * Gets the edge adjacent to node1 and node2.
@@ -333,5 +333,13 @@ public interface Graph {
      * @return true if all nodes were added, false otherwise
      */
     public boolean addEdgesFromNeigborArray(int[][] nearests, int k);
-
+    
+    /**
+     * Returns index of node in this graph
+     *
+     * @param node the node to get index from
+     * @return node index
+     */
+    int getIndex(Node node);
+    
 }
