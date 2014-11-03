@@ -37,7 +37,7 @@ public class P2PPartitioning implements Partitioning {
         graphNodes = graph.getNodes().toArray();
         nodes = new Vertex[nodeCount];
         for (int i = 0; i < nodeCount; i++) {
-            nodes[i] = new Vertex(graphNodes[i].getIndex(), g.getDegree(graphNodes[i]));
+            nodes[i] = new Vertex(graph.getIndex(graphNodes[i]), g.getDegree(graphNodes[i]));
         }
     }
 
@@ -79,7 +79,7 @@ public class P2PPartitioning implements Partitioning {
         for (int i = 0; i < k; i++) {
             System.out.print("Cluster " + i + ": ");
             for (Node n : clusters.get(i)) {
-                System.out.print(n.getIndex() + ", ");
+                System.out.print(graph.getIndex(n) + ", ");
             }
             System.out.println("");
         }
@@ -116,11 +116,11 @@ public class P2PPartitioning implements Partitioning {
         Iterator<Node> neighbors = graph.getNeighbors(n).iterator();
         while (neighbors.hasNext()) {
             Node neighbor = neighbors.next();
-            if (used[neighbor.getIndex()] == false) {
-                used[neighbor.getIndex()] = true;
+            if (used[graph.getIndex(neighbor)] == false) {
+                used[graph.getIndex(neighbor)] = true;
                 clusters.get(cluster).add(neighbor);
-                futureNodes.get(cluster).add(nodes[neighbor.getIndex()]);
-                nodes[neighbor.getIndex()].cluster = cluster;
+                futureNodes.get(cluster).add(nodes[graph.getIndex(neighbor)]);
+                nodes[graph.getIndex(neighbor)].cluster = cluster;
                 usedCount++;
             }
         }
