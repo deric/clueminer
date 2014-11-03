@@ -20,6 +20,9 @@ public class AdjMatrixFactory implements GraphFactory {
 
     private static AdjMatrixFactory instance;
 
+    private static long nodeIdCounter;
+    private static long edgeIdCounter;
+    
     public static AdjMatrixFactory getInstance() {
         if (instance == null) {
             instance = new AdjMatrixFactory();
@@ -28,7 +31,7 @@ public class AdjMatrixFactory implements GraphFactory {
     }
 
     protected AdjMatrixFactory() {
-
+        nodeIdCounter = edgeIdCounter = 0;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        Edge edge = new AdjMatrixEdge(source, target, weight);
+        Edge edge = new AdjMatrixEdge(edgeIdCounter++,source, target, weight);
         return edge;
     }
 
@@ -59,22 +62,23 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Node newNode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Node node = new AdjMatrixNode(nodeIdCounter++);
+        return node;
     }
 
     @Override
-    public Node newNode(Object id) {
-        Node node = new AdjMatrixNode(id);
+    public Node newNode(Object label) {
+        Node node = new AdjMatrixNode(nodeIdCounter++,label);
         return node;
     }
 
-    public Node newNode(Object id, int dimension) {
-        Node node = new AdjMatrixNode(id, dimension);
+    public Node newNode(int dimension) {
+        Node node = new AdjMatrixNode(nodeIdCounter++, dimension);
         return node;
     }
 
-    public Node newNode(Object id, double[] coordinates) {
-        Node node = new AdjMatrixNode(id, coordinates);
+    public Node newNode(double[] coordinates) {
+        Node node = new AdjMatrixNode(nodeIdCounter++, coordinates);
         return node;
     }
 
@@ -82,12 +86,11 @@ public class AdjMatrixFactory implements GraphFactory {
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
         ArrayList<Node> nodes = new ArrayList<>(input.size());
         for (Instance ins : input) {
-            String id = ins.getId();
             double[] coordinates = new double[ins.size()];
             for (int i = 0; i < ins.size(); i++) {
                 coordinates[i] = ins.get(i);
             }
-            nodes.add((AdjMatrixNode) newNode(id, coordinates));
+            nodes.add((AdjMatrixNode) newNode(coordinates));
         }
         return nodes;
     }

@@ -14,13 +14,14 @@ import org.clueminer.graph.api.Node;
  */
 public class AdjMatrixEdge implements Edge {
 
-    private int id;
+    private long id;
     private final AdjMatrixNode source;
     private final AdjMatrixNode target;
     private boolean directed;
     private final double weight;
     
-    AdjMatrixEdge(Node source, Node target, double weight) {
+    AdjMatrixEdge(long id,Node source, Node target, double weight) {
+        this.id = id;
         this.source = (AdjMatrixNode) source;
         this.target = (AdjMatrixNode) target;
         this.weight = weight;
@@ -42,12 +43,17 @@ public class AdjMatrixEdge implements Edge {
     }
 
     @Override
-    public Object getId() {
+    public long getId() {
         return id;
     }
     
     @Override
     public double getWeight() {
         return weight;
+    }
+
+    @Override
+    public Object getLabel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

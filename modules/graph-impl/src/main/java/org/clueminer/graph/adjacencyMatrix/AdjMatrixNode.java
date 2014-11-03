@@ -13,46 +13,47 @@ import org.clueminer.graph.api.Node;
  */
 public class AdjMatrixNode implements Node {
 
-    private final Object id;
+    private final long id;
+    Object label;
     private int index;
     private double[] coordinates;
 
-    public AdjMatrixNode(Object id) {
+    public AdjMatrixNode(long id) {
         this.id = id;
-        this.index = -1;
     }
-    
-    public AdjMatrixNode(Object id, int dimension) {
+
+    public AdjMatrixNode(long id, Object label) {
+        this.label = label;
+        this.id = id;
+    }
+
+    public AdjMatrixNode(long id, int dimension) {
         coordinates = new double[dimension];
         this.id = id;
     }
-    
-    public AdjMatrixNode(Object id, double[] coordinates) {
+
+    public AdjMatrixNode(long id, double[] coordinates) {
         this.coordinates = coordinates;
         this.id = id;
     }
 
-    public void setCoordinate(int i, int value) {
+    public void setCoordinate(int i, double value) {
         coordinates[i] = value;
     }
-    
+
     public double getCoordinate(int i) {
         return coordinates[i];
     }
-    
+
+
     @Override
-    public Object getId() {
+   public long getId() {
         return id;
     }
-    
+
     @Override
-    public int getIndex() {
-        return index;
+    public Object getLabel() {
+        return label;
     }
-    
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-    
+
 }
