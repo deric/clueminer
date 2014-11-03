@@ -202,8 +202,8 @@ public abstract class AbstractMatrix implements Matrix {
      * with a Fortran-like 'Fw.d' style format.
      *
      * @param output Output stream.
-     * @param w Column width.
-     * @param d Number of digits after the decimal.
+     * @param w      Column width.
+     * @param d      Number of digits after the decimal.
      */
     @Override
     public void print(PrintWriter output, int w, int d) {
@@ -223,7 +223,7 @@ public abstract class AbstractMatrix implements Matrix {
      * NumberFormat that is set to US Locale.
      *
      * @param format A Formatting object for individual elements.
-     * @param width Field width for each column.
+     * @param width  Field width for each column.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
     @Override
@@ -243,16 +243,18 @@ public abstract class AbstractMatrix implements Matrix {
      *
      * @param output the output stream.
      * @param format A formatting object to format the matrix elements
-     * @param width Column width.
+     * @param width  Column width.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
     @Override
     public void print(PrintWriter output, NumberFormat format, int width) {
+        String s;
+        int padding;
         output.println();  // start on new line.
         for (int i = 0; i < rowsCount(); i++) {
             for (int j = 0; j < columnsCount(); j++) {
-                String s = format.format(get(i, j)); // format the number
-                int padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                s = format.format(get(i, j)); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
                 for (int k = 0; k < padding; k++) {
                     output.print(' ');
                 }
@@ -261,6 +263,59 @@ public abstract class AbstractMatrix implements Matrix {
             output.println();
         }
         output.println();   // end with blank line.
+    }
+
+    @Override
+    public void printFancy(int w, int d) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        printFancy(new PrintWriter(System.out, true), format, w + 2);
+    }
+
+    public void printFancy(PrintWriter output, NumberFormat format, int width) {
+        String s;
+        int padding;
+        output.println();  // start on new line.
+        for (int i = 0; i < rowsCount(); i++) {
+            //print row label
+            s = String.valueOf(i);
+            padding = Math.max(1, width - s.length() - 1);
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+            output.print(" |");
+            for (int j = 0; j < columnsCount(); j++) {
+                s = format.format(get(i, j)); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        //footer
+        for (int i = 0; i < width * (columnsCount() + 1); i++) {
+            output.print('-');
+        }
+        output.println();
+        for (int k = 0; k < width; k++) {
+            output.print(' ');
+        }
+        for (int i = 0; i < rowsCount(); i++) {
+            s = String.valueOf(i); // format the number
+            padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+        }
+        output.println();
     }
 
     @Override
