@@ -357,7 +357,11 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
                 double x2 = nodes[neighbors[i][j]].getCoordinate(0);
                 double y2 = nodes[neighbors[i][j]].getCoordinate(1);
                 //different const needed?
-                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]],1 ,10/Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)) , false)); //max val
+                double distance = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+                if (distance < 0.1) {
+                    distance = 0.1;
+                }
+                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]],1 ,10/distance , false)); //max val
             }
         }
         return true;
