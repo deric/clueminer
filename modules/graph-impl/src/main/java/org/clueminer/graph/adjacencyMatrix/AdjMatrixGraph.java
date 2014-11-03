@@ -245,7 +245,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public boolean isAdjacent(Node node1, Node node2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return adjMatrix[idToIndex.get(node1.getId())][idToIndex.get(node2.getId())] != null;
     }
 
     @Override
