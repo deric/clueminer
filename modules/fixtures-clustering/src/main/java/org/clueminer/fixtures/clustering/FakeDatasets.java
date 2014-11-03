@@ -24,6 +24,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> school;
     private static Dataset<? extends Instance> usArrests;
     private static Dataset<? extends Instance> glassDataset;
+    private static Dataset<? extends Instance> kumar;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -98,6 +99,27 @@ public class FakeDatasets {
         data.builder().create(new double[]{2, 2}, "C");
         data.builder().create(new double[]{2, 1}, "D");
         return data;
+    }
+
+    /**
+     * Testing dataset from Introduction to Data-mining, Tan, Kumar (chapter 8,
+     * page 519)
+     *
+     * @return
+     */
+    public static Dataset<? extends Instance> kumarData() {
+        if (kumar == null) {
+            kumar = new ArrayDataset<>(4, 2);
+            kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+            kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+            kumar.builder().create(new double[]{0.40, 0.53}, "1");
+            kumar.builder().create(new double[]{0.22, 0.38}, "2");
+            kumar.builder().create(new double[]{0.35, 0.32}, "3");
+            kumar.builder().create(new double[]{0.26, 0.19}, "4");
+            kumar.builder().create(new double[]{0.08, 0.41}, "5");
+            kumar.builder().create(new double[]{0.45, 0.30}, "6");
+        }
+        return kumar;
     }
 
 }
