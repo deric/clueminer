@@ -2,6 +2,8 @@ package org.clueminer.eval.hclust;
 
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HACLWMS;
+import org.clueminer.clustering.aggl.HacLwComplete;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -125,14 +127,13 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testCopheneticMatrix() {
-        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW()};
+        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HACLWMS()};
 
         for (AgglomerativeClustering alg : algorithms) {
             testSingleLink(alg);
         }
 
-        //TODO: make sure we have same result for all algorithms
-        for (AgglomerativeClustering alg : new AgglomerativeClustering[]{new HACLW()}) {
+        for (AgglomerativeClustering alg : new AgglomerativeClustering[]{new HACLW(), new HAC(), new HACLWMS(), new HacLwComplete()}) {
             testCompleteLink(alg);
         }
     }
@@ -155,12 +156,12 @@ public class CopheneticCorrelationTest {
         Dump.matrix(copheneticMatrix, "cophn - " + algorithm.getName(), 2);
 
         //we expect this matrix
-        //0.00  0.71  2.50  2.50  2.50  2.50
-        //0.71  0.00  2.50  2.50  2.50  2.50
-        //2.50  2.50  0.00  1.41  1.41  1.41
-        //2.50  2.50  1.41  0.00  1.00  0.50FF
-        //2.50  2.50  1.41  1.00  0.00  1.00
-        //2.50  2.50  1.41  0.50  1.00  0.00
+        //0.00   0.71   5.66   5.66   5.66   5.66
+        //0.71   0.00   5.66   5.66   5.66   5.66
+        //5.66   5.66   0.00   2.50   2.50   2.50
+        //5.66   5.66   2.50   0.00   1.12   0.50
+        //5.66   5.66   2.50   1.12   0.00   1.12
+        //5.66   5.66   2.50   0.50   1.12   0.00
         assertEquals(0.71, copheneticMatrix[0][1], precision);
         assertEquals(2.50, copheneticMatrix[0][2], precision);
         assertEquals(1.41, copheneticMatrix[2][3], precision);
@@ -198,7 +199,7 @@ public class CopheneticCorrelationTest {
         //4.95   4.95   2.50   0.50   1.12   0.00
         Dump.matrix(copheneticMatrix, "cophn - " + algorithm.getName(), 2);
         assertEquals(0.71, copheneticMatrix[0][1], precision);
-        assertEquals(4.95, copheneticMatrix[0][2], precision);
+        assertEquals(5.65, copheneticMatrix[0][2], precision);
         assertEquals(2.50, copheneticMatrix[2][3], precision);
         assertEquals(0.50, copheneticMatrix[5][3], precision);
         assertEquals(1.11803, copheneticMatrix[5][4], precision);
