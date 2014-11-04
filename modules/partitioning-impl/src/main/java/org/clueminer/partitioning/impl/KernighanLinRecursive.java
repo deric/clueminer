@@ -15,18 +15,19 @@ import org.clueminer.partitioning.api.Partitioning;
  */
 public class KernighanLinRecursive implements Partitioning {
 
-    int maxNodexInCluster;
+    int maxNodesInCluster;
     Graph graph;
+    ArrayList<LinkedList<Node>> finalResult;
 
-    public KernighanLinRecursive(int max, Graph g) {
-        maxNodexInCluster = max;
-        graph = g;
+    public KernighanLinRecursive() {
+        
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition() {
-        KernighanLin kl = new KernighanLin(graph);
-        if (graph.getNodeCount() < maxNodexInCluster) {
+    public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
+        maxNodesInCluster = max;
+        graph = g;
+        if (graph.getNodeCount() < maxNodesInCluster) {
             return null; //create one list with nodes
         } else {
             return recursivePartition(graph);
@@ -34,17 +35,18 @@ public class KernighanLinRecursive implements Partitioning {
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin(g);
-        ArrayList<LinkedList<Node>> result = kl.partition();
+        KernighanLin kl = new KernighanLin();
+        ArrayList<LinkedList<Node>> result = kl.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
-            if (result.get(0).size() <= maxNodexInCluster) {
+            if (result.get(0).size() <= maxNodesInCluster) {
                 output.add(result.get(i));
             } else {
                 Graph newGraph = buildGraphFromCluster(result.get(i), g);
                 output.addAll(recursivePartition(newGraph));
             }
         }
+        finalResult = output;
         return output;
     }
 
@@ -66,7 +68,6 @@ public class KernighanLinRecursive implements Partitioning {
 
     @Override
     public Graph removeUnusedEdges() {
-        ArrayList<LinkedList<Node>> result = partition();
         Graph  g = new AdjMatrixGraph(graph.getNodeCount());
         
         ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
@@ -75,11 +76,11 @@ public class KernighanLinRecursive implements Partitioning {
             g.addNode(node);
         }
          
-        for (int k = 0; k < result.size(); k++) {
-            for (int i = 0; i < result.get(k).size(); i++) {
-                for (int j = i + 1; j < result.get(k).size(); j++) {
-                    if (graph.isAdjacent(result.get(k).get(i), result.get(k).get(j))) {
-                        g.addEdge(graph.getEdge(result.get(k).get(i), result.get(k).get(j)));
+        for (int k = 0; k < finalResult.size(); k++) {
+            for (int i = 0; i < finalResult.get(k).size(); i++) {
+                for (int j = i + 1; j < finalResult.get(k).size(); j++) {
+                    if (graph.isAdjacent(finalResult.get(k).get(i), finalResult.get(k).get(j))) {
+                        g.addEdge(graph.getEdge(finalResult.get(k).get(i), finalResult.get(k).get(j)));
                     }
                 }
             }

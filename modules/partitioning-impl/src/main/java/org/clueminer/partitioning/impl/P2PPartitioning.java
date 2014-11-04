@@ -17,32 +17,26 @@ import org.clueminer.partitioning.api.Partitioning;
  */
 public class P2PPartitioning implements Partitioning {
 
-    private final Vertex[] nodes;
-    private final int nodeCount;
+    private  Vertex[] nodes;
+    private  int nodeCount;
     private boolean[] used;
     private int usedCount;
-    private final int k;
+    private  int k;
     Node[] graphNodes;
 
-    private final Graph graph;
+    private  Graph graph;
 
     private ArrayList<LinkedList<Node>> clusters;
     private ArrayList<LinkedList<Vertex>> currentNodes;
     private ArrayList<LinkedList<Vertex>> futureNodes;
 
-    public P2PPartitioning(Graph g, int k) {
-        graph = g;
-        this.k = k;
-        nodeCount = graph.getNodeCount();
-        graphNodes = graph.getNodes().toArray();
-        nodes = new Vertex[nodeCount];
-        for (int i = 0; i < nodeCount; i++) {
-            nodes[i] = new Vertex(graph.getIndex(graphNodes[i]), g.getDegree(graphNodes[i]));
-        }
+    public P2PPartitioning() {
+        
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition() {
+    public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
+        initialize(k,g);
        
         used = new boolean[nodeCount];
         Arrays.fill(used, false);
@@ -58,6 +52,17 @@ public class P2PPartitioning implements Partitioning {
             prepareFutureNodes();
         }
         return clusters;
+    }
+    
+    private void initialize(int k, Graph g) {
+        graph = g;
+        this.k = k;
+        nodeCount = graph.getNodeCount();
+        graphNodes = graph.getNodes().toArray();
+        nodes = new Vertex[nodeCount];
+        for (int i = 0; i < nodeCount; i++) {
+            nodes[i] = new Vertex(graph.getIndex(graphNodes[i]), g.getDegree(graphNodes[i]));
+        }
     }
     
     @Override

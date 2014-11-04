@@ -13,26 +13,24 @@ import org.clueminer.graph.api.Node;
 public class KernighanLin {
 
     private ArrayList<LinkedList<Vertex>> cluster;
-    private final Node[] nodes;
+    private Node[] nodes;
     private Vertex[] vertexes;
     private boolean[] used;
     private Vertex[] swapPair;
     private LinkedList<ArrayList<Vertex>> swapHistory;
     private LinkedList<Double> swapHistoryCost;
-    private final int nodeCount;
+    private int nodeCount;
     private double maxCost;
     private int usedNodes;
-    private final Graph graph;
+    private Graph graph;
 
-    public KernighanLin(Graph g) {
-        graph = g;
-        nodes = g.getNodes().toArray();
-        nodeCount = g.getNodeCount();
-        usedNodes = 0;
-        createVertexes();
+    public KernighanLin() {
+
     }
 
-    public ArrayList<LinkedList<Node>> partition() {
+    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+        initialize(g);
+
         createIntitalPartition();
         computeCosts();
         //nodeCount-1 for odd numbers of nodes
@@ -43,6 +41,17 @@ public class KernighanLin {
         }
         swapUpToBestIndex();
         return createNodeClusters();
+    }
+
+    private void initialize(Graph g) {
+        graph = g;
+        nodes = g.getNodes().toArray();
+        nodeCount = g.getNodeCount();
+        usedNodes = 0;
+        createVertexes();
+        swapPair = new Vertex[2];
+        swapHistory = new LinkedList<>();
+        swapHistoryCost = new LinkedList<>();
     }
 
     private ArrayList<LinkedList<Node>> createNodeClusters() {
@@ -130,7 +139,7 @@ public class KernighanLin {
         for (int i = 0; i < nodeCount; i++) {
             for (int j = i + 1; j < nodeCount; j++) {
                 //having vertexes in list is pointless - sum would be n^2/2 too
-                if ((vertexes[i].used || vertexes[j].used) || (vertexes[i].cluster == vertexes[j].cluster) ) {
+                if ((vertexes[i].used || vertexes[j].used) || (vertexes[i].cluster == vertexes[j].cluster)) {
                     continue;
                 }
                 double edgeWeight;
@@ -155,9 +164,7 @@ public class KernighanLin {
             vertexes[i] = new Vertex();
             vertexes[i].index = graph.getIndex(nodes[i]);
         }
-        swapPair = new Vertex[2];
-        swapHistory = new LinkedList<>();
-        swapHistoryCost = new LinkedList<>();
+
     }
 
     private void createIntitalPartition() {
@@ -184,18 +191,18 @@ public class KernighanLin {
             System.out.println("");
         }
     }
-    
+
     public Graph removeUnusedEdges() {
         for (int i = 0; i < nodeCount; i++) {
             for (int j = 0; j < nodeCount; j++) {
                 if (vertexes[i].cluster != vertexes[j].cluster) {
                     Edge e = graph.getEdge(nodes[i], nodes[j]);
-                    if (e!=null) {
-                       graph.removeEdge(e);
+                    if (e != null) {
+                        graph.removeEdge(e);
                     }
                 }
             }
-        } 
+        }
         return graph; // deep copy or new graph needed
     }
 
