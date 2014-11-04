@@ -20,7 +20,7 @@ public class MatrixRunner implements Runnable {
     private File file;
     private DendroViewer analysis;
     private ProgressHandle ph;
-    private Dataset<? extends Instance> dataset;
+    private boolean includeHeader;
 
     MatrixRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
         this.file = file;
@@ -30,7 +30,7 @@ public class MatrixRunner implements Runnable {
     }
 
     private void parsePref(Preferences pref) {
-
+        includeHeader = pref.getBoolean(MatrixOptions.INCLUDE_HEADER, true);
     }
 
     @Override
@@ -38,6 +38,22 @@ public class MatrixRunner implements Runnable {
         try (FileWriter fw = new FileWriter(file)) {
             DendrogramMapping map = analysis.getDendrogramMapping();
             StringBuilder sb;
+            int cnt = 0;
+            if (ph != null) {
+                ph.start(map.getNumberOfRows());
+            }
+            if (includeHeader) {
+                sb = new StringBuilder();
+                Dataset<? extends Instance> dataset = map.getDataset();
+                for (int j = 0; j < map.getNumberOfColumns(); j++) {
+                    if (j > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(dataset.getAttribute(map.getColumnIndex(j)).getName());
+                }
+                sb.append("\n");
+                fw.write(sb.toString());
+            }
             for (int i = 0; i < map.getNumberOfRows(); i++) {
                 sb = new StringBuilder();
                 for (int j = 0; j < map.getNumberOfColumns(); j++) {
@@ -47,8 +63,12 @@ public class MatrixRunner implements Runnable {
                     sb.append(map.getMappedValue(i, j));
                 }
                 sb.append(",").append(map.getRowsResult().getInstance(i).getName());
+                sb.append(",").append(map.getRowsResult().getInstance(i).getId());
                 sb.append("\n");
                 fw.write(sb.toString());
+                if (ph != null) {
+                    ph.progress(cnt++);
+                }
             }
 
         } catch (IOException ex) {
