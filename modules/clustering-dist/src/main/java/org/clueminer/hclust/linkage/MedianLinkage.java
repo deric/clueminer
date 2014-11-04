@@ -66,12 +66,12 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double alphaA() {
+    public double alphaA(int ma, int mb, int mq) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double alphaB() {
+    public double alphaB(int ma, int mb, int mq) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

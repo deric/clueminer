@@ -49,9 +49,23 @@ public interface ClusterLinkage extends Serializable {
      */
     double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd);
 
-    double alphaA();
+    /**
+     *
+     * @param ma size of cluster A
+     * @param mb size of cluster B
+     * @param mq size of cluster Q
+     * @return
+     */
+    double alphaA(int ma, int mb, int mq);
 
-    double alphaB();
+    /**
+     *
+     * @param ma size of cluster A
+     * @param mb size of cluster B
+     * @param mq size of cluster Q
+     * @return
+     */
+    double alphaB(int ma, int mb, int mq);
 
     double beta();
 

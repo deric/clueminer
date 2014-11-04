@@ -2,7 +2,6 @@ package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +67,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
+        int ma, mb;
         /**
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
@@ -89,13 +89,17 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
                 //remove old clusters
                 //System.out.println("removing " + curr.getRow() + " from " + assignments.toString());
                 left = assignments.remove(curr.getRow());
+                ma = left.size();
                 //System.out.println("removing " + curr.getColumn() + " from " + assignments.toString());
                 right = assignments.remove(curr.getColumn());
+                mb = right.size();
                 //merge together and add as a new cluster
                 left.addAll(right);
                 //System.out.println("left: " + left.toString());
-                updateDistances(left, similarityMatrix, assignments, pq, params.getLinkage(), curr.getRow(), curr.getColumn());
+                updateDistances(similarityMatrix, assignments, pq, params.getLinkage(), curr.getRow(), curr.getColumn(), ma, mb);
                 //when assignment have size == 1, all clusters are merged into one
+                //finaly add merged cluster
+                assignments.put(curr.getRow(), left);
             }
         }
         logger.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
@@ -109,18 +113,17 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      * When we merge two items and create a new dendrogram node, we have to
      * update distances to all other nodes (clusters)
      *
-     * @param mergedCluster
      * @param similarityMatrix
      * @param assignments
      * @param pq
      * @param linkage
      * @param leftId
      * @param rightId
+     * @param ma
+     * @param mb
      */
-    protected void updateDistances(Set<Integer> mergedCluster,
-            Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            AbstractQueue<Element> pq, ClusterLinkage linkage,
-            int leftId, int rightId) {
+    protected void updateDistances(Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
+            AbstractQueue<Element> pq, ClusterLinkage linkage, int leftId, int rightId, int ma, int mb) {
         Element current;
         double distance;
         Set<Integer> clusterMembers;
@@ -133,22 +136,13 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
             clusterMembers = cluster.getValue();
             //each item is at the begining cluster by itself
             for (Integer id : clusterMembers) {
-                distance = updateProximity(leftId, id, leftId, rightId, similarityMatrix, linkage);
+                distance = updateProximity(id, leftId, rightId, similarityMatrix,
+                                           linkage, ma, mb, clusterMembers.size());
                 current = new Element(distance, leftId, cluster.getKey());
                 pq.add(current);
             }
-
         }
-        //finaly add merged cluster
-        assignments.put(leftId, mergedCluster);
         //System.out.println("assiga: " + assignments.entrySet().toString());
-    }
-
-    protected void createNode(int mergedId, int other, int key, Matrix similarityMatrix,
-            PriorityQueue<Element> pq, ClusterLinkage linkage, int a, int b) {
-        double distance = updateProximity(mergedId, other, a, b, similarityMatrix, linkage);
-        Element current = new Element(distance, mergedId, key);
-        pq.add(current);
     }
 
     /**
@@ -158,20 +152,22 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r       cluster R is created after merging A and B
      * @param q       existing cluster
      * @param a       a cluster that is being merged
      * @param b       a cluster that is being merged
      * @param sim     similarity matrix
      * @param linkage cluster linkage method
+     * @param ma
+     * @param mb
+     * @param mq
      * @return
      */
-    public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage) {
+    public double updateProximity(int q, int a, int b, Matrix sim, ClusterLinkage linkage, int ma, int mb, int mq) {
         double aq = sim.get(a, q);
         double bq = sim.get(b, q);
 
         //System.out.println("p(" + r + ", " + q + ") = 0.5 * p(" + a + ", " + q + ") + 0.5*p(" + b + ", " + q + ") - 0.5*| p(" + a + ", " + q + ") - p(" + b + ", " + q + ")|");
-        double dist = linkage.alphaA() * aq + linkage.alphaB() * bq;
+        double dist = linkage.alphaA(ma, mb, mq) * aq + linkage.alphaB(ma, mb, mq) * bq;
         if (linkage.beta() != 0) {
             dist += linkage.beta() * sim.get(a, b);
         }
@@ -183,6 +179,7 @@ public class HACLWMS extends HACLW implements AgglomerativeClustering {
         //System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
         //update proximity matrix
         //we rewrite proximity matrix values in order to match new distances between items
+        // R is equal A and B in this case
         sim.set(a, q, dist);
         sim.set(b, q, dist);
         return dist;

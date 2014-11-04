@@ -140,6 +140,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
+        int ma, mb;
         /**
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
@@ -160,9 +161,12 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //remove old clusters
                 left = assignments.remove(curr.getRow());
                 right = assignments.remove(curr.getColumn());
+                ma = left.size();
+                mb = right.size();
                 //merge together and add as a new cluster
                 left.addAll(right);
-                updateDistances(node.getId(), left, similarityMatrix, assignments, pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn());
+                updateDistances(node.getId(), left, similarityMatrix, assignments,
+                                pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
@@ -208,11 +212,13 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @param cache
      * @param leftId           left cluster ID
      * @param rightId          right cluster ID
+     * @param ma
+     * @param mb
      */
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             AbstractQueue<Element> pq, ClusterLinkage linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId) {
+            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {

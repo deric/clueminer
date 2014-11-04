@@ -78,12 +78,12 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double alphaA() {
+    public double alphaA(int ma, int mb, int mq) {
         return 0.5;
     }
 
     @Override
-    public double alphaB() {
+    public double alphaB(int ma, int mb, int mq) {
         return 0.5;
     }
 

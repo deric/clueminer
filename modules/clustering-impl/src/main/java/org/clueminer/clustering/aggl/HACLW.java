@@ -46,12 +46,14 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * @param pq
      * @param linkage
      * @param cache
+     * @param leftId
+     * @param rightId
      */
     @Override
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             AbstractQueue<Element> pq, ClusterLinkage linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId) {
+            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
         Element current;
         double distance;
         //System.out.println("merge [" + leftId + ", " + rightId + "] -> " + leftId);
@@ -62,7 +64,8 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             //update distance only to cluster keys (items contained in cluster
             //were already merged and we can't remerge them again)
-            distance = updateProximity(mergedId, cluster.getKey(), leftId, rightId, similarityMatrix, linkage, cache);
+            distance = updateProximity(mergedId, cluster.getKey(), leftId, rightId,
+                                       similarityMatrix, linkage, cache, ma, mb, cluster.getValue().size());
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
         }
@@ -86,13 +89,17 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * @param sim     similarity matrix
      * @param linkage cluster linkage method
      * @param cache
+     * @param ma
+     * @param mb
+     * @param mq
      * @return
      */
-    public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
+    public double updateProximity(int r, int q, int a, int b, Matrix sim,
+            ClusterLinkage linkage, HashMap<Integer, Double> cache, int ma, int mb, int mq) {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
 
-        double dist = linkage.alphaA() * aq + linkage.alphaB() * bq;
+        double dist = linkage.alphaA(ma, mb, mq) * aq + linkage.alphaB(ma, mb, mq) * bq;
         if (linkage.beta() != 0) {
             dist += linkage.beta() * sim.get(a, b);
         }

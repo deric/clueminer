@@ -36,7 +36,8 @@ public class HacLwComplete extends HACLW implements AgglomerativeClustering {
      * @return
      */
     @Override
-    public double updateProximity(int r, int q, int a, int b, Matrix sim, ClusterLinkage linkage, HashMap<Integer, Double> cache) {
+    public double updateProximity(int r, int q, int a, int b, Matrix sim,
+            ClusterLinkage linkage, HashMap<Integer, Double> cache, int ma, int mb, int mq) {
         double dist = Math.max(fetchDist(a, q, sim, cache), fetchDist(b, q, sim, cache));
         cache.put(map(r, q), dist);
         return dist;
