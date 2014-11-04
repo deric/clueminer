@@ -124,11 +124,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>6.5.13</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE80</version>
@@ -136,6 +131,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fastutil</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

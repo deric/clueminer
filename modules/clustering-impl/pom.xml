@@ -116,11 +116,6 @@
             <version>RELEASE80</version>
         </dependency>
         <dependency>
-            <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
-            <version>6.5.13</version>
-        </dependency>
-        <dependency>
             <groupId>org.specs2</groupId>
             <artifactId>specs2_2.10</artifactId>
             <version>2.3.10</version>
@@ -156,6 +151,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fastutil</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

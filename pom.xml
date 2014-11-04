@@ -210,6 +210,7 @@
         <module>modules/graph-api</module>
         <module>modules/graph-impl</module>
         <module>modules/guava</module>
+        <module>modules/fastutil</module>
     </modules>
     <reporting>
         <plugins>
