@@ -211,6 +211,7 @@
         <module>modules/graph-impl</module>
         <module>modules/guava</module>
         <module>modules/fastutil</module>
+        <module>modules/commons</module>
     </modules>
     <reporting>
         <plugins>

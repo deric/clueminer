@@ -106,11 +106,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
             <version>RELEASE80</version>
@@ -156,6 +151,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>fastutil</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

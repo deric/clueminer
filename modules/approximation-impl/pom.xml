@@ -83,11 +83,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>fixtures</artifactId>
             <version>${project.version}</version>
@@ -107,6 +102,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
