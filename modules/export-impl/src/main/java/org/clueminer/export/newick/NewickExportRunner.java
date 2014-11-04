@@ -35,6 +35,7 @@ public class NewickExportRunner implements Runnable {
     private Dataset<? extends Instance> dataset;
     private boolean includeNodeNames;
     private boolean exportRows = true;
+    private boolean includeRoot = false;
     private String label = "index";
     private int cnt;
 
@@ -52,6 +53,7 @@ public class NewickExportRunner implements Runnable {
         includeNodeNames = p.getBoolean(NewickOptions.INNER_NODES_NAMES, false);
         exportRows = p.getBoolean(NewickOptions.EXPORT_ROWS, true);
         label = p.get(NewickOptions.NODE_LABEL, "index");
+        includeRoot = p.getBoolean(NewickOptions.INCLUDE_ROOT, false);
     }
 
     @Override
@@ -102,6 +104,13 @@ public class NewickExportRunner implements Runnable {
         }
         boolean openBracket = false;
 
+        if (sb.length() > 0) {
+            char c = sb.charAt(sb.length() - 1);
+            if (c != ')' && c != '(') {
+                sb.append(",");
+            }
+        }
+
         if (node.getLeft() != null && node.getRight() != null) {
             openBracket = true;
             sb.append("(");
@@ -111,20 +120,27 @@ public class NewickExportRunner implements Runnable {
 
         if (openBracket) {
             sb.append(")");
-        } else {
-            if (!isLeft) {
-                sb.append(",");
-            }
         }
 
         if (node.isLeaf()) {
-            sb.append(getLabel(node)).append(":").append(node.getHeight());
+            sb.append(getLabel(node));
         } else {
             if (includeNodeNames) {
                 sb.append("#").append(node.getId());
             }
-            sb.append(":").append(node.getHeight());
         }
+        if (!node.isRoot()) {
+            sb.append(":");
+            DendroNode parent = node.getParent();
+            if (parent != null) {
+                sb.append(String.format("%.3f", parent.getHeight() - node.getHeight()));
+            } else {
+                if (includeRoot) {
+                    sb.append("0.0");
+                }
+            }
+        }
+
         if (ph != null) {
             ph.progress(cnt++);
         }
@@ -158,6 +174,14 @@ public class NewickExportRunner implements Runnable {
         }
 
         return String.valueOf(node.getId());
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

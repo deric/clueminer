@@ -18,6 +18,7 @@ public class NewickOptions extends javax.swing.JPanel {
      * attribute used for node labels
      */
     public static final String NODE_LABEL = "node_label";
+    public static final String INCLUDE_ROOT = "include_root";
 
     /**
      * Creates new form NewickOptions
@@ -39,6 +40,12 @@ public class NewickOptions extends javax.swing.JPanel {
         } else {
             p.putBoolean(EXPORT_ROWS, false);
             p.put(NODE_LABEL, (String) cbColumnLabel.getSelectedItem());
+        }
+
+        if (chckIncludeRoot.isSelected()) {
+            p.putBoolean(INCLUDE_ROOT, true);
+        } else {
+            p.putBoolean(INCLUDE_ROOT, false);
         }
 
         return p;
@@ -63,6 +70,7 @@ public class NewickOptions extends javax.swing.JPanel {
         cbRowLabel = new javax.swing.JComboBox();
         lbColumnsName = new javax.swing.JLabel();
         cbColumnLabel = new javax.swing.JComboBox();
+        chckIncludeRoot = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(chckInnerNodes, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.chckInnerNodes.text")); // NOI18N
 
@@ -94,19 +102,19 @@ public class NewickOptions extends javax.swing.JPanel {
         cbColumnLabel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "index", "name" }));
         cbColumnLabel.setEnabled(false);
 
+        org.openide.awt.Mnemonics.setLocalizedText(chckIncludeRoot, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.chckIncludeRoot.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chckIncludeRoot)
+                    .addComponent(lbExport)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chckInnerNodes)
-                            .addComponent(lbExport)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
+                        .addGap(37, 37, 37)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnColumns)
                             .addComponent(btnRows)
@@ -120,7 +128,8 @@ public class NewickOptions extends javax.swing.JPanel {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lbColumnsName)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cbColumnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                        .addComponent(cbColumnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addComponent(chckInnerNodes))
                 .addContainerGap(72, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -128,6 +137,8 @@ public class NewickOptions extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(chckInnerNodes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chckIncludeRoot)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbExport)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -142,7 +153,7 @@ public class NewickOptions extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbColumnsName)
                     .addComponent(cbColumnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -166,6 +177,7 @@ public class NewickOptions extends javax.swing.JPanel {
     private javax.swing.JRadioButton btnRows;
     private javax.swing.JComboBox cbColumnLabel;
     private javax.swing.JComboBox cbRowLabel;
+    private javax.swing.JCheckBox chckIncludeRoot;
     private javax.swing.JCheckBox chckInnerNodes;
     private javax.swing.JLabel lbColumnsName;
     private javax.swing.JLabel lbExport;
