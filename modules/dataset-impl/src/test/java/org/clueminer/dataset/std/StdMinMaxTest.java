@@ -20,9 +20,6 @@ public class StdMinMaxTest {
     private static final StdMinMax subject = new StdMinMax();
     private static final String method = StdMinMax.name;
 
-    public StdMinMaxTest() {
-    }
-
     @Test
     public void testOptimizeData() {
         Matrix res = Scaler.standartize(data, method, false);

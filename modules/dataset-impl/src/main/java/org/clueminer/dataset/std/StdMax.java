@@ -41,6 +41,7 @@ public class StdMax implements DataStandardization {
         }
 
         double value;
+        Instance orig;
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
                 //System.out.println("max val = " + maxVal[j]);
@@ -48,7 +49,11 @@ public class StdMax implements DataStandardization {
                 //System.out.println("[" + i + "," + j + "] = " + value);
                 opt.set(i, j, value);
             }
-            opt.get(i).setClassValue(dataset.get(i).classValue());
+            orig = dataset.get(i);
+            opt.get(i).setClassValue(orig.classValue());
+            opt.get(i).setId(orig.getId());
+            opt.get(i).setName(orig.getName());
+            opt.get(i).setAncestor(orig);
         }
 
         return opt;
