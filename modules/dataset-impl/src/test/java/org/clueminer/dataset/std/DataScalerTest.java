@@ -1,11 +1,9 @@
 package org.clueminer.dataset.std;
 
-import java.io.IOException;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.CsvLoader;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.std.StdAbsDev;
@@ -14,7 +12,6 @@ import org.clueminer.std.StdScale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -32,8 +29,7 @@ public class DataScalerTest {
         {6.5, 3.8, 6.6, 5.7, 6.0, 6.4, 5.3},};
 
     private static final double delta = 1e-9;
-    private static Dataset<? extends Instance> school;
-    private static final CommonFixture fixture = new CommonFixture();
+    private static Dataset<? extends Instance> kumar;
 
     @Test
     public void testStandartize() {
@@ -45,10 +41,10 @@ public class DataScalerTest {
 
     @Test
     public void testSchool() {
-        run(schoolData(), StdDev.name, false);
-        run(schoolData(), StdScale.name, false);
-        run(schoolData(), StdMax.name, false);
-        run(schoolData(), StdAbsDev.name, false);
+        run(kumarData(), StdDev.name, false);
+        run(kumarData(), StdScale.name, false);
+        run(kumarData(), StdMax.name, false);
+        run(kumarData(), StdAbsDev.name, false);
     }
 
     private void run(double[][] data, String method, boolean log) {
@@ -87,20 +83,19 @@ public class DataScalerTest {
 
     }
 
-    public static Dataset<? extends Instance> schoolData() {
-        if (school == null) {
-            CsvLoader loader = new CsvLoader();
-            school = new ArrayDataset(17, 4);
-            loader.setClassIndex(4);
-            loader.setSeparator(' ');
-            try {
-                loader.load(fixture.schoolData(), school);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+    public static Dataset<? extends Instance> kumarData() {
+        if (kumar == null) {
+            kumar = new ArrayDataset<>(4, 2);
+            kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+            kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+            kumar.builder().create(new double[]{0.40, 0.53}, "1");
+            kumar.builder().create(new double[]{0.22, 0.38}, "2");
+            kumar.builder().create(new double[]{0.35, 0.32}, "3");
+            kumar.builder().create(new double[]{0.26, 0.19}, "4");
+            kumar.builder().create(new double[]{0.08, 0.41}, "5");
+            kumar.builder().create(new double[]{0.45, 0.30}, "6");
         }
-        return school;
-
+        return kumar;
     }
 
 }
