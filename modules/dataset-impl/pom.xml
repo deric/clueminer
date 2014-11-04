@@ -69,11 +69,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>math-plot</artifactId>
             <version>${project.version}</version>
@@ -98,6 +93,11 @@
             <artifactId>zohhak</artifactId>
             <version>1.0.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>guava</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

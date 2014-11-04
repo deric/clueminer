@@ -90,11 +90,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE80</version>
@@ -156,6 +151,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-struct</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>guava</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
