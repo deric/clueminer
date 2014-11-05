@@ -88,7 +88,7 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double beta() {
+    public double beta(int ma, int mb, int mq) {
         return 0.0;
     }
 

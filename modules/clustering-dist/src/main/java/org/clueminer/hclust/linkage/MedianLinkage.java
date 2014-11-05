@@ -14,7 +14,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Median linkage is a variation of
  *
- * @{link AverageLinkage}, this method should be less sensitive to outliers
+ * {@link AverageLinkage}, this method should be less sensitive to outliers
  * because we consider distance between existing data points and not just
  * "virtual ones".
  *
@@ -67,21 +67,21 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double alphaA(int ma, int mb, int mq) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ma + mb;
     }
 
     @Override
     public double alphaB(int ma, int mb, int mq) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (double) mb / (ma + mb);
     }
 
     @Override
-    public double beta() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public double beta(int ma, int mb, int mq) {
+        return (double) -(ma * mb) / (Math.pow((ma + mb), 2));
     }
 
     @Override
     public double gamma() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 }

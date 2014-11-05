@@ -7,9 +7,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class AverageLinkageTest {
+public class MedianLinkageTest {
 
-    private final AverageLinkage subject = new AverageLinkage();
+    private final MedianLinkage subject = new MedianLinkage();
     private final double delta = 1e-9;
 
     @Test
@@ -22,7 +22,7 @@ public class AverageLinkageTest {
 
     @Test
     public void testAlphaA() {
-        assertEquals(0.25, subject.alphaA(1, 3, 1), delta);
+        assertEquals(4, subject.alphaA(1, 3, 99), delta);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class AverageLinkageTest {
 
     @Test
     public void testBeta() {
-        assertEquals(0.0, subject.beta(1, 2, 3), delta);
+        assertEquals(-0.25, subject.beta(2, 2, 99), delta);
     }
 
     @Test

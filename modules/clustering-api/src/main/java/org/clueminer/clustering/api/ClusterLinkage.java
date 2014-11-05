@@ -50,24 +50,57 @@ public interface ClusterLinkage extends Serializable {
     double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd);
 
     /**
+     * We are merging cluster A and cluster B to make a new cluster R. Cluster Q
+     * is one of remaining cluster to which we update distance.
+     *
+     * Lance, G. N. and Williams, W. T.. "A general theory of classificatory
+     * sorting strategies 1. Hierarchical systems." The Computer Journal 9 , no.
+     * 4 (1967):373-380.
+     *
      *
      * @param ma size of cluster A
      * @param mb size of cluster B
      * @param mq size of cluster Q
-     * @return
+     * @return Lance-Williams coefficient alpha_A
      */
     double alphaA(int ma, int mb, int mq);
 
     /**
+     * We are merging cluster A and cluster B to make a new cluster R. Cluster Q
+     * is one of remaining cluster to which we update distance.
+     *
+     * Lance, G. N. and Williams, W. T.. "A general theory of classificatory
+     * sorting strategies 1. Hierarchical systems." The Computer Journal 9 , no.
+     * 4 (1967):373-380.
      *
      * @param ma size of cluster A
      * @param mb size of cluster B
      * @param mq size of cluster Q
-     * @return
+     * @return Lance-Williams coefficient alpha_B
      */
     double alphaB(int ma, int mb, int mq);
 
-    double beta();
+    /**
+     * We are merging cluster A and cluster B to make a new cluster R. Cluster Q
+     * is one of remaining cluster to which we update distance.
+     *
+     * Lance, G. N. and Williams, W. T.. "A general theory of classificatory
+     * sorting strategies 1. Hierarchical systems." The Computer Journal 9 , no.
+     * 4 (1967):373-380.
+     *
+     * @param ma size of cluster A
+     * @param mb size of cluster B
+     * @param mq size of cluster Q
+     * @return Lance-Williams coefficient beta
+     */
+    double beta(int ma, int mb, int mq);
 
+    /**
+     * Lance, G. N. and Williams, W. T.. "A general theory of classificatory
+     * sorting strategies 1. Hierarchical systems." The Computer Journal 9 , no.
+     * 4 (1967):373-380.
+     *
+     * @return Lance-Williams coefficient gamma
+     */
     double gamma();
 }

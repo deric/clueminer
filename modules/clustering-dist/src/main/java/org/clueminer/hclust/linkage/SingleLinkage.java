@@ -94,7 +94,7 @@ public class SingleLinkage extends AbstractLinkage {
     }
 
     @Override
-    public double beta() {
+    public double beta(int ma, int mb, int mq) {
         return 0;
     }
 
