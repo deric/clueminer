@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.hclust.linkage.AverageLinkage;
 import org.clueminer.report.NanoBench;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
@@ -93,6 +94,25 @@ public class HclustBenchmarkTest {
             other = new HclustBenchmark().singleLinkage(algorithm, dataset);
             other.run();
             System.out.println("comparing " + algorithms[0].getName() + " vs " + algorithm.getName());
+            assertEquals(true, ref.equals(other));
+        }
+    }
+
+    @Test
+    public void testAverageLinkageResult() {
+        String linkage = AverageLinkage.name;
+        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        //use one algorithm as reference one
+        Container ref = new HclustBenchmark().hclust(algorithms[0], dataset, linkage);
+        ref.run();
+        Container other;
+
+        //compare result to others
+        for (int i = 1; i < algorithms.length; i++) {
+            AgglomerativeClustering algorithm = algorithms[i];
+            other = new HclustBenchmark().hclust(algorithm, dataset, linkage);
+            other.run();
+            System.out.println("comparing " + algorithms[0].getName() + " vs " + algorithm.getName() + " linkage: " + linkage);
             assertEquals(true, ref.equals(other));
         }
     }
