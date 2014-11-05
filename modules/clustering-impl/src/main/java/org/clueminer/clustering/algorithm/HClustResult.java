@@ -29,6 +29,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -52,6 +53,7 @@ public class HClustResult implements HierarchicalResult {
     private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
+    private Props props;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -64,6 +66,12 @@ public class HClustResult implements HierarchicalResult {
 
     public HClustResult(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+        init();
+    }
+
+    public HClustResult(Dataset<? extends Instance> dataset, Props props) {
+        this.dataset = dataset;
+        this.props = props;
         init();
     }
 
@@ -189,6 +197,9 @@ public class HClustResult implements HierarchicalResult {
         //proximity.printLower(5, 2);
         // similarity.print(4, 2);
         result.lookupAdd(dataset);
+        if (props != null) {
+            result.setParams(props);
+        }
         return result;
     }
 
@@ -407,7 +418,7 @@ public class HClustResult implements HierarchicalResult {
 
     private void updateMapping() {
         //we need a guarantee of ordered items
-        LinkedHashSet<Integer> samples = new LinkedHashSet<Integer>();
+        LinkedHashSet<Integer> samples = new LinkedHashSet<>();
         for (Merge m : getMerges()) {
             samples.add(m.mergedCluster()); //this should be unique
             if (!samples.contains(m.remainingCluster())) {
@@ -556,6 +567,11 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public int size() {
         return proximity.rowsCount();
+    }
+
+    @Override
+    public Props getParams() {
+        return props;
     }
 
 }

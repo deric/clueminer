@@ -2,10 +2,6 @@ package org.clueminer.hclust;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
@@ -24,22 +20,6 @@ public class DynamicTreeDataTest {
         subject.getRoot().setId(0);
         subject.getRoot().setLeft(new DTreeNode(1));
         subject.getRoot().setRight(new DTreeNode(2));
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -94,7 +74,7 @@ public class DynamicTreeDataTest {
     public void testPrint() {
         try {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
-            subject.printTree(out);
+            subject.printTree(out, subject.getRoot());
             out.flush();
             out.close();
         } catch (IOException e) {

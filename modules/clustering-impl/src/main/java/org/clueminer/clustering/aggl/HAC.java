@@ -71,7 +71,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         int n;
-        HierarchicalResult result = new HClustResult(dataset);
+        HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
         checkParams(pref);
         AgglParams params = new AgglParams(pref);

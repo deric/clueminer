@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.TreeDataImpl;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -370,6 +371,11 @@ public class HCLResult implements HierarchicalResult {
     @Override
     public boolean hasClustering() {
         return (clustering != null);
+    }
+
+    @Override
+    public Props getParams() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

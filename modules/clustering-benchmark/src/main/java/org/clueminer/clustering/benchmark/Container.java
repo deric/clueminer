@@ -2,6 +2,7 @@ package org.clueminer.clustering.benchmark;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -52,18 +53,26 @@ public abstract class Container implements Runnable {
                        new Object[]{result.getTreeData().numLeaves(), other.getTreeData().numLeaves()});
             return false;
         }
-        System.out.println("first:");
-        result.getTreeData().print();
-        System.out.println("other:");
-        other.getTreeData().print();
 
         DendroNode rootA = result.getTreeData().getRoot();
         DendroNode rootB = other.getTreeData().getRoot();
 
-        same &= expectHeight(rootA, rootB);
-        /**
-         * TODO: recursive tree check
-         */
+        try {
+            same &= sameSubTree(rootA, rootB);
+        } catch (TreeException e) {
+            System.out.println("first - " + result.getParams().get(AgglParams.ALG));
+            result.getTreeData().print();
+            System.out.println("second - " + other.getParams().get(AgglParams.ALG));
+            other.getTreeData().print();
+            System.out.println("=============");
+            System.out.println("problems:");
+
+            System.out.println("first:");
+            result.getTreeData().print(e.getNodeA());
+            System.out.println("second:");
+            result.getTreeData().print(e.getNodeB());
+            return false;
+        }
 
         return same;
     }
@@ -72,7 +81,34 @@ public abstract class Container implements Runnable {
         return Math.abs(a - b) < eps;
     }
 
-    private boolean expectHeight(DendroNode rootA, DendroNode rootB) {
+    private boolean sameSubTree(DendroNode nodeA, DendroNode nodeB) {
+        if (sameNodeId(nodeA, nodeB) && sameHeight(nodeA, nodeB)) {
+            if (nodeA.isLeaf() && nodeB.isLeaf()) {
+                return true;
+            }
+            if (sameNodeId(nodeA.getLeft(), nodeB.getLeft())) {
+                return sameSubTree(nodeA.getLeft(), nodeB.getLeft());
+            } else if (sameNodeId(nodeA.getLeft(), nodeB.getRight())) {
+                return sameSubTree(nodeA.getLeft(), nodeB.getRight());
+            } else {
+                System.out.println("subtrees does not match:");
+                throw new TreeException(nodeA, nodeB);
+            }
+        }
+        return false;
+    }
+
+    private boolean sameNodeId(DendroNode nodeA, DendroNode nodeB) {
+        if (nodeA.getId() == nodeB.getId()) {
+            return true;
+        }
+        System.out.println(": " + nodeA.getId() + " vs " + nodeB.getId());
+        logger.log(Level.WARNING, "different node number: {0} vs. {1}",
+                   new Object[]{nodeA.getId(), nodeB.getId()});
+        return false;
+    }
+
+    private boolean sameHeight(DendroNode rootA, DendroNode rootB) {
         if (almostEqual(rootA.getHeight(), rootB.getHeight(), delta)) {
             return true;
         }
