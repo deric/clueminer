@@ -5,11 +5,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HACLWMS;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.hclust.linkage.AverageLinkage;
+import org.clueminer.hclust.linkage.MedianLinkage;
+import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.report.NanoBench;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
@@ -83,36 +86,41 @@ public class HclustBenchmarkTest {
     public void testSingleLinkageSameResult() {
         //Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         Dataset<? extends Instance> dataset = FakeDatasets.kumarData();
-        //use one algorithm as reference one
-        Container ref = new HclustBenchmark().singleLinkage(algorithms[0], dataset);
-        ref.run();
-        Container other;
-
-        //compare result to others
-        for (int i = 1; i < algorithms.length; i++) {
-            AgglomerativeClustering algorithm = algorithms[i];
-            other = new HclustBenchmark().singleLinkage(algorithm, dataset);
-            other.run();
-            System.out.println("comparing " + algorithms[0].getName() + " vs " + algorithm.getName());
-            assertEquals(true, ref.equals(other));
-        }
+        String linkage = SingleLinkage.name;
+        compareTreeResults(dataset, linkage, algorithms);
     }
 
     @Test
     public void testAverageLinkageResult() {
         String linkage = AverageLinkage.name;
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+
+        compareTreeResults(dataset, linkage, algorithms);
+    }
+
+    /**
+     * TODO: median (centroid) linkage is broken
+     */
+    //@Test
+    public void testMedianLinkageResult() {
+        String linkage = MedianLinkage.name;
+        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+
+        compareTreeResults(dataset, linkage, new AgglomerativeClustering[]{new HAC(), new HACLWMS()});
+    }
+
+    private void compareTreeResults(Dataset<? extends Instance> dataset, String linkage, AgglomerativeClustering[] algs) {
         //use one algorithm as reference one
-        Container ref = new HclustBenchmark().hclust(algorithms[0], dataset, linkage);
+        Container ref = new HclustBenchmark().hclust(algs[0], dataset, linkage);
         ref.run();
         Container other;
 
         //compare result to others
-        for (int i = 1; i < algorithms.length; i++) {
-            AgglomerativeClustering algorithm = algorithms[i];
+        for (int i = 1; i < algs.length; i++) {
+            AgglomerativeClustering algorithm = algs[i];
             other = new HclustBenchmark().hclust(algorithm, dataset, linkage);
             other.run();
-            System.out.println("comparing " + algorithms[0].getName() + " vs " + algorithm.getName() + " linkage: " + linkage);
+            System.out.println("comparing " + algs[0].getName() + " vs " + algorithm.getName() + " linkage: " + linkage);
             assertEquals(true, ref.equals(other));
         }
     }

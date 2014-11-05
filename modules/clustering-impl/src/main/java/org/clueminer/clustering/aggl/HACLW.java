@@ -100,8 +100,8 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         double bq = fetchDist(b, q, sim, cache);
 
         double dist = linkage.alphaA(ma, mb, mq) * aq + linkage.alphaB(ma, mb, mq) * bq;
-        if (linkage.beta() != 0) {
-            dist += linkage.beta() * sim.get(a, b);
+        if (linkage.beta(ma, mb, mq) != 0) {
+            dist += linkage.beta(ma, mb, mq) * sim.get(a, b);
         }
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
