@@ -54,12 +54,12 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double alphaA(int ma, int mb, int mq) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (double) ma / (ma + mb);
     }
 
     @Override
     public double alphaB(int ma, int mb, int mq) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (double) mb / (ma + mb);
     }
 
     @Override

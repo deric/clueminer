@@ -9,16 +9,13 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.hclust.linkage.AverageLinkage;
 import org.clueminer.hclust.linkage.CompleteLinkage;
 import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,7 +38,7 @@ public class HACLWTest {
         return data;
     }
 
-    //@Test
+    @Test
     public void testUpdateProximity() {
         Dataset<? extends Instance> dataset = simpleData();
         Props pref = new Props();
@@ -57,7 +54,7 @@ public class HACLWTest {
         result.getTreeData().print();
     }
 
-    //@Test
+    @Test
     public void testSingleLinkage() {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
@@ -89,7 +86,7 @@ public class HACLWTest {
         assertEquals(0.21587033144922907, root.getHeight(), delta);
     }
 
-    //@Test
+    @Test
     public void testSingleLinkageSchool() {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
@@ -138,6 +135,28 @@ public class HACLWTest {
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
         assertEquals(0.38600518131237566, root.getHeight(), delta);
+    }
+
+    @Test
+    public void testAverageLinkage() {
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
+        assertEquals(6, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        Matrix similarityMatrix = result.getProximityMatrix();
+        assertNotNull(similarityMatrix);
+        assertEquals(similarityMatrix.rowsCount(), dataset.size());
+        assertEquals(similarityMatrix.columnsCount(), dataset.size());
+        System.out.println("kumar - average");
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        //kumar - averate
+
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(0.27900110873498624, root.getHeight(), delta);
     }
 
 }
