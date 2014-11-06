@@ -3,6 +3,9 @@ package org.clueminer.export.newick;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -38,8 +41,10 @@ public class NewickExportRunner implements Runnable {
     private boolean includeRoot = false;
     private String label = "index";
     private int cnt;
+    private DecimalFormat df;
 
     public NewickExportRunner() {
+        df = initFormat(3);
     }
 
     public NewickExportRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
@@ -54,6 +59,17 @@ public class NewickExportRunner implements Runnable {
         exportRows = p.getBoolean(NewickOptions.EXPORT_ROWS, true);
         label = p.get(NewickOptions.NODE_LABEL, "index");
         includeRoot = p.getBoolean(NewickOptions.INCLUDE_ROOT, false);
+        df = initFormat(3);
+    }
+
+    private DecimalFormat initFormat(int d) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        return format;
     }
 
     @Override
@@ -133,7 +149,7 @@ public class NewickExportRunner implements Runnable {
             sb.append(":");
             DendroNode parent = node.getParent();
             if (parent != null) {
-                sb.append(String.format("%.3f", parent.getHeight() - node.getHeight()));
+                sb.append(df.format(parent.getHeight() - node.getHeight()));
             } else {
                 if (includeRoot) {
                     sb.append("0.0");
