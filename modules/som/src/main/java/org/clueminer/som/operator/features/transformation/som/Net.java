@@ -19,6 +19,7 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.Tools;
 import org.clueminer.math.EigenvalueDecomposition;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.MathUtil;
 
 /**
  *
@@ -824,8 +825,8 @@ public class Net {
             maxValue[column] = Double.NEGATIVE_INFINITY;
 
             for (Example example : exampleSet) {
-                minValue[column] = MathFunctions.robustMin(minValue[column], example.getValue(attribute));
-                maxValue[column] = MathFunctions.robustMax(maxValue[column], example.getValue(attribute));
+                minValue[column] = MathUtil.robustMin(minValue[column], example.getValue(attribute));
+                maxValue[column] = MathUtil.robustMax(maxValue[column], example.getValue(attribute));
             }
 
             column++;

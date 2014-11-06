@@ -19,8 +19,6 @@ import com.rapidminer.operator.AbstractModel;
 import com.rapidminer.operator.OperatorException;
 import com.rapidminer.tools.Ontology;
 
-import cz.ctu.rapidminer.operator.features.transformation.som.Net;
-
 public class SOMModel extends AbstractModel {
 
     private static final long serialVersionUID = 8270281740686080765L;
