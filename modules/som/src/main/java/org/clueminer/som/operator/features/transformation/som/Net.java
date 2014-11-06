@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import Jama.EigenvalueDecomposition;
-import Jama.Matrix;
-
 import com.rapidminer.datatable.DataTable;
 import com.rapidminer.datatable.DataTableRow;
 import com.rapidminer.example.Attribute;
@@ -20,8 +17,8 @@ import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.Tools;
-import com.rapidminer.tools.math.MathFunctions;
-import com.rapidminer.tools.math.matrix.CovarianceMatrix;
+import org.clueminer.math.EigenvalueDecomposition;
+import org.clueminer.math.Matrix;
 
 /**
  *
@@ -199,7 +196,7 @@ public class Net {
         explainedVariance = getExplainedVarince(data);
     }
 
-	// update all Nodes in SOM (one step)
+    // update all Nodes in SOM (one step)
     // for algorithm description see http://www.ai-junkie.com/ann/som/som1.html
     // but nicer explanation is at http://www.shy.am/wp-content/uploads/2009/01/kohonen-self-organizing-maps-shyam-guthikonda.pdf
     private void update(double data[], int iterationCount, int numberOfIterations, int positionX, int positionY) {
@@ -218,7 +215,7 @@ public class Net {
                 learningRate = learningRateInitial - iterationCount / (numberOfIterations - 1.00) * (learningRateInitial - learningRateInitial / 100.0);
                 break;
             case 1:
-			// Inverse time (see http://www.cis.hut.fi/somtoolbox/documentation/somalg.shtml)
+                // Inverse time (see http://www.cis.hut.fi/somtoolbox/documentation/somalg.shtml)
                 // alpha(t) = a / (t+b), where a and b are chosen suitably below, they are chosen so that alpha_fin = alpha_ini/100
                 double b = (double) numberOfIterations / (100f - 1f);
                 double a = b * learningRateInitial;
@@ -249,7 +246,7 @@ public class Net {
 
     }
 
-	// Hexagonal distance
+    // Hexagonal distance
     // for description see: http://www-cs-students.stanford.edu/~amitp/Articles/HexLOS.html
     private int hexagonalDistance(int Aax, int Aay, int Bax, int Bay) {
         // Use Torrid network instead of a sheet
@@ -322,7 +319,7 @@ public class Net {
             }
 
             // walk thru all nodes to get some idea about the content
-            allClasses = new TreeMap<String, Integer>();
+            allClasses = new TreeMap<>();
 
             for (int y = 0; y < sizeY; y++) {
                 for (int x = 0; x < sizeX; x++) {
@@ -685,7 +682,7 @@ public class Net {
             updatePDistances(dataTable);
         }
 
-		// calculate U*-Matrix
+        // calculate U*-Matrix
         // for description see http://www.uni-marburg.de/fb12/datenbionik/pdf/pubs/2005/ultsch05ustarf
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
@@ -884,7 +881,7 @@ public class Net {
             ratio = Math.sqrt(eigenvalues[eigLen] / eigenvalues[eigLen - 1]); // ... set ratio between map sidelengths
         }
 
-		// in hexagonal lattice, the sidelengths are not directly
+        // in hexagonal lattice, the sidelengths are not directly
         // proportional to the number of units since the units on the
         // y-axis are squeezed together by a factor of sqrt(0.75).
         // The result is then rounded: (int) (value + 0.5)
@@ -901,7 +898,7 @@ public class Net {
             sizeX = 1;
         }
 
-		// a special case: if the map is toroid with hexa lattice,
+        // a special case: if the map is toroid with hexa lattice,
         // size along first axis must be even
         if (useHexagonalMap && useToroidNetwork && sizeX % 2 == 1) {
             sizeX = sizeX + 1;
@@ -942,9 +939,9 @@ public class Net {
             }
         }
 
-		// measure clustering efficiency
+        // measure clustering efficiency
         // unite clusters until the optimal solution
-        TreeSet<Integer> clusters = new TreeSet<Integer>();
+        TreeSet<Integer> clusters = new TreeSet<>();
         int clusterCounter = 0;
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {

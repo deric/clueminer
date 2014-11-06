@@ -34,9 +34,8 @@ import com.rapidminer.parameter.ParameterTypeAttribute;
 import com.rapidminer.parameter.ParameterTypeBoolean;
 import com.rapidminer.parameter.ParameterTypeString;
 import com.rapidminer.report.Reportable;
-
-import cz.ctu.rapidminer.gui.plotter.charts.SOMChartPlotter;
-import cz.ctu.rapidminer.operator.features.transformation.som.SOMModel;
+import org.clueminer.som.gui.plotter.charts.SOMChartPlotter;
+import org.clueminer.som.operator.features.transformation.som.SOMModel;
 
 /**
  * A renderer for the graph view of the Self-Organizing Map.
@@ -248,7 +247,7 @@ public class SOMPlotRenderer extends AbstractRenderer {
             table.add(new SimpleDataTableRow(value.clone()));
         }
 
-		// Mark special attributes as special
+        // Mark special attributes as special
         return table;
     }
 

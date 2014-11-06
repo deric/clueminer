@@ -3,9 +3,6 @@ package org.clueminer.som.operator.features.transformation.som;
 import java.util.Arrays;
 import java.util.List;
 
-import Jama.EigenvalueDecomposition;
-import Jama.Matrix;
-
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.operator.learner.CapabilityCheck;
 import com.rapidminer.operator.learner.CapabilityProvider;
@@ -36,6 +33,9 @@ import com.rapidminer.tools.RandomGenerator;
 import com.rapidminer.tools.Tools;
 import com.rapidminer.tools.math.container.Range;
 import com.rapidminer.tools.math.matrix.CovarianceMatrix;
+import java.util.logging.Logger;
+import org.clueminer.math.EigenvalueDecomposition;
+import org.clueminer.math.Matrix;
 
 /**
  * This class defines input & output ports and UI for model settings
@@ -52,6 +52,7 @@ public class SOM extends Operator implements CapabilityProvider {
     public static final String PARAMETER_INITIAL_LEARNING_RATE = "initial_learning_rate";
     public static final String PARAMETER_LEARNING_RATE_FUNCTION = "learning_rate_function";
     public static final String PARAMETER_TOROID_NETWORK = "use_toroid_network";
+    private static final Logger logger = Logger.getLogger(SOM.class.getName());
 
     public static final String[] NET_SIZE = new String[]{
         "automatic",
@@ -219,11 +220,11 @@ public class SOM extends Operator implements CapabilityProvider {
         boolean useHexagonalMap = true;						// so far we are always using hexagonal map, but in the feature...
 
         // create covariance matrix
-        log("Creating the covariance matrix...");
+        logger.info("Creating the covariance matrix...");
         Matrix covarianceMatrix = CovarianceMatrix.getCovarianceMatrix(exampleSet);
 
         // EigenVector and EigenValues of the covariance matrix
-        log("Performing the eigenvalue decomposition...");
+        logger.info("Performing the eigenvalue decomposition...");
         EigenvalueDecomposition eigenvalueDecomposition = covarianceMatrix.eig();
 
         // create and deliver results
@@ -239,7 +240,7 @@ public class SOM extends Operator implements CapabilityProvider {
             ratio = Math.sqrt(eigenvalues[eigLen] / eigenvalues[eigLen - 1]); // ... set ratio between map sidelengths
         }
 
-		// in hexagonal lattice, the sidelengths are not directly
+        // in hexagonal lattice, the sidelengths are not directly
         // proportional to the number of units since the units on the
         // y-axis are squeezed together by a factor of sqrt(0.75).
         // The result is then rounded: (int) (value + 0.5)
@@ -256,7 +257,7 @@ public class SOM extends Operator implements CapabilityProvider {
             netSize[0] = 1;
         }
 
-		// a special case: if the map is toroid with hexa lattice,
+        // a special case: if the map is toroid with hexa lattice,
         // size along first axis must be even
         if (useHexagonalMap && getParameterAsBoolean(PARAMETER_TOROID_NETWORK) && netSize[0] % 2 == 1) {
             netSize[0] = netSize[0] + 1;

@@ -2,8 +2,6 @@ package org.clueminer.som.gui.plotter.charts;
 
 import java.awt.Color;
 
-import com.rapidminer.gui.plotter.ColorProvider;
-
 /**
  * Provides colors for Self-Organizing Map. The colors are drawn
  * from a specified colormap. The default colormap schema is blueAndred.
@@ -13,6 +11,9 @@ import com.rapidminer.gui.plotter.ColorProvider;
 public class SOMColor {
 
     private String colorSchema = "blueAndRed";	// the default color schema to use
+
+    private Color minColor = Color.BLUE;
+    private Color maxColor = Color.RED;
 
     /**
      * Class constructor.
@@ -33,7 +34,7 @@ public class SOMColor {
      */
     public Color getColor(float colorValue) {
         if ("Blue & Red".equals(colorSchema)) {
-            return getColorProvider().getPointColor(colorValue);
+            return getPointColor(colorValue);
         }
         if ("Black & White".equals(colorSchema)) {
             return Color.getHSBColor(0, 0, colorValue);
@@ -51,9 +52,29 @@ public class SOMColor {
         return getColor((float) colorValue);
     }
 
-    // Helper functions
-    private ColorProvider getColorProvider() {
-        return new ColorProvider();
+    public Color getPointColor(double value) {
+        return getPointColor(value, 255);
+    }
+
+    public Color getPointColor(double value, int alpha) {
+        if (Double.isNaN(value)) {
+            return Color.LIGHT_GRAY;
+        }
+        Color MIN_LEGEND_COLOR = minColor;
+        Color MAX_LEGEND_COLOR = maxColor;
+        float[] minCol = Color.RGBtoHSB(MIN_LEGEND_COLOR.getRed(), MIN_LEGEND_COLOR.getGreen(), MIN_LEGEND_COLOR.getBlue(), null);
+        float[] maxCol = Color.RGBtoHSB(MAX_LEGEND_COLOR.getRed(), MAX_LEGEND_COLOR.getGreen(), MAX_LEGEND_COLOR.getBlue(), null);
+        //double hColorDiff = 1.0f - 0.68f;
+        double hColorDiff = maxCol[0] - minCol[0];
+        double sColorDiff = maxCol[1] - minCol[1];
+        double bColorDiff = maxCol[2] - minCol[2];
+
+        Color color = new Color(Color.HSBtoRGB((float) (minCol[0] + hColorDiff * value), (float) (minCol[1] + value * sColorDiff), (float) (minCol[2] + value * bColorDiff)));
+
+        if (alpha < 255) {
+            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+        }
+        return color;
     }
 
 }

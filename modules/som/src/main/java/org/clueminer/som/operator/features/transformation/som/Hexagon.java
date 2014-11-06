@@ -25,7 +25,7 @@ public class Hexagon {
 
     private boolean withOutline = true;	// draw the outline around the hexagon
 
-	// create isometric hexagon:frame width and height, size of net horizontally and vertically
+    // create isometric hexagon:frame width and height, size of net horizontally and vertically
     // nice explanation is at: http://www.miniwizardstudios.com/iso.asp
     public Hexagon(Graphics g, int pixWidth, int pixHeight, int countX, int countY) {
         this.g = g;

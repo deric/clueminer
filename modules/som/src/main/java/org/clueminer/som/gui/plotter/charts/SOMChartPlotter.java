@@ -8,27 +8,25 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
 import com.rapidminer.datatable.DataTable;
-import com.rapidminer.gui.plotter.PlotterAdapter;
 import com.rapidminer.gui.plotter.PlotterConfigurationModel;
 import com.rapidminer.tools.Tools;
-
-import cz.ctu.rapidminer.operator.features.transformation.som.Hexagon;
-import cz.ctu.rapidminer.operator.features.transformation.som.Net;
-import cz.ctu.rapidminer.operator.features.transformation.som.SOMModel;
+import javax.swing.JPanel;
+import org.clueminer.som.operator.features.transformation.som.Hexagon;
+import org.clueminer.som.operator.features.transformation.som.Net;
 
 /**
  * This class plots SOM map
  *
  * @author Jan Motl
  */
-public class SOMChartPlotter extends PlotterAdapter {
+public class SOMChartPlotter extends JPanel {
 
     private static final long serialVersionUID = 1511167115976161350L;
 
     private static final int MARGIN = 30;
 
-	//public static final String PARAMETER_SHOW_CLUSTERS="show_clusters";
-	//private final ListeningJCheckBox showClusters;
+    //public static final String PARAMETER_SHOW_CLUSTERS="show_clusters";
+    //private final ListeningJCheckBox showClusters;
     private Net network;							// output data
 
     private transient DataTable dataTable;			// input data (imputed for legend)
@@ -82,7 +80,7 @@ public class SOMChartPlotter extends PlotterAdapter {
 
         Graphics2D g = (Graphics2D) graphics;
 
-		// set antialiasing
+        // set antialiasing
         //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int pixWidth = getWidth() - 2 * MARGIN;
         int pixHeight = getHeight() - 2 * MARGIN;
@@ -133,7 +131,7 @@ public class SOMChartPlotter extends PlotterAdapter {
         // color initialization
         colorSchema = new SOMColor(selectedColorSchema);	// initialize color colorSchema
 
-		// paint ToolTip
+        // paint ToolTip
         //drawToolTip((Graphics2D) g);
         // draw the hexagons
         draw(translated, pixWidth, pixHeight);
@@ -336,7 +334,7 @@ public class SOMChartPlotter extends PlotterAdapter {
         return true;
     }
 
-	////////////////// Setters //////////////
+    ////////////////// Setters //////////////
     // set the visualization style (dimensions, u matrix, p matrix,...)
     public void setVisualizationStyle(String style) {
         visualizationStyle = style;
