@@ -212,6 +212,8 @@
         <module>modules/guava</module>
         <module>modules/fastutil</module>
         <module>modules/commons</module>
+        <module>som</module>
+        <module>modules/som</module>
     </modules>
     <reporting>
         <plugins>
