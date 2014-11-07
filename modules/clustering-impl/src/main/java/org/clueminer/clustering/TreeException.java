@@ -1,4 +1,4 @@
-package org.clueminer.clustering.benchmark;
+package org.clueminer.clustering;
 
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 

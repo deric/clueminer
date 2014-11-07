@@ -2,7 +2,6 @@ package org.clueminer.clustering.aggl;
 
 import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.aggl.linkage.AverageLinkage;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
@@ -13,11 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -28,26 +23,6 @@ public class HACTest {
 
     private static final HAC subject = new HAC();
     private static final double delta = 1e-9;
-
-    public HACTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getName method, of class HC1.
@@ -158,23 +133,6 @@ public class HACTest {
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
         assertEquals(121.11422748793802, root.getHeight(), delta);
-        assertEquals(2 * dataset.size() - 1, tree.numNodes());
-    }
-
-    @Test
-    public void testAverageLinkageSchool() {
-        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
-        assertEquals(17, dataset.size());
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = subject.hierarchy(dataset, pref);
-        System.out.println("school - average");
-        DendroTreeData tree = result.getTreeData();
-        tree.print();
-        assertEquals(dataset.size(), tree.numLeaves());
-        DendroNode root = tree.getRoot();
-        assertEquals(64.62613681177399, root.getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
     }
 
