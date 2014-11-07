@@ -53,7 +53,7 @@ public class WardsLinkageTest extends AbstractLinkageTest {
     public void testLinkageKumar() {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
 
-        //HierarchicalResult naive = naiveLinkage(dataset);
+//        HierarchicalResult naive = naiveLinkage(dataset);
         HierarchicalResult lance = lanceWilliamsLinkage(dataset);
         //assertEquals(true, TreeDiff.compare(naive, lance));
         System.out.println(dataset.getName() + " - " + subject.getName());

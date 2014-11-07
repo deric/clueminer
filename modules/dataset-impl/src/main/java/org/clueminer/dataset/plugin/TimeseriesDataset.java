@@ -114,7 +114,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
-    public boolean addAll(Dataset<E> d) {
+    public boolean addAll(Dataset<? extends E> d) {
         boolean success = true;
         for (E instance : d) {
             check(instance);

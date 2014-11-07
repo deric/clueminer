@@ -3,6 +3,7 @@ package org.clueminer.clustering.aggl.linkage;
 import java.util.Arrays;
 import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -48,7 +49,7 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
      * @return distance between clusters computed with current distance metric
      */
     @Override
-    public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2) {
+    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

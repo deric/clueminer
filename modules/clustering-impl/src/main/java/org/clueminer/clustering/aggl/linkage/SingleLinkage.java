@@ -2,6 +2,7 @@ package org.clueminer.clustering.aggl.linkage;
 
 import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -40,7 +41,7 @@ public class SingleLinkage extends AbstractLinkage {
     }
 
     @Override
-    public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2) {
+    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
         double distance = Double.MAX_VALUE;
 
         Instance x, y;

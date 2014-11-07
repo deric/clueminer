@@ -102,8 +102,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      * UnsupportedOperationException("Not supported yet."); }
      */
     @Override
-    public boolean addAll(Dataset<E> d) {
-        Iterator<E> it = d.iterator();
+    public boolean addAll(Dataset<? extends E> d) {
+        Iterator<? extends E> it = d.iterator();
         while (n < data.length && it.hasNext()) {
             Instance i = it.next();
             data[n++] = i;

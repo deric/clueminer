@@ -63,7 +63,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     @Override
     boolean addAll(Collection<? extends E> c);
 
-    boolean addAll(Dataset<E> d);
+    boolean addAll(Dataset<? extends E> d);
 
     /**
      * Get the instance with a certain index. In order to keep readability of

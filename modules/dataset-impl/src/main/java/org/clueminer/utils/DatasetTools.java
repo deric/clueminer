@@ -274,5 +274,5 @@ final public class DatasetTools {
         }
         throw new ArrayIndexOutOfBoundsException("empty dataset - dimensions " + m + " x " + n);
     }
-    
+
 }

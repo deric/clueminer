@@ -118,7 +118,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     }
 
     @Override
-    public boolean addAll(Dataset<E> d) {
+    public boolean addAll(Dataset<? extends E> d) {
         for (E i : d) {
             add(i);
         }

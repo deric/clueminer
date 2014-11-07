@@ -2,15 +2,11 @@ package org.clueminer.clustering.aggl.linkage;
 
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.TreeDiff;
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -61,7 +57,6 @@ public class AverageLinkageTest extends AbstractLinkageTest {
         assertEquals(true, TreeDiff.compare(naive, lance));
         System.out.println("school - average");
         DendroTreeData tree = naive.getTreeData();
-        tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
         assertEquals(64.62613681177399, root.getHeight(), delta);

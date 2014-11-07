@@ -2,7 +2,6 @@ package org.clueminer.clustering.api;
 
 import java.io.Serializable;
 import java.util.Set;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
@@ -34,7 +33,7 @@ public interface ClusterLinkage extends Serializable {
      * @param cluster2
      * @return
      */
-    double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2);
+    double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2);
 
     /**
      * Returns the similarity of two clusters according the specified linkage

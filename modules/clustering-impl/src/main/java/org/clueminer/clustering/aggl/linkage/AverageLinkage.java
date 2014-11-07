@@ -2,8 +2,8 @@ package org.clueminer.clustering.aggl.linkage;
 
 import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -11,6 +11,8 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Group Averaged Agglomerative Clustering (GAAC)
+ *
  * Clusters will be compared using the similarity of the computed mean data
  * point (or <i>centroid</i>) for each cluster. This comparison method is also
  * known as UPGMA or Mean Linkage.
@@ -37,7 +39,7 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2) {
+    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -1,11 +1,13 @@
 package org.clueminer.clustering.aggl.linkage;
 
-import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.TreeDiff;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -21,30 +23,9 @@ public class CompleteLinkageTest extends AbstractLinkageTest {
         subject = new CompleteLinkage();
     }
 
-    /**
-     * Testing dataset from Introduction to Data-mining, Tan, Kumar (chapter 8,
-     * page 519)
-     *
-     * @return
-     */
-    public static Dataset<? extends Instance> kumarData() {
-        if (kumar == null) {
-            kumar = new ArrayDataset<>(4, 2);
-            kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
-            kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-            kumar.builder().create(new double[]{0.40, 0.53}, "1");
-            kumar.builder().create(new double[]{0.22, 0.38}, "2");
-            kumar.builder().create(new double[]{0.35, 0.32}, "3");
-            kumar.builder().create(new double[]{0.26, 0.19}, "4");
-            kumar.builder().create(new double[]{0.08, 0.41}, "5");
-            kumar.builder().create(new double[]{0.45, 0.30}, "6");
-        }
-        return kumar;
-    }
-
     @Test
     public void testDistance() {
-        Dataset<? extends Instance> dataset = kumarData();
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
 
         Cluster a = new BaseCluster(2);
         a.add(dataset.get(2));
@@ -84,6 +65,39 @@ public class CompleteLinkageTest extends AbstractLinkageTest {
     @Test
     public void testGamma() {
         assertEquals(0.5, subject.gamma(), delta);
+    }
+
+    @Test
+    public void testLinkageSchool() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
+
+        HierarchicalResult naive = naiveLinkage(dataset);
+        HierarchicalResult lance = lanceWilliamsLinkage(dataset);
+        assertEquals(true, TreeDiff.compare(naive, lance));
+        System.out.println("school - " + subject.getName());
+        DendroTreeData tree = naive.getTreeData();
+        assertEquals(dataset.size(), tree.numLeaves());
+        assertEquals(121.11422748793802, tree.getRoot().getHeight(), delta);
+        assertEquals(121.11422748793802, lance.getTreeData().getRoot().getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+    }
+
+    /**
+     * Make sure that naive approach and Lance-Williams gives same results
+     */
+    @Test
+    public void testLinkageKumar() {
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
+
+        HierarchicalResult naive = naiveLinkage(dataset);
+        HierarchicalResult lance = lanceWilliamsLinkage(dataset);
+        assertEquals(true, TreeDiff.compare(naive, lance));
+        System.out.println("school - " + subject.getName());
+        DendroTreeData tree = naive.getTreeData();
+        assertEquals(dataset.size(), tree.numLeaves());
+        assertEquals(0.38600518131237566, tree.getRoot().getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
     }
 
 }
