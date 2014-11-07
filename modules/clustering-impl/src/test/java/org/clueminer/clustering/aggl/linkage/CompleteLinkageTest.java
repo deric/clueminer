@@ -13,10 +13,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class CompleteLinkageTest {
-    private final CompleteLinkage subject = new CompleteLinkage();
-    private static final double delta = 1e-9;
+public class CompleteLinkageTest extends AbstractLinkageTest {
+
     private static Dataset<? extends Instance> kumar;
+
+    public CompleteLinkageTest() {
+        subject = new CompleteLinkage();
+    }
 
     /**
      * Testing dataset from Introduction to Data-mining, Tan, Kumar (chapter 8,

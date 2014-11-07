@@ -18,13 +18,11 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class AverageLinkageTest {
+public class AverageLinkageTest extends AbstractLinkageTest {
 
-    private final AverageLinkage subject = new AverageLinkage();
-    private final double delta = 1e-9;
-    private static final HAC hac = new HAC();
-    private static final HACLW haclw = new HACLW();
-
+    public AverageLinkageTest() {
+        subject = new AverageLinkage();
+    }
     @Test
     public void testDistance() {
     }
@@ -51,22 +49,6 @@ public class AverageLinkageTest {
     @Test
     public void testGamma() {
         assertEquals(0.0, subject.gamma(), delta);
-    }
-
-    private HierarchicalResult naiveLinkage(Dataset<? extends Instance> dataset) {
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = hac.hierarchy(dataset, pref);
-        return result;
-    }
-
-    private HierarchicalResult lanceWilliamsLinkage(Dataset<? extends Instance> dataset) {
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = haclw.hierarchy(dataset, pref);
-        return result;
     }
 
     @Test

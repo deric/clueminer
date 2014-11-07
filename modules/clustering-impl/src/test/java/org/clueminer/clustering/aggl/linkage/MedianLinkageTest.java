@@ -7,10 +7,12 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class MedianLinkageTest {
+public class MedianLinkageTest extends AbstractLinkageTest {
 
-    private final MedianLinkage subject = new MedianLinkage();
-    private final double delta = 1e-9;
+    public MedianLinkageTest() {
+        subject = new MedianLinkage();
+    }
+
 
     @Test
     public void testDistance() {

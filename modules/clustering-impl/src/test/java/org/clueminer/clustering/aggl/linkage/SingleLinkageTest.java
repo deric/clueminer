@@ -2,15 +2,11 @@ package org.clueminer.clustering.aggl.linkage;
 
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.TreeDiff;
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.Props;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,12 +14,11 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class SingleLinkageTest {
+public class SingleLinkageTest extends AbstractLinkageTest {
 
-    private final SingleLinkage subject = new SingleLinkage();
-    private final double delta = 1e-9;
-    private static final HAC hac = new HAC();
-    private static final HACLW haclw = new HACLW();
+    public SingleLinkageTest() {
+        subject = new SingleLinkage();
+    }
 
     @Test
     public void testDistance() {
@@ -31,22 +26,6 @@ public class SingleLinkageTest {
 
     @Test
     public void testSimilarity() {
-    }
-
-    private HierarchicalResult naiveLinkage(Dataset<? extends Instance> dataset) {
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, subject.getName());
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = hac.hierarchy(dataset, pref);
-        return result;
-    }
-
-    private HierarchicalResult lanceWilliamsLinkage(Dataset<? extends Instance> dataset) {
-        Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, subject.getName());
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        HierarchicalResult result = haclw.hierarchy(dataset, pref);
-        return result;
     }
 
     @Test

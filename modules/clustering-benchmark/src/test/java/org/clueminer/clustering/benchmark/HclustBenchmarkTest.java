@@ -106,7 +106,7 @@ public class HclustBenchmarkTest {
         String linkage = MedianLinkage.name;
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
 
-        compareTreeResults(dataset, linkage, new AgglomerativeClustering[]{new HAC(), new HACLWMS()});
+        compareTreeResults(dataset, linkage, new AgglomerativeClustering[]{new HAC(), new HACLW()});
     }
 
     private void compareTreeResults(Dataset<? extends Instance> dataset, String linkage, AgglomerativeClustering[] algs) {
