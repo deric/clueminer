@@ -31,6 +31,7 @@ public class FakeDatasets {
         if (school == null) {
             CsvLoader loader = new CsvLoader();
             school = new ArrayDataset(17, 4);
+            school.setName("school data");
             loader.setClassIndex(4);
             loader.setSeparator(' ');
             try {
@@ -92,6 +93,7 @@ public class FakeDatasets {
 
     public static Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
+        data.setName("simple x,y data");
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
         data.builder().create(new double[]{0, 0}, "A");
@@ -110,6 +112,7 @@ public class FakeDatasets {
     public static Dataset<? extends Instance> kumarData() {
         if (kumar == null) {
             kumar = new ArrayDataset<>(4, 2);
+            kumar.setName("kumar");
             kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
             kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
             kumar.builder().create(new double[]{0.40, 0.53}, "1");

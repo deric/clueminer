@@ -300,6 +300,7 @@ public class FakeClustering {
         if (school == null) {
             CsvLoader loader = new CsvLoader();
             school = new ArrayDataset(17, 4);
+            school.setName("school data");
             loader.setClassIndex(4);
             loader.setSeparator(' ');
             try {
