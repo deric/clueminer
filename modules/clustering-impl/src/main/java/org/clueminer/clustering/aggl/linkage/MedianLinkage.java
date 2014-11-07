@@ -27,7 +27,7 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
     public static final String name = "Median Linkage";
 
     public MedianLinkage() {
-        super(new EuclideanDistance());
+        super(EuclideanDistance.getInstance());
     }
 
     public MedianLinkage(DistanceMeasure dm) {

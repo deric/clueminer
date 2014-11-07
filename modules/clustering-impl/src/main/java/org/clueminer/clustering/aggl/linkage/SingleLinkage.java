@@ -27,7 +27,7 @@ public class SingleLinkage extends AbstractLinkage {
     public static final String name = "Single Linkage";
 
     public SingleLinkage() {
-        super(new EuclideanDistance());
+        super(EuclideanDistance.getInstance());
     }
 
     public SingleLinkage(DistanceMeasure dm) {

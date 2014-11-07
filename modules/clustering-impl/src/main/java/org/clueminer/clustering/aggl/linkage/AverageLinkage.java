@@ -24,7 +24,7 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
     public static String name = "Average Linkage";
 
     public AverageLinkage() {
-        super(new EuclideanDistance());
+        super(EuclideanDistance.getInstance());
     }
 
     public AverageLinkage(DistanceMeasure dm) {

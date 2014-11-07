@@ -26,7 +26,7 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
     public static final String name = "Complete Linkage";
 
     public CompleteLinkage() {
-        super(new EuclideanDistance());
+        super(EuclideanDistance.getInstance());
     }
 
     public CompleteLinkage(DistanceMeasure dm) {

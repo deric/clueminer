@@ -1,6 +1,5 @@
 package org.clueminer.clustering.aggl.linkage;
 
-import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;
@@ -65,7 +64,23 @@ public class CompleteLinkageTest {
     }
 
     @Test
-    public void testSimilarity() {
+    public void testAlphaA() {
+        assertEquals(0.5, subject.alphaA(1, 3, 1), delta);
+    }
+
+    @Test
+    public void testAlphaB() {
+        assertEquals(0.5, subject.alphaB(1, 3, 1), delta);
+    }
+
+    @Test
+    public void testBeta() {
+        assertEquals(0.0, subject.beta(1, 2, 3), delta);
+    }
+
+    @Test
+    public void testGamma() {
+        assertEquals(0.5, subject.gamma(), delta);
     }
 
 }
