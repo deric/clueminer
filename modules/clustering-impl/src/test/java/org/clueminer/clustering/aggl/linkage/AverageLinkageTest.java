@@ -1,5 +1,6 @@
-package org.clueminer.hclust.linkage;
+package org.clueminer.clustering.aggl.linkage;
 
+import org.clueminer.clustering.aggl.linkage.AverageLinkage;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

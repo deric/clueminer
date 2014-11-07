@@ -1,13 +1,13 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -46,7 +46,8 @@ public class DunnIndex extends ClusterEvaluator {
         double maxIntraClusterdist = Double.MIN_VALUE, temp;
         double minClusterDistance = Double.MAX_VALUE;
         Dataset<Instance> clusterX, clusterY;
-        ClusterLinkage link = new SingleLinkage(dm);
+        ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
+        link.setDistanceMeasure(dm);
 
         for (int i = 0; i < clusters.size(); i++) {
             clusterX = clusters.get(i);

@@ -1,5 +1,6 @@
-package org.clueminer.hclust.linkage;
+package org.clueminer.clustering.aggl.linkage;
 
+import java.util.Arrays;
 import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -11,23 +12,25 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Clusters will be compared using the similarity of the computed mean data
- * point (or <i>centroid</i>) for each cluster. This comparison method is also
- * known as UPGMA or Mean Linkage.
+ * Median linkage is a variation of
+ *
+ * {@link AverageLinkage}, this method should be less sensitive to outliers
+ * because we consider distance between existing data points and not just
+ * "virtual ones".
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
+public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
 
-    private static final long serialVersionUID = 1357290267936276833L;
-    public static String name = "Average Linkage";
+    private static final long serialVersionUID = 7942079385178130303L;
+    public static final String name = "Median Linkage";
 
-    public AverageLinkage() {
+    public MedianLinkage() {
         super(new EuclideanDistance());
     }
 
-    public AverageLinkage(DistanceMeasure dm) {
+    public MedianLinkage(DistanceMeasure dm) {
         super(dm);
     }
 
@@ -36,6 +39,14 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
         return name;
     }
 
+    /**
+     * Clusters will be compared using the similarity of the computed median
+     * data point for each cluster
+     *
+     * @param cluster1 first cluster
+     * @param cluster2 second cluster
+     * @return distance between clusters computed with current distance metric
+     */
     @Override
     public double distance(Dataset<Instance> cluster1, Dataset<Instance> cluster2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -43,18 +54,20 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd) {
-        double similaritySum = 0;
+        double[] similarities = new double[cluster.size() * toAdd.size()];
+        int index = 0;
         for (int i : cluster) {
             for (int j : toAdd) {
-                similaritySum += similarityMatrix.get(i, j);
+                similarities[index++] = similarityMatrix.get(i, j);
             }
         }
-        return similaritySum / (cluster.size() * toAdd.size());
+        Arrays.sort(similarities);
+        return similarities[similarities.length / 2];
     }
 
     @Override
     public double alphaA(int ma, int mb, int mq) {
-        return (double) ma / (ma + mb);
+        return ma + mb;
     }
 
     @Override
@@ -64,7 +77,7 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double beta(int ma, int mb, int mq) {
-        return 0;
+        return (double) -(ma * mb) / (Math.pow((ma + mb), 2));
     }
 
     @Override

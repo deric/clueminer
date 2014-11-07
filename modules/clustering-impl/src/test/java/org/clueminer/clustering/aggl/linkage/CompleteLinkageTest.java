@@ -1,5 +1,6 @@
-package org.clueminer.hclust.linkage;
+package org.clueminer.clustering.aggl.linkage;
 
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;

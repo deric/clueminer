@@ -15,7 +15,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;

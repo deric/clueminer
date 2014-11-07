@@ -1,4 +1,4 @@
-package org.clueminer.hclust.linkage;
+package org.clueminer.clustering.aggl.linkage;
 
 import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;

@@ -12,7 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.hclust.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;

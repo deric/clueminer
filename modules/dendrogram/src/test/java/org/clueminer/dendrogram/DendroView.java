@@ -23,7 +23,7 @@ import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
 
