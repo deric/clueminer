@@ -49,4 +49,9 @@ public class HacLwComplete extends HACLW implements AgglomerativeClustering {
             throw new RuntimeException(getName() + " algorithm does not support linkage: " + props.get(AgglParams.LINKAGE));
         }
     }
+
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        return linkage.equals("Complete Linkage");
+    }
 }

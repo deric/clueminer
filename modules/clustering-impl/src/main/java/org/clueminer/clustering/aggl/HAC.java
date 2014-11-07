@@ -269,4 +269,14 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        switch (linkage) {
+            case "Ward's Linkage":
+                return false;
+            default:
+                return true;
+        }
+    }
+
 }

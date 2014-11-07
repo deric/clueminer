@@ -239,4 +239,14 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         output.println();
     }
 
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        switch (linkage) {
+            case "Median Linkage":
+                return false;
+            default:
+                return true;
+        }
+    }
+
 }

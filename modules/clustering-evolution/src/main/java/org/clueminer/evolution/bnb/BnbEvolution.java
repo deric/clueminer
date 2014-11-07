@@ -139,9 +139,11 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             for (int i = 0; i < pop.size(); i++) {
                 Individual thisOne = pop.getIndividual(i).deepCopy();
                 thisOne.mutate();
-                if (!isItTabu(thisOne.toString())) {
-                    // put mutated individual to the list of new individuals
-                    children.add(thisOne);
+                if (thisOne.isValid()) {
+                    if (!isItTabu(thisOne.toString())) {
+                        // put mutated individual to the list of new individuals
+                        children.add(thisOne);
+                    }
                 }
             }
             double fitness;

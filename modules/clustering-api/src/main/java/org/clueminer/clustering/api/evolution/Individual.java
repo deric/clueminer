@@ -19,24 +19,24 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return final clustering
      */
-    public Clustering<? extends Cluster> getClustering();
+    Clustering<? extends Cluster> getClustering();
 
     /**
      * Update fitness function value (counting fitness could be quite expensive)
      */
-    public void countFitness();
+    void countFitness();
 
     /**
      *
      * @return value of fitness function
      */
-    public double getFitness();
+    double getFitness();
 
     /**
      *
      * @return Clustering algorithm which is used in the Individual
      */
-    public ClusteringAlgorithm getAlgorithm();
+    ClusteringAlgorithm getAlgorithm();
 
     /**
      * Force to initial use some algorithm (might be later changed by evolution
@@ -44,7 +44,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @param algorithm
      */
-    public void setAlgorithm(ClusteringAlgorithm algorithm);
+    void setAlgorithm(ClusteringAlgorithm algorithm);
 
     /**
      * With given probability (from Evolution class) should mutate each property
@@ -52,7 +52,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @TODO implement this behaviour -- currently only weights are modified
      */
-    public void mutate();
+    void mutate();
 
     /**
      * Crossover of genetic information
@@ -60,7 +60,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @param other
      * @return
      */
-    public List<E> cross(Individual other);
+    List<E> cross(Individual other);
 
     /**
      * Crossover between completely different algorithms might to be very
@@ -70,7 +70,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @param other
      * @return true when this Individual is compatible specie with the other
      */
-    public boolean isCompatible(Individual other);
+    boolean isCompatible(Individual other);
 
     /**
      * Duplicate might not share all properties like the original, but it's same
@@ -78,7 +78,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return not a precise clone
      */
-    public E duplicate();
+    E duplicate();
 
     /**
      * Should make exact clone. Deep copy (unlike shallow copy) means that
@@ -86,5 +86,12 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return exact clone of Individual
      */
-    public E deepCopy();
+    E deepCopy();
+
+    /**
+     * Some mutations might bring us to invalid state
+     *
+     * @return true when fitness could be counted
+     */
+    boolean isValid();
 }

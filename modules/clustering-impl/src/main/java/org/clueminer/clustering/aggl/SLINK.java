@@ -211,4 +211,9 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        return linkage.equals("Single Linkage");
+    }
+
 }

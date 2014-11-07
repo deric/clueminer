@@ -34,10 +34,12 @@ public class WardsLinkage extends AbstractLinkage implements ClusterLinkage {
 
     @Override
     public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
-        //Instance centroid1 = cluster1.
+        Instance centroid1 = cluster1.getCentroid();
+        Instance centroid2 = cluster2.getCentroid();
 
-        //return (2 * cluster1.size() * cluster2.size()) / (cluster1.size() + cluster2.size()) * similaritySum;
-        return 0;
+        double diff = distanceMeasure.measure(centroid1, centroid2);
+
+        return (cluster1.size() * cluster2.size()) / (cluster1.size() + cluster2.size()) * diff;
     }
 
     @Override
