@@ -244,6 +244,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     void set(int instanceIdx, int attrIdx, double value);
 
     /**
+     * Places instance at given position
+     *
+     * @param instanceIdx
+     * @param inst
+     * @return
+     */
+    E set(int instanceIdx, E inst);
+
+    /**
      * Set i-th attribute (column)
      *
      * @param index

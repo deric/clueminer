@@ -31,7 +31,7 @@ public class ArrayDatasetTest {
     private static final int attributesCnt = 2;
     private static Random rand;
     private static final double delta = 1e-7;
-    private double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
+    private final double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
     public ArrayDatasetTest() {
     }
@@ -283,6 +283,20 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testCopy() {
+        Dataset<? extends Instance> d1 = new ArrayDataset<>(data2x5);
+        Dataset<? extends Instance> d2 = d1.copy();
+        for (int i = 0; i < d1.size(); i++) {
+            for (int j = 0; j < d1.attributeCount(); j++) {
+                d1.set(i, j, -1);
+            }
+        }
+        //copied values should be unchanged
+        for (int i = 0; i < d1.size(); i++) {
+            for (int j = 0; j < d1.attributeCount(); j++) {
+                assertEquals(true, (d2.get(i, j) > 0));
+            }
+        }
+
     }
 
     /**
@@ -418,6 +432,16 @@ public class ArrayDatasetTest {
                 assertEquals(data[i][j], test.get(i, j), delta);
             }
         }
+    }
+
+    @Test
+    public void testSet() {
+        Dataset<Instance> test = new ArrayDataset<>(data2x5);
+        //swap instances
+        Instance tmp = test.get(0);
+        test.set(0, test.get(1));
+        test.set(1, tmp);
+        assertEquals(6.0, test.get(0, 0), delta);
     }
 
     /**

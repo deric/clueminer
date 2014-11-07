@@ -301,11 +301,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Dataset<E> copy() {
-        SampleDataset out = new SampleDataset();
-        Instance inst;
+        Dataset<E> out = duplicate();
         for (int i = 0; i < size(); i++) {
-            inst = instance(i);
-            out.add(inst.copy());
+            out.set(i, (E) data[i].copy());
         }
         return out;
     }
@@ -347,6 +345,12 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public double get(int instanceIdx, int attributeIndex) {
         return data[instanceIdx].value(attributeIndex);
+    }
+
+    @Override
+    public E set(int instanceIdx, E inst) {
+        data[instanceIdx] = inst;
+        return inst;
     }
 
     @Override

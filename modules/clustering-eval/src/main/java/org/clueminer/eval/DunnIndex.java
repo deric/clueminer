@@ -74,7 +74,7 @@ public class DunnIndex extends ClusterEvaluator {
         return minClusterDistance / maxIntraClusterdist;
     }
 
-    public double maxIntraClusterDistance(Cluster<? extends Instance> cluster) {
+    public double maxIntraClusterDistance(Dataset<? extends Instance> cluster) {
         double max = Double.MIN_VALUE;
         Instance x, y;
         double dist;
