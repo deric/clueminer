@@ -75,6 +75,7 @@ public class SingleLinkage extends AbstractLinkage {
         for (int i : cluster) {
             for (int j : toAdd) {
                 double s = similarityMatrix.get(i, j);
+                //if (s < closest) {
                 if (distanceMeasure.compare(s, closest)) {
                     closest = s;
                 }

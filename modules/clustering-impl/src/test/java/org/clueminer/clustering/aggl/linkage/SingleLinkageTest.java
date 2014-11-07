@@ -11,8 +11,6 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -52,7 +50,7 @@ public class SingleLinkageTest {
     }
 
     @Test
-    public void testAverageLinkageSchool() {
+    public void testLinkageSchool() {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
 
@@ -66,6 +64,26 @@ public class SingleLinkageTest {
         DendroNode root = tree.getRoot();
         assertEquals(32.542734980330046, root.getHeight(), delta);
         assertEquals(32.542734980330046, lance.getTreeData().getRoot().getHeight(), delta);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+    }
+
+    /**
+     * TODO: this might fail because of same distance between nodes: 0.14
+     */
+    //@Test
+    public void testLinkageKumar() {
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
+
+        HierarchicalResult naive = naiveLinkage(dataset);
+        HierarchicalResult lance = lanceWilliamsLinkage(dataset);
+        assertEquals(true, TreeDiff.compare(naive, lance));
+        System.out.println(dataset.getName() + " - " + subject.getName());
+        DendroTreeData tree = naive.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+     //   assertEquals(32.542734980330046, root.getHeight(), delta);
+        //   assertEquals(32.542734980330046, lance.getTreeData().getRoot().getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
     }
 

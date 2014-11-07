@@ -59,7 +59,6 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         //System.out.println("merge [" + leftId + ", " + rightId + "] -> " + leftId);
         //System.out.println("assign: " + assignments.entrySet().toString());
         //System.out.println("merged cluster: " + mergedCluster.toString());
-
         //System.out.println("merging: [" + leftId + ", " + rightId + "] -> " + mergedId);
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             //update distance only to cluster keys (items contained in cluster
@@ -99,10 +98,14 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
 
+        //System.out.println("ma = " + ma + ", mb = " + mb + ", mq = " + mq);
         double dist = linkage.alphaA(ma, mb, mq) * aq + linkage.alphaB(ma, mb, mq) * bq;
+        //System.out.println("alpha_A + alpha_B = " + String.format("%.2f", dist));
         if (linkage.beta(ma, mb, mq) != 0) {
-            dist += linkage.beta(ma, mb, mq) * sim.get(a, b);
+            //System.out.println("[" + a + ", " + b + "] -> " + map(a, b));
+            dist += linkage.beta(ma, mb, mq) * fetchDist(a, b, sim, cache);
         }
+        //System.out.println("alpha + beta = " + String.format("%.2f", dist));
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
