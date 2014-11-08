@@ -12,11 +12,8 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -31,14 +28,6 @@ public class ClusterListTest {
     public ClusterListTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
         subject = new ClusterList(5);
@@ -46,12 +35,11 @@ public class ClusterListTest {
         subject.createCluster();
     }
 
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testGetName() {
+        String str = "my clustering";
+        subject.setName(str);
+        assertEquals(str, subject.getName());
     }
 
     @Test
@@ -118,24 +106,50 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesCount() {
+        Clustering<Cluster> clusters = createClusters();
+        assertEquals(12, clusters.instancesCount());
     }
 
-    //@Test
+    @Test
     public void testGetCentroid() {
         Clustering<Cluster> clusters = createClusters();
         assertEquals(3, clusters.get(0).size());
-        Instance inst = clusters.getCentroid();
-        System.out.println("centroid: " + inst.toString());
+        Instance centroid = clusters.getCentroid();
+        System.out.println("centroid: " + centroid.toString());
         assertEquals(3, clusters.get(0).size());
+    }
+
+    private Clustering<Cluster> createEmptyClusters() {
+        Clustering<Cluster> clusters = new ClusterList(5);
+        return clusters;
     }
 
     private Clustering<Cluster> createClusters() {
         Clustering<Cluster> clusters = new ClusterList(5);
+        assertEquals(0, clusters.size());
+        instanceIter(clusters);
+        int size = 4;
+        for (int i = 0; i < size; i++) {
+            Cluster clust = clusters.createCluster();
+            clust.attributeBuilder().create("x", "NUMERIC");
+            clust.attributeBuilder().create("y", "NUMERIC");
+            clust.builder().create(new double[]{1.0, 1.0});
+            clust.builder().create(new double[]{1.0, 0.0});
+            clust.builder().create(new double[]{1.0, 2.0});
+        }
+
+        return clusters;
+    }
+
+    private Clustering<Cluster> createClustersOrdered() {
+        Clustering<Cluster> clusters = new ClusterList(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
-        clust.add(new DoubleArrayDataRow(new double[]{1.0, 1.0}));
-        clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
-        clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
+        clust.attributeBuilder().create("x", "NUMERIC");
+        clust.attributeBuilder().create("y", "NUMERIC");
+        clust.builder().create(new double[]{1.0, 1.0});
+        clust.builder().create(new double[]{1.0, 0.0});
+        clust.builder().create(new double[]{1.0, 2.0});
         return clusters;
     }
 
@@ -161,7 +175,7 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesIterator() {
-        Clustering<Cluster> clusters = createClusters();
+        Clustering<Cluster> clusters = createClustersOrdered();
         Cluster clust = clusters.get(0);
         assertEquals(3, clust.size());
         assertEquals(3, clusters.instancesCount());
@@ -193,6 +207,9 @@ public class ClusterListTest {
 
     @Test
     public void testGet() {
+        Clustering<Cluster> clusters = createClusters();
+        Cluster clust = clusters.get(3);
+        assertEquals(3, clust.size());
     }
 
     /**
@@ -274,6 +291,14 @@ public class ClusterListTest {
     }
 
     @Test
+    public void testGetByName() {
+        Clustering<Cluster> c1 = createClusters();
+        Cluster c = c1.get("cluster 1");
+        assertNotNull(c);
+        assertEquals(3, c.size());
+    }
+
+    @Test
     public void testAddAll() {
     }
 
@@ -288,7 +313,7 @@ public class ClusterListTest {
     @Test
     public void testClear() {
         Clustering<Cluster> clust = createClusters();
-        assertEquals(1, clust.size());
+        assertEquals(4, clust.size());
         clust.clear();
         assertEquals(0, clust.size());
     }
@@ -375,17 +400,19 @@ public class ClusterListTest {
 
     @Test
     public void testHashCode() {
-        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c1 = createClustersOrdered();
         Clustering<Cluster> c2 = createClustersDifferentOrder();
         assertEquals(c1.hashCode(), c2.hashCode());
 
         Clustering<Cluster> c3 = createClusters2();
+        Clustering<Cluster> c4 = createEmptyClusters();
         assertNotSame(c2.hashCode(), c3.hashCode());
+        assertNotSame(c4.hashCode(), c3.hashCode());
     }
 
     @Test
     public void testEquals() {
-        Clustering<Cluster> c1 = createClusters();
+        Clustering<Cluster> c1 = createClustersOrdered();
         Clustering<Cluster> c2 = createClustersDifferentOrder();
         assertEquals(true, c1.equals(c2));
         assertEquals(true, c2.equals(c1));

@@ -2,6 +2,7 @@ package org.clueminer.clustering.struct;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -21,6 +22,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private static final long serialVersionUID = 5866077228917808995L;
     private Cluster<E>[] data;
     private Props params;
+    private final HashMap<String, Integer> name2id;
     /**
      * (n - 1) is index of last inserted item, n itself represents current
      * number of instances in this dataset
@@ -36,6 +38,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         params = new Props();
+        name2id = new HashMap<>(capacity);
     }
 
     /**
@@ -85,8 +88,17 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         ensureCapacity(n);
         //cluster numbers start from 0
         e.setClusterId(n);
+        ensureName(e);
+        name2id.put(e.getName(), n);
         data[n++] = e;
         return true;
+    }
+
+    private void ensureName(Cluster<E> e) {
+        if (e.getName() == null) {
+            //human readable name
+            e.setName("cluster " + (e.getId() + 1));
+        }
     }
 
     public int getCapacity() {
@@ -131,6 +143,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         data[index] = x;
         //cluster numbers start from 1
         x.setClusterId(index);
+        ensureName(x);
+        name2id.put(x.getName(), index);
     }
 
     @Override
@@ -158,23 +172,26 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         return cnt;
     }
 
+    /**
+     * TODO: what's the point of centroid of all clusters?
+     *
+     * @return
+     */
     @Override
     public E getCentroid() {
         Cluster<E> first = get(0);
         Instance centroid = first.builder().build(first.attributeCount());
-
+        Instance center;
         for (Cluster<E> c : this) {
-            for (Instance inst : c) {
-                //sum all features
-                for (int i = 0; i < inst.size(); i++) {
-                    centroid.set(i, inst.value(i) + centroid.value(i));
-                }
+            center = c.getCentroid();
+            for (int i = 0; i < center.size(); i++) {
+                centroid.set(i, center.value(i) + centroid.value(i));
             }
         }
-
+        int cnt = instancesCount();
         //average of features
         for (int i = 0; i < first.attributeCount(); i++) {
-            centroid.set(i, centroid.value(i) / instancesCount());
+            centroid.set(i, centroid.value(i) / cnt);
         }
         return (E) centroid;
     }
@@ -416,6 +433,14 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         for (String key : other.keySet()) {
             params.put(key, other.get(key));
         }
+    }
+
+    @Override
+    public Cluster<E> get(String label) {
+        if (name2id.containsKey(label)) {
+            return get(name2id.get(label));
+        }
+        return null;
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {
