@@ -16,7 +16,7 @@ import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
-import org.clueminer.dgram.eval.MOLO;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;

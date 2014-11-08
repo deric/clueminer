@@ -12,7 +12,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.eval.MOLO;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;

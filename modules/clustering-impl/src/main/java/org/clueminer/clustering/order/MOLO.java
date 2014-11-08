@@ -1,4 +1,4 @@
-package org.clueminer.dgram.eval;
+package org.clueminer.clustering.order;
 
 import java.util.Stack;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -6,7 +6,6 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,7 +56,6 @@ public class MOLO implements OptimalTreeOrder {
         //Dump.array(tree.getMapping(), "tree mapping");
         //System.out.println("score after = " + score(tree, similarity));
         //tree.print();
-
         //System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.createMapping(n, tree.getRoot());
         tree.updatePositions(tree.getRoot());
@@ -142,7 +140,7 @@ public class MOLO implements OptimalTreeOrder {
      * @return
      */
     public double inOrderScore(DendroNode node) {
-        Stack<DendroNode> stack = new Stack<DendroNode>();
+        Stack<DendroNode> stack = new Stack<>();
         DendroNode prev = null;
         double score = 0.0;
         while (!stack.isEmpty() || node != null) {

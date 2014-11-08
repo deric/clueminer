@@ -12,6 +12,8 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -33,6 +35,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
     private Map<Dataset<? extends Instance>, StdStorage> storage;
+    private OptimalTreeOrder treeOrder = new MOLO();
 
     public ClusteringExecutorCached() {
         algorithm = new HACLW();
@@ -44,6 +47,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
+        treeOrder.optimize(rowsResult, true);
         return rowsResult;
     }
 
@@ -53,6 +57,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
+        treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;
