@@ -6,7 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
@@ -33,7 +34,7 @@ public class DendroView2 extends JFrame {
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
 
-        ClusteringExecutor exec = new ClusteringExecutor();
+        Executor exec = new ClusteringExecutorCached();
 
         DistanceMeasure dm = new EuclideanDistance();
 

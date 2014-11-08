@@ -10,7 +10,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
@@ -141,7 +140,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
-        logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
+        //logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
 
         if (fitToPanel) {
             //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
@@ -301,7 +300,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             totalHeight += heatmapYoffset;
         }
         heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
-        logger.log(Level.INFO, "heatmap pos [{0}, {1}]", new Object[]{heatmapXoffset, heatmapYoffset});
+        //logger.log(Level.INFO, "heatmap pos [{0}, {1}]", new Object[]{heatmapXoffset, heatmapYoffset});
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
         int rowsScaleHeight = rowsScale.getHeight();

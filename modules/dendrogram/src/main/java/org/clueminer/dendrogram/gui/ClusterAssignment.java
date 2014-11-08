@@ -2,10 +2,8 @@ package org.clueminer.dendrogram.gui;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
-import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -14,24 +12,22 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.gui.BPanel;
 
 /**
  * Color stripe for showing assignments to clusters
  *
  * @author Tomas Barton
  */
-public class ClusterAssignment extends JPanel implements DendrogramDataListener, ClusteringListener {
+public class ClusterAssignment extends BPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 7662186965958650502L;
-    private Dimension size = new Dimension(0, 0);
     private final DendroPane panel;
     private int stripeWidth = 20;
-    private int maxTextWidth = 30;
+    private int maxTextWidth = 20;
     private boolean drawBorders = true;
     private boolean drawLabels = true;
-    private BufferedImage bufferedImage;
-    private Graphics2D buffGr;
-    private final Insets insets = new Insets(0, 15, 0, 10);
+    private final Insets insets = new Insets(0, 10, 0, 10);
     private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
     private Font font = new Font("verdana", Font.BOLD, 12);
     private int lineHeight;
@@ -42,64 +38,12 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
         setBackground(panel.getBackground());
-        updateSize();
+        //this.preserveAlpha = true;
+        //this.fitToSpace = true;
+        recalculate();
     }
 
-    protected void setDimension(int width, int height) {
-        //if there is some change
-        if (width != this.size.width || height != this.size.height) {
-            this.size.width = width;
-            this.size.height = height;
-            /**
-             * we want exactly this size, when windows is enlarged the heatmap
-             * should be bigger
-             */
-            setPreferredSize(this.size);
-            setMinimumSize(this.size);
-            setSize(this.size);
-        }
-    }
-
-    private void updateSize() {
-        int width = 0;
-        int height = 0;
-        if (hieraRes != null) {
-            width = stripeWidth + 2 * labelOffset + maxTextWidth;
-            height = panel.getElementSize().height * hieraRes.getDataset().size() + 2;
-        }
-        setDimension(width, height);
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (panel.getDendrogramData() == null) {
-            return;
-        }
-
-        if (size.width <= 0 || size.height <= 0) {
-            return;
-        }
-
-        //create color palette
-        if (bufferedImage == null) {
-            drawData(size.width, size.height);
-        }
-        Graphics2D g2d = (Graphics2D) g;
-        //places color bar to canvas
-        g2d.drawImage(bufferedImage,
-                      insets.left, insets.top,
-                      size.width, size.height,
-                      null);
-        g2d.dispose();
-    }
-
-    private void drawData(int width, int height) {
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        buffGr = bufferedImage.createGraphics();
-        buffGr.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        buffGr.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
+    private void drawData(Graphics2D g) {
         if (flatClust != null) {
             HierarchicalResult res = flatClust.getLookup().lookup(HierarchicalResult.class);
             if (res != null) {
@@ -113,26 +57,26 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
                 logger.log(Level.INFO, "clusters size is 0!!!");
                 return;
             }
-            buffGr.setFont(font);
-            FontMetrics fm = buffGr.getFontMetrics();
+            g.setFont(font);
+            FontMetrics fm = g.getFontMetrics();
             lineHeight = fm.getHeight();
             int currClust = clusters[i];
             int start = 0;
-            int x = 0;
+            int x = insets.left;
             int mapped;
             while (i < clusters.length) {
                 mapped = hieraRes.getMappedIndex(i);
                 if (clusters[mapped] != currClust) {
-                    drawCluster(buffGr, x, start, i, currClust);
+                    drawCluster(g, x, start, i, currClust);
                     start = i; //index if new cluster start
                     currClust = clusters[hieraRes.getMappedIndex(i)];
                 }
                 i++;
             }
             //close unfinished cluster
-            drawCluster(buffGr, x, start, i, currClust);
+            drawCluster(g, x, start, i, currClust);
         }
-        buffGr.dispose(); //finished drawing
+        g.dispose(); //finished drawing
     }
 
     private void drawCluster(Graphics2D g, int x, int start, int end, int clusterNum) {
@@ -177,7 +121,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
             labelWidth = (int) (g.getFont().getStringBounds(label, frc).getWidth()) + 10;
             checkMax(labelWidth);
             yLabel = y + lineHeight / 2.0;
-            xLabel = stripeWidth + labelOffset;
+            xLabel = stripeWidth + labelOffset + insets.left;
             //logger.log(Level.INFO, "label {0} at {1}, {2}", new Object[]{label, xLabel, yLabel});
             g.drawString(label, (float) xLabel, (float) yLabel);
         }
@@ -190,9 +134,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dendroData) {
         hieraRes = dendroData.getRowsResult();
-        updateSize();
-        bufferedImage = null; //clear cached image
-        repaint();
+        resetCache();
     }
 
     @Override
@@ -202,8 +144,7 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
 
     @Override
     public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting) {
-        updateSize();
-        createBufferedGraphics();
+        resetCache();
     }
 
     @Override
@@ -215,7 +156,6 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
         hieraRes = hclust;
-        //
     }
 
     public boolean isDrawLabels() {
@@ -237,13 +177,46 @@ public class ClusterAssignment extends JPanel implements DendrogramDataListener,
     private void checkMax(int width) {
         if (width > maxTextWidth) {
             maxTextWidth = width;
-            updateSize();
-            createBufferedGraphics();
+            resetCache();
         }
     }
 
-    private void createBufferedGraphics() {
-        bufferedImage = null; //clear cached image
-        repaint();
+    @Override
+    public void render(Graphics2D g) {
+        if (!hasData()) {
+            return;
+        }
+
+        drawData(g);
+    }
+
+    @Override
+    public void sizeUpdated(Dimension size) {
+        realSize = size;
+
+        setPreferredSize(realSize);
+        setMinimumSize(realSize);
+    }
+
+    @Override
+    public boolean hasData() {
+        return hieraRes != null;
+    }
+
+    @Override
+    public final void recalculate() {
+        if (hasData()) {
+            realSize.width = insets.left + stripeWidth + 2 * labelOffset + maxTextWidth + insets.right;
+            realSize.height = insets.top + panel.getElementSize().height * hieraRes.getDataset().size() + 2 + insets.bottom;
+            reqSize.width = realSize.width;
+            reqSize.height = realSize.height;
+
+            setSize(realSize);
+        }
+    }
+
+    @Override
+    public boolean isAntiAliasing() {
+        return true;
     }
 }
