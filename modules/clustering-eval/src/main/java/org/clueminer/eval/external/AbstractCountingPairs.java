@@ -27,6 +27,7 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
      */
     public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
         BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
+        //we don't expect mapping to original to change, so we can store the result
         if (matching == null) {
             matching = CountingPairs.findMatching(table);
             ref.lookupAdd(matching);
@@ -37,7 +38,8 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        return countScore(table, c1);
+        //don't store mapping when comparing list of clusterings (too many posibilities)
+        return countScore(table, c1, CountingPairs.findMatching(table));
     }
 
     @Override
