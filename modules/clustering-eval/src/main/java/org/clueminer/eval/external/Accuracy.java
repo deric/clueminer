@@ -28,22 +28,27 @@ public class Accuracy extends AbstractExternalEval {
         return name;
     }
 
-    public double countScore(Table<String, String, Integer> table) {
+    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
         int tp, fn, fp, tn;
         double index = 0.0;
         double accuracy;
+        Cluster c;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-            tp = res.get("tp");
-            fp = res.get("fp");
-            tn = res.get("tn");
-            fn = res.get("fn");
-            accuracy = (tp + tn) / (double) (tp + fn + fp + tn);
-            index += accuracy;
+            c = ref.get(cluster);
+            //clusters with size 1 should not increase accuracy
+            if (c.size() > 1) {
+                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+                tp = res.get("tp");
+                fp = res.get("fp");
+                tn = res.get("tn");
+                fn = res.get("fn");
+                accuracy = (tp + tn) / (double) (tp + fn + fp + tn);
+                index += accuracy;
+            }
         }
 
         //average value - divided by known number of classes (or should we divide it by number of clusters?)
@@ -53,18 +58,18 @@ public class Accuracy extends AbstractExternalEval {
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        return countScore(table);
+        return countScore(table, c1);
     }
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table);
+        return countScore(table, clusters);
     }
 
     public double score(Clustering<? extends Cluster> clusters) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table);
+        return countScore(table, clusters);
     }
 
     @Override
