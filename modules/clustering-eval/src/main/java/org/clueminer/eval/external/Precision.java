@@ -52,10 +52,10 @@ public class Precision extends AbstractExternalEval {
         //for each cluster we have score of quality
         Cluster c;
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
             c = ref.get(cluster);
             //we intentionally ignore computing precision in clusters with single instance
             if (c.size() > 1) {
+                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
                 //System.out.println("class: " + matching.inverse().get(cluster) + " cluster = " + cluster);
                 tp = res.get("tp");
                 fp = res.get("fp");
