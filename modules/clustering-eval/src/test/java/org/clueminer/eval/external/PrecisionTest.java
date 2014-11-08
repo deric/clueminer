@@ -77,6 +77,8 @@ public class PrecisionTest {
      */
     @Test
     public void testCompareScore() {
+        //first one should be better
+        assertEquals(true, test.compareScore(1.0, 0.4));
     }
 
     @Test
@@ -156,5 +158,8 @@ public class PrecisionTest {
      */
     @Test
     public void testCountScore() {
+        double score = test.score(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
+        assertEquals(true, score < 0.4);
+        System.out.println("mostly wrong precision  = " + score);
     }
 }
