@@ -151,7 +151,7 @@ public class HCLResult implements HierarchicalResult {
                     clust = result.get(num);
                 }
                 idx = itemsMapping[i];
-                //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getInstance(idx).getName(), num});
+                //logger.log(Level.WARNING, "adding {0} to cluster {1}", new Object[]{getVector(idx).getName(), num});
                 //mapping is tracked in cluster
                 // values in cluster array doesn't need mapping!
                 /**
@@ -328,7 +328,7 @@ public class HCLResult implements HierarchicalResult {
      * @return
      */
     @Override
-    public Instance getInstance(int index) {
+    public Instance getVector(int index) {
         return dataset.get(this.getMappedIndex(index));
     }
 
@@ -376,6 +376,11 @@ public class HCLResult implements HierarchicalResult {
     @Override
     public Props getParams() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Instance getInstance(int index) {
+        return dataset.get(this.getMappedIndex(index));
     }
 
 }

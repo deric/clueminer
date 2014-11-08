@@ -51,7 +51,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         initComponents();
 
 
-        /*   TopComponent comp = Lookup.getInstance().lookup(RTCAProjectFrame.class);
+        /*   TopComponent comp = Lookup.getVector().lookup(RTCAProjectFrame.class);
          if (comp != null) {
          System.out.println("top compoent Project frame should listen to cluster changes");
          viewer.addClusteringListener((ClusteringListener)comp);

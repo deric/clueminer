@@ -52,7 +52,7 @@ public class DendroView extends JFrame {
         }
         logger.fine("done");
 
-        final Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        final Dataset<? extends Instance> data = FakeDatasets.irisDataset();
 
         Executor exec = new ClusteringExecutorCached();
 

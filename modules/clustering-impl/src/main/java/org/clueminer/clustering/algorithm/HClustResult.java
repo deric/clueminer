@@ -463,7 +463,7 @@ public class HClustResult implements HierarchicalResult {
      * @return
      */
     @Override
-    public Instance getInstance(int index) {
+    public Instance getVector(int index) {
         if (dataset != null) {
             return dataset.instance(getMappedIndex(index));
         } else {
@@ -572,6 +572,15 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public Props getParams() {
         return props;
+    }
+
+    @Override
+    public Instance getInstance(int index) {
+        if (dataset != null) {
+            return dataset.instance(getMappedIndex(index));
+        } else {
+            throw new RuntimeException("dataset is null");
+        }
     }
 
 }

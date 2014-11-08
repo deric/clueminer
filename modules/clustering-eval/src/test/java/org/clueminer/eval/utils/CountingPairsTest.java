@@ -156,10 +156,22 @@ public class CountingPairsTest {
 
     }
 
-    /**
-     * Test of countPairs2 method, of class CountingPairs.
-     */
     @Test
     public void testCountPairs2() {
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        //only 2 classes could be paired, third one is paired in a random way
+        assertEquals(2, matching.size());
+    }
+
+    @Test
+    public void testCountPairs3() {
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisWrong4());
+        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        System.out.println("iris wrong4:");
+        System.out.println("table: " + table);
+        System.out.println("matching: " + matching);
+        //only 2 classes could be paired, third one is paired in a random way
+        assertEquals(3, matching.size());
     }
 }

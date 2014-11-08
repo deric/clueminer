@@ -36,13 +36,13 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             int width;
             float x = 0.0f, y;
             for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
-                str = dendroData.getRowsResult().getInstance(row).getName();
+                str = dendroData.getRowsResult().getVector(row).getName();
                 if (str == null) {
                     //if name empty, try to use ID
                     str = dendroData.getRowsResult().getInstance(row).getId();
                     if (str == null) {
                         //index is number of line in dataset, starting from 0
-                        str = String.valueOf(dendroData.getRowsResult().getInstance(row).getIndex());
+                        str = String.valueOf(dendroData.getRowsResult().getVector(row).getIndex());
                     }
                 }
                 if (row == firstSelectedRow) {
@@ -79,9 +79,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                0, 0,
-                size.width, size.height,
-                null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
     }
 
     /**

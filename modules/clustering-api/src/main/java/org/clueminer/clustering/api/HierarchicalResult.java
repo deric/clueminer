@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
@@ -183,12 +184,21 @@ public interface HierarchicalResult extends Serializable {
     int[] getMapping();
 
     /**
-     * Return instance at given index -- that means either row or column
+     * Return instance at given index - only for rows
+     *
+     * @param index
+     * @deprecated in future only {@link DataVector} will be supported
+     * @return
+     */
+    Instance getInstance(int index);
+
+    /**
+     * Either row or column vector
      *
      * @param index
      * @return
      */
-    Instance getInstance(int index);
+    DataVector getVector(int index);
 
     /**
      * Sets order of items in dendrogram

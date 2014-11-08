@@ -23,6 +23,12 @@ public class ColorBrewer implements ColorGenerator {
         cnt = 0;
     }
 
+    public void seek(int i) {
+        if (i < scheme1.length) {
+            this.cnt = i;
+        }
+    }
+
     @Override
     public Color next() {
         if (cnt < scheme1.length) {

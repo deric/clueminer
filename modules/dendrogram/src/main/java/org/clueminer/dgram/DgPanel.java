@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.dendrogram.gui.ClassAssignment;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
 import org.clueminer.dendrogram.gui.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
@@ -64,6 +65,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected ColumnAnnotation columnAnnotationBar;
     protected ColumnStatistics statistics;
     protected ClusterAssignment clusterAssignment;
+    protected ClassAssignment classAssignment;
     protected SilhouettePlot silhouettePlot;
     private JLayeredPane rowTreeLayered;
     private boolean showColumnsTree = true;
@@ -169,7 +171,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
 
         heatmapWidth = reqSize.width - rowsTreeDim - insets.left - insets.right
-                - clusterAssignment.getSize().width;
+                - clusterAssignment.getSize().width - classAssignment.getSize().width;
         if (showEvalPlot) {
             heatmapWidth = (int) (heatmapWidth * 0.4);
         }
@@ -252,6 +254,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         createClusterAssignments();
         add(clusterAssignment);
 
+        createClassAssignments();
+        add(classAssignment);
+
         if (showEvalPlot) {
             createEvaluation();
             add(silhouettePlot);
@@ -322,6 +327,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         totalWidth = heatmapXoffset + dimHeatmap.width;
         clusterAssignment.setBounds(totalWidth, heatmapYoffset, clustAssign.width, clustAssign.height);
         totalWidth += clustAssign.width;
+
+        dim = classAssignment.getSize();
+        classAssignment.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
+        totalWidth += dim.width;
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
@@ -529,6 +538,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             clusterAssignment = new ClusterAssignment(this);
             dataListeners.add(clusterAssignment);
             dendroViewer.addClusteringListener(clusterAssignment);
+        }
+    }
+
+    private void createClassAssignments() {
+        if (classAssignment == null) {
+            classAssignment = new ClassAssignment(this);
+            dataListeners.add(classAssignment);
+            dendroViewer.addClusteringListener(classAssignment);
         }
     }
 

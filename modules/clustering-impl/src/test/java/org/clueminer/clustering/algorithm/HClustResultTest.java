@@ -313,7 +313,7 @@ public class HClustResultTest {
     }
 
     /**
-     * Test of getInstance method, of class HClustResult.
+     * Test of getVector method, of class HClustResult.
      */
     @Test
     public void testGetInstance() {

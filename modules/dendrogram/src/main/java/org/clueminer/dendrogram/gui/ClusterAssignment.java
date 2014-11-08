@@ -23,17 +23,17 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
 
     private static final long serialVersionUID = 7662186965958650502L;
     private final DendroPane panel;
-    private int stripeWidth = 20;
+    protected int stripeWidth = 20;
     private int maxTextWidth = 20;
-    private boolean drawBorders = true;
+    protected boolean drawBorders = true;
     private boolean drawLabels = true;
-    private final Insets insets = new Insets(0, 10, 0, 10);
+    protected final Insets insets = new Insets(0, 10, 0, 10);
     private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
-    private Font font = new Font("verdana", Font.BOLD, 12);
-    private int lineHeight;
+    protected Font font = new Font("verdana", Font.BOLD, 12);
+    protected int lineHeight;
     private final int labelOffset = 5;
-    private Clustering<Cluster> flatClust;
-    private HierarchicalResult hieraRes;
+    protected Clustering<Cluster> flatClust;
+    protected HierarchicalResult hieraRes;
 
     public ClusterAssignment(DendroPane panel) {
         this.panel = panel;
@@ -43,7 +43,7 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
         recalculate();
     }
 
-    private void drawData(Graphics2D g) {
+    protected void drawData(Graphics2D g) {
         if (flatClust != null) {
             HierarchicalResult res = flatClust.getLookup().lookup(HierarchicalResult.class);
             if (res != null) {
@@ -69,7 +69,7 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
                 if (clusters[mapped] != currClust) {
                     drawCluster(g, x, start, i, currClust);
                     start = i; //index if new cluster start
-                    currClust = clusters[hieraRes.getMappedIndex(i)];
+                    currClust = clusters[mapped];
                 }
                 i++;
             }
@@ -127,13 +127,14 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
         }
     }
 
-    private int elemHeight() {
+    protected int elemHeight() {
         return panel.getElementSize().height;
     }
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dendroData) {
         hieraRes = dendroData.getRowsResult();
+        //flatClust = hieraRes.getClustering();
         resetCache();
     }
 
@@ -150,12 +151,13 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
     @Override
     public void clusteringChanged(Clustering clust) {
         flatClust = clust;
-        createBufferedGraphics();
+        resetCache();
     }
 
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
         hieraRes = hclust;
+        resetCache();
     }
 
     public boolean isDrawLabels() {
