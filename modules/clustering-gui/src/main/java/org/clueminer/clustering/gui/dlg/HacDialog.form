@@ -141,6 +141,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="chckColumns">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/clueminer/clustering/gui/dlg/Bundle.properties" key="HacDialog.chckColumns.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
