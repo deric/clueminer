@@ -16,13 +16,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class SpecificityTest {
+public class AUCTest {
 
-    private static Specificity subject;
+    private static AUC subject;
     private static final double delta = 1e-9;
 
-    public SpecificityTest() {
-        subject = new Specificity();
+    public AUCTest() {
+        subject = new AUC();
     }
 
     @Test
@@ -46,7 +46,7 @@ public class SpecificityTest {
     @Test
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
-        assertEquals(true, score < 0.4);
+        assertEquals(true, score < 0.3);
     }
 
     @Test
@@ -55,4 +55,5 @@ public class SpecificityTest {
         //this is fixed clustering which correspods to true classes in dataset
         assertEquals(1.0, score, delta);
     }
+
 }
