@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -35,7 +35,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     private Map<Dataset<? extends Instance>, StdStorage> storage;
 
     public ClusteringExecutorCached() {
-        algorithm = new HAC();
+        algorithm = new HACLW();
     }
 
     @Override

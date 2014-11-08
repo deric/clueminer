@@ -32,7 +32,7 @@ public abstract class AbstractExecutor implements Executor {
         String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
 
         if (!cutoffAlg.equals("-- naive --")) {
-            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "NMI");
+            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
             ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
             strategy = CutoffStrategyFactory.getInstance().getDefault();
             strategy.setEvaluator(eval);

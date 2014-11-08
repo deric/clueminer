@@ -3,11 +3,13 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
@@ -47,7 +49,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        exec = new ClusteringExecutor();
+        exec = new ClusteringExecutorCached();
         gen = 0;
     }
 
@@ -83,8 +85,15 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
             ph.start(workunits);
         }
         cnt = 0;
-        for (String std : standartizations) {
-            for (ClusterLinkage link : linkage) {
+        for (ClusterLinkage link : linkage) {
+            ClusteringAlgorithm alg = getAlgorithm();
+            if (alg instanceof AgglomerativeClustering) {
+                if (!((AgglomerativeClustering) alg).isLinkageSupported(link.getName())) {
+                    //skip unsupported linkages
+                    continue;
+                }
+            }
+            for (String std : standartizations) {
                 //no log scale
                 makeClusters(std, false, link);
                 //with log scale
