@@ -12,9 +12,11 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
+import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.gui.Heatmap;
+import org.clueminer.dgram.eval.MOLO;
 import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
@@ -128,9 +130,9 @@ public class DGramVis {
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         mapping.setDataset(dataset);
 
-        /*OptimalTreeOrder treeOrder = new MOLO();
-         treeOrder.optimize(rowsResult, true);
-         treeOrder.optimize(colsResult, true);*/
+        OptimalTreeOrder treeOrder = new MOLO();
+        treeOrder.optimize(rowsResult, true);
+        treeOrder.optimize(colsResult, true);
         mapping.setRowsResult(rowsResult);
         mapping.setColsResult(colsResult);
         clustering.lookupAdd(mapping);
