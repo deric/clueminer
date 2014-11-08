@@ -121,12 +121,12 @@ public class CountingPairs {
 
         //sort clusters by number of diverse classes inside, clusters containing
         //only one class will have priority
-        TreeMap<String, Integer> sortedClusters = new ValueComparableMap<String, Integer>(Ordering.natural());
+        TreeMap<String, Integer> sortedClusters = new ValueComparableMap<>(Ordering.natural());
 
         for (String rowKey : table.rowKeySet()) {
             sortedClusters.put(rowKey, table.row(rowKey).size());
         }
-        LinkedList<String> notAssigned = new LinkedList<String>();
+        LinkedList<String> notAssigned = new LinkedList<>();
         //for each real class we have to find best match
         for (String cluster : sortedClusters.keySet()) {
             Map<String, Integer> assign = table.row(cluster);

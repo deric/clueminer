@@ -2,7 +2,7 @@ package org.clueminer.evolution.bnb;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.NMI;
+import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;

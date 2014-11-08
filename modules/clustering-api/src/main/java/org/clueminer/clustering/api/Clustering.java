@@ -45,6 +45,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     T get(int i);
 
     /**
+     * Find cluster by label, nil if given label is not present
+     *
+     * @param label
+     * @return cluster with given label
+     */
+    T get(String label);
+
+    /**
      * Inserts Dataset (a cluster) into Clustering (a set of clusters)
      *
      * @param d

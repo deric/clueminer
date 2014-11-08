@@ -1,7 +1,7 @@
 package org.clueminer.explorer;
 
 import org.clueminer.eval.CalinskiHarabasz;
-import org.clueminer.eval.NMI;
+import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;

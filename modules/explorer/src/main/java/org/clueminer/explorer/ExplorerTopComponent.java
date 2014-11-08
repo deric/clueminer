@@ -19,7 +19,7 @@ import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.NMI;
+import org.clueminer.eval.external.NMI;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
