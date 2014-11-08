@@ -34,11 +34,12 @@ public class RandIndex extends AbstractCountingPairs {
      *
      * @param table
      * @param ref
+     * @param matching
      * @return
      */
     @Override
-    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+    public double countScore(Table<String, String, Integer> table,
+            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
         Map<String, Integer> res;
 
         int tp, fp, fn, tn;

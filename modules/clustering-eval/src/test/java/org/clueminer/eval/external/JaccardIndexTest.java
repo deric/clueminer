@@ -11,7 +11,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,20 +18,14 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class JaccardIndexTest {
+public class JaccardIndexTest extends ExternalTest {
 
     private static Clustering clusters;
     private static Clustering iris;
-    private static JaccardIndex subject;
-    private static final double delta = 1e-9;
 
     public JaccardIndexTest() throws FileNotFoundException, IOException {
         clusters = FakeClustering.iris();
         iris = FakeClustering.irisWrong();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
         subject = new JaccardIndex();
     }
 
@@ -41,32 +34,11 @@ public class JaccardIndexTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = subject.score(clusters, FakeDatasets.irisDataset());
-        //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
-        System.out.println("jaccard index = " + score);
+        measure(clusters, FakeDatasets.irisDataset(), 1.0);
 
-        //delta here depends on random initialization of k-means
-        long start = System.currentTimeMillis();
-        score = subject.score(iris, FakeDatasets.irisDataset());
-        long end = System.currentTimeMillis();
-        //it should be 0.8045 or 0.81...
-        assertEquals(0.15032686686154664, score, delta);
-        System.out.println("jaccard index = " + score);
-        System.out.println("measuring Jaccard took " + (end - start) + " ms");
+        measure(iris, FakeDatasets.irisDataset(), 0.15032686686154664);
 
-        Clustering<Cluster> irisWrong2 = FakeClustering.irisWrong2();
-        score = subject.score(irisWrong2, FakeDatasets.irisDataset());
-        assertEquals(0.3666666666666667, score, delta);
-        System.out.println("jaccard index (wrong clust2) = " + score);
-
-    }
-
-    /**
-     * Test of score method, of class JaccardIndex.
-     */
-    @Test
-    public void testScore_3args() {
+        measure(FakeClustering.irisWrong2(), FakeDatasets.irisDataset(), 0.3666666666666667);
     }
 
     /**
@@ -81,28 +53,15 @@ public class JaccardIndexTest {
      */
     @Test
     public void testScore_Clustering_Clustering() {
-        long start, end;
         double score;
-
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
-        end = System.currentTimeMillis();
-
         //each cluster should have this scores:
         //Cabernet = 0.5625
         //Syrah = 0.3846
         //Pinot = 0.5714
-        assertEquals(0.5061813186813187, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.5061813186813187);
 
-        start = System.currentTimeMillis();
-        double score2 = subject.score(FakeClustering.wineClustering(), FakeClustering.wine());
-        end = System.currentTimeMillis();
         //when using class labels result should be the same
-        assertEquals(score, score2, delta);
-        System.out.println(subject.getName() + " = " + score2);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
+        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
     }
 
     @Test

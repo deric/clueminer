@@ -11,7 +11,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,21 +18,9 @@ import static org.junit.Assert.*;
  *
  * @author tombart
  */
-public class PrecisionTest {
-
-    private static Clustering clusters;
-    private static Clustering iris;
-    private static Precision subject;
-    private static final double delta = 1e-9;
+public class PrecisionTest extends ExternalTest {
 
     public PrecisionTest() throws FileNotFoundException, IOException {
-
-        clusters = FakeClustering.iris();
-        iris = FakeClustering.irisWrong();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
         subject = new Precision();
     }
 
@@ -42,25 +29,8 @@ public class PrecisionTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = subject.score(clusters, FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-
-        long start = System.currentTimeMillis();
-        score = subject.score(iris, FakeDatasets.irisDataset());
-        long end = System.currentTimeMillis();
-
-        assertEquals(0.36666666666, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-    }
-
-    /**
-     * Test of score method, of class Precision.
-     */
-    @Test
-    public void testScore_3args() {
+        measure(FakeClustering.iris(), FakeDatasets.irisDataset(), 1.0);
     }
 
     /**
@@ -95,51 +65,19 @@ public class PrecisionTest {
      */
     @Test
     public void testScore_Clustering_Clustering() {
-        long start, end;
-        start = System.currentTimeMillis();
-        double score = subject.score(FakeClustering.iris(), FakeClustering.iris());
-        end = System.currentTimeMillis();
-        //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
-        System.out.println("precision  = " + score);
-        System.out.println("measuring precision took " + (end - start) + " ms");
+        double score;
+        measure(FakeClustering.iris(), FakeDatasets.irisDataset(), 1.0);
 
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.irisWrong(), FakeClustering.iris());
-        end = System.currentTimeMillis();
-
-        assertEquals(0.3666666666666667, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.irisWrong2(), FakeClustering.iris());
-        end = System.currentTimeMillis();
-
-        assertEquals(0.5333333333333333, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
-        end = System.currentTimeMillis();
+        measure(FakeClustering.irisWrong4(), FakeClustering.iris(), 0.8666666666666667);
+        measure(FakeClustering.irisWrong5(), FakeClustering.iris(), 0.6666666666666667);
 
         //each cluster should have this scores:
         //Cabernet = 0.6923
         //Syrah = 0.5555
         //Pinot = 0.8000
-        assertEquals(0.6826210826210826, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-
-        start = System.currentTimeMillis();
-        double score2 = subject.score(FakeClustering.wineClustering(), FakeClustering.wine());
-        end = System.currentTimeMillis();
-        //when using class labels result should be the same
-        assertEquals(score, score2, delta);
-        System.out.println(subject.getName() + " = " + score2);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6826210826210826);
+        //when using class labels, result should be the same
+        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
     }
 
     /**

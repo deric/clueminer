@@ -28,12 +28,13 @@ public class JaccardIndex extends AbstractCountingPairs {
      *
      * @param table
      * @param ref
+     * @param matching
      * @return Jaccard index which should be between 0.0 and 1.0 (bigger is
      *         better)
      */
     @Override
-    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+    public double countScore(Table<String, String, Integer> table,
+            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
         Map<String, Integer> res;
 
         int tp, fp, fn;

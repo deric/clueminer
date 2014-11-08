@@ -11,7 +11,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,28 +18,15 @@ import static org.junit.Assert.*;
  *
  * @author tombart
  */
-public class RecallTest {
+public class RecallTest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
-    private static Recall subject;
-    private static final double delta = 1e-9;
 
     public RecallTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
         subject = new Recall();
-    }
-
-    /**
-     * Test of getName method, of class Recall.
-     */
-    @Test
-    public void testGetName() {
     }
 
     /**
@@ -48,26 +34,9 @@ public class RecallTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = subject.score(irisCorrect, FakeDatasets.irisDataset());
-        //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
-        System.out.println(subject.getName() + " = " + score);
+        measure(irisCorrect, FakeDatasets.irisDataset(), 1.0);
 
-        //delta here depends on random initialization of k-means
-        long start = System.currentTimeMillis();
-        score = subject.score(irisWrong, FakeDatasets.irisDataset());
-        long end = System.currentTimeMillis();
-
-        assertEquals(0.53403755868544, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-    }
-
-    /**
-     * Test of score method, of class Recall.
-     */
-    @Test
-    public void testScore_3args() {
+        measure(irisWrong, FakeDatasets.irisDataset(), 0.53403755868544);
     }
 
     /**
@@ -85,28 +54,16 @@ public class RecallTest {
      */
     @Test
     public void testScore_Clustering_Clustering() {
-        long start, end;
         double score;
-
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
-        end = System.currentTimeMillis();
 
         //each cluster should have this scores:
         //Cabernet = 0.7500
         //Syrah = 0.5555
         //Pinot = 0.6666
-        assertEquals(0.6574074074074074, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6574074074074074);
 
-        start = System.currentTimeMillis();
-        double score2 = subject.score(FakeClustering.wineClustering(), FakeClustering.wine());
-        end = System.currentTimeMillis();
         //when using class labels result should be the same
-        assertEquals(score, score2, delta);
-        System.out.println(subject.getName() + " = " + score2);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
+        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
     }
 
     @Test

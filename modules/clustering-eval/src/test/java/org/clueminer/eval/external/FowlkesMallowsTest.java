@@ -11,7 +11,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,28 +18,15 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class FowlkesMallowsTest {
+public class FowlkesMallowsTest extends ExternalTest {
 
-    private static FowlkesMallows subject;
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
-    private static final double delta = 1e-9;
 
     public FowlkesMallowsTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
         subject = new FowlkesMallows();
-    }
-
-    /**
-     * Test of getName method, of class FowlkesMallows.
-     */
-    @Test
-    public void testGetName() {
     }
 
     /**
@@ -48,25 +34,11 @@ public class FowlkesMallowsTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        double score = subject.score(irisCorrect, FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
-        System.out.println("fm index = " + score);
+        measure(irisCorrect, FakeDatasets.irisDataset(), 1.0);
 
-        //delta here depends on random initialization of k-means
-        long start = System.currentTimeMillis();
-        score = subject.score(irisWrong, FakeDatasets.irisDataset());
-        long end = System.currentTimeMillis();
-        //     assertEquals(1565, score, 1.0);
-        System.out.println("fm index = " + score);
-        System.out.println("measuring Fowlkes-Mallows took " + (end - start) + " ms");
-    }
+        measure(irisWrong, FakeDatasets.irisDataset(), 0.49390115014267694);
 
-    /**
-     * Test of score method, of class FowlkesMallows.
-     */
-    @Test
-    public void testScore_3args() {
     }
 
     /**
@@ -83,26 +55,11 @@ public class FowlkesMallowsTest {
      */
     @Test
     public void testScore_Clustering_Clustering() {
-        long start, end;
         double score;
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6688096636728896);
 
-        start = System.currentTimeMillis();
-        score = subject.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
-        end = System.currentTimeMillis();
-
-        //each cluster should have this scores:
-        assertEquals(0.6688096636728896, score, delta);
-        System.out.println(subject.getName() + " = " + score);
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
-
-        start = System.currentTimeMillis();
-        double score2 = subject.score(FakeClustering.wineClustering(), FakeClustering.wine());
-        end = System.currentTimeMillis();
-        System.out.println(subject.getName() + " = " + score2);
         //when using class labels result should be the same
-        assertEquals(score, score2, delta);
-
-        System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
+        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
     }
 
     @Test

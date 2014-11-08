@@ -16,10 +16,7 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class SpecificityTest {
-
-    private static Specificity subject;
-    private static final double delta = 1e-9;
+public class SpecificityTest extends ExternalTest {
 
     public SpecificityTest() {
         subject = new Specificity();
@@ -51,8 +48,7 @@ public class SpecificityTest {
 
     @Test
     public void testIrisCorrect() {
-        double score = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
         //this is fixed clustering which correspods to true classes in dataset
-        assertEquals(1.0, score, delta);
+        measure(FakeClustering.iris(), FakeDatasets.irisDataset(), 1.0);
     }
 }

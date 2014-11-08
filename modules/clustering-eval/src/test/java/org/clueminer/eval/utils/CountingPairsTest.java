@@ -1,6 +1,5 @@
 package org.clueminer.eval.utils;
 
-import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.io.FileNotFoundException;

@@ -1,5 +1,6 @@
 package org.clueminer.eval.external;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -14,7 +15,24 @@ import org.clueminer.math.Matrix;
  */
 public abstract class AbstractCountingPairs extends AbstractExternalEval {
 
-    public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref);
+    public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, BiMap<String, String> matching);
+
+    /**
+     * Once matching classes <-> clusters are found result will be stored in
+     * clustering lookup
+     *
+     * @param table
+     * @param ref
+     * @return
+     */
+    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
+        BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
+        if (matching == null) {
+            matching = CountingPairs.findMatching(table);
+            ref.lookupAdd(matching);
+        }
+        return countScore(table, ref, matching);
+    }
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
