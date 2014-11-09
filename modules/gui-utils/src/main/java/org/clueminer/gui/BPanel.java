@@ -72,12 +72,24 @@ public abstract class BPanel extends JPanel {
 
     public abstract boolean isAntiAliasing();
 
-    public void createBufferedGraphics() {
-        if (!hasData() || realSize.width <= 0 || realSize.height <= 0) {
+    private void createBufferedGraphics() {
+        if (!hasData()) {
             return;
         }
 
-        bufferedImage = new BufferedImage(realSize.width, realSize.height, BufferedImage.TYPE_INT_ARGB);
+        if (fitToSpace) {
+            if (realSize.width <= 0 || realSize.height <= 0) {
+                return;
+            }
+            //create smaller image, then upscale or downscale
+            bufferedImage = new BufferedImage(realSize.width, realSize.height, BufferedImage.TYPE_INT_ARGB);
+        } else {
+            if (reqSize.width <= 0 || reqSize.height <= 0) {
+                return;
+            }
+            bufferedImage = new BufferedImage(reqSize.width, reqSize.height, BufferedImage.TYPE_INT_ARGB);
+        }
+
         g = bufferedImage.createGraphics();
         //this.setOpaque(false);
         // clear the panel
@@ -87,7 +99,11 @@ public abstract class BPanel extends JPanel {
             g.setComposite(AlphaComposite.Clear);
         } else {
             g.setComposite(AlphaComposite.Src);
-            g.fillRect(0, 0, realSize.width, realSize.width);
+            if (fitToSpace) {
+                g.fillRect(0, 0, realSize.width, realSize.width);
+            } else {
+                g.fillRect(0, 0, reqSize.width, reqSize.width);
+            }
         }
 
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
@@ -125,7 +141,7 @@ public abstract class BPanel extends JPanel {
                     if (reqSize.width <= 0 || reqSize.height <= 0) {
                         return;
                     }
-
+                    //resize buffered image
                     BufferedImage scaledBI = new BufferedImage(reqSize.width, reqSize.height, BufferedImage.TYPE_INT_ARGB);
                     Graphics2D gr = scaledBI.createGraphics();
                     if (preserveAlpha) {
