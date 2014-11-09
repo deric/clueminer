@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -44,10 +43,10 @@ public class ClassAssignment extends ClusterAssignment {
         if (flatClust != null && hieraRes != null) {
             int i = 0;
             Dataset<? extends Instance> dataset = hieraRes.getDataset();
-            if (dataset.getClasses().size() == 0) {
-                logger.log(Level.WARNING, "no class information in data");
-                return;
-            }
+            /*if (dataset.getClasses().size() == 0) {
+             logger.log(Level.WARNING, "no class information in data");
+             return;
+             }*/
             BiMap<String, String> matching = getMatching(flatClust);
             Object2ObjectMap<Object, Color> map = new Object2ObjectOpenHashMap(i);
 

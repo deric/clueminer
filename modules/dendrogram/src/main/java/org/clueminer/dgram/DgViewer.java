@@ -386,6 +386,11 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
         return data;
     }
 
+    @Override
+    public boolean isEvaluationVisible() {
+        return dendrogramPanel.isShowEvalPlot();
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DgViewer viewer;

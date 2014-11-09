@@ -356,6 +356,11 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
         return data;
     }
 
+    @Override
+    public boolean isEvaluationVisible() {
+        return false;
+    }
+
     private class ViewerComponentListener implements ComponentListener {
 
         DendrogramViewer viewer;
