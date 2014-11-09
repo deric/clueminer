@@ -90,6 +90,10 @@ public class ARFFHandlerTest {
         //from vehicle dataset
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Class' {opel,saab,bus,van}"));
         assertTrue(arff.isValidAttributeDefinition("@attribute class {east,west}"));
+        //from breast-w - in square brackets there is range of values
+        assertTrue(arff.isValidAttributeDefinition("@attribute Cell_Size_Uniformity integer [1,10]"));
+        //from cmc
+        assertTrue(arff.isValidAttributeDefinition("@attribute Number_of_children_ever_born INTEGER"));
     }
 
     /**

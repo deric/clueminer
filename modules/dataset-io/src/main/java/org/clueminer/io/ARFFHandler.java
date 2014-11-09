@@ -31,11 +31,22 @@ public class ARFFHandler implements DatasetLoader {
     public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
 
     /**
-     * matches eg. "
+     * matches attribute definition which might simply contain attribute name
+     * and its type, starting with "@attribute" annotation:
      *
-     * @ATTRIBUTE sepallength	REAL"
+     * "@attribute attr_name numeric"
+     *
+     * more complex definitions contain a set of allowed values (in curly
+     * brackets {a, b, c}):
+     *
+     * "@attribute class {cp,im,pp,imU,om,omL,imL,imS}"
+     *
+     * or ranges in square bracets
+     *
+     * "@attribute Mitoses integer [1,10]"
+     *
      */
-    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
+    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\}|\\[[(\\w+),]+\\])", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
