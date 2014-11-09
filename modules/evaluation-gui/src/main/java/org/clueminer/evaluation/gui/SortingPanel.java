@@ -92,13 +92,9 @@ public class SortingPanel extends JPanel {
     }
 
     public void setClusterings(Collection<? extends Clustering> clusterings) {
-        plot.setClusterings((Collection<Clustering>) clusterings);
-        clusteringChanged();
-    }
-
-    private void clusteringChanged() {
-        //this.removeAll();
-
+        if (clusterings != null && clusterings.size() > 1) {
+            plot.setClusterings((Collection<Clustering>) clusterings);
+        }
     }
 
 }

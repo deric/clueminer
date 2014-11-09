@@ -28,6 +28,7 @@ public class SortingDemo extends JFrame {
         clusterings.add(FakeClustering.irisWrong());
         clusterings.add(FakeClustering.irisWrong2());
         clusterings.add(FakeClustering.irisWrong5());
+        clusterings.add(FakeClustering.irisMostlyWrong());
 
         evalPlot.setClusterings(clusterings);
     }

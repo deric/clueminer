@@ -2,11 +2,17 @@ package org.clueminer.evaluation.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.Collection;
+import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 
 /**
  * Top component which displays something.
@@ -32,9 +38,10 @@ import org.openide.util.NbBundle.Messages;
     "CTL_SortingTopComponent=Sorting Window",
     "HINT_SortingTopComponent=This is a Sorting window"
 })
-public final class SortingTopComponent extends TopComponent {
+public final class SortingTopComponent extends TopComponent implements LookupListener {
 
     private final SortingPanel frame;
+    private Lookup.Result<Clustering> result = null;
 
     public SortingTopComponent() {
         initComponents();
@@ -60,12 +67,15 @@ public final class SortingTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        result.addLookupListener(this);
+        resultChanged(new LookupEvent(result));
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        result.removeLookupListener(this);
+        result = null;
     }
 
     void writeProperties(java.util.Properties p) {
@@ -78,5 +88,11 @@ public final class SortingTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends Clustering> allClusterings = result.allInstances();
+        frame.setClusterings(allClusterings);
     }
 }

@@ -79,11 +79,9 @@ public class SortedClusterings extends BPanel {
     }
 
     protected void clusteringChanged() {
-        if (clusterings != null) {
-            //           Clustering[] clust = new Clustering[5];
-//            Arrays.sort(clust, Collections.reverseOrder());
+        if (hasData()) {
+            resetCache();
         }
-        resetCache();
     }
 
     private int itemsCnt() {
@@ -97,7 +95,7 @@ public class SortedClusterings extends BPanel {
     public void render(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.setFont(defaultFont);
-        float xA = 0.0f, xB = reqSize.width - maxWidth;
+        float xA = 0.0f, xB = getSize().width - maxWidth;
         Clustering clust;
         int rowB;
         double x1, y1, y2;
@@ -126,7 +124,7 @@ public class SortedClusterings extends BPanel {
             //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
 
         }
-        System.out.println("distance: " + dist);
+        //System.out.println("distance: " + dist);
         g.dispose();
     }
 
@@ -188,7 +186,7 @@ public class SortedClusterings extends BPanel {
         realSize.height = height;
         //reqSize.height = height;
         //setMinimumSize(realSize);
-        //setPreferredSize(realSize);
+        setPreferredSize(realSize);
         //setSize(realSize);
 
     }
