@@ -1,14 +1,17 @@
 package org.clueminer.clustering.algorithm;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.Table;
 import java.util.HashSet;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
@@ -33,7 +36,7 @@ public class HClustResultTest {
     @BeforeClass
     public static void setUpClass() {
         dataset = FakeClustering.irisDataset();
-        algorithm = new HAC();
+        algorithm = new HACLW();
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
@@ -161,6 +164,17 @@ public class HClustResultTest {
             }
             prev = c;
         }
+        //magic constant
+        cut = 0.7708573149422662;
+        c = rowsResult.updateCutoff(cut);
+        assertEquals(rowsResult.getDataset().size(), c.instancesCount());
+        int[] clusters = rowsResult.getClusters(0);
+        Dump.array(clusters, "clusters");
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(c);
+        BiMap<String, String> matching;
+        System.out.println("table: " + table);
+        matching = CountingPairs.findMatching(table);
+        System.out.println("matching: " + matching);
     }
 
     /**

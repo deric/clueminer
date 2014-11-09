@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,7 +37,7 @@ public class MOLO implements OptimalTreeOrder {
         //similarity.printLower(2, 2);
         DendroTreeData tree = clustering.getTreeData();
         //tree.print();
-        //Dump.array(tree.getMapping(), "tree mapping");
+        Dump.array(tree.getMapping(), "tree mapping");
         //tree.print();
         int n = tree.numLeaves();
         /* order = new int[n];
@@ -59,6 +60,7 @@ public class MOLO implements OptimalTreeOrder {
         //System.out.println("in order " + inOrderScore(tree.getRoot()));
         tree.createMapping(n, tree.getRoot());
         tree.updatePositions(tree.getRoot());
+        //clustering.updateCutoff(clustering.getCutoff());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class MOLO implements OptimalTreeOrder {
             //right is leaf
             sortSmallest(d.getLeft());
             min = Math.min(d.getHeight(), d.getLeft().getHeight());
-            //System.out.println("!L: " + d.getHeight() + " vs R: " + d.getLeft().getHeight());
+            System.out.println("!L: " + d.getHeight() + " vs R: " + d.getLeft().getHeight());
             d.setMin(min);
             return d;
         } else if (d.getLeft().isLeaf() && !d.getRight().isLeaf()) {
@@ -83,13 +85,13 @@ public class MOLO implements OptimalTreeOrder {
             sortSmallest(d.getRight());
             min = Math.min(d.getHeight(), d.getRight().getHeight());
             d.swapChildren();
-            //System.out.println("L: " + d.getHeight() + " vs !R: " + d.getRight().getHeight());
+            System.out.println("L: " + d.getHeight() + " vs !R: " + d.getRight().getHeight());
             d.setMin(min);
         } else {
             //both branches are subtrees
             sortSmallest(d.getLeft());
             sortSmallest(d.getRight());
-            //System.out.println("L: " + d.getLeft().getHeight() + " vs R: " + d.getRight().getHeight());
+            System.out.println("L: " + d.getLeft().getHeight() + " vs R: " + d.getRight().getHeight());
             if (d.getLeft().getMin() >= d.getRight().getMin()) {
                 d.swapChildren();
             }

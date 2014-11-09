@@ -47,7 +47,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
-        treeOrder.optimize(rowsResult, true);
+        //TODO: tree ordering might break assigning items to clusters
+        //treeOrder.optimize(rowsResult, true);
         return rowsResult;
     }
 
@@ -57,7 +58,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
-        treeOrder.optimize(columnsResult, true);
+        //treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;
