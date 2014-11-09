@@ -107,7 +107,8 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
 
         }
         if (y2 > 0) {
-            drawLabel(g, y + y2 / 2.0, clusterNum, frc);
+            //clusterNum starts from 0, we make it more human readable
+            drawLabel(g, y + y2 / 2.0, clusterNum + 1, frc);
         }
     }
 
