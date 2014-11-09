@@ -212,6 +212,7 @@
         <module>modules/guava</module>
         <module>modules/fastutil</module>
         <module>modules/commons</module>
+        <module>modules/evaluation-gui</module>
     </modules>
     <reporting>
         <plugins>
