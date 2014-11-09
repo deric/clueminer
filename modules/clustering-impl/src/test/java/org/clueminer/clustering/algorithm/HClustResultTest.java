@@ -1,7 +1,5 @@
 package org.clueminer.clustering.algorithm;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
 import java.util.HashSet;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HACLW;
@@ -11,7 +9,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
@@ -170,11 +167,6 @@ public class HClustResultTest {
         assertEquals(rowsResult.getDataset().size(), c.instancesCount());
         int[] clusters = rowsResult.getClusters(0);
         Dump.array(clusters, "clusters");
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c);
-        BiMap<String, String> matching;
-        System.out.println("table: " + table);
-        matching = CountingPairs.findMatching(table);
-        System.out.println("matching: " + matching);
     }
 
     /**

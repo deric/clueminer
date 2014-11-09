@@ -1,7 +1,5 @@
 package org.clueminer.clustering.order;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
@@ -10,7 +8,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
@@ -73,11 +70,6 @@ public class MOLOTest {
             prev = c;
         }
 
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c);
-        BiMap<String, String> matching;
-        System.out.println("table: " + table);
-        matching = CountingPairs.findMatching(table);
-        System.out.println("matching: " + matching);
     }
 
     @Test
