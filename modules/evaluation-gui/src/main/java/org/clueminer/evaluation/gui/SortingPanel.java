@@ -19,8 +19,7 @@ public class SortingPanel extends JPanel {
 
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
-    private SortedClusterings plotX;
-    private SortedClusterings plotY;
+    private SortedClusterings plot;
 
     public SortingPanel() {
         initComponents();
@@ -59,23 +58,19 @@ public class SortingPanel extends JPanel {
             }
         });
         c.insets = new Insets(5, 0, 5, 5);
-        c.gridx = 2;
+        c.gridx = 1;
         add(comboEvaluatorY, c);
 
-        plotX = new SortedClusterings();
+        //left list
+        plot = new SortedClusterings();
         c.gridy = 1;
-        c.gridwidth = 1;
+        c.gridwidth = 2;
         c.gridx = 0;
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 0, 0);
-        add(plotX, c);
-        plotY = new SortedClusterings();
-        c.gridx = 2;
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0, 0, 0, 0);
-        add(plotY, c);
+        add(plot, c);
 
         revalidate();
         validate();
@@ -85,20 +80,19 @@ public class SortingPanel extends JPanel {
     private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {
         String item = (String) comboEvaluatorX.getSelectedItem();
         if (item != null) {
-            plotX.setEvaluator(EvaluationFactory.getInstance().getProvider(item));
+            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 
     private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
         String item = (String) comboEvaluatorY.getSelectedItem();
         if (item != null) {
-            plotY.setEvaluator(EvaluationFactory.getInstance().getProvider(item));
+            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 
     public void setClusterings(Collection<? extends Clustering> clusterings) {
-        plotX.setClusterings(clusterings);
-        plotY.setClusterings(clusterings);
+        plot.setClusterings((Collection<Clustering>) clusterings);
         clusteringChanged();
     }
 

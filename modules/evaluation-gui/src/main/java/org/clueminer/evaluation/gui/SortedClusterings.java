@@ -1,5 +1,6 @@
 package org.clueminer.evaluation.gui;
 
+import org.clueminer.eval.utils.ClusteringComparator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,9 +8,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.font.FontRenderContext;
+import java.util.Arrays;
 import java.util.Collection;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.AICScore;
 import org.clueminer.gui.BPanel;
 
 /**
@@ -18,9 +21,11 @@ import org.clueminer.gui.BPanel;
  */
 public class SortedClusterings extends BPanel {
 
-    private ClusterEvaluation evaluatorX;
-    private ClusterEvaluation evaluatorY;
     private Collection<? extends Clustering> clusterings;
+    Clustering[] left;
+    Clustering[] right;
+    ClusteringComparator cLeft;
+    ClusteringComparator cRight;
     protected Font defaultFont;
     protected int lineHeight = 12;
     protected int elemHeight = 20;
@@ -29,22 +34,33 @@ public class SortedClusterings extends BPanel {
     private Insets insets = new Insets(5, 5, 5, 5);
 
     public SortedClusterings() {
-        //setBackground(Color.red);
+        setBackground(Color.red);
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
         this.fitToSpace = false;
         this.preserveAlpha = true;
+        cLeft = new ClusteringComparator(new AICScore());
+        cRight = new ClusteringComparator(new AICScore());
     }
 
-    void setEvaluator(ClusterEvaluation provider) {
-        this.evaluatorX = provider;
+    void setEvaluatorX(ClusterEvaluation provider) {
+        cLeft.setEvaluator(provider);
+        Arrays.sort(left, cLeft);
+        clusteringChanged();
     }
 
     void setEvaluatorY(ClusterEvaluation provider) {
-        this.evaluatorY = provider;
+        cRight.setEvaluator(provider);
+        Arrays.sort(right, cRight);
+        clusteringChanged();
     }
 
-    public void setClusterings(Collection<? extends Clustering> clusterings) {
+    public void setClusterings(Collection<Clustering> clusterings) {
         this.clusterings = clusterings;
+        left = clusterings.toArray(new Clustering[clusterings.size()]);
+        Arrays.sort(left, cLeft);
+
+        right = clusterings.toArray(new Clustering[clusterings.size()]);
+        Arrays.sort(right, cRight);
         clusteringChanged();
     }
 
@@ -65,16 +81,15 @@ public class SortedClusterings extends BPanel {
 
     @Override
     public void render(Graphics2D g) {
-
         g.setColor(Color.BLACK);
         g.setFont(defaultFont);
         FontRenderContext frc = g.getFontRenderContext();
         FontMetrics fm = g.getFontMetrics();
-        Font f;
         String str;
         int width;
         float x = 0.0f, y;
         int row = 0;
+        //draw first column
         for (Clustering c : clusterings) {
             str = c.getName();
             if (str == null) {
@@ -99,13 +114,9 @@ public class SortedClusterings extends BPanel {
 
     @Override
     public void sizeUpdated(Dimension size) {
-        System.out.println("component " + size);
-        //realSize.width = size.width;
-        //realSize.height = size.height;
         if (hasData()) {
             int h = (size.height - insets.top - insets.bottom) / (itemsCnt() + 1);
             if (h > 0) {
-                System.out.println("new height = " + h);
                 elemHeight = h;
                 fontSize = (int) (0.8 * elemHeight);
                 defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);

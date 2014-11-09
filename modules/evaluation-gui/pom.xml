@@ -92,7 +92,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-eval</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <properties>
