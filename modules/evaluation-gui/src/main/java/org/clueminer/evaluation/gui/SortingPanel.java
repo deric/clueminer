@@ -6,9 +6,10 @@ import java.awt.Insets;
 import java.util.Collection;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
+import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 
 /**
  *
@@ -16,12 +17,10 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
  */
 public class SortingPanel extends JPanel {
 
-    private Collection<? extends Clustering> clusterings;
-    private ClusterEvaluator evaluatorX;
-    private ClusterEvaluator evaluatorY;
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
-    private SortingPlot plot;
+    private SortedClusterings plotX;
+    private SortedClusterings plotY;
 
     public SortingPanel() {
         initComponents();
@@ -42,7 +41,7 @@ public class SortingPanel extends JPanel {
         c.insets = new Insets(5, 5, 5, 10);
 
         comboEvaluatorX = new JComboBox();
-        comboEvaluatorX.setModel(new EvaluatorComboBox());
+        comboEvaluatorX.setModel(new EvaluatorComboBox(ExternalEvaluatorFactory.getInstance().getProvidersArray()));
         comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -52,7 +51,7 @@ public class SortingPanel extends JPanel {
         add(comboEvaluatorX, c);
 
         comboEvaluatorY = new JComboBox();
-        comboEvaluatorY.setModel(new EvaluatorComboBox());
+        comboEvaluatorY.setModel(new EvaluatorComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray()));
         comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -60,43 +59,46 @@ public class SortingPanel extends JPanel {
             }
         });
         c.insets = new Insets(5, 0, 5, 5);
-        c.gridx = 1;
+        c.gridx = 2;
         add(comboEvaluatorY, c);
 
-        plot = new SortingPlot();
+        plotX = new SortedClusterings();
         c.gridy = 1;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         c.gridx = 0;
+        c.weightx = 1.0;
         c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(0, 0, 0, 0);
-        add(plot, c);
+        add(plotX, c);
+        plotY = new SortedClusterings();
+        c.gridx = 2;
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(plotY, c);
+
+        revalidate();
+        validate();
+        repaint();
     }
 
     private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {
         String item = (String) comboEvaluatorX.getSelectedItem();
         if (item != null) {
-            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
+            plotX.setEvaluator(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 
     private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
         String item = (String) comboEvaluatorY.getSelectedItem();
         if (item != null) {
-            plot.setEvaluatorY(EvaluationFactory.getInstance().getProvider(item));
+            plotY.setEvaluator(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 
     public void setClusterings(Collection<? extends Clustering> clusterings) {
-        this.clusterings = clusterings;
-        clusteringChanged();
-    }
-
-    public void setEvaluatorX(String eval) {
-        clusteringChanged();
-    }
-
-    public void setEvaluatorY(String eval) {
+        plotX.setClusterings(clusterings);
+        plotY.setClusterings(clusterings);
         clusteringChanged();
     }
 

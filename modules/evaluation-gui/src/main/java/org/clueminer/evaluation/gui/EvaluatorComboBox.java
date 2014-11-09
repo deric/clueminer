@@ -2,7 +2,6 @@ package org.clueminer.evaluation.gui;
 
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
-import org.clueminer.clustering.api.factory.EvaluationFactory;
 
 /**
  *
@@ -14,8 +13,8 @@ public class EvaluatorComboBox extends AbstractListModel<String> implements Comb
     private final String[] providers;
     private String selection = null;
 
-    public EvaluatorComboBox() {
-        providers = EvaluationFactory.getInstance().getProvidersArray();
+    public EvaluatorComboBox(String[] providers) {
+        this.providers = providers;
     }
 
     @Override

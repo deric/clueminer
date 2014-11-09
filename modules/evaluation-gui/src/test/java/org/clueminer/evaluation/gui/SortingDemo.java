@@ -23,9 +23,6 @@ public class SortingDemo extends JFrame {
     public SortingDemo() throws IOException {
         initComponents();
 
-        evalPlot.setEvaluatorX("AIC score");
-        evalPlot.setEvaluatorY("BIC score");
-
         Collection<Clustering> clusterings = new HashSet<>(4);
         clusterings.add(FakeClustering.irisWrong4());
         clusterings.add(FakeClustering.irisWrong());
