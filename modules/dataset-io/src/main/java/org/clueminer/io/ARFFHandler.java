@@ -46,7 +46,7 @@ public class ARFFHandler implements DatasetLoader {
      * "@attribute Mitoses integer [1,10]"
      *
      */
-    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\}|\\[[(\\w+),]+\\])", Pattern.CASE_INSENSITIVE);
+    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+)|'([-\\w+ ])',]+\\}|\\[[(\\w+),]+\\])", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the

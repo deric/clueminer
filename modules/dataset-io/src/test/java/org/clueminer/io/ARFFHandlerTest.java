@@ -94,6 +94,10 @@ public class ARFFHandlerTest {
         assertTrue(arff.isValidAttributeDefinition("@attribute Cell_Size_Uniformity integer [1,10]"));
         //from cmc
         assertTrue(arff.isValidAttributeDefinition("@attribute Number_of_children_ever_born INTEGER"));
+        //from glass
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { 'build wind float', 'build wind non-float', 'vehic wind float', 'vehic wind non-float', containers, tableware, headlamps}"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build-wind }"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build_wind }"));
     }
 
     /**
