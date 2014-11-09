@@ -35,11 +35,10 @@ public class SortedClusterings extends BPanel {
     private int maxWidth;
     private Insets insets = new Insets(5, 5, 5, 5);
     private Object2IntOpenHashMap<Clustering> matching;
-    final static BasicStroke stroke = new BasicStroke(2.0f);
-    final static BasicStroke wideStroke = new BasicStroke(8.0f);
+    static BasicStroke wideStroke = new BasicStroke(8.0f);
+    private double strokeW;
 
     public SortedClusterings() {
-        setBackground(Color.red);
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
         this.fitToSpace = false;
         this.preserveAlpha = true;
@@ -49,15 +48,19 @@ public class SortedClusterings extends BPanel {
 
     void setEvaluatorX(ClusterEvaluation provider) {
         cLeft.setEvaluator(provider);
-        Arrays.sort(left, cLeft);
-        clusteringChanged();
+        if (left != null && left.length > 1) {
+            Arrays.sort(left, cLeft);
+            clusteringChanged();
+        }
     }
 
     void setEvaluatorY(ClusterEvaluation provider) {
         cRight.setEvaluator(provider);
-        Arrays.sort(right, cRight);
-        updateMatching();
-        clusteringChanged();
+        if (right != null && right.length > 1) {
+            Arrays.sort(right, cRight);
+            updateMatching();
+            clusteringChanged();
+        }
     }
 
     public void setClusterings(Collection<Clustering> clusterings) {
@@ -115,8 +118,8 @@ public class SortedClusterings extends BPanel {
             drawClustering(g, clust, xB, rowB);
 
             g.setStroke(wideStroke);
-            y1 = row * elemHeight + elemHeight / 2.0 - wideStroke.getLineWidth();
-            y2 = rowB * elemHeight + elemHeight / 2.0 - wideStroke.getLineWidth();
+            y1 = row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
+            y2 = rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
             line = new Line2D.Double(x1, y1, xB, y2);
             g.draw(line);
             dist += distance(x1, y1, xB, y2);
@@ -162,10 +165,13 @@ public class SortedClusterings extends BPanel {
             if (h > 0) {
                 elemHeight = h;
                 fontSize = (int) (0.8 * elemHeight);
+                strokeW = 0.05 * elemHeight;
+                wideStroke = new BasicStroke((float) strokeW);
                 defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
             }
             //use maximum width avaiable
             realSize.width = size.width;
+            maxWidth = 0;
         }
     }
 
