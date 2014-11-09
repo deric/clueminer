@@ -25,7 +25,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.dendrogram.gui.ClassAssignment;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
-import org.clueminer.dendrogram.gui.ColorSchemeImpl;
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
 import org.clueminer.dendrogram.gui.ColumnStatistics;
 import org.clueminer.dendrogram.gui.CutoffLine;

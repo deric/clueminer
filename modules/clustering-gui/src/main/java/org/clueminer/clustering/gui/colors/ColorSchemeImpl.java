@@ -1,4 +1,4 @@
-package org.clueminer.dendrogram.gui;
+package org.clueminer.clustering.gui.colors;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -11,12 +11,12 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
  *
  * @author Tomas Barton
  */
-public class ColorSchemeImpl implements ColorScheme {
+public final class ColorSchemeImpl implements ColorScheme {
 
-    private final BufferedImage posColorImage = createGradientImage(Color.black, Color.green);
-    private final BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
-    protected static Color missingColor = new Color(128, 128, 128);
-    protected static Color maskColor = new Color(255, 255, 255, 128);
+    private BufferedImage negColorImage = createGradientImage(Color.red, Color.black);
+    private BufferedImage posColorImage = createGradientImage(Color.black, Color.green);
+    public static Color missingColor = new Color(128, 128, 128);
+    public static Color maskColor = new Color(255, 255, 255, 128);
     private boolean useDoubleGradient = true;
 
     public ColorSchemeImpl(boolean useDoubleGradient) {
@@ -25,6 +25,11 @@ public class ColorSchemeImpl implements ColorScheme {
 
     public ColorSchemeImpl() {
 
+    }
+
+    public ColorSchemeImpl(Color c1, Color c2, Color c3) {
+        negColorImage = createGradientImage(c1, c2);
+        posColorImage = createGradientImage(c2, c3);
     }
 
     /**

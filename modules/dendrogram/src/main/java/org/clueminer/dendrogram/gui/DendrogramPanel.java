@@ -1,5 +1,6 @@
 package org.clueminer.dendrogram.gui;
 
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import java.awt.*;
 import java.text.DecimalFormat;
 import javax.swing.Box;
