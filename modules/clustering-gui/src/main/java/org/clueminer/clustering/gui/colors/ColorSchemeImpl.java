@@ -58,33 +58,7 @@ public final class ColorSchemeImpl implements ColorScheme {
      */
     @Override
     public Color getColor(double value, DendrogramMapping dendroData) {
-        if (Double.isNaN(value)) {
-            return missingColor;
-        }
-
-        double maximum;
-        int colorIndex, rgb;
-        if (useDoubleGradient) {
-            maximum = value < dendroData.getMidValue() ? dendroData.getMinValue() : dendroData.getMaxValue();
-            colorIndex = (int) (255 * (value - dendroData.getMidValue()) / (maximum - dendroData.getMidValue()));
-            if (colorIndex < 0) {
-                colorIndex = -colorIndex;
-            }
-            colorIndex = colorIndex > 255 ? 255 : colorIndex;
-            rgb = value < dendroData.getMidValue() ? negColorImage.getRGB(255 - colorIndex, 0)
-                    : posColorImage.getRGB(colorIndex, 0);
-        } else {
-            double span = dendroData.getMaxValue() - dendroData.getMinValue();
-            if (value <= dendroData.getMinValue()) {
-                colorIndex = 0;
-            } else if (value >= dendroData.getMaxValue()) {
-                colorIndex = 255;
-            } else {
-                colorIndex = (int) (((value - dendroData.getMinValue()) / span) * 255);
-            }
-            rgb = posColorImage.getRGB(colorIndex, 0);
-        }
-        return new Color(rgb);
+        return getColor(value, dendroData.getMinValue(), dendroData.getMidValue(), dendroData.getMaxValue());
     }
 
     @Override
@@ -95,6 +69,37 @@ public final class ColorSchemeImpl implements ColorScheme {
     @Override
     public void setUseDoubleGradient(boolean useDoubleGradient) {
         this.useDoubleGradient = useDoubleGradient;
+    }
+
+    @Override
+    public Color getColor(double value, double min, double mid, double max) {
+        if (Double.isNaN(value)) {
+            return missingColor;
+        }
+
+        double maximum;
+        int colorIndex, rgb;
+        if (useDoubleGradient) {
+            maximum = value < mid ? min : max;
+            colorIndex = (int) (255 * (value - mid) / (maximum - mid));
+            if (colorIndex < 0) {
+                colorIndex = -colorIndex;
+            }
+            colorIndex = colorIndex > 255 ? 255 : colorIndex;
+            rgb = value < mid ? negColorImage.getRGB(255 - colorIndex, 0)
+                    : posColorImage.getRGB(colorIndex, 0);
+        } else {
+            double span = max - min;
+            if (value <= min) {
+                colorIndex = 0;
+            } else if (value >= max) {
+                colorIndex = 255;
+            } else {
+                colorIndex = (int) (((value - min) / span) * 255);
+            }
+            rgb = posColorImage.getRGB(colorIndex, 0);
+        }
+        return new Color(rgb);
     }
 
 }
