@@ -3,17 +3,16 @@ package org.clueminer.clustering.algorithm;
 import java.util.HashSet;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,6 +25,7 @@ public class HClustResultTest {
     private static AgglomerativeClustering algorithm;
     private static Dataset<? extends Instance> dataset;
     private static HierarchicalResult rowsResult;
+    private static final double delta = 1e-9;
 
     public HClustResultTest() {
     }
@@ -38,19 +38,8 @@ public class HClustResultTest {
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, "Single Linkage");
         rowsResult = algorithm.hierarchy(dataset, pref);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -146,13 +135,32 @@ public class HClustResultTest {
      */
     @Test
     public void testGetClusters() {
+        Clustering c, prev = rowsResult.getClustering();
+        c = rowsResult.getClustering();
+        //clustering should be cached (not created on each request)
+        assertEquals(prev, c);
     }
 
     /**
-     * Test of setCutoff method, of class HClustResult.
+     * When we cut dendrogram at any height, we always must have same number of
+     * instances in the dataset
      */
     @Test
-    public void testSetCutoff() {
+    public void testUpdateCutoff() {
+        double height = rowsResult.getMaxTreeHeight();
+        assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), delta);
+        double inc = 0.1;
+        double cut = height;
+        Clustering c, prev = null;
+        while (cut > 0.0) {
+            c = rowsResult.updateCutoff(cut);
+            assertEquals(rowsResult.getDataset().size(), c.instancesCount());
+            cut -= inc;
+            if (prev != null) {
+                assertNotSame(c, prev);
+            }
+            prev = c;
+        }
     }
 
     /**
@@ -249,20 +257,6 @@ public class HClustResultTest {
     }
 
     /**
-     * Test of getMappedIndex method, of class HClustResult.
-     */
-    @Test
-    public void testGetMappedIndex() {
-    }
-
-    /**
-     * Test of setMappedIndex method, of class HClustResult.
-     */
-    @Test
-    public void testSetMappedIndex() {
-    }
-
-    /**
      * Test of getMapping method, of class HClustResult.
      */
     @Test
@@ -293,6 +287,7 @@ public class HClustResultTest {
         //all numbers of rows should be there
         assertEquals(mapping.length - 1, max);
 
+        assertEquals(mapping.length, rowsResult.getDataset().size());
         Dump.array(mapping, "mapping");
 
         //@TODO implement tests
