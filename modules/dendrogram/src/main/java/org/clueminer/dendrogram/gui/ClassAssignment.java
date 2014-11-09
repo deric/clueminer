@@ -29,6 +29,8 @@ public class ClassAssignment extends ClusterAssignment {
 
     public ClassAssignment(DendroPane panel) {
         super(panel);
+        insets.left = 0;
+        insets.right = 0;
     }
 
     @Override
@@ -43,11 +45,10 @@ public class ClassAssignment extends ClusterAssignment {
             int i = 0;
             Dataset<? extends Instance> dataset = hieraRes.getDataset();
             if (dataset.getClasses().size() == 0) {
-                logger.log(Level.INFO, "no class information in data");
+                logger.log(Level.WARNING, "no class information in data");
                 return;
             }
             BiMap<String, String> matching = getMatching(flatClust);
-            System.out.println("matching " + matching.toString());
             Object2ObjectMap<Object, Color> map = new Object2ObjectOpenHashMap(i);
 
             g.setFont(font);
@@ -61,9 +62,7 @@ public class ClassAssignment extends ClusterAssignment {
 
             while (i < dataset.size()) {
                 mapped = hieraRes.getMappedIndex(i);
-//                System.out.println("curr: " + currClass + " ith: " + dataset.get(mapped).classValue());
                 if (!dataset.get(mapped).classValue().equals(currClass)) {
-                    //System.out.println("rectangle from " + start + " to " + i);
                     drawClass(g, x, start, i, colorForClass(map, currClass, matching));
                     start = i; //index if new cluster start
                     currClass = dataset.get(mapped).classValue();
@@ -78,7 +77,7 @@ public class ClassAssignment extends ClusterAssignment {
 
     private Color colorForClass(Object2ObjectMap<Object, Color> map, Object klass, BiMap<String, String> matching) {
         if (!map.containsKey(klass)) {
-            String cls = String.valueOf(klass);
+            String cls = klass.toString();
             if (matching.containsKey(cls)) {
                 String cluster = matching.get(cls);
                 Cluster c = flatClust.get(cluster);
@@ -90,9 +89,7 @@ public class ClassAssignment extends ClusterAssignment {
                     map.put(klass, colorGenerator.next());
                 }
             } else {
-                //System.out.println("matching miss " + cls);
-                //System.out.println(matching.toString());
-                colorGenerator.seek(map.size());
+                colorGenerator.seek(matching.size() + map.size());
                 map.put(klass, colorGenerator.next());
             }
         }
@@ -124,7 +121,6 @@ public class ClassAssignment extends ClusterAssignment {
         BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
         if (matching == null) {
             Table<String, String, Integer> table = CountingPairs.contingencyTable(ref);
-            System.out.println("table: " + table);
             matching = CountingPairs.findMatching(table);
             ref.lookupAdd(matching);
         }

@@ -51,7 +51,8 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
             }
         }
         if (flatClust != null && hieraRes != null) {
-            int[] clusters = hieraRes.getClusters(flatClust.instancesCount());
+            //param for getClusters is not used
+            int[] clusters = hieraRes.getClusters(0);
             int i = 0;
             if (clusters == null || clusters.length == 0) {
                 logger.log(Level.INFO, "clusters size is 0!!!");
