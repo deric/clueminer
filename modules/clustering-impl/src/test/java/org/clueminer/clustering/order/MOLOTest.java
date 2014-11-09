@@ -54,10 +54,13 @@ public class MOLOTest {
         double cut = height;
         Clustering c = null, prev = null;
         int[] clusters;
+        int numNodes = 2 * rowsResult.getDataset().size() - 1;
         while (cut > 0.0) {
             c = rowsResult.updateCutoff(cut);
             Dump.array(c.clusterSizes(), "cluster sizes " + cut);
             ///rowsResult.getTreeData().print();
+            assertEquals(rowsResult.getDataset().size(), rowsResult.getTreeData().numLeaves());
+            assertEquals(numNodes, rowsResult.getTreeData().numNodes());
             assertEquals(rowsResult.getDataset().size(), c.instancesCount());
             cut -= inc;
             System.out.println("cut = " + cut);
