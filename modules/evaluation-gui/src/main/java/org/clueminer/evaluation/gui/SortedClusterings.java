@@ -203,6 +203,7 @@ public class SortedClusterings extends BPanel {
     public void recalculate() {
         //int width = 40 + maxWidth;
         int height = 0;
+        elemHeight = (realSize.height - insets.top - insets.bottom) / itemsCnt();
         if (elemHeight > lineHeight) {
             height = elemHeight * clusterings.size();
         }
