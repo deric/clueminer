@@ -35,7 +35,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         super();
         silhouette = new Silhouette();
         scale = new StdScale();
-        fitToSpace = fit;
+        this.fitToSpace = fit;
+        this.preserveAlpha = true;
     }
 
     @Override
@@ -254,8 +255,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         render(g);
         if (image.getHeight() != height || image.getWidth() != width) {
             image = Scalr.resize(image, Scalr.Method.SPEED,
-                    Scalr.Mode.AUTOMATIC,
-                    width, height, Scalr.OP_ANTIALIAS);
+                                 Scalr.Mode.AUTOMATIC,
+                                 width, height, Scalr.OP_ANTIALIAS);
         }
 
         return image;
