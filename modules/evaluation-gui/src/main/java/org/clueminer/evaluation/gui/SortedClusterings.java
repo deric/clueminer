@@ -1,15 +1,17 @@
 package org.clueminer.evaluation.gui;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import java.awt.BasicStroke;
 import org.clueminer.eval.utils.ClusteringComparator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.font.FontRenderContext;
+import java.awt.geom.Line2D;
 import java.util.Arrays;
 import java.util.Collection;
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.AICScore;
@@ -32,6 +34,9 @@ public class SortedClusterings extends BPanel {
     protected int fontSize = 10;
     private int maxWidth;
     private Insets insets = new Insets(5, 5, 5, 5);
+    private Object2IntOpenHashMap<Clustering> matching;
+    final static BasicStroke stroke = new BasicStroke(2.0f);
+    final static BasicStroke wideStroke = new BasicStroke(8.0f);
 
     public SortedClusterings() {
         setBackground(Color.red);
@@ -51,6 +56,7 @@ public class SortedClusterings extends BPanel {
     void setEvaluatorY(ClusterEvaluation provider) {
         cRight.setEvaluator(provider);
         Arrays.sort(right, cRight);
+        updateMatching();
         clusteringChanged();
     }
 
@@ -61,7 +67,15 @@ public class SortedClusterings extends BPanel {
 
         right = clusterings.toArray(new Clustering[clusterings.size()]);
         Arrays.sort(right, cRight);
+        updateMatching();
         clusteringChanged();
+    }
+
+    private void updateMatching() {
+        matching = new Object2IntOpenHashMap<>();
+        for (int i = 0; i < right.length; i++) {
+            matching.put(right[i], i);
+        }
     }
 
     protected void clusteringChanged() {
@@ -83,26 +97,57 @@ public class SortedClusterings extends BPanel {
     public void render(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.setFont(defaultFont);
-        FontRenderContext frc = g.getFontRenderContext();
-        FontMetrics fm = g.getFontMetrics();
-        String str;
-        int width;
-        float x = 0.0f, y;
-        int row = 0;
-        //draw first column
-        for (Clustering c : clusterings) {
-            str = c.getName();
-            if (str == null) {
-                str = "unknown |" + c.size() + "|";
-            }
+        float xA = 0.0f, xB = reqSize.width - maxWidth;
+        Clustering clust;
+        int rowB;
+        double x1, y1, y2;
 
-            width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
-            checkMax(width);
-            y = (row * elemHeight + elemHeight / 2f + fm.getDescent() / 2f);
-            g.drawString(str, x, y);
-            row++;
+        x1 = maxWidth + 10;
+        Line2D.Double line;
+        double dist = 0.0;
+
+        //draw
+        for (int row = 0; row < left.length; row++) {
+            //left clustering
+            clust = left[row];
+            drawClustering(g, clust, xA, row);
+
+            //right clustering
+            rowB = matching.getInt(clust);
+            drawClustering(g, clust, xB, rowB);
+
+            g.setStroke(wideStroke);
+            y1 = row * elemHeight + elemHeight / 2.0 - wideStroke.getLineWidth();
+            y2 = rowB * elemHeight + elemHeight / 2.0 - wideStroke.getLineWidth();
+            line = new Line2D.Double(x1, y1, xB, y2);
+            g.draw(line);
+            dist += distance(x1, y1, xB, y2);
+            // g.setStroke(wideStroke);
+            //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
+
         }
+        System.out.println("distance: " + dist);
         g.dispose();
+    }
+
+    private double distance(double x1, double y1, double x2, double y2) {
+        double res = FastMath.pow(x1 - x2, 2) + FastMath.pow(y1 - y2, 2);
+
+        return FastMath.sqrt(res);
+    }
+
+    private void drawClustering(Graphics2D g, Clustering clust, float x, int row) {
+        String str = clust.getName();
+        int width;
+        float y;
+        if (str == null) {
+            str = "unknown |" + clust.size() + "|";
+        }
+
+        width = (int) (g.getFont().getStringBounds(str, g.getFontRenderContext()).getWidth());
+        checkMax(width);
+        y = (row * elemHeight + elemHeight / 2f + g.getFontMetrics().getDescent() / 2f);
+        g.drawString(str, x, y);
     }
 
     private void checkMax(int width) {
@@ -121,6 +166,8 @@ public class SortedClusterings extends BPanel {
                 fontSize = (int) (0.8 * elemHeight);
                 defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
             }
+            //use maximum width avaiable
+            realSize.width = size.width;
         }
     }
 
@@ -131,12 +178,12 @@ public class SortedClusterings extends BPanel {
 
     @Override
     public void recalculate() {
-        int width = 40 + maxWidth;
+        //int width = 40 + maxWidth;
         int height = 0;
         if (elemHeight > lineHeight) {
             height = elemHeight * clusterings.size();
         }
-        realSize.width = width;
+        //realSize.width = width;
         //reqSize.width = width;
         realSize.height = height;
         //reqSize.height = height;
