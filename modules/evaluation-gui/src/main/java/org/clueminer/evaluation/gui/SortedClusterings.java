@@ -31,9 +31,11 @@ public class SortedClusterings extends BPanel {
     ClusteringComparator cLeft;
     ClusteringComparator cRight;
     protected Font defaultFont;
+    protected Font headerFont;
     protected int lineHeight = 12;
     protected int elemHeight = 20;
     protected int fontSize = 10;
+    protected float headerFontSize = 10;
     private int maxWidth;
     private Insets insets = new Insets(5, 5, 5, 5);
     private Object2IntOpenHashMap<Clustering> matching;
@@ -46,6 +48,7 @@ public class SortedClusterings extends BPanel {
 
     public SortedClusterings() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
+        headerFont = defaultFont.deriveFont(Font.BOLD);
         this.fitToSpace = false;
         this.preserveAlpha = true;
         cLeft = new ClusteringComparator(new AICScore());
@@ -104,7 +107,7 @@ public class SortedClusterings extends BPanel {
     @Override
     public void render(Graphics2D g) {
         g.setColor(Color.BLACK);
-        g.setFont(defaultFont);
+
         float xA = 0.0f, xB = getSize().width - maxWidth;
         Clustering clust;
         int rowB;
@@ -116,20 +119,23 @@ public class SortedClusterings extends BPanel {
         Line2D.Double line;
         double total = 0.0, dist;
 
+        int yOffset = drawHeader(g);
+        //set font for rendering rows
+        g.setFont(defaultFont);
         //draw
         for (int row = 0; row < left.length; row++) {
             //left clustering
             clust = left[row];
             g.setColor(Color.BLACK);
-            drawClustering(g, clust, xA, row);
+            drawClustering(g, clust, xA, row, yOffset);
 
             //right clustering
             rowB = matching.getInt(clust);
-            drawClustering(g, clust, xB, rowB);
+            drawClustering(g, clust, xB, rowB, yOffset);
 
             g.setStroke(wideStroke);
-            y1 = row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
-            y2 = rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
+            y1 = yOffset + row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
+            y2 = yOffset + rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
             line = new Line2D.Double(x1, y1, xB, y2);
             dist = distance(x1, y1, xB, y2);
             //System.out.println("dist: " + dist);
@@ -144,13 +150,75 @@ public class SortedClusterings extends BPanel {
         g.dispose();
     }
 
+    /**
+     * Euclidean distance between two points
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return
+     */
     private double distance(double x1, double y1, double x2, double y2) {
         double res = FastMath.pow(x1 - x2, 2) + FastMath.pow(y1 - y2, 2);
 
         return FastMath.sqrt(res);
     }
 
-    private void drawClustering(Graphics2D g, Clustering clust, float x, int row) {
+    /**
+     *
+     * @param g
+     * @return height of drawn header
+     */
+    private int drawHeader(Graphics2D g) {
+        //approx one third
+        int colWidth = getSize().width / 3;
+        g.setFont(headerFont);
+        String eval1 = cLeft.getEvaluator().getName();
+        String eval2 = cRight.getEvaluator().getName();
+        updateHeaderFont(eval1, eval2, colWidth, g);
+
+        int strWidth = stringWidth(headerFont, g, eval1);
+        int x = (colWidth - strWidth) / 2;
+        int y = (int) (headerFontSize + g.getFontMetrics().getDescent() * 2);
+        g.drawString(eval1, x, y);
+
+        //3rd column
+        strWidth = stringWidth(headerFont, g, eval2);
+        x = 2 * colWidth + (colWidth - strWidth) / 2;
+        g.drawString(eval2, x, y);
+        return y + 20;
+    }
+
+    private int stringWidth(Font f, Graphics2D g2, String str) {
+        return (int) (f.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+    }
+
+    /**
+     * Adjust font size to given 3 columns layout
+     *
+     * @param s1
+     * @param s2
+     * @param colWidth
+     * @param g2
+     */
+    private void updateHeaderFont(String s1, String s2, int colWidth, Graphics2D g2) {
+        int maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
+        //decrease font size
+        while (maxW > (0.8 * colWidth)) {
+            headerFontSize *= 0.9;
+            headerFont = headerFont.deriveFont(headerFontSize);
+            maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
+        }
+        //increase font
+        while (maxW < (0.5 * colWidth)) {
+            headerFontSize *= 1.1;
+            headerFont = headerFont.deriveFont(headerFontSize);
+            maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
+        }
+    }
+
+    private void drawClustering(Graphics2D g, Clustering clust, float x, int row, int yOffset) {
         String str = clust.getName();
         int width;
         float y;
@@ -158,9 +226,9 @@ public class SortedClusterings extends BPanel {
             str = "unknown |" + clust.size() + "|";
         }
 
-        width = (int) (g.getFont().getStringBounds(str, g.getFontRenderContext()).getWidth());
+        width = stringWidth(defaultFont, g, str);
         checkMax(width);
-        y = (row * elemHeight + elemHeight / 2f + g.getFontMetrics().getDescent() / 2f);
+        y = yOffset + (row * elemHeight + elemHeight / 2f + g.getFontMetrics().getDescent() / 2f);
         g.drawString(str, x, y);
     }
 
@@ -203,7 +271,7 @@ public class SortedClusterings extends BPanel {
     public void recalculate() {
         //int width = 40 + maxWidth;
         int height = 0;
-        elemHeight = (realSize.height - insets.top - insets.bottom) / itemsCnt();
+        //elemHeight = (realSize.height - insets.top - insets.bottom) / itemsCnt();
         if (elemHeight > lineHeight) {
             height = elemHeight * clusterings.size();
         }

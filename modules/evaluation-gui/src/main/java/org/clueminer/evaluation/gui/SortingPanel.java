@@ -87,7 +87,7 @@ public class SortingPanel extends JPanel {
     private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
         String item = (String) comboEvaluatorY.getSelectedItem();
         if (item != null) {
-            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
+            plot.setEvaluatorY(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 
