@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.netbeans.api.progress.ProgressHandle;
 

@@ -15,7 +15,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringExport.class)
-public class CsvExporter extends AbstractExporter implements ActionListener, ClusteringExport {
+public class CsvExporter extends ClusteringExporter implements ActionListener, ClusteringExport {
 
     private CsvOptions options;
     public static final String title = "Export to CSV";

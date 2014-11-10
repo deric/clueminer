@@ -6,9 +6,8 @@ import java.io.File;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDescriptor;
@@ -23,23 +22,30 @@ import org.openide.windows.WindowManager;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractExporter implements ActionListener, ClusteringExport {
+public abstract class AbstractExporter implements ActionListener {
 
     protected static final RequestProcessor RP = new RequestProcessor("Export");
     protected RequestProcessor.Task task;
-    protected DendroViewer viewer;
     protected static final String prefKey = "last_folder";
     protected DialogDescriptor dialog = null;
     protected File defaultFolder = null;
     protected FileFilter fileFilter;
     private static final Logger logger = Logger.getLogger(AbstractExporter.class.getName());
 
-    @Override
-    public void setViewer(DendroViewer analysis) {
-        this.viewer = analysis;
-    }
+    public abstract String getName();
 
-    @Override
+    public abstract void updatePreferences(Preferences p);
+
+    public abstract JPanel getOptions();
+
+    public abstract FileFilter getFileFilter();
+
+    public abstract String getExtension();
+
+    public abstract boolean hasData();
+
+    public abstract Runnable getRunner(File file, Preferences pref, ProgressHandle ph);
+
     public void showDialog() {
         dialog = new DialogDescriptor(getOptions(), "Export", true, NotifyDescriptor.OK_CANCEL_OPTION,
                                       NotifyDescriptor.OK_CANCEL_OPTION,
@@ -49,7 +55,6 @@ public abstract class AbstractExporter implements ActionListener, ClusteringExpo
         DialogDisplayer.getDefault().notifyLater(dialog);
     }
 
-    @Override
     public void export() {
         Preferences p = NbPreferences.root().node("/clueminer/exporter");
         updatePreferences(p);
@@ -78,8 +83,8 @@ public abstract class AbstractExporter implements ActionListener, ClusteringExpo
     }
 
     public void makeExport(Preferences pref) {
-        if (viewer == null) {
-            logger.warning("missing cluster analysis object");
+        if (!hasData()) {
+            logger.warning("missing data for export");
             return;
         }
         String folder = pref.get(prefKey, null);
@@ -112,7 +117,7 @@ public abstract class AbstractExporter implements ActionListener, ClusteringExpo
 
             if (retval.equals(NotifyDescriptor.YES_OPTION)) {
                 final ProgressHandle ph = ProgressHandleFactory.createHandle(getName() + ":" + file.getName());
-                createTask(file, viewer, pref, ph);
+                createTask(file, pref, ph);
             } else {
                 makeExport(pref);
             }
@@ -122,12 +127,11 @@ public abstract class AbstractExporter implements ActionListener, ClusteringExpo
     /**
      *
      * @param file
-     * @param analysis
      * @param pref
      * @param ph
      */
-    protected void createTask(File file, DendroViewer analysis, Preferences pref, final ProgressHandle ph) {
-        task = RP.create(getRunner(file, analysis, pref, ph));
+    protected void createTask(File file, Preferences pref, final ProgressHandle ph) {
+        task = RP.create(getRunner(file, pref, ph));
         //task.addTaskListener(analysis);
         task.addTaskListener(new TaskListener() {
             @Override

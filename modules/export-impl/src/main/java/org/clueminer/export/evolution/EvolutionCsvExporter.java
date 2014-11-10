@@ -1,42 +1,41 @@
-package org.clueminer.export.sim;
+package org.clueminer.export.evolution;
 
 import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
-import org.clueminer.clustering.gui.ClusteringExport;
-import org.clueminer.export.impl.ClusteringExporter;
+import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.gui.EvolutionExport;
+import org.clueminer.export.impl.AbstractExporter;
+import static org.clueminer.export.sim.MatrixExporter.ext;
 import org.netbeans.api.progress.ProgressHandle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusteringExport.class)
-public class MatrixExporter extends ClusteringExporter implements ClusteringExport {
+public class EvolutionCsvExporter extends AbstractExporter implements EvolutionExport {
 
-    public static final String title = "Export similarity matrix";
-    public static final String ext = ".csv";
-    private MatrixOptions options;
+    private static final String name = "CSV";
+    private CsvEvolutionOptions options;
+    private Evolution evolution;
 
     @Override
     public String getName() {
-        return title;
+        return name;
     }
 
     @Override
     public JPanel getOptions() {
         if (options == null) {
-            options = new MatrixOptions();
+            options = new CsvEvolutionOptions();
         }
         return options;
     }
 
     @Override
     public String getExtension() {
-        return ext;
+        return ".csv";
     }
 
     @Override
@@ -65,8 +64,22 @@ public class MatrixExporter extends ClusteringExporter implements ClusteringExpo
     }
 
     @Override
-    public Runnable getRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
-        return new MatrixRunner(file, analysis, pref, ph);
+    public Runnable getRunner(File file, Evolution evolution, Preferences pref, ProgressHandle ph) {
+        return new EvolutionCsvRunner(file, evolution, pref, ph);
+    }
+
+    public void setEvolution(Evolution e) {
+        this.evolution = e;
+    }
+
+    @Override
+    public boolean hasData() {
+        return evolution != null;
+    }
+
+    @Override
+    public Runnable getRunner(File file, Preferences pref, ProgressHandle ph) {
+        return getRunner(file, evolution, pref, ph);
     }
 
 }
