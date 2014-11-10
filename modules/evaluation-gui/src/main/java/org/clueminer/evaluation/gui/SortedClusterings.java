@@ -18,14 +18,17 @@ import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.eval.AICScore;
 import org.clueminer.gui.BPanel;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 
 /**
  *
  * @author Tomas Barton
  */
-public class SortedClusterings extends BPanel {
+public class SortedClusterings extends BPanel implements TaskListener {
 
-    private Collection<? extends Clustering> clusterings;
+    Collection<? extends Clustering> clusterings;
     Clustering[] left;
     Clustering[] right;
     ClusteringComparator cLeft;
@@ -45,6 +48,7 @@ public class SortedClusterings extends BPanel {
     private double minDist;
     private double midDist;
     private double maxDist;
+    private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
 
     public SortedClusterings() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -59,27 +63,51 @@ public class SortedClusterings extends BPanel {
     void setEvaluatorX(ClusterEvaluation provider) {
         cLeft.setEvaluator(provider);
         if (left != null && left.length > 1) {
-            Arrays.sort(left, cLeft);
-            clusteringChanged();
+            RP.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Arrays.sort(left, cLeft);
+                    clusteringChanged();
+                }
+            });
+
         }
     }
 
     void setEvaluatorY(ClusterEvaluation provider) {
         cRight.setEvaluator(provider);
         if (right != null && right.length > 1) {
-            Arrays.sort(right, cRight);
-            updateMatching();
-            clusteringChanged();
+            RequestProcessor.Task task = RP.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Arrays.sort(right, cRight);
+                }
+            });
+            task.addTaskListener(this);
         }
     }
 
-    public void setClusterings(Collection<Clustering> clusterings) {
-        this.clusterings = clusterings;
-        left = clusterings.toArray(new Clustering[clusterings.size()]);
-        Arrays.sort(left, cLeft);
+    public void setClusterings(final Collection<Clustering> clusters) {
+        RequestProcessor.Task task = RP.post(new Runnable() {
 
-        right = clusterings.toArray(new Clustering[clusterings.size()]);
-        Arrays.sort(right, cRight);
+            @Override
+            public void run() {
+
+                left = clusters.toArray(new Clustering[clusters.size()]);
+                Arrays.sort(left, cLeft);
+
+                right = clusters.toArray(new Clustering[clusters.size()]);
+                Arrays.sort(right, cRight);
+                clusterings = clusters;
+            }
+        });
+        task.addTaskListener(this);
+    }
+
+    @Override
+    public void taskFinished(Task task) {
         updateMatching();
         clusteringChanged();
     }
@@ -200,7 +228,7 @@ public class SortedClusterings extends BPanel {
 
     private void drawDistance(Graphics2D g2, double distance) {
         int colWidth = getSize().width / 3;
-        String str = String.valueOf(distance);
+        String str = String.format("%.2f", distance);
         g2.setFont(headerFont);
         g2.setColor(Color.BLACK);
         int strWidth = stringWidth(headerFont, g, str);
