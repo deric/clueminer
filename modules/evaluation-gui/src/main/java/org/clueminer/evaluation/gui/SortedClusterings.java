@@ -38,6 +38,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     protected int lineHeight = 12;
     protected int elemHeight = 20;
     protected int fontSize = 10;
+    private int headerHeight;
     protected float headerFontSize = 10;
     private int maxWidth;
     private Insets insets = new Insets(5, 5, 5, 5);
@@ -147,7 +148,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
         Line2D.Double line;
         double total = 0.0, dist;
 
-        int yOffset = drawHeader(g);
+        headerHeight = drawHeader(g);
         //set font for rendering rows
         g.setFont(defaultFont);
         //draw
@@ -155,15 +156,15 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //left clustering
             clust = left[row];
             g.setColor(Color.BLACK);
-            drawClustering(g, clust, xA, row, yOffset);
+            drawClustering(g, clust, xA, row, headerHeight);
 
             //right clustering
             rowB = matching.getInt(clust);
-            drawClustering(g, clust, xB, rowB, yOffset);
+            drawClustering(g, clust, xB, rowB, headerHeight);
 
             g.setStroke(wideStroke);
-            y1 = yOffset + row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
-            y2 = yOffset + rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
+            y1 = headerHeight + row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
+            y2 = headerHeight + rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
             line = new Line2D.Double(x1, y1, xB, y2);
             //dist = distance(x1, y1, xB, y2);
             //row distance (relative) - difference of row indexes
@@ -317,11 +318,11 @@ public class SortedClusterings extends BPanel implements TaskListener {
     @Override
     public void recalculate() {
         //int width = 40 + maxWidth;
-        int height = 0;
+        int height = headerHeight;
         //elemHeight = (realSize.height - insets.top - insets.bottom) / itemsCnt();
-        if (elemHeight > lineHeight) {
-            height = elemHeight * clusterings.size();
-        }
+        //if (elemHeight > lineHeight) {
+        height += elemHeight * clusterings.size();
+        //}
         //realSize.width = width;
         //reqSize.width = width;
         realSize.height = height;
