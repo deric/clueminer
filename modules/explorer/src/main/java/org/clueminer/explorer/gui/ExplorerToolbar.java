@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.EvolutionFactory;
+import org.clueminer.clustering.gui.EvolutionExport;
 import org.clueminer.explorer.ToolbarListener;
 import org.clueminer.utils.Props;
 import org.openide.DialogDescriptor;
@@ -33,7 +34,9 @@ public class ExplorerToolbar extends JToolBar {
     private JButton btnSingle;
     private JButton btnStart;
     private JButton btnFunction;
+    private JButton btnExport;
     private EvalFuncPanel functionPanel;
+    private ExportPanel exportPanel;
     private ClusterAlgPanel algPanel;
 
     public ExplorerToolbar() {
@@ -127,6 +130,26 @@ public class ExplorerToolbar extends JToolBar {
             }
         });
         add(btnFunction);
+        btnExport = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/save16.png", false));
+        btnExport.setToolTipText("Export results");
+        btnExport.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (exportPanel == null) {
+                    exportPanel = new ExportPanel();
+                }
+                DialogDescriptor dd = new DialogDescriptor(exportPanel, NbBundle.getMessage(ExplorerToolbar.class, "ExplorerToolbar.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    EvolutionExport exp = exportPanel.getExporter();
+                    if (exp != null) {
+                        exp.export();
+                    }
+                }
+            }
+        });
+        add(btnExport);
+        addSeparator();
     }
 
     private String[] initEvolution() {
