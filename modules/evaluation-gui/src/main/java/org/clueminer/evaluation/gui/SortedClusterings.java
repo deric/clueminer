@@ -113,7 +113,7 @@ public class SortedClusterings extends BPanel {
         int rowB;
         double x1, y1, y2;
         //minimal distance (straight line)
-        minDist = xB - xA;
+        //minDist = xB - xA;
 
         x1 = maxWidth + 10;
         Line2D.Double line;
@@ -137,7 +137,9 @@ public class SortedClusterings extends BPanel {
             y1 = yOffset + row * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
             y2 = yOffset + rowB * elemHeight + elemHeight / 2.0 - strokeW / 2.0;
             line = new Line2D.Double(x1, y1, xB, y2);
-            dist = distance(x1, y1, xB, y2);
+            //dist = distance(x1, y1, xB, y2);
+            //row distance (relative) - difference of row indexes
+            dist = Math.abs(row - rowB);
             //System.out.println("dist: " + dist);
             total += dist;
             g.setColor(colorScheme.getColor(dist, minDist, midDist, maxDist));
@@ -146,6 +148,8 @@ public class SortedClusterings extends BPanel {
             // g.setStroke(wideStroke);
             //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
         }
+        //average distance per item
+        drawDistance(g, total / (double) left.length);
         //System.out.println("distance: " + dist);
         g.dispose();
     }
@@ -192,6 +196,18 @@ public class SortedClusterings extends BPanel {
 
     private int stringWidth(Font f, Graphics2D g2, String str) {
         return (int) (f.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+    }
+
+    private void drawDistance(Graphics2D g2, double distance) {
+        int colWidth = getSize().width / 3;
+        String str = String.valueOf(distance);
+        g2.setFont(headerFont);
+        g2.setColor(Color.BLACK);
+        int strWidth = stringWidth(headerFont, g, str);
+        // 2nd column
+        int x = colWidth + (colWidth - strWidth) / 2;
+        int y = (int) (headerFontSize + g.getFontMetrics().getDescent() * 2);
+        g.drawString(str, x, y);
     }
 
     /**
@@ -249,8 +265,11 @@ public class SortedClusterings extends BPanel {
                 strokeW = 0.05 * elemHeight;
                 wideStroke = new BasicStroke((float) strokeW);
                 defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
-                minDist = size.width - 2 * maxWidth - insets.left - insets.right - 20;
-                maxDist = distance(maxWidth, elemHeight / 2.0, elemHeight * itemsCnt(), size.width - maxWidth);
+                minDist = 0;
+                maxDist = itemsCnt();
+                //for euclidean distance
+                //minDist = size.width - 2 * maxWidth - insets.left - insets.right - 20;
+                //maxDist = distance(maxWidth, elemHeight / 2.0, elemHeight * itemsCnt(), size.width - maxWidth);
                 midDist = (maxDist + minDist) / 2.0;
                 //System.out.println("min = " + minDist);
                 //System.out.println("mid = " + midDist);
