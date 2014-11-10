@@ -2,8 +2,6 @@ package org.clueminer.clustering.gui;
 
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -12,40 +10,7 @@ import org.netbeans.api.progress.ProgressHandle;
  *
  * @author Tomas Barton
  */
-public interface EvolutionExport {
-
-    /**
-     * Name of exported format
-     *
-     * @return
-     */
-    String getName();
-
-    /**
-     *
-     * @return panel with format specific options
-     */
-    JPanel getOptions();
-
-    /**
-     * Extension of exported format
-     *
-     * @return
-     */
-    String getExtension();
-
-    /**
-     * Method is called after user confirms dialog with format specific settings
-     *
-     * @param p
-     */
-    void updatePreferences(Preferences p);
-
-    /**
-     *
-     * @return filter for specific format(s)
-     */
-    FileFilter getFileFilter();
+public interface EvolutionExport extends ExporterGUI {
 
     /**
      * Creates Runnable object for performing the export
@@ -58,8 +23,11 @@ public interface EvolutionExport {
      */
     Runnable getRunner(File file, Evolution evolution, Preferences pref, final ProgressHandle ph);
 
+
     /**
-     * Perform export
+     * Evolution is used for obtaining data
+     *
+     * @param evolution
      */
-    void export();
+    void setEvolution(Evolution evolution);
 }
