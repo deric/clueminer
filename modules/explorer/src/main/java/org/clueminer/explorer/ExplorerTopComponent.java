@@ -297,4 +297,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         task.schedule(0);
     }
 
+    @Override
+    public Evolution currentEvolution() {
+        return alg;
+    }
+
 }

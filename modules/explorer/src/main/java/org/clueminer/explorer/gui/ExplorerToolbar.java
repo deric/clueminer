@@ -143,7 +143,10 @@ public class ExplorerToolbar extends JToolBar {
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     EvolutionExport exp = exportPanel.getExporter();
                     if (exp != null) {
-                        exp.export();
+                        if (listener != null) {
+                            exp.setEvolution(listener.currentEvolution());
+                            exp.export();
+                        }
                     }
                 }
             }

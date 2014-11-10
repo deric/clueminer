@@ -3,6 +3,7 @@ package org.clueminer.export.impl;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
@@ -48,8 +49,8 @@ public abstract class AbstractExporter implements ActionListener {
 
     public void showDialog() {
         dialog = new DialogDescriptor(getOptions(), "Export", true, NotifyDescriptor.OK_CANCEL_OPTION,
-                                      NotifyDescriptor.OK_CANCEL_OPTION,
-                                      DialogDescriptor.BOTTOM_ALIGN, null, this);
+                NotifyDescriptor.OK_CANCEL_OPTION,
+                DialogDescriptor.BOTTOM_ALIGN, null, this);
 
         dialog.setClosingOptions(new Object[]{});
         DialogDisplayer.getDefault().notifyLater(dialog);
@@ -84,6 +85,9 @@ public abstract class AbstractExporter implements ActionListener {
 
     public void makeExport(Preferences pref) {
         if (!hasData()) {
+            NotifyDescriptor d
+                    = new NotifyDescriptor.Message("No data for export", NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notify(d);
             logger.warning("missing data for export");
             return;
         }
@@ -133,6 +137,7 @@ public abstract class AbstractExporter implements ActionListener {
     protected void createTask(File file, Preferences pref, final ProgressHandle ph) {
         task = RP.create(getRunner(file, pref, ph));
         //task.addTaskListener(analysis);
+        logger.log(Level.INFO, "starting export to {0}", file.getAbsolutePath());
         task.addTaskListener(new TaskListener() {
             @Override
             public void taskFinished(org.openide.util.Task task) {

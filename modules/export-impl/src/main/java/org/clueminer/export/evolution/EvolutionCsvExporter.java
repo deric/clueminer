@@ -9,11 +9,13 @@ import org.clueminer.clustering.gui.EvolutionExport;
 import org.clueminer.export.impl.AbstractExporter;
 import static org.clueminer.export.sim.MatrixExporter.ext;
 import org.netbeans.api.progress.ProgressHandle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = EvolutionExport.class)
 public class EvolutionCsvExporter extends AbstractExporter implements EvolutionExport {
 
     private static final String name = "CSV";
@@ -68,6 +70,7 @@ public class EvolutionCsvExporter extends AbstractExporter implements EvolutionE
         return new EvolutionCsvRunner(file, evolution, pref, ph);
     }
 
+    @Override
     public void setEvolution(Evolution e) {
         this.evolution = e;
     }
