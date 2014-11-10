@@ -170,7 +170,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     @Override
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
-        maximizedFitness = evaluator.compareScore(1.0, 0.0);
+        maximizedFitness = evaluator.isMaximized();
     }
 
     protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
