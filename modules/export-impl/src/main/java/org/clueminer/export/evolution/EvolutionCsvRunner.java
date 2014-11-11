@@ -45,11 +45,12 @@ public class EvolutionCsvRunner implements Runnable {
 
     @Override
     public void run() {
+        long start, end;
         try {
             try (CSVWriter writer = new CSVWriter(new FileWriter(file), separator)) {
                 String[] line;
                 Collection<? extends Clustering> result = evolution.getLookup().lookupAll(Clustering.class);
-                if (result != null) {
+                if (result != null && result.size() > 0) {
                     //number of items in dataset must be same as number of instances in clusters
                     ph.start(result.size());
 
@@ -65,7 +66,10 @@ public class EvolutionCsvRunner implements Runnable {
                         line[0] = c.getParams().toString();
                         int i = 1;
                         for (ClusterEvaluation ext : evaluators) {
+                            start = System.currentTimeMillis();
                             line[i++] = String.valueOf(et.getScore(ext));
+                            end = System.currentTimeMillis() - start;
+                            System.out.println(c.getName() + ": measuring " + ext.getName() + " took " + end + " ms");
                         }
                         writer.writeNext(line, quoteStrings);
                         ph.progress(cnt++);
@@ -73,6 +77,7 @@ public class EvolutionCsvRunner implements Runnable {
                 } else {
                     throw new RuntimeException("no clustering result. did you run clustering?");
                 }
+                writer.close();
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

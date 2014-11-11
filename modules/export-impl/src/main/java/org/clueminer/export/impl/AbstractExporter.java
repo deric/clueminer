@@ -134,7 +134,7 @@ public abstract class AbstractExporter implements ActionListener {
      * @param pref
      * @param ph
      */
-    protected void createTask(File file, Preferences pref, final ProgressHandle ph) {
+    protected void createTask(final File file, Preferences pref, final ProgressHandle ph) {
         task = RP.create(getRunner(file, pref, ph));
         //task.addTaskListener(analysis);
         logger.log(Level.INFO, "starting export to {0}", file.getAbsolutePath());
@@ -144,6 +144,7 @@ public abstract class AbstractExporter implements ActionListener {
                 //make sure that we get rid of the ProgressHandle
                 //when the task is finished
                 ph.finish();
+                logger.log(Level.INFO, "export to {0} finished", file.getAbsolutePath());
             }
         });
         task.schedule(0);
