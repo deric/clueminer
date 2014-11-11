@@ -29,6 +29,13 @@ public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEva
 
     @Override
     public int compareTo(double score1, double score2) {
+        if (Double.isNaN(score1)) {
+            score1 = replaceNaN(score1);
+        }
+        if (Double.isNaN(score2)) {
+            score2 = replaceNaN(score2);
+        }
+
         if (score1 == score2) {
             return 0;
         }
@@ -42,6 +49,20 @@ public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEva
             }
         }
         return -1;
+    }
+
+    /**
+     * NaN should be considered as the worst value
+     *
+     * @param v
+     * @return
+     */
+    private double replaceNaN(double v) {
+        if (isMaximized()) {
+            return Double.MIN_VALUE;
+        } else {
+            return Double.MAX_VALUE;
+        }
     }
 
 }
