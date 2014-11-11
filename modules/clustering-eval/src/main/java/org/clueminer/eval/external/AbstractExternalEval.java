@@ -43,4 +43,21 @@ public abstract class AbstractExternalEval implements ClusterEvaluation, Externa
         return score1 < score2;
     }
 
+    @Override
+    public int compareTo(double score1, double score2) {
+        if (score1 == score2) {
+            return 0;
+        }
+        if (isMaximized()) {
+            if (score1 < score2) {
+                return 1;
+            }
+        } else {
+            if (score1 > score2) {
+                return 1;
+            }
+        }
+        return -1;
+    }
+
 }

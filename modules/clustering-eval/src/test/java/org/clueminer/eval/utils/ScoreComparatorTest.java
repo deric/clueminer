@@ -22,28 +22,29 @@ public class ScoreComparatorTest {
 
     @Test
     public void testCompare() {
-
-        double[] values = new double[]{2.3, 3.14, 155, -5};
-        sortArray(values, -5, 155);
+        double[] values = new double[]{15, 8, 2.3, 3.14, 155, 4};
+        sortArray(values, 2.3, 155);
     }
 
     private void sortArray(double[] values, double min, double max) {
+        //Dump.array(values, "test array");
         Numeric ary[] = new Numeric[values.length];
         for (int i = 0; i < ary.length; i++) {
             ary[i] = new DataItem(values[i]); //just wrapper around double
         }
-
         List<ClusterEvaluator> eval = InternalEvaluatorFactory.getInstance().getAll();
         for (ClusterEvaluator e : eval) {
             subject.setEvaluator(e);
-            System.out.println("testing " + e.getName());
+            System.out.println("testing " + e.getName() + " maximized: " + e.isMaximized());
             Arrays.sort(ary, subject);
+            //System.out.println(Arrays.toString(ary));
             if (e.isMaximized()) {
-                assertEquals(min, ary[0].getValue(), delta);
-                assertEquals(max, ary[ary.length - 1].getValue(), delta);
-            } else {
+                //first value is the best
                 assertEquals(max, ary[0].getValue(), delta);
                 assertEquals(min, ary[ary.length - 1].getValue(), delta);
+            } else {
+                assertEquals(min, ary[0].getValue(), delta);
+                assertEquals(max, ary[ary.length - 1].getValue(), delta);
             }
         }
     }

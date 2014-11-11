@@ -50,6 +50,16 @@ public interface ClusterEvaluation {
     boolean isBetter(double score1, double score2);
 
     /**
+     * Classical C-like comparator, return 0 when scores are equal, 1 when
+     * score1 is better, -1 otherwise.
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
+    int compareTo(double score1, double score2);
+
+    /**
      *
      *
      * @return true when class labels are required in order to evaluate score

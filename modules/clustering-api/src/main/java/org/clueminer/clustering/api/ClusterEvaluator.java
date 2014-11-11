@@ -25,4 +25,21 @@ public abstract class ClusterEvaluator implements ClusterEvaluation, Serializabl
     public boolean isExternal() {
         return false;
     }
+
+    @Override
+    public int compareTo(double score1, double score2) {
+        if (score1 == score2) {
+            return 0;
+        }
+        if (isMaximized()) {
+            if (score1 < score2) {
+                return 1;
+            }
+        } else {
+            if (score1 > score2) {
+                return 1;
+            }
+        }
+        return -1;
+    }
 }
