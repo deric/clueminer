@@ -1,6 +1,5 @@
 package org.clueminer.explorer;
 
-import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.fixtures.clustering.FakeClustering;
@@ -46,10 +45,6 @@ public class ClustComparatorTest {
         //first one is "better" DESC, A > B
         assertEquals(1, subject.compare(a, b));
         //C > B
-        assertEquals(1, subject.compare(c, b));
-        assertEquals(1, subject.compare(c, a));
-        subject.setEvaluator(new CalinskiHarabasz());
-        assertEquals(1, subject.compare(a, b));
         assertEquals(1, subject.compare(c, b));
         assertEquals(1, subject.compare(c, a));
     }
