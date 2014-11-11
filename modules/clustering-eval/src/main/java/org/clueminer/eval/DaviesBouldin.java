@@ -46,7 +46,7 @@ public class DaviesBouldin extends ClusterEvaluator {
         Cluster<Instance> x, y;
         double intraX, intraY, max, interGroup, dij;
         Instance centroidX, centroidY;
-        HashMap<Integer, Double> intraDists = new HashMap<Integer, Double>();
+        HashMap<Integer, Double> intraDists = new HashMap<>();
         for (int i = 0; i < clusters.size(); i++) {
             x = clusters.get(i);
             centroidX = x.getCentroid();
