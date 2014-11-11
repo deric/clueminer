@@ -99,23 +99,23 @@ public class CIndexTest {
          *
          * System.out.println("\t score \t 2 clusters better than 3? ");
          * System.out.println("AIC score: \t" + aicScore3 + "\t" + aicScore4 +
-         * "\t" + aic.compareScore(aicScore3, aicScore4)); //assertEquals(true,
-         * aic.compareScore(aicScore3, aicScore4)); System.out.println("BIC
+         * "\t" + aic.isBetter(aicScore3, aicScore4)); //assertEquals(true,
+         * aic.isBetter(aicScore3, aicScore4)); System.out.println("BIC
          * score: \t" + bicScore3 + "\t" + bicScore4 + "\t" +
-         * bic.compareScore(bicScore3, bicScore4)); // assertEquals(true,
-         * bic.compareScore(bicScore3, bicScore4)); System.out.println("SQ
+         * bic.isBetter(bicScore3, bicScore4)); // assertEquals(true,
+         * bic.isBetter(bicScore3, bicScore4)); System.out.println("SQ
          * error: \t" + sseScore3 + "\t" + sseScore4 + "\t" +
-         * sse.compareScore(sseScore3, sseScore4)); // assertEquals(true,
-         * sse.compareScore(sseScore3, sseScore4)); System.out.println("CIndex:
-         * \t" + k3res + "\t" + k4res + "\t" + cind.compareScore(k3res, k4res));
+         * sse.isBetter(sseScore3, sseScore4)); // assertEquals(true,
+         * sse.isBetter(sseScore3, sseScore4)); System.out.println("CIndex:
+         * \t" + k3res + "\t" + k4res + "\t" + cind.isBetter(k3res, k4res));
          * System.out.println("Gamma: \t" + gScore2 + "\t" + gScore3 + "\t" +
-         * cind.compareScore(gScore2, gScore3));
+         * cind.isBetter(gScore2, gScore3));
          */
         /**
          * We know, that in iris dataset there are 3 true classes, so first
          * score should be better
          */
-        //assertEquals(true, cind.compareScore(k3res, k4res));
+        //assertEquals(true, cind.isBetter(k3res, k4res));
     }
 
     @Test
@@ -158,7 +158,7 @@ public class CIndexTest {
     }
 
     /**
-     * Test of compareScore method, of class CIndex.
+     * Test of isBetter method, of class CIndex.
      */
     @Test
     public void testCompareScore() {

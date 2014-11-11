@@ -44,7 +44,7 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
             }
             System.out.println("score = " + score + " prev= " + prev);
             if (!Double.isNaN(prev)) {
-                if (!evaluator.compareScore(score, prev)) {
+                if (!evaluator.isBetter(score, prev)) {
                     isClimbing = false;
                     System.out.println("function is not climbing anymore");
                     hclust.updateCutoff(oldcut);

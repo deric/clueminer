@@ -45,7 +45,7 @@ public class FmeasureTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class Fmeasure.
+     * Test of isBetter method, of class Fmeasure.
      */
     @Test
     public void testCompareScore() {

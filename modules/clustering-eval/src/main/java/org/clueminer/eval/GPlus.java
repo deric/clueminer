@@ -95,7 +95,7 @@ public class GPlus extends ClusterEvaluator {
      * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimized: range = [0,x] with x= fb/nd
         return score1 < score2;
     }

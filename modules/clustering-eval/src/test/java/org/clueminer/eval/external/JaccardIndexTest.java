@@ -42,7 +42,7 @@ public class JaccardIndexTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class JaccardIndex.
+     * Test of isBetter method, of class JaccardIndex.
      */
     @Test
     public void testCompareScore() {

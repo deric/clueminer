@@ -47,7 +47,7 @@ public interface ClusterEvaluation {
      * @return true if the first score is better than the second, false in all
      *         other cases
      */
-    boolean compareScore(double score1, double score2);
+    boolean isBetter(double score1, double score2);
 
     /**
      *

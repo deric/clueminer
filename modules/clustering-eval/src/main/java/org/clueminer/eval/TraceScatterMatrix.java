@@ -75,7 +75,7 @@ public class TraceScatterMatrix extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimalized
         return Math.abs(score1) < Math.abs(score2);
     }

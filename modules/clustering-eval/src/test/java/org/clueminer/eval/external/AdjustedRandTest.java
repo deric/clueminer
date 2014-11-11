@@ -21,11 +21,11 @@ public class AdjustedRandTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class AdjustedRand.
+     * Test of isBetter method, of class AdjustedRand.
      */
     @Test
     public void testCompareScore() {
-        assertTrue(subject.compareScore(1.0, 0.5));
+        assertTrue(subject.isBetter(1.0, 0.5));
     }
 
     /**

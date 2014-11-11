@@ -48,7 +48,7 @@ public class HybridCentroidSimilarity extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be maximized
         return score1 > score2;
     }

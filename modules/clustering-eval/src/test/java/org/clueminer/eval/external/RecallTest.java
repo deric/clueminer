@@ -40,7 +40,7 @@ public class RecallTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class Recall.
+     * Test of isBetter method, of class Recall.
      */
     @Test
     public void testCompareScore() {

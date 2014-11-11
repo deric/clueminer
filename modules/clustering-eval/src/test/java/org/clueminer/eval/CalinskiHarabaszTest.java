@@ -80,7 +80,7 @@ public class CalinskiHarabaszTest {
     }
 
     /**
-     * Test of compareScore method, of class CalinskiHarabasz.
+     * Test of isBetter method, of class CalinskiHarabasz.
      */
     @Test
     public void testCompareScore() {

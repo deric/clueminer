@@ -34,12 +34,12 @@ public class PrecisionTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class Precision.
+     * Test of isBetter method, of class Precision.
      */
     @Test
     public void testCompareScore() {
         //first one should be better
-        assertEquals(true, subject.compareScore(1.0, 0.4));
+        assertEquals(true, subject.isBetter(1.0, 0.4));
     }
 
     @Test

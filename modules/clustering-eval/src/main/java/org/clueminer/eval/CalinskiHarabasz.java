@@ -92,7 +92,7 @@ public class CalinskiHarabasz extends ClusterEvaluator {
      * @return true in case that score1 is better than score2
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         return score1 > score2;
     }
 

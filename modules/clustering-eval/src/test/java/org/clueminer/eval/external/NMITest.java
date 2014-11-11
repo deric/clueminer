@@ -51,13 +51,13 @@ public class NMITest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class NMI.
+     * Test of isBetter method, of class NMI.
      */
     @Test
     public void testCompareScore() {
         //one is better than zero
-        assertTrue(subject.compareScore(1.0, 0.0));
-        assertTrue(subject.compareScore(1.0, 0.5));
-        assertTrue(subject.compareScore(1.0, 0.9999));
+        assertTrue(subject.isBetter(1.0, 0.0));
+        assertTrue(subject.isBetter(1.0, 0.5));
+        assertTrue(subject.isBetter(1.0, 0.9999));
     }
 }

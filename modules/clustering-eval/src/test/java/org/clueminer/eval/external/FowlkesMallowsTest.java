@@ -42,12 +42,12 @@ public class FowlkesMallowsTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class FowlkesMallows.
+     * Test of isBetter method, of class FowlkesMallows.
      */
     @Test
     public void testCompareScore() {
         //bigger is better
-        assertTrue(subject.compareScore(2600, 2000));
+        assertTrue(subject.isBetter(2600, 2000));
     }
 
     /**

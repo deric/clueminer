@@ -36,7 +36,7 @@ public abstract class AbstractExternalEval implements ClusterEvaluation, Externa
      * @return true if score1 is better than score2
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         if (isMaximized()) {
             return score1 > score2;
         }

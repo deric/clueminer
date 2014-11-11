@@ -48,7 +48,7 @@ public class ClustComparator implements Comparator<Node> {
         if (s1 == s2) {
             return 0;
         }
-        bigger = eval.compareScore(s1, s2);
+        bigger = eval.isBetter(s1, s2);
 
         if (!ascOrder) {
             bigger = !bigger;

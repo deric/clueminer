@@ -44,12 +44,12 @@ public class RandIndexTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class RandIndex.
+     * Test of isBetter method, of class RandIndex.
      */
     @Test
     public void testCompareScore() {
         //one should be the best value
-        assertTrue(subject.compareScore(1.0, 0.0));
+        assertTrue(subject.isBetter(1.0, 0.0));
     }
 
     @Test

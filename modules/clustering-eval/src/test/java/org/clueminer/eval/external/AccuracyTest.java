@@ -56,7 +56,7 @@ public class AccuracyTest extends ExternalTest {
     }
 
     /**
-     * Test of compareScore method, of class Accuracy.
+     * Test of isBetter method, of class Accuracy.
      */
     @Test
     public void testCompareScore() {

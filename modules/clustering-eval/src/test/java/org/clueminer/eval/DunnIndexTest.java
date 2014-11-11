@@ -104,7 +104,7 @@ public class DunnIndexTest {
     }
 
     /**
-     * Test of compareScore method, of class DunnIndex.
+     * Test of isBetter method, of class DunnIndex.
      */
     @Test
     public void testCompareScore() {

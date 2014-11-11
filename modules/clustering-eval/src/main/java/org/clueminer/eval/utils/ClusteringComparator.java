@@ -37,7 +37,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
         if (s1 == s2) {
             return 0;
         }
-        bigger = evaluator.compareScore(s1, s2);
+        bigger = evaluator.isBetter(s1, s2);
 
         if (!asc) {
             bigger = !bigger;
