@@ -15,7 +15,6 @@ import org.clueminer.dataset.api.Instance;
 public class ClusteringComparator implements Comparator<Clustering> {
 
     private ClusterEvaluation evaluator;
-    private boolean asc = true;
 
     public ClusteringComparator() {
 
@@ -32,22 +31,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
 
         double s1 = t1.getScore(evaluator);
         double s2 = t2.getScore(evaluator);
-        boolean bigger;
-
-        if (s1 == s2) {
-            return 0;
-        }
-        bigger = evaluator.isBetter(s1, s2);
-
-        if (!asc) {
-            bigger = !bigger;
-        }
-        // "best" solution is at the end
-        if (bigger) {
-            return 1;
-        } else {
-            return -1;
-        }
+        return evaluator.compareTo(s1, s2);
     }
 
     protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
@@ -70,14 +54,6 @@ public class ClusteringComparator implements Comparator<Clustering> {
 
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
-    }
-
-    public boolean isAsc() {
-        return asc;
-    }
-
-    public void setAsc(boolean asc) {
-        this.asc = asc;
     }
 
 }
