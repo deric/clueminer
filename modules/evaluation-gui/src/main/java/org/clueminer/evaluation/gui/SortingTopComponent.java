@@ -94,5 +94,8 @@ public final class SortingTopComponent extends TopComponent implements LookupLis
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         frame.setClusterings(allClusterings);
+        frame.revalidate();
+        frame.validate();
+        frame.repaint();
     }
 }

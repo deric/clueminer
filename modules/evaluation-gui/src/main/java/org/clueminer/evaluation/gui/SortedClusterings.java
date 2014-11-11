@@ -18,6 +18,8 @@ import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.eval.AICScore;
 import org.clueminer.gui.BPanel;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
@@ -61,29 +63,35 @@ public class SortedClusterings extends BPanel implements TaskListener {
         colorScheme = new ColorSchemeImpl(Color.green, Color.BLACK, Color.RED);
     }
 
-    void setEvaluatorX(ClusterEvaluation provider) {
-        cLeft.setEvaluator(provider);
+    void setEvaluatorX(final ClusterEvaluation provider) {
         if (left != null && left.length > 1) {
+            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RP.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    Arrays.sort(left, cLeft);
+                    ph.start();
+                    Arrays.sort(left, new ClusteringComparator(provider));
+                    cLeft.setEvaluator(provider);
                     clusteringChanged();
+                    ph.finish();
                 }
             });
 
         }
     }
 
-    void setEvaluatorY(ClusterEvaluation provider) {
-        cRight.setEvaluator(provider);
+    void setEvaluatorY(final ClusterEvaluation provider) {
         if (right != null && right.length > 1) {
+            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RequestProcessor.Task task = RP.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    Arrays.sort(right, cRight);
+                    ph.start();
+                    Arrays.sort(right, new ClusteringComparator(provider));
+                    cRight.setEvaluator(provider);
+                    ph.finish();
                 }
             });
             task.addTaskListener(this);
