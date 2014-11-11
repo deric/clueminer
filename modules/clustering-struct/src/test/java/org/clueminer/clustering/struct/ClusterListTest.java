@@ -24,6 +24,7 @@ public class ClusterListTest {
 
     private static ClusterList subject;
     private static final CommonFixture tf = new CommonFixture();
+    private static final double delta = 1e-9;
 
     public ClusterListTest() {
     }
@@ -112,11 +113,14 @@ public class ClusterListTest {
 
     @Test
     public void testGetCentroid() {
-        Clustering<Cluster> clusters = createClusters();
+        Clustering<Cluster> clusters = createClusters2();
         assertEquals(3, clusters.get(0).size());
         Instance centroid = clusters.getCentroid();
         System.out.println("centroid: " + centroid.toString());
         assertEquals(3, clusters.get(0).size());
+        //centroid shoould be average of all cluster's centroids
+        assertEquals(false, Double.isNaN(centroid.get(0)));
+        assertEquals(1.0, centroid.get(1), delta);
     }
 
     private Clustering<Cluster> createEmptyClusters() {
@@ -167,6 +171,8 @@ public class ClusterListTest {
         Clustering<Cluster> clusters = new ClusterList(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
+        clust.attributeBuilder().create("x", "NUMERIC");
+        clust.attributeBuilder().create("y", "NUMERIC");
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
         clust.add(new DoubleArrayDataRow(new double[]{5.0, 1.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));

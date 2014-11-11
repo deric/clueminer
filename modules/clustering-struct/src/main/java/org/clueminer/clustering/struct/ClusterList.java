@@ -173,7 +173,9 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     /**
-     * TODO: what's the point of centroid of all clusters?
+     * Centroid of all clusters is used by some evaluation criterion
+     *
+     * e.g. {@link org.clueminer.eval.CalinskiHarabasz}
      *
      * @return
      */
@@ -181,17 +183,25 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     public E getCentroid() {
         Cluster<E> first = get(0);
         Instance centroid = first.builder().build(first.attributeCount());
+
+        //TODO: remove this initialization when DoubleVector is fixed
+        //initialize with zeros
+        for (int i = 0; i < first.attributeCount(); i++) {
+            centroid.set(i, 0.0);
+        }
         Instance center;
         for (Cluster<E> c : this) {
             center = c.getCentroid();
             for (int i = 0; i < center.size(); i++) {
-                centroid.set(i, center.value(i) + centroid.value(i));
+                //TODO: replace by running average
+                centroid.set(i, center.get(i) + centroid.get(i));
             }
         }
-        int cnt = instancesCount();
         //average of features
-        for (int i = 0; i < first.attributeCount(); i++) {
-            centroid.set(i, centroid.value(i) / cnt);
+        if (this.size() > 1) {
+            for (int i = 0; i < first.attributeCount(); i++) {
+                centroid.set(i, centroid.value(i) / this.size());
+            }
         }
         return (E) centroid;
     }

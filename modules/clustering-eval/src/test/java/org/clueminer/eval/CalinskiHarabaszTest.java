@@ -45,23 +45,22 @@ public class CalinskiHarabaszTest {
     public void testScore_Clustering_Dataset() {
         long start = System.currentTimeMillis();
         double score = subject.score(clusters, dataset);
-        long end = System.currentTimeMillis();
         System.out.println("Calinski-Harabasz = " + score);
+        long end = System.currentTimeMillis();
         System.out.println("measuring took " + (end - start) + " ms");
+        assertEquals(false, Double.isNaN(score));
     }
 
     /**
-     * Test of getSumOfSquaredError method, of class CalinskiHarabasz.
+     * TODO: fix index computation
      */
     @Test
-    public void testGetSumOfSquaredError() {
-    }
-
-    /**
-     * Test of score method, of class CalinskiHarabasz.
-     */
-    @Test
-    public void testScore_3args() {
+    public void testIris() {
+        double s1 = subject.score(FakeClustering.iris(), dataset);
+        double s2 = subject.score(FakeClustering.irisMostlyWrong(), dataset);
+        double s3 = subject.score(FakeClustering.irisWrong5(), dataset);
+        assertEquals(true, subject.isBetter(s1, s2));
+        assertEquals(true, subject.isBetter(s1, s3));
     }
 
     /**
