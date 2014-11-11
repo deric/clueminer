@@ -27,8 +27,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     private static final long serialVersionUID = -5482153886671625555L;
     private Instance[] data;
-    private InstanceBuilder builder;
-    private AttributeBuilder attributeBuilder;
+    protected InstanceBuilder builder;
+    protected AttributeBuilder attributeBuilder;
     private final TreeSet<Object> classes = new TreeSet<>();
     protected Attribute[] attributes;
     private int attrCnt = 0;
@@ -72,6 +72,10 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public boolean add(Instance inst) {
         ensureCapacity(n);
 
+        //update attribute's statistics
+        for (int i = 0; i < attributeCount(); i++) {
+            attributes[i].updateStatistics(inst.get(i));
+        }
         data[n] = inst;
         if (inst.getIndex() < 0) {
             inst.setIndex(n);
@@ -104,9 +108,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public boolean addAll(Dataset<? extends E> d) {
         Iterator<? extends E> it = d.iterator();
-        while (n < data.length && it.hasNext()) {
-            Instance i = it.next();
-            data[n++] = i;
+        while (it.hasNext()) {
+            add(it.next());
         }
         return !it.hasNext();
     }
@@ -187,7 +190,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public final AttributeBuilder attributeBuilder() {
+    public AttributeBuilder attributeBuilder() {
         if (attributeBuilder == null) {
             attributeBuilder = new AttributeFactoryImpl<>(this);
         }

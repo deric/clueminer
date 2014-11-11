@@ -13,10 +13,7 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,15 +33,6 @@ public class ArrayDatasetTest {
     public ArrayDatasetTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
         dataset = new ArrayDataset<>(dataCapacity, attributesCnt);
@@ -53,10 +41,6 @@ public class ArrayDatasetTest {
         rand = new Random();
         //before each testing method we add an instance to the dataset
         dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
-    }
-
-    @After
-    public void tearDown() {
     }
 
     private Dataset<? extends Instance> data2x5() {
@@ -106,6 +90,11 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testAddAll_Dataset() {
+        Dataset<? extends Instance> data = dataset.copy();
+        Dataset another = dataset.copy();
+        int size = data.size();
+        data.addAll(another);
+        assertEquals(2 * size, data.size());
     }
 
     /**
