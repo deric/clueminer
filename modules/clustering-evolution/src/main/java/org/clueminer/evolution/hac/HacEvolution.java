@@ -145,8 +145,16 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     }
 
     protected void individualCreated(Clustering<? extends Cluster> clustering) {
-        instanceContent.add(clustering);
-        fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
+        if (uniqueClusterings.contains(clustering)) {
+            Clustering other = (Clustering) uniqueClusterings.get(clustering);
+            Props p = other.getParams();
+            int occur = p.getInt(NUM_OCCUR, 1);
+            p.putInt(NUM_OCCUR, occur + 1);
+        } else {
+            uniqueClusterings.add(clustering);
+            instanceContent.add(clustering);
+            fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
+        }
     }
 
     @Override
