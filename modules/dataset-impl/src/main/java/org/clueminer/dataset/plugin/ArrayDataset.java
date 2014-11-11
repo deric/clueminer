@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.stats.AttrNumStats;
+import org.clueminer.stats.NumericalStats;
 import org.math.plot.Plot2DPanel;
 
 /**
@@ -359,9 +360,16 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public void setAttributes(Map<Integer, Attribute> attrs) {
         ensureAttrSize(attrs.size());
-
+        Attribute attr;
         for (Entry<Integer, Attribute> entry : attrs.entrySet()) {
-            this.setAttribute(entry.getKey(), entry.getValue());
+            //deep copy to avoid unexpected behaviour
+            attr = (Attribute) entry.getValue().clone();
+            //TODO this is ugly but somehow clone does not work
+            if (attr.isNumerical()) {
+                attr.registerStatistics(new NumericalStats(attr));
+            }
+            attr.resetStats();
+            this.setAttribute(entry.getKey(), attr);
         }
     }
 

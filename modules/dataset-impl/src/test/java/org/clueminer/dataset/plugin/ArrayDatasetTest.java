@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
+import org.clueminer.stats.AttrNumStats;
 import org.clueminer.std.Scaler;
 import org.junit.Before;
 import org.junit.Test;
@@ -332,10 +333,16 @@ public class ArrayDatasetTest {
         map.put(0, dataset.attributeBuilder().build("attr0", "NUMERIC"));
         map.put(1, dataset.attributeBuilder().build("attr1", "NUMERIC"));
         map.put(2, dataset.attributeBuilder().build("attr2", "NUMERIC"));
+        assertEquals(true, map.get(0).getAllStatistics().hasNext());
+
+        assertEquals(0.0, map.get(0).statistics(AttrNumStats.AVG), delta);
 
         Dataset<? extends Instance> test = new ArrayDataset<>(5, 2);
         test.setAttributes(map);
         assertEquals(3, test.attributeCount());
+        assertEquals(true, test.getAttribute(0).getAllStatistics().hasNext());
+        Attribute attr = test.getAttribute(0);
+        assertEquals(0.0, attr.statistics(AttrNumStats.AVG), 0.0);
     }
 
     /**

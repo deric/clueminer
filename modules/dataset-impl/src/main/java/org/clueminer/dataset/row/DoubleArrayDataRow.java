@@ -38,11 +38,17 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     public DoubleArrayDataRow(int size) {
         super(null);
         this.data = new double[size];
+        //TODO: we should be able to initialize array with zeros. right now
+        //it is causing strange problems when standardizing datata
+       /* if (size > 0) {
+         last = size - 1; //if we're getting index < size we'll get 0.0 (instead of unknown == Double.NaN)
+         }*/
     }
 
     public DoubleArrayDataRow(int size, Object classValue) {
         super(classValue);
         this.data = new double[size];
+        // last = size;
     }
 
     @Override
@@ -378,7 +384,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     @Override
     public String toString(String separator) {
         StringBuilder result = new StringBuilder("DoubleArrayData").append("(").append(getCapacity()).append(")[");
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < size(); i++) {
             result.append(i == 0 ? "" : ",").append(data[i]);
         }
         result.append("]");
