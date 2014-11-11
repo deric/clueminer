@@ -3,10 +3,15 @@ package org.clueminer.clustering.struct;
 import com.google.common.collect.Sets;
 import java.awt.Color;
 import java.util.Set;
+import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.plugin.DoubleArrayFactory;
+import org.clueminer.stats.AttrNumStats;
 
 /**
  *
@@ -39,6 +44,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     public boolean add(Instance inst) {
         if (super.add(inst)) {
             mapping.add(inst.getIndex());
+            centroid = null;
             return true;
         }
         return false;
@@ -69,29 +75,27 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         this.color = color;
     }
 
+    /**
+     * Centroid is computed from stored cluster statistics
+     *
+     * @return artificial instance representing center of cluster
+     */
     @Override
     public E getCentroid() {
-        /**
-         * @TODO add hook for notification when dataset changes, to update
-         * centroids
-         */
-        //  if (centroid == null) {
-        int attrCount = this.attributeCount();
-        if (attrCount == 0) {
-            throw new RuntimeException("number of attributes should not be 0");
-        }
-        double[] tmpOut = new double[attrCount];
-        for (int i = 0; i < attrCount; i++) {
-            double sum = 0.0;
-            for (int j = 0; j < this.size(); j++) {
-                sum += get(j).value(i);
+        if (centroid == null) {
+            int attrCount = this.attributeCount();
+            if (attrCount == 0) {
+                throw new RuntimeException("number of attributes should not be 0");
             }
-            tmpOut[i] = sum / this.size();
-
+            double value;
+            Instance avg = this.builder().build(attrCount);
+            for (int i = 0; i < attrCount; i++) {
+                //use pre-computed average for each attribute
+                value = getAttribute(i).statistics(AttrNumStats.AVG);
+                avg.set(i, value);
+            }
+            centroid = (E) avg;
         }
-        Instance avg = this.builder().build(tmpOut);
-        centroid = (E) avg;
-        //   }
 
         return centroid;
     }
@@ -112,6 +116,22 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
             }
         }
         return mutual;
+    }
+
+    @Override
+    public InstanceBuilder builder() {
+        if (builder == null) {
+            builder = new DoubleArrayFactory(this, '.');
+        }
+        return builder;
+    }
+
+    @Override
+    public AttributeBuilder attributeBuilder() {
+        if (attributeBuilder == null) {
+            attributeBuilder = new AttributeFactoryImpl<>(this);
+        }
+        return attributeBuilder;
     }
 
     @Override
