@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
@@ -97,7 +97,7 @@ public class HashEvaluationTable implements EvaluationTable {
             InternalEvaluatorFactory inf = InternalEvaluatorFactory.getInstance();
             internalMap = new Object2ObjectOpenHashMap<>();
 
-            for (ClusterEvaluator eval : inf.getAll()) {
+            for (InternalEvaluator eval : inf.getAll()) {
                 internalMap.put(eval.getName(), eval);
             }
         }

@@ -2,7 +2,7 @@ package org.clueminer.eval.utils;
 
 import java.util.Arrays;
 import java.util.List;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.row.DataItem;
 import org.clueminer.math.Numeric;
@@ -24,6 +24,9 @@ public class ScoreComparatorTest {
     public void testCompare() {
         double[] values = new double[]{15, 8, 2.3, 3.14, 155, 4};
         sortArray(values, 2.3, 155);
+
+        values = new double[]{5, Double.NaN, 1, 8.3};
+        // sortArray(values, 1.0, Double.NaN);
     }
 
     private void sortArray(double[] values, double min, double max) {
@@ -32,8 +35,8 @@ public class ScoreComparatorTest {
         for (int i = 0; i < ary.length; i++) {
             ary[i] = new DataItem(values[i]); //just wrapper around double
         }
-        List<ClusterEvaluator> eval = InternalEvaluatorFactory.getInstance().getAll();
-        for (ClusterEvaluator e : eval) {
+        List<InternalEvaluator> eval = InternalEvaluatorFactory.getInstance().getAll();
+        for (InternalEvaluator e : eval) {
             subject.setEvaluator(e);
             System.out.println("testing " + e.getName() + " maximized: " + e.isMaximized());
             Arrays.sort(ary, subject);

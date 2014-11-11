@@ -1,7 +1,7 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.LinkageFactory;
@@ -17,8 +17,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class DunnIndex extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class DunnIndex extends AbstractEvaluator {
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String name = "Dunn index";

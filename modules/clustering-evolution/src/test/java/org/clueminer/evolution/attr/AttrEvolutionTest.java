@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -164,7 +164,7 @@ public class AttrEvolutionTest {
             System.out.println(dataset.toString());
             String dataDir = benchmarkFolder + File.separatorChar + name;
             (new File(dataDir)).mkdir();
-            for (ClusterEvaluator eval : factory.getAll()) {
+            for (InternalEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
                 test = new AttrEvolution(dataset, 20);
                 test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));
@@ -187,7 +187,7 @@ public class AttrEvolutionTest {
     //@Test
     public void testSilhouette() {
         ExternalEvaluator ext = new JaccardIndex();
-        ClusterEvaluator eval = new Silhouette();
+        InternalEvaluator eval = new Silhouette();
         Dataset<Instance> dataset = DatasetFixture.glass();
         String name = dataset.getName();
         System.out.println("evaluator: " + eval.getName());

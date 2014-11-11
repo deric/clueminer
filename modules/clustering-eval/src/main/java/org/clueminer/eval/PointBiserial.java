@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -13,8 +13,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class PointBiserial extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class PointBiserial extends AbstractEvaluator {
 
     private static String NAME = "PointBiserial";
     private static final long serialVersionUID = -3222061698654228829L;

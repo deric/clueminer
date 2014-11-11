@@ -1,7 +1,7 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -13,8 +13,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class HybridCentroidSimilarity extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class HybridCentroidSimilarity extends AbstractEvaluator {
 
     private static final String NAME = "Hybrid Centroid Similarity";
     private static final long serialVersionUID = 5859566115007803560L;

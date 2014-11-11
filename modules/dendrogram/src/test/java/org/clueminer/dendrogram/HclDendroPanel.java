@@ -3,7 +3,7 @@ package org.clueminer.dendrogram;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -125,7 +125,7 @@ public class HclDendroPanel extends DendroPanel {
         String cutoffAlg = params.get("cutoff", "-- naive --");
         Clustering clust;
         if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
             HillClimbCutoff strategy = new HillClimbCutoff(eval);
             rowsResult.findCutoff(strategy);
         }// else we use a naive approach
@@ -139,7 +139,7 @@ public class HclDendroPanel extends DendroPanel {
         clust.lookupAdd(dendroData);
         clust.setParams(params);
         System.out.println("result clust size " + clust.size());
-        List<ClusterEvaluator> list = InternalEvaluatorFactory.getInstance().getAll();
+        List<InternalEvaluator> list = InternalEvaluatorFactory.getInstance().getAll();
 
         String linkage = null;
         switch (params.getInt("method-linkage", 1)) {
@@ -173,7 +173,7 @@ public class HclDendroPanel extends DendroPanel {
          evaluators.append("Cutoff").append("\t");
          scores.append(cutoffAlg).append("\t");
 
-         for (ClusterEvaluator c : list) {
+         for (InternalEvaluator c : list) {
          s = c.score(clust, getDataset());
          scores.append(s).append("\t");
          evaluators.append(c.getName()).append("\t");

@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -17,8 +17,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Andreas De Rijcke
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class SumOfAveragePairwiseSimilarities extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
 
     private static final long serialVersionUID = 3813005489221333305L;
     private static String NAME = "Sum of AVG parwise similarities";

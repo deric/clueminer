@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.utils.ServiceFactory;
 
@@ -28,7 +28,7 @@ public class EvaluationFactory extends ServiceFactory<ClusterEvaluation> {
     private EvaluationFactory() {
         providers = new LinkedHashMap<>();
         List<ExternalEvaluator> extern = ExternalEvaluatorFactory.getInstance().getAll();
-        List<ClusterEvaluator> internal = InternalEvaluatorFactory.getInstance().getAll();
+        List<InternalEvaluator> internal = InternalEvaluatorFactory.getInstance().getAll();
 
         Collection<ClusterEvaluation> list = new LinkedList<>();
         list.addAll(extern);

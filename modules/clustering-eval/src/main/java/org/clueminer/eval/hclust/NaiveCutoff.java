@@ -1,6 +1,6 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -105,7 +105,7 @@ public class NaiveCutoff implements CutoffStrategy {
     }
 
     @Override
-    public void setEvaluator(ClusterEvaluator evaluator) {
+    public void setEvaluator(InternalEvaluator evaluator) {
         //nothing to do
     }
 

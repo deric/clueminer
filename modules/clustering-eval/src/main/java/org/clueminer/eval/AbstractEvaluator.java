@@ -1,17 +1,18 @@
-package org.clueminer.clustering.api;
+package org.clueminer.eval;
 
-import java.io.Serializable;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.api.DistanceMeasure;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class ClusterEvaluator implements ClusterEvaluation, Serializable {
+public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEvaluation {
 
-    private static final long serialVersionUID = 1947286273667041934L;
     protected DistanceMeasure dm;
 
+    @Override
     public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
@@ -42,4 +43,5 @@ public abstract class ClusterEvaluator implements ClusterEvaluation, Serializabl
         }
         return -1;
     }
+
 }

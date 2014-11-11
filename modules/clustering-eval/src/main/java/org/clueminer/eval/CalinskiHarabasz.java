@@ -1,7 +1,7 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -26,8 +26,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class CalinskiHarabasz extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class CalinskiHarabasz extends AbstractEvaluator {
 
     private static final long serialVersionUID = -2699019526373205522L;
     private static final String name = "Calinski-Harabasz";
