@@ -47,10 +47,12 @@ echo $(( $(awk '/MemTotal/{print $2}' /proc/meminfo) >> 10 ))m
 
  1. click on fork button on github
  2. add upstream repository
+
   ```
    $ git remote add upstream https://github.com/deric/clueminer.git
   ```
  3. from time to time merge with upstream
+
   ```
   $ git fetch upstream
   $ git checkout master
