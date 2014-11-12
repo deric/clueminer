@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.eval.AICScore;
@@ -89,7 +90,19 @@ public class SortedClusterings extends BPanel implements TaskListener {
                 @Override
                 public void run() {
                     ph.start();
-                    Arrays.sort(right, new ClusteringComparator(provider));
+                    ClusteringComparator compare = new ClusteringComparator(provider);
+                    try {
+                        Arrays.sort(right, compare);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("sorting error during " + provider.getName());
+                        double[] score = new double[right.length];
+                        EvaluationTable et;
+                        for (int i = 0; i < score.length; i++) {
+                            et = compare.evaluationTable(right[i]);
+                            score[i] = et.getScore(provider);
+                        }
+                        System.out.println(Arrays.toString(score));
+                    }
                     cRight.setEvaluator(provider);
                     ph.finish();
                 }

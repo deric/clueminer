@@ -34,7 +34,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
         return evaluator.compareTo(s1, s2);
     }
 
-    protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
+    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
         EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
