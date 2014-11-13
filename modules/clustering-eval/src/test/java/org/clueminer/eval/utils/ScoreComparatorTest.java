@@ -28,8 +28,15 @@ public class ScoreComparatorTest {
         values = new double[]{5, Double.NaN, 1, 8.3};
         sortNaN(values, 1, 8.3);
 
+        //2* NaN
+        values = new double[]{5, Double.NaN, Double.NaN, 1, 8.3};
+        sortNaN(values, 1, 8.3);
+
         values = new double[]{5, Double.NEGATIVE_INFINITY, 1, 8.3};
         sortNinf(values, 1.0, 8.3);
+
+        values = new double[]{5, Double.NEGATIVE_INFINITY, 1, 8.3, Double.NaN, 2};
+        sortNinfNaN(values, 1.0, 8.3);
     }
 
     private void sortArray(double[] values, double min, double max) {
@@ -92,6 +99,25 @@ public class ScoreComparatorTest {
             } else {
                 assertEquals(Double.NEGATIVE_INFINITY, ary[0].getValue(), delta);
                 assertEquals(max, ary[ary.length - 1].getValue(), delta);
+            }
+        }
+    }
+
+    private void sortNinfNaN(double[] values, double min, double max) {
+        Numeric ary[] = createArray(values);
+        List<InternalEvaluator> eval = InternalEvaluatorFactory.getInstance().getAll();
+        for (InternalEvaluator e : eval) {
+            subject.setEvaluator(e);
+            System.out.println("testing " + e.getName() + " maximized: " + e.isMaximized());
+            Arrays.sort(ary, subject);
+            System.out.println(Arrays.toString(ary));
+            if (e.isMaximized()) {
+                //first value is the best
+                assertEquals(max, ary[0].getValue(), delta);
+                assertEquals(Double.NEGATIVE_INFINITY, ary[ary.length - 1].getValue(), delta);
+            } else {
+                assertEquals(Double.NEGATIVE_INFINITY, ary[0].getValue(), delta);
+                assertEquals(Double.NaN, ary[ary.length - 1].getValue(), delta);
             }
         }
     }
