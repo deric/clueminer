@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -20,14 +21,16 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author deric
  */
-public class IconDemo extends JFrame {
+public class IconDemo extends JFrame implements DendrogramVisualizationListener {
 
     private static final long serialVersionUID = -8493251992060371012L;
+    private JLabel picLabel;
 
     public IconDemo() {
         setLayout(new BorderLayout());
@@ -46,11 +49,11 @@ public class IconDemo extends JFrame {
         Clustering<? extends Cluster> clustering = FakeClustering.iris();
         clustering.lookupAdd(dendroData);
 
-        Image image = DGramVis.generate(clustering, 300, 300, null);
-
-        JLabel picLabel = new JLabel(new ImageIcon(image));
+        Image image = DGramVis.generate(clustering, 300, 300, this);
+        picLabel = new JLabel(new ImageIcon(image));
 
         add(picLabel);
+
     }
 
     // this function will be run from the EDT
@@ -70,8 +73,28 @@ public class IconDemo extends JFrame {
                     createAndShowGUI();
                 } catch (Exception e) {
                     System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
+            }
+        });
+    }
+
+    @Override
+    public void clusteringFinished(Clustering<? extends Cluster> clustering) {
+        //
+    }
+
+    @Override
+    public void previewUpdated(final Image preview) {
+        System.out.println("updating preview");
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                picLabel.setIcon(new ImageIcon(preview));
+                validate();
+                revalidate();
+                repaint();
             }
         });
     }

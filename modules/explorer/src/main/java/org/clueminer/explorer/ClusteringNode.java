@@ -59,9 +59,9 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     public Image getIcon(int type) {
         if (image == null) {
             Clustering clustering = getClustering();
-            if (mapping == null) {
-                image = DGramVis.generate(clustering, 64, 64, this);
-            }
+            //image should be updated asynchronously when image is generated
+            DGramVis.generate(clustering, 64, 64, this);
+            return DGramVis.loading();
         }
         return image;
     }

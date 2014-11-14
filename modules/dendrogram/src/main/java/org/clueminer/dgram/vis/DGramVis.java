@@ -32,11 +32,9 @@ public class DGramVis {
 
     private static final Logger log = Logger.getLogger(DGramVis.class.getName());
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
-    private static Heatmap heatmap;
-    private static SilhouettePlot silhoulette;
 
     public static Image generate(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
-        DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             log.warning("missing mapping, can't generate preview");
             //generating clustering does not help
@@ -51,12 +49,12 @@ public class DGramVis {
              generateImage(clustering, width, height, listener, map);
              }
              });*/
-            return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+            return loading();
 
         } else {
             if (!mapping.hasRowsClustering()) {
                 //computing still in progress
-                return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+                return loading();
             }
 
             //don't generate columns mapping
@@ -79,7 +77,11 @@ public class DGramVis {
              });
 
              }*/
-            return generateImage(clustering, width, height, listener, mapping);
+            //add task to queue
+            ImageFactory.getInstance(5).generateImage(clustering, width, height, listener, mapping);
+
+            return loading();
+            //return generateImage(clustering, width, height, listener, mapping);
         }
 
         /**
@@ -90,13 +92,20 @@ public class DGramVis {
          viewer.setClustering(clustering);*/
     }
 
+    /**
+     *
+     * @param clustering
+     * @param width
+     * @param height
+     * @param listener
+     * @param mapping
+     * @return
+     * @deprecated
+     */
     public static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
-        if (heatmap == null) {
-            heatmap = new Heatmap();
-        }
-        if (silhoulette == null) {
-            silhoulette = new SilhouettePlot(true);
-        }
+        Heatmap heatmap = new Heatmap();
+        SilhouettePlot silhoulette = new SilhouettePlot(true);
+
         heatmap.setData(mapping);
         silhoulette.setClustering(clustering);
 
@@ -138,6 +147,15 @@ public class DGramVis {
         clustering.lookupAdd(mapping);
 
         return mapping;
+    }
+
+    /**
+     * Loading icon, should be displayed when we are computing real image
+     *
+     * @return
+     */
+    public static Image loading() {
+        return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
     }
 
 }
