@@ -1,8 +1,6 @@
 package org.clueminer.dgram.vis;
 
-import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglParams;
@@ -15,9 +13,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.clustering.order.MOLO;
-import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.openide.util.RequestProcessor;
@@ -38,25 +34,9 @@ public class DGramVis {
         if (mapping == null) {
             log.warning("missing mapping, can't generate preview");
             //generating clustering does not help
-            /* log.warning("missing mapping, running clustering");
-             RP.post(new Runnable() {
-             @Override
-             public void run() {
-             //add empty mapping
-             DendrogramMapping map = new DendrogramData2();
-             clustering.lookupAdd(map);
-             createMapping(clustering);
-             generateImage(clustering, width, height, listener, map);
-             }
-             });*/
+            //TODO return error image
             return loading();
-
         } else {
-            if (!mapping.hasRowsClustering()) {
-                //computing still in progress
-                return loading();
-            }
-
             //don't generate columns mapping
             /*
              if (!mapping.hasColumnsClustering()) {
@@ -81,7 +61,6 @@ public class DGramVis {
             ImageFactory.getInstance().generateImage(clustering, width, height, listener, mapping);
 
             return loading();
-            //return generateImage(clustering, width, height, listener, mapping);
         }
 
         /**
@@ -90,40 +69,6 @@ public class DGramVis {
         /*       DgViewer viewer = new DgViewer();
          viewer.setDataset(null);
          viewer.setClustering(clustering);*/
-    }
-
-    /**
-     *
-     * @param clustering
-     * @param width
-     * @param height
-     * @param listener
-     * @param mapping
-     * @return
-     * @deprecated
-     */
-    public static Image generateImage(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener, DendrogramMapping mapping) {
-        Heatmap heatmap = new Heatmap();
-        SilhouettePlot silhoulette = new SilhouettePlot(true);
-
-        heatmap.setData(mapping);
-        silhoulette.setClustering(clustering);
-
-        int silWidth = (int) (0.3 * width);
-        int dendroWidth = width - silWidth;
-        Image img = heatmap.generate(dendroWidth, height);
-
-        Image imgSil = silhoulette.generate(silWidth, height);
-        BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = combined.getGraphics();
-        g.drawImage(img, 0, 0, null);
-        g.drawImage(imgSil, dendroWidth, 0, null);
-
-        if (listener != null) {
-            listener.clusteringFinished(clustering);
-            listener.previewUpdated(combined);
-        }
-        return combined;
     }
 
     private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {

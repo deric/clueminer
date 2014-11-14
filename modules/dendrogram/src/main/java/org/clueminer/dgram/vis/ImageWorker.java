@@ -54,9 +54,7 @@ public class ImageWorker implements Runnable {
         while (isRunning()) {
             try {
                 ImageTask task = factory.getTask();
-                System.out.println("worker got task");
                 generateImage(task);
-                System.out.println("task finished");
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }

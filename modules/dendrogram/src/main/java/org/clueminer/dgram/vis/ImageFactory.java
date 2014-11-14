@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
-import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -69,7 +68,6 @@ public class ImageFactory {
         //ensure at least one worker
         ensure(1);
         ImageTask task = new ImageTask(clustering, width, height, listener, mapping);
-        logger.info("adding task");
         queue.add(task);
         if (workers.length == 0) {
             throw new RuntimeException("no workers are running");
@@ -94,14 +92,10 @@ public class ImageFactory {
      * Stop workers and free resources
      */
     public void shutdown() {
+        logger.log(Level.INFO, "stopping {0} workers", workerCnt);
         for (ImageWorker worker : workers) {
             if (worker != null) {
                 worker.stop();
-                try {
-                    worker.wait();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
             }
             workerCnt--;
         }
