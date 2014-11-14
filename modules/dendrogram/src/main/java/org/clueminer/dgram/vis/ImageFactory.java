@@ -1,16 +1,14 @@
 package org.clueminer.dgram.vis;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -23,12 +21,12 @@ public class ImageFactory {
     private static ImageFactory instance;
     private BlockingQueue<ImageTask> queue;
     private static final RequestProcessor RP = new RequestProcessor("Dendrogram image preview");
-    private ExecutorService threadPoolExecutor;
-    private final Logger logger = Logger.getLogger(ImageFactory.class.getName());
+    private static final Logger logger = Logger.getLogger(ImageFactory.class.getName());
+    private int workerCnt = 0;
 
-    public static ImageFactory getInstance(int numWorkers) {
+    public static ImageFactory getInstance() {
         if (instance == null) {
-            instance = new ImageFactory(numWorkers);
+            instance = new ImageFactory(5);
         }
         //TODO: ensure scaling workers upto requested count
         return instance;
@@ -39,20 +37,37 @@ public class ImageFactory {
     }
 
     private void initWorkers(int numWorkers) {
-        queue = new LinkedBlockingQueue<>(5);
+        queue = new LinkedBlockingQueue<>();
         workers = new ImageWorker[numWorkers];
         logger.log(Level.INFO, "intializing {0} workers", numWorkers);
+        ensure(numWorkers);
+    }
 
-        for (int i = 0; i < workers.length; i++) {
-            //each workers has its own vizualization components
-            workers[i] = new ImageWorker(this);
-            //threadPoolExecutor.submit(workers[i]);
-            RP.post(workers[i]);
+    public ImageFactory ensure(int workersNum) {
+        if (workerCnt < workersNum) {
+            setCapacity(workersNum);
+            for (int i = workerCnt; i < workersNum; i++) {
+                //each workers has its own vizualization components
+                workers[i] = new ImageWorker(this);
+                RP.post(workers[i]);
+                workerCnt++;
+            }
         }
+        return instance;
+    }
 
+    private void setCapacity(int capacity) {
+        if (workers.length >= capacity) {
+            return;
+        }
+        ImageWorker[] newWorkers = new ImageWorker[capacity];
+        System.arraycopy(workers, 0, newWorkers, 0, workers.length);
+        workers = newWorkers;
     }
 
     public void generateImage(Clustering<? extends Cluster> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+        //ensure at least one worker
+        ensure(1);
         ImageTask task = new ImageTask(clustering, width, height, listener, mapping);
         logger.info("adding task");
         queue.add(task);
@@ -79,7 +94,17 @@ public class ImageFactory {
      * Stop workers and free resources
      */
     public void shutdown() {
-        //TODO
+        for (ImageWorker worker : workers) {
+            if (worker != null) {
+                worker.stop();
+                try {
+                    worker.wait();
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            workerCnt--;
+        }
     }
 
 }

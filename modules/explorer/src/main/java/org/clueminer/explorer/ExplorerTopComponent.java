@@ -19,6 +19,7 @@ import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
@@ -211,6 +212,8 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             logger.warning("task should have been already finished");
         }
         toolbar.evolutionFinished();
+        //shutdown image workers
+        ImageFactory.getInstance().shutdown();
     }
 
     @Override

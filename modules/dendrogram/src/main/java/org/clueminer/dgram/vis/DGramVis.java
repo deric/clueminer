@@ -78,7 +78,7 @@ public class DGramVis {
 
              }*/
             //add task to queue
-            ImageFactory.getInstance(5).generateImage(clustering, width, height, listener, mapping);
+            ImageFactory.getInstance().generateImage(clustering, width, height, listener, mapping);
 
             return loading();
             //return generateImage(clustering, width, height, listener, mapping);
