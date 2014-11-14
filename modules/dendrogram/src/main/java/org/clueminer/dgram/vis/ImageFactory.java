@@ -45,6 +45,9 @@ public class ImageFactory {
     public ImageFactory ensure(int workersNum) {
         if (workerCnt < workersNum) {
             setCapacity(workersNum);
+            if (workerCnt < 0) {
+                workerCnt = 0;
+            }
             for (int i = workerCnt; i < workersNum; i++) {
                 //each workers has its own vizualization components
                 workers[i] = new ImageWorker(this);
@@ -58,6 +61,9 @@ public class ImageFactory {
     private void setCapacity(int capacity) {
         if (workers.length >= capacity) {
             return;
+        }
+        if (capacity < 1) {
+            capacity = 1;
         }
         ImageWorker[] newWorkers = new ImageWorker[capacity];
         System.arraycopy(workers, 0, newWorkers, 0, workers.length);
@@ -93,11 +99,13 @@ public class ImageFactory {
      */
     public void shutdown() {
         logger.log(Level.INFO, "stopping {0} workers", workerCnt);
-        for (ImageWorker worker : workers) {
-            if (worker != null) {
-                worker.stop();
+        if (workerCnt > 0) {
+            for (ImageWorker worker : workers) {
+                if (worker != null) {
+                    worker.stop();
+                }
+                workerCnt--;
             }
-            workerCnt--;
         }
     }
 
