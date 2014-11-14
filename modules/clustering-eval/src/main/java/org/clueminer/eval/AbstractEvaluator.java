@@ -11,6 +11,7 @@ import org.clueminer.distance.api.DistanceMeasure;
 public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEvaluation {
 
     protected DistanceMeasure dm;
+    protected double eps = 1e-8;
 
     @Override
     public void setDistanceMeasure(DistanceMeasure dm) {
@@ -36,7 +37,7 @@ public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEva
             score2 = replaceNaN(score2);
         }
 
-        if (score1 == score2) {
+        if (Math.abs(score1 - score2) < eps) {
             return 0;
         }
         if (isMaximized()) {
