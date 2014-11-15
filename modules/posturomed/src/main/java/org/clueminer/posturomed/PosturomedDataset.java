@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AbstractDataset;
@@ -30,11 +31,6 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public SortedSet<Object> getClasses() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean addAll(Dataset<E> d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -195,6 +191,16 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public void resetStats() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addAll(Dataset<? extends E> d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

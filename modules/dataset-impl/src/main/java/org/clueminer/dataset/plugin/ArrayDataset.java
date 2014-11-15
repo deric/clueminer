@@ -77,6 +77,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         for (int i = 0; i < attributeCount(); i++) {
             attributes[i].updateStatistics(inst.get(i));
         }
+        if (inst.classValue() != null) {
+            changedClass(null, inst.classValue(), inst);
+        }
         data[n] = inst;
         if (inst.getIndex() < 0) {
             inst.setIndex(n);
@@ -180,6 +183,15 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
             i++;
         }
         return null;
+    }
+
+    @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        if (current != null) {
+            if (!classes.contains(current)) {
+                classes.add(current);
+            }
+        }
     }
 
     @Override

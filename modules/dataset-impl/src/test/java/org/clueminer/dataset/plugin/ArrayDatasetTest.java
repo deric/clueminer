@@ -14,6 +14,8 @@ import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.std.Scaler;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -44,8 +46,20 @@ public class ArrayDatasetTest {
         dataset.add(new DoubleArrayDataRow(new double[]{rand.nextDouble(), rand.nextDouble()}));
     }
 
+    @After
+    public void tearDown() throws Exception {
+    }
+
     private Dataset<? extends Instance> data2x5() {
         Dataset<? extends Instance> test = new ArrayDataset<>(data2x5);
+        return test;
+    }
+
+    private Dataset<? extends Instance> data2x5WithAttr() {
+        Dataset<? extends Instance> test = new ArrayDataset<>(data2x5);
+        for (int i = 0; i < data2x5.length; i++) {
+            test.attributeBuilder().create("attr" + i, "NUMERIC");
+        }
         return test;
     }
 
@@ -301,6 +315,9 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testArrayCopy() {
+        Dataset<? extends Instance> data = data2x5();
+        double[][] copy = data.arrayCopy();
+        Assert.assertArrayEquals(data2x5, copy);
     }
 
     /**
@@ -588,6 +605,52 @@ public class ArrayDatasetTest {
         int index = dataset.size() - 1;
         inst = dataset.get(index);
         assertEquals(index, inst.getIndex());
+    }
+
+    @Test
+    public void testSet_3args() {
+    }
+
+    @Test
+    public void testChangedClass() {
+        dataset.builder().create(new double[]{1.2, 2.3}, "class 1");
+        assertEquals(1, dataset.getClasses().size());
+    }
+
+    @Test
+    public void testAddAttribute() {
+    }
+
+    @Test
+    public void testEnsureAttrSize() {
+    }
+
+    @Test
+    public void testGet_int_int() {
+    }
+
+    @Test
+    public void testSet_int_GenericType() {
+    }
+
+    @Test
+    public void testGet_int() {
+    }
+
+    @Test
+    public void testIndexOf() {
+    }
+
+    @Test
+    public void testMin() {
+    }
+
+    @Test
+    public void testMax() {
+    }
+
+    @Test
+    public void testResetStats() {
     }
 
 }

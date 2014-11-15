@@ -254,6 +254,15 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         return null;
     }
 
+    @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        if (current != null) {
+            if (!classes.contains(current)) {
+                classes.add(current);
+            }
+        }
+    }
+
     /**
      * When an item is added, we have to recompute statistics
      *

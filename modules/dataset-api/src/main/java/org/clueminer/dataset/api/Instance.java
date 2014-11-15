@@ -23,28 +23,28 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @return unique identification at least in the dataset
      */
-    public String getId();
+    String getId();
 
-    public void setId(String id);
+    void setId(String id);
 
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
     /**
      *
      * @return numeric position in dataset, start from 0
      */
-    public int getIndex();
+    int getIndex();
 
-    public void setIndex(int i);
+    void setIndex(int i);
 
     /**
      * Full name is a combination of name and ID or dataset name.
      *
      * @return
      */
-    public String getFullName();
+    String getFullName();
 
     /**
      * Adds value at the end and return its index
@@ -52,7 +52,7 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @param value
      * @return index
      */
-    public int put(double value);
+    int put(double value);
 
     /**
      * Remove i-th attribute
@@ -61,7 +61,7 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @param i
      */
-    public void remove(int i);
+    void remove(int i);
 
     /**
      * Retrieve value from Instance at given index
@@ -69,7 +69,7 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @param index
      * @return value at position specified by index
      */
-    public double value(int index);
+    double value(int index);
 
     /**
      * Set value at given position (behavior depends on underlying structure -
@@ -78,7 +78,7 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @param index starting from 0
      * @param value
      */
-    public void set(int index, double value);
+    void set(int index, double value);
 
     /**
      * Current number of attributes (dimension of the instance)
@@ -86,13 +86,13 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @return
      */
     @Override
-    public int size();
+    int size();
 
     /**
      *
      * @return true when instance doesn't contain any value
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Set maximum number of attributes (usually it's the same as size) It
@@ -100,14 +100,14 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @param capacity
      */
-    public void setCapacity(int capacity);
+    void setCapacity(int capacity);
 
     /**
      * Return maximum number of attributes that can be stored in the instance
      *
      * @return
      */
-    public int getCapacity();
+    int getCapacity();
 
     /**
      * Assignment to a class (category), it it's available otherwise returns
@@ -115,36 +115,36 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @return
      */
-    public Object classValue();
+    Object classValue();
 
-    public void setClassValue(Object obj);
+    void setClassValue(Object obj);
 
     /**
      * Color is used for plotting
      *
      * @return color of instance
      */
-    public Color getColor();
+    Color getColor();
 
-    public void setColor(Color c);
+    void setColor(Color c);
 
     /**
      * A deep copy of this instance
      *
      * @return
      */
-    public Instance copy();
+    Instance copy();
 
     @Override
-    public int hashCode();
+    int hashCode();
 
     @Override
-    public boolean equals(Object obj);
+    boolean equals(Object obj);
 
-    public double[] arrayCopy();
+    double[] arrayCopy();
 
     @Override
-    public String toString();
+    String toString();
 
     /**
      * Converts instance to string representation
@@ -152,27 +152,27 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * @param separator of values
      * @return serialized values
      */
-    public String toString(String separator);
+    String toString(String separator);
 
     /**
      * Used for exporting dataset
      *
      * @return array of Strings
      */
-    public String[] toStringArray();
+    String[] toStringArray();
 
     /**
      *
      * @return numeric meta data
      */
-    public double[] getMetaNum();
+    double[] getMetaNum();
 
     /**
      * Numeric meta data
      *
      * @param meta
      */
-    public void setMetaNum(double[] meta);
+    void setMetaNum(double[] meta);
 
     /**
      * When preprocessing data sometimes we need to display reference to
@@ -180,14 +180,14 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @return Instance from which was this one derived
      */
-    public Instance getAncestor();
+    Instance getAncestor();
 
     /**
      * Set reference to original data row
      *
      * @param instance
      */
-    public void setAncestor(Instance instance);
+    void setAncestor(Instance instance);
 
     /**
      * Return component for default data visualization which displays an
@@ -195,5 +195,18 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      *
      * @return
      */
-    public Plotter getPlotter();
+    Plotter getPlotter();
+
+    /**
+     *
+     * @param dataset
+     */
+    void setParent(Dataset<? extends Instance> dataset);
+
+    /**
+     * The dataset where this instance belong
+     *
+     * @return original dataset
+     */
+    Dataset<? extends Instance> getParent();
 }

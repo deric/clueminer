@@ -158,6 +158,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     Object classValue(int index);
 
     /**
+     * Invoked when class membership of an instance +source+ changes
+     *
+     * @param orig
+     * @param current
+     * @param source
+     */
+    void changedClass(Object orig, Object current, Instance source);
+
+    /**
      * Get a copy of attributes
      *
      * @return
