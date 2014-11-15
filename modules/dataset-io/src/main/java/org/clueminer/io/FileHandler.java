@@ -8,11 +8,15 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
- * A class to load data sets from file and write them back. <p> The format of
+ * A class to load data sets from file and write them back.
+ * <p>
+ * The format of
  * the file should be as follows: One instance on each line, all values of an
  * entry on a single line, values should be separated by a tab character or
  * specified with the method and all entries should have the same number of
- * values. <p> Only class values are allowed to be non double. If a data set has
+ * values.
+ * <p>
+ * Only class values are allowed to be non double. If a data set has
  * no labels, then all columns should be double values.
  *
  *
@@ -25,6 +29,7 @@ public class FileHandler extends StreamHandler {
      * Utility method to load from a file without class set.
      *
      * @param f
+     * @param dataset
      * @param separator
      * @return
      * @throws IOException
@@ -34,40 +39,52 @@ public class FileHandler extends StreamHandler {
     }
 
     /**
-     * This method will load the data stored in a file.. <p> Only the column
+     * This method will load the data stored in a file..
+     * <p>
+     * Only the column
      * with the class values is allowed to have different values than doubles.
-     * <p> Symbols that cannot be parsed to numbers will be converted to missing
+     * <p>
+     * Symbols that cannot be parsed to numbers will be converted to missing
      * values.
      *
-     * @param f the file to be loaded.
+     * @param f          the file to be loaded.
+     * @param dataset
      * @param classIndex the index of the column that contains the class labels.
-     * This index starts from zero for the first column and should not be
-     * negative.
+     *                   This index starts from zero for the first column and should not be
+     *                   negative.
+     * @return
+     * @throws java.io.IOException
      */
-    public static boolean loadDataset(File f,Dataset dataset, int classIndex) throws IOException {
-        return loadDataset(f,dataset, classIndex, "\t");
+    public static boolean loadDataset(File f, Dataset dataset, int classIndex) throws IOException {
+        return loadDataset(f, dataset, classIndex, "\t");
     }
 
-    public static boolean loadDataset(File f,Dataset dataset) throws IOException {
-        return loadDataset(f,  dataset,-1);
+    public static boolean loadDataset(File f, Dataset dataset) throws IOException {
+        return loadDataset(f, dataset, -1);
 
     }
 
     /**
-     * Load the data from a file. <p> All columns should only contain double
+     * Load the data from a file.
+     * <p>
+     * All columns should only contain double
      * values, except the class column which can only contain integer values.
-     * <p> Values that cannot be parsed to numbers will be entered as missing
-     * values in the instances. <p> When the classIndex is outside the range of
+     * <p>
+     * Values that cannot be parsed to numbers will be entered as missing
+     * values in the instances.
+     * <p>
+     * When the classIndex is outside the range of
      * available attributes, all instances will have the same class.
      *
-     * @param f the file to be loaded.
+     * @param f          the file to be loaded.
+     * @param out        the dataset which will be used for storing the data
      * @param classIndex the index of the class value
-     * @param separator the symbol used to separate two fields, typically
-     * ,(comma) ;(semi-colon) or \t (tab).
+     * @param separator  the symbol used to separate two fields, typically
+     *                   ,(comma) ;(semi-colon) or \t (tab).
      * @return a data set containing the data from the file
      * @throws IOException
      */
-    public static boolean loadDataset(File f,Dataset out, int classIndex, String separator) throws IOException {
+    public static boolean loadDataset(File f, Dataset out, int classIndex, String separator) throws IOException {
         if (f.getName().endsWith("gz")) {
             return load(new InputStreamReader(new GZIPInputStream(new FileInputStream(f))), out, classIndex, separator);
         }
@@ -78,7 +95,7 @@ public class FileHandler extends StreamHandler {
 
     }
 
-    public static boolean loadSparseDataset(File f,Dataset out, int classIndex) throws IOException {
+    public static boolean loadSparseDataset(File f, Dataset out, int classIndex) throws IOException {
         return loadSparseDataset(f, out, classIndex, "\t", ":");
 
     }
@@ -101,9 +118,10 @@ public class FileHandler extends StreamHandler {
      * Note: data sets with mixed sparse and dense instances may not be loadable
      * with the load methods.
      *
-     * @param data data set
-     * @param outFile file to write data to
+     * @param data     data set
+     * @param outFile  file to write data to
      * @param compress flag to indicate whether GZIP compression should be used.
+     * @param sep
      * @throws IOException when something went wrong during the export
      */
     public static void exportDataset(Dataset<Instance> data, File outFile, boolean compress, String sep) throws IOException {
@@ -134,7 +152,7 @@ public class FileHandler extends StreamHandler {
      * By default compression of the output is turned off.
      *
      * @param data data set
-     * @param outFile file to write data to
+     * @param file file to write data to
      * @throws IOException when something went wrong during the export
      */
     public static void exportDataset(Dataset data, File file) throws IOException {

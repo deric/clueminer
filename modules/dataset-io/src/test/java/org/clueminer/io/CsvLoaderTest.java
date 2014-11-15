@@ -48,7 +48,7 @@ public class CsvLoaderTest {
     @Test
     public void testLoad_File_Dataset() throws Exception {
         File file = fixture.insectCsv();
-        Dataset<Instance> dataset = new ArrayDataset<Instance>(30, 3);
+        Dataset<Instance> dataset = new ArrayDataset<>(30, 3);
         subject.setClassIndex(3);
         subject.load(file, dataset);
         assertEquals(3, dataset.attributeCount());
@@ -79,7 +79,7 @@ public class CsvLoaderTest {
     @Test
     public void testSetHeader() throws IOException {
         File file = fixture.irisData();
-        Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
+        Dataset<Instance> dataset = new ArrayDataset<>(150, 4);
         subject.setClassIndex(4);
         subject.setHasHeader(false);
         //run
@@ -93,7 +93,7 @@ public class CsvLoaderTest {
     @Test
     public void testLoadingNames() throws IOException {
         File file = fixture.irisData();
-        Dataset<Instance> dataset = new ArrayDataset<Instance>(150, 4);
+        Dataset<Instance> dataset = new ArrayDataset<>(150, 4);
         subject.setClassIndex(4);
         subject.setHasHeader(false);
         subject.addNameAttr(4);
@@ -107,9 +107,9 @@ public class CsvLoaderTest {
     public void testDatasetWithHeader() throws IOException {
         File file = fixture.legendreCsv();
         char separator = ',';
-        Dataset<Instance> dataset = new ArrayDataset<Instance>(39, 21);
+        Dataset<Instance> dataset = new ArrayDataset<>(39, 21);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> skip = new ArrayList<Integer>();
+        ArrayList<Integer> skip = new ArrayList<>();
         //skip.add(0); //first one is ID
         //loader.addNameAttr(0);
         for (int i = 0; i < 7; i++) {
@@ -209,7 +209,7 @@ public class CsvLoaderTest {
     @Test
     public void testMeta() throws IOException {
         File file = fixture.schoolData();
-        Dataset<Instance> dataset = new ArrayDataset<Instance>(17, 5);
+        Dataset<Instance> dataset = new ArrayDataset<>(17, 5);
         subject.setHasHeader(true);
         subject.addNameAttr(4);
         subject.addMetaAttr(3);
@@ -227,9 +227,9 @@ public class CsvLoaderTest {
         char separator = ',';
         TimeseriesFixture tf = new TimeseriesFixture();
         File file = tf.ts01();
-        Dataset<? extends Instance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        Dataset<? extends Instance> dataset = new TimeseriesDataset<>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+        ArrayList<Integer> metaAttr = new ArrayList<>();
         //ArrayList<Integer> skipAttr = new ArrayList<Integer>();
         loader.setClassIndex(0);
         for (int i = 1; i < 7; i++) {
@@ -273,9 +273,9 @@ public class CsvLoaderTest {
         char separator = ',';
         TimeseriesFixture tf = new TimeseriesFixture();
         File file = tf.quoted();
-        Dataset<? extends Instance> dataset = new ArrayDataset<Instance>(100, 22);
+        Dataset<? extends Instance> dataset = new ArrayDataset<>(100, 22);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> skip = new ArrayList<Integer>();
+        ArrayList<Integer> skip = new ArrayList<>();
         //skipped.add(0); //first one is ID
         for (int i = 0; i < 7; i++) {
             skip.add(i);
