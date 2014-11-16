@@ -8,8 +8,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.AbstractIndividual;
 import org.clueminer.utils.Props;
 
@@ -99,8 +97,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
      * @return clustering according to current parameters
      */
     private Clustering<? extends Cluster> updateCustering() {
-        DistanceMeasure dm = DistanceFactory.getInstance().getProvider(genom.getString(AgglParams.DIST));
-        clustering = ((BnbEvolution) evolution).exec.clusterRows(evolution.getDataset(), dm, genom);
+        clustering = ((BnbEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
 
         return clustering;
     }

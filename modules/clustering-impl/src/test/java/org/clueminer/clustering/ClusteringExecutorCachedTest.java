@@ -13,6 +13,7 @@ import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,11 +35,10 @@ public class ClusteringExecutorCachedTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Ignore
     public void testHclustRows() {
-        DistanceMeasure dm = new EuclideanDistance();
         Props pref = new Props();
-        Clustering<Cluster> clust = subject.clusterRows(FakeClustering.irisDataset(), dm, pref);
+        Clustering<Cluster> clust = subject.clusterRows(FakeClustering.irisDataset(), pref);
         assertNotNull(clust);
         //cutoff implementation is needed
     }
@@ -47,7 +47,7 @@ public class ClusteringExecutorCachedTest {
     public void testHclustColumns() {
         DistanceMeasure dm = new EuclideanDistance();
         Props pref = new Props();
-        HierarchicalResult hres = subject.hclustRows(FakeClustering.irisDataset(), dm, pref);
+        HierarchicalResult hres = subject.hclustRows(FakeClustering.irisDataset(), pref);
         assertNotNull(hres);
         assertEquals(150, hres.size());
     }
@@ -57,11 +57,11 @@ public class ClusteringExecutorCachedTest {
     }
 
     //TODO: move some cutoff strategy to this package
-    //@Test
+    @Ignore
     public void testClusterAll() {
         DistanceMeasure dm = new EuclideanDistance();
         Props pref = new Props();
-        DendrogramMapping mapping = subject.clusterAll(FakeClustering.irisDataset(), dm, pref);
+        DendrogramMapping mapping = subject.clusterAll(FakeClustering.irisDataset(), pref);
         assertNotNull(mapping);
         HierarchicalResult rows = mapping.getRowsResult();
         Matrix mr = rows.getProximityMatrix();

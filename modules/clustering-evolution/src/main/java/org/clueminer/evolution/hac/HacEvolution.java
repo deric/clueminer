@@ -124,7 +124,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         params.put(AgglParams.LINKAGE, link.getName());
         for (DistanceMeasure dm : dist) {
             params.put(AgglParams.DIST, dm.getName());
-            clustering = exec.clusterRows(dataset, dm, params);
+            clustering = exec.clusterRows(dataset, params);
             clustering.setName("#" + cnt);
             individualCreated(clustering);
             if (ph != null) {

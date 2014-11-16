@@ -17,7 +17,6 @@ import org.clueminer.clustering.order.MOLO;
 import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 
@@ -42,7 +41,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
@@ -53,7 +52,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
@@ -87,8 +86,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
 
         findCutoff(rowsResult, params);
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
@@ -110,15 +109,14 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
      * Cluster both - rows and columns
      *
      * @param dataset data to be clustered
-     * @param dm      distance metric
      * @param params
      * @return
      */
     @Override
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
         findCutoff(rowsResult, params);
-        HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
+        HierarchicalResult columnsResult = hclustColumns(dataset, params);
 
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult, columnsResult);
         Clustering clustering = rowsResult.getClustering();
