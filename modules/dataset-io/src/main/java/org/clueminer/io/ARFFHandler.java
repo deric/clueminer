@@ -101,6 +101,7 @@ public class ARFFHandler implements DatasetLoader {
         Matcher amatch;
 
         int headerLine = 0;
+        int numAttr = 0;
         /*
          * Indicates whether we are reading data
          */
@@ -147,8 +148,17 @@ public class ARFFHandler implements DatasetLoader {
                     if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
-                        //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
-                        out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase()));
+                        //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                        String attrName = amatch.group(1).toLowerCase().trim();
+                        switch (attrName) {
+                            case "class":
+                            case "type":
+                                classIndex = numAttr;
+                                break;
+                            default:
+                                out.attributeBuilder().create(attrName, convertType(amatch.group(2).toUpperCase()));
+                        }
+                        numAttr++;
                     }
                     headerLine++;
 
