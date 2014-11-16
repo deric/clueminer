@@ -20,8 +20,6 @@ import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.report.MemInfo;
@@ -56,11 +54,10 @@ public class DendroView extends JFrame {
 
         Executor exec = new ClusteringExecutorCached();
 
-        DistanceMeasure dm = new EuclideanDistance();
         Props prop = new Props();
         prop.put(AgglParams.LINKAGE, SingleLinkage.name);
         MemInfo mem = new MemInfo();
-        Clustering clust = exec.clusterRows(data, dm, prop);
+        Clustering clust = exec.clusterRows(data, prop);
         mem.report();
         frame.setClustering(clust);
     }

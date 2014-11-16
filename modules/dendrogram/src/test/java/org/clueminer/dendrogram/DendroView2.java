@@ -13,8 +13,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 
@@ -36,10 +34,8 @@ public class DendroView2 extends JFrame {
 
         Executor exec = new ClusteringExecutorCached();
 
-        DistanceMeasure dm = new EuclideanDistance();
-
         //cluster both rows and columns
-        DendrogramMapping mapping = exec.clusterAll(data, dm, new Props());
+        DendrogramMapping mapping = exec.clusterAll(data, new Props());
         frame.setDataset(mapping);
 
     }

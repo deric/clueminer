@@ -11,7 +11,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.std.DataScaler;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
@@ -31,7 +30,7 @@ public class ConfNormData extends JFrame {
 
         Dataset<? extends Instance> out = DataScaler.standartize(FakeDatasets.irisDataset(), "z-score", false);
         ClusteringExecutorCached executor = new ClusteringExecutorCached();
-        Clustering<Cluster> clustering = executor.clusterRows(out, new EuclideanDistance(), new Props());
+        Clustering<Cluster> clustering = executor.clusterRows(out, new Props());
 
         confMatrix.setClustering(clustering);
 

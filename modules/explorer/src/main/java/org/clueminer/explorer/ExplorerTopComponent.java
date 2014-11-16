@@ -286,15 +286,15 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 exec.setAlgorithm(aggl);
                 Clustering<? extends Cluster> clustering;
                 if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
-                    DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
+                    DendrogramMapping mapping = exec.clusterAll(dataset, props);
                     clustering = mapping.getRowsClustering();
                     children.addClustering(clustering);
                 } else {
-                    clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
+                    clustering = exec.clusterRows(dataset, props);
                     children.addClustering(clustering);
                 }
                 logger.log(Level.INFO, "finished clustering dataset {1} with algorithm {0}",
-                           new Object[]{alg.getName(), dataset.getName()});
+                        new Object[]{alg.getName(), dataset.getName()});
             }
         });
         task.schedule(0);

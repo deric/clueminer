@@ -57,7 +57,7 @@ public class HacDendroPanel extends DendroPanel {
         algorithm.setDistanceFunction(func);
 
         exec.setAlgorithm(algorithm);
-        DendrogramMapping dendroData = exec.clusterAll(getDataset(), func, params);
+        DendrogramMapping dendroData = exec.clusterAll(getDataset(), params);
         memInfo.report();
 
         viewer.setDataset(dendroData);
