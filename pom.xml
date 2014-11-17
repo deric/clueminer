@@ -213,6 +213,7 @@
         <module>modules/fastutil</module>
         <module>modules/commons</module>
         <module>modules/evaluation-gui</module>
+        <module>modules/meta-api</module>
     </modules>
     <reporting>
         <plugins>
