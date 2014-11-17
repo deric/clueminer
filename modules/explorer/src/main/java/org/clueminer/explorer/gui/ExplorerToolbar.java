@@ -91,7 +91,7 @@ public class ExplorerToolbar extends JToolBar {
         sliderGenerations = new JSlider(SwingConstants.HORIZONTAL);
         sliderGenerations.setMaximum(200);
         sliderGenerations.setMinimum(10);
-        sliderGenerations.setValue(10);
+        sliderGenerations.setValue(1);
         add(sliderGenerations);
 
         btnStart = new JButton("Start Clustering");
