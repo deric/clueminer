@@ -15,6 +15,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
+import org.clueminer.utils.Dump;
 import org.imgscalr.Scalr;
 
 /**
@@ -51,6 +52,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             // String str;
             if (hierarchicalResult != null) {
                 for (int i = 0; i < hierarchicalResult.getDataset().size(); i++) {
+                    Dump.array(hierarchicalResult.getMapping(), "sil mapping");
                     s = score[i];
                     if (Double.isNaN(s)) {
                         s = -1.0;
@@ -255,8 +257,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         render(g);
         if (image.getHeight() != height || image.getWidth() != width) {
             image = Scalr.resize(image, Scalr.Method.SPEED,
-                                 Scalr.Mode.AUTOMATIC,
-                                 width, height, Scalr.OP_ANTIALIAS);
+                    Scalr.Mode.AUTOMATIC,
+                    width, height, Scalr.OP_ANTIALIAS);
         }
 
         return image;

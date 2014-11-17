@@ -32,8 +32,8 @@ public class ImageWorker implements Runnable {
         heatmap.setData(task.getMapping());
         silhoulette.setClustering(task.getClustering());
 
-        // 2px space
-        int space = 2;
+        // 1px space
+        int space = 1;
         int silWidth = (int) (0.3 * task.getWidth()) - space;
         int dendroWidth = task.getWidth() - silWidth;
         Image img = heatmap.generate(dendroWidth, task.getHeight());
@@ -42,7 +42,7 @@ public class ImageWorker implements Runnable {
         BufferedImage combined = new BufferedImage(task.getWidth(), task.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics g = combined.getGraphics();
         g.drawImage(img, 0, 0, null);
-        // 2px to separate silhoulette from heatmap
+        // 1px to separate silhoulette from heatmap
         g.drawImage(imgSil, dendroWidth + space, 0, null);
 
         DendrogramVisualizationListener listener = task.getListener();
