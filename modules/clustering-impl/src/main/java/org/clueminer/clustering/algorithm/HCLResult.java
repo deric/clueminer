@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
@@ -381,6 +382,16 @@ public class HCLResult implements HierarchicalResult {
     @Override
     public Instance getInstance(int index) {
         return dataset.get(this.getMappedIndex(index));
+    }
+
+    @Override
+    public DendrogramMapping getDendrogramMapping() {
+        DendrogramMapping res = null;
+        Clustering c = getClustering();
+        if (c != null) {
+            res = c.getLookup().lookup(DendrogramMapping.class);
+        }
+        return res;
     }
 
 }

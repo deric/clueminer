@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -262,5 +263,12 @@ public interface HierarchicalResult extends Serializable {
      * @return
      */
     Props getParams();
+
+    /**
+     * Dendrogram mapping might contain both rows and columns clustering
+     *
+     * @return dendrogram mapping
+     */
+    DendrogramMapping getDendrogramMapping();
 
 }

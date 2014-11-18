@@ -19,6 +19,7 @@ import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.ClusterList;
@@ -581,6 +582,16 @@ public class HClustResult implements HierarchicalResult {
         } else {
             throw new RuntimeException("dataset is null");
         }
+    }
+
+    @Override
+    public DendrogramMapping getDendrogramMapping() {
+        DendrogramMapping res = null;
+        Clustering c = getClustering();
+        if (c != null) {
+            res = c.getLookup().lookup(DendrogramMapping.class);
+        }
+        return res;
     }
 
 }
