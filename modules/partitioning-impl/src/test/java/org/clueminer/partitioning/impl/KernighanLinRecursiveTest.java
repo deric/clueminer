@@ -28,7 +28,8 @@ import org.junit.Test;
  * @author tomas
  */
 public class KernighanLinRecursiveTest {
-   
+    
+   //Will not work correctly until distance measure for nodes is implemented
     @Test
     public void irisDataTest() throws IOException {
         CommonFixture tf = new CommonFixture();
@@ -36,7 +37,9 @@ public class KernighanLinRecursiveTest {
         DistanceMeasure distanceMeasure = new EuclideanDistance();
         data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
-        FileHandler.loadDataset(tf.irisData(), data, 2, ",");
+        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
+        FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
         int k = 5;
         KNN knn = new KNN(k);

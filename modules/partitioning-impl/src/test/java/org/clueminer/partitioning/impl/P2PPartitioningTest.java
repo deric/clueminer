@@ -96,7 +96,7 @@ public class P2PPartitioningTest {
 
 
 
-
+    //Will not work correctly until distance measure for nodes is implemented
     @Test
     public void irisDataTest() throws IOException {
         CommonFixture tf = new CommonFixture();
@@ -104,7 +104,9 @@ public class P2PPartitioningTest {
         DistanceMeasure distanceMeasure = new EuclideanDistance();
         data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
-        FileHandler.loadDataset(tf.irisData(), data, 2, ",");
+        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
+        FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
         int k = 3;
         KNN knn = new KNN(k);
