@@ -5,12 +5,13 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 
 /**
  *
  * @author Tomas Bruna
  */
-public class KernighanLin {
+public class KernighanLin implements Bisection {
 
     private ArrayList<LinkedList<Vertex>> cluster;
     private Node[] nodes;
@@ -25,9 +26,20 @@ public class KernighanLin {
     private Graph graph;
 
     public KernighanLin() {
-
+        
     }
+    
+    public KernighanLin(Graph g) {
+        graph = g;
+    }
+    
 
+    @Override
+    public ArrayList<LinkedList<Node>> bisect() {
+        return bisect(graph);
+    }
+    
+    @Override
     public ArrayList<LinkedList<Node>> bisect(Graph g) {
         initialize(g);
 
@@ -42,7 +54,14 @@ public class KernighanLin {
         swapUpToBestIndex();
         return createNodeClusters();
     }
+    
+    
 
+     /**
+     * Initialize all variables before bisection
+     *
+     * @param g graph to bisect
+     */
     private void initialize(Graph g) {
         graph = g;
         nodes = g.getNodes().toArray();
@@ -54,6 +73,11 @@ public class KernighanLin {
         swapHistoryCost = new LinkedList<>();
     }
 
+     /**
+     * Create clusters of nodes form vertex array
+     *
+     * @return lists of nodes according to clusters
+     */
     private ArrayList<LinkedList<Node>> createNodeClusters() {
         ArrayList<LinkedList<Node>> clusters = new ArrayList<>();
         clusters.add(new LinkedList<Node>());
@@ -68,6 +92,9 @@ public class KernighanLin {
         return clusters;
     }
 
+     /**
+     * Swap nodes form 0 up to maxDifferenceIndex.
+     */
     private void swapUpToBestIndex() {
         int index = findBestSwaps();
         for (int i = 0; i <= index; i++) {
@@ -77,7 +104,10 @@ public class KernighanLin {
         }
 
     }
-
+    
+     /**
+     * Find how many swaps should be done to achieve best difference sum.
+     */
     private int findBestSwaps() {
         int maxDifference = 0;
         int differenceSum = 0;
@@ -92,10 +122,12 @@ public class KernighanLin {
         return maxDifferenceIndex;
     }
 
+     /**
+     * Simulate swapping of two nodes. 
+     * Real swapping is not done, nodes will be swapped at the end according to 
+     * best difference sum
+     */
     private void swapPair() {
-        // int tempCluster = swapPair[1].cluster;
-        // swapPair[0].cluster = swapPair[2].cluster;
-        // swapPair[1].cluster = tempCluster;
         swapPair[0].used = true;
         swapPair[1].used = true;
         usedNodes += 2;
@@ -106,6 +138,10 @@ public class KernighanLin {
         swapHistory.add(a);
     }
 
+     
+     /**
+     * Update differences of all nodes according to swapped pair. 
+     */
     private void updateCosts() {
         for (int i = 0; i <= 1; i++) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(nodes[swapPair[i].index]).toCollection();
@@ -119,6 +155,9 @@ public class KernighanLin {
         }
     }
 
+     /**
+     * Compute differences of all nodes.
+     */
     private void computeCosts() {
         for (Node node : nodes) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(node).toCollection();
@@ -134,6 +173,9 @@ public class KernighanLin {
         }
     }
 
+     /**
+     * Find pair of nodes which has the highest sum of differences.
+     */
     private void findBestPair() {
         maxCost = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < nodeCount; i++) {
@@ -158,6 +200,9 @@ public class KernighanLin {
         }
     }
 
+     /**
+     * Create vertexes from nodes in graph.
+     */
     private void createVertexes() {
         vertexes = new Vertex[nodeCount];
         for (int i = 0; i < nodeCount; i++) {
@@ -167,6 +212,9 @@ public class KernighanLin {
 
     }
 
+     /**
+     * Randomly assign nodes to clusters at the beginning.
+     */
     private void createIntitalPartition() {
         cluster = new ArrayList<>(2);
         cluster.add(new LinkedList<Vertex>());
@@ -192,6 +240,7 @@ public class KernighanLin {
         }
     }
 
+    @Override
     public Graph removeUnusedEdges() {
         for (int i = 0; i < nodeCount; i++) {
             for (int j = 0; j < nodeCount; j++) {
@@ -212,6 +261,7 @@ public class KernighanLin {
             internalCost = externalCost = 0;
             used = false;
         }
+        //reference to node not to have node array and vertex array
         int index;
         int cluster;
         boolean used;
