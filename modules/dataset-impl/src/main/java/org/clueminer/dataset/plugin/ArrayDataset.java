@@ -543,7 +543,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public double min() {
         double min = Double.POSITIVE_INFINITY, curr;
-        for (Attribute attribute : attributes) {
+        Attribute attribute;
+        for (int i = 0; i < attrCnt; i++) {
+            attribute = attributes[i];
             if (attribute == null) {
                 throw new RuntimeException("got null attribute");
             }
@@ -558,7 +560,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     @Override
     public double max() {
         double max = Double.NEGATIVE_INFINITY, curr;
-        for (Attribute attribute : attributes) {
+        Attribute attribute;
+        for (int i = 0; i < attrCnt; i++) {
+            attribute = attributes[i];
             if (attribute == null) {
                 throw new RuntimeException("got null attribute");
             }
@@ -572,7 +576,12 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public void resetStats() {
-        for (Attribute attribute : attributes) {
+        Attribute attribute;
+        for (int i = 0; i < attrCnt; i++) {
+            attribute = attributes[i];
+            if (attribute == null) {
+                throw new RuntimeException("got null attribute");
+            }
             attribute.resetStats();
         }
     }

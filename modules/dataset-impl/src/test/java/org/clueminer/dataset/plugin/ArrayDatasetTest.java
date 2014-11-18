@@ -623,6 +623,20 @@ public class ArrayDatasetTest {
 
     @Test
     public void testEnsureAttrSize() {
+        //we annouce creating 3 attributes
+        Dataset<? extends Instance> test = new ArrayDataset<>(3, 3);
+        //then create just 2
+        test.attributeBuilder().create("a1", "NUMERIC");
+        test.attributeBuilder().create("a2", "NUMERIC");
+
+        test.builder().create(new double[]{1.2, 5.0});
+        test.builder().create(new double[]{3.2, 2.0});
+
+        //max is one of methods that iterates over all attributes
+        //we want to test that this won't throw null exception
+        assertEquals(5.0, test.max(), delta);
+        assertEquals(1.2, test.min(), delta);
+
     }
 
     @Test

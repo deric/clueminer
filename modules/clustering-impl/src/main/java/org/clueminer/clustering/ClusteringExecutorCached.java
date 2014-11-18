@@ -117,7 +117,6 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         findCutoff(rowsResult, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, params);
-
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult, columnsResult);
         Clustering clustering = rowsResult.getClustering();
         clustering.lookupAdd(mapping);
