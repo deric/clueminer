@@ -319,16 +319,16 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
 
         width = Math.max(w, dendroDim.width);
         height = Math.max(h, dendroDim.height);
+
+        dendrogramPanel.setSize(width, height);
         if (dimPrev != null) {
             width += dimPrev.width;
             height = Math.max(dendroDim.height, dimPrev.height);
         }
 
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = bi.createGraphics();
-        g.setPaint(Color.WHITE);
-        g.fillRect(0, 0, width, height);
-        dendrogramPanel.paint(g);
+        dendrogramPanel.render(g, width, height);
         logger.log(Level.INFO, "exporting dendrogram to bitmap, export size: {0}x{1}", new Object[]{width, height});
         if (prev != null) {
             //combine images

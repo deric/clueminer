@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
@@ -142,7 +143,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
-        //logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
+        logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
 
         if (fitToPanel) {
             //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
@@ -154,6 +155,23 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     @Override
     public void render(Graphics2D g) {
+        paint(g);
+    }
+
+    /**
+     * Could be used for exporting component
+     *
+     * @param g
+     * @param width
+     * @param height
+     */
+    public void render(Graphics2D g, int width, int height) {
+        prepareComputedLayout();
+        this.fitToSpace = true;
+        this.fitToPanel = true;
+        sizeUpdated(new Dimension(width, height));
+
+        drawComponent(g);
     }
 
     /**
@@ -344,6 +362,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         //setPreferredSize(new Dimension(totalWidth, totalHeight));
         setMinimumSize(new Dimension(totalWidth, totalHeight));
+        realSize.width = totalWidth;
+        realSize.height = totalHeight;
     }
 
     private void updateColumnTreePosition(Dimension dim, int heatmapXoffset) {

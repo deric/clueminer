@@ -105,11 +105,19 @@ public abstract class BPanel extends JPanel {
                 g.fillRect(0, 0, reqSize.width, reqSize.width);
             }
         }
+        drawComponent(g);
+    }
 
+    /**
+     * Draws componet on given graphics.
+     *
+     * @param g
+     */
+    public void drawComponent(Graphics2D g) {
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.setRenderingHint(RenderingHints.KEY_RENDERING,
-                           RenderingHints.VALUE_RENDER_QUALITY);
+                RenderingHints.VALUE_RENDER_QUALITY);
 
         if (isAntiAliasing()) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -162,9 +170,9 @@ public abstract class BPanel extends JPanel {
 
             //cached image
             g.drawImage(bufferedImage,
-                        0, 0,
-                        reqSize.width, reqSize.height,
-                        null);
+                    0, 0,
+                    reqSize.width, reqSize.height,
+                    null);
         }
     }
 

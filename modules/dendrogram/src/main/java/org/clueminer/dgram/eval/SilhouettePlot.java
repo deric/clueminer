@@ -51,8 +51,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             double value, s;
             // String str;
             if (hierarchicalResult != null) {
+                Dump.array(hierarchicalResult.getMapping(), "sil mapping");
                 for (int i = 0; i < hierarchicalResult.getDataset().size(); i++) {
-                    Dump.array(hierarchicalResult.getMapping(), "sil mapping");
                     s = score[i];
                     if (Double.isNaN(s)) {
                         s = -1.0;
