@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
@@ -45,7 +45,7 @@ import org.openide.util.NbBundle;
  */
 public class BenchmarkTest {
 
-    private static Collection<? extends ClusterEvaluator> evaluators;
+    private static Collection<? extends InternalEvaluator> evaluators;
     private static String benchmarkFolder;
     private static CommonFixture tf;
     private Map<String, String> classColors = new HashMap<String, String>();
@@ -53,7 +53,7 @@ public class BenchmarkTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        evaluators = Lookup.getDefault().lookupAll(ClusterEvaluator.class);
+        evaluators = Lookup.getDefault().lookupAll(InternalEvaluator.class);
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
                         FileUtils.class,
@@ -97,7 +97,7 @@ public class BenchmarkTest {
      */
     private void plotResults(String datasetName, int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
         int i = 0;
-        for (ClusterEvaluator c : evaluators) {
+        for (InternalEvaluator c : evaluators) {
             System.out.println("evaluator " + c.getName());
             JavaPlot p = new JavaPlot();
             JavaPlot.getDebugger().setLevel(Debug.VERBOSE);
@@ -268,7 +268,7 @@ public class BenchmarkTest {
 
             double score;
             int j = 0;
-            for (ClusterEvaluator c : evaluators) {
+            for (InternalEvaluator c : evaluators) {
                 score = c.score(clusters, data);
                 results[j++][n - kmin] = score;
             }

@@ -9,6 +9,16 @@ import java.util.prefs.Preferences;
 public class NewickOptions extends javax.swing.JPanel {
 
     public static final String INNER_NODES_NAMES = "inner_nodes_names";
+    /**
+     * either we export rows clustering or columns clustering (if available)
+     */
+    public static final String EXPORT_ROWS = "export_rows";
+
+    /**
+     * attribute used for node labels
+     */
+    public static final String NODE_LABEL = "node_label";
+    public static final String INCLUDE_ROOT = "include_root";
 
     /**
      * Creates new form NewickOptions
@@ -24,6 +34,20 @@ public class NewickOptions extends javax.swing.JPanel {
         }
         p.putBoolean(INNER_NODES_NAMES, includeInnerNodes);
 
+        if (btnRows.isSelected()) {
+            p.putBoolean(EXPORT_ROWS, true);
+            p.put(NODE_LABEL, (String) cbRowLabel.getSelectedItem());
+        } else {
+            p.putBoolean(EXPORT_ROWS, false);
+            p.put(NODE_LABEL, (String) cbColumnLabel.getSelectedItem());
+        }
+
+        if (chckIncludeRoot.isSelected()) {
+            p.putBoolean(INCLUDE_ROOT, true);
+        } else {
+            p.putBoolean(INCLUDE_ROOT, false);
+        }
+
         return p;
     }
 
@@ -37,9 +61,48 @@ public class NewickOptions extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGroupType = new javax.swing.ButtonGroup();
         chckInnerNodes = new javax.swing.JCheckBox();
+        btnRows = new javax.swing.JRadioButton();
+        lbExport = new javax.swing.JLabel();
+        btnColumns = new javax.swing.JRadioButton();
+        lbRowLabel = new javax.swing.JLabel();
+        cbRowLabel = new javax.swing.JComboBox();
+        lbColumnsName = new javax.swing.JLabel();
+        cbColumnLabel = new javax.swing.JComboBox();
+        chckIncludeRoot = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(chckInnerNodes, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.chckInnerNodes.text")); // NOI18N
+
+        btnGroupType.add(btnRows);
+        btnRows.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(btnRows, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.btnRows.text")); // NOI18N
+        btnRows.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRowsActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbExport, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.lbExport.text")); // NOI18N
+
+        btnGroupType.add(btnColumns);
+        org.openide.awt.Mnemonics.setLocalizedText(btnColumns, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.btnColumns.text")); // NOI18N
+        btnColumns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnColumnsActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbRowLabel, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.lbRowLabel.text")); // NOI18N
+
+        cbRowLabel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ID", "name", "index", "class" }));
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbColumnsName, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.lbColumnsName.text")); // NOI18N
+
+        cbColumnLabel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "index", "name" }));
+        cbColumnLabel.setEnabled(false);
+
+        org.openide.awt.Mnemonics.setLocalizedText(chckIncludeRoot, org.openide.util.NbBundle.getMessage(NewickOptions.class, "NewickOptions.chckIncludeRoot.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -47,19 +110,77 @@ public class NewickOptions extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chckInnerNodes)
-                .addContainerGap(176, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chckIncludeRoot)
+                    .addComponent(lbExport)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnColumns)
+                            .addComponent(btnRows)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lbRowLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cbRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(lbColumnsName)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cbColumnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addComponent(chckInnerNodes))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(chckInnerNodes)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chckIncludeRoot)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbExport)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRows)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbRowLabel)
+                    .addComponent(cbRowLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnColumns)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbColumnsName)
+                    .addComponent(cbColumnLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnColumnsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnColumnsActionPerformed
+        if (btnColumns.isSelected()) {
+            cbColumnLabel.setEnabled(true);
+            cbRowLabel.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnColumnsActionPerformed
+
+    private void btnRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRowsActionPerformed
+        if (btnRows.isSelected()) {
+            cbColumnLabel.setEnabled(false);
+            cbRowLabel.setEnabled(true);
+        }
+    }//GEN-LAST:event_btnRowsActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton btnColumns;
+    private javax.swing.ButtonGroup btnGroupType;
+    private javax.swing.JRadioButton btnRows;
+    private javax.swing.JComboBox cbColumnLabel;
+    private javax.swing.JComboBox cbRowLabel;
+    private javax.swing.JCheckBox chckIncludeRoot;
     private javax.swing.JCheckBox chckInnerNodes;
+    private javax.swing.JLabel lbColumnsName;
+    private javax.swing.JLabel lbExport;
+    private javax.swing.JLabel lbRowLabel;
     // End of variables declaration//GEN-END:variables
 }

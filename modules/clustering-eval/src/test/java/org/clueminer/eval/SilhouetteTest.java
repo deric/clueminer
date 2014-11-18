@@ -114,7 +114,7 @@ public class SilhouetteTest {
     }
 
     /**
-     * Test of compareScore method, of class Silhouette.
+     * Test of isBetter method, of class Silhouette.
      */
     @Test
     public void testCompareScore() {

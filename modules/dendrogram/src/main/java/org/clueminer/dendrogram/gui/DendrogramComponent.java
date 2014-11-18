@@ -51,7 +51,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         initComponents();
 
 
-        /*   TopComponent comp = Lookup.getInstance().lookup(RTCAProjectFrame.class);
+        /*   TopComponent comp = Lookup.getVector().lookup(RTCAProjectFrame.class);
          if (comp != null) {
          System.out.println("top compoent Project frame should listen to cluster changes");
          viewer.addClusteringListener((ClusteringListener)comp);
@@ -189,7 +189,7 @@ public class DendrogramComponent extends ClusterAnalysis {
         String cutoffAlg = params.get("cutoff", "Naive");
         Clustering clust;
         if (!cutoffAlg.equals("-- naive --")) {
-            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
             HillClimbCutoff strategy = new HillClimbCutoff(eval);
             rowsResult.findCutoff(strategy);
         }// else we use a naive approach

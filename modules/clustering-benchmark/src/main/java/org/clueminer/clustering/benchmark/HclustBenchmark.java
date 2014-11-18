@@ -1,12 +1,12 @@
 package org.clueminer.clustering.benchmark;
 
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.hclust.linkage.CompleteLinkage;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.utils.Props;
 
 /**

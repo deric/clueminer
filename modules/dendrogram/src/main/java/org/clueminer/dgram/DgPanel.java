@@ -23,8 +23,9 @@ import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.dendrogram.gui.ClassAssignment;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
-import org.clueminer.dendrogram.gui.ColorSchemeImpl;
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
 import org.clueminer.dendrogram.gui.ColumnStatistics;
 import org.clueminer.dendrogram.gui.CutoffLine;
@@ -64,6 +65,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected ColumnAnnotation columnAnnotationBar;
     protected ColumnStatistics statistics;
     protected ClusterAssignment clusterAssignment;
+    protected ClassAssignment classAssignment;
     protected SilhouettePlot silhouettePlot;
     private JLayeredPane rowTreeLayered;
     private boolean showColumnsTree = true;
@@ -71,9 +73,12 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private boolean showScale = true;
     private boolean showColorBar = true;
     private boolean showLegend = true;
+    /**
+     * whether to show row labels of instances (class labels)
+     */
     private boolean showLabels = true;
     private boolean showSlider = true;
-    private boolean showEvalPlot = false;
+    private boolean showEvalPlot = true;
     private boolean fitToPanel = true;
     protected DendroViewer dendroViewer;
     private Legend legend;
@@ -137,6 +142,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
+        //logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
 
         if (fitToPanel) {
             //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
@@ -152,6 +158,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     /**
      * Calculate sizes of components in order to fit into given panel size
+     *
+     * Method is called when most of the components are initialized and might
+     * know its size.
      */
     @Override
     public void recalculate() {
@@ -160,10 +169,15 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int rowsTreeDim = Math.min(200, (int) (reqSize.width * 0.3));
         int colsTreeDim = Math.min(200, (int) (reqSize.height * 0.3));
         int heatmapWidth, heatmapHeight = reqSize.height - 40; //TODO: empiric constant for annotations
+
+        heatmapWidth = reqSize.width - rowsTreeDim - insets.left - insets.right
+                - clusterAssignment.getSize().width - classAssignment.getSize().width;
         if (showEvalPlot) {
-            heatmapWidth = (int) (reqSize.width * 0.4);
-        } else {
-            heatmapWidth = reqSize.width - rowsTreeDim;
+            heatmapWidth = (int) (heatmapWidth * 0.4);
+        }
+
+        if (showLabels) {
+            heatmapWidth -= rowAnnotationBar.getWidth();
         }
 
         if (showColumnsTree) {
@@ -188,11 +202,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //System.out.println("heatmap h diff = " + diff);
 
         //compute element width
-        perLine = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
-        if (perLine < 1) {
-            perLine = 1;// 1px line height
+        double perColumn = Math.floor(heatmapWidth / (double) dendroData.getNumberOfColumns());
+        if (perColumn < 1) {
+            perColumn = 1;// 1px line height
         }
-        elementSize.width = (int) perLine;
+        elementSize.width = (int) perColumn;
         // diff = heatmapWidth - (dendroData.getNumberOfColumns() * elementSize.width);
         dendroViewer.setCellHeight(elementSize.height, false, this);
         dendroViewer.setCellWidth(elementSize.width, false, this);
@@ -239,6 +253,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         }
         createClusterAssignments();
         add(clusterAssignment);
+
+        createClassAssignments();
+        add(classAssignment);
 
         if (showEvalPlot) {
             createEvaluation();
@@ -288,6 +305,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             totalHeight += heatmapYoffset;
         }
         heatmap.setBounds(heatmapXoffset, heatmapYoffset, dimHeatmap.width, dimHeatmap.height);
+        //logger.log(Level.INFO, "heatmap pos [{0}, {1}]", new Object[]{heatmapXoffset, heatmapYoffset});
         dim = columnAnnotationBar.getSize();
         columnAnnotationBar.setBounds(heatmapXoffset, heatmapYoffset + dimHeatmap.height, dim.width, dim.height);
         int rowsScaleHeight = rowsScale.getHeight();
@@ -309,6 +327,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         totalWidth = heatmapXoffset + dimHeatmap.width;
         clusterAssignment.setBounds(totalWidth, heatmapYoffset, clustAssign.width, clustAssign.height);
         totalWidth += clustAssign.width;
+
+        dim = classAssignment.getSize();
+        classAssignment.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
+        totalWidth += dim.width;
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();
@@ -516,6 +538,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             clusterAssignment = new ClusterAssignment(this);
             dataListeners.add(clusterAssignment);
             dendroViewer.addClusteringListener(clusterAssignment);
+        }
+    }
+
+    private void createClassAssignments() {
+        if (classAssignment == null) {
+            classAssignment = new ClassAssignment(this);
+            dataListeners.add(classAssignment);
+            dendroViewer.addClusteringListener(classAssignment);
         }
     }
 

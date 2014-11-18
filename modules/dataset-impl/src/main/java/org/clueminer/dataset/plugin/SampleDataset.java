@@ -118,7 +118,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     }
 
     @Override
-    public boolean addAll(Dataset<E> d) {
+    public boolean addAll(Dataset<? extends E> d) {
         for (E i : d) {
             add(i);
         }
@@ -254,6 +254,15 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         return null;
     }
 
+    @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        if (current != null) {
+            if (!classes.contains(current)) {
+                classes.add(current);
+            }
+        }
+    }
+
     /**
      * When an item is added, we have to recompute statistics
      *
@@ -297,16 +306,6 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
             out.add(i.copy());
         }
         return out;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder("SampleDataset [ size= " + size() + " \n");
-        for (int i = 0; i < size(); i++) {
-            str.append(classValue(i)).append(">> ").append(this.get(i).toString());
-        }
-        str.append("\n ]");
-        return str.toString();
     }
 
     /**
@@ -437,6 +436,25 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         for (Attribute attribute : attributes.values()) {
             attribute.resetStats();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("SampleDataset(size= " + size() + ", attrSize= " + attributeCount() + ") [");
+        Instance inst;
+        for (int i = 0; i < size(); i++) {
+            if (i > 0) {
+                str.append(", ");
+            }
+            if (i % 3 == 0) {
+                str.append("\n ");
+            }
+            inst = get(i);
+            str.append("{").append(inst.getIndex()).append("}");
+            str.append(inst.classValue()).append(": ").append(inst.toString());
+        }
+        str.append("\n ]");
+        return str.toString();
     }
 
 }

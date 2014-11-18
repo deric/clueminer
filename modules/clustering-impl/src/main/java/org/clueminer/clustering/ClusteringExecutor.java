@@ -14,7 +14,6 @@ import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
@@ -37,7 +36,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -56,7 +55,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -70,8 +69,8 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
@@ -84,14 +83,13 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
      * Cluster both - rows and columns
      *
      * @param dataset data to be clustered
-     * @param dm      distance metric
      * @param params
      * @return
      */
     @Override
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
-        HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
+    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
+        HierarchicalResult columnsResult = hclustColumns(dataset, params);
 
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
         rowsResult.getClustering().lookupAdd(mapping);

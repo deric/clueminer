@@ -19,6 +19,7 @@ public class FakeClustering {
 
     private static Clustering<Cluster> irisClusters;
     private static Clustering<Cluster> irisWrong;
+    private static Clustering<Cluster> irisWrong1;
     private static Clustering<Cluster> irisWrong2;
     private static Clustering<Cluster> irisWrong4;
     private static Clustering<Cluster> irisWrong5;
@@ -229,6 +230,37 @@ public class FakeClustering {
             irisWrong5.lookupAdd(irisData);
         }
         return irisWrong5;
+    }
+
+    /**
+     * Very bad clustering result, one item in singleton cluster, rest together
+     *
+     * @return
+     */
+    public static Clustering irisMostlyWrong() {
+        if (irisWrong1 == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
+            irisWrong1 = new ClusterList(2);
+            Cluster a = new BaseCluster(1);
+            a.setName("cluster 1"); // Iris-setosa
+            //will contain single setosa item
+            a.setAttributes(irisData.getAttributes());
+            a.add(irisData.instance(0));
+
+            Cluster b = new BaseCluster(149);
+            b.setName("cluster 2");
+            //will all the remaining items
+            b.setAttributes(irisData.getAttributes());
+            for (int i = 1; i < 150; i++) {
+                b.add(irisData.instance(i));
+            }
+
+            irisWrong1.add(a);
+            irisWrong1.add(b);
+            //add dataset to lookup
+            irisWrong1.lookupAdd(irisData);
+        }
+        return irisWrong1;
     }
 
     public static Dataset<Instance> wine() {

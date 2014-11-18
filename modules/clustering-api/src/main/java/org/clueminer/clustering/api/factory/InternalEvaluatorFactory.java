@@ -2,7 +2,7 @@ package org.clueminer.clustering.api.factory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
@@ -10,7 +10,7 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-public class InternalEvaluatorFactory extends ServiceFactory<ClusterEvaluator> {
+public class InternalEvaluatorFactory extends ServiceFactory<InternalEvaluator> {
 
     private static InternalEvaluatorFactory instance;
 
@@ -23,8 +23,8 @@ public class InternalEvaluatorFactory extends ServiceFactory<ClusterEvaluator> {
 
     private InternalEvaluatorFactory() {
         providers = new LinkedHashMap<>();
-        Collection<? extends ClusterEvaluator> list = Lookup.getDefault().lookupAll(ClusterEvaluator.class);
-        for (ClusterEvaluator c : list) {
+        Collection<? extends InternalEvaluator> list = Lookup.getDefault().lookupAll(InternalEvaluator.class);
+        for (InternalEvaluator c : list) {
             providers.put(c.getName(), c);
         }
         sort();

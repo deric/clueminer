@@ -3,7 +3,6 @@ package org.clueminer.clustering.api;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
 
 /**
@@ -20,38 +19,34 @@ public interface Executor {
      * Run hierarchical clustering of rows in the given dataset
      *
      * @param dataset
-     * @param dm
      * @param params
      * @return
      */
-    HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params);
+    HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params);
 
     /**
      * Run hierarchical clustering of columns in the given dataset
      *
      * @param dataset
-     * @param dm
      * @param params
      * @return
      */
-    HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params);
+    HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params);
 
     /**
      *
      * @param dataset
-     * @param dm
      * @param params
      * @return
      */
-    Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params);
+    Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params);
 
     /**
      *
      * @param dataset
-     * @param dm
      * @param params
      * @return
      */
-    DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params);
+    DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params);
 
 }

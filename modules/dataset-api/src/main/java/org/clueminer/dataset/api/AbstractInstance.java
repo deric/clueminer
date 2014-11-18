@@ -15,6 +15,7 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
     protected String id;
     protected Object classValue;
     protected int index = -1;
+    protected Dataset<? extends Instance> parent;
     /**
      * color might be part of GUI extension package, however is heavily used
      * when plotting and keeping same colors through all charts is quite
@@ -73,7 +74,30 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
 
     @Override
     public final void setClassValue(Object obj) {
+        if (parent != null) {
+            //notify parent
+            parent.changedClass(classValue, obj, this);
+        }
         this.classValue = obj;
+    }
+
+    /**
+     * @{@inheritDoc }
+     * @param dataset
+     */
+    @Override
+    public void setParent(Dataset<? extends Instance> dataset) {
+        this.parent = dataset;
+    }
+
+    /**
+     * The dataset where this instance belong
+     *
+     * @return original dataset
+     */
+    @Override
+    public Dataset<? extends Instance> getParent() {
+        return parent;
     }
 
     /**

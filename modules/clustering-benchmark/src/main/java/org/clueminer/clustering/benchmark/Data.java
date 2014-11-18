@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
@@ -157,7 +157,7 @@ public class Data extends Bench {
             System.out.println(dataset.toString());
             String dataDir = benchmarkFolder + File.separatorChar + name;
             (new File(dataDir)).mkdir();
-            for (ClusterEvaluator eval : factory.getAll()) {
+            for (InternalEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
                 test = new AttrEvolution(dataset, 20);
                 test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));

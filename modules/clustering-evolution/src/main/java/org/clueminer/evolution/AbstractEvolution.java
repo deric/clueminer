@@ -1,6 +1,8 @@
 package org.clueminer.evolution;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
@@ -33,6 +35,11 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     protected Dataset<? extends Instance> dataset;
     protected ClusterEvaluation evaluator;
     protected int populationSize = 10;
+    protected ObjectOpenCustomHashSet<Clustering> uniqueClusterings = new ObjectOpenCustomHashSet<>(new ClustHash<>());
+    /**
+     * parameter for clustering counting same solutions
+     */
+    protected static String NUM_OCCUR = "num_occur";
     /**
      * Probability of mutation
      */
@@ -170,7 +177,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     @Override
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
-        maximizedFitness = evaluator.compareScore(1.0, 0.0);
+        maximizedFitness = evaluator.isMaximized();
     }
 
     protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {

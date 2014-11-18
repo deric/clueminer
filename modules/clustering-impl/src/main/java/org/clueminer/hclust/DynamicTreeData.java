@@ -131,17 +131,26 @@ public class DynamicTreeData implements DendroTreeData {
         System.out.println();
     }
 
-    public void printTree(OutputStreamWriter out) throws IOException {
-        DendroNode node = getRoot().getLeft();
+    public void printTree(OutputStreamWriter out, DendroNode treeRoot) throws IOException {
+        DendroNode node = treeRoot.getLeft();
         if (node != null) {
             node.printTree(out, false, "");
         }
-        if (getRoot() != null) {
-            ((DTreeNode) getRoot()).printNodeValue(out);
-        }
-        node = getRoot().getRight();
+        ((DTreeNode) treeRoot).printNodeValue(out);
+
+        node = treeRoot.getRight();
         if (node != null) {
             node.printTree(out, true, "");
+        }
+    }
+
+    public void print(DendroNode treeRoot) {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTree(out, treeRoot);
+            out.flush();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -149,7 +158,7 @@ public class DynamicTreeData implements DendroTreeData {
     public void print() {
         try {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
-            printTree(out);
+            printTree(out, getRoot());
             out.flush();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.AbstractExporter;
+import org.clueminer.export.impl.ClusteringExporter;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -15,7 +16,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringExport.class)
-public class NewickExporter extends AbstractExporter implements ClusteringExport {
+public class NewickExporter extends ClusteringExporter implements ClusteringExport {
 
     public static final String title = "Export to Newick";
     public static final String ext = ".nwk";

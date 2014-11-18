@@ -4,7 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.util.Set;
-import org.apache.commons.math3.util.ArithmeticUtils;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -81,7 +81,7 @@ public class AdjustedRand extends AbstractExternalEval {
     private long combinationOfTwo(int n) {
         if (n > 1) {
             //for n < k doesn't make sense
-            return ArithmeticUtils.binomialCoefficient(n, 2);
+            return CombinatoricsUtils.binomialCoefficient(n, 2);
         }
         return 0;
     }

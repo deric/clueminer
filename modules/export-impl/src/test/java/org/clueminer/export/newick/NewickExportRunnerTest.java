@@ -7,7 +7,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -31,17 +30,43 @@ public class NewickExportRunnerTest {
         HACLW alg = new HACLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
         result.getTreeData().print();
-        subject.setIncludeNodeNames(true);
+        subject.setIncludeNodeNames(false);
         String res = subject.doExport(result);
-//        assertEquals("(((C:0.0,D:0.0)#4:1.0,B:0.0)#5:1.414213562373095,A:0.0)#6:2.23606797749979;", res);
-        assertEquals("(((2:0.0,3:0.0)#4:1.0,1:0.0)#5:1.414213562373095,0:0.0)#6:2.23606797749979;", res);
+        System.out.println(res);
+//        assertEquals("(((2:0.143,5:0.143):0.199,1:0.342):0.044,((3:0.102,6:0.102):0.118,4:0.220):0.166):0.0;", res);
+
+    }
+
+    @Test
+    public void testExportKumar() {
+        Dataset<? extends Instance> dataset = FakeDatasets.kumarData();
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, "Complete Linkage");
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        subject.setLabel("name");
+        HACLW alg = new HACLW();
+        HierarchicalResult result = alg.hierarchy(dataset, pref);
+        result.getTreeData().print();
+        subject.setIncludeNodeNames(false);
+        String res = subject.doExport(result);
+        //assertEquals("(((C:0.0,D:0.0):1.0,B:0.0):2.23606797749979,A:0.0):3.16227766016838;", res);
         System.out.println(res);
 
-        //without inner node names
+    }
+
+    @Test
+    public void testDoExportWithNames() {
+        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, "Complete Linkage");
+        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        subject.setLabel("name");
+        HACLW alg = new HACLW();
+        HierarchicalResult result = alg.hierarchy(dataset, pref);
+        result.getTreeData().print();
         subject.setIncludeNodeNames(false);
-        res = subject.doExport(result);
-        //      assertEquals("(((C:0.0,D:0.0):1.0,B:0.0):1.414213562373095,A:0.0):2.23606797749979;", res);
-        assertEquals("(((2:0.0,3:0.0):1.0,1:0.0):1.414213562373095,0:0.0):2.23606797749979;", res);
+        String res = subject.doExport(result);
+        //assertEquals("(((C:0.0,D:0.0):1.0,B:0.0):2.23606797749979,A:0.0):3.16227766016838;", res);
         System.out.println(res);
 
     }

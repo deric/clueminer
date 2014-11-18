@@ -114,11 +114,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>16.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>importer-api</artifactId>
             <version>${project.version}</version>
@@ -131,6 +126,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>explorer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>guava</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

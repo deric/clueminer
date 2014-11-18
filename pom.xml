@@ -192,11 +192,9 @@
         <module>modules/approximation-api</module>
         <module>modules/approximation-impl</module>
         <module>modules/explorer</module>
-        <module>modules/infopanel</module>
         <module>modules/gnuplot</module>
         <module>modules/clustering-benchmark</module>
         <module>modules/dataset-benchmark</module>
-        <module>modules/posturomed</module>
         <module>modules/mlearn</module>
         <module>modules/importer-impl</module>
         <module>modules/clustering-evolution</module>
@@ -211,6 +209,11 @@
         <module>modules/clustering-struct</module>
         <module>modules/graph-api</module>
         <module>modules/graph-impl</module>
+        <module>modules/guava</module>
+        <module>modules/fastutil</module>
+        <module>modules/commons</module>
+        <module>modules/evaluation-gui</module>
+        <module>modules/meta-api</module>
         <module>modules/chameleon</module>
         <module>modules/partitioning-api</module>
         <module>modules/partitioning-impl</module>

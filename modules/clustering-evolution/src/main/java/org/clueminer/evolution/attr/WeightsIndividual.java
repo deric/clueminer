@@ -160,4 +160,9 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
         sb.append("]");
         return sb.toString();
     }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 }

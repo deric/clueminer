@@ -63,7 +63,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     @Override
     boolean addAll(Collection<? extends E> c);
 
-    boolean addAll(Dataset<E> d);
+    boolean addAll(Dataset<? extends E> d);
 
     /**
      * Get the instance with a certain index. In order to keep readability of
@@ -158,6 +158,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     Object classValue(int index);
 
     /**
+     * Invoked when class membership of an instance +source+ changes
+     *
+     * @param orig
+     * @param current
+     * @param source
+     */
+    void changedClass(Object orig, Object current, Instance source);
+
+    /**
      * Get a copy of attributes
      *
      * @return
@@ -242,6 +251,15 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param value
      */
     void set(int instanceIdx, int attrIdx, double value);
+
+    /**
+     * Places instance at given position
+     *
+     * @param instanceIdx
+     * @param inst
+     * @return
+     */
+    E set(int instanceIdx, E inst);
 
     /**
      * Set i-th attribute (column)

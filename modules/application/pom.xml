@@ -169,11 +169,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>infopanel</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-libs-junit4</artifactId>
             <version>RELEASE80</version>
@@ -244,6 +239,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-eval</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>evaluation-gui</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

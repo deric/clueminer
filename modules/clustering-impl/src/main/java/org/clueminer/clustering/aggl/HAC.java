@@ -71,7 +71,9 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         int n;
-        HierarchicalResult result = new HClustResult(dataset);
+        HierarchicalResult result = new HClustResult(dataset, pref);
+        pref.put(AgglParams.ALG, getName());
+        checkParams(pref);
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
         distanceMeasure = params.getDistanceMeasure();
@@ -105,6 +107,17 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     /**
+     * Could be overridden by inherited method to check where algorithm is
+     * capable of running with requested parameters (otherwise throw an
+     * Exception)
+     *
+     * @param props
+     */
+    protected void checkParams(Props props) {
+
+    }
+
+    /**
      * Find most closest items and merges them into one cluster (subtree)
      *
      * @param pq               queue with sorted distances (lowest distance pops
@@ -127,13 +140,14 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
+        int ma, mb;
         /**
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.6f", curr.getValue()));
+            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.3f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
@@ -147,9 +161,12 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //remove old clusters
                 left = assignments.remove(curr.getRow());
                 right = assignments.remove(curr.getColumn());
+                ma = left.size();
+                mb = right.size();
                 //merge together and add as a new cluster
                 left.addAll(right);
-                updateDistances(node.getId(), left, similarityMatrix, assignments, pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn());
+                updateDistances(node.getId(), left, similarityMatrix, assignments,
+                                pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
@@ -195,11 +212,13 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @param cache
      * @param leftId           left cluster ID
      * @param rightId          right cluster ID
+     * @param ma
+     * @param mb
      */
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             AbstractQueue<Element> pq, ClusterLinkage linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId) {
+            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
@@ -207,6 +226,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
         }
+        //System.out.println("adding " + mergedId + " -> " + mergedCluster.toString());
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
     }
@@ -247,6 +267,16 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        switch (linkage) {
+            case "Ward's Linkage":
+                return false;
+            default:
+                return true;
+        }
     }
 
 }

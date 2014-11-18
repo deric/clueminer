@@ -12,11 +12,11 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
+import org.clueminer.stats.AttrNumStats;
 import org.clueminer.std.Scaler;
 import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -31,18 +31,9 @@ public class ArrayDatasetTest {
     private static final int attributesCnt = 2;
     private static Random rand;
     private static final double delta = 1e-7;
-    private double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
+    private final double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
     public ArrayDatasetTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -56,11 +47,19 @@ public class ArrayDatasetTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
     }
 
     private Dataset<? extends Instance> data2x5() {
         Dataset<? extends Instance> test = new ArrayDataset<>(data2x5);
+        return test;
+    }
+
+    private Dataset<? extends Instance> data2x5WithAttr() {
+        Dataset<? extends Instance> test = new ArrayDataset<>(data2x5);
+        for (int i = 0; i < data2x5.length; i++) {
+            test.attributeBuilder().create("attr" + i, "NUMERIC");
+        }
         return test;
     }
 
@@ -106,6 +105,11 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testAddAll_Dataset() {
+        Dataset<? extends Instance> data = dataset.copy();
+        Dataset another = dataset.copy();
+        int size = data.size();
+        data.addAll(another);
+        assertEquals(2 * size, data.size());
     }
 
     /**
@@ -283,6 +287,20 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testCopy() {
+        Dataset<? extends Instance> d1 = new ArrayDataset<>(data2x5);
+        Dataset<? extends Instance> d2 = d1.copy();
+        for (int i = 0; i < d1.size(); i++) {
+            for (int j = 0; j < d1.attributeCount(); j++) {
+                d1.set(i, j, -1);
+            }
+        }
+        //copied values should be unchanged
+        for (int i = 0; i < d1.size(); i++) {
+            for (int j = 0; j < d1.attributeCount(); j++) {
+                assertEquals(true, (d2.get(i, j) > 0));
+            }
+        }
+
     }
 
     /**
@@ -297,6 +315,9 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testArrayCopy() {
+        Dataset<? extends Instance> data = data2x5();
+        double[][] copy = data.arrayCopy();
+        Assert.assertArrayEquals(data2x5, copy);
     }
 
     /**
@@ -329,10 +350,16 @@ public class ArrayDatasetTest {
         map.put(0, dataset.attributeBuilder().build("attr0", "NUMERIC"));
         map.put(1, dataset.attributeBuilder().build("attr1", "NUMERIC"));
         map.put(2, dataset.attributeBuilder().build("attr2", "NUMERIC"));
+        assertEquals(true, map.get(0).getAllStatistics().hasNext());
+
+        assertEquals(0.0, map.get(0).statistics(AttrNumStats.AVG), delta);
 
         Dataset<? extends Instance> test = new ArrayDataset<>(5, 2);
         test.setAttributes(map);
         assertEquals(3, test.attributeCount());
+        assertEquals(true, test.getAttribute(0).getAllStatistics().hasNext());
+        Attribute attr = test.getAttribute(0);
+        assertEquals(0.0, attr.statistics(AttrNumStats.AVG), 0.0);
     }
 
     /**
@@ -418,6 +445,16 @@ public class ArrayDatasetTest {
                 assertEquals(data[i][j], test.get(i, j), delta);
             }
         }
+    }
+
+    @Test
+    public void testSet() {
+        Dataset<Instance> test = new ArrayDataset<>(data2x5);
+        //swap instances
+        Instance tmp = test.get(0);
+        test.set(0, test.get(1));
+        test.set(1, tmp);
+        assertEquals(6.0, test.get(0, 0), delta);
     }
 
     /**
@@ -568,6 +605,52 @@ public class ArrayDatasetTest {
         int index = dataset.size() - 1;
         inst = dataset.get(index);
         assertEquals(index, inst.getIndex());
+    }
+
+    @Test
+    public void testSet_3args() {
+    }
+
+    @Test
+    public void testChangedClass() {
+        dataset.builder().create(new double[]{1.2, 2.3}, "class 1");
+        assertEquals(1, dataset.getClasses().size());
+    }
+
+    @Test
+    public void testAddAttribute() {
+    }
+
+    @Test
+    public void testEnsureAttrSize() {
+    }
+
+    @Test
+    public void testGet_int_int() {
+    }
+
+    @Test
+    public void testSet_int_GenericType() {
+    }
+
+    @Test
+    public void testGet_int() {
+    }
+
+    @Test
+    public void testIndexOf() {
+    }
+
+    @Test
+    public void testMin() {
+    }
+
+    @Test
+    public void testMax() {
+    }
+
+    @Test
+    public void testResetStats() {
     }
 
 }

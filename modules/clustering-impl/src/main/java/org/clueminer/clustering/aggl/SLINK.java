@@ -15,7 +15,6 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.Props;
@@ -76,7 +75,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
 
-        HierarchicalResult result = new HClustResult(dataset);
+        HierarchicalResult result = new HClustResult(dataset, pref);
 
         PointerHierarchy pointers = run(dataset, pref);
 
@@ -210,6 +209,11 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        return linkage.equals("Single Linkage");
     }
 
 }

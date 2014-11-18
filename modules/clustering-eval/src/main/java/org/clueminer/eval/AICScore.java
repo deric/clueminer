@@ -1,7 +1,7 @@
 package org.clueminer.eval;
 
 import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
@@ -14,8 +14,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Thomas Abeel
  *
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class AICScore extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class AICScore extends AbstractEvaluator {
 
     private static final String NAME = "AIC score";
     private static final long serialVersionUID = -8805325971847590600L;
@@ -51,7 +51,7 @@ public class AICScore extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimalized
         return Math.abs(score1) < Math.abs(score2);
     }

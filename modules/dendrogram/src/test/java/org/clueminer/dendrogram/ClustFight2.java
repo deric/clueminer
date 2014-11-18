@@ -13,9 +13,9 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.eval.MOLO;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
@@ -84,10 +84,11 @@ public class ClustFight2 extends JFrame {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 1;
         c.gridheight = 1;
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.NORTHEAST;
-        c.weightx = c.weighty = 8.0; //ratio for filling the frame space
+        c.weightx = c.weighty = 1.0; //ratio for filling the frame space
         gbl.setConstraints(panel1, c);
         this.add(panel1, c);
 

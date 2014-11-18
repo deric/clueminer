@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -15,8 +15,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Andreas De Rijcke
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class SumOfSquaredErrors extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class SumOfSquaredErrors extends AbstractEvaluator {
 
     private static String NAME = "Sum of squared errors";
     private static final long serialVersionUID = 7246192305561714193L;
@@ -59,7 +59,7 @@ public class SumOfSquaredErrors extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // TODO solve bug: score is NaN when clusters with 0 instances
         // should be minimized
         return score1 < score2;

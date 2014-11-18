@@ -79,6 +79,7 @@ public abstract class DendroPanel extends JPanel {
 
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = (AgglomerativeClustering) algorithm;
+        options.selectAlgorithm(algorithm.getName());
     }
 
     public Dataset<? extends Instance> getDataset() {
@@ -95,7 +96,19 @@ public abstract class DendroPanel extends JPanel {
         return viewer;
     }
 
+    /**
+     * Called when user changes dataset
+     *
+     * @param datasetName
+     */
     public abstract void dataChanged(String datasetName);
+
+    /**
+     * Called when user changes linkage
+     *
+     * @param linkage name of chosen linkage algorithm
+     */
+    public abstract void linkageChanged(String linkage);
 
     public abstract String[] getDatasets();
 

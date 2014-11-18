@@ -17,6 +17,14 @@ public interface AgglomerativeClustering extends ClusteringAlgorithm {
      * @param pref
      * @return
      */
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref);
+    HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref);
+
+    /**
+     * Some implementation can not support certain linkage types
+     *
+     * @param linkage name of linkage method
+     * @return
+     */
+    boolean isLinkageSupported(String linkage);
 
 }

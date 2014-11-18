@@ -288,6 +288,7 @@ public class DoubleArrayDataRowTest {
     public void testIsEmpty() {
         assertEquals(false, t1.isEmpty());
         assertEquals(true, new DoubleArrayDataRow(0).isEmpty());
+        //TODO: new vector should be filled with zeros (expected behaviour in java)
         assertEquals(true, new DoubleArrayDataRow(5).isEmpty());
     }
 

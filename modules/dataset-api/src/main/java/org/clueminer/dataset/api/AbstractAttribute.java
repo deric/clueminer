@@ -19,11 +19,9 @@ public abstract class AbstractAttribute implements Attribute {
     /**
      * Contains all attribute statistics calculation algorithms.
      */
-    protected List<Statistics> statistics = new LinkedList<Statistics>();
-    /**
-     * Mapping of attributes to its providers
-     */
-    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
+    protected List<Statistics> statistics = new LinkedList<>();
+
+    protected HashMap<IStats, Statistics> statisticsProviders;
 
     protected Dataset<? extends Instance> dataset;
 
@@ -41,10 +39,11 @@ public abstract class AbstractAttribute implements Attribute {
      * @param other
      */
     protected AbstractAttribute(AbstractAttribute other) {
+        this.statisticsProviders = new HashMap<>();
         this.attributeDescription = new AttributeDescription(other.getName(), other.getType(), 0.0d);
 
         // copy statistics
-        this.statistics = new LinkedList<Statistics>();
+        this.statistics = new LinkedList<>();
         for (Statistics st : other.statistics) {
             this.statistics.add((Statistics) st.clone());
         }
@@ -52,6 +51,7 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     protected AbstractAttribute(String name, AttributeType type, AttributeRole role) {
+        this.statisticsProviders = new HashMap<>();
         this.attributeDescription = new AttributeDescription(name, type, 0.0d);
         this.role = role;
     }

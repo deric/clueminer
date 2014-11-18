@@ -97,9 +97,9 @@ final public class DatasetTools {
      * for each attribute.
      *
      * @param data data set to calculate attribute value standard deviations for
-     * @param avg the average instance for the data set
+     * @param avg  the average instance for the data set
      * @return Instance representing the standard deviation of the values for
-     * each attribute
+     *         each attribute
      */
     public static Instance standardDeviation(Dataset<Instance> data, Instance avg) {
         /*
@@ -197,7 +197,7 @@ final public class DatasetTools {
      * @param data data set to compute this array for
      *
      * @return a two-dimensional array with the minimum and maximum values per
-     * attribute
+     *         attribute
      */
     private static double[][] getMinMax(Dataset<? extends Instance> data) {
         final int noAttributes = data.attributeCount();
@@ -274,5 +274,21 @@ final public class DatasetTools {
         }
         throw new ArrayIndexOutOfBoundsException("empty dataset - dimensions " + m + " x " + n);
     }
-    
+
+    public static Dataset<? extends Instance> shuffle(Dataset<? extends Instance> input) {
+        Dataset<Instance> out = (Dataset<Instance>) input.copy();
+        Random rnd = new Random();
+        // Shuffle array
+        for (int i = input.size(); i > 1; i--) {
+            swap(out, i - 1, rnd.nextInt(i));
+        }
+        return out;
+    }
+
+    private static void swap(Dataset<Instance> out, int i, int j) {
+        Instance tmp = out.get(i);
+        out.set(i, out.get(j));
+        out.set(j, tmp);
+    }
+
 }

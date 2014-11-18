@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
@@ -42,7 +42,7 @@ public class HashEvaluationTable implements EvaluationTable {
     }
 
     private void reset() {
-        scores = new HashMap<String, Double>(internalMap.size() + externalMap.size());
+        scores = new HashMap<>(internalMap.size() + externalMap.size());
     }
 
     /**
@@ -64,7 +64,7 @@ public class HashEvaluationTable implements EvaluationTable {
     }
 
     private Map<String, Double> evalToScoreMap(Object2ObjectMap<String, ClusterEvaluation> map) {
-        HashMap<String, Double> res = new HashMap<String, Double>(map.size());
+        HashMap<String, Double> res = new HashMap<>(map.size());
         for (ClusterEvaluation eval : map.values()) {
             res.put(eval.getName(), getScore(eval));
         }
@@ -86,7 +86,7 @@ public class HashEvaluationTable implements EvaluationTable {
         if (internalMap == null) {
             return new String[0];
         }
-        Collection<String> evaluators = new TreeSet<String>();
+        Collection<String> evaluators = new TreeSet<>();
         evaluators.addAll(internalMap.keySet());
         evaluators.addAll(externalMap.keySet());
         return evaluators.toArray(new String[internalMap.size()]);
@@ -95,14 +95,14 @@ public class HashEvaluationTable implements EvaluationTable {
     private static void initEvaluators() {
         if (internalMap == null) {
             InternalEvaluatorFactory inf = InternalEvaluatorFactory.getInstance();
-            internalMap = new Object2ObjectOpenHashMap<String, ClusterEvaluation>();
+            internalMap = new Object2ObjectOpenHashMap<>();
 
-            for (ClusterEvaluator eval : inf.getAll()) {
+            for (InternalEvaluator eval : inf.getAll()) {
                 internalMap.put(eval.getName(), eval);
             }
         }
         if (externalMap == null) {
-            externalMap = new Object2ObjectOpenHashMap<String, ClusterEvaluation>();
+            externalMap = new Object2ObjectOpenHashMap<>();
             ExternalEvaluatorFactory extf = ExternalEvaluatorFactory.getInstance();
             for (ExternalEvaluator eval : extf.getAll()) {
                 externalMap.put(eval.getName(), eval);

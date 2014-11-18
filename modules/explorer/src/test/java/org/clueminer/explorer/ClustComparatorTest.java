@@ -1,12 +1,9 @@
 package org.clueminer.explorer;
 
-import org.clueminer.eval.CalinskiHarabasz;
-import org.clueminer.eval.NMI;
+import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.junit.After;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.openide.nodes.Node;
 
@@ -19,14 +16,6 @@ public class ClustComparatorTest {
     private final ClustComparator subject = new ClustComparator(new NMI());
 
     public ClustComparatorTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -48,14 +37,16 @@ public class ClustComparatorTest {
     @Test
     public void testSetEvaluator() {
         subject.setEvaluator(new Silhouette());
-        Node n1 = new ClusteringNode(FakeClustering.irisWrong2());
-        Node n2 = new ClusteringNode(FakeClustering.irisWrong4());
+        subject.setAscOrder(true);
+        Node a = new ClusteringNode(FakeClustering.irisWrong2());
+        Node b = new ClusteringNode(FakeClustering.irisWrong4());
+        Node c = new ClusteringNode(FakeClustering.iris());
 
-        //first one is "better" DESC
-        assertEquals(-1, subject.compare(n1, n2));
-
-        subject.setEvaluator(new CalinskiHarabasz());
-        assertEquals(1, subject.compare(n1, n2));
+        //first one is "better" DESC, A > B
+        assertEquals(1, subject.compare(a, b));
+        //C > B
+        assertEquals(1, subject.compare(c, b));
+        assertEquals(1, subject.compare(c, a));
     }
 
     public void testNaN() {

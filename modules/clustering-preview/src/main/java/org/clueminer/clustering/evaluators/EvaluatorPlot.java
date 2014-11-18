@@ -18,7 +18,7 @@ import java.awt.geom.Ellipse2D;
 import java.util.Collection;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -34,8 +34,8 @@ public class EvaluatorPlot extends JPanel {
     private static final long serialVersionUID = 4355229276691601032L;
     private Collection<? extends Clustering> clusterings;
     private final Shape shape = new Ellipse2D.Double(-3, -3, 6, 6);
-    private ClusterEvaluator evaluatorX;
-    private ClusterEvaluator evaluatorY;
+    private InternalEvaluator evaluatorX;
+    private InternalEvaluator evaluatorY;
 
     public EvaluatorPlot() {
         initComponents();

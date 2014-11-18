@@ -113,9 +113,9 @@
             <version>RELEASE80</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>guava</artifactId>
-            <version>16.0.1</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

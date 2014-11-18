@@ -7,70 +7,25 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class AdjustedRandTest {
-
-    private static AdjustedRand test;
-    private static final double delta = 1e-9;
+public class AdjustedRandTest extends ExternalTest {
 
     public AdjustedRandTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-        test = new AdjustedRand();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+        subject = new AdjustedRand();
     }
 
     /**
-     * Test of getName method, of class AdjustedRand.
-     */
-    @Test
-    public void testGetName() {
-    }
-
-    /**
-     * Test of score method, of class AdjustedRand.
-     */
-    @Test
-    public void testScore_Clustering_Dataset() {
-
-    }
-
-    /**
-     * Test of score method, of class AdjustedRand.
-     */
-    @Test
-    public void testScore_3args() {
-    }
-
-    /**
-     * Test of compareScore method, of class AdjustedRand.
+     * Test of isBetter method, of class AdjustedRand.
      */
     @Test
     public void testCompareScore() {
-        assertTrue(test.compareScore(1.0, 0.5));
+        assertTrue(subject.isBetter(1.0, 0.5));
     }
 
     /**
@@ -78,25 +33,10 @@ public class AdjustedRandTest {
      */
     @Test
     public void testScore_Clustering_Clustering() {
-
-        long start, end;
         double score;
 
-        start = System.currentTimeMillis();
-        score = test.score(FakeClustering.wineClustering(), FakeClustering.wineCorrect());
-        end = System.currentTimeMillis();
-
-        assertEquals(0.13473684210526315, score, delta);
-        System.out.println(test.getName() + " = " + score);
-        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
-
-        start = System.currentTimeMillis();
-        double score2 = test.score(FakeClustering.wineClustering(), FakeClustering.wine());
-        end = System.currentTimeMillis();
-        //when using class labels result should be the same
-        assertEquals(score, score2, delta);
-        System.out.println(test.getName() + " = " + score2);
-        System.out.println("measuring " + test.getName() + " took " + (end - start) + " ms");
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.13473684210526315);
+        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
     }
 
     /**
@@ -133,7 +73,8 @@ public class AdjustedRandTest {
         mat[3][2] = 5;
         mat[3][3] = 10;
 
-        double score = test.countScore(mat);
+        AdjustedRand rand = (AdjustedRand) subject;
+        double score = rand.countScore(mat);
         System.out.println("score: " + score);
         assertEquals(0.31257344300822565, score, delta);
     }
@@ -141,7 +82,7 @@ public class AdjustedRandTest {
     @Test
     public void testScoreDataset() {
         Clustering<Cluster> clustering = FakeClustering.irisWrong4();
-        double score = test.score(clustering, FakeDatasets.irisDataset());
+        double score = subject.score(clustering, FakeDatasets.irisDataset());
         System.out.println("clust(4) = " + score);
     }
 
@@ -150,7 +91,8 @@ public class AdjustedRandTest {
         Clustering<Cluster> clustering = FakeClustering.irisWrong5();
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
         dumpTable(table);
-        double score = test.countScore(table);
+        AdjustedRand rand = (AdjustedRand) subject;
+        double score = rand.countScore(table);
         //value based on experiments (not verified yet) - just to verify that we didnt break the functionality
         assertEquals(0.14754877843024122, score, delta);
         System.out.println("clust(5) = " + score);

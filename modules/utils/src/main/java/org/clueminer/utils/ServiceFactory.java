@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
+ * Generic factory for service providers
  *
  * @author Tomas Barton
  * @param <T> class to be looked up
@@ -15,9 +16,9 @@ public class ServiceFactory<T> {
     protected T defaultProvider;
 
     protected void sort() {
-        List<String> mapKeys = new ArrayList<String>(providers.keySet());
+        List<String> mapKeys = new ArrayList<>(providers.keySet());
 
-        LinkedHashMap<String, T> someMap = new LinkedHashMap<String, T>();
+        LinkedHashMap<String, T> someMap = new LinkedHashMap<>();
         for (String mapKey : mapKeys) {
             someMap.put(mapKey, providers.get(mapKey));
         }
@@ -32,7 +33,7 @@ public class ServiceFactory<T> {
     }
 
     public List<String> getProviders() {
-        List<String> list = new ArrayList<String>(providers.keySet());
+        List<String> list = new ArrayList<>(providers.keySet());
         return list;
     }
 
@@ -42,7 +43,7 @@ public class ServiceFactory<T> {
     }
 
     public List<String> removeProvider(String current) {
-        List<String> list = new ArrayList<String>(providers.keySet());
+        List<String> list = new ArrayList<>(providers.keySet());
         list.remove(current);
         return list;
     }
@@ -53,7 +54,7 @@ public class ServiceFactory<T> {
      * @return
      */
     public List<T> getAll() {
-        List<T> list = new ArrayList<T>(providers.values());
+        List<T> list = new ArrayList<>(providers.values());
         return list;
     }
 

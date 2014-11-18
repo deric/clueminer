@@ -3,6 +3,7 @@ package org.clueminer.dendrogram;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
@@ -23,6 +24,7 @@ public class DendroToolbar extends JToolBar {
     private JButton btnFitToSpace;
     private JButton btnScreenshot;
     private JButton btnExport;
+    private JToggleButton btnEvaluation;
     private final DendroViewer viewer;
 
     public DendroToolbar(DendroViewer viewer) {
@@ -43,9 +45,12 @@ public class DendroToolbar extends JToolBar {
         btnScreenshot.setToolTipText("Make a screenshot of this window");
         btnExport = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/save16.png", false));
         btnExport.setToolTipText("Export this dendrogram");
+        btnEvaluation = new JToggleButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/eval16.png", false));
         add(btnFitToSpace);
         add(btnScreenshot);
         add(btnExport);
+        add(btnEvaluation);
+        addSeparator();
 
         btnFitToSpace.addActionListener(new ActionListener() {
 
@@ -94,7 +99,14 @@ public class DendroToolbar extends JToolBar {
             }
         });
 
-        addSeparator();
+        btnEvaluation.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewer.setEvaluationVisible(!viewer.isEvaluationVisible());
+            }
+        });
+
     }
 
 }

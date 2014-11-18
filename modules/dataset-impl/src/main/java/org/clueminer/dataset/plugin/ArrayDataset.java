@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.stats.AttrNumStats;
+import org.clueminer.stats.NumericalStats;
 import org.math.plot.Plot2DPanel;
 
 /**
@@ -27,8 +28,8 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     private static final long serialVersionUID = -5482153886671625555L;
     private Instance[] data;
-    private InstanceBuilder builder;
-    private AttributeBuilder attributeBuilder;
+    protected InstanceBuilder builder;
+    protected AttributeBuilder attributeBuilder;
     private final TreeSet<Object> classes = new TreeSet<>();
     protected Attribute[] attributes;
     private int attrCnt = 0;
@@ -72,6 +73,13 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public boolean add(Instance inst) {
         ensureCapacity(n);
 
+        //update attribute's statistics
+        for (int i = 0; i < attributeCount(); i++) {
+            attributes[i].updateStatistics(inst.get(i));
+        }
+        if (inst.classValue() != null) {
+            changedClass(null, inst.classValue(), inst);
+        }
         data[n] = inst;
         if (inst.getIndex() < 0) {
             inst.setIndex(n);
@@ -102,11 +110,10 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      * UnsupportedOperationException("Not supported yet."); }
      */
     @Override
-    public boolean addAll(Dataset<E> d) {
-        Iterator<E> it = d.iterator();
-        while (n < data.length && it.hasNext()) {
-            Instance i = it.next();
-            data[n++] = i;
+    public boolean addAll(Dataset<? extends E> d) {
+        Iterator<? extends E> it = d.iterator();
+        while (it.hasNext()) {
+            add(it.next());
         }
         return !it.hasNext();
     }
@@ -179,6 +186,15 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        if (current != null) {
+            if (!classes.contains(current)) {
+                classes.add(current);
+            }
+        }
+    }
+
+    @Override
     public InstanceBuilder builder() {
         if (builder == null) {
             builder = new DoubleArrayFactory(this, '.');
@@ -187,7 +203,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
-    public final AttributeBuilder attributeBuilder() {
+    public AttributeBuilder attributeBuilder() {
         if (attributeBuilder == null) {
             attributeBuilder = new AttributeFactoryImpl<>(this);
         }
@@ -301,23 +317,11 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     @Override
     public Dataset<E> copy() {
-        SampleDataset out = new SampleDataset();
-        Instance inst;
+        Dataset<E> out = duplicate();
         for (int i = 0; i < size(); i++) {
-            inst = instance(i);
-            out.add(inst.copy());
+            out.set(i, (E) data[i].copy());
         }
         return out;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder str = new StringBuilder("ArrayDataset [ size= " + size() + " \n");
-        for (int i = 0; i < size(); i++) {
-            str.append(classValue(i)).append(">> ").append(this.instance(i).toString());
-        }
-        str.append("\n ]");
-        return str.toString();
     }
 
     @Override
@@ -360,11 +364,24 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     }
 
     @Override
+    public E set(int instanceIdx, E inst) {
+        data[instanceIdx] = inst;
+        return inst;
+    }
+
+    @Override
     public void setAttributes(Map<Integer, Attribute> attrs) {
         ensureAttrSize(attrs.size());
-
+        Attribute attr;
         for (Entry<Integer, Attribute> entry : attrs.entrySet()) {
-            this.setAttribute(entry.getKey(), entry.getValue());
+            //deep copy to avoid unexpected behaviour
+            attr = (Attribute) entry.getValue().clone();
+            //TODO this is ugly but somehow clone does not work
+            if (attr.isNumerical()) {
+                attr.registerStatistics(new NumericalStats(attr));
+            }
+            attr.resetStats();
+            this.setAttribute(entry.getKey(), attr);
         }
     }
 
@@ -558,6 +575,26 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         for (Attribute attribute : attributes) {
             attribute.resetStats();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("ArrayDataset(size= " + size() + ", attrSize= " + attributeCount() + ") [");
+        Instance inst;
+        for (int i = 0; i < size(); i++) {
+            if (i > 0) {
+                str.append(", ");
+            }
+            if (i % 3 == 0) {
+                str.append("\n ");
+            }
+            inst = get(i);
+            str.append(inst.classValue());
+            str.append(" {").append(inst.getIndex()).append("}");
+            str.append(": ").append(inst.toString());
+        }
+        str.append("\n ]");
+        return str.toString();
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {

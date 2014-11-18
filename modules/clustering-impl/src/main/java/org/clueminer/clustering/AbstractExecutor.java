@@ -2,7 +2,7 @@ package org.clueminer.clustering;
 
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -32,8 +32,8 @@ public abstract class AbstractExecutor implements Executor {
         String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
 
         if (!cutoffAlg.equals("-- naive --")) {
-            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "NMI");
-            ClusterEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
+            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
             strategy = CutoffStrategyFactory.getInstance().getDefault();
             strategy.setEvaluator(eval);
         } else {

@@ -1,14 +1,14 @@
 package org.clueminer.eval;
 
 import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = ClusterEvaluator.class)
-public class BICScore extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class BICScore extends AbstractEvaluator {
 
     private static final String NAME = "BIC score";
     private static final long serialVersionUID = -8771446315217152042L;
@@ -42,7 +42,7 @@ public class BICScore extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimzed.
         return score1 < score2;
     }

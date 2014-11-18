@@ -1,7 +1,8 @@
 package org.clueminer.eval;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -26,8 +27,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class CalinskiHarabasz extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class CalinskiHarabasz extends AbstractEvaluator {
 
     private static final long serialVersionUID = -2699019526373205522L;
     private static final String name = "Calinski-Harabasz";
@@ -48,18 +49,21 @@ public class CalinskiHarabasz extends ClusterEvaluator {
     @Override
     public double score(Clustering clusters, Dataset dataset) {
         if (clusters.size() > 1) {
-            double w = 0.0, b = 0.0, ch;
+            double w = 0.0, b = 0.0;
             //centroid of all data
             Instance centroid = clusters.getCentroid();
+            double d;
             for (int i = 0; i < clusters.size(); i++) {
                 Cluster<Instance> x = clusters.get(i);
-
                 w += getSumOfSquaredError(x);
-                b += (x.size()) * Math.pow(dm.measure(centroid, x.getCentroid()), 2);
+                d = dm.measure(centroid, x.getCentroid());
+                b += (x.size()) * FastMath.pow(d, 2);
             }
-            ch = (b / (clusters.size() - 1)) / (w / (clusters.instancesCount() - clusters.size()));
-
-            return ch;
+            double denom = w / (clusters.instancesCount() - clusters.size());
+            if (denom == 0.0) {
+                return 0.0;
+            }
+            return (b / (clusters.size() - 1)) / denom;
         } else {
             /*
              * To avoid division by zero,
@@ -73,7 +77,7 @@ public class CalinskiHarabasz extends ClusterEvaluator {
         double squaredErrorSum = 0, dist;
         for (Instance inst : x) {
             dist = dm.measure(inst, x.getCentroid());
-            squaredErrorSum += Math.pow(dist, 2);
+            squaredErrorSum += FastMath.pow(dist, 2);
         }
 
         return squaredErrorSum;
@@ -92,7 +96,7 @@ public class CalinskiHarabasz extends ClusterEvaluator {
      * @return true in case that score1 is better than score2
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         return score1 > score2;
     }
 

@@ -440,6 +440,14 @@ public interface Matrix extends Serializable {
     void print(int w, int d);
 
     /**
+     * Human friendly matrix format (with line numbers)
+     *
+     * @param w
+     * @param d
+     */
+    void printFancy(int w, int d);
+
+    /**
      * Print upper matrix without numbers on diagonal
      *
      * @param w column width

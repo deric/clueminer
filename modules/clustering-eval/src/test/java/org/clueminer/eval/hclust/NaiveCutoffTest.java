@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.hclust.linkage.SingleLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;

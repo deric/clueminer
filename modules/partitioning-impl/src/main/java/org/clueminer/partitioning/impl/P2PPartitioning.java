@@ -10,34 +10,34 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
 
-
 /**
  *
  * @author Tomas Bruna
  */
 public class P2PPartitioning implements Partitioning {
 
-    private  Vertex[] nodes;
-    private  int nodeCount;
+    private Vertex[] nodes;
+    private int nodeCount;
     private boolean[] used;
     private int usedCount;
-    private  int k;
+    private int k;
     Node[] graphNodes;
 
-    private  Graph graph;
+    private Graph graph;
 
     private ArrayList<LinkedList<Node>> clusters;
     private ArrayList<LinkedList<Vertex>> currentNodes;
     private ArrayList<LinkedList<Vertex>> futureNodes;
 
     public P2PPartitioning() {
-        
+
     }
+
 
     @Override
     public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
-        initialize(k,g);
-       
+        initialize(k, g);
+
         used = new boolean[nodeCount];
         Arrays.fill(used, false);
 
@@ -53,7 +53,7 @@ public class P2PPartitioning implements Partitioning {
         }
         return clusters;
     }
-    
+
     private void initialize(int k, Graph g) {
         graph = g;
         this.k = k;
@@ -64,22 +64,22 @@ public class P2PPartitioning implements Partitioning {
             nodes[i] = new Vertex(graph.getIndex(graphNodes[i]), g.getDegree(graphNodes[i]));
         }
     }
-    
+
     @Override
     public Graph removeUnusedEdges() {
         for (int i = 0; i < nodeCount; i++) {
             for (int j = 0; j < nodeCount; j++) {
                 if (nodes[i].cluster != nodes[j].cluster) {
                     Edge e = graph.getEdge(graphNodes[i], graphNodes[j]);
-                    if (e!=null) {
-                       graph.removeEdge(e);
+                    if (e != null) {
+                        graph.removeEdge(e);
                     }
                 }
             }
-        } 
+        }
         return graph; // deep copy or new graph needed
     }
-    
+
     private void printClusters() {
         for (int i = 0; i < k; i++) {
             System.out.print("Cluster " + i + ": ");
@@ -89,7 +89,7 @@ public class P2PPartitioning implements Partitioning {
             System.out.println("");
         }
     }
-    
+
     private void prepareFutureNodes() {
         futureNodes = new ArrayList<>(k);
         for (int i = 0; i < k; i++) {
@@ -158,7 +158,7 @@ public class P2PPartitioning implements Partitioning {
     private void sortByDegree(Vertex[] set) {
         Arrays.sort(set);
     }
-    
+
     private void sortByDegree(ArrayList<LinkedList<Vertex>> set) {
         for (int i = 0; i < k; i++) {
             Collections.sort(set.get(i));
@@ -172,6 +172,5 @@ public class P2PPartitioning implements Partitioning {
         }
         return result;
     }
-
 
 }

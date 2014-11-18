@@ -54,6 +54,13 @@ public interface DendroViewer extends Exportable {
      */
     void setEvaluationVisible(boolean show);
 
+    /**
+     * True when evaluation bar is visible
+     *
+     * @return
+     */
+    boolean isEvaluationVisible();
+
     boolean isLabelVisible();
 
     /**

@@ -3,12 +3,11 @@ package org.clueminer.evolution.bnb;
 import java.util.List;
 import java.util.Random;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.AbstractIndividual;
 import org.clueminer.utils.Props;
 
@@ -50,7 +49,9 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
         genom.putBoolean(AgglParams.CLUSTER_ROWS, true);
         genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         genom.put(AgglParams.CUTOFF_SCORE, evolution.getEvaluator().getName());
-        genom.put(AgglParams.LINKAGE, linkage(rand));
+        do {
+            genom.put(AgglParams.LINKAGE, linkage(rand));
+        } while (!isValid());
         genom.put(AgglParams.DIST, distance(rand));
         countFitness();
     }
@@ -96,8 +97,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
      * @return clustering according to current parameters
      */
     private Clustering<? extends Cluster> updateCustering() {
-        DistanceMeasure dm = DistanceFactory.getInstance().getProvider(genom.getString(AgglParams.DIST));
-        clustering = ((BnbEvolution) evolution).exec.clusterRows(evolution.getDataset(), dm, genom);
+        clustering = ((BnbEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
 
         return clustering;
     }
@@ -164,5 +164,14 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
         sb.append(genom.toString());
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public boolean isValid() {
+        if (algorithm instanceof AgglomerativeClustering) {
+            AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+            return aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
+        }
+        return true;
     }
 }

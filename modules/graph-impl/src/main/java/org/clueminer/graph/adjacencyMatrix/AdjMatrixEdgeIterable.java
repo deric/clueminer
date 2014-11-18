@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.clueminer.graph.adjacencyMatrix;
 
 import java.util.ArrayList;
@@ -30,21 +25,7 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
 
     @Override
     public Iterator<Edge> iterator() {
-        Iterator<Edge> it = new Iterator<Edge>() {
-
-            private int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return currentIndex < edges.size();
-            }
-
-            @Override
-            public Edge next() {
-                return edges.get(currentIndex++);
-            }
-        };
-        return it;
+        return new AdjMatrixEdgeIterator();
     }
 
     @Override
@@ -60,6 +41,26 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
     @Override
     public void doBreak() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private class AdjMatrixEdgeIterator implements Iterator<Edge> {
+
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < edges.size();
+        }
+
+        @Override
+        public Edge next() {
+            return edges.get(currentIndex++);
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
 }

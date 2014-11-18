@@ -874,4 +874,16 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        switch (linkage) {
+            case "Single Linkage":
+            case "Complete Linkage":
+            case "Average Linkage":
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

@@ -41,24 +41,14 @@ public class ClustComparator implements Comparator<Node> {
         EvaluationTable t1 = c1.evaluationTable(c1.getClustering());
         EvaluationTable t2 = c2.evaluationTable(c2.getClustering());
 
-        double s1 = t1.getScore(eval);
-        double s2 = t2.getScore(eval);
-        boolean bigger;
-
-        if (s1 == s2) {
-            return 0;
+        int ret = eval.compareTo(t1.getScore(eval), t2.getScore(eval));
+        if (ret == 0) {
+            return ret;
         }
-        bigger = eval.compareScore(s1, s2);
-
-        if (!ascOrder) {
-            bigger = !bigger;
+        if (ascOrder) {
+            ret = (ret < 0) ? 1 : -1;
         }
-        // "best" solution is at the end
-        if (bigger) {
-            return 1;
-        } else {
-            return -1;
-        }
+        return ret;
     }
 
     public void setEvaluator(ClusterEvaluation eval) {

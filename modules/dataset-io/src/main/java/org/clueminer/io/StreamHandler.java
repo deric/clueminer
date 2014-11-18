@@ -43,7 +43,6 @@ public class StreamHandler {
             if (inst.size() > maxAttributes) {
                 maxAttributes = inst.size();
             }
-            out.add(inst);
 
         }
         for (Instance inst : out) {
@@ -54,10 +53,10 @@ public class StreamHandler {
 
     /**
      *
-     * @param in input Reader
-     * @param out output Dataset
+     * @param in         input Reader
+     * @param out        output Dataset
      * @param classIndex column number of class label in file
-     * @param separator data columns separator
+     * @param separator  data columns separator
      * @return
      */
     public static boolean load(Reader in, Dataset<Instance> out, int classIndex, String separator) {

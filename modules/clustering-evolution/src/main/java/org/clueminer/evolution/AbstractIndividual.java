@@ -39,7 +39,7 @@ public abstract class AbstractIndividual<T extends Individual> implements Indivi
             return 0;
         }
 
-        if (evolution.getEvaluator().compareScore(thisFitness, otherFitness)) {
+        if (evolution.getEvaluator().isBetter(thisFitness, otherFitness)) {
             return 1;
         } else {
             return -1;

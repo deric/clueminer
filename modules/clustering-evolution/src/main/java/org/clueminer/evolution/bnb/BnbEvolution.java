@@ -34,12 +34,13 @@ import org.clueminer.std.Scaler;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
-//@ServiceProvider(service = Evolution.class)
+@ServiceProvider(service = Evolution.class)
 public class BnbEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "BnB";
@@ -48,7 +49,6 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     protected List<DistanceMeasure> dist;
     protected List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(BnbEvolution.class.getName());
-    private int cnt;
     protected List<String> standartizations;
     protected final Random rand = new Random();
     private HashSet<String> tabu;
@@ -120,7 +120,6 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             ph.start(workunits);
             ph.progress("starting evolution...");
         }
-        cnt = 0;
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
@@ -137,11 +136,13 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
             // apply mutate operator
             for (int i = 0; i < pop.size(); i++) {
-                Individual thisOne = pop.getIndividual(i).deepCopy();
-                thisOne.mutate();
-                if (!isItTabu(thisOne.toString())) {
-                    // put mutated individual to the list of new individuals
-                    children.add(thisOne);
+                Individual current = pop.getIndividual(i).deepCopy();
+                current.mutate();
+                if (current.isValid()) {
+                    if (!isItTabu(current.toString())) {
+                        // put mutated individual to the list of new individuals
+                        children.add(current);
+                    }
                 }
             }
             double fitness;

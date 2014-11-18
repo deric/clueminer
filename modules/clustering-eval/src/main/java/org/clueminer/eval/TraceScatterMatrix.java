@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -19,8 +19,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Andreas De Rijcke
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class TraceScatterMatrix extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class TraceScatterMatrix extends AbstractEvaluator {
 
     private static String NAME = "Trace Scatter Matrix";
     private static final long serialVersionUID = -3714149292456837484L;
@@ -75,7 +75,7 @@ public class TraceScatterMatrix extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimalized
         return Math.abs(score1) < Math.abs(score2);
     }

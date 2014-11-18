@@ -15,7 +15,7 @@ public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E>
 
 
     private static final long serialVersionUID = 4300989082762007729L;
-    protected Map<Integer, Attribute> attributes = new HashMap<Integer, Attribute>();
+    protected Map<Integer, Attribute> attributes = new HashMap<>();
 
     @Override
     public int attributeCount() {

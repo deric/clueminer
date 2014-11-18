@@ -2,11 +2,10 @@ package org.clueminer.evolution.bnb;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.NMI;
+import org.clueminer.eval.AICScore;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,10 +30,6 @@ public class BnbEvolutionTest {
         mem = new MemInfo();
     }
 
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testGetName() {
     }
@@ -46,7 +41,7 @@ public class BnbEvolutionTest {
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
         //subject.setAlgorithm(new ));
-        subject.setEvaluator(new NMI());
+        subject.setEvaluator(new AICScore());
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 

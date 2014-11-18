@@ -1,12 +1,13 @@
 package org.clueminer.io;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,25 +21,10 @@ public class ARFFHandlerTest {
     private static ARFFHandler arff;
     private static CommonFixture tf;
 
-    public ARFFHandlerTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
         arff = new ARFFHandler();
         tf = new CommonFixture();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -65,15 +51,29 @@ public class ARFFHandlerTest {
         arff.load(tf.wineArff(), data, 0);
         assertEquals(13, data.attributeCount());
         assertEquals(178, data.size());
+    }
 
-        //load iris
-        data = new SampleDataset();
+    @Test
+    public void testLoadIris() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), data, 4);
         assertEquals(4, data.attributeCount());
         assertEquals(150, data.size());
+    }
 
-        //load yeast
-        data = new SampleDataset();
+    @Test
+    public void testLoadIrisWithoutClassIndex() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(150, 4);
+        arff.load(tf.irisArff(), data);
+        assertEquals(4, data.attributeCount());
+        assertEquals(150, data.size());
+        //there should be 3 classes
+        assertEquals(3, data.getClasses().size());
+    }
+
+    @Test
+    public void testLoadYeast() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(1484, 8);
         ArrayList<Integer> skippedIndexes = new ArrayList<>();
         skippedIndexes.add(0); //we skip instance name
         arff.load(tf.yeastData(), data, 9, "\\s+", skippedIndexes);
@@ -82,20 +82,18 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoad_3args() throws Exception {
-    }
-
-    @Test
     public void testClassAttrDefinition() {
         //from vehicle dataset
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Class' {opel,saab,bus,van}"));
         assertTrue(arff.isValidAttributeDefinition("@attribute class {east,west}"));
+        //from breast-w - in square brackets there is range of values
+        assertTrue(arff.isValidAttributeDefinition("@attribute Cell_Size_Uniformity integer [1,10]"));
+        //from cmc
+        assertTrue(arff.isValidAttributeDefinition("@attribute Number_of_children_ever_born INTEGER"));
+        //from glass
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { 'build wind float', 'build wind non-float', 'vehic wind float', 'vehic wind non-float', containers, tableware, headlamps}"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build-wind }"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build_wind }"));
     }
 
-    /**
-     * Test of load method, of class ARFFHandler.
-     */
-    @Test
-    public void testLoad_5args() throws Exception {
-    }
 }

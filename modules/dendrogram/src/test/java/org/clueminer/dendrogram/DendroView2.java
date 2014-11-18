@@ -6,14 +6,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.ClusteringExecutor;
+import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 
@@ -33,12 +32,10 @@ public class DendroView2 extends JFrame {
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
 
-        ClusteringExecutor exec = new ClusteringExecutor();
-
-        DistanceMeasure dm = new EuclideanDistance();
+        Executor exec = new ClusteringExecutorCached();
 
         //cluster both rows and columns
-        DendrogramMapping mapping = exec.clusterAll(data, dm, new Props());
+        DendrogramMapping mapping = exec.clusterAll(data, new Props());
         frame.setDataset(mapping);
 
     }

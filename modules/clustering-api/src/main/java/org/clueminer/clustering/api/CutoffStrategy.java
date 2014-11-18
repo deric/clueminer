@@ -26,5 +26,5 @@ public interface CutoffStrategy {
      *
      * @param evaluator
      */
-    void setEvaluator(ClusterEvaluator evaluator);
+    void setEvaluator(InternalEvaluator evaluator);
 }

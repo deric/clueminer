@@ -6,6 +6,7 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -40,7 +41,9 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
 
     private Image image;
     DendrogramMapping mapping;
+    private boolean rendering = false;
     private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
+    private final ReentrantLock lock = new ReentrantLock();
 
     public ClusteringNode(Clustering<Cluster> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -57,11 +60,22 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
      */
     @Override
     public Image getIcon(int type) {
-        if (image == null) {
-            Clustering clustering = getClustering();
-            if (mapping == null) {
-                image = DGramVis.generate(clustering, 64, 64, this);
+        if (image == null && rendering == false) {
+            lock.lock();
+            try {
+                Clustering clustering = getClustering();
+                //ensure that for each clustering we submit exatctly one task
+                rendering = true;
+                //image should be updated asynchronously when image is generated
+                DGramVis.generate(clustering, 64, 64, this);
+                //image is rendering, wait for it...
+                return DGramVis.loading();
+            } finally {
+                lock.unlock();
             }
+        }
+        if (image == null) {
+            return DGramVis.loading();
         }
         return image;
     }

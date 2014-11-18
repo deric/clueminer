@@ -31,11 +31,22 @@ public class ARFFHandler implements DatasetLoader {
     public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
 
     /**
-     * matches eg. "
+     * matches attribute definition which might simply contain attribute name
+     * and its type, starting with "@attribute" annotation:
      *
-     * @ATTRIBUTE sepallength	REAL"
+     * "@attribute attr_name numeric"
+     *
+     * more complex definitions contain a set of allowed values (in curly
+     * brackets {a, b, c}):
+     *
+     * "@attribute class {cp,im,pp,imU,om,omL,imL,imS}"
+     *
+     * or ranges in square bracets
+     *
+     * "@attribute Mitoses integer [1,10]"
+     *
      */
-    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+),]+\\})", Pattern.CASE_INSENSITIVE);
+    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+)|'([-\\w+ ])',]+\\}|\\[[(\\w+),]+\\])", Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -90,6 +101,7 @@ public class ARFFHandler implements DatasetLoader {
         Matcher amatch;
 
         int headerLine = 0;
+        int numAttr = 0;
         /*
          * Indicates whether we are reading data
          */
@@ -136,8 +148,17 @@ public class ARFFHandler implements DatasetLoader {
                     if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
-                        //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
-                        out.attributeBuilder().create(amatch.group(1), convertType(amatch.group(2).toUpperCase()));
+                        //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                        String attrName = amatch.group(1).toLowerCase().trim();
+                        switch (attrName) {
+                            case "class":
+                            case "type":
+                                classIndex = numAttr;
+                                break;
+                            default:
+                                out.attributeBuilder().create(attrName, convertType(amatch.group(2).toUpperCase()));
+                        }
+                        numAttr++;
                     }
                     headerLine++;
 

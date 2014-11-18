@@ -6,9 +6,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -21,7 +18,7 @@ public class CalinskiHarabaszTest {
 
     private static Clustering clusters;
     private static Dataset<? extends Instance> dataset;
-    private static CalinskiHarabasz test;
+    private static CalinskiHarabasz subject;
 
     public CalinskiHarabaszTest() {
     }
@@ -30,19 +27,7 @@ public class CalinskiHarabaszTest {
     public static void setUpClass() {
         clusters = FakeClustering.iris();
         dataset = FakeDatasets.irisDataset();
-        test = new CalinskiHarabasz(new EuclideanDistance());
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+        subject = new CalinskiHarabasz(new EuclideanDistance());
     }
 
     /**
@@ -50,7 +35,7 @@ public class CalinskiHarabaszTest {
      */
     @Test
     public void testGetName() {
-        assertEquals("Calinski-Harabasz", test.getName());
+        assertEquals("Calinski-Harabasz", subject.getName());
     }
 
     /**
@@ -59,30 +44,30 @@ public class CalinskiHarabaszTest {
     @Test
     public void testScore_Clustering_Dataset() {
         long start = System.currentTimeMillis();
-        double score = test.score(clusters, dataset);
-        long end = System.currentTimeMillis();
+        double score = subject.score(clusters, dataset);
         System.out.println("Calinski-Harabasz = " + score);
+        long end = System.currentTimeMillis();
         System.out.println("measuring took " + (end - start) + " ms");
+        assertEquals(false, Double.isNaN(score));
     }
 
     /**
-     * Test of getSumOfSquaredError method, of class CalinskiHarabasz.
+     * TODO: fix index computation
      */
     @Test
-    public void testGetSumOfSquaredError() {
+    public void testIris() {
+        double s1 = subject.score(FakeClustering.iris(), dataset);
+        double s2 = subject.score(FakeClustering.irisMostlyWrong(), dataset);
+        double s3 = subject.score(FakeClustering.irisWrong5(), dataset);
+        assertEquals(true, subject.isBetter(s1, s2));
+        assertEquals(true, subject.isBetter(s1, s3));
     }
 
     /**
-     * Test of score method, of class CalinskiHarabasz.
-     */
-    @Test
-    public void testScore_3args() {
-    }
-
-    /**
-     * Test of compareScore method, of class CalinskiHarabasz.
+     * Test of isBetter method, of class CalinskiHarabasz.
      */
     @Test
     public void testCompareScore() {
+        assertEquals(true, subject.isBetter(15, 2));
     }
 }

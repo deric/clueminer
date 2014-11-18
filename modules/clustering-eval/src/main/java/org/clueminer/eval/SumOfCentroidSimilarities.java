@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -14,8 +14,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class SumOfCentroidSimilarities extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class SumOfCentroidSimilarities extends AbstractEvaluator {
 
     private static String NAME = "Sum of Centroid Similarities";
     private static final long serialVersionUID = -2323688637159800449L;
@@ -57,7 +57,7 @@ public class SumOfCentroidSimilarities extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimized -- probably not, doesnt work
         return score1 > score2;
     }

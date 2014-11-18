@@ -1,13 +1,14 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ClusterLinkage;
-import org.clueminer.clustering.api.ClusterEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.hclust.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -16,8 +17,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class DunnIndex extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class DunnIndex extends AbstractEvaluator {
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String name = "Dunn index";
@@ -45,8 +46,9 @@ public class DunnIndex extends ClusterEvaluator {
 
         double maxIntraClusterdist = Double.MIN_VALUE, temp;
         double minClusterDistance = Double.MAX_VALUE;
-        Dataset<Instance> clusterX, clusterY;
-        ClusterLinkage link = new SingleLinkage(dm);
+        Cluster<? extends Instance> clusterX, clusterY;
+        ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
+        link.setDistanceMeasure(dm);
 
         for (int i = 0; i < clusters.size(); i++) {
             clusterX = clusters.get(i);
@@ -72,7 +74,7 @@ public class DunnIndex extends ClusterEvaluator {
         return minClusterDistance / maxIntraClusterdist;
     }
 
-    public double maxIntraClusterDistance(Dataset<Instance> cluster) {
+    public double maxIntraClusterDistance(Dataset<? extends Instance> cluster) {
         double max = Double.MIN_VALUE;
         Instance x, y;
         double dist;
@@ -102,7 +104,7 @@ public class DunnIndex extends ClusterEvaluator {
      * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         return (score1 > score2);
     }
 

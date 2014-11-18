@@ -2,8 +2,6 @@ package org.clueminer.clustering.gui;
 
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JPanel;
-import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -11,40 +9,8 @@ import org.netbeans.api.progress.ProgressHandle;
  *
  * @author Tomas Barton
  */
-public interface ClusteringExport {
+public interface ClusteringExport extends ExporterGUI {
 
-    /**
-     * Name of exported format
-     *
-     * @return
-     */
-    String getName();
-
-    /**
-     *
-     * @return panel with format specific options
-     */
-    JPanel getOptions();
-
-    /**
-     * Extension of exported format
-     *
-     * @return
-     */
-    String getExtension();
-
-    /**
-     * Method is called after user confirms dialog with format specific settings
-     *
-     * @param p
-     */
-    void updatePreferences(Preferences p);
-
-    /**
-     *
-     * @return filter for specific format(s)
-     */
-    FileFilter getFileFilter();
 
     /**
      * Creates Runnable object for performing the export
@@ -68,9 +34,4 @@ public interface ClusteringExport {
      * @param analysis
      */
     void setViewer(DendroViewer analysis);
-
-    /**
-     * Perform export
-     */
-    void export();
 }

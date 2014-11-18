@@ -2,7 +2,7 @@ package org.clueminer.eval;
 
 import java.util.HashMap;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -21,8 +21,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class DaviesBouldin extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class DaviesBouldin extends AbstractEvaluator {
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String name = "Davies-Bouldin";
@@ -46,7 +46,7 @@ public class DaviesBouldin extends ClusterEvaluator {
         Cluster<Instance> x, y;
         double intraX, intraY, max, interGroup, dij;
         Instance centroidX, centroidY;
-        HashMap<Integer, Double> intraDists = new HashMap<Integer, Double>();
+        HashMap<Integer, Double> intraDists = new HashMap<>();
         for (int i = 0; i < clusters.size(); i++) {
             x = clusters.get(i);
             centroidX = x.getCentroid();
@@ -107,7 +107,7 @@ public class DaviesBouldin extends ClusterEvaluator {
      * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         return score1 < score2;
     }
 

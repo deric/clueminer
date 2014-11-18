@@ -27,6 +27,17 @@ public interface ColorScheme {
      */
     Color getColor(double value, DendrogramMapping dendroData);
 
+    /**
+     * Generate color for given value
+     *
+     * @param value
+     * @param min
+     * @param mid
+     * @param max
+     * @return
+     */
+    Color getColor(double value, double min, double mid, double max);
+
     boolean isUseDoubleGradient();
 
     /**

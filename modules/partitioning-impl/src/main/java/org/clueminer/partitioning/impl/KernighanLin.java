@@ -26,13 +26,13 @@ public class KernighanLin implements Bisection {
     private Graph graph;
 
     public KernighanLin() {
-        
+
     }
     
     public KernighanLin(Graph g) {
         graph = g;
     }
-    
+
 
     @Override
     public ArrayList<LinkedList<Node>> bisect() {

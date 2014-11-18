@@ -2,6 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.util.Map;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
@@ -41,6 +42,10 @@ public class HacDendroPanel extends DendroPanel {
     @Override
     public DendrogramMapping execute() {
         Props params = getProperties().copy();
+        return execute(params);
+    }
+
+    public DendrogramMapping execute(Props params) {
         MemInfo memInfo = new MemInfo();
 
         DistanceFactory df = DistanceFactory.getInstance();
@@ -51,20 +56,22 @@ public class HacDendroPanel extends DendroPanel {
         params.put("name", getAlgorithm().getName());
         algorithm.setDistanceFunction(func);
 
-        DendrogramMapping dendroData = exec.clusterAll(getDataset(), func, params);
+        exec.setAlgorithm(algorithm);
+        DendrogramMapping dendroData = exec.clusterAll(getDataset(), params);
         memInfo.report();
 
         viewer.setDataset(dendroData);
 
-        repaint();
+        validate();
         revalidate();
+        repaint();
         return dendroData;
     }
 
     @Override
     public void dataChanged(String datasetName) {
         setDataset(dataProvider.getDataset(datasetName));
-        System.out.println("dataset changed to " + datasetName + ": " + System.identityHashCode(this));
+        System.out.println("dataset changed to " + datasetName + ": " + System.identityHashCode(getDataset()));
         if (algorithm != null) {
             execute();
         }
@@ -73,6 +80,13 @@ public class HacDendroPanel extends DendroPanel {
     @Override
     public String[] getDatasets() {
         return dataProvider.getDatasetNames();
+    }
+
+    @Override
+    public void linkageChanged(String linkage) {
+        Props params = getProperties().copy();
+        params.put(AgglParams.LINKAGE, linkage);
+        execute(params);
     }
 
 }

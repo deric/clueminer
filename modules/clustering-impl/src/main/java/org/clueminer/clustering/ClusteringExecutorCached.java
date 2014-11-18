@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -12,10 +12,11 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 
@@ -33,26 +34,30 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
     private Map<Dataset<? extends Instance>, StdStorage> storage;
+    private OptimalTreeOrder treeOrder = new MOLO();
 
     public ClusteringExecutorCached() {
-        algorithm = new HAC();
+        algorithm = new HACLW();
     }
 
     @Override
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
+        //TODO: tree ordering might break assigning items to clusters
+        //treeOrder.optimize(rowsResult, true);
         return rowsResult;
     }
 
     @Override
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
+        //treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;
@@ -81,8 +86,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
 
         findCutoff(rowsResult, params);
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
@@ -104,15 +109,14 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
      * Cluster both - rows and columns
      *
      * @param dataset data to be clustered
-     * @param dm      distance metric
      * @param params
      * @return
      */
     @Override
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, dm, params);
+    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params) {
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
         findCutoff(rowsResult, params);
-        HierarchicalResult columnsResult = hclustColumns(dataset, dm, params);
+        HierarchicalResult columnsResult = hclustColumns(dataset, params);
 
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult, columnsResult);
         Clustering clustering = rowsResult.getClustering();

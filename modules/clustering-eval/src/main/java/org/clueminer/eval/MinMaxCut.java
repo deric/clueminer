@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
@@ -8,8 +8,8 @@ import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = ClusterEvaluator.class)
-public class MinMaxCut extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class MinMaxCut extends AbstractEvaluator {
 
     private static final String NAME = "min-max cut";
     private static final long serialVersionUID = -4963722097900153865L;
@@ -63,7 +63,7 @@ public class MinMaxCut extends ClusterEvaluator {
     }
 
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be minimized
         return score1 < score2;
     }

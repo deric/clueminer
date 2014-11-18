@@ -3,6 +3,7 @@ package org.clueminer.explorer;
 import java.awt.event.ActionEvent;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.utils.Props;
 
 /**
@@ -18,4 +19,11 @@ public interface ToolbarListener {
     void evaluatorChanged(ClusterEvaluation eval);
 
     void runClustering(ClusteringAlgorithm alg, Props props);
+
+    /**
+     *
+     * @return currently active algorithm
+     */
+    Evolution currentEvolution();
+
 }

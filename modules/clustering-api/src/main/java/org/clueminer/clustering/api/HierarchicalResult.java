@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -22,18 +24,18 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return
      */
-     Matrix getProximityMatrix();
+    Matrix getProximityMatrix();
 
-     void setProximityMatrix(Matrix m);
+    void setProximityMatrix(Matrix m);
 
     /**
      * Cuts dendrogram tree into k clusters
      *
      * @return a set of clusters
      */
-     Clustering getClustering();
+    Clustering getClustering();
 
-     Clustering getClustering(Dataset<? extends Instance> dataset);
+    Clustering getClustering(Dataset<? extends Instance> dataset);
 
     /**
      * Array of integers with cluster assignments
@@ -42,7 +44,7 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return
      */
-     int[] getClusters(int terminalsNum);
+    int[] getClusters(int terminalsNum);
 
     /**
      * Set dendrogram tree cut-off, which determines number of clusters and
@@ -51,14 +53,14 @@ public interface HierarchicalResult extends Serializable {
      * @param cutoff
      * @return
      */
-     Clustering updateCutoff(double cutoff);
+    Clustering updateCutoff(double cutoff);
 
     /**
      * Dendrogram tree cut-off
      *
      * @return cutoff
      */
-     double getCutoff();
+    double getCutoff();
 
     /**
      * Cuts tree at given level
@@ -67,14 +69,14 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return
      */
-     double cutTreeByLevel(int level);
+    double cutTreeByLevel(int level);
 
     /**
      * Find and sets optimal cutoff with default strategy
      *
      * @return
      */
-     double findCutoff();
+    double findCutoff();
 
     /**
      * Find and sets optimal cutoff with given strategy
@@ -82,21 +84,21 @@ public interface HierarchicalResult extends Serializable {
      * @param strategy
      * @return
      */
-     double findCutoff(CutoffStrategy strategy);
+    double findCutoff(CutoffStrategy strategy);
 
     /**
      *
      * @return return current number of clusters (computed according to current
      *         cutoff)
      */
-     int getNumClusters();
+    int getNumClusters();
 
     /**
      * Forces number of clusters, if -1 then is leaved undecided
      *
      * @param num
      */
-     void setNumClusters(int num);
+    void setNumClusters(int num);
 
     /**
      * Scoring functions are used for evaluation of optimal number of clusters
@@ -106,9 +108,9 @@ public interface HierarchicalResult extends Serializable {
      * @see ClusterEvaluator
      * @return Map<number of clusters, cutoff>
      */
-     Map<Integer, Double> getScores(String evaluator);
+    Map<Integer, Double> getScores(String evaluator);
 
-     double getScore(String evaluator, int clustNum);
+    double getScore(String evaluator, int clustNum);
 
     /**
      * Stores clustering score for given evaluator and number of clusters
@@ -117,29 +119,29 @@ public interface HierarchicalResult extends Serializable {
      * @param clustNum
      * @param sc
      */
-     void setScores(String evaluator, int clustNum, double sc);
+    void setScores(String evaluator, int clustNum, double sc);
 
-     boolean isScoreCached(String evaluator, int clustNum);
+    boolean isScoreCached(String evaluator, int clustNum);
 
     /**
      *
      * @return original dataset used for clustering
      */
-     Dataset<? extends Instance> getDataset();
+    Dataset<? extends Instance> getDataset();
 
     /**
      *
      * @return number of tree levels
      */
-     int treeLevels();
+    int treeLevels();
 
     /**
      *
      * @return dendrogram tree structure
      */
-     DendroTreeData getTreeData();
+    DendroTreeData getTreeData();
 
-     void setTreeData(DendroTreeData treeData);
+    void setTreeData(DendroTreeData treeData);
 
     /**
      *
@@ -148,7 +150,7 @@ public interface HierarchicalResult extends Serializable {
      * @return height of dendrogram tree at given node index
      * @deprecated
      */
-     double treeHeightAt(int idx);
+    double treeHeightAt(int idx);
 
     /**
      *
@@ -156,13 +158,13 @@ public interface HierarchicalResult extends Serializable {
      * @return
      * @deprecated
      */
-     int treeOrder(int idx);
+    int treeOrder(int idx);
 
     /**
      *
      * @return maximum height of dendrogram tree
      */
-     double getMaxTreeHeight();
+    double getMaxTreeHeight();
 
     /**
      * Translate position of row/column which has been moved during clustering
@@ -172,46 +174,55 @@ public interface HierarchicalResult extends Serializable {
      * @return row/column index in original dataset that maps from passed
      *         row/column index.
      */
-     int getMappedIndex(int idx);
+    int getMappedIndex(int idx);
 
-     void setMappedIndex(int pos, int idx);
+    void setMappedIndex(int pos, int idx);
 
     /**
      * @return indexes of items
      */
-     int[] getMapping();
+    int[] getMapping();
 
     /**
-     * Return instance at given index -- that means either row or column
+     * Return instance at given index - only for rows
+     *
+     * @param index
+     * @deprecated in future only {@link DataVector} will be supported
+     * @return
+     */
+    Instance getInstance(int index);
+
+    /**
+     * Either row or column vector
      *
      * @param index
      * @return
      */
-     Instance getInstance(int index);
+    DataVector getVector(int index);
 
     /**
      * Sets order of items in dendrogram
      *
      * @param mapping
      */
-     void setMapping(int[] mapping);
+    void setMapping(int[] mapping);
 
-     void setInputData(Matrix inputData);
+    void setInputData(Matrix inputData);
 
-     Matrix getInputData();
+    Matrix getInputData();
 
     /**
      *
      * @return list of level where clustered instances are merged
      */
-     List<Merge> getMerges();
+    List<Merge> getMerges();
 
     /**
      * Use e.g. DendrogramBuilder to generate merge list
      *
      * @param merges
      */
-     void setMerges(List<Merge> merges);
+    void setMerges(List<Merge> merges);
 
     /**
      * Return ID of cluster to which was item at given position in input dataset
@@ -221,14 +232,14 @@ public interface HierarchicalResult extends Serializable {
      * @param idx position in input dataset/matrix
      * @return cluster ID
      */
-     int assignedCluster(int idx);
+    int assignedCluster(int idx);
 
     /**
      * Sets original dataset which was used to obtain the result
      *
      * @param dataset input dataset
      */
-     void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<? extends Instance> dataset);
 
     /**
      * Size of input data (dimension of similarity/proximity matrix) which
@@ -244,5 +255,12 @@ public interface HierarchicalResult extends Serializable {
      * @return true when clusters are available
      */
     boolean hasClustering();
+
+    /**
+     * Parameters used for obtaining the clustering result
+     *
+     * @return
+     */
+    Props getParams();
 
 }

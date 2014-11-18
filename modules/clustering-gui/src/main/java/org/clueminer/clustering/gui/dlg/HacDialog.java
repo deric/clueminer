@@ -70,6 +70,7 @@ public class HacDialog extends ClusteringDialog {
 
         comboCutoff.setModel(new DefaultComboBoxModel(initCutoff()));
 
+        chckColumns.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chckColumns, org.openide.util.NbBundle.getMessage(HacDialog.class, "HacDialog.chckColumns.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

@@ -7,8 +7,6 @@ import com.google.common.collect.Table;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -16,7 +14,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class JaccardIndex extends AbstractExternalEval {
+public class JaccardIndex extends AbstractCountingPairs {
 
     private static final long serialVersionUID = -1547620533572167033L;
     private static final String name = "Jaccard";
@@ -26,53 +24,38 @@ public class JaccardIndex extends AbstractExternalEval {
         return name;
     }
 
-    private double countScore(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+    /**
+     *
+     * @param table
+     * @param ref
+     * @param matching
+     * @return Jaccard index which should be between 0.0 and 1.0 (bigger is
+     *         better)
+     */
+    @Override
+    public double countScore(Table<String, String, Integer> table,
+            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
         Map<String, Integer> res;
 
         int tp, fp, fn;
         double index = 0.0;
         double jaccard;
+        Cluster c;
         //for each cluster we have score of quality
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-            tp = res.get("tp");
-            fp = res.get("fp");
-            fn = res.get("fn");
-            jaccard = tp / (double) (tp + fp + fn);
-            index += jaccard;
+            c = ref.get(cluster);
+            if (c.size() > 1) {
+                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+                tp = res.get("tp");
+                fp = res.get("fp");
+                fn = res.get("fn");
+                jaccard = tp / (double) (tp + fp + fn);
+                index += jaccard;
+            }
         }
 
         //average value
         return index / table.columnKeySet().size();
     }
 
-    /**
-     *
-     * @param clusters
-     * @param dataset
-     * @return Jaccard index which should be between 0.0 and 1.0 (bigger is
-     *         better)
-     */
-    @Override
-    public double score(Clustering clusters, Dataset dataset) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table);
-    }
-
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
-    }
-
-    @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        return countScore(table);
-    }
-
-    @Override
-    public boolean isMaximized() {
-        return true;
-    }
 }

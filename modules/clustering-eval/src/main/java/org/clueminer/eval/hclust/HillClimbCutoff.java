@@ -1,6 +1,6 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -13,14 +13,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = CutoffStrategy.class)
 public class HillClimbCutoff implements CutoffStrategy {
 
-    protected ClusterEvaluator evaluator;
+    protected InternalEvaluator evaluator;
     private static final String name = "hill-climb cutoff";
 
     public HillClimbCutoff() {
         //evaluator must be set after calling constructor!
     }
 
-    public HillClimbCutoff(ClusterEvaluator eval) {
+    public HillClimbCutoff(InternalEvaluator eval) {
         this.evaluator = eval;
     }
 
@@ -54,7 +54,7 @@ public class HillClimbCutoff implements CutoffStrategy {
             }
             System.out.println("score = " + score + " prev= " + prev);
             if (!Double.isNaN(prev)) {
-                if (!evaluator.compareScore(score, prev)) {
+                if (!evaluator.isBetter(score, prev)) {
                     isClimbing = false;
                     System.out.println("function is not climbing anymore");
                     hclust.updateCutoff(oldcut);
@@ -69,11 +69,11 @@ public class HillClimbCutoff implements CutoffStrategy {
         return cutoff;
     }
 
-    public ClusterEvaluator getEvaluator() {
+    public InternalEvaluator getEvaluator() {
         return evaluator;
     }
 
-    public void setEvaluator(ClusterEvaluator evaluator) {
+    public void setEvaluator(InternalEvaluator evaluator) {
         this.evaluator = evaluator;
     }
 }

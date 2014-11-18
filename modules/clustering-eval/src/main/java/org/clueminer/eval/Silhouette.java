@@ -1,7 +1,7 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -17,8 +17,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @see  Peter J. Rousseeuw (1987). "Silhouettes: a Graphical Aid to the Interpretation and Validation of Cluster Analysis". Computational and Applied Mathematics 20: 53–65. doi:10.1016/0377-0427(87)90125-7
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class Silhouette extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class Silhouette extends AbstractEvaluator {
 
     private static final long serialVersionUID = -2195054290041907628L;
     private static String name = "Silhouette";
@@ -144,7 +144,7 @@ public class Silhouette extends ClusterEvaluator {
      * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         return (score1 > score2);
     }
 

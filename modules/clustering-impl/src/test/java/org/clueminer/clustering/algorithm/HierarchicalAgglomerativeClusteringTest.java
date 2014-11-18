@@ -5,7 +5,7 @@ import org.clueminer.clustering.api.Merge;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.hclust.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Dump;

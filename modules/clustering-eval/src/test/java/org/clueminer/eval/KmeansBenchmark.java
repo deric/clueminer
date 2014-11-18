@@ -12,7 +12,7 @@ import java.util.*;
 import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Attribute;
@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
  */
 public class KmeansBenchmark {
 
-    private static Collection<? extends ClusterEvaluator> evaluators;
+    private static Collection<? extends InternalEvaluator> evaluators;
     private static String benchmarkFolder;
     private static CommonFixture tf;
     private final Map<String, String> classColors = new HashMap<String, String>();
@@ -49,7 +49,7 @@ public class KmeansBenchmark {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        evaluators = Lookup.getDefault().lookupAll(ClusterEvaluator.class);
+        evaluators = Lookup.getDefault().lookupAll(InternalEvaluator.class);
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
                         FileUtils.class,
@@ -197,7 +197,7 @@ public class KmeansBenchmark {
 
             double score;
             int j = 0;
-            for (ClusterEvaluator c : evaluators) {
+            for (InternalEvaluator c : evaluators) {
                 score = c.score(clusters, data);
                 results[j++][n - kmin] = score;
             }
@@ -234,7 +234,7 @@ public class KmeansBenchmark {
         String dataDir = getDataDir(dir);
         String[] plots = new String[evaluators.size()];
         int i = 0;
-        for (ClusterEvaluator c : evaluators) {
+        for (InternalEvaluator c : evaluators) {
             System.out.println("evaluator " + c.getName());
             //reformat data for plotting
             double[][] d = new double[kmax - kmin][2];

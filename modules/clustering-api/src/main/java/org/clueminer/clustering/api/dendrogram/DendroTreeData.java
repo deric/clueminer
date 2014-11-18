@@ -61,6 +61,13 @@ public interface DendroTreeData {
     void print();
 
     /**
+     * Print tree with given root
+     *
+     * @param treeRoot
+     */
+    void print(DendroNode treeRoot);
+
+    /**
      * Set mapping to instances indexes
      *
      * @param mapping

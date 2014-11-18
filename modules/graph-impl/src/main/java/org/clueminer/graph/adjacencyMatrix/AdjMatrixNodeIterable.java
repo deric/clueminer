@@ -24,7 +24,7 @@ public class AdjMatrixNodeIterable implements NodeIterable {
     public AdjMatrixNodeIterable(Node[] nodes) {
         this.nodes = new ArrayList<>(Arrays.asList(nodes));
     }
-    
+
     public AdjMatrixNodeIterable(ArrayList<Node> nodes) {
         this.nodes = nodes;
     }
@@ -32,7 +32,7 @@ public class AdjMatrixNodeIterable implements NodeIterable {
     @Override
     public Iterator<Node> iterator() {
         Iterator<Node> it = new Iterator<Node>() {
-            
+
             private int currentIndex = 0;
 
             @Override
@@ -43,6 +43,11 @@ public class AdjMatrixNodeIterable implements NodeIterable {
             @Override
             public Node next() {
                 return nodes.get(currentIndex++);
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
         };
         return it;

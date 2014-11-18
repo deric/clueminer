@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.clustering.api.ClusterEvaluator;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -21,8 +21,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  *
  */
-@ServiceProvider(service = ClusterEvaluator.class)
-public class Gamma extends ClusterEvaluator {
+@ServiceProvider(service = InternalEvaluator.class)
+public class Gamma extends AbstractEvaluator {
 
     private static final String NAME = "Gamma";
     private static final long serialVersionUID = 4782242459481724512L;
@@ -100,7 +100,7 @@ public class Gamma extends ClusterEvaluator {
      * @return
      */
     @Override
-    public boolean compareScore(double score1, double score2) {
+    public boolean isBetter(double score1, double score2) {
         // should be maximized. range = [-1,1]
         return score1 > score2;
     }

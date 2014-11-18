@@ -24,9 +24,7 @@ public class BaseClusterTest {
 
     private static Dataset<? extends Instance> irisData;
     private static Clustering<Cluster> irisClusters;
-
-    public BaseClusterTest() {
-    }
+    private static final double delta = 1e-9;
 
     @Before
     public void setUp() {
@@ -145,6 +143,24 @@ public class BaseClusterTest {
         Instance centroid = a.getCentroid();
         //artificial instance, should not be included in original data
         assertEquals(false, a.contains(centroid));
+    }
+
+    @Test
+    public void testModifyingCentroid() {
+        Cluster a = new BaseCluster(5);
+        a.attributeBuilder().create("x", "NUMERIC");
+        a.attributeBuilder().create("y", "NUMERIC");
+
+        a.builder().create(new double[]{2, 2});
+        a.builder().create(new double[]{4, 0});
+        assertEquals(2, a.attributeCount());
+        //centroid should be [2, 3]
+        assertEquals(3, a.getCentroid().get(0), delta);
+        assertEquals(1, a.getCentroid().get(1), delta);
+        //after adding instance centroid must be recomputed
+        a.builder().create(new double[]{6, 1});
+        assertEquals(4, a.getCentroid().get(0), delta);
+        assertEquals(1, a.getCentroid().get(1), delta);
     }
 
     /**

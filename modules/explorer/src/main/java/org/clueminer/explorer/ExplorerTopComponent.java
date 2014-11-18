@@ -19,7 +19,8 @@ import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.NMI;
+import org.clueminer.dgram.vis.ImageFactory;
+import org.clueminer.eval.external.NMI;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -211,6 +212,8 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             logger.warning("task should have been already finished");
         }
         toolbar.evolutionFinished();
+        //shutdown image workers
+        ImageFactory.getInstance().shutdown();
     }
 
     @Override
@@ -283,18 +286,23 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 exec.setAlgorithm(aggl);
                 Clustering<? extends Cluster> clustering;
                 if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
-                    DendrogramMapping mapping = exec.clusterAll(dataset, aggl.getDistanceFunction(), props);
+                    DendrogramMapping mapping = exec.clusterAll(dataset, props);
                     clustering = mapping.getRowsClustering();
                     children.addClustering(clustering);
                 } else {
-                    clustering = exec.clusterRows(dataset, aggl.getDistanceFunction(), props);
+                    clustering = exec.clusterRows(dataset, props);
                     children.addClustering(clustering);
                 }
                 logger.log(Level.INFO, "finished clustering dataset {1} with algorithm {0}",
-                           new Object[]{alg.getName(), dataset.getName()});
+                        new Object[]{alg.getName(), dataset.getName()});
             }
         });
         task.schedule(0);
+    }
+
+    @Override
+    public Evolution currentEvolution() {
+        return alg;
     }
 
 }

@@ -2,8 +2,6 @@ package org.clueminer.fixtures.clustering;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -13,22 +11,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class FakeDatasetsTest {
 
-    public FakeDatasetsTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testSchoolData() {
         Dataset<? extends Instance> school = FakeDatasets.schoolData();
         assertEquals(17, school.size());
         assertEquals(4, school.attributeCount());
+        Instance inst = school.get(0);
+        assertEquals(0, inst.getIndex());
+        assertEquals("lau", inst.classValue());
     }
 
     @Test

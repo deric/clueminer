@@ -45,7 +45,7 @@ public class Population<T extends AbstractIndividual> extends AbstractPopulation
                 rand[j] = randomInt(getIndividuals().length - 1);
             }
             for (int j = 0; j < rand_cnt; j++) {
-                if (evolution.getEvaluator().compareScore(getIndividual(rand[j]).getFitness(), max)) {
+                if (evolution.getEvaluator().isBetter(getIndividual(rand[j]).getFitness(), max)) {
                     max = this.getIndividual(rand[j]).getFitness();
                     max_id = j;
                 }

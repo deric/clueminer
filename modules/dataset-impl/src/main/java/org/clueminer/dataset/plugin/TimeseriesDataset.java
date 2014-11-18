@@ -114,7 +114,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
-    public boolean addAll(Dataset<E> d) {
+    public boolean addAll(Dataset<? extends E> d) {
         boolean success = true;
         for (E instance : d) {
             check(instance);
@@ -389,6 +389,15 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
+    public void changedClass(Object orig, Object current, Instance source) {
+        if (current != null) {
+            if (!classes.contains(current)) {
+                classes.add(current);
+            }
+        }
+    }
+
+    @Override
     public InstanceBuilder builder() {
         if (builder == null) {
             builder = new TimeRowFactory(this, attributeCount());
@@ -521,4 +530,5 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
             t.resetStats();
         }
     }
+
 }
