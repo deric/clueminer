@@ -298,24 +298,27 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
     public BufferedImage getBufferedImage(int w, int h) {
         Dimension dendroDim = dendrogramPanel.getSize();
         int width, height;
-
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace = pc.getCurrentWorkspace();
-        JPanel previews = null;
-        if (workspace != null) {
-            previews = (JPanel) workspace.getLookup().lookup(ClusterPreviewer.class);
-        }
         Dimension dimPrev = null;
         BufferedImage prev = null;
-        if (previews != null) {
-            dimPrev = previews.getSize();
-            prev = new BufferedImage(dimPrev.width, dimPrev.height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D gp = prev.createGraphics();
-            previews.paint(gp);
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc != null) {
+            Workspace workspace = pc.getCurrentWorkspace();
+            JPanel previews = null;
+            if (workspace != null) {
+                previews = (JPanel) workspace.getLookup().lookup(ClusterPreviewer.class);
+            }
+
+            if (previews != null) {
+                dimPrev = previews.getSize();
+                prev = new BufferedImage(dimPrev.width, dimPrev.height, BufferedImage.TYPE_INT_RGB);
+                Graphics2D gp = prev.createGraphics();
+                previews.paint(gp);
+            }
         }
 
-        width = dendroDim.width;
-        height = dendroDim.height;
+        width = Math.max(w, dendroDim.width);
+        height = Math.max(h, dendroDim.height);
         if (dimPrev != null) {
             width += dimPrev.width;
             height = Math.max(dendroDim.height, dimPrev.height);
