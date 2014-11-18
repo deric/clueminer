@@ -5,6 +5,7 @@
         <groupId>org.clueminer</groupId>
         <artifactId>clueminer-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>partitioning-impl</artifactId>
     <packaging>nbm</packaging>
