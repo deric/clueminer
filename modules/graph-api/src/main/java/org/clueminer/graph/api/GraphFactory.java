@@ -1,5 +1,10 @@
 package org.clueminer.graph.api;
 
+import java.util.ArrayList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+
+
 /**
  * Factory for nodes and edges.
  * <p>
@@ -75,8 +80,18 @@ public interface GraphFactory {
     /**
      * Creates and returns a node.
      *
-     * @param id the node id
+     * @param label the node label
      * @return the new node
      */
-    public Node newNode(Object id);
+    public Node newNode(Object label);
+    
+    
+    /**
+     * Creates nodes from the dataset
+     *
+     * @param input input dataset
+     * @return list of nodes
+     */
+    public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input);
+    
 }

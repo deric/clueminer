@@ -16,4 +16,6 @@ public interface Edge extends Element {
     Node getSource();
 
     Node getTarget();
+    
+    double getWeight();
 }

@@ -6,4 +6,5 @@ package org.clueminer.graph.api;
  */
 public interface Node extends Element {
 
+        
 }

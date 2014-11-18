@@ -214,6 +214,9 @@
         <module>modules/commons</module>
         <module>modules/evaluation-gui</module>
         <module>modules/meta-api</module>
+        <module>modules/chameleon</module>
+        <module>modules/partitioning-api</module>
+        <module>modules/partitioning-impl</module>
     </modules>
     <reporting>
         <plugins>

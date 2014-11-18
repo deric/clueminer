@@ -5,9 +5,8 @@
         <groupId>org.clueminer</groupId>
         <artifactId>clueminer-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>graph-api</artifactId>
+    <artifactId>partitioning-api</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -17,7 +16,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.graph.api</publicPackage>
+                        <publicPackage>org.clueminer.partitioning.api</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -38,16 +37,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-api</artifactId>
+            <artifactId>graph-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <name>partitioning-api</name>
 </project>
