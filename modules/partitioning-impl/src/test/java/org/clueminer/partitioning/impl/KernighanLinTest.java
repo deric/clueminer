@@ -86,8 +86,8 @@ public class KernighanLinTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
         System.out.println(g.graphVizExport());
-        KernighanLin kl = new KernighanLin(g);
-        kl.partition();
+        KernighanLin kl = new KernighanLin();
+        kl.bisect(g);
         kl.removeUnusedEdges();
         System.out.println(g.graphVizExport());
     }
@@ -101,8 +101,8 @@ public class KernighanLinTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
         System.out.println(g.graphVizExport());
-        KernighanLin kl = new KernighanLin(g);
-        kl.partition();
+        KernighanLin kl = new KernighanLin();
+        kl.bisect(g);
         kl.removeUnusedEdges();
         kl.printClusters();
         System.out.println(g.graphVizExport());
@@ -118,8 +118,8 @@ public class KernighanLinTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
         System.out.println(g.graphVizExport());
-        KernighanLin kl = new KernighanLin(g);
-        kl.partition();
+        KernighanLin kl = new KernighanLin();
+        kl.bisect(g);
         kl.removeUnusedEdges();
         kl.printClusters();
         System.out.println(g.graphVizExport());

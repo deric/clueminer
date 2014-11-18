@@ -25,7 +25,10 @@ public class KernighanLin {
     private Graph graph;
 
     public KernighanLin() {
+    }
 
+    public KernighanLin(Graph g) {
+        initialize(g);
     }
 
     public ArrayList<LinkedList<Node>> bisect(Graph g) {

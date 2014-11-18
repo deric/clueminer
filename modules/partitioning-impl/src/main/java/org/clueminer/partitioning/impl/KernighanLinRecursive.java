@@ -20,7 +20,7 @@ public class KernighanLinRecursive implements Partitioning {
     ArrayList<LinkedList<Node>> finalResult;
 
     public KernighanLinRecursive() {
-        
+
     }
 
     @Override
@@ -35,7 +35,7 @@ public class KernighanLinRecursive implements Partitioning {
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin();
+        KernighanLin kl = new KernighanLin(g);
         ArrayList<LinkedList<Node>> result = kl.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
@@ -69,13 +69,13 @@ public class KernighanLinRecursive implements Partitioning {
     @Override
     public Graph removeUnusedEdges() {
         Graph  g = new AdjMatrixGraph(graph.getNodeCount());
-        
+
         ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
-        
+
         for (Node node : nodes) {
             g.addNode(node);
         }
-         
+
         for (int k = 0; k < finalResult.size(); k++) {
             for (int i = 0; i < finalResult.get(k).size(); i++) {
                 for (int j = i + 1; j < finalResult.get(k).size(); j++) {
@@ -85,7 +85,7 @@ public class KernighanLinRecursive implements Partitioning {
                 }
             }
         }
-        return g; 
+        return g;
     }
 
 }
