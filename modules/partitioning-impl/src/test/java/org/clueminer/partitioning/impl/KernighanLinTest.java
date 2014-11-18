@@ -1,5 +1,7 @@
 package org.clueminer.partitioning.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.chameleon.KNN;
 import org.clueminer.dataset.api.Dataset;
@@ -8,6 +10,7 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Node;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -76,7 +79,7 @@ public class KernighanLinTest {
         return data;
     }
 
-    @Test
+ /*   @Test
     public void twoDistinctTest() {
         Dataset<? extends Instance> dataset = twoDistinctNeighbors();
         DistanceMeasure dm = new EuclideanDistance();
@@ -106,7 +109,7 @@ public class KernighanLinTest {
         kl.removeUnusedEdges();
         kl.printClusters();
         System.out.println(g.graphVizExport());
-    }
+    } */
 
     @Test
     public void twoDistinct2Test() {
@@ -118,11 +121,22 @@ public class KernighanLinTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
         System.out.println(g.graphVizExport());
-        KernighanLin kl = new KernighanLin(g);
-        kl.partition();
+        KernighanLin kl = new KernighanLin();
+        ArrayList<LinkedList<Node>> result = kl.bisect(g);
+        //printResult(result);
         kl.removeUnusedEdges();
         kl.printClusters();
         System.out.println(g.graphVizExport());
 
+    }
+    
+        private void printResult(ArrayList<LinkedList<Node>> result) {
+        for (int i = 0;i<result.size();i++) {
+            System.out.print("Cluster " + i + ": ");
+            for (Node node : result.get(i)) {
+                System.out.print(node.getId() + ", ");
+            }
+            System.out.println("");
+        }
     }
 }
