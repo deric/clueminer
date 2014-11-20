@@ -18,11 +18,11 @@ import org.openide.util.Exceptions;
  */
 public class DatasetFixture {
 
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
 
-    public static Map<Dataset<Instance>, Integer> allDatasets() {
+    public static Map<Dataset<? extends Instance>, Integer> allDatasets() {
         //dataset, num_true_classes
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
+        Map<Dataset<? extends Instance>, Integer> datasets = new HashMap<>();
         datasets.put(DatasetFixture.dermatology(), 6);
         datasets.put(DatasetFixture.glass(), 7);
         datasets.put(DatasetFixture.insect(), 3);

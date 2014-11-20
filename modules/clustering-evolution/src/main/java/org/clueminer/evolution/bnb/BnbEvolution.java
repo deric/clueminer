@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
@@ -79,7 +79,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     }
 
     private void init() {
-        algorithm = new HAC();
+        algorithm = new HACLW();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         gen = 0;

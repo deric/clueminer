@@ -21,7 +21,6 @@ import org.clueminer.clustering.benchmark.Experiment;
 public class Hclust extends Bench {
 
     protected static Hclust instance;
-    protected static String benchmarkFolder;
 
     /**
      * @param args the command line arguments

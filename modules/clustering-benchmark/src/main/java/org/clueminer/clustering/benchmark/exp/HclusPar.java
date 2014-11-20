@@ -1,6 +1,5 @@
 package org.clueminer.clustering.benchmark.exp;
 
-import org.clueminer.clustering.benchmark.exp.Hclust;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -1,12 +1,22 @@
 package org.clueminer.clustering.benchmark;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.benchmark.DatasetFixture;
 
 /**
  *
  * @author Tomas Barton
  */
 public abstract class Bench {
+
+    protected static String benchmarkFolder;
+    protected HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets = new HashMap<>();
 
     public Bench() {
         //constructor without arguments
@@ -24,5 +34,25 @@ public abstract class Bench {
     }
 
     public abstract void main(String[] args);
+
+    public static void printUsage(String[] args, JCommander cmd, AbsParams params) {
+
+        try {
+            cmd.parse(args);
+
+        } catch (ParameterException ex) {
+            System.out.println(ex.getMessage());
+            cmd.usage();
+            System.exit(0);
+        }
+    }
+
+    protected void loadDatasets() {
+        Map<Dataset<? extends Instance>, Integer> datasets = DatasetFixture.allDatasets();
+        for (Map.Entry<Dataset<? extends Instance>, Integer> entry : datasets.entrySet()) {
+            Dataset<? extends Instance> d = entry.getKey();
+            availableDatasets.put(d.getName(), entry);
+        }
+    }
 
 }

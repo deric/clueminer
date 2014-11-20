@@ -53,7 +53,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
         initEvolution();
     }
 
-    public AttrEvolution(Dataset<Instance> dataset, int generations) {
+    public AttrEvolution(Dataset<? extends Instance> dataset, int generations) {
         this.dataset = dataset;
         this.generations = generations;
         //@TODO fetch number of clusters

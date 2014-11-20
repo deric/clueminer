@@ -14,7 +14,6 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.ConsoleDump;
-import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.distance.EuclideanDistance;
@@ -34,9 +33,7 @@ public class Data extends Bench {
     private Evolution test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
-    private HashMap<String, Map.Entry<Dataset<Instance>, Integer>> availableDatasets = new HashMap<>();
     private static ResultsCollector rc;
-    private static String benchmarkFolder;
     private static String csvOutput;
     private static Data instance;
 
@@ -122,17 +119,13 @@ public class Data extends Bench {
         csvOutput = benchmarkFolder + File.separatorChar + "results.csv";
 
         //preload dataset names
-        Map<Dataset<Instance>, Integer> datasets = DatasetFixture.allDatasets();
-        for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
-            Dataset<Instance> d = entry.getKey();
-            availableDatasets.put(d.getName(), entry);
-        }
+        loadDatasets();
     }
 
     public void execute(String datasetName) {
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
+        Map<Dataset<? extends Instance>, Integer> datasets = new HashMap<>();
         if (availableDatasets.containsKey(datasetName)) {
-            Map.Entry<Dataset<Instance>, Integer> entry = availableDatasets.get(datasetName);
+            Map.Entry<Dataset<? extends Instance>, Integer> entry = availableDatasets.get(datasetName);
             datasets.put(entry.getKey(), entry.getValue());
         } else {
             System.out.println("dataset " + datasetName + " not found");
@@ -149,8 +142,8 @@ public class Data extends Bench {
 
         String name;
         System.out.println("working folder: " + benchmarkFolder);
-        for (Map.Entry<Dataset<Instance>, Integer> entry : datasets.entrySet()) {
-            Dataset<Instance> dataset = entry.getKey();
+        for (Map.Entry<Dataset<? extends Instance>, Integer> entry : datasets.entrySet()) {
+            Dataset<? extends Instance> dataset = entry.getKey();
             name = dataset.getName();
             String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
             System.out.println("=== dataset " + name);

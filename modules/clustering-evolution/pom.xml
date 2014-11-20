@@ -140,8 +140,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.evolution</publicPackage>
-                        <publicPackage>org.clueminer.evolution.attr</publicPackage>
+                        <publicPackage>org.clueminer.evolution.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
