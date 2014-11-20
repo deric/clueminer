@@ -17,7 +17,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
-import org.clueminer.utils.Dump;
 import org.imgscalr.Scalr;
 
 /**
@@ -52,34 +51,35 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             int x = 0, k, prev = -1;
             double value, s;
             Dataset<? extends Instance> dataset;
-            Instance inst;
+            //Instance inst;
             // String str;
             if (hierarchicalResult != null) {
                 dataset = hierarchicalResult.getDataset();
-                Dump.array(hierarchicalResult.getMapping(), "sil mapping");
-                System.out.println("clusters size: " + clustering.size());
-                System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
-                System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
+                //Dump.array(hierarchicalResult.getMapping(), "sil mapping");
+                //System.out.println("clusters size: " + clustering.size());
+                //System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
+                //System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
                 for (int i = 0; i < dataset.size(); i++) {
-                    s = score[i];
+                    s = score[hierarchicalResult.getMappedIndex(i)];
                     if (Double.isNaN(s)) {
                         s = -1.0;
                     }
                     value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-                    inst = dataset.get(hierarchicalResult.getMappedIndex(i));
-                    //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue());
+                    //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
+                    //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
+
                     if (k != prev) {
                         if (clustering.hasAt(k)) {
                             clust = clustering.get(k);
                         }
+                        if (clust != null) {
+                            g.setColor(clust.getColor());
+                        } else {
+                            g.setColor(Color.GRAY);
+                        }
                     }
-                    if (clust != null) {
-                        g.setColor(clust.getColor());
-                    } else {
-                        g.setColor(Color.GRAY);
-                    }
-
+                    //System.out.println(i + " -> " + k + " : " + hierarchicalResult.getMappedIndex(i) + " color: " + g.getColor().toString());
                     g.fillRect(x, i * element.height, (int) value, element.height);
                     /*
                      g.setColor(Color.BLACK);
@@ -162,6 +162,8 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         DendrogramMapping d = data.getLookup().lookup(DendrogramMapping.class);
         if (d != null) {
             hierarchicalResult = d.getRowsResult();
+        } else {
+            System.out.println("can't find hierarchical result in lookup, using: " + hierarchicalResult);
         }
         updateScore();
         if (reqSize.width == 0) {
@@ -208,7 +210,6 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             for (int i = 0; i < score.length; i++) {
                 instId = hierarchicalResult.getMappedIndex(i);
                 k = clustering.assignedCluster(instId);
-                //System.out.println(i + " -> " + instId + " = " + k + " - " + hierarchicalResult.getDataset().get(instId).getName());
                 //if k == -1 (not assigned to any cluster yet) there's no point to count the score
                 if (clustering.hasAt(k)) {
                     clust = clustering.get(k);
@@ -219,6 +220,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
                         throw new RuntimeException("missing hierarchical result");
                     }
                 }
+                //System.out.println(i + " -> " + instId + " = " + k + " - " + hierarchicalResult.getDataset().get(instId).getName() + " = " + score[instId]);
             }
             //Dump.array(score, "silhouette score");
         }
@@ -252,7 +254,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
      * @return
      */
     public Image generate(int width, int height) {
-        double fHeight = height / (double) clustering.instancesCount();
+        double fHeight = height / (double) hierarchicalResult.getDataset().size();
         reqSize.width = width;
         reqSize.height = height;
         realSize.width = width;
@@ -260,15 +262,19 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
 
         //element size can't be smaller than 1px
         element.height = (int) Math.ceil(fHeight);
-
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        //min height is 1px for each row
+        int h = element.height * hierarchicalResult.getDataset().size();
+        BufferedImage image = new BufferedImage(width, h, BufferedImage.TYPE_INT_ARGB);
+        //System.out.println("preview = " + width + " x " + height);
         g = image.createGraphics();
         render(g);
+        //System.out.println("actual size = " + image.getWidth() + " x " + image.getHeight());
         if (image.getHeight() != height || image.getWidth() != width) {
             image = Scalr.resize(image, Scalr.Method.SPEED,
                     Scalr.Mode.AUTOMATIC,
                     width, height, Scalr.OP_ANTIALIAS);
         }
+        g.dispose();
 
         return image;
     }

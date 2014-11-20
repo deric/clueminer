@@ -173,6 +173,11 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
+    public void setClustering(Clustering clustering) {
+        this.clustering = clustering;
+    }
+
+    @Override
     public Clustering getClustering(Dataset<? extends Instance> parent) {
         setDataset(parent);
 
@@ -207,6 +212,11 @@ public class HClustResult implements HierarchicalResult {
     @Override
     public int[] getClusters(int terminalsNum) {
         return mapping;
+    }
+
+    @Override
+    public void setCutoff(double cutoff) {
+        this.cutoff = cutoff;
     }
 
     @Override

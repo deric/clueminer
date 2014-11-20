@@ -26,6 +26,7 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * use {@link HClustResult} instead
  */
 @Deprecated
 public class HCLResult implements HierarchicalResult {
@@ -392,6 +393,16 @@ public class HCLResult implements HierarchicalResult {
             res = c.getLookup().lookup(DendrogramMapping.class);
         }
         return res;
+    }
+
+    @Override
+    public void setCutoff(double cutoff) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setClustering(Clustering clustering) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
