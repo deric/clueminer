@@ -1,4 +1,4 @@
-package org.clueminer.clustering.benchmark;
+package org.clueminer.clustering.benchmark.exp;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -10,6 +10,9 @@ import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.aggl.HACLWMS;
 import org.clueminer.clustering.algorithm.HCL;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.benchmark.Bench;
+import org.clueminer.clustering.benchmark.BenchParams;
+import org.clueminer.clustering.benchmark.Experiment;
 
 /**
  *

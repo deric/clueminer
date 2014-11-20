@@ -1,4 +1,4 @@
-package org.clueminer.clustering.benchmark;
+package org.clueminer.clustering.benchmark.exp;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
@@ -19,6 +19,7 @@ import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.benchmark.Bench;
 import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.utils.FileUtils;

@@ -1,5 +1,9 @@
 package org.clueminer.clustering.benchmark;
 
+import org.clueminer.clustering.benchmark.exp.Data;
+import org.clueminer.clustering.benchmark.exp.HclusPar;
+import org.clueminer.clustering.benchmark.exp.HclusPar2;
+import org.clueminer.clustering.benchmark.exp.Hclust;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
