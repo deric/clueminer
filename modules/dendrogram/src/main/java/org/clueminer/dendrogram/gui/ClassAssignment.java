@@ -43,10 +43,11 @@ public class ClassAssignment extends ClusterAssignment {
         if (flatClust != null && hieraRes != null) {
             int i = 0;
             Dataset<? extends Instance> dataset = hieraRes.getDataset();
-            if (dataset.getClasses().size() == 0) {
-                //logger.log(Level.WARNING, "no class information in data");
-                return;
-            }
+            //TODO: still class size == 0 does not mean that there's no class information
+            /*if (dataset.getClasses().size() == 0) {
+             //logger.log(Level.WARNING, "no class information in data");
+             return;
+             }*/
             BiMap<String, String> matching = getMatching(flatClust);
             Object2ObjectMap<Object, Color> map = new Object2ObjectOpenHashMap(i);
 
