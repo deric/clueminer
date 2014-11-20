@@ -98,10 +98,11 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         return clustering;
     }
 
-    public void findCutoff(HierarchicalResult rowsResult, Props params) {
+    public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
-        double cut = rowsResult.findCutoff(strategy);
+        double cut = result.findCutoff(strategy);
         logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        logger.log(Level.INFO, "num clusters = {0}", result.getClustering().size());
         params.putDouble(AgglParams.CUTOFF, cut);
     }
 

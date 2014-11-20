@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -38,7 +38,7 @@ public class IconDemo extends JFrame implements DendrogramVisualizationListener 
         Matrix input = new JMatrix(dataset.arrayCopy());
 
         Props params = new Props();
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HACLW();
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);

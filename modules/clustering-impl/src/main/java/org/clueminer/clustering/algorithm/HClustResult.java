@@ -222,6 +222,8 @@ public class HClustResult implements HierarchicalResult {
             checkCutoff(root, cutoff, clusters, assign);
             if (clusters.size() > 0) {
                 mapping = assign;
+            } else {
+                logger.log(Level.SEVERE, "failed to cutoff dendrogram, cut = {0}", cutoff);
             }
         }
         //add input dataset to clustering lookup
@@ -289,7 +291,7 @@ public class HClustResult implements HierarchicalResult {
     public double cutTreeByLevel(int level) {
         DendroNode node = treeData.getRoot();
         double cut = findLevel(node, level);
-        updateCutoff(cut);
+        this.clustering = updateCutoff(cut);
         return cut;
     }
 

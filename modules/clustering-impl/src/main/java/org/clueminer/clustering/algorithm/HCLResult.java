@@ -140,7 +140,7 @@ public class HCLResult implements HierarchicalResult {
             //if clustering wasn't computed yet, cluster number == -1
             if (num >= 0) {
                 if (!result.hasAt(num)) {
-                    clust = new BaseCluster<Instance>(perCluster);
+                    clust = new BaseCluster<>(perCluster);
                     clust.setColor(cg.next());
                     clust.setName("cluster " + (num + 1));
                     clust.setClusterId(num);
@@ -190,7 +190,7 @@ public class HCLResult implements HierarchicalResult {
         if (this.scores.containsKey(evaluator)) {
             this.scores.get(evaluator).put(clustNum, sc);
         } else {
-            Map<Integer, Double> hm = new HashMap<Integer, Double>();
+            Map<Integer, Double> hm = new HashMap<>();
             hm.put(clustNum, sc);
             this.scores.put(evaluator, hm);
         }

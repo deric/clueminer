@@ -12,6 +12,8 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
@@ -49,16 +51,23 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
             // float y;
             int x = 0, k, prev = -1;
             double value, s;
+            Dataset<? extends Instance> dataset;
+            Instance inst;
             // String str;
             if (hierarchicalResult != null) {
+                dataset = hierarchicalResult.getDataset();
                 Dump.array(hierarchicalResult.getMapping(), "sil mapping");
-                for (int i = 0; i < hierarchicalResult.getDataset().size(); i++) {
+                System.out.println("clusters size: " + clustering.size());
+                System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
+                System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
+                for (int i = 0; i < dataset.size(); i++) {
                     s = score[i];
                     if (Double.isNaN(s)) {
                         s = -1.0;
                     }
                     value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-
+                    inst = dataset.get(hierarchicalResult.getMappedIndex(i));
+                    //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue());
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
                     if (k != prev) {
                         if (clustering.hasAt(k)) {
