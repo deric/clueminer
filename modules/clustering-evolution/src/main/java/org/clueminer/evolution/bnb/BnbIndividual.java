@@ -47,7 +47,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
         genom.putBoolean(AgglParams.LOG, logscale(rand));
         genom.put(AgglParams.STD, std(rand));
         genom.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
+        genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
         genom.put(AgglParams.CUTOFF_SCORE, evolution.getEvaluator().getName());
         do {
             genom.put(AgglParams.LINKAGE, linkage(rand));

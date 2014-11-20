@@ -6,6 +6,8 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Incremental strategy starts from tree root (should be faster when we expect
+ * much smaller number of clusters than instances in data)
  *
  * @author Tomas Barton
  */
@@ -21,7 +23,7 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
 
     @Override
     public double findCutoff(HierarchicalResult hclust) {
-        Clustering clust;
+        Clustering clust, prevClust = null;
         double cutoff;
         double score, prev = Double.NaN, oldcut = 0;
         int level = 1;
@@ -29,13 +31,11 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
         String evalName;
         int clustNum;
         do {
-            hclust.cutTreeByLevel(level);
+            cutoff = hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
-            System.out.println("clust = " + clust);
-            cutoff = hclust.getCutoff();
+            System.out.println("level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
             evalName = evaluator.getName();
             clustNum = clust.size();
-            System.out.println("we have " + clust.size() + " clusters");
             if (hclust.isScoreCached(evalName, clustNum)) {
                 System.out.println("score cached");
                 score = hclust.getScore(evalName, clustNum);
@@ -46,8 +46,9 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
             if (!Double.isNaN(prev)) {
                 if (!evaluator.isBetter(score, prev)) {
                     isClimbing = false;
-                    System.out.println("function is not climbing anymore");
-                    hclust.updateCutoff(oldcut);
+                    System.out.println("function is not climbing anymore, reverting");
+                    hclust.setCutoff(oldcut);
+                    hclust.setClustering(prevClust);
                 }
             }
             hclust.setScores(evaluator.getName(), clust.size(), score);
