@@ -24,12 +24,12 @@ public class GraphicsEnv {
      */
     public static BufferedImage compatibleImage(int width, int height) {
         BufferedImage image;
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-        if (ge.isHeadlessInstance()) {
-            //without java auto-detection
+        if (GraphicsEnvironment.isHeadless()) {
+            //without graphical display we can't have java auto-detection
             image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         } else {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             image = ge.getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         }
 
