@@ -29,10 +29,10 @@ import org.openide.util.Exceptions;
 public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     private final Evolution evolution;
-    private Dataset<? extends Instance> dataset;
-    private String benchmarkFolder;
-    private String outputDir;
-    private String dataDir;
+    private final Dataset<? extends Instance> dataset;
+    private final String benchmarkFolder;
+    private final String outputDir;
+    private final String dataDir;
     private final LinkedList<String> results;
     //each 10 generations plot data
     private int plotDumpMod = 10;

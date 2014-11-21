@@ -19,6 +19,8 @@ import org.clueminer.dataset.benchmark.DatasetFixture;
  */
 public class EvolveScores extends Bench {
 
+    public static final String name = "evolve-sc";
+
     protected static EvolveParams parseArguments(String[] args) {
         EvolveParams params = new EvolveParams();
         JCommander cmd = new JCommander(params);
@@ -30,7 +32,7 @@ public class EvolveScores extends Bench {
     public void main(String[] args) {
         EvolveParams params = parseArguments(args);
 
-        benchmarkFolder = params.home + File.separatorChar + "benchmark" + File.separatorChar + "evolve-sc";
+        benchmarkFolder = params.home + File.separatorChar + "benchmark" + File.separatorChar + name;
         ensureFolder(benchmarkFolder);
 
         System.out.println("=== starting evolution exp:");

@@ -118,7 +118,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             logger.log(Level.INFO, "distances: {0}", dist.size());
             logger.log(Level.INFO, "linkages: {0}", linkage.size());
             ph.start(workunits);
-            ph.progress("starting evolution...");
+            ph.progress("starting " + getName() + "evolution...");
         }
 
         time.a = System.currentTimeMillis();

@@ -55,4 +55,8 @@ public abstract class Bench {
         }
     }
 
+    public static String safeName(String name) {
+        return name.toLowerCase().replace(" ", "_");
+    }
+
 }

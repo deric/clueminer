@@ -40,6 +40,7 @@ public class Data extends Bench {
     /**
      * @param args the command line arguments
      */
+    @Override
     public void main(String[] args) {
         int i = 0, j;
         String arg;
@@ -167,9 +168,5 @@ public class Data extends Bench {
                 rc.writeToCsv(csvRes);
             }
         }
-    }
-
-    private String safeName(String name) {
-        return name.toLowerCase().replace(" ", "_");
     }
 }
