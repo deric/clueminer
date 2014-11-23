@@ -212,6 +212,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
         avgFitness.b = pop.getAvgFitness();
         best = pop.getBestIndividual();
         bestFitness.b = best.getFitness();
+        fireFinalResult(generations, best, time, bestFitness, avgFitness);
 
         finish();
     }
@@ -243,7 +244,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
     @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
-        throw new UnsupportedOperationException("not supported yet");
+        this.algorithm = algorithm;
     }
 
     @Override
