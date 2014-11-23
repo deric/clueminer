@@ -31,6 +31,7 @@ public class HillClimbCutoff implements CutoffStrategy {
 
     @Override
     public double findCutoff(HierarchicalResult hclust) {
+        check();
         double cutoff;
         Clustering clust, prevClust = null;
         double score, prev = Double.NaN, oldcut = 0;
@@ -76,5 +77,11 @@ public class HillClimbCutoff implements CutoffStrategy {
     @Override
     public void setEvaluator(InternalEvaluator evaluator) {
         this.evaluator = evaluator;
+    }
+
+    protected void check() {
+        if (evaluator == null) {
+            throw new RuntimeException("evaluator method must be set!");
+        }
     }
 }

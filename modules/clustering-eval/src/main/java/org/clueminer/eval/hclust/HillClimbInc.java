@@ -23,6 +23,7 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
 
     @Override
     public double findCutoff(HierarchicalResult hclust) {
+        check();
         Clustering clust, prevClust = null;
         double cutoff;
         double score, prev = Double.NaN, oldcut = 0;
@@ -33,7 +34,7 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
         do {
             cutoff = hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
-            System.out.println("level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
+            System.out.println("# level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
             evalName = evaluator.getName();
             clustNum = clust.size();
             if (hclust.isScoreCached(evalName, clustNum)) {
@@ -41,6 +42,10 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
                 score = hclust.getScore(evalName, clustNum);
             } else {
                 score = evaluator.score(clust, hclust.getDataset());
+            }
+            if (cutoff < 0) {
+                System.out.println("negative cutoff " + cutoff + " stopping cutoff");
+                isClimbing = false;
             }
             System.out.println("score = " + score + " prev= " + prev);
             if (!Double.isNaN(prev)) {
