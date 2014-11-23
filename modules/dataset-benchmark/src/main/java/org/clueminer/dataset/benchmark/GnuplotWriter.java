@@ -44,8 +44,8 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
         this.outputDir = subDirectory;
-        benchmarkFolder = benchmarkDir;
-        dataDir = getDataDir(subDirectory);
+        this.benchmarkFolder = benchmarkDir;
+        this.dataDir = getDataDir(benchmarkDir + File.separatorChar + subDirectory);
         mkdir(dataDir);
     }
 
@@ -77,7 +77,9 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
+        String dir = benchmarkFolder + File.separatorChar + outputDir;
+        mkdir(dir);
+        plotFitness(dir, results, evolution.getEvaluator());
 
         try {
             bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
@@ -256,7 +258,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private String getDataDir(String dir) {
-        return mkdir(dir) + "data" + File.separatorChar;
+        return mkdir(dir) + File.separatorChar + "data" + File.separatorChar;
     }
 
     public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {

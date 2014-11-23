@@ -56,6 +56,9 @@ public class AgglParams {
      * Strategy for selecting cutoff, typically dependent on cutoff-score
      */
     public static final String CUTOFF_STRATEGY = "cutoff-strategy";
+    /**
+     * Evaluation function which could be used for determining quality of cutoff
+     */
     public static final String CUTOFF_SCORE = "cutoff-score";
     /**
      * Boolean - whether to keep precomputed proximity matrix for further
