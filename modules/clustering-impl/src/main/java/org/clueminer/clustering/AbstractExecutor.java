@@ -32,13 +32,14 @@ public abstract class AbstractExecutor implements Executor {
         String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
 
         if (cutoffAlg.equals("-- naive --")) {
-            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
-            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
             strategy = CutoffStrategyFactory.getInstance().getDefault();
-            strategy.setEvaluator(eval);
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
+        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
+        InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+        strategy.setEvaluator(eval);
+
         return strategy;
     }
 
