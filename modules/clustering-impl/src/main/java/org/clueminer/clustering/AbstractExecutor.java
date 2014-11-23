@@ -37,7 +37,7 @@ public abstract class AbstractExecutor implements Executor {
             strategy = CutoffStrategyFactory.getInstance().getDefault();
             strategy.setEvaluator(eval);
         } else {
-            strategy = CutoffStrategyFactory.getInstance().getProvider("hill-climb cutoff");
+            strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
         return strategy;
     }
