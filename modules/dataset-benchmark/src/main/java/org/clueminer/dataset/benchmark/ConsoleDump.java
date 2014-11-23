@@ -17,9 +17,11 @@ public class ConsoleDump implements EvolutionListener {
     @Override
     public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         Clustering<Cluster> clusters = best.getClustering();
-        System.out.println("============== " + generationNum);
+        System.out.println("============== generation: " + generationNum);
         System.out.println("external = " + external);
-
+        System.out.println("avgFit = " + avgFitness);
+        System.out.println("clustering: " + clusters.toString());
+        System.out.println("==============");
     }
 
     @Override

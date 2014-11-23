@@ -2,6 +2,7 @@ package org.clueminer.clustering.benchmark;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import it.unimi.dsi.fastutil.objects.AbstractObject2ObjectMap;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,15 @@ public abstract class Bench {
             Dataset<? extends Instance> d = entry.getKey();
             availableDatasets.put(d.getName(), entry);
         }
+    }
+
+    protected void loadIris() {
+        Dataset<? extends Instance> d = DatasetFixture.iris();
+        Map.Entry<Dataset<? extends Instance>, Integer> entry
+                = (Map.Entry<Dataset<? extends Instance>, Integer>) new AbstractObject2ObjectMap.BasicEntry<>(d, 3);
+
+        availableDatasets.put(d.getName(), entry);
+
     }
 
     public static String safeName(String name) {

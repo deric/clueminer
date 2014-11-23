@@ -23,7 +23,7 @@ public class Main {
         map.put("data", new Data());
         map.put("hclust-par", new HclusPar());
         map.put("hclust-par2", new HclusPar2());
-        map.put("hclust-par2", new EvolveScores());
+        map.put("evolve-sc", new EvolveScores());
     }
 
     /**

@@ -182,7 +182,9 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
 
     protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
         for (EvolutionListener listener : evoListeners) {
-            listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
+            if (best != null) {
+                listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
+            }
         }
     }
 

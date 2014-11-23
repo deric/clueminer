@@ -18,7 +18,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -36,6 +35,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     private final LinkedList<String> results;
     //each 10 generations plot data
     private int plotDumpMod = 10;
+    private boolean plotIndividuals = false;
     private final LinkedList<String> plots;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
@@ -49,6 +49,14 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         mkdir(dataDir);
     }
 
+    public boolean isPlotIndividuals() {
+        return plotIndividuals;
+    }
+
+    public void setPlotIndividuals(boolean plotIndividuals) {
+        this.plotIndividuals = plotIndividuals;
+    }
+
     @Override
     public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
         //plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
@@ -59,7 +67,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         sb.append(external);
         results.add(sb.toString());
 
-        if (generationNum % plotDumpMod == 0) {
+        if (plotIndividuals && generationNum % plotDumpMod == 0) {
             String dataFile = writeData(generationNum, dataDir, best.getClustering());
             plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, best, external));
             //plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
@@ -198,25 +206,28 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return res;
     }
 
+    private int attrCount() {
+        return dataset.attributeCount();
+    }
+
     private String plotTemplate(int k, int x, int y, Individual best, String dataFile, double external) {
         Clustering<Cluster> clustering = best.getClustering();
-        Cluster<Instance> first = clustering.get(0);
         double fitness = best.getFitness();
-        int attrCnt = first.attributeCount();
-        int labelPos = attrCnt + 1;
+        int attrCnt = attrCount();
+        int clusterLabelPos = attrCnt + 1;
         //attributes are numbered from zero, gnuplot columns from 1
-        double max = first.getAttribute(x - 1).statistics(AttrNumStats.MAX);
-        double min = first.getAttribute(x - 1).statistics(AttrNumStats.MIN);
-        String xrange = "[" + min + ":" + max + "]";
-        max = first.getAttribute(y - 1).statistics(AttrNumStats.MAX);
-        min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
-        String yrange = "[" + min + ":" + max + "]";
+      /*  double max = dataset.getAttribute(x - 1).statistics(AttrNumStats.MAX);
+         double min = dataset.getAttribute(x - 1).statistics(AttrNumStats.MIN);
+         String xrange = "[" + min + ":" + max + "]";
+         max = dataset.getAttribute(y - 1).statistics(AttrNumStats.MAX);
+         min = dataset.getAttribute(y - 1).statistics(AttrNumStats.MIN);
+         String yrange = "[" + min + ":" + max + "]";*/
 
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
                 + "set title \"generation = " + k + ", fitness = " + fitness + ", jacc = " + external + "\"\n"
-                + "set xlabel \"" + first.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
-                + "set ylabel \"" + first.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
+                + "set xlabel \"" + dataset.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
+                + "set ylabel \"" + dataset.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
                 //   + "set xtics 0,0.5 nomirror\n"
                 //   + "set ytics 0,0.5 nomirror\n"
                 + "set mytics 2\n"
@@ -232,7 +243,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
             if (i == 0) {
                 res += "plot ";
             }
-            res += "\"< awk -F\\\",\\\" '{if($" + labelPos + " == \\\"" + clust.getName() + "\\\") print}' " + dataFile + "\" u " + x + ":" + y + " t \"" + clust.getName() + "\" w p pt " + pti.next();
+            res += "\"< awk -F\\\",\\\" '{if($" + clusterLabelPos + " == \\\"" + clust.getName() + "\\\") print}' " + dataFile + "\" u " + x + ":" + y + " t \"" + clust.getName() + "\" w p pt " + pti.next();
             if (i != last) {
                 res += ", \\\n";
             } else {
