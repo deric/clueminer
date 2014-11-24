@@ -37,6 +37,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     private int plotDumpMod = 10;
     private boolean plotIndividuals = false;
     private final LinkedList<String> plots;
+    private String customTitle;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
         this.results = new LinkedList<>();
@@ -154,12 +155,10 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
         try {
             String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
-            System.out.println("writing to: " + script);
             template = new PrintWriter(script, "UTF-8");
             template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
             plots.add(scriptFile);
             String scExt = dir + File.separatorChar + scriptExtern + gnuplotExtension;
-            System.out.println("writing to: " + scExt);
             template2 = new PrintWriter(scExt, "UTF-8");
             template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
             plots.add(scriptExtern);
@@ -177,8 +176,20 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     }
 
+    private String getTitle(ClusterEvaluation validator) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(evolution.getName()).append("[p=")
+                .append(evolution.getPopulationSize())
+                .append(", g=").append(evolution.getGenerations())
+                .append("] fitness = ").append(validator.getName())
+                .append(" ").append(customTitle);
+
+        return sb.toString();
+    }
+
+
     private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
-        String res = "set title 'Fitness = " + validator.getName() + "'\n"
+        String res = "set title '" + getTitle(validator) + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -196,7 +207,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private String gnuplotExternal(String dataFile, ClusterEvaluation validator) {
-        String res = "set title '" + validator.getName() + "'\n"
+        String res = "set title '" + getTitle(validator) + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -306,4 +317,9 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
 
     }
+
+    public void setCustomTitle(String customTitle) {
+        this.customTitle = customTitle;
+    }
+
 }

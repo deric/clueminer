@@ -4,6 +4,7 @@ import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.utils.Props;
 
 /**
  * @param <E>
@@ -94,4 +95,11 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @return true when fitness could be counted
      */
     boolean isValid();
+
+    /**
+     * Algorithm properties
+     *
+     * @return
+     */
+    Props getProps();
 }

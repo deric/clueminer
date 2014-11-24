@@ -39,6 +39,13 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      */
     void setGenerations(int generations);
 
+    /**
+     * Number of generations in an evolutionary algorithm
+     *
+     * @return
+     */
+    int getGenerations();
+
     double getMutationProbability();
 
     void setMutationProbability(double mutationProbability);
@@ -96,4 +103,12 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      * @return new individual
      */
     T createIndividual();
+
+    /**
+     * Default settings of parameter in newly created individual
+     *
+     * @param key
+     * @return
+     */
+    String getDefaultParam(String key);
 }

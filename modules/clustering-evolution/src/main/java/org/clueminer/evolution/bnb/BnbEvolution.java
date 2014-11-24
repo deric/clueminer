@@ -83,6 +83,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         gen = 0;
+        prepare();
     }
 
     @Override
@@ -91,15 +92,19 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     }
 
     private void prepare() {
-        if (dataset == null) {
-            throw new RuntimeException("missing data");
-        }
         StandardisationFactory sf = StandardisationFactory.getInstance();
         standartizations = sf.getProviders();
         DistanceFactory df = DistanceFactory.getInstance();
         dist = df.getAll();
         LinkageFactory lf = LinkageFactory.getInstance();
         linkage = lf.getAll();
+
+    }
+
+    private void clean() {
+        if (dataset == null) {
+            throw new RuntimeException("missing data");
+        }
         isFinished = false;
         avgFitness = new Pair<>();
         bestFitness = new Pair<>();
@@ -109,7 +114,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
     @Override
     public void run() {
-        prepare();
+        clean();
         int stdMethods = standartizations.size();
 
         if (ph != null) {

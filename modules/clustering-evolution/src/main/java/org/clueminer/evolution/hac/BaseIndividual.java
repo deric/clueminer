@@ -5,6 +5,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.evolution.AbstractIndividual;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -60,6 +61,11 @@ public class BaseIndividual extends AbstractIndividual implements Individual {
 
     @Override
     public boolean isValid() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Props getProps() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

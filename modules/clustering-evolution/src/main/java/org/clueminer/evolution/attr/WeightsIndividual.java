@@ -165,4 +165,9 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     public boolean isValid() {
         return true;
     }
+
+    @Override
+    public Props getProps() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

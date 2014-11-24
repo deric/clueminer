@@ -56,6 +56,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
         return maximizedFitness;
     }
 
+    @Override
     public int getGenerations() {
         return generations;
     }
@@ -205,4 +206,9 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
         }
     }
 
+    @Override
+    public String getDefaultParam(String key) {
+        T ind = createIndividual();
+        return ind.getProps().get(key);
+    }
 }

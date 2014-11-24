@@ -53,7 +53,8 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
             genom.put(AgglParams.LINKAGE, linkage(rand));
         } while (!isValid());
         genom.put(AgglParams.DIST, distance(rand));
-        countFitness();
+        //first we might want to mutate etc, then count fitness
+        //countFitness();
     }
 
     private boolean logscale(Random rand) {
@@ -173,5 +174,10 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
             return aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
         }
         return true;
+    }
+
+    @Override
+    public Props getProps() {
+        return genom;
     }
 }
