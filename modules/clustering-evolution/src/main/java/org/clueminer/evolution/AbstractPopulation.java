@@ -50,6 +50,7 @@ public abstract class AbstractPopulation<E extends AbstractIndividual> implement
     /**
      * This methods needs that Individual implements interface Comparable.
      */
+    @Override
     public void sortByFitness() {
         Arrays.sort(individuals);
     }

@@ -39,6 +39,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     private boolean plotIndividuals = false;
     private final LinkedList<String> plots;
     private String customTitle;
+    private int top = 5;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
         this.results = new LinkedList<>();
@@ -62,11 +63,23 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
+        Individual[] ind = population.getIndividuals();
+        double sum = 0.0;
+        double sumExt = 0.0;
+        for (int i = 0; i < getTop(); i++) {
+            sum += ind[i].getFitness();
+            sumExt += evolution.getExternal().score(ind[i].getClustering(), dataset);
+        }
+        double topNfit = sum / (double) getTop();
+        double topNext = sumExt / (double) getTop();
+
         StringBuilder sb = new StringBuilder();
         sb.append(String.valueOf(generationNum)).append(separator);
         sb.append(String.valueOf(population.getBestFitness())).append(separator);
         sb.append(population.getAvgFitness()).append(separator);
-        sb.append(external);
+        sb.append(external).append(separator);
+        sb.append(topNfit).append(separator);
+        sb.append(topNext);
         results.add(sb.toString());
 
         if (plotIndividuals && generationNum % plotDumpMod == 0) {
@@ -131,20 +144,20 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private void plotFitness(String dir, LinkedList<String> table, ClusterEvaluation validator) {
-        PrintWriter template = null;
-        PrintWriter template2 = null;
-
         String dataFile = "data-fitness.csv";
         String scriptFile = "fitness-" + safeName(validator.getName());
+        String scriptTopFile = "fitness-top-" + safeName(validator.getName());
         String scriptExtern = "external-" + safeName(evolution.getExternal().getName());
 
         try (PrintWriter writer = new PrintWriter(dir + File.separatorChar + dataFile, "UTF-8")) {
             CSVWriter csv = new CSVWriter(writer, ',');
-            String[] header = new String[4];
+            String[] header = new String[6];
             header[0] = "generation";
             header[1] = "best";
             header[2] = "avg";
             header[3] = "external";
+            header[4] = "top" + top + "-fit";
+            header[5] = "top" + top + "-ext";
             csv.writeNext(header);
             for (String row : table) {
                 csv.writeLine(row);
@@ -154,27 +167,25 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
             Exceptions.printStackTrace(ex);
         }
 
-        try {
-            String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
-            template = new PrintWriter(script, "UTF-8");
-            template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
-            plots.add(scriptFile);
-            String scExt = dir + File.separatorChar + scriptExtern + gnuplotExtension;
-            template2 = new PrintWriter(scExt, "UTF-8");
-            template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
-            plots.add(scriptExtern);
+        writeGnuplot(dir, scriptFile, gnuplotFitness(dataFile, validator, evolution.getExternal()));
+        writeGnuplot(dir, scriptExtern, gnuplotExternal(dataFile, evolution.getExternal()));
+        writeGnuplot(dir, scriptTopFile, gnuplotTop(dataFile, validator, evolution.getExternal()));
+    }
 
+    private void writeGnuplot(String dir, String scriptFile, String content) {
+        PrintWriter template = null;
+        String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
+        try {
+            template = new PrintWriter(script, "UTF-8");
+            template.write(content);
+            plots.add(scriptFile);
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             if (template != null) {
                 template.close();
             }
-            if (template2 != null) {
-                template2.close();
-            }
         }
-
     }
 
     private String getTitle(ClusterEvaluation validator) {
@@ -189,6 +200,32 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
+        String res = "set title '" + getTitle(validator) + "'\n"
+                + "set grid \n"
+                + "set size 1.0, 1.0\n"
+                + "set key outside bottom horizontal box\n"
+                + "set datafile separator \",\"\n"
+                + "set datafile missing \"NaN\"\n"
+                + "set ylabel '" + validator.getName() + "'\n"
+                + "set xlabel 'generation'\n"
+                + "set y2label \"" + external.getName() + "\"\n"
+                + "set y2tics\n"
+                + "set y2range [0:1]\n" //@TODO this might differ for other external measures
+                + "plot '" + dataFile + "' u 1:2 title 'best' with linespoints linewidth 2 pointtype 7 pointsize 0.3,\\\n"
+                + "'' u 1:5 title 'top" + top + " avg' with linespoints linewidth 2 pointtype 9 pointsize 0.3,\\\n"
+                + "'' u 1:6 title 'top" + top + "external (" + external.getName() + ")' axes x1y2 with linespoints lt 1 lw 3 pt 3 pointsize 0.3 linecolor rgbcolor \"blue\"";
+        return res;
+    }
+
+    /**
+     * Plots average of top individuals in a generation
+     *
+     * @param dataFile
+     * @param validator
+     * @param external
+     * @return
+     */
+    private String gnuplotTop(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
         String res = "set title '" + getTitle(validator) + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
@@ -320,6 +357,19 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     public void setCustomTitle(String customTitle) {
         this.customTitle = customTitle;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    /**
+     * How many individuals are taken as best representatives
+     *
+     * @param n
+     */
+    public void setTop(int n) {
+        this.top = n;
     }
 
 }
