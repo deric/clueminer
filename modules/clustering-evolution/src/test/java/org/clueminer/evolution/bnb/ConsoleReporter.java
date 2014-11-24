@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 
 /**
  *
@@ -15,8 +16,8 @@ import org.clueminer.clustering.api.evolution.Pair;
 public class ConsoleReporter implements EvolutionListener {
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
-        System.out.println("gen: " + generationNum + ", avg: " + avgFitness + ", exter: " + external);
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
+        System.out.println("gen: " + generationNum + ", avg: " + population.getAvgFitness() + ", exter: " + external);
     }
 
     @Override

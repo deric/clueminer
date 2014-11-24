@@ -20,14 +20,13 @@ import org.clueminer.clustering.api.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.AbstractEvolution;
-import org.clueminer.evolution.AbstractIndividual;
-import org.clueminer.evolution.attr.Population;
-import org.clueminer.evolution.hac.BaseIndividual;
+import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
@@ -53,6 +52,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     protected final Random rand = new Random();
     private HashSet<String> tabu;
     private boolean isFinished = true;
+    private Population<? extends Individual> population;
 
     /**
      * for start and final average fitness
@@ -128,9 +128,9 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
-        Population<BnbIndividual> pop = new Population(this, populationSize, BnbIndividual.class);
-        avgFitness.a = pop.getAvgFitness();
-        Individual best = pop.getBestIndividual();
+        population = new TournamentPopulation(this, populationSize, BnbIndividual.class);
+        avgFitness.a = population.getAvgFitness();
+        Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
         ArrayList<Individual> selected = new ArrayList<>(populationSize);
 
@@ -140,8 +140,8 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             children.clear();
 
             // apply mutate operator
-            for (int i = 0; i < pop.size(); i++) {
-                Individual current = pop.getIndividual(i).deepCopy();
+            for (int i = 0; i < population.size(); i++) {
+                Individual current = population.getIndividual(i).deepCopy();
                 current.mutate();
                 if (current.isValid()) {
                     if (!isItTabu(current.toString())) {
@@ -158,8 +158,8 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             }
             selected.clear();
             // merge new and old individuals
-            for (int i = children.size(); i < pop.size(); i++) {
-                Individual tmpi = pop.getIndividual(i).deepCopy();
+            for (int i = children.size(); i < population.size(); i++) {
+                Individual tmpi = population.getIndividual(i).deepCopy();
                 tmpi.countFitness();
                 selected.add(tmpi);
             }
@@ -184,8 +184,8 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             }
 
             int indsToCopy;
-            if (newIndsArr.length > pop.size()) {
-                indsToCopy = pop.size();
+            if (newIndsArr.length > population.size()) {
+                indsToCopy = population.size();
             } else {
                 indsToCopy = newIndsArr.length;
             }
@@ -195,7 +195,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
             if (indsToCopy > 0) {
                 //System.out.println("copying " + indsToCopy);
                 //TODO: old population should be sorted as well? take only part of the new population?
-                System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, indsToCopy);
+                System.arraycopy(newIndsArr, 0, population.getIndividuals(), 0, indsToCopy);
             } else {
                 logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
                 //    throw new RuntimeException("no new individuals");
@@ -203,19 +203,19 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
-            AbstractIndividual bestInd = pop.getBestIndividual();
+            Individual bestInd = population.getBestIndividual();
             Clustering<Cluster> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
-            fireBestIndividual(g, bestInd, pop.getAvgFitness());
+            fireBestIndividual(g, population);
             if (ph != null) {
                 ph.progress(g);
             }
         }
 
         time.b = System.currentTimeMillis();
-        pop.sortByFitness();
-        avgFitness.b = pop.getAvgFitness();
-        best = pop.getBestIndividual();
+        population.sortByFitness();
+        avgFitness.b = population.getAvgFitness();
+        best = population.getBestIndividual();
         bestFitness.b = best.getFitness();
         fireFinalResult(generations, best, time, bestFitness, avgFitness);
 
@@ -242,11 +242,6 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
         return tabu.contains(config);
     }
 
-    protected void individualCreated(Clustering<? extends Cluster> clustering) {
-        instanceContent.add(clustering);
-        fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
-    }
-
     @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
@@ -256,4 +251,5 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
     public Individual createIndividual() {
         return new BnbIndividual(this);
     }
+
 }

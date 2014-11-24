@@ -18,6 +18,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -59,18 +60,18 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
         StringBuilder sb = new StringBuilder();
         sb.append(String.valueOf(generationNum)).append(separator);
-        sb.append(String.valueOf(best.getFitness())).append(separator);
-        sb.append(avgFitness).append(separator);
+        sb.append(String.valueOf(population.getBestFitness())).append(separator);
+        sb.append(population.getAvgFitness()).append(separator);
         sb.append(external);
         results.add(sb.toString());
 
         if (plotIndividuals && generationNum % plotDumpMod == 0) {
-            String dataFile = writeData(generationNum, dataDir, best.getClustering());
-            plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, best, external));
+            String dataFile = writeData(generationNum, dataDir, population.getBestIndividual().getClustering());
+            plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, population.getBestIndividual(), external));
             //plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
         }
     }
@@ -186,7 +187,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
         return sb.toString();
     }
-
 
     private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
         String res = "set title '" + getTitle(validator) + "'\n"

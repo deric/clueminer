@@ -25,7 +25,6 @@ import org.openide.util.lookup.InstanceContent;
 /**
  *
  * @author Tomas Barton
- * @param <T>
  */
 //@ServiceProvider(service = Evolution.class)
 public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
@@ -79,7 +78,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
     public void run() {
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
-        Population pop = new Population(this, populationSize, WeightsIndividual.class);
+        TournamentPopulation pop = new TournamentPopulation(this, populationSize, WeightsIndividual.class);
         avgFitness.a = pop.getAvgFitness();
         Individual best = pop.getBestIndividual();
         bestFitness.a = best.getFitness();
@@ -171,7 +170,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
             AbstractIndividual bestInd = pop.getBestIndividual();
             Clustering<Cluster> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
-            fireBestIndividual(g, bestInd, pop.getAvgFitness());
+            fireBestIndividual(g, pop);
             if (ph != null) {
                 ph.progress(g);
             }

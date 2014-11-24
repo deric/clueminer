@@ -44,6 +44,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
     private List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(HacEvolution.class.getName());
     private int cnt;
+    private FakePopulation population = new FakePopulation();
 
     public HacEvolution() {
         instanceContent = new InstanceContent();
@@ -109,8 +110,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
      *
      * @param std
      * @param logscale
-     * @param params
-     * @param i
+     * @param link
      */
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
@@ -153,7 +153,8 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         } else {
             uniqueClusterings.add(clustering);
             instanceContent.add(clustering);
-            fireBestIndividual(gen++, new BaseIndividual(clustering), getEvaluator().score((Clustering<Cluster>) clustering, dataset));
+            population.setCurrent(new BaseIndividual(clustering));
+            fireBestIndividual(gen++, population);
         }
     }
 

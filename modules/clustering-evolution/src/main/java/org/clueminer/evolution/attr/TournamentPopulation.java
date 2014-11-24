@@ -13,11 +13,11 @@ import org.clueminer.evolution.AbstractPopulation;
  * @author Tomas Barton
  * @param <T>
  */
-public class Population<T extends AbstractIndividual> extends AbstractPopulation<T> {
+public class TournamentPopulation<T extends AbstractIndividual> extends AbstractPopulation<T> {
 
     private final Evolution<T> evolution;
 
-    public Population(Evolution evolve, int size, Class<?> klass) {
+    public TournamentPopulation(Evolution evolve, int size, Class<?> klass) {
         this.evolution = evolve;
         individuals = (T[]) Array.newInstance(klass, size);
         for (int i = 0; i < individuals.length; i++) {
@@ -79,4 +79,5 @@ public class Population<T extends AbstractIndividual> extends AbstractPopulation
         sb.append("=== avgFIT: ").append(avgFitness).append(" ===\n");
         return sb.toString();
     }
+
 }

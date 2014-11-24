@@ -13,6 +13,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 import org.openide.util.Exceptions;
 
 /**
@@ -29,7 +30,7 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //we care only about final results
     }
 

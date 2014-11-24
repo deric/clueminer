@@ -1,13 +1,14 @@
 package org.clueminer.evolution;
 
 import java.util.Arrays;
+import org.clueminer.clustering.api.evolution.Population;
 
 /**
  *
  * @author Tomas Barton
  * @param <E>
  */
-public abstract class AbstractPopulation<E extends AbstractIndividual> {
+public abstract class AbstractPopulation<E extends AbstractIndividual> implements Population<E> {
 
     protected E[] individuals = null;
     protected double avgFitness = 0;
@@ -18,6 +19,7 @@ public abstract class AbstractPopulation<E extends AbstractIndividual> {
      *
      * @return average fitness value
      */
+    @Override
     public double getAvgFitness() {
         avgFitness = 0;
         for (E individual : individuals) {
@@ -34,6 +36,7 @@ public abstract class AbstractPopulation<E extends AbstractIndividual> {
      *
      * @return best individual
      */
+    @Override
     public E getBestIndividual() {
         E best = this.individuals[0];
         for (E individual : this.individuals) {
@@ -51,22 +54,31 @@ public abstract class AbstractPopulation<E extends AbstractIndividual> {
         Arrays.sort(individuals);
     }
 
+    @Override
     public E[] getIndividuals() {
         return individuals;
     }
 
+    @Override
     public int size() {
         return individuals.length;
     }
 
+    @Override
     public E getIndividual(int idx) {
         return this.individuals[idx];
     }
 
+    @Override
     public void setIndividuals(int index, E individual) {
         individuals[index] = individual;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public double getBestFitness() {
         return bestFitness;
     }
@@ -85,5 +97,10 @@ public abstract class AbstractPopulation<E extends AbstractIndividual> {
         }
         sb.append("=== avgFIT: ").append(avgFitness).append(" ===\n");
         return sb.toString();
+    }
+
+    @Override
+    public void setIndividuals(E[] individuals) {
+        this.individuals = individuals;
     }
 }

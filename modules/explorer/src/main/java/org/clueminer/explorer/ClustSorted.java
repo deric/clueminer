@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 
@@ -36,15 +37,13 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     /**
      *
      * @param generationNum
-     * @param best
-     * @param avgFitness
      * @param external
      */
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
-        logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, avgFitness, external});
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
+        logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, population.getAvgFitness(), external});
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
-        nodesAry[0] = new ClusteringNode(best.getClustering());
+        nodesAry[0] = new ClusteringNode(population.getBestIndividual().getClustering());
 
         SwingUtilities.invokeLater(new Runnable() {
 

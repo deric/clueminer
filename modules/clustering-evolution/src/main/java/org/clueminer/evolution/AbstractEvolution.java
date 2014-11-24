@@ -8,6 +8,7 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.EvolutionListener;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.clustering.api.evolution.Population;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
@@ -181,10 +182,11 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
         maximizedFitness = evaluator.isMaximized();
     }
 
-    protected void fireBestIndividual(int generationNum, Individual best, double avgFitness) {
+    protected void fireBestIndividual(int generationNum, Population<? extends Individual> population) {
+        Individual best = population.getBestIndividual();
         for (EvolutionListener listener : evoListeners) {
             if (best != null) {
-                listener.bestInGeneration(generationNum, best, avgFitness, externalValidation(best));
+                listener.bestInGeneration(generationNum, population, externalValidation(best));
             }
         }
     }
