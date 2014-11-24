@@ -15,4 +15,10 @@ public class EvolveParams extends AbsParams {
     @Parameter(names = "--test", description = "test only on one dataset")
     public boolean test = false;
 
+    @Parameter(names = "--generations", description = "number of generations in evolution")
+    public int generations = 10;
+
+    @Parameter(names = "--population", description = "size of population in each generation")
+    public int population = 10;
+
 }

@@ -74,6 +74,8 @@ public class EvolveExp implements Runnable {
                     evolution.setDataset(d);
                     evolution.setEvaluator(eval);
                     evolution.setExternal(ext);
+                    evolution.setGenerations(params.generations);
+                    evolution.setPopulationSize(params.population);
                     GnuplotWriter gw = new GnuplotWriter(evolution, benchmarkFolder, name + File.separatorChar + safeName(eval.getName()));
                     gw.setPlotDumpMod(50);
                     //collect data from evolution
