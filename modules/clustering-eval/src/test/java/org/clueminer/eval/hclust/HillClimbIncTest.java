@@ -1,51 +1,41 @@
 package org.clueminer.eval.hclust;
 
+import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.AICScore;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
  * @author deric
  */
-public class NaiveCutoffTest {
+public class HillClimbIncTest {
 
-    private final NaiveCutoff subject = new NaiveCutoff();
+    private static final HillClimbInc subject = new HillClimbInc();
+    private final Dataset<? extends Instance> dataset;
+    private final HACLW alg;
 
-    public NaiveCutoffTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
+    public HillClimbIncTest() {
+        subject.setEvaluator(new AICScore());
+        dataset = FakeDatasets.schoolData();
+        alg = new HACLW();
     }
 
     @Before
     public void setUp() {
-    }
 
-    @After
-    public void tearDown() {
     }
 
     @Test
     public void testFindCutoff() {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
-        HAC alg = new HAC();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
@@ -56,11 +46,9 @@ public class NaiveCutoffTest {
         double cut = subject.findCutoff(result);
         assertEquals(true, cut > 0);
         System.out.println("cutoff = " + cut);
-        System.out.println("clustering size: " + result.getClustering().size());
-    }
-
-    @Test
-    public void testFindCutoffOld() {
+        int numClusters = result.getClustering().size();
+        System.out.println("clustering size: " + numClusters);
+        assertEquals(true, numClusters < 4);
     }
 
 }

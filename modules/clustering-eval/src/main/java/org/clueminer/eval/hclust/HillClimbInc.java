@@ -48,17 +48,18 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
                 isClimbing = false;
             }
             System.out.println("score = " + score + " prev= " + prev);
+            hclust.setScores(evaluator.getName(), clust.size(), score);
             if (!Double.isNaN(prev)) {
                 if (!evaluator.isBetter(score, prev)) {
-                    isClimbing = false;
                     System.out.println("function is not climbing anymore, reverting");
                     hclust.setCutoff(oldcut);
                     hclust.setClustering(prevClust);
+                    return oldcut;
                 }
             }
-            hclust.setScores(evaluator.getName(), clust.size(), score);
             prev = score;
             oldcut = cutoff;
+            prevClust = clust;
             level++;
 
         } while (level < (hclust.treeLevels() - 1) && isClimbing && !Double.isNaN(score));
