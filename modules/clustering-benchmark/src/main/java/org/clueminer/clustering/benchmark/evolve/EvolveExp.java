@@ -59,23 +59,22 @@ public class EvolveExp implements Runnable {
             BnbEvolution evolution;
             String name;
 
-            evolution = new BnbEvolution();
             ClusterEvaluation ext = fetchExternal(params.external);
-            System.out.println("starting evolution " + evolution.getName());
             //evolution.setAlgorithm(new HACLW());
             System.out.println("datasets size: " + datasets.size());
             for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
                 Dataset<? extends Instance> d = e.getValue().getKey();
-                evolution.setDataset(d);
                 name = safeName(d.getName());
                 String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
                 System.out.println("=== dataset " + name);
                 System.out.println("size: " + d.size());
                 ensureFolder(benchmarkFolder + File.separatorChar + name);
                 for (ClusterEvaluation eval : scores) {
+                    evolution = new BnbEvolution();
+                    evolution.setDataset(d);
                     evolution.setEvaluator(eval);
                     evolution.setExternal(ext);
-                    GnuplotWriter gw = new GnuplotWriter(evolution, benchmarkFolder, name + '/' + name + "-" + safeName(eval.getName()));
+                    GnuplotWriter gw = new GnuplotWriter(evolution, benchmarkFolder, name + File.separatorChar + safeName(eval.getName()));
                     gw.setPlotDumpMod(50);
                     //collect data from evolution
                     evolution.addEvolutionListener(new ConsoleDump());

@@ -43,9 +43,9 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.plots = new LinkedList<>();
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
-        this.outputDir = subDirectory;
+        this.outputDir = benchmarkDir + File.separatorChar + subDirectory;
         this.benchmarkFolder = benchmarkDir;
-        this.dataDir = getDataDir(benchmarkDir + File.separatorChar + subDirectory);
+        this.dataDir = getDataDir(outputDir);
         mkdir(dataDir);
     }
 
@@ -77,13 +77,11 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        String dir = benchmarkFolder + File.separatorChar + outputDir;
-        mkdir(dir);
-        plotFitness(dir, results, evolution.getEvaluator());
+        plotFitness(dataDir, results, evolution.getEvaluator());
 
         try {
-            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
-            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
@@ -119,9 +117,9 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         String strn = String.format("%02d", n);
         //filename without extension
         String scriptFile = "plot-" + strn + String.format("-x%02d", x) + String.format("-y%02d", y);
-
+        String filename = dataDir + scriptFile + gnuplotExtension;
         try {
-            template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
+            template = new PrintWriter(filename, "UTF-8");
             template.write(plotTemplate(n, x, y, best, dataFile, external));
             template.close();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
@@ -130,7 +128,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return scriptFile;
     }
 
-    private void plotFitness(String dataDir, LinkedList<String> table, ClusterEvaluation validator) {
+    private void plotFitness(String dir, LinkedList<String> table, ClusterEvaluation validator) {
         PrintWriter template = null;
         PrintWriter template2 = null;
 
@@ -138,7 +136,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         String scriptFile = "fitness-" + safeName(validator.getName());
         String scriptExtern = "external-" + safeName(evolution.getExternal().getName());
 
-        try (PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(dir + File.separatorChar + dataFile, "UTF-8")) {
             CSVWriter csv = new CSVWriter(writer, ',');
             String[] header = new String[4];
             header[0] = "generation";
@@ -155,11 +153,14 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         }
 
         try {
-            template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
+            String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
+            System.out.println("writing to: " + script);
+            template = new PrintWriter(script, "UTF-8");
             template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
             plots.add(scriptFile);
-
-            template2 = new PrintWriter(dataDir + scriptExtern + gnuplotExtension, "UTF-8");
+            String scExt = dir + File.separatorChar + scriptExtern + gnuplotExtension;
+            System.out.println("writing to: " + scExt);
+            template2 = new PrintWriter(scExt, "UTF-8");
             template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
             plots.add(scriptExtern);
 
