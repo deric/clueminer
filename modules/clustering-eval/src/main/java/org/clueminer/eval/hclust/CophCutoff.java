@@ -5,15 +5,17 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = CutoffStrategy.class)
 public class CophCutoff implements CutoffStrategy {
 
     private static final String name = "coph cutoff";
-    private HierarchicalClusterEvaluator eval = new CopheneticCorrelation();
+    private final HierarchicalClusterEvaluator eval = new CopheneticCorrelation();
 
     @Override
     public String getName() {
@@ -39,14 +41,15 @@ public class CophCutoff implements CutoffStrategy {
             System.out.println("score = " + score + " prev= " + prev);
             if (!Double.isNaN(prev)) {
                 if (score <= prev) {
-                    isClimbing = false;
                     System.out.println("function is not climbing anymore, reverting to " + oldcut);
                     hclust.setCutoff(oldcut);
                     hclust.setClustering(prevClust);
+                    return oldcut;
                 }
             }
 
             prev = score;
+            prevClust = clust;
             oldcut = cutoff;
             level++;
             System.out.println("res clustering size: " + hclust.getClustering().size());

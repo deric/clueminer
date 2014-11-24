@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class CophCutoffTest {
 
-    private static CophCutoff subject = new CophCutoff();
+    private static final CophCutoff subject = new CophCutoff();
 
     public CophCutoffTest() {
     }
@@ -42,6 +42,7 @@ public class CophCutoffTest {
         assertEquals(true, cut > 0);
         System.out.println("cutoff = " + cut);
         System.out.println("clustering size " + result.getClustering().size());
+        assertEquals(2, result.getClustering().size());
     }
 
 }
