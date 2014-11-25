@@ -1,4 +1,4 @@
-package org.clueminer.evolution.bnb;
+package org.clueminer.evolution.multim;
 
 import java.util.List;
 import java.util.Random;
@@ -15,14 +15,14 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
-public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements Individual<BnbIndividual> {
+public class MultiMuteIndividual extends AbstractIndividual<MultiMuteIndividual> implements Individual<MultiMuteIndividual> {
 
     private double fitness = 0;
     private static Random rand = new Random();
     private Clustering<? extends Cluster> clustering;
     private Props genom;
 
-    public BnbIndividual(Evolution evolution) {
+    public MultiMuteIndividual(Evolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         this.genom = new Props();
@@ -34,7 +34,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
      *
      * @param parent
      */
-    public BnbIndividual(BnbIndividual parent) {
+    public MultiMuteIndividual(MultiMuteIndividual parent) {
         this.evolution = parent.evolution;
         this.algorithm = parent.algorithm;
         this.genom = parent.genom.copy();
@@ -62,21 +62,21 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
     }
 
     private String std(Random rand) {
-        int size = ((BnbEvolution) evolution).standartizations.size();
+        int size = ((MultiMuteEvolution) evolution).standartizations.size();
         int i = rand.nextInt(size);
-        return ((BnbEvolution) evolution).standartizations.get(i);
+        return ((MultiMuteEvolution) evolution).standartizations.get(i);
     }
 
     private String linkage(Random rand) {
-        int size = ((BnbEvolution) evolution).linkage.size();
+        int size = ((MultiMuteEvolution) evolution).linkage.size();
         int i = rand.nextInt(size);
-        return ((BnbEvolution) evolution).linkage.get(i).getName();
+        return ((MultiMuteEvolution) evolution).linkage.get(i).getName();
     }
 
     private String distance(Random rand) {
-        int size = ((BnbEvolution) evolution).dist.size();
+        int size = ((MultiMuteEvolution) evolution).dist.size();
         int i = rand.nextInt(size);
-        return ((BnbEvolution) evolution).dist.get(i).getName();
+        return ((MultiMuteEvolution) evolution).dist.get(i).getName();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
      * @return clustering according to current parameters
      */
     private Clustering<? extends Cluster> updateCustering() {
-        clustering = ((BnbEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
+        clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
 
         return clustering;
     }
@@ -134,7 +134,7 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
     }
 
     @Override
-    public List<BnbIndividual> cross(Individual i) {
+    public List<MultiMuteIndividual> cross(Individual i) {
         throw new UnsupportedOperationException("not supported yet");
     }
 
@@ -143,8 +143,8 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
     }
 
     @Override
-    public BnbIndividual deepCopy() {
-        BnbIndividual newOne = new BnbIndividual(this);
+    public MultiMuteIndividual deepCopy() {
+        MultiMuteIndividual newOne = new MultiMuteIndividual(this);
         return newOne;
     }
 
@@ -154,8 +154,8 @@ public class BnbIndividual extends AbstractIndividual<BnbIndividual> implements 
     }
 
     @Override
-    public BnbIndividual duplicate() {
-        BnbIndividual duplicate = new BnbIndividual(evolution);
+    public MultiMuteIndividual duplicate() {
+        MultiMuteIndividual duplicate = new MultiMuteIndividual(evolution);
         return duplicate;
     }
 

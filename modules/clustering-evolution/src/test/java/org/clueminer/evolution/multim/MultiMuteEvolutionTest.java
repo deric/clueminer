@@ -1,4 +1,4 @@
-package org.clueminer.evolution.bnb;
+package org.clueminer.evolution.multim;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -13,18 +13,18 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class BnbEvolutionTest {
+public class MultiMuteEvolutionTest {
 
-    protected BnbEvolution subject;
+    protected MultiMuteEvolution subject;
     protected ConsoleReporter report;
     protected MemInfo mem;
 
-    public BnbEvolutionTest() {
+    public MultiMuteEvolutionTest() {
     }
 
     @Before
     public void setUp() {
-        subject = new BnbEvolution(new ClusteringExecutorCached());
+        subject = new MultiMuteEvolution(new ClusteringExecutorCached());
         report = new ConsoleReporter();
         subject.addEvolutionListener(report);
         mem = new MemInfo();

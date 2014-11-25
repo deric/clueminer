@@ -18,7 +18,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.ConsoleDump;
 import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
-import org.clueminer.evolution.bnb.BnbEvolution;
+import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Exceptions;
 
 /**
@@ -57,7 +57,7 @@ public class EvolveExp implements Runnable {
     @Override
     public void run() {
         try {
-            BnbEvolution evolution;
+            MultiMuteEvolution evolution;
             String name;
 
             ClusterEvaluation ext = fetchExternal(params.external);
@@ -71,7 +71,7 @@ public class EvolveExp implements Runnable {
                 System.out.println("size: " + d.size());
                 ensureFolder(benchmarkFolder + File.separatorChar + name);
                 for (ClusterEvaluation eval : scores) {
-                    evolution = new BnbEvolution();
+                    evolution = new MultiMuteEvolution();
                     evolution.setDataset(d);
                     evolution.setEvaluator(eval);
                     evolution.setExternal(ext);

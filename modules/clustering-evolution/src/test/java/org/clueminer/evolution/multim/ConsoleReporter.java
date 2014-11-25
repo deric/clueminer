@@ -1,4 +1,4 @@
-package org.clueminer.evolution.bnb;
+package org.clueminer.evolution.multim;
 
 import java.util.Collection;
 import org.clueminer.clustering.api.Cluster;

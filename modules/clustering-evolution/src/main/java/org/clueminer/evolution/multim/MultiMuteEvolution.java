@@ -1,4 +1,4 @@
-package org.clueminer.evolution.bnb;
+package org.clueminer.evolution.multim;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,14 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class BnbEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MultiMuteEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
-    private static final String name = "BnB";
+    private static final String name = "muti-mute";
     protected final Executor exec;
     private int gen;
     protected List<DistanceMeasure> dist;
     protected List<ClusterLinkage> linkage;
-    private static final Logger logger = Logger.getLogger(BnbEvolution.class.getName());
+    private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
     protected List<String> standartizations;
     protected final Random rand = new Random();
     private HashSet<String> tabu;
@@ -67,13 +67,13 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
      */
     private Pair<Long, Long> time;
 
-    public BnbEvolution() {
+    public MultiMuteEvolution() {
         //cache normalized datasets
         this.exec = new ClusteringExecutorCached();
         init();
     }
 
-    public BnbEvolution(Executor executor) {
+    public MultiMuteEvolution(Executor executor) {
         this.exec = executor;
         init();
     }
@@ -128,7 +128,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
-        population = new TournamentPopulation(this, populationSize, BnbIndividual.class);
+        population = new TournamentPopulation(this, populationSize, MultiMuteIndividual.class);
         avgFitness.a = population.getAvgFitness();
         Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
@@ -249,7 +249,7 @@ public class BnbEvolution extends AbstractEvolution implements Runnable, Evoluti
 
     @Override
     public Individual createIndividual() {
-        return new BnbIndividual(this);
+        return new MultiMuteIndividual(this);
     }
 
 }
