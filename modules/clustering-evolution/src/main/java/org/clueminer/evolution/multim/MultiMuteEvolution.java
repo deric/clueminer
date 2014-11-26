@@ -43,8 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MultiMuteEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "muti-mute";
-    protected final Executor exec;
-    private int gen;
+    protected Executor exec;
     protected List<DistanceMeasure> dist;
     protected List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
@@ -82,7 +81,6 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
         algorithm = new HACLW();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
-        gen = 0;
         prepare();
     }
 
@@ -91,14 +89,13 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
         return name;
     }
 
-    private void prepare() {
+    protected void prepare() {
         StandardisationFactory sf = StandardisationFactory.getInstance();
         standartizations = sf.getProviders();
         DistanceFactory df = DistanceFactory.getInstance();
         dist = df.getAll();
         LinkageFactory lf = LinkageFactory.getInstance();
         linkage = lf.getAll();
-
     }
 
     private void clean() {
