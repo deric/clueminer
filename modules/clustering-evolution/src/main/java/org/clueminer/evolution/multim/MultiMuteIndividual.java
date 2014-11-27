@@ -17,10 +17,10 @@ import org.clueminer.utils.Props;
  */
 public class MultiMuteIndividual extends AbstractIndividual<MultiMuteIndividual> implements Individual<MultiMuteIndividual> {
 
-    private double fitness = 0;
-    private static Random rand = new Random();
-    private Clustering<? extends Cluster> clustering;
-    private Props genom;
+    protected double fitness = 0;
+    protected static Random rand = new Random();
+    protected Clustering<? extends Cluster> clustering;
+    protected Props genom;
 
     public MultiMuteIndividual(Evolution evolution) {
         this.evolution = evolution;
