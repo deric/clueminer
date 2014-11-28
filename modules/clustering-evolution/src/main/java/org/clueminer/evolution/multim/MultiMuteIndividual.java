@@ -57,23 +57,23 @@ public class MultiMuteIndividual extends AbstractIndividual<MultiMuteIndividual>
         //countFitness();
     }
 
-    private boolean logscale(Random rand) {
+    protected boolean logscale(Random rand) {
         return rand.nextBoolean();
     }
 
-    private String std(Random rand) {
+    protected String std(Random rand) {
         int size = ((MultiMuteEvolution) evolution).standartizations.size();
         int i = rand.nextInt(size);
         return ((MultiMuteEvolution) evolution).standartizations.get(i);
     }
 
-    private String linkage(Random rand) {
+    protected String linkage(Random rand) {
         int size = ((MultiMuteEvolution) evolution).linkage.size();
         int i = rand.nextInt(size);
         return ((MultiMuteEvolution) evolution).linkage.get(i).getName();
     }
 
-    private String distance(Random rand) {
+    protected String distance(Random rand) {
         int size = ((MultiMuteEvolution) evolution).dist.size();
         int i = rand.nextInt(size);
         return ((MultiMuteEvolution) evolution).dist.get(i).getName();
