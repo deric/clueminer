@@ -5,10 +5,10 @@ package org.clueminer.clustering.api.config;
  * @author Tomas Barton
  * @param <T>
  */
-public interface Property<T> {
+public interface Param<T> {
 
     /**
-     * Used for interactive configuration to retrieve a human readable property
+     * Used for interactive configuration to retrieve a human readable parameter
      * name.
      *
      * @return a <code>String</code> containing a human readable name
@@ -16,7 +16,7 @@ public interface Property<T> {
     String getName();
 
     /**
-     * Used for interactive configuration to retrieve a human readable property
+     * Used for interactive configuration to retrieve a human readable parameter
      * description.
      *
      * @return a <code>String</code> containing a human readable description
