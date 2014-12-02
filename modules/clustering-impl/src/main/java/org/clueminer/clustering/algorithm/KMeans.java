@@ -5,6 +5,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
@@ -45,6 +46,9 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * Random generator for this clusterer.
      */
     private Random rg;
+
+    @Param(name = "k", description = "expected number of clusters", required = true)
+    private int k;
 
     /**
      * The centroids of the different clusters.
