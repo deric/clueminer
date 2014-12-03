@@ -1,5 +1,8 @@
 package org.clueminer.clustering.api;
 
+import java.lang.reflect.Field;
+import java.util.Collection;
+import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.netbeans.api.progress.ProgressHandle;
@@ -39,6 +42,20 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     @Override
     public void setProgressHandle(ProgressHandle ph) {
         this.ph = ph;
+    }
+
+    public Collection<Param> getParameters() {
+
+        for (Field field : getClass().getDeclaredFields()) {
+            Class type = field.getType();
+            String name = field.getName();
+            Param[] annotations = field.getAnnotationsByType(Param.class);
+            for (Param p : annotations) {
+                System.out.println("p: " + p.name() + " type: " + type.getName() + " field: " + name);
+            }
+        }
+
+        return null;
     }
 
 }
