@@ -310,20 +310,20 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
      *
      * @return Graphviz source code describing this graph
      */
-    public String graphVizExport() {
+    public String graphVizExport(double scale) {
         String result = "Graph G {\n";
-        result += exportNodes();
+        result += exportNodes(scale);
         result += exportEdges();
         result += "}\n";
         return result;
     }
 
     /* add to parent class */
-    public String exportNodes() {
+    public String exportNodes(double scale) {
         String result = "";
         for (int i = 0; i < nodeCounter; i++) {
-            result += "    " + i + "[fontsize=11 pos=\"" + nodes[i].getInstance().get(0) * 10 + ","
-                    + nodes[i].getInstance().get(1) * 10 + "!\" width=0.1 height=0.1 shape=point];\n";
+            result += "    " + i + "[fontsize=11 pos=\"" + nodes[i].getInstance().get(0) * scale + ","
+                    + nodes[i].getInstance().get(1) * scale + "!\" width=0.1 height=0.1 shape=point];\n";
         }
         return result;
     }
