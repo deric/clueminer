@@ -22,7 +22,7 @@ public class AdjMatrixFactory implements GraphFactory {
 
     private static long nodeIdCounter;
     private static long edgeIdCounter;
-    
+
     public static AdjMatrixFactory getInstance() {
         if (instance == null) {
             instance = new AdjMatrixFactory();
@@ -51,7 +51,7 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        Edge edge = new AdjMatrixEdge(edgeIdCounter++,source, target, weight);
+        Edge edge = new AdjMatrixEdge(edgeIdCounter++, source, target, weight);
         return edge;
     }
 
@@ -68,17 +68,13 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Node newNode(Object label) {
-        Node node = new AdjMatrixNode(nodeIdCounter++,label);
+        Node node = new AdjMatrixNode(nodeIdCounter++, label);
         return node;
     }
 
-    public Node newNode(int dimension) {
-        Node node = new AdjMatrixNode(nodeIdCounter++, dimension);
-        return node;
-    }
-
-    public Node newNode(double[] coordinates) {
-        Node node = new AdjMatrixNode(nodeIdCounter++, coordinates);
+    @Override
+    public Node newNode(Instance i) {
+        Node node = new AdjMatrixNode(nodeIdCounter++, i);
         return node;
     }
 
@@ -86,11 +82,7 @@ public class AdjMatrixFactory implements GraphFactory {
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
         ArrayList<Node> nodes = new ArrayList<>(input.size());
         for (Instance ins : input) {
-            double[] coordinates = new double[ins.size()];
-            for (int i = 0; i < ins.size(); i++) {
-                coordinates[i] = ins.get(i);
-            }
-            nodes.add((AdjMatrixNode) newNode(coordinates));
+            nodes.add((AdjMatrixNode) newNode(ins));
         }
         return nodes;
     }

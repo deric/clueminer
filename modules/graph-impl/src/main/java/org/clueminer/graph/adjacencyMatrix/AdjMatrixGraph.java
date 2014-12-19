@@ -3,7 +3,7 @@ package org.clueminer.graph.adjacencyMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
@@ -17,20 +17,26 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
-    HashMap<Long,Integer> idToIndex;
-    HashMap<Long,AdjMatrixNode> idToNode;
+    HashMap<Long, Integer> idToIndex;
+    HashMap<Long, AdjMatrixNode> idToNode;
     AdjMatrixEdge[][] adjMatrix;
     AdjMatrixNode[] nodes;
     int size;
     int nodeCounter;
+    DistanceMeasure dm;
 
     public AdjMatrixGraph(int size) {
+        this(size, new EuclideanDistance());
+    }
+
+    public AdjMatrixGraph(int size, DistanceMeasure dm) {
         this.size = size;
         this.nodes = new AdjMatrixNode[size];
         nodeCounter = 0;
         adjMatrix = new AdjMatrixEdge[size][size];
         idToIndex = new HashMap<>();
         idToNode = new HashMap<>();
+        this.dm = dm;
     }
 
     @Override
@@ -51,7 +57,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         if (nodeCounter >= size) {
             return false;
         }
-        idToNode.put(node.getId(), (AdjMatrixNode)node);
+        idToNode.put(node.getId(), (AdjMatrixNode) node);
         idToIndex.put(node.getId(), nodeCounter);
         nodes[nodeCounter++] = (AdjMatrixNode) node;
         return true;
@@ -226,11 +232,11 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         int degree = 0;
         int index = idToIndex.get(node.getId());
         for (int i = 0; i < nodeCounter; i++) {
-            if (i!=index && adjMatrix[i][index] != null) {
+            if (i != index && adjMatrix[i][index] != null) {
                 degree++;
             }
         }
-        return degree; 
+        return degree;
     }
 
     @Override
@@ -298,13 +304,10 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-        
-     /**
-     * Export graph to Graphviz
-     * 
-     * To build graph run "neato -Tpng -o out.png -Gmode=KK input" 
-     * where input is the output of this function
-     * 
+    /**
+     * Export graph to Graphviz * To build graph run "neato -Tpng -o out.png
+     * -Gmode=KK input" where input is the output of this function
+     *
      * @return Graphviz source code describing this graph
      */
     public String graphVizExport() {
@@ -319,8 +322,8 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     public String exportNodes() {
         String result = "";
         for (int i = 0; i < nodeCounter; i++) {
-            result += "    " + i + "[fontsize=11 pos=\"" + nodes[i].getCoordinate(0) + ","
-                    + nodes[i].getCoordinate(1) + "!\" width=0.1 height=0.1 shape=point];\n";
+            result += "    " + i + "[fontsize=11 pos=\"" + nodes[i].getInstance().get(0) * 10 + ","
+                    + nodes[i].getInstance().get(1) * 10 + "!\" width=0.1 height=0.1 shape=point];\n";
         }
         return result;
     }
@@ -336,8 +339,8 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         }
         return result;
     }
-    
-     /**
+
+    /**
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
@@ -345,28 +348,22 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
-        if (k>nodeCounter) {
+        if (k > nodeCounter) {
             return false;
         }
         AdjMatrixFactory f = AdjMatrixFactory.getInstance();
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = 0; j < k; j++) {
-                //todo - support distanceMeasure for nodes
-                double x1 = nodes[i].getCoordinate(0);
-                double y1 = nodes[i].getCoordinate(1);
-                double x2 = nodes[neighbors[i][j]].getCoordinate(0);
-                double y2 = nodes[neighbors[i][j]].getCoordinate(1);
-                //different const needed?
-                double distance = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+                double distance = dm.measure(nodes[i].getInstance(), nodes[neighbors[i][j]].getInstance());
                 if (distance < 0.1) {
                     distance = 0.1;
                 }
-                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]],1 ,10/distance , false)); //max val
+                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1 / distance, false)); //max val
             }
         }
         return true;
     }
-    
+
     @Override
     public GraphFactory getFactory() {
         return AdjMatrixFactory.getInstance();
@@ -376,6 +373,5 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     public int getIndex(Node node) {
         return idToIndex.get(node.getId());
     }
-
 
 }
