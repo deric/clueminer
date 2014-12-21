@@ -13,30 +13,31 @@ import org.clueminer.graph.api.Node;
  */
 public class AdjListFactory implements GraphFactory {
 
-    private static AdjListFactory instance;
+	private static AdjListFactory instance;
 
-    private static long nodeIdCounter;
-    private static long edgeIdCounter;
-    
-    public static AdjListFactory getInstance() {
-        if (instance == null) {
-            instance = new AdjListFactory();
-        }
-        return instance;
-    }
+	private static long nodeIdCounter;
+	private static long edgeIdCounter;
 
-    protected AdjListFactory() {
-        nodeIdCounter = edgeIdCounter = 0;
-    }
+	public static AdjListFactory getInstance() {
+		if (instance == null) {
+			instance = new AdjListFactory();
+		}
+		return instance;
+	}
+
+	protected AdjListFactory() {
+		nodeIdCounter = 0;
+		edgeIdCounter = 0;
+	}
 
 	@Override
 	public Edge newEdge(Node source, Node target) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListEdge(edgeIdCounter++, source, target);
 	}
 
 	@Override
 	public Edge newEdge(Node source, Node target, boolean directed) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListEdge(edgeIdCounter++, source, target, directed);
 	}
 
 	@Override
@@ -56,18 +57,17 @@ public class AdjListFactory implements GraphFactory {
 
 	@Override
 	public Node newNode() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListNode(nodeIdCounter++);
 	}
 
 	@Override
 	public Node newNode(Object label) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListNode(nodeIdCounter++, label);
 	}
 
 	@Override
 	public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-
 
 }

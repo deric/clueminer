@@ -1,6 +1,7 @@
 package org.clueminer.graph.adjacencyList;
 
 import java.util.Collection;
+import java.util.HashMap;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -14,64 +15,95 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjListGraph implements Graph {
 
+	HashMap<Long, AdjListNode> nodes;
+	HashMap<Long, AdjListEdge> edges;
+
 	@Override
 	public boolean addEdge(Edge edge) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(edges.containsKey(edge.getId()))
+			return false;
+		if(!nodes.containsKey(edge.getSource().getId()) || !nodes.containsKey(edge.getTarget().getId()))
+			throw new IllegalArgumentException("Source or target node does not exist");
+		edges.put(edge.getId(), (AdjListEdge) edge);
+		AdjListNode source = (AdjListNode) edge.getSource();
+		AdjListNode target = (AdjListNode) edge.getTarget();
+		source.addEdgeOut(edge);
+		target.addEdgeIn(edge);
+		return true;
 	}
 
 	@Override
 	public boolean addNode(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		if(nodes.containsKey(node.getId()))
+			return false;
+		nodes.put(node.getId(), (AdjListNode) node);
+		return true;
 	}
 
 	@Override
 	public boolean addAllEdges(Collection<? extends Edge> edges) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		boolean added = false;
+		for(Edge edge : edges)
+			if(addEdge(edge))
+				added = true;
+		return added;
 	}
 
 	@Override
 	public boolean addAllNodes(Collection<? extends Node> nodes) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		boolean added = false;
+		for(Node node : nodes)
+			if(addNode(node))
+				added = true;
+		return added;
 	}
 
 	@Override
 	public boolean removeEdge(Edge edge) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edges.remove(edge.getId()) != null;
 	}
 
 	@Override
 	public boolean removeNode(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return nodes.remove(node.getId()) != null;
 	}
 
 	@Override
 	public boolean removeAllEdges(Collection<? extends Edge> edges) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		boolean removed = false;
+		for(Edge edge : edges)
+			if(removeEdge(edge))
+				removed = true;
+		return removed;
 	}
 
 	@Override
 	public boolean removeAllNodes(Collection<? extends Node> nodes) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		boolean removed = false;
+		for(Node node : nodes)
+			if(removeNode(node))
+				removed = true;
+		return removed;
 	}
 
 	@Override
 	public boolean contains(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return nodes.containsKey(node.getId());
 	}
 
 	@Override
 	public boolean contains(Edge edge) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edges.containsKey(edge.getId());
 	}
 
 	@Override
 	public Node getNode(long id) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return nodes.get(id);
 	}
 
 	@Override
 	public Edge getEdge(long id) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edges.get(id);
 	}
 
 	@Override

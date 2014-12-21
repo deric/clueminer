@@ -12,14 +12,31 @@ public class AdjListEdge implements Edge {
 	private final long id;
 	private final AdjListNode source;
 	private final AdjListNode target;
-	private boolean directed;
 	private final double weight;
+	private final boolean directed;
 
-	AdjListEdge(long id, Node source, Node target, double weight) {
+	AdjListEdge(long id, Node source, Node target) {
+		this.id = id;
+		this.source = (AdjListNode) source;
+		this.target = (AdjListNode) target;
+		this.weight = 1;
+		this.directed = false;
+	}
+
+	AdjListEdge(long id, Node source, Node target, boolean directed) {
+		this.id = id;
+		this.source = (AdjListNode) source;
+		this.target = (AdjListNode) target;
+		this.weight = 1;
+		this.directed = directed;
+	}
+
+	AdjListEdge(long id, Node source, Node target, boolean directed, double weight) {
 		this.id = id;
 		this.source = (AdjListNode) source;
 		this.target = (AdjListNode) target;
 		this.weight = weight;
+		this.directed = directed;
 	}
 
 	@Override
