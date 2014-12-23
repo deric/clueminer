@@ -1,12 +1,7 @@
 package org.clueminer.chameleon;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.clueminer.attributes.BasicAttrType;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -14,12 +9,8 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixEdge;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixFactory;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixNode;
 import org.clueminer.io.FileHandler;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -44,15 +35,15 @@ public class KNNTest {
         KNN knn = new KNN(k);
         int[][] a = knn.getNeighborArray(data);
         for (int i = 0; i < data.size(); i++) {
-          //  System.out.print("Row " + i + ": ");
+            //  System.out.print("Row " + i + ": ");
             for (int j = 0; j < k; j++) {
-            //    System.out.print(", " + distanceMeasure.measure(data.instance(i), data.instance(a[i][j])));
+                //    System.out.print(", " + distanceMeasure.measure(data.instance(i), data.instance(a[i][j])));
                 if (j > 0) {
                     assertEquals(true, distanceMeasure.measure(data.instance(i), data.instance(a[i][j])) >= distanceMeasure.measure(data.instance(i), data.instance(a[i][j - 1])));
                 }
 
             }
-           // System.out.println();
+            // System.out.println();
         }
     }
 
@@ -100,17 +91,17 @@ public class KNNTest {
         assertEquals(3, a[4][2]);
         assertEquals(0, a[4][3]);
     }
-    
+
     @Test
     public void printGraph() {
         Dataset<? extends Instance> dataset = simpleData();
         DistanceMeasure dm = new EuclideanDistance();
         KNN knn = new KNN(4);
         int[][] a = knn.getNeighborArray(dataset);
-        
+
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-        System.out.println(g.graphVizExport());
+        System.out.println(g.graphVizExport(1));
     }
 
 }
