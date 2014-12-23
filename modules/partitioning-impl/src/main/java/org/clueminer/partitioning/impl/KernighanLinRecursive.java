@@ -2,9 +2,7 @@ package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixFactory;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
-import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
@@ -39,7 +37,7 @@ public class KernighanLinRecursive implements Partitioning {
         ArrayList<LinkedList<Node>> result = kl.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
-            if (result.get(0).size() <= maxNodesInCluster) {
+            if (result.get(i).size() <= maxNodesInCluster) {
                 output.add(result.get(i));
             } else {
                 Graph newGraph = buildGraphFromCluster(result.get(i), g);
@@ -68,7 +66,7 @@ public class KernighanLinRecursive implements Partitioning {
 
     @Override
     public Graph removeUnusedEdges() {
-        Graph  g = new AdjMatrixGraph(graph.getNodeCount());
+        Graph g = new AdjMatrixGraph(graph.getNodeCount());
 
         ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
 
