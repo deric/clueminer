@@ -355,8 +355,8 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = 0; j < k; j++) {
                 double distance = dm.measure(nodes[i].getInstance(), nodes[neighbors[i][j]].getInstance());
-                if (distance < 0.1) {
-                    distance = 0.1;
+                if (distance < 0.00001) {
+                    distance = 0.00001;
                 }
                 addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1 / distance, false)); //max val
             }
