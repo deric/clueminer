@@ -153,12 +153,12 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public int getNodeCount() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return nodes.size();
 	}
 
 	@Override
 	public int getEdgeCount() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edges.size();
 	}
 
 	@Override
@@ -218,7 +218,8 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public void clear() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		nodes.clear();
+		edges.clear();
 	}
 
 	@Override
