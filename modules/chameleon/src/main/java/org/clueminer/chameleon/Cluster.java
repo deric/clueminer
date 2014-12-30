@@ -33,12 +33,20 @@ public class Cluster {
      */
     Graph firstHalf, secondHalf;
 
-    public Cluster(LinkedList<Node> n, Graph g) {
+    public Cluster parent;
+
+    public LinkedList<Cluster> offsprings;
+
+    public int index;
+
+    public Cluster(LinkedList<Node> n, Graph g, int index) {
         buildGraphFromCluster(n, g);
+        this.index = index;
     }
 
-    public Cluster(Graph g) {
+    public Cluster(Graph g, int index) {
         graph = g;
+        this.index = index;
     }
 
     /**
