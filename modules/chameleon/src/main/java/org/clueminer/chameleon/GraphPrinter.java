@@ -46,6 +46,7 @@ public class GraphPrinter {
      * @param scale Scale of the graph
      * @param graph Graph to export
      * @param nodeToCluster Node to cluster assignment
+     * @param clusterCount Number of clusters
      * @param path Path to output folder
      * @param output Output file name
      *
@@ -53,8 +54,8 @@ public class GraphPrinter {
      * @throws java.io.FileNotFoundException
      * @throws java.lang.InterruptedException
      */
-    public void printClusters(Graph graph, double scale, int nodeToCluster[], String path, String output) throws UnsupportedEncodingException, IOException, FileNotFoundException, InterruptedException {
-        generateImage(graphVizClusterExport(scale, graph, nodeToCluster), path, output);
+    public void printClusters(Graph graph, double scale, int nodeToCluster[], int clusterCount, String path, String output) throws UnsupportedEncodingException, IOException, FileNotFoundException, InterruptedException {
+        generateImage(graphVizClusterExport(scale, graph, nodeToCluster, clusterCount), path, output);
     }
 
     /**
@@ -102,9 +103,9 @@ public class GraphPrinter {
      *
      * @return Graphviz source code describing graph's clusters
      */
-    private String graphVizClusterExport(double scale, Graph graph, int nodeToCluster[]) {
+    private String graphVizClusterExport(double scale, Graph graph, int nodeToCluster[], int clusterCount) {
         String result = "Graph G {\n";
-        Color[] scheme = generateColorScheme(nodeToCluster.length);
+        Color[] scheme = generateColorScheme(clusterCount);
         result += exportNodes(scale, graph, nodeToCluster, scheme);
         result += "}\n";
         return result;
