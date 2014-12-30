@@ -5,11 +5,6 @@
  */
 package org.clueminer.partitioning.impl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.attributes.BasicAttrType;
@@ -81,17 +76,6 @@ public class PartitioningTest {
         data.builder().create(new double[]{9, 9});
         data.builder().create(new double[]{8, 9});
         return data;
-    }
-
-    protected void printGraph(String graph, String path, String output) throws FileNotFoundException, UnsupportedEncodingException, IOException, InterruptedException {
-        try (PrintWriter writer = new PrintWriter(path + "/" + "tempfile", "UTF-8")) {
-            writer.print(graph);
-            writer.close();
-            Process p = Runtime.getRuntime().exec("neato -Tpng -o " + path + "/" + output + " -Gmode=KK " + path + "/" + "tempfile");
-            p.waitFor();
-            File file = new File(path + "/" + "tempfile");
-            file.delete();
-        }
     }
 
     protected void printResult(ArrayList<LinkedList<Node>> result) {

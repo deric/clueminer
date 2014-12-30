@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.chameleon.GraphPrinter;
 import org.clueminer.chameleon.KNN;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -20,7 +21,7 @@ import org.junit.Test;
  */
 public class P2PPartitioningTest extends PartitioningTest {
 
-    /* @Test
+    /*@Test
      public void twoDistinctNeighborTest() {
      Dataset<? extends Instance> dataset = twoDistinctNeighbors();
      DistanceMeasure dm = new EuclideanDistance();
@@ -29,10 +30,10 @@ public class P2PPartitioningTest extends PartitioningTest {
 
      AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
      g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-     // System.out.println(g.graphVizExport());
+
      P2PPartitioning p = new P2PPartitioning();
      p.partition(2, g);
-     //System.out.println(g.graphVizExport(10));
+
      p.removeUnusedEdges();
      }
 
@@ -44,13 +45,12 @@ public class P2PPartitioningTest extends PartitioningTest {
 
      AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
      g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-     System.out.println(g.graphVizExport(10));
+
      P2PPartitioning p = new P2PPartitioning();
      p.partition(3, g);
-     System.out.println(g.graphVizExport(10));
+
      p.removeUnusedEdges();
      } */
-    //Will not work correctly until distance measure for nodes is implemented
     @Test
     public void irisDataTest() throws IOException, FileNotFoundException, UnsupportedEncodingException, InterruptedException {
         CommonFixture tf = new CommonFixture();
@@ -65,12 +65,13 @@ public class P2PPartitioningTest extends PartitioningTest {
 
         AdjMatrixGraph g = new AdjMatrixGraph(data.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(data, g);
-        //System.out.println(g.graphVizExport(10));
+
         P2PPartitioning p = new P2PPartitioning();
         p.partition(15, g);
         p.removeUnusedEdges();
-        //System.out.println(g.graphVizExport(10));
-        printGraph(g.graphVizExport(10), "/home/tomas/Desktop", "output.png");
+
+        GraphPrinter gp = new GraphPrinter();
+        gp.printGraph(g, 10, "/home/tomas/Desktop", "output.png");
     }
 
 }

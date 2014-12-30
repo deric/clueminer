@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.chameleon.GraphPrinter;
 import org.clueminer.chameleon.KNN;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -40,12 +41,13 @@ public class KernighanLinRecursiveTest extends PartitioningTest {
 
         AdjMatrixGraph g = new AdjMatrixGraph(data.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(data, g);
-        //System.out.println(g.graphVizExport(10));
+
+        GraphPrinter gp = new GraphPrinter();
+        gp.printGraph(g, 10, "/home/tomas/Desktop", "knn2.png");
         KernighanLinRecursive klr = new KernighanLinRecursive();
         klr.partition(6, g);
         AdjMatrixGraph outGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
-        //System.out.println(outGraph.graphVizExport(10));
-        printGraph(outGraph.graphVizExport(10), "/home/tomas/Desktop", "output.png");
+        gp.printGraph(outGraph, 10, "/home/tomas/Desktop", "output2.png");
     }
 
 }

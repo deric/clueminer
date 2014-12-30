@@ -1,7 +1,11 @@
 package org.clueminer.partitioning.impl;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.GraphPrinter;
 import org.clueminer.chameleon.KNN;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -26,11 +30,11 @@ public class KernighanLinTest extends PartitioningTest {
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-        //System.out.println(g.graphVizExport(1));
+
         KernighanLin kl = new KernighanLin();
         kl.bisect(g);
         kl.removeUnusedEdges();
-        //System.out.println(g.graphVizExport(1));
+
     }
 
     @Test
@@ -41,16 +45,16 @@ public class KernighanLinTest extends PartitioningTest {
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-        //System.out.println(g.graphVizExport(1));
+
         KernighanLin kl = new KernighanLin();
         kl.bisect(g);
         kl.removeUnusedEdges();
         kl.printClusters();
-        //System.out.println(g.graphVizExport(1));
+
     }
 
     @Test
-    public void twoDistinct2Test() {
+    public void twoDistinct2Test() throws UnsupportedEncodingException, IOException, FileNotFoundException, InterruptedException {
         Dataset<? extends Instance> dataset = twoDistinctNeighbors2();
         DistanceMeasure dm = new EuclideanDistance();
         KNN knn = new KNN(4);
@@ -58,14 +62,15 @@ public class KernighanLinTest extends PartitioningTest {
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-        System.out.println(g.graphVizExport(1));
+
         KernighanLin kl = new KernighanLin();
         ArrayList<LinkedList<Node>> result = kl.bisect(g);
         //printResult(result);
         kl.removeUnusedEdges();
         kl.printClusters();
-        //System.out.println(g.graphVizExport(1));
 
+        GraphPrinter gp = new GraphPrinter();
+        gp.printGraph(g, 1, "/home/tomas/Desktop", "output.png");
     }
 
 }

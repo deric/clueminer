@@ -305,42 +305,6 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     }
 
     /**
-     * Export graph to Graphviz * To build graph run "neato -Tpng -o out.png
-     * -Gmode=KK input" where input is the output of this function
-     *
-     * @return Graphviz source code describing this graph
-     */
-    public String graphVizExport(double scale) {
-        String result = "Graph G {\n";
-        result += exportNodes(scale);
-        result += exportEdges();
-        result += "}\n";
-        return result;
-    }
-
-    /* add to parent class */
-    public String exportNodes(double scale) {
-        String result = "";
-        for (int i = 0; i < nodeCounter; i++) {
-            result += "    " + i + "[fontsize=11 pos=\"" + nodes[i].getInstance().get(0) * scale + ","
-                    + nodes[i].getInstance().get(1) * scale + "!\" width=0.1 height=0.1 shape=point];\n";
-        }
-        return result;
-    }
-
-    public String exportEdges() {
-        String result = "";
-        for (int i = 0; i < nodeCounter; i++) {
-            for (int j = i; j < nodeCounter; j++) {
-                if (adjMatrix[i][j] != null) {
-                    result += "    " + idToIndex.get(adjMatrix[i][j].getSource().getId()) + " -- " + idToIndex.get(adjMatrix[i][j].getTarget().getId()) + ";\n";
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array

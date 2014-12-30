@@ -9,7 +9,6 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.io.FileHandler;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -91,17 +90,4 @@ public class KNNTest {
         assertEquals(3, a[4][2]);
         assertEquals(0, a[4][3]);
     }
-
-    @Test
-    public void printGraph() {
-        Dataset<? extends Instance> dataset = simpleData();
-        DistanceMeasure dm = new EuclideanDistance();
-        KNN knn = new KNN(4);
-        int[][] a = knn.getNeighborArray(dataset);
-
-        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-        System.out.println(g.graphVizExport(1));
-    }
-
 }

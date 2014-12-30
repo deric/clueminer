@@ -1,9 +1,7 @@
 package org.clueminer.chameleon;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import static java.lang.Math.sqrt;
 import org.clueminer.attributes.BasicAttrType;
@@ -46,7 +44,8 @@ public class ClusterTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
         //Print knn graph
-        //printGraph(g.graphVizExport(1), "/home/tomas/Desktop", "knn.png");
+        //GraphPrinter gp = new GraphPrinter();
+        //gp.printGraph(g, 1, "/home/tomas/Desktop", "knn.png");
         Cluster c = new Cluster(g);
         c.computeProperties(new KernighanLin());
 
@@ -60,17 +59,6 @@ public class ClusterTest {
         //Bisection b = new KernighanLin(g);
         //b.bisect();
         //b.removeUnusedEdges();
-        //printGraph(g.graphVizExport(1), "/home/tomas/Desktop", "bisected.png");
-    }
-
-    protected void printGraph(String graph, String path, String output) throws FileNotFoundException, UnsupportedEncodingException, IOException, InterruptedException {
-        try (PrintWriter writer = new PrintWriter(path + "/" + "tempfile", "UTF-8")) {
-            writer.print(graph);
-            writer.close();
-            Process p = Runtime.getRuntime().exec("neato -Tpng -o " + path + "/" + output + " -Gmode=KK " + path + "/" + "tempfile");
-            p.waitFor();
-            File file = new File(path + "/" + "tempfile");
-            file.delete();
-        }
+        //gp.printGraph(g, 1, "/home/tomas/Desktop", "bisected.png");
     }
 }
