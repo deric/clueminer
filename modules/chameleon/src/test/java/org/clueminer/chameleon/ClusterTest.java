@@ -46,7 +46,7 @@ public class ClusterTest {
         //Print knn graph
         //GraphPrinter gp = new GraphPrinter();
         //gp.printGraph(g, 1, "/home/tomas/Desktop", "knn.png");
-        Cluster c = new Cluster(g);
+        Cluster c = new Cluster(g, 1);
         c.computeProperties(new KernighanLin());
 
         //Assert internal interconnectivity

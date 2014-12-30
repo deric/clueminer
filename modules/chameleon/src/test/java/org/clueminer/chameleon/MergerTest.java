@@ -1,9 +1,7 @@
 package org.clueminer.chameleon;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
@@ -12,11 +10,14 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.io.FileHandler;
 import org.clueminer.partitioning.impl.KernighanLin;
 import org.clueminer.partitioning.impl.KernighanLinRecursive;
 import static org.junit.Assert.assertEquals;
@@ -75,8 +76,8 @@ public class MergerTest {
 
         KernighanLin kl = new KernighanLin(g);
         ArrayList<LinkedList<Node>> result = kl.bisect();
-        Merger m = new Merger(g, result);
-        m.computeExternalProperties();
+        Merger m = new Merger(g);
+        m.merge(result);
 
         //Assert external interconnectivity
         assertEquals(m.getEIC(1, 0), 1 / (sqrt(2)) + 1 / (sqrt(10)) + 1 / (sqrt(5)) + 1 / (sqrt(8)) + 1 / (sqrt(5)), 0.0001);
@@ -101,9 +102,8 @@ public class MergerTest {
         AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
         //printGraph(resultGraph.graphVizExport(1), "/home/tomas/Desktop", "paritioned.png");
 
-        //printClusters(g, result);
-        Merger m = new Merger(g, result);
-        m.computeExternalProperties();
+        Merger m = new Merger(g);
+        m.merge(result);
 
         assertEquals(m.getEIC(1, 0), 1 / sqrt(1 + 1.5 * 1.5), 0.00001);
         assertEquals(m.getEIC(2, 0), 0, 0.00001);
@@ -114,17 +114,6 @@ public class MergerTest {
         assertEquals(m.getEIC(2, 3), 1 / 2.0, 0.00001);
     }
 
-    protected void printGraph(String graph, String path, String output) throws FileNotFoundException, UnsupportedEncodingException, IOException, InterruptedException {
-        try (PrintWriter writer = new PrintWriter(path + "/" + "tempfile", "UTF-8")) {
-            writer.print(graph);
-            writer.close();
-            Process p = Runtime.getRuntime().exec("neato -Tpng -o " + path + "/" + output + " -Gmode=KK " + path + "/" + "tempfile");
-            p.waitFor();
-            File file = new File(path + "/" + "tempfile");
-            file.delete();
-        }
-    }
-
     protected void printClusters(Graph g, ArrayList<LinkedList<Node>> result) {
         for (LinkedList<Node> cluster : result) {
             for (Node node : cluster) {
@@ -132,5 +121,64 @@ public class MergerTest {
             }
             System.out.println("");
         }
+    }
+
+    @Test
+    public void test() throws IOException, UnsupportedEncodingException, FileNotFoundException, InterruptedException {
+        Dataset<? extends Instance> dataset = fourClusters();
+        DistanceMeasure dm = new EuclideanDistance();
+        KNN knn = new KNN(3);
+        int[][] a = knn.getNeighborArray(dataset);
+
+        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
+        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
+
+        //printGraph(g.graphVizExport(1), "/home/tomas/Desktop", "knn.png");
+        KernighanLinRecursive klr = new KernighanLinRecursive();
+        ArrayList<LinkedList<Node>> result = klr.partition(4, g);
+
+        AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
+        //printGraph(resultGraph.graphVizExport(1), "/home/tomas/Desktop", "paritioned.png");
+
+        Merger m = new Merger(g);
+        ArrayList<LinkedList<Node>> r = m.merge(result);
+        m.printExternalProperties();
+        int nodeToCluster[] = m.getNodeToCluster();
+        GraphPrinter gp = new GraphPrinter();
+        gp.printClusters(g, 1, nodeToCluster, r.size(), "/home/tomas/Desktop", "simple.png");
+    }
+
+    @Test
+    public void irisDataTest() throws IOException, FileNotFoundException, UnsupportedEncodingException, InterruptedException {
+        CommonFixture tf = new CommonFixture();
+        Dataset data = new SampleDataset();
+        DistanceMeasure distanceMeasure = new EuclideanDistance();
+        data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
+        FileHandler.loadDataset(tf.irisData(), data, 2, ",");
+
+        int k = 5;
+        KNN knn = new KNN(k);
+
+        AdjMatrixGraph g = new AdjMatrixGraph(data.size());
+        g = (AdjMatrixGraph) knn.getNeighborGraph(data, g);
+
+        GraphPrinter gp = new GraphPrinter();
+        gp.printGraph(g, 10, "/home/tomas/Desktop", "graph.png");
+
+        KernighanLinRecursive klr = new KernighanLinRecursive();
+        ArrayList<LinkedList<Node>> result = klr.partition(10, g);
+
+        AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
+        gp.printGraph(resultGraph, 5, "/home/tomas/Desktop", "partitioned.png");
+
+        //printClusters(g, result);
+        Merger m = new Merger(g);
+        ArrayList<LinkedList<Node>> r = m.merge(result);
+        m.printExternalProperties();
+        int nodeToCluster[] = m.getNodeToCluster();
+
+        gp.printClusters(g, 5, nodeToCluster, r.size(), "/home/tomas/Desktop", "clusters.png");
+
     }
 }
