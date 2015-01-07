@@ -47,7 +47,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, ActionL
     private JButton btnChooseMeta;
     private final int minChartHeight = 150;
     private final int maxChartHeight = 650;
-    private MetaLoaderDialog loader = new MetaLoaderDialog(this);
+    private final MetaLoaderDialog loader = new MetaLoaderDialog(this);
     private Logger logger = Logger.getLogger(ClusterPreviewFrame.class.getName());
 
     public ClusterPreviewFrame() {
@@ -142,7 +142,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, ActionL
     public void taskFinished(Task task) {
         logger.log(Level.INFO, "meta data loading finished");
         Dataset<? extends Instance>[] result = loader.getDatasets();
-        HashMap<Integer, Instance> metaMap = new HashMap<Integer, Instance>(3000);
+        HashMap<Integer, Instance> metaMap = new HashMap<>(3000);
         int id;
         double ymin = Double.MAX_VALUE, ymax = Double.MIN_VALUE;
         double xmax = Double.MIN_VALUE;
