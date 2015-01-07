@@ -144,7 +144,18 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
 
     private void comboSeparatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSeparatorActionPerformed
         String sep = (String) comboSeparator.getSelectedItem();
-        char separator = sep.charAt(0);
+        char separator;
+        switch (sep) {
+            case "<tab>":
+                separator = '\t';
+                break;
+            case "<space>":
+                separator = ' ';
+                break;
+            default:
+                separator = sep.charAt(0);
+                break;
+        }
         importer.setSeparator(separator);
         fireImporterChanged();
     }//GEN-LAST:event_comboSeparatorActionPerformed
