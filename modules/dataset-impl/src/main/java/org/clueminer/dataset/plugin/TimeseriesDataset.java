@@ -195,6 +195,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         int i = 0;
         for (TimePointAttribute timep : tps) {
             i++;
+            timep.setDataset(this);
             if (timep == null) {
                 for (TimePointAttribute tdp : tps) {
                     System.out.println("time point:" + tdp);
