@@ -26,7 +26,7 @@ import org.clueminer.project.api.Project;
 import org.clueminer.project.api.WorkspaceListener;
 
 /**
- * Top component which displays something.
+ * Top component which displays previews of clusters.
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.clusterpreview//ClusterPreview//EN",

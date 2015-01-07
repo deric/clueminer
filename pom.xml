@@ -217,6 +217,8 @@
         <module>modules/chameleon</module>
         <module>modules/partitioning-api</module>
         <module>modules/partitioning-impl</module>
+        <module>modules/clustering-preview</module>
+        <module>modules/evaluation-plot</module>
     </modules>
     <reporting>
         <plugins>
@@ -226,6 +228,15 @@
                 <version>2.11</version>
                 <configuration>
                     <configLocation>config/sun_checks.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
