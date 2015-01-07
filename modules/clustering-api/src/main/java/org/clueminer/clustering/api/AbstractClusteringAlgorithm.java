@@ -49,10 +49,10 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
         for (Field field : getClass().getDeclaredFields()) {
             Class type = field.getType();
             String name = field.getName();
-            Param[] annotations = field.getAnnotationsByType(Param.class);
-            for (Param p : annotations) {
+            /*Param[] annotations = field.getAnnotationsByType(Param.class);
+             for (Param p : annotations) {
                 System.out.println("p: " + p.name() + " type: " + type.getName() + " field: " + name);
-            }
+            }*/
         }
 
         return null;
