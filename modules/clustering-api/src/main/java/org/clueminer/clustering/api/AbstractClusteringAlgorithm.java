@@ -1,9 +1,12 @@
 package org.clueminer.clustering.api;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.params.AlgParam;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.netbeans.api.progress.ProgressHandle;
@@ -45,29 +48,34 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
         this.ph = ph;
     }
 
+    /**
+     * Get all algorithm parameters that could be modified.
+     *
+     * @return all algorithm parameters
+     */
     @Override
-    public Param[] getParameters() {
+    public Parameter[] getParameters() {
         Field[] fields = getClass().getDeclaredFields();
 
-        Collection<Param> res = new LinkedList<>();
+        Collection<Parameter> res = new LinkedList<>();
         for (Field field : fields) {
             Class type = field.getType();
-            String name = field.getName();
-            Param[] annotations = field.getAnnotationsByType(Param.class);
-            if (annotations.length == 1) {
-                res.add(annotations[0]);
-            }
-
-            System.out.println("annotations: " + annotations.length);
-            for (Param p : annotations) {
-                System.out.println("p: " + p.name() + " type: " + type.getName() + " field: " + name);
+            //from JDK8: field.getAnnotationsByType(Param.class);
+            Annotation[] annotations = field.getDeclaredAnnotations();
+            for (Annotation anno : annotations) {
+                if (anno instanceof Param) {
+                    Param p = (Param) anno;
+                    String paramName = p.name();
+                    if (paramName.isEmpty()) {
+                        paramName = field.getName();
+                    }
+                    Parameter out = new AlgParam(paramName, type);
+                    res.add(out);
+                }
             }
         }
 
-        Param[] f = getClass().getDeclaredAnnotationsByType(Param.class);
-        System.out.println("p size; " + f.length);
-
-        return res.toArray(new Param[res.size()]);
+        return res.toArray(new Parameter[res.size()]);
     }
 
 }

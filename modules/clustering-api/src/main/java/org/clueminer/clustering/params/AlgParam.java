@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.config.Parameter;
  *
  * @author Tomas Barton
  */
-public class AlgParam implements Parameter {
+public class AlgParam<T> implements Parameter<T> {
 
     private final String name;
     private String description;
@@ -15,6 +15,12 @@ public class AlgParam implements Parameter {
     public AlgParam(String name, Class<?> type) {
         this.name = name;
         this.type = type;
+    }
+
+    public AlgParam(String name, Class<?> type, String description) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
     }
 
     @Override
@@ -31,13 +37,17 @@ public class AlgParam implements Parameter {
         this.description = desc;
     }
 
+    public Class<?> getType() {
+        return type;
+    }
+
     @Override
-    public Object getValue() {
+    public T getValue() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(T value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

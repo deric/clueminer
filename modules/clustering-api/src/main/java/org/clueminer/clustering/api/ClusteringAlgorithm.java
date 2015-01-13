@@ -1,6 +1,6 @@
 package org.clueminer.clustering.api;
 
-import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -56,5 +56,5 @@ public interface ClusteringAlgorithm {
      */
     void setProgressHandle(ProgressHandle ph);
 
-    Param[] getParameters();
+    Parameter[] getParameters();
 }
