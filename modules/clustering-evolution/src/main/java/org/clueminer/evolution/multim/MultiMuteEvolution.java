@@ -56,15 +56,15 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
     /**
      * for start and final average fitness
      */
-    private Pair<Double, Double> avgFitness;
+    protected Pair<Double, Double> avgFitness;
     /**
      * for start and final best fitness in whole population
      */
-    private Pair<Double, Double> bestFitness;
+    protected Pair<Double, Double> bestFitness;
     /**
      * for star and final time
      */
-    private Pair<Long, Long> time;
+    protected Pair<Long, Long> time;
 
     public MultiMuteEvolution() {
         //cache normalized datasets
@@ -98,7 +98,7 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
         linkage = lf.getAll();
     }
 
-    private void clean() {
+    protected void clean() {
         if (dataset == null) {
             throw new RuntimeException("missing data");
         }
@@ -235,7 +235,7 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
      * @param config
      * @return
      */
-    private boolean isItTabu(String config) {
+    protected boolean isItTabu(String config) {
         return tabu.contains(config);
     }
 
