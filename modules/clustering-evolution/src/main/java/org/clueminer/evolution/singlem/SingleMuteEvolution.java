@@ -32,9 +32,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
     private static final String name = "single-mute";
     private static final Logger logger = Logger.getLogger(SingleMuteEvolution.class.getName());
     private HashSet<String> tabu;
-    private boolean isFinished = true;
+    private boolean isFinished = false;
     private Population<? extends Individual> population;
-
 
     public SingleMuteEvolution() {
         //cache normalized datasets
@@ -85,12 +84,13 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
         ArrayList<Individual> selected = new ArrayList<>(populationSize);
+        System.out.println("initialized population");
 
         for (int g = 0; g < generations && !isFinished; g++) {
 
             // clear collection for new individuals
             children.clear();
-
+            System.out.println("population size: " + population.size());
             // apply mutate operator
             for (int i = 0; i < population.size(); i++) {
                 Individual current = population.getIndividual(i).deepCopy();
@@ -145,7 +145,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                 ph.progress(indsToCopy + " new individuals in population. generation: " + g);
             }
             if (indsToCopy > 0) {
-                //System.out.println("copying " + indsToCopy);
+                System.out.println("copying " + indsToCopy + " new inds: " + newIndsArr.length);
                 //TODO: old population should be sorted as well? take only part of the new population?
                 System.arraycopy(newIndsArr, 0, population.getIndividuals(), 0, indsToCopy);
             } else {

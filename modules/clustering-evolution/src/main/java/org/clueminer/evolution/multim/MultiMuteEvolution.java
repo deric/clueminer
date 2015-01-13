@@ -50,7 +50,7 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
     protected List<String> standartizations;
     protected final Random rand = new Random();
     private HashSet<String> tabu;
-    private boolean isFinished = true;
+    private boolean isFinished = false;
     private Population<? extends Individual> population;
 
     /**

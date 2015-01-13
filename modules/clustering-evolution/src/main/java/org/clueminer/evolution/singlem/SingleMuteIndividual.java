@@ -16,6 +16,7 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
     public SingleMuteIndividual(Evolution evolution) {
         super(evolution);
+        System.out.println("SM ind: " + genom.toString());
         rand = new Random();
     }
 
