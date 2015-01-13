@@ -2,6 +2,7 @@ package org.clueminer.clustering.api;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.LinkedList;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -44,18 +45,29 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
         this.ph = ph;
     }
 
-    public Collection<Param> getParameters() {
+    @Override
+    public Param[] getParameters() {
+        Field[] fields = getClass().getDeclaredFields();
 
-        for (Field field : getClass().getDeclaredFields()) {
+        Collection<Param> res = new LinkedList<>();
+        for (Field field : fields) {
             Class type = field.getType();
             String name = field.getName();
-            /*Param[] annotations = field.getAnnotationsByType(Param.class);
-             for (Param p : annotations) {
+            Param[] annotations = field.getAnnotationsByType(Param.class);
+            if (annotations.length == 1) {
+                res.add(annotations[0]);
+            }
+
+            System.out.println("annotations: " + annotations.length);
+            for (Param p : annotations) {
                 System.out.println("p: " + p.name() + " type: " + type.getName() + " field: " + name);
-            }*/
+            }
         }
 
-        return null;
+        Param[] f = getClass().getDeclaredAnnotationsByType(Param.class);
+        System.out.println("p size; " + f.length);
+
+        return res.toArray(new Param[res.size()]);
     }
 
 }

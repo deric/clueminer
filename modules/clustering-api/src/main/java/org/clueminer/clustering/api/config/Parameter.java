@@ -5,7 +5,7 @@ package org.clueminer.clustering.api.config;
  * @author Tomas Barton
  * @param <T>
  */
-public interface Param<T> {
+public interface Parameter<T> {
 
     /**
      * Used for interactive configuration to retrieve a human readable parameter
