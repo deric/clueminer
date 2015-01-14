@@ -110,15 +110,14 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
 
             // apply mutate operator
             for (int i = 0; i < pop.getIndividuals().length; i++) {
-                Individual thisOne = pop.getIndividual(i).deepCopy();
-                thisOne.mutate();
+                Individual current = pop.getIndividual(i).deepCopy();
+                current.mutate();
                 // put mutated individual to the list of new individuals
-                children.add(thisOne);
+                children.add(current);
             }
             double fitness;
             for (Individual child : children) {
                 child.countFitness();
-                child.getFitness();
             }
             selected.clear();
             // merge new and old individuals

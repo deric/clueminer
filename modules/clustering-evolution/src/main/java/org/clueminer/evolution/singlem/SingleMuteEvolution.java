@@ -99,15 +99,12 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                     if (!isItTabu(current.toString())) {
                         // put mutated individual to the list of new individuals
                         children.add(current);
+                        current.countFitness();
                     }
                 }
             }
             double fitness;
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
-            for (Individual child : children) {
-                child.countFitness();
-                child.getFitness();
-            }
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {
@@ -124,30 +121,30 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
             }
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
-            Individual[] newIndsArr = selected.toArray(new Individual[0]);
+            Individual[] nextGen = selected.toArray(new Individual[0]);
             //  for (int i = 0; i < newIndsArr.length; i++) {
             //      System.out.println(i + ": " + newIndsArr[i].getFitness());
             //  }
             if (maximizedFitness) {
-                Arrays.sort(newIndsArr, Collections.reverseOrder());
+                Arrays.sort(nextGen, Collections.reverseOrder());
             } else {
                 //natural ordering
-                Arrays.sort(newIndsArr);
+                Arrays.sort(nextGen);
             }
 
             int indsToCopy;
-            if (newIndsArr.length > population.size()) {
+            if (nextGen.length > population.size()) {
                 indsToCopy = population.size();
             } else {
-                indsToCopy = newIndsArr.length;
+                indsToCopy = nextGen.length;
             }
             if (ph != null) {
                 ph.progress(indsToCopy + " new individuals in population. generation: " + g);
             }
             if (indsToCopy > 0) {
-                System.out.println("copying " + indsToCopy + " new inds: " + newIndsArr.length);
+                System.out.println("copying " + indsToCopy + " new inds: " + nextGen.length);
                 //TODO: old population should be sorted as well? take only part of the new population?
-                System.arraycopy(newIndsArr, 0, population.getIndividuals(), 0, indsToCopy);
+                System.arraycopy(nextGen, 0, population.getIndividuals(), 0, indsToCopy);
             } else {
                 logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
                 //    throw new RuntimeException("no new individuals");

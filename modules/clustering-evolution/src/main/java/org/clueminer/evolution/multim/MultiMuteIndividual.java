@@ -22,6 +22,10 @@ public class MultiMuteIndividual extends AbstractIndividual<MultiMuteIndividual>
     protected Clustering<? extends Cluster> clustering;
     protected Props genom;
 
+    public MultiMuteIndividual() {
+
+    }
+
     public MultiMuteIndividual(Evolution evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();

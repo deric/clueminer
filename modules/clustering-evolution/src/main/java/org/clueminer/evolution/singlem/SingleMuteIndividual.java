@@ -20,20 +20,40 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
         rand = new Random();
     }
 
+    /**
+     * Copying constructor
+     *
+     * @param parent
+     */
+    private SingleMuteIndividual(SingleMuteIndividual parent) {
+        this.evolution = parent.evolution;
+        this.algorithm = parent.algorithm;
+        this.genom = parent.genom.copy();
+
+        this.fitness = parent.fitness;
+    }
+
     @Override
     public void mutate() {
+        System.out.println("muuuuuuuuuuuuuuuuuuuuuu");
         //TODO: choose only one mutation
         Parameter[] params = getAlgorithm().getParameters();
         if (params.length > 0) {
             int id = rand.nextInt(params.length);
             Parameter p = params[id];
-            System.out.println("mutating param" + p.getName());
+            System.out.println("========= mutating param" + p.getName());
 
             genom.putBoolean(AgglParams.LOG, logscale(rand));
             genom.put(AgglParams.STD, std(rand));
             genom.put(AgglParams.LINKAGE, linkage(rand));
             genom.put(AgglParams.DIST, distance(rand));
         }
+    }
+
+    @Override
+    public SingleMuteIndividual deepCopy() {
+        SingleMuteIndividual newOne = new SingleMuteIndividual(this);
+        return newOne;
     }
 
 }
