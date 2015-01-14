@@ -76,7 +76,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         checkParams(pref);
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
-        distanceMeasure = params.getDistanceMeasure();
+        distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = dataset.size();
         } else {
@@ -90,10 +90,10 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
         Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
-            similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
+            similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
         } else {
             logger.log(Level.INFO, "matrix columns: {0}", input.columnsCount());
-            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
+            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
         if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {

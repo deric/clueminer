@@ -17,7 +17,8 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
-    protected DistanceMeasure distanceMeasure;
+    @Param(name = AgglParams.DIST)
+    protected DistanceMeasure distanceFunction;
     protected ColorGenerator colorGenerator;
     protected ProgressHandle ph;
 
@@ -25,12 +26,12 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
 
     @Override
     public DistanceMeasure getDistanceFunction() {
-        return distanceMeasure;
+        return distanceFunction;
     }
 
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
-        this.distanceMeasure = dm;
+        this.distanceFunction = dm;
     }
 
     @Override

@@ -32,4 +32,11 @@ public @interface Param {
      * @return
      */
     boolean required() default false;
+
+    /**
+     * Service factory provider
+     *
+     * @return
+     */
+    String factory() default "";
 }

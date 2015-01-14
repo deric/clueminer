@@ -100,7 +100,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     public KMeans(int clusters, int iterations, DistanceMeasure dm) {
         this.numberOfClusters = clusters;
         this.numberOfIterations = iterations;
-        this.distanceMeasure = dm;
+        this.distanceFunction = dm;
         rg = new Random(System.currentTimeMillis());
     }
 
@@ -111,12 +111,12 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
 
     @Override
     public DistanceMeasure getDistanceFunction() {
-        return distanceMeasure;
+        return distanceFunction;
     }
 
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
-        this.distanceMeasure = dm;
+        this.distanceFunction = dm;
     }
 
     @Override
@@ -171,10 +171,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             int[] assignment = new int[data.size()];
             for (int i = 0; i < data.size(); i++) {
                 int tmpCluster = 0;
-                double minDistance = distanceMeasure.measure(centroids[0], data.instance(i));
+                double minDistance = distanceFunction.measure(centroids[0], data.instance(i));
                 for (int j = 1; j < centroids.length; j++) {
-                    double dist = distanceMeasure.measure(centroids[j], data.instance(i));
-                    if (distanceMeasure.compare(dist, minDistance)) {
+                    double dist = distanceFunction.measure(centroids[j], data.instance(i));
+                    if (distanceFunction.compare(dist, minDistance)) {
                         minDistance = dist;
                         tmpCluster = j;
                     }
@@ -206,7 +206,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
                         tmp[j] = (float) sumPosition[i][j] / countPosition[i];
                     }
                     Instance newCentroid = new DoubleArrayDataRow(tmp);
-                    if (distanceMeasure.measure(newCentroid, centroids[i]) > 0.0001) {
+                    if (distanceFunction.measure(newCentroid, centroids[i]) > 0.0001) {
                         centroidsChanged = true;
                         centroids[i] = newCentroid;
                     }
@@ -246,10 +246,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
         }
         for (int i = 0; i < data.size(); i++) {
             int tmpCluster = 0;
-            double minDistance = distanceMeasure.measure(centroids[0], data.instance(i));
+            double minDistance = distanceFunction.measure(centroids[0], data.instance(i));
             for (int j = 0; j < centroids.length; j++) {
-                double dist = distanceMeasure.measure(centroids[j], data.instance(i));
-                if (distanceMeasure.compare(dist, minDistance)) {
+                double dist = distanceFunction.measure(centroids[j], data.instance(i));
+                if (distanceFunction.compare(dist, minDistance)) {
                     minDistance = dist;
                     tmpCluster = j;
                 }

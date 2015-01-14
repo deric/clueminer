@@ -18,12 +18,12 @@ public abstract class KClustererBase extends AbstractClusteringAlgorithm impleme
     
     @Override
     public DistanceMeasure getDistanceFunction() {
-        return distanceMeasure;
+        return distanceFunction;
     }
 
     @Override
     public void setDistanceFunction(DistanceMeasure dm) {
-        this.distanceMeasure = dm;
+        this.distanceFunction = dm;
     }
 
     /**
