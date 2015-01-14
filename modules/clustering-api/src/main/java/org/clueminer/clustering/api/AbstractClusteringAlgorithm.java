@@ -17,7 +17,7 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
-    @Param(name = AgglParams.DIST)
+    @Param(name = AgglParams.DIST, factory = "org.clueminer.distance.api.DistanceFactory")
     protected DistanceMeasure distanceFunction;
     protected ColorGenerator colorGenerator;
     protected ProgressHandle ph;

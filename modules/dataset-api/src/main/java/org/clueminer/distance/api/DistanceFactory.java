@@ -21,7 +21,7 @@ public class DistanceFactory extends ServiceFactory<DistanceMeasure> {
     }
 
     private DistanceFactory() {
-        providers = new LinkedHashMap<String, DistanceMeasure>();
+        providers = new LinkedHashMap<>();
         Collection<? extends DistanceMeasure> list = Lookup.getDefault().lookupAll(DistanceMeasure.class);
         for (DistanceMeasure c : list) {
             providers.put(c.getName(), c);

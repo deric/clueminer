@@ -47,6 +47,8 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
             genom.put(AgglParams.STD, std(rand));
             genom.put(AgglParams.LINKAGE, linkage(rand));
             genom.put(AgglParams.DIST, distance(rand));
+        } else {
+            System.out.println("WARN: no params available");
         }
     }
 
