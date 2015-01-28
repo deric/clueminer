@@ -12,12 +12,11 @@ import org.clueminer.evolution.multim.MultiMuteIndividual;
  */
 public class SingleMuteIndividual extends MultiMuteIndividual {
 
-    private Random rand;
+    private Random rand = new Random();
 
     public SingleMuteIndividual(Evolution evolution) {
         super(evolution);
         System.out.println("SM ind: " + genom.toString());
-        rand = new Random();
     }
 
     /**

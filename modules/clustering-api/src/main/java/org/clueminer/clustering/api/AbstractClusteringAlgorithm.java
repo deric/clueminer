@@ -56,26 +56,30 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
      */
     @Override
     public Parameter[] getParameters() {
-        Field[] fields = getClass().getDeclaredFields();
-
         Collection<Parameter> res = new LinkedList<>();
-        for (Field field : fields) {
-            Class type = field.getType();
-            //from JDK8: field.getAnnotationsByType(Param.class);
-            Annotation[] annotations = field.getDeclaredAnnotations();
-            for (Annotation anno : annotations) {
-                if (anno instanceof Param) {
-                    Param p = (Param) anno;
-                    String paramName = p.name();
-                    if (paramName.isEmpty()) {
-                        paramName = field.getName();
+        Class<?> clazz = getClass();
+        while (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+
+            for (Field field : fields) {
+                Class type = field.getType();
+                //from JDK8: field.getAnnotationsByType(Param.class);
+                Annotation[] annotations = field.getDeclaredAnnotations();
+                for (Annotation anno : annotations) {
+                    if (anno instanceof Param) {
+                        Param p = (Param) anno;
+                        String paramName = p.name();
+                        if (paramName.isEmpty()) {
+                            paramName = field.getName();
+                        }
+                        Parameter out = new AlgParam(paramName, type);
+                        res.add(out);
                     }
-                    Parameter out = new AlgParam(paramName, type);
-                    res.add(out);
                 }
             }
+            //go to parent class
+            clazz = clazz.getSuperclass();
         }
-
         return res.toArray(new Parameter[res.size()]);
     }
 
