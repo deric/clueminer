@@ -17,7 +17,9 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
-    @Param(name = AgglParams.DIST, factory = "org.clueminer.distance.api.DistanceFactory")
+    @Param(name = AgglParams.DIST,
+           factory = "org.clueminer.distance.api.DistanceFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
     protected DistanceMeasure distanceFunction;
     protected ColorGenerator colorGenerator;
     protected ProgressHandle ph;
@@ -62,7 +64,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
             Field[] fields = clazz.getDeclaredFields();
 
             for (Field field : fields) {
-                Class type = field.getType();
+                //Class type = field.getType();
                 //from JDK8: field.getAnnotationsByType(Param.class);
                 Annotation[] annotations = field.getDeclaredAnnotations();
                 for (Annotation anno : annotations) {
@@ -72,7 +74,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
                         if (paramName.isEmpty()) {
                             paramName = field.getName();
                         }
-                        Parameter out = new AlgParam(paramName, type);
+                        Parameter out = new AlgParam(paramName, p.type());
                         res.add(out);
                     }
                 }

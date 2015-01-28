@@ -1,5 +1,7 @@
 package org.clueminer.clustering.api.config;
 
+import org.clueminer.clustering.params.ParamType;
+
 /**
  *
  * @author Tomas Barton
@@ -36,4 +38,10 @@ public interface Parameter<T> {
      * @param value to set the property to
      */
     void setValue(T value);
+
+    /**
+     *
+     * @return type of this parameter
+     */
+    ParamType getType();
 }

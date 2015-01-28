@@ -34,13 +34,28 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
     @Override
     public void mutate() {
-        System.out.println("muuuuuuuuuuuuuuuuuuuuuu");
         //TODO: choose only one mutation
         Parameter[] params = getAlgorithm().getParameters();
         if (params.length > 0) {
             int id = rand.nextInt(params.length);
             Parameter p = params[id];
-            System.out.println("========= mutating param" + p.getName());
+            System.out.println("========= mutating param: " + p.getName());
+
+            switch (p.getType()) {
+                case STRING:
+                    System.out.println("type: " + p.getType().toString());
+                    break;
+            }
+
+
+            /*    java.lang.reflect.Method method;
+             try {
+                method = obj.getClass().getMethod(methodName);
+            } catch (SecurityException e) {
+                // ...
+            } catch (NoSuchMethodException e) {
+                // ...
+            }*/
 
             genom.putBoolean(AgglParams.LOG, logscale(rand));
             genom.put(AgglParams.STD, std(rand));

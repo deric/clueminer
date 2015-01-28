@@ -5,19 +5,20 @@ import org.clueminer.clustering.api.config.Parameter;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
 public class AlgParam<T> implements Parameter<T> {
 
     private final String name;
     private String description;
-    private final Class<?> type;
+    private final ParamType type;
 
-    public AlgParam(String name, Class<?> type) {
+    public AlgParam(String name, ParamType type) {
         this.name = name;
         this.type = type;
     }
 
-    public AlgParam(String name, Class<?> type, String description) {
+    public AlgParam(String name, ParamType type, String description) {
         this.name = name;
         this.type = type;
         this.description = description;
@@ -37,7 +38,8 @@ public class AlgParam<T> implements Parameter<T> {
         this.description = desc;
     }
 
-    public Class<?> getType() {
+    @Override
+    public ParamType getType() {
         return type;
     }
 
