@@ -1,10 +1,14 @@
 package org.clueminer.evolution.singlem;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.evolution.multim.MultiMuteIndividual;
+import org.clueminer.utils.ServiceFactory;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -43,20 +47,44 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
             switch (p.getType()) {
                 case STRING:
-                    System.out.println("type: " + p.getType().toString());
+                    if (p.getFactory().isEmpty()) {
+                        throw new RuntimeException("expected an factory for " + p.getName());
+                    }
+
+                    try {
+                        Class<?> clazz = Class.forName(p.getFactory());
+                        Method inst = clazz.getMethod("getInstance", ServiceFactory.class);
+                        try {
+                            ServiceFactory f = (ServiceFactory) inst.invoke(clazz);
+                            System.out.println("possibilities: " + f.getAll().size());
+                        } catch (IllegalAccessException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (IllegalArgumentException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (InvocationTargetException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                    } catch (ClassNotFoundException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (NoSuchMethodException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (SecurityException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+
+                    System.out.println("factory: " + p.getFactory());
                     break;
             }
 
 
             /*    java.lang.reflect.Method method;
              try {
-                method = obj.getClass().getMethod(methodName);
-            } catch (SecurityException e) {
-                // ...
-            } catch (NoSuchMethodException e) {
-                // ...
-            }*/
-
+             method = obj.getClass().getMethod(methodName);
+             } catch (SecurityException e) {
+             // ...
+             } catch (NoSuchMethodException e) {
+             // ...
+             }*/
             genom.putBoolean(AgglParams.LOG, logscale(rand));
             genom.put(AgglParams.STD, std(rand));
             genom.put(AgglParams.LINKAGE, linkage(rand));

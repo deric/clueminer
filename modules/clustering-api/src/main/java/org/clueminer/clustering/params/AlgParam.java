@@ -12,16 +12,18 @@ public class AlgParam<T> implements Parameter<T> {
     private final String name;
     private String description;
     private final ParamType type;
+    private String factory;
 
     public AlgParam(String name, ParamType type) {
         this.name = name;
         this.type = type;
     }
 
-    public AlgParam(String name, ParamType type, String description) {
+    public AlgParam(String name, ParamType type, String description, String factory) {
         this.name = name;
         this.type = type;
         this.description = description;
+        this.factory = factory;
     }
 
     @Override
@@ -51,6 +53,11 @@ public class AlgParam<T> implements Parameter<T> {
     @Override
     public void setValue(T value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getFactory() {
+        return factory;
     }
 
 }

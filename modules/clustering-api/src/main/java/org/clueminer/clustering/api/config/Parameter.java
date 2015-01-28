@@ -44,4 +44,11 @@ public interface Parameter<T> {
      * @return type of this parameter
      */
     ParamType getType();
+
+    /**
+     * Factory for getting possible values
+     *
+     * @return String
+     */
+    String getFactory();
 }

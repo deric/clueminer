@@ -74,7 +74,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
                         if (paramName.isEmpty()) {
                             paramName = field.getName();
                         }
-                        Parameter out = new AlgParam(paramName, p.type());
+                        Parameter out = new AlgParam(paramName, p.type(), p.description(), p.factory());
                         res.add(out);
                     }
                 }
