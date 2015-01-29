@@ -53,26 +53,28 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
                     try {
                         Class<?> clazz = Class.forName(p.getFactory());
-                        Method inst = clazz.getMethod("getInstance", ServiceFactory.class);
+                        Method meth = clazz.getMethod("getInstance");
                         try {
-                            ServiceFactory f = (ServiceFactory) inst.invoke(clazz);
-                            System.out.println("possibilities: " + f.getAll().size());
-                        } catch (IllegalAccessException ex) {
-                            Exceptions.printStackTrace(ex);
-                        } catch (IllegalArgumentException ex) {
-                            Exceptions.printStackTrace(ex);
-                        } catch (InvocationTargetException ex) {
+                            ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
+                            String[] list = f.getProvidersArray();
+                            String prev = genom.get(p.getName());
+                            int i = 0;
+                            int idx;
+                            do {
+                                //choose random number between 0 and number of possible providers
+                                idx = rand.nextInt(list.length);
+                                //we have 3 tries to find different value than previous one
+                                i++;
+                            } while (list[idx].equals(prev) && i < 3);
+                            genom.put(p.getName(), list[idx]);
+                            System.out.println("mutated " + p.getName() + " from: " + prev + " to: " + list[idx]);
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                             Exceptions.printStackTrace(ex);
                         }
-                    } catch (ClassNotFoundException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (NoSuchMethodException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (SecurityException ex) {
+                    } catch (ClassNotFoundException | NoSuchMethodException | SecurityException ex) {
                         Exceptions.printStackTrace(ex);
                     }
 
-                    System.out.println("factory: " + p.getFactory());
                     break;
             }
 

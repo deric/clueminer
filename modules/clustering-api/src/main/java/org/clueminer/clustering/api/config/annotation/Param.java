@@ -30,6 +30,7 @@ public @interface Param {
 
     /**
      * Whether this option is required.
+     *
      * @return
      */
     boolean required() default false;
