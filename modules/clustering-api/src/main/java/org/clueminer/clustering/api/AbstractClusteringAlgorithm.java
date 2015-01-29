@@ -8,6 +8,7 @@ import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.params.AlgParam;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -21,6 +22,18 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
            factory = "org.clueminer.distance.api.DistanceFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected DistanceMeasure distanceFunction;
+
+    //standartization method that is used as part of preprocessing
+    @Param(name = AgglParams.STD,
+           factory = "org.clueminer.dataset.api.DataStandardizationFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected DataStandardization std;
+
+    //apply logarithm to all values
+    @Param(name = AgglParams.LOG,
+           type = org.clueminer.clustering.params.ParamType.BOOLEAN)
+    protected boolean logScale;
+
     protected ColorGenerator colorGenerator;
     protected ProgressHandle ph;
 

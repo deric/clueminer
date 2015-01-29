@@ -35,7 +35,7 @@ public class SingleMuteEvolutionTest {
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
         subject.setGenerations(1);
-        subject.setPopulationSize(1);
+        subject.setPopulationSize(10);
         //subject.setAlgorithm(new ));
         subject.setEvaluator(new AICScore());
         ExternalEvaluator ext = new Precision();
