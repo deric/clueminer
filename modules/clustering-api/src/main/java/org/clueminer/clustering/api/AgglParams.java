@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;

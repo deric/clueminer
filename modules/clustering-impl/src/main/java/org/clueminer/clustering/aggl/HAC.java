@@ -17,6 +17,7 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -53,6 +54,11 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
     private final static String name = "HAC";
     private static final Logger logger = Logger.getLogger(HAC.class.getName());
+
+    @Param(name = AgglParams.LINKAGE,
+           factory = "org.clueminer.clustering.api.factory.LinkageFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected ClusterLinkage linkage;
 
     @Override
     public String getName() {
@@ -166,7 +172,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //merge together and add as a new cluster
                 left.addAll(right);
                 updateDistances(node.getId(), left, similarityMatrix, assignments,
-                                pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
+                        pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }

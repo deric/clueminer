@@ -1,7 +1,8 @@
-package org.clueminer.clustering.api;
+package org.clueminer.clustering.api.factory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
@@ -21,7 +22,7 @@ public class LinkageFactory extends ServiceFactory<ClusterLinkage> {
     }
 
     private LinkageFactory() {
-        providers = new LinkedHashMap<String, ClusterLinkage>();
+        providers = new LinkedHashMap<>();
         Collection<? extends ClusterLinkage> list = Lookup.getDefault().lookupAll(ClusterLinkage.class);
         for (ClusterLinkage c : list) {
             providers.put(c.getName(), c);

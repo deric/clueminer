@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.LinkageFactory;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.dataset.api.Dataset;
