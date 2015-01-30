@@ -52,6 +52,15 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
 
     protected final transient ListenerList<EvolutionListener> evoListeners = new ListenerList<>();
 
+    /**
+     * Hook that should be called when evolution starts
+     *
+     * @param e
+     */
+    protected void evolutionStarted(Evolution e) {
+        fireEvolutionStarts(e);
+    }
+
     @Override
     public boolean isMaximizedFitness() {
         return maximizedFitness;
@@ -180,6 +189,14 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
         maximizedFitness = evaluator.isMaximized();
+    }
+
+    protected void fireEvolutionStarts(Evolution e) {
+        for (EvolutionListener listener : evoListeners) {
+            if (listener != null) {
+                listener.started(e);
+            }
+        }
     }
 
     protected void fireBestIndividual(int generationNum, Population<? extends Individual> population) {

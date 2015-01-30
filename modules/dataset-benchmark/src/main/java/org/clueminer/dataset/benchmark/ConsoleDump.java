@@ -40,4 +40,8 @@ public class ConsoleDump implements EvolutionListener {
     public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
         //not much to do
     }
+
+    @Override
+    public void started(Evolution evolution) {
+    }
 }

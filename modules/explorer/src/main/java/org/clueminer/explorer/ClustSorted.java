@@ -30,6 +30,10 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     }
 
     @Override
+    public void started(Evolution evolution) {
+    }
+
+    @Override
     protected void addNotify() {
 
     }

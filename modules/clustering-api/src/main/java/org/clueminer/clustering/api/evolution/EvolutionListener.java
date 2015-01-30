@@ -11,6 +11,13 @@ import org.clueminer.clustering.api.Clustering;
  */
 public interface EvolutionListener extends EventListener {
 
+    /**
+     * Called when evolution starts
+     *
+     * @param evolution
+     */
+    void started(Evolution evolution);
+
     void resultUpdate(Collection<Clustering<? extends Cluster>> result);
 
     /**
@@ -22,6 +29,17 @@ public interface EvolutionListener extends EventListener {
      */
     void bestInGeneration(int generationNum, Population<? extends Individual> population, double external);
 
+    /**
+     * Final evolution result
+     *
+     * @param evolution
+     * @param g
+     * @param best
+     * @param time
+     * @param bestFitness
+     * @param avgFitness
+     * @param external
+     */
     void finalResult(Evolution evolution, int g, Individual best,
             Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external);
 }

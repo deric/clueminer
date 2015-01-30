@@ -30,6 +30,10 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
+    public void started(Evolution evolution) {
+    }
+
+    @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //we care only about final results
     }

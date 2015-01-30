@@ -37,4 +37,8 @@ public class ConsoleReporter implements EvolutionListener {
     public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
     }
 
+    @Override
+    public void started(Evolution evolution) {
+    }
+
 }

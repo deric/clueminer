@@ -76,6 +76,7 @@ public class AttrEvolution extends AbstractEvolution implements Runnable, Evolut
 
     @Override
     public void run() {
+        evolutionStarted(this);
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
         TournamentPopulation pop = new TournamentPopulation(this, populationSize, WeightsIndividual.class);

@@ -11,9 +11,9 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -67,6 +67,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
 
     @Override
     public void run() {
+        evolutionStarted(this);
         prepare();
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();

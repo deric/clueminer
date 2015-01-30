@@ -65,6 +65,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
 
     @Override
     public void run() {
+        evolutionStarted(this);
         clean();
         int stdMethods = standartizations.size();
 
