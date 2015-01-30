@@ -46,7 +46,7 @@ public class PropPanel extends JPanel {
     }
 
     private int addSet(Node.PropertySet set, int i) {
-        JLabel label = new JLabel("<strong>" + set.getName() + "</strong>");
+        JLabel label = new JLabel("<html><b>" + set.getName() + "</b></html>");
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
