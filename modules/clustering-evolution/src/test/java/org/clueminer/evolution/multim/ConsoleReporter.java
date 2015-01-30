@@ -26,7 +26,10 @@ public class ConsoleReporter implements EvolutionListener {
         System.out.println("===== evolution finished =============");
         System.out.println("evolution: " + evolution.getName());
         System.out.println("generations: " + g);
-        System.out.println("exter: " + external);
+        System.out.println("external: " + external);
+        System.out.println("internal: " + best.getFitness());
+        System.out.println("num clusters: " + best.getClustering().size());
+        System.out.println("best: " + best.getProps().toString());
         System.out.println("======================================");
     }
 

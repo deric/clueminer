@@ -2,7 +2,7 @@ package org.clueminer.evolution.singlem;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -34,10 +34,10 @@ public class SingleMuteEvolutionTest {
     @Test
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
-        subject.setGenerations(1);
+        subject.setGenerations(5);
         subject.setPopulationSize(10);
         //subject.setAlgorithm(new ));
-        subject.setEvaluator(new AICScore());
+        subject.setEvaluator(new CalinskiHarabasz());
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 

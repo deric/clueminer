@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
-import org.clueminer.clustering.api.AgglParams;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,12 +10,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -59,6 +61,16 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
            factory = "org.clueminer.clustering.api.factory.LinkageFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected ClusterLinkage linkage;
+
+    @Param(name = AgglParams.CUTOFF_STRATEGY,
+           factory = "org.clueminer.clustering.api.factory.CutoffStrategyFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected CutoffStrategy cutoffStrategy;
+
+    @Param(name = AgglParams.CUTOFF_SCORE,
+           factory = "org.clueminer.clustering.api.factory.InternalEvaluatorFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected InternalEvaluator cutoffScore;
 
     @Override
     public String getName() {
