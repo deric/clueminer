@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.explorer.gui.ExplorerToolbar;
+import org.clueminer.meta.api.MetaFeed;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -244,6 +245,11 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 });
                 alg.setProgressHandle(ph);
                 alg.addEvolutionListener(children);
+                //TODO: we could optionally disable storing data in meta-database
+                MetaFeed feed = getLookup().lookup(MetaFeed.class);
+                if(feed != null){
+                    alg.addEvolutionListener(feed);
+                }
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);
                 logger.log(Level.INFO, "starting evolution...");
