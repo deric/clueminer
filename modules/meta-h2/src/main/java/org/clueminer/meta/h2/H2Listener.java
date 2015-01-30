@@ -15,24 +15,26 @@ import org.clueminer.meta.api.MetaFeed;
  */
 public class H2Listener implements MetaFeed {
 
+    private H2Store store;
+
     @Override
     public void started(Evolution evolution) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        store = H2Store.getInstance();
     }
 
     @Override
     public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
 }
