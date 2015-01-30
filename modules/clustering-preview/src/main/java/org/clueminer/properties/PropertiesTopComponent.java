@@ -1,12 +1,13 @@
 package org.clueminer.properties;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.nodes.Node;
+import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -35,19 +36,21 @@ import org.openide.windows.TopComponent;
 )
 @Messages({
     "CTL_PropertiesAction=Properties",
-    "CTL_PropertiesTopComponent=Properties Window",
-    "HINT_PropertiesTopComponent=This is a Properties window"
+    "CTL_PropertiesTopComponent=Properties",
+    "HINT_PropertiesTopComponent=Information about clustering"
 })
 public final class PropertiesTopComponent extends TopComponent implements LookupListener {
 
-    private Lookup.Result<Node> result = null;
+    private Lookup.Result<AbstractNode> result = null;
     private static final Logger logger = Logger.getLogger(PropertiesTopComponent.class.getName());
+    private final PropPanel panel;
 
     public PropertiesTopComponent() {
         initComponents();
         setName(Bundle.CTL_PropertiesTopComponent());
         setToolTipText(Bundle.HINT_PropertiesTopComponent());
-
+        panel = new PropPanel();
+        add(panel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
     /**
@@ -58,23 +61,14 @@ public final class PropertiesTopComponent extends TopComponent implements Lookup
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult(Node.class);
+        result = Utilities.actionsGlobalContext().lookupResult(AbstractNode.class);
         result.addLookupListener(this);
     }
 
@@ -98,10 +92,10 @@ public final class PropertiesTopComponent extends TopComponent implements Lookup
     @Override
     public void resultChanged(LookupEvent ev) {
         if (result != null) {
-            logger.log(Level.INFO, "got lookup result {0}", result.allInstances().size());
-            Collection<? extends Node> allNodes = result.allInstances();
-            for (Node node : allNodes) {
-                System.out.println("node: " + node.toString());
+            Collection<? extends AbstractNode> res = result.allInstances();
+            panel.setNodes(res);
+            if (res.size() == 1) {
+                setName(res.iterator().next().getName() + " - " + Bundle.CTL_PropertiesTopComponent());
             }
         }
     }
