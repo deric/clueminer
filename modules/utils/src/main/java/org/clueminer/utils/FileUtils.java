@@ -1,6 +1,10 @@
 package org.clueminer.utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -15,8 +19,8 @@ public final class FileUtils {
     public static String LocalFolder() {
         String result = System.getProperty("user.home") + File.separator
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         createFolder(result);
         return result;
     }
