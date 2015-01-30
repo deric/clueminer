@@ -21,13 +21,13 @@ public final class FileUtils {
                 + NbBundle.getMessage(
                         FileUtils.class,
                         "FOLDER_Home");
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
     public static String LogFolder() {
         String result = LocalFolder() + File.separator + "log";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -45,7 +45,7 @@ public final class FileUtils {
 
     public static String SettingsFolder() {
         String result = LocalFolder() + File.separator + "settings";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -61,7 +61,7 @@ public final class FileUtils {
 
     public static String cacheFolder() {
         String result = LocalFolder() + File.separator + "cache";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -77,7 +77,7 @@ public final class FileUtils {
 
     public static String getHistoryFolder() {
         String result = LocalFolder() + File.separator + "history";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -88,7 +88,7 @@ public final class FileUtils {
 
     public static String templatesFolder() {
         String result = LocalFolder() + File.separator + "templates";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -123,12 +123,15 @@ public final class FileUtils {
         }
     }
 
-    public static void createFolder(String path) {
+    public static void ensureFolder(String path) {
         File dir = new File(path);
-        try {
-            FileObject folder = FileUtil.createFolder(dir);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (!dir.exists()) {
+            try {
+                FileUtil.createFolder(dir);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("failed to create " + dir);
+            }
         }
     }
 
