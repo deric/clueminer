@@ -51,9 +51,10 @@ public class H2Store implements MetaStorage {
      * Create tables for meta-storage
      */
     private void initialize() throws SQLException {
-        Statement st = conn.createStatement();
-        st.execute("create table datasets(id integer, name varchar(255),"
-                + "num_attr INTEGER, num_inst INTEGER)");
+        try (Statement st = conn.createStatement()) {
+            st.execute("CREATE TABLE IF NOT EXISTS datasets(id INT PRIMARY KEY, name varchar(255),"
+                    + "num_attr INTEGER, num_inst INTEGER)");
+        }
     }
 
     public static String getDbDir() {
@@ -65,7 +66,7 @@ public class H2Store implements MetaStorage {
     }
 
     public Connection getConnection(String db) throws SQLException {
-        if (conn == null) {
+        if (conn == null || conn.isClosed()) {
             try {
                 Class.forName("org.h2.Driver");
                 conn = DriverManager.getConnection("jdbc:h2:" + getDbDir() + File.separatorChar + db, "sa", "");
