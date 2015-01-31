@@ -47,16 +47,6 @@ public class H2Store implements MetaStorage {
         }
     }
 
-    /**
-     * Create tables for meta-storage
-     */
-    private void initialize() throws SQLException {
-        try (Statement st = conn.createStatement()) {
-            st.execute("CREATE TABLE IF NOT EXISTS datasets(id INT PRIMARY KEY, name varchar(255),"
-                    + "num_attr INTEGER, num_inst INTEGER)");
-        }
-    }
-
     public static String getDbDir() {
         return FileUtils.LocalFolder() + File.separatorChar + "db";
     }
@@ -78,15 +68,48 @@ public class H2Store implements MetaStorage {
         return conn;
     }
 
+    /**
+     * Create tables for meta-storage
+     */
+    private void initialize() throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("CREATE TABLE IF NOT EXISTS datasets("
+                    + "id INT PRIMARY KEY, name varchar(255),"
+                    + "num_attr INTEGER, num_inst INTEGER)");
+
+            st.execute("CREATE TABLE IF NOT EXISTS clusterings("
+                    + "id INT PRIMARY KEY,"
+                    + "n INT,"
+                    + "hash BIGINT,"
+                    + "num_occur INT,"
+                    + "dataset_id INT,"
+                    + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id))");
+
+            st.execute("CREATE TABLE IF NOT EXISTS templates("
+                    + "id INT PRIMARY KEY,"
+                    + "algorithm CLOB"
+                    + ")");
+        }
+    }
+
     @Override
     public void add(String datasetName, Clustering<? extends Cluster> clustering) {
+        try {
+            int datasetId = fetchDataset(datasetName);
+            add(datasetId, clustering);
+        } catch (SQLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void add(int datasetId, Clustering<? extends Cluster> clustering) {
 
     }
 
-    public long fetchDataset(String dataset) throws SQLException {
+    public int fetchDataset(String dataset) throws SQLException {
         Statement stmt = conn.createStatement();
         ResultSet rset = stmt.executeQuery("select id from datasets WHERE name=" + dataset);
-        long id = -1;
+        int id = -1;
         int rowcount = 0;
         while (rset.next()) {
             rowcount++;
@@ -99,7 +122,7 @@ public class H2Store implements MetaStorage {
             st.executeUpdate();
             ResultSet generatedKeys = st.getGeneratedKeys();
             if (generatedKeys.next()) {
-                id = generatedKeys.getLong(1);
+                id = generatedKeys.getInt(1);
             } else {
                 // Throw exception?
                 throw new RuntimeException("insert into datasets failed");
