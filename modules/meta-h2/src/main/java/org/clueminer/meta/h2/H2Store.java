@@ -77,17 +77,26 @@ public class H2Store implements MetaStorage {
                     + "id INT PRIMARY KEY, name varchar(255),"
                     + "num_attr INTEGER, num_inst INTEGER)");
 
-            st.execute("CREATE TABLE IF NOT EXISTS clusterings("
+            st.execute("CREATE TABLE IF NOT EXISTS partitionings("
                     + "id INT PRIMARY KEY,"
-                    + "n INT,"
+                    + "k INT," //number of clusters
                     + "hash BIGINT,"
                     + "num_occur INT,"
                     + "dataset_id INT,"
-                    + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id))");
+                    + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id)"
+                    + ")");
 
             st.execute("CREATE TABLE IF NOT EXISTS templates("
                     + "id INT PRIMARY KEY,"
-                    + "algorithm CLOB"
+                    + "template CLOB,"
+                    + "algorithm_id INT,"
+                    + "FOREIGN KEY(algorithm_id) REFERENCES public.algorithms(id)"
+                    + ")");
+
+            //base algorithms
+            st.execute("CREATE TABLE IF NOT EXISTS algorithms("
+                    + "id INT PRIMARY KEY,"
+                    + "name VARCHAR(255)"
                     + ")");
         }
     }
