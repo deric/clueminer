@@ -98,6 +98,14 @@ public class H2Store implements MetaStorage {
                     + "id INT PRIMARY KEY,"
                     + "name VARCHAR(255)"
                     + ")");
+
+            st.execute("CREATE TABLE IF NOT EXISTS results("
+                    + "id INT PRIMARY KEY,"
+                    + "template_id INT,"
+                    + "partitioning_id INT,"
+                    + "FOREIGN KEY(template_id) REFERENCES public.templates(id),"
+                    + "FOREIGN KEY(partitioning_id) REFERENCES public.partitionings(id)"
+                    + ")");
         }
     }
 
