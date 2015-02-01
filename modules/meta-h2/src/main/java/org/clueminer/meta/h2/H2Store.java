@@ -10,6 +10,8 @@ import java.sql.Statement;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.utils.FileUtils;
 import org.openide.util.Exceptions;
@@ -75,7 +77,8 @@ public class H2Store implements MetaStorage {
         try (Statement st = conn.createStatement()) {
             st.execute("CREATE TABLE IF NOT EXISTS datasets("
                     + "id INT PRIMARY KEY, name varchar(255),"
-                    + "num_attr INTEGER, num_inst INTEGER)");
+                    + "num_attr INTEGER,"
+                    + "num_inst INTEGER)");
 
             st.execute("CREATE TABLE IF NOT EXISTS partitionings("
                     + "id INT PRIMARY KEY,"
@@ -112,7 +115,14 @@ public class H2Store implements MetaStorage {
     @Override
     public void add(String datasetName, Clustering<? extends Cluster> clustering) {
         try {
-            int datasetId = fetchDataset(datasetName);
+            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            int datasetId;
+            if (dataset == null) {
+                datasetId = fetchDataset(datasetName);
+            } else {
+                datasetId = fetchDataset(dataset);
+            }
+
             add(datasetId, clustering);
         } catch (SQLException ex) {
             Exceptions.printStackTrace(ex);
@@ -141,10 +151,37 @@ public class H2Store implements MetaStorage {
             if (generatedKeys.next()) {
                 id = generatedKeys.getInt(1);
             } else {
-                // Throw exception?
                 throw new RuntimeException("insert into datasets failed");
             }
 
+        }
+        return id;
+    }
+
+    private int fetchDataset(Dataset<? extends Instance> dataset) throws SQLException {
+        String sql = "SELECT id from datasets WHERE name=?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, dataset.getName());
+        ResultSet rset = stmt.executeQuery();
+        int id = -1;
+        int rowcount = 0;
+        while (rset.next()) {
+            rowcount++;
+            id = rset.getInt(1);
+        }
+        if (rowcount == 0) {
+            sql = "INSERT INTO datasets(col,num_attr, num_inst) VALUES (?,?,?)";
+            PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            st.setString(1, dataset.getName());
+            st.setInt(2, dataset.attributeCount());
+            st.setInt(3, dataset.size());
+            st.executeUpdate();
+            ResultSet generatedKeys = st.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                id = generatedKeys.getInt(1);
+            } else {
+                throw new RuntimeException("insert into datasets failed");
+            }
         }
         return id;
     }
