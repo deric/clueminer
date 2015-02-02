@@ -1,7 +1,9 @@
 package org.clueminer.meta.h2;
 
 import java.sql.SQLException;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -20,11 +22,8 @@ public class H2StoreTest {
     @Before
     public void setUp() {
         subject = H2Store.getInstance();
-        try {
-            subject.getConnection("unit-test");
-        } catch (SQLException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+
+        subject.db("unit-test");
     }
 
     @After
@@ -37,8 +36,9 @@ public class H2StoreTest {
     }
 
     @Test
-    public void testGetConnection() throws Exception {
-//        assertEquals(false, subject.getConnection().isClosed());
+    public void testFetchDataset(){
+        long id = subject.fetchDataset(FakeDatasets.irisDataset());
+        assertEquals(true, id > 0);
     }
 
     @Test
