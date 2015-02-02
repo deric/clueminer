@@ -39,7 +39,7 @@ public class H2StoreTest {
 
     @Test
     public void testFetchDataset(){
-        long id = subject.fetchDataset(FakeDatasets.irisDataset());
+        int id = subject.fetchDataset(FakeDatasets.irisDataset());
         assertEquals(true, id > 0);
     }
 

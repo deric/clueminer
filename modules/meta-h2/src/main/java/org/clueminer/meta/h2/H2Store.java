@@ -96,7 +96,7 @@ public class H2Store implements MetaStorage {
         dh.begin();
 
         dh.execute("CREATE TABLE IF NOT EXISTS datasets("
-                + "id BIGINT auto_increment PRIMARY KEY,"
+                + "id INT auto_increment PRIMARY KEY,"
                 + "name varchar(255),"
                 + "num_attr INT,"
                 + "num_inst INT"
@@ -104,7 +104,7 @@ public class H2Store implements MetaStorage {
         dh.commit();
 
         dh.execute("CREATE TABLE IF NOT EXISTS partitionings("
-                + "id BIGINT auto_increment PRIMARY KEY,"
+                + "id INT auto_increment PRIMARY KEY,"
                 + "k INT," //number of clusters
                 + "hash BIGINT,"
                 + "num_occur INT,"
@@ -115,13 +115,13 @@ public class H2Store implements MetaStorage {
 
         //base algorithms
         dh.execute("CREATE TABLE IF NOT EXISTS algorithms("
-                + "id BIGINT auto_increment PRIMARY KEY,"
+                + "id INT auto_increment PRIMARY KEY,"
                 + "name VARCHAR(255)"
                 + ")");
         dh.commit();
 
         dh.execute("CREATE TABLE IF NOT EXISTS templates("
-                + "id BIGINT auto_increment PRIMARY KEY,"
+                + "id INT auto_increment PRIMARY KEY,"
                 + "template CLOB,"
                 + "algorithm_id INT,"
                 + "FOREIGN KEY(algorithm_id) REFERENCES public.algorithms(id)"
@@ -129,7 +129,7 @@ public class H2Store implements MetaStorage {
         dh.commit();
 
         dh.execute("CREATE TABLE IF NOT EXISTS results("
-                + "id BIGINT auto_increment PRIMARY KEY,"
+                + "id INT auto_increment PRIMARY KEY,"
                 + "template_id INT,"
                 + "partitioning_id INT,"
                 + "FOREIGN KEY(template_id) REFERENCES public.templates(id),"
@@ -164,7 +164,7 @@ public class H2Store implements MetaStorage {
     public void add(String datasetName, Clustering<? extends Cluster> clustering) {
         try {
             Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-            long datasetId;
+            int datasetId;
             if (dataset == null) {
                 datasetId = fetchDataset(datasetName);
             } else {
@@ -177,12 +177,12 @@ public class H2Store implements MetaStorage {
         }
     }
 
-    public void add(long datasetId, Clustering<? extends Cluster> clustering) {
+    public void add(int datasetId, Clustering<? extends Cluster> clustering) {
 
     }
 
-    public long fetchDataset(String name) throws SQLException {
-        long id;
+    public int fetchDataset(String name) throws SQLException {
+        int id;
         id = findDataset(name);
 
         if (id < 0) {
@@ -199,8 +199,8 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    protected long fetchDataset(Dataset<? extends Instance> dataset) {
-        long id;
+    protected int fetchDataset(Dataset<? extends Instance> dataset) {
+        int id;
         id = findDataset(dataset.getName());
 
         if (id < 0) {
@@ -219,13 +219,13 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    private long findDataset(String name) {
-        long id = -1;
+    private int findDataset(String name) {
+        int id = -1;
         Handle h = db().open();
         List<Map<String, Object>> rs = h.select("SELECT id from datasets WHERE name=?", name);
         if (rs.size() == 1) {
             Map<String, Object> row = rs.get(0);
-            id = (Long) row.get("id");
+            id = (Integer) row.get("id");
         }
         h.close();
         return id;
