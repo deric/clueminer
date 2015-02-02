@@ -23,4 +23,7 @@ public interface PartitioningModel {
     @SqlQuery("select hash from partitionings where id = :id")
     int findHash(@Bind("id") int id);
 
+    @SqlQuery("SELECT id from partitionings WHERE k = :k AND hash=:hash")
+    int find(@Bind("k") int k, @Bind("hash") int hash);
+
 }

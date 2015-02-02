@@ -19,4 +19,7 @@ public interface DatasetModel {
     @SqlQuery("select name from datasets where id = :id")
     String findName(@Bind("id") int id);
 
+    @SqlQuery("select id from datasets where name = :name")
+    int findId(@Bind("name") String name);
+
 }

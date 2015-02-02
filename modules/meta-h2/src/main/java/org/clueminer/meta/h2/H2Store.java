@@ -3,7 +3,6 @@ package org.clueminer.meta.h2;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
@@ -205,27 +204,19 @@ public class H2Store implements MetaStorage {
     }
 
     protected int findDataset(String name) {
-        int id = -1;
+        int id;
         try (Handle h = db().open()) {
-            List<Map<String, Object>> rs = h.select("SELECT id from datasets WHERE name=?", name);
-            if (rs.size() == 1) {
-                Map<String, Object> row = rs.get(0);
-                id = (Integer) row.get("id");
-            }
+            DatasetModel dt = h.attach(DatasetModel.class);
+            id = dt.findId(name);
         }
         return id;
     }
 
     protected int findPartitioning(Clustering<? extends Cluster> clustering) {
-        int id = -1;
+        int id;
         try (Handle h = db().open()) {
-            List<Map<String, Object>> rs = h.select(
-                    "SELECT id from partitionings WHERE k = ? AND hash=?",
-                    clustering.size(), clustering.hashCode());
-            if (rs.size() == 1) {
-                Map<String, Object> row = rs.get(0);
-                id = (Integer) row.get("id");
-            }
+            PartitioningModel pt = h.attach(PartitioningModel.class);
+            id = pt.find(clustering.size(), clustering.hashCode());
         }
         return id;
     }
