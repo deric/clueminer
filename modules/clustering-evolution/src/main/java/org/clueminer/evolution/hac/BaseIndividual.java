@@ -26,12 +26,12 @@ public class BaseIndividual extends AbstractIndividual implements Individual {
 
     @Override
     public void countFitness() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //
     }
 
     @Override
     public double getFitness() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Double.NaN;
     }
 
     @Override
