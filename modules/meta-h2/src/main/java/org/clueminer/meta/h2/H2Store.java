@@ -14,7 +14,11 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorage;
+import org.clueminer.meta.h2.dao.AlgorithmModel;
 import org.clueminer.meta.h2.dao.DatasetModel;
+import org.clueminer.meta.h2.dao.PartitioningModel;
+import org.clueminer.meta.h2.dao.ResultModel;
+import org.clueminer.meta.h2.dao.TemplateModel;
 import org.clueminer.utils.FileUtils;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
@@ -101,38 +105,21 @@ public class H2Store implements MetaStorage {
             dt.createTable();
             dh.commit();
 
-            dh.execute("CREATE TABLE IF NOT EXISTS partitionings("
-                    + "id INT auto_increment PRIMARY KEY,"
-                    + "k INT," //number of clusters
-                    + "hash BIGINT,"
-                    + "num_occur INT,"
-                    + "dataset_id INT,"
-                    + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id)"
-                    + ")");
+            PartitioningModel pt = dh.attach(PartitioningModel.class);
+            pt.createTable();
             dh.commit();
 
             //base algorithms
-            dh.execute("CREATE TABLE IF NOT EXISTS algorithms("
-                    + "id INT auto_increment PRIMARY KEY,"
-                    + "name VARCHAR(255)"
-                    + ")");
+            AlgorithmModel at = dh.attach(AlgorithmModel.class);
+            at.createTable();
             dh.commit();
 
-            dh.execute("CREATE TABLE IF NOT EXISTS templates("
-                    + "id INT auto_increment PRIMARY KEY,"
-                    + "template CLOB,"
-                    + "algorithm_id INT,"
-                    + "FOREIGN KEY(algorithm_id) REFERENCES public.algorithms(id)"
-                    + ")");
+            TemplateModel tt = dh.attach(TemplateModel.class);
+            tt.createTable();
             dh.commit();
 
-            dh.execute("CREATE TABLE IF NOT EXISTS results("
-                    + "id INT auto_increment PRIMARY KEY,"
-                    + "template_id INT,"
-                    + "partitioning_id INT,"
-                    + "FOREIGN KEY(template_id) REFERENCES public.templates(id),"
-                    + "FOREIGN KEY(partitioning_id) REFERENCES public.partitionings(id)"
-                    + ")");
+            ResultModel rt = dh.attach(ResultModel.class);
+            rt.createTable();
             dh.commit();
 
             //update score names
