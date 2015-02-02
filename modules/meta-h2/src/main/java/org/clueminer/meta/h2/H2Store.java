@@ -187,7 +187,7 @@ public class H2Store implements MetaStorage {
     protected int fetchDataset(Dataset<? extends Instance> dataset) {
         int id = findDataset(dataset.getName());
 
-        if (id < 0) {
+        if (id <= 0) {
             try (Handle h = db().open()) {
                 GeneratedKeys<Map<String, Object>> res = h.createStatement(
                         "INSERT INTO datasets(name, num_attr, num_inst) VALUES (:name,:num_attr,:num_inst)")
@@ -224,7 +224,7 @@ public class H2Store implements MetaStorage {
     protected int fetchPartitioning(int datasetId, Clustering<? extends Cluster> clustering) {
         int id = findPartitioning(clustering);
 
-        if (id < 0) {
+        if (id <= 0) {
             try (Handle h = db().open()) {
                 GeneratedKeys<Map<String, Object>> res = h.createStatement(
                         "INSERT INTO partitionings(k, hash, num_occur,dataset_id) VALUES (:k,:hash,:num_occur,:dataset_id)")
@@ -245,8 +245,13 @@ public class H2Store implements MetaStorage {
     @Override
     public double findScore(String datasetName, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
         double res = Double.NaN;
-        int dataset_id = findDataset(datasetName);
-        int partitioning_id = fetchPartitioning(dataset_id, clustering);
+        int datasetId = findDataset(datasetName);
+        int partitioningId = fetchPartitioning(datasetId, clustering);
+
+        try (Handle h = db().open()) {
+            ResultModel rt = h.attach(ResultModel.class);
+            res = rt.score(eval.getName(), partitioningId, datasetId);
+        }
 
         return res;
     }

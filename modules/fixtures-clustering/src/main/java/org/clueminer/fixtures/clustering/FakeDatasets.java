@@ -62,6 +62,7 @@ public class FakeDatasets {
         if (irisData == null) {
             CommonFixture tf = new CommonFixture();
             irisData = new ArrayDataset(150, 4);
+            irisData.setName("iris");
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(tf.irisArff(), irisData, 4);

@@ -1,10 +1,13 @@
 package org.clueminer.meta.h2;
 
 import java.sql.SQLException;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -57,6 +60,14 @@ public class H2StoreTest {
 
     @Test
     public void testFindScore() {
+        int datasetId = subject.fetchDataset(FakeDatasets.irisDataset());
+        int pid = subject.fetchPartitioning(datasetId, FakeClustering.iris());
+
+        ClusterEvaluation e = EvaluationFactory.getInstance().getDefault();
+        //TODO: return 0.0 when no record was found
+        double score = subject.findScore(FakeDatasets.irisDataset().getName(),
+                FakeClustering.iris(), e);
+        assertNotSame(Double.NaN, score);
     }
 
     @Test
