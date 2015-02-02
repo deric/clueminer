@@ -2,11 +2,10 @@ package org.clueminer.meta.h2;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.sql.DataSource;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -19,6 +18,7 @@ import org.clueminer.utils.FileUtils;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
 import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
 
 /**
@@ -205,34 +205,17 @@ public class H2Store implements MetaStorage {
         id = findDataset(dataset.getName());
 
         if (id < 0) {
-            Handle h = db().open();
-            Statement st = h.createStatement(
-                    "INSERT INTO datasets(name, num_attr, num_inst) VALUES (:name,:num_attr,:num_inst)")
-                    .bind("name", dataset.getName())
-                    .bind("num_attr", dataset.attributeCount())
-                    .bind("num_inst", dataset.size()).getContext().getStatement();
-            id = lastId(st);
-            h.close();
-        }
-        return id;
-    }
-
-    /**
-     * Retrieve last inserted ID
-     *
-     * @param st
-     * @return
-     */
-    protected int lastId(Statement st) {
-        int id = -1;
-        try {
-            st.getGeneratedKeys();
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-                id = rs.getInt(1);
+            try (Handle h = db().open()) {
+                GeneratedKeys<Map<String, Object>> res = h.createStatement(
+                        "INSERT INTO datasets(name, num_attr, num_inst) VALUES (:name,:num_attr,:num_inst)")
+                        .bind("name", dataset.getName())
+                        .bind("num_attr", dataset.attributeCount())
+                        .bind("num_inst", dataset.size()).executeAndReturnGeneratedKeys();
+                //TODO: this is rather complicated way of getting first value
+                for (Entry<String, Object> e : res.first().entrySet()) {
+                    id = (int) e.getValue();
+                }
             }
-        } catch (SQLException ex) {
-            Exceptions.printStackTrace(ex);
         }
         return id;
     }
