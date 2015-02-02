@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.138</version>
+            <version>1.4.185</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -80,6 +80,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>fixtures-clustering</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-eval</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

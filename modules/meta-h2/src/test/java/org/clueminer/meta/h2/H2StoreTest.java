@@ -15,6 +15,7 @@ import org.openide.util.Exceptions;
 public class H2StoreTest {
 
     private H2Store subject;
+    private static final String testDb = "unit-test";
 
     public H2StoreTest() {
     }
@@ -23,13 +24,14 @@ public class H2StoreTest {
     public void setUp() {
         subject = H2Store.getInstance();
 
-        subject.db("unit-test");
+        subject.db(testDb);
     }
 
     @After
     public void tearDown() {
         try {
             subject.close();
+            subject.deleteDb(testDb);
         } catch (SQLException ex) {
             Exceptions.printStackTrace(ex);
         }

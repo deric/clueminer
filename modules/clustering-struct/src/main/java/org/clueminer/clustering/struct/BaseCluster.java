@@ -152,6 +152,12 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         return sb.toString();
     }
 
+    /**
+     * Hash code for clusters should not depend on order of elements in the
+     * cluster.
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 0;

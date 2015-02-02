@@ -2,16 +2,14 @@ package org.clueminer.meta.h2;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorage;
@@ -69,15 +67,31 @@ public class H2Store implements MetaStorage {
             DataSource ds = JdbcConnectionPool.create("jdbc:h2:" + getDbDir() + File.separatorChar + db, "sa", "");
             dbi = new DBI(ds);
 
-            initialize();
+            try {
+                initialize();
+            } catch (SQLException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         return dbi;
     }
 
     /**
+     * Delete database
+     *
+     * @param name
+     */
+    public void deleteDb(String name) {
+        File f = new File(getDbDir() + File.separatorChar + name);
+        if (f.exists()) {
+            f.delete();
+        }
+    }
+
+    /**
      * Create tables for meta-storage
      */
-    private void initialize() {
+    private void initialize() throws SQLException {
         Handle dh = dbi.open();
         dh.begin();
 
@@ -123,6 +137,26 @@ public class H2Store implements MetaStorage {
                 + ")");
         dh.commit();
 
+        //update score names
+        EvaluationFactory ef = EvaluationFactory.getInstance();
+        for (String eval : ef.getProviders()) {
+            //evaluators are in quotes, therefore names are case sensitive
+            dh.execute("ALTER TABLE results ADD COLUMN IF NOT EXISTS \"" + eval + "\" DOUBLE");
+        }
+
+        dh.commit();
+
+        /* getting all column names */
+        /*   Statement statement = dh.getConnection().createStatement();
+         ResultSet results = statement.executeQuery("SELECT * FROM results LIMIT 1");
+         ResultSetMetaData metadata = results.getMetaData();
+         int columnCount = metadata.getColumnCount();
+
+         HashSet<String> hash = new HashSet<>(columnCount);
+         for (int i = 1; i <= columnCount; i++) {
+         hash.add(metadata.getColumnName(i));
+         System.out.println("col " + i + ": " + metadata.getColumnName(i));
+         }*/
         dh.close();
     }
 
@@ -147,32 +181,25 @@ public class H2Store implements MetaStorage {
 
     }
 
-    public int fetchDataset(String dataset) throws SQLException {
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery("select id from datasets WHERE name=" + dataset);
-        int id = -1;
-        int rowcount = 0;
-        while (rset.next()) {
-            rowcount++;
-            id = rset.getInt(1);
-        }
-        if (rowcount == 0) {
-            String sql = "INSERT INTO datasets(name) VALUES (?)";
-            PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, dataset);
-            st.executeUpdate();
-            ResultSet generatedKeys = st.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                id = generatedKeys.getInt(1);
-            } else {
-                throw new RuntimeException("insert into datasets failed");
-            }
+    public long fetchDataset(String name) throws SQLException {
+        long id;
+        id = findDataset(name);
 
+        if (id < 0) {
+            Handle h = db().open();
+            h.createStatement(
+                    "INSERT INTO datasets(name, num_attr, num_inst) VALUES (:name)")
+                    .bind("name", name)
+                    .execute();
+            h.close();
         }
+        //TODO: fix this if we can get inserted ID
+        id = findDataset(name);
+
         return id;
     }
 
-    protected long fetchDataset(Dataset<? extends Instance> dataset){
+    protected long fetchDataset(Dataset<? extends Instance> dataset) {
         long id;
         id = findDataset(dataset.getName());
 
@@ -184,6 +211,7 @@ public class H2Store implements MetaStorage {
                     .bind("num_attr", dataset.attributeCount())
                     .bind("num_inst", dataset.size())
                     .executeAndReturnGeneratedKeys();
+            h.close();
         }
         //TODO: fix this if we can get inserted ID
         id = findDataset(dataset.getName());
@@ -203,10 +231,12 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-
     @Override
     public double findScore(String datasetName, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double res = Double.NaN;
+        long dataset_id = findDataset(datasetName);
+
+        return res;
     }
 
     public void close() throws SQLException {
