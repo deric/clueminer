@@ -1,6 +1,7 @@
 package org.clueminer.meta.h2;
 
 import java.sql.SQLException;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -38,8 +39,15 @@ public class H2StoreTest {
     }
 
     @Test
-    public void testFetchDataset(){
+    public void testFetchDataset() {
         int id = subject.fetchDataset(FakeDatasets.irisDataset());
+        assertEquals(true, id > 0);
+    }
+
+    @Test
+    public void testFetchPartitioning() {
+        int datasetId = subject.fetchDataset(FakeDatasets.irisDataset());
+        int id = subject.fetchPartitioning(datasetId, FakeClustering.iris());
         assertEquals(true, id > 0);
     }
 

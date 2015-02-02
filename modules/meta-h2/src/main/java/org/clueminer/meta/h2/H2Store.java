@@ -14,6 +14,7 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorage;
+import org.clueminer.meta.h2.dao.DatasetModel;
 import org.clueminer.utils.FileUtils;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
@@ -96,12 +97,8 @@ public class H2Store implements MetaStorage {
         try (Handle dh = dbi.open()) {
             dh.begin();
 
-            dh.execute("CREATE TABLE IF NOT EXISTS datasets("
-                    + "id INT auto_increment PRIMARY KEY,"
-                    + "name varchar(255),"
-                    + "num_attr INT,"
-                    + "num_inst INT"
-                    + ")");
+            DatasetModel dt = dh.attach(DatasetModel.class);
+            dt.createTable();
             dh.commit();
 
             dh.execute("CREATE TABLE IF NOT EXISTS partitionings("
@@ -246,10 +243,32 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
+    protected int fetchPartitioning(int datasetId, Clustering<? extends Cluster> clustering) {
+        int id = findPartitioning(clustering);
+
+        if (id < 0) {
+            try (Handle h = db().open()) {
+                GeneratedKeys<Map<String, Object>> res = h.createStatement(
+                        "INSERT INTO partitionings(k, hash, num_occur,dataset_id) VALUES (:k,:hash,:num_occur,:dataset_id)")
+                        .bind("k", clustering.size())
+                        .bind("hash", clustering.hashCode())
+                        .bind("dataset_id", datasetId)
+                        .bind("num_occur", 0
+                        ).executeAndReturnGeneratedKeys();
+                //TODO: this is rather complicated way of getting first value
+                for (Entry<String, Object> e : res.first().entrySet()) {
+                    id = (int) e.getValue();
+                }
+            }
+        }
+        return id;
+    }
+
     @Override
     public double findScore(String datasetName, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
         double res = Double.NaN;
         int dataset_id = findDataset(datasetName);
+        int partitioning_id = fetchPartitioning(dataset_id, clustering);
 
         return res;
     }
