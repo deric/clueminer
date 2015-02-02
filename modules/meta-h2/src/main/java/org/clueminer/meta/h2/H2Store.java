@@ -2,7 +2,9 @@ package org.clueminer.meta.h2;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
@@ -17,7 +19,6 @@ import org.clueminer.utils.FileUtils;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
 import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
 
 /**
@@ -82,9 +83,9 @@ public class H2Store implements MetaStorage {
      * @param name
      */
     public void deleteDb(String name) {
-        File f = new File(getDbDir() + File.separatorChar + name);
+        File f = new File(getDbDir() + File.separatorChar + name + ".db");
         if (f.exists()) {
-            f.delete();
+            f.deleteOnExit();
         }
     }
 
@@ -205,21 +206,38 @@ public class H2Store implements MetaStorage {
 
         if (id < 0) {
             Handle h = db().open();
-            GeneratedKeys<Map<String, Object>> ret = h.createStatement(
+            Statement st = h.createStatement(
                     "INSERT INTO datasets(name, num_attr, num_inst) VALUES (:name,:num_attr,:num_inst)")
                     .bind("name", dataset.getName())
                     .bind("num_attr", dataset.attributeCount())
-                    .bind("num_inst", dataset.size())
-                    .executeAndReturnGeneratedKeys();
+                    .bind("num_inst", dataset.size()).getContext().getStatement();
+            id = lastId(st);
             h.close();
         }
-        //TODO: fix this if we can get inserted ID
-        id = findDataset(dataset.getName());
-
         return id;
     }
 
-    private int findDataset(String name) {
+    /**
+     * Retrieve last inserted ID
+     *
+     * @param st
+     * @return
+     */
+    protected int lastId(Statement st) {
+        int id = -1;
+        try {
+            st.getGeneratedKeys();
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return id;
+    }
+
+    protected int findDataset(String name) {
         int id = -1;
         Handle h = db().open();
         List<Map<String, Object>> rs = h.select("SELECT id from datasets WHERE name=?", name);
@@ -231,10 +249,24 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
+    protected int findPartitioning(Clustering<? extends Cluster> clustering) {
+        int id = -1;
+        Handle h = db().open();
+        List<Map<String, Object>> rs = h.select(
+                "SELECT id from partitionings WHERE k = ? AND hash=?",
+                clustering.size(), clustering.hashCode());
+        if (rs.size() == 1) {
+            Map<String, Object> row = rs.get(0);
+            id = (Integer) row.get("id");
+        }
+        h.close();
+        return id;
+    }
+
     @Override
     public double findScore(String datasetName, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
         double res = Double.NaN;
-        long dataset_id = findDataset(datasetName);
+        int dataset_id = findDataset(datasetName);
 
         return res;
     }
