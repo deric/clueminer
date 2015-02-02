@@ -2,11 +2,11 @@ package org.clueminer.meta.h2;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.sql.DataSource;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -14,7 +14,10 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.utils.FileUtils;
+import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
+import org.skife.jdbi.v2.DBI;
+import org.skife.jdbi.v2.Handle;
 
 /**
  *
@@ -25,6 +28,7 @@ public class H2Store implements MetaStorage {
     private static H2Store instance;
     private Connection conn = null;
     private static final String dbName = "meta-db";
+    private DBI dbi;
 
     public static H2Store getInstance() {
         if (instance == null) {
@@ -53,63 +57,68 @@ public class H2Store implements MetaStorage {
         return FileUtils.LocalFolder() + File.separatorChar + "db";
     }
 
-    public Connection getConnection() throws SQLException {
+    public DBI getConnection() throws SQLException {
         return getConnection(dbName);
     }
 
-    public Connection getConnection(String db) throws SQLException {
-        if (conn == null || conn.isClosed()) {
-            try {
-                Class.forName("org.h2.Driver");
-                conn = DriverManager.getConnection("jdbc:h2:" + getDbDir() + File.separatorChar + db, "sa", "");
-                initialize();
-            } catch (ClassNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            }
+    public DBI getConnection(String db) throws SQLException {
+        if (dbi == null) {
+            DataSource ds = JdbcConnectionPool.create("jdbc:h2:" + getDbDir() + File.separatorChar + db, "sa", "");
+            dbi = new DBI(ds);
+
+            initialize();
         }
-        return conn;
+        return dbi;
     }
 
     /**
      * Create tables for meta-storage
      */
     private void initialize() throws SQLException {
-        try (Statement st = conn.createStatement()) {
-            st.execute("CREATE TABLE IF NOT EXISTS datasets("
-                    + "id INT PRIMARY KEY, name varchar(255),"
-                    + "num_attr INTEGER,"
-                    + "num_inst INTEGER)");
+        Handle dh = dbi.open();
+        dh.begin();
 
-            st.execute("CREATE TABLE IF NOT EXISTS partitionings("
-                    + "id INT PRIMARY KEY,"
-                    + "k INT," //number of clusters
-                    + "hash BIGINT,"
-                    + "num_occur INT,"
-                    + "dataset_id INT,"
-                    + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id)"
-                    + ")");
+        dh.execute("CREATE TABLE IF NOT EXISTS datasets("
+                + "id INT PRIMARY KEY, name varchar(255),"
+                + "num_attr INTEGER,"
+                + "num_inst INTEGER)");
+        dh.commit();
 
-            st.execute("CREATE TABLE IF NOT EXISTS templates("
-                    + "id INT PRIMARY KEY,"
-                    + "template CLOB,"
-                    + "algorithm_id INT,"
-                    + "FOREIGN KEY(algorithm_id) REFERENCES public.algorithms(id)"
-                    + ")");
+        dh.execute("CREATE TABLE IF NOT EXISTS partitionings("
+                + "id INT PRIMARY KEY,"
+                + "k INT," //number of clusters
+                + "hash BIGINT,"
+                + "num_occur INT,"
+                + "dataset_id INT,"
+                + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id)"
+                + ")");
+        dh.commit();
 
-            //base algorithms
-            st.execute("CREATE TABLE IF NOT EXISTS algorithms("
-                    + "id INT PRIMARY KEY,"
-                    + "name VARCHAR(255)"
-                    + ")");
+        //base algorithms
+        dh.execute("CREATE TABLE IF NOT EXISTS algorithms("
+                + "id INT PRIMARY KEY,"
+                + "name VARCHAR(255)"
+                + ")");
+        dh.commit();
 
-            st.execute("CREATE TABLE IF NOT EXISTS results("
-                    + "id INT PRIMARY KEY,"
-                    + "template_id INT,"
-                    + "partitioning_id INT,"
-                    + "FOREIGN KEY(template_id) REFERENCES public.templates(id),"
-                    + "FOREIGN KEY(partitioning_id) REFERENCES public.partitionings(id)"
-                    + ")");
-        }
+        dh.execute("CREATE TABLE IF NOT EXISTS templates("
+                + "id INT PRIMARY KEY,"
+                + "template CLOB,"
+                + "algorithm_id INT,"
+                + "FOREIGN KEY(algorithm_id) REFERENCES public.algorithms(id)"
+                + ")");
+        dh.commit();
+
+        dh.execute("CREATE TABLE IF NOT EXISTS results("
+                + "id INT PRIMARY KEY,"
+                + "template_id INT,"
+                + "partitioning_id INT,"
+                + "FOREIGN KEY(template_id) REFERENCES public.templates(id),"
+                + "FOREIGN KEY(partitioning_id) REFERENCES public.partitionings(id)"
+                + ")");
+        dh.commit();
+
+        dh.close();
     }
 
     @Override
@@ -158,7 +167,7 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    private int fetchDataset(Dataset<? extends Instance> dataset) throws SQLException {
+    protected int fetchDataset(Dataset<? extends Instance> dataset) throws SQLException {
         String sql = "SELECT id from datasets WHERE name=?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1, dataset.getName());
