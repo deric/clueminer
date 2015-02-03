@@ -1,6 +1,7 @@
 package org.clueminer.meta.h2.dao;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
@@ -20,5 +21,13 @@ public interface TemplateModel {
 
     @SqlQuery("select name from templates where id = :id")
     String findTemplate(@Bind("id") int id);
+
+    @SqlQuery("select id from    templates where algorithm_id = :alg AND template = :template")
+    int find(@Bind("alg") int algId, @Bind("template") String template);
+
+    @SqlUpdate("insert into templates (template, algorithm_id)"
+            + " values (:template, :alg)")
+    @GetGeneratedKeys
+    int insert(@Bind("alg") int algId, @Bind("template") String template);
 
 }

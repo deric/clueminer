@@ -1,6 +1,7 @@
 package org.clueminer.meta.h2.dao;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
@@ -25,5 +26,10 @@ public interface PartitioningModel {
 
     @SqlQuery("SELECT id from partitionings WHERE k = :k AND hash=:hash")
     int find(@Bind("k") int k, @Bind("hash") int hash);
+
+    @SqlUpdate("insert into partitionings (k, hash, num_occur, dataset_id)"
+            + " values (:k, :hash, 1, :dataset_id)")
+    @GetGeneratedKeys
+    int insert(@Bind("k") int k, @Bind("hash") int hash, @Bind("dataset_id") int datasetId);
 
 }

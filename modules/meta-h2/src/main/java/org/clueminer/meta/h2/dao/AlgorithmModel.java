@@ -1,6 +1,7 @@
 package org.clueminer.meta.h2.dao;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
@@ -18,5 +19,12 @@ public interface AlgorithmModel {
 
     @SqlQuery("select name from algorithms where id = :id")
     String findName(@Bind("id") int id);
+
+    @SqlQuery("SELECT id FROM algorithms WHERE name = :name")
+    int find(@Bind("name") String name);
+
+    @SqlUpdate("insert into algorithms (name) values (:name)")
+    @GetGeneratedKeys
+    int insert(@Bind("name") String name);
 
 }

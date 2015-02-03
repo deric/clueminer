@@ -56,6 +56,7 @@ public class H2StoreTest {
 
     @Test
     public void testAdd() {
+        subject.add(FakeDatasets.irisDataset(), FakeClustering.irisWrong2());
     }
 
     @Test

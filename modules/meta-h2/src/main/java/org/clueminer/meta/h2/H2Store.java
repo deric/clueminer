@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -19,6 +20,7 @@ import org.clueminer.meta.h2.dao.PartitioningModel;
 import org.clueminer.meta.h2.dao.ResultModel;
 import org.clueminer.meta.h2.dao.TemplateModel;
 import org.clueminer.utils.FileUtils;
+import org.clueminer.utils.Props;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
 import org.skife.jdbi.v2.DBI;
@@ -150,7 +152,13 @@ public class H2Store implements MetaStorage {
     }
 
     public void add(int datasetId, Clustering<? extends Cluster> clustering) {
+        int pId = fetchPartitioning(datasetId, clustering);
+        Props p = clustering.getParams();
+        int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
+        int templateId = fetchTemplate(algId, p.toString());
+        try (Handle h = db().open()) {
 
+        }
     }
 
     public int fetchDataset(String name) throws SQLException {
@@ -214,17 +222,8 @@ public class H2Store implements MetaStorage {
 
         if (id <= 0) {
             try (Handle h = db().open()) {
-                GeneratedKeys<Map<String, Object>> res = h.createStatement(
-                        "INSERT INTO partitionings(k, hash, num_occur,dataset_id) VALUES (:k,:hash,:num_occur,:dataset_id)")
-                        .bind("k", clustering.size())
-                        .bind("hash", clustering.hashCode())
-                        .bind("dataset_id", datasetId)
-                        .bind("num_occur", 0
-                        ).executeAndReturnGeneratedKeys();
-                //TODO: this is rather complicated way of getting first value
-                for (Entry<String, Object> e : res.first().entrySet()) {
-                    id = (int) e.getValue();
-                }
+                PartitioningModel pm = h.attach(PartitioningModel.class);
+                id = pm.insert(clustering.size(), clustering.hashCode(), datasetId);
             }
         }
         return id;
@@ -242,6 +241,32 @@ public class H2Store implements MetaStorage {
         }
 
         return res;
+    }
+
+    protected int fetchAlgorithm(String name) {
+        int id;
+        try (Handle h = db().open()) {
+            AlgorithmModel am = h.attach(AlgorithmModel.class);
+            id = am.find(name);
+
+            if (id <= 0) {
+                id = am.insert(name);
+            }
+        }
+        return id;
+    }
+
+    protected int fetchTemplate(int algId, String template) {
+        int id;
+        try (Handle h = db().open()) {
+            TemplateModel tm = h.attach(TemplateModel.class);
+            id = tm.find(algId, template);
+
+            if (id <= 0) {
+                id = tm.insert(algId, template);
+            }
+        }
+        return id;
     }
 
     public void close() throws SQLException {
