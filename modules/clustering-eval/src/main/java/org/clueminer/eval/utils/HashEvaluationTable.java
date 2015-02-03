@@ -45,6 +45,11 @@ public class HashEvaluationTable implements EvaluationTable {
         scores = new HashMap<>(internalMap.size() + externalMap.size());
     }
 
+    @Override
+    public HashMap<String, Double> getAll() {
+        return scores;
+    }
+
     /**
      * Computes evaluator score and caches the result
      *

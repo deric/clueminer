@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -152,12 +153,35 @@ public class H2Store implements MetaStorage {
     }
 
     public void add(int datasetId, Clustering<? extends Cluster> clustering) {
-        int pId = fetchPartitioning(datasetId, clustering);
+        int partitionId = fetchPartitioning(datasetId, clustering);
         Props p = clustering.getParams();
         int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
         int templateId = fetchTemplate(algId, p.toString());
-        try (Handle h = db().open()) {
 
+        try (Handle h = db().open()) {
+            ResultModel rm = h.attach(ResultModel.class);
+            int rId = rm.insert(templateId, partitionId, datasetId);
+            EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+            if (evalTable != null) {
+                StringBuilder sb = new StringBuilder("UPDATE results SET ");
+                double val;
+                int i = 0;
+                for (Entry<String, Double> entry : evalTable.getAll().entrySet()) {
+                    val = entry.getValue();
+                    if (!Double.isNaN(val)) {
+                        //evaluators are in quotes, therefore names are case sensitive
+                        if (i > 0) {
+                            sb.append(",");
+                        }
+                        sb.append("\"").append(entry.getKey()).append("\"='").append(val).append("'");
+                        i++;
+                    }
+                    if (i > 0) {
+                        sb.append(" WHERE id = ").append(rId);
+                        h.execute(sb.toString());
+                    }
+                }
+            }
         }
     }
 

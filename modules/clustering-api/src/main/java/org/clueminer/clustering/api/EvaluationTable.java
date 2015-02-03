@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -39,4 +40,10 @@ public interface EvaluationTable {
      * @return map of external evaluations scores
      */
     Map<String, Double> getExternal();
+
+    /**
+     *
+     * @return all currently computed scores
+     */
+    HashMap<String, Double> getAll();
 }
