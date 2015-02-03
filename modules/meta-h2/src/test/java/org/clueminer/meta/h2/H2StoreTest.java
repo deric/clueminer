@@ -65,7 +65,7 @@ public class H2StoreTest {
 
         ClusterEvaluation e = EvaluationFactory.getInstance().getDefault();
         //TODO: return 0.0 when no record was found
-        double score = subject.findScore(FakeDatasets.irisDataset().getName(),
+        double score = subject.findScore(FakeDatasets.irisDataset(),
                 FakeClustering.iris(), e);
         assertNotSame(Double.NaN, score);
     }

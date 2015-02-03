@@ -145,20 +145,8 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public void add(String datasetName, Clustering<? extends Cluster> clustering) {
-        try {
-            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-            int datasetId;
-            if (dataset == null) {
-                datasetId = fetchDataset(datasetName);
-            } else {
-                datasetId = fetchDataset(dataset);
-            }
-
-            add(datasetId, clustering);
-        } catch (SQLException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+    public void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering) {
+        add(fetchDataset(dataset), clustering);
     }
 
     public void add(int datasetId, Clustering<? extends Cluster> clustering) {
@@ -243,9 +231,9 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public double findScore(String datasetName, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
+    public double findScore(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
         double res = Double.NaN;
-        int datasetId = findDataset(datasetName);
+        int datasetId = fetchDataset(dataset);
         int partitioningId = fetchPartitioning(datasetId, clustering);
 
         try (Handle h = db().open()) {

@@ -7,6 +7,8 @@ import org.clueminer.clustering.api.evolution.Evolution;
 import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.clustering.api.evolution.Pair;
 import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaFeed;
 
 /**
@@ -34,7 +36,12 @@ public class H2Listener implements MetaFeed {
 
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        
+
+    }
+
+    @Override
+    public void individualCreated(Dataset<? extends Instance> dataset, Individual individual) {
+        store.add(dataset, individual.getClustering());
     }
 
 }
