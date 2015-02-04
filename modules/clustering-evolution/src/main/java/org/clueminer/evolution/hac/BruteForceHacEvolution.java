@@ -35,18 +35,18 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class HacEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
+public class BruteForceHacEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "Brute-force HAC";
     private final Executor exec;
     private int gen;
     private List<DistanceMeasure> dist;
     private List<ClusterLinkage> linkage;
-    private static final Logger logger = Logger.getLogger(HacEvolution.class.getName());
+    private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
     private int cnt;
     private FakePopulation population = new FakePopulation();
 
-    public HacEvolution() {
+    public BruteForceHacEvolution() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used

@@ -101,6 +101,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                         // put mutated individual to the list of new individuals
                         children.add(current);
                         current.countFitness();
+                        //update meta-database
+                        fireIndividualCreated(dataset, current);
                     }
                 }
             }
