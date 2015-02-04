@@ -1,7 +1,6 @@
-package org.clueminer.meta.api;
+package org.clueminer.evolution.api;
 
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
+import java.util.EventListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -9,7 +8,7 @@ import org.clueminer.dataset.api.Instance;
  *
  * @author Tomas Barton
  */
-public interface MetaFeed extends EvolutionListener {
+public interface UpdateFeed extends EventListener {
 
     /**
      * Name should uniquely identify the type of storage/processing engine
@@ -17,6 +16,13 @@ public interface MetaFeed extends EvolutionListener {
      * @return unique name of the provider
      */
     String getName();
+
+    /**
+     * Triggered when evolution starts
+     *
+     * @param evolution
+     */
+    void started(Evolution evolution);
 
     /**
      * Triggered when individual added to population

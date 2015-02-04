@@ -7,8 +7,7 @@
         <version>0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <groupId>org.clueminer</groupId>
-    <artifactId>meta-api</artifactId>
+    <artifactId>evolution-api</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -18,7 +17,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.meta.api</publicPackage>
+                        <publicPackage>org.clueminer.evolution.api</publicPackage>
+                        <publicPackage>org.clueminer.evolution.gui</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -53,13 +53,13 @@
             <version>RELEASE80</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>utils</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE80</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>evolution-api</artifactId>
+            <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -1,19 +1,9 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.api;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
-import org.clueminer.colors.ColorBrewer;
-import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.events.ListenerList;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.InstanceContent;
@@ -26,7 +16,6 @@ import org.openide.util.lookup.InstanceContent;
 public abstract class AbstractEvolution<T extends Individual> implements Evolution<T> {
 
     protected int generations = 10;
-    protected ColorGenerator cg = new ColorBrewer();
     protected ClusterEvaluation external;
     protected ClusteringAlgorithm algorithm;
     protected boolean maximizedFitness;
@@ -36,7 +25,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     protected Dataset<? extends Instance> dataset;
     protected ClusterEvaluation evaluator;
     protected int populationSize = 10;
-    protected ObjectOpenCustomHashSet<Clustering> uniqueClusterings = new ObjectOpenCustomHashSet<>(new ClustHash<>());
     /**
      * parameter for clustering counting same solutions
      */
@@ -50,16 +38,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
      */
     protected double crossoverProbability = 0.3;
 
-    protected final transient ListenerList<EvolutionListener> evoListeners = new ListenerList<>();
-
-    /**
-     * Hook that should be called when evolution starts
-     *
-     * @param e
-     */
-    protected void evolutionStarted(Evolution e) {
-        fireEvolutionStarts(e);
-    }
 
     @Override
     public boolean isMaximizedFitness() {
@@ -79,17 +57,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     @Override
     public Lookup getLookup() {
         return lookup;
-    }
-
-    @Override
-    public void setColorGenerator(ColorGenerator cg) {
-        this.cg = cg;
-
-    }
-
-    @Override
-    public ColorGenerator getColorGenerator() {
-        return cg;
     }
 
     @Override
@@ -117,13 +84,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
         return algorithm;
     }
 
-    @Override
-    public void setAlgorithm(ClusteringAlgorithm algorithm) {
-        this.algorithm = algorithm;
-        if (cg != null) {
-            algorithm.setColorGenerator(cg);
-        }
-    }
 
     @Override
     public ClusterEvaluation getEvaluator() {
@@ -171,11 +131,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     }
 
     @Override
-    public void addEvolutionListener(EvolutionListener listener) {
-        evoListeners.add(listener);
-    }
-
-    @Override
     public int getPopulationSize() {
         return populationSize;
     }
@@ -189,40 +144,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     public void setEvaluator(ClusterEvaluation evaluator) {
         this.evaluator = evaluator;
         maximizedFitness = evaluator.isMaximized();
-    }
-
-    protected void fireEvolutionStarts(Evolution e) {
-        for (EvolutionListener listener : evoListeners) {
-            if (listener != null) {
-                listener.started(e);
-            }
-        }
-    }
-
-    protected void fireBestIndividual(int generationNum, Population<? extends Individual> population) {
-        Individual best = population.getBestIndividual();
-        for (EvolutionListener listener : evoListeners) {
-            if (best != null) {
-                listener.bestInGeneration(generationNum, population, externalValidation(best));
-            }
-        }
-    }
-
-    protected double externalValidation(Individual best) {
-        if (external != null) {
-            return external.score(best.getClustering(), dataset);
-        }
-        return Double.NaN;
-    }
-
-    protected void fireFinalResult(int g, Individual best, Pair<Long, Long> time,
-            Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
-
-        if (evoListeners != null) {
-            for (EvolutionListener listener : evoListeners) {
-                listener.finalResult(this, g, best, time, bestFitness, avgFitness, externalValidation(best));
-            }
-        }
     }
 
     @Override

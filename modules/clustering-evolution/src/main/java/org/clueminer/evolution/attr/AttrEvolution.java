@@ -11,13 +11,13 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evolution.AbstractEvolution;
-import org.clueminer.evolution.AbstractIndividual;
+import org.clueminer.evolution.BaseEvolution;
+import org.clueminer.evolution.api.AbstractIndividual;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -27,7 +27,7 @@ import org.openide.util.lookup.InstanceContent;
  * @author Tomas Barton
  */
 //@ServiceProvider(service = Evolution.class)
-public class AttrEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class AttrEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private boolean isFinished = true;
     private final Random rand = new Random();

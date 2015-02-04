@@ -1,7 +1,6 @@
-package org.clueminer.evolution;
+package org.clueminer.evolution.api;
 
 import java.util.Arrays;
-import org.clueminer.clustering.api.evolution.Population;
 
 /**
  *

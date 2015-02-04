@@ -16,16 +16,16 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.evolution.AbstractEvolution;
+import org.clueminer.evolution.BaseEvolution;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class MultiMuteEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "muti-mute";
     protected Executor exec;

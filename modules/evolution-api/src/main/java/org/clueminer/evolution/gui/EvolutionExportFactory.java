@@ -1,8 +1,7 @@
-package org.clueminer.clustering.api.factory;
+package org.clueminer.evolution.gui;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import org.clueminer.clustering.gui.EvolutionExport;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 

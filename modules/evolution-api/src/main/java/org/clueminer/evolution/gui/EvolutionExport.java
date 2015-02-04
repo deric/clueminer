@@ -1,8 +1,9 @@
-package org.clueminer.clustering.gui;
+package org.clueminer.evolution.gui;
 
 import java.io.File;
 import java.util.prefs.Preferences;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.clustering.gui.ExporterGUI;
+import org.clueminer.evolution.api.Evolution;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**

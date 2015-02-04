@@ -3,19 +3,19 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.evolution.AbstractIndividual;
+import org.clueminer.evolution.BaseIndividual;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author Tomas Barton
  */
-public class BaseIndividual extends AbstractIndividual implements Individual {
+public class SimpleIndividual extends BaseIndividual implements Individual {
 
     private final Clustering<? extends Cluster> clustering;
 
-    public BaseIndividual(Clustering<? extends Cluster> clustering) {
+    public SimpleIndividual(Clustering<? extends Cluster> clustering) {
         this.clustering = clustering;
     }
 

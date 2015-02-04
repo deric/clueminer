@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Random;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.multim.MultiMuteIndividual;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;

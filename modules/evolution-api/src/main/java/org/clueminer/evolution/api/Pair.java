@@ -1,4 +1,4 @@
-package org.clueminer.clustering.api.evolution;
+package org.clueminer.evolution.api;
 
 /**
  *

@@ -1,20 +1,20 @@
 package org.clueminer.evolution.hac;
 
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.evolution.api.Population;
 
 /**
  *
  * @author Tomas Barton
  */
-public class FakePopulation implements Population<BaseIndividual> {
+public class FakePopulation implements Population<SimpleIndividual> {
 
-    private BaseIndividual current;
+    private SimpleIndividual current;
 
-    public BaseIndividual getCurrent() {
+    public SimpleIndividual getCurrent() {
         return current;
     }
 
-    public void setCurrent(BaseIndividual current) {
+    public void setCurrent(SimpleIndividual current) {
         this.current = current;
     }
 
@@ -32,27 +32,27 @@ public class FakePopulation implements Population<BaseIndividual> {
     }
 
     @Override
-    public BaseIndividual getBestIndividual() {
+    public SimpleIndividual getBestIndividual() {
         return current;
     }
 
     @Override
-    public BaseIndividual[] getIndividuals() {
+    public SimpleIndividual[] getIndividuals() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setIndividuals(BaseIndividual[] individuals) {
+    public void setIndividuals(SimpleIndividual[] individuals) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BaseIndividual getIndividual(int idx) {
+    public SimpleIndividual getIndividual(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setIndividuals(int index, BaseIndividual individual) {
+    public void setIndividuals(int index, SimpleIndividual individual) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

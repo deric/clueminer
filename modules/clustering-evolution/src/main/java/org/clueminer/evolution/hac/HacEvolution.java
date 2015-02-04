@@ -11,14 +11,14 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.evolution.AbstractEvolution;
+import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class HacEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class HacEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "Brute-force HAC";
     private final Executor exec;
@@ -154,7 +154,7 @@ public class HacEvolution extends AbstractEvolution implements Runnable, Evoluti
         } else {
             uniqueClusterings.add(clustering);
             instanceContent.add(clustering);
-            population.setCurrent(new BaseIndividual(clustering));
+            population.setCurrent(new SimpleIndividual(clustering));
             fireBestIndividual(gen++, population);
         }
     }

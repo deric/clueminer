@@ -2,7 +2,7 @@ package org.clueminer.explorer;
 
 import java.util.List;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
 import org.openide.nodes.ChildFactory;
 
 /**

@@ -14,15 +14,15 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionFactory;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMI;
+import org.clueminer.evolution.api.UpdateFeed;
 import org.clueminer.explorer.gui.ExplorerToolbar;
-import org.clueminer.meta.api.MetaFeed;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -246,9 +246,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 alg.setProgressHandle(ph);
                 alg.addEvolutionListener(children);
                 //TODO: we could optionally disable storing data in meta-database
-                MetaFeed feed = getLookup().lookup(MetaFeed.class);
+                UpdateFeed feed = getLookup().lookup(UpdateFeed.class);
                 if(feed != null){
-                    alg.addEvolutionListener(feed);
+                    alg.addUpdateListener(feed);
                 }
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);

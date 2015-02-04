@@ -3,7 +3,7 @@ package org.clueminer.explorer;
 import java.awt.event.ActionEvent;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
 import org.clueminer.utils.Props;
 
 /**

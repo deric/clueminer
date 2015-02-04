@@ -1,9 +1,10 @@
-package org.clueminer.clustering.api.evolution;
+package org.clueminer.evolution.api;
 
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.utils.Props;
 
 /**
@@ -102,4 +103,11 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @return
      */
     Props getProps();
+
+    /**
+     *
+     * @param clustering
+     * @return
+     */
+    EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering);
 }

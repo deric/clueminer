@@ -6,16 +6,16 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.evolution.AbstractIndividual;
+import org.clueminer.evolution.BaseIndividual;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MultiMuteIndividual extends AbstractIndividual<MultiMuteIndividual> implements Individual<MultiMuteIndividual> {
+public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> implements Individual<MultiMuteIndividual> {
 
     protected double fitness = 0;
     protected static Random rand = new Random();

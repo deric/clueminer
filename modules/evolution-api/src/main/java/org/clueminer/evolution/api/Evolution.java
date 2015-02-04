@@ -1,4 +1,4 @@
-package org.clueminer.clustering.api.evolution;
+package org.clueminer.evolution.api;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -71,6 +71,12 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
     void setPopulationSize(int populationSize);
 
     void addEvolutionListener(EvolutionListener listener);
+
+    /**
+     *
+     * @param listener
+     */
+    void addUpdateListener(UpdateFeed listener);
 
     /**
      *

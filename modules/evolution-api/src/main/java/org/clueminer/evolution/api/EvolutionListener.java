@@ -1,5 +1,6 @@
-package org.clueminer.clustering.api.evolution;
+package org.clueminer.evolution.api;
 
+import org.clueminer.evolution.api.Evolution;
 import java.util.Collection;
 import java.util.EventListener;
 import org.clueminer.clustering.api.Cluster;

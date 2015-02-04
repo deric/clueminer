@@ -2,9 +2,9 @@ package org.clueminer.evolution.attr;
 
 import org.clueminer.evolution.attr.WeightsIndividual;
 import org.clueminer.evolution.attr.AttrEvolution;
-import org.clueminer.clustering.api.evolution.Individual;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.eval.external.JaccardIndex;

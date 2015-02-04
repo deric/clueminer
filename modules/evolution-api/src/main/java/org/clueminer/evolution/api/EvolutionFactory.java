@@ -1,4 +1,4 @@
-package org.clueminer.clustering.api.evolution;
+package org.clueminer.evolution.api;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -21,7 +21,7 @@ public class EvolutionFactory extends ServiceFactory<Evolution> {
     }
 
     private EvolutionFactory() {
-        providers = new LinkedHashMap<String, Evolution>();
+        providers = new LinkedHashMap<>();
         Collection<? extends Evolution> list = Lookup.getDefault().lookupAll(Evolution.class);
         for (Evolution c : list) {
             providers.put(c.getName(), c);
