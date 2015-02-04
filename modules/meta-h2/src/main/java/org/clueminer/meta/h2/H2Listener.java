@@ -10,14 +10,22 @@ import org.clueminer.clustering.api.evolution.Population;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaFeed;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = MetaFeed.class)
 public class H2Listener implements MetaFeed {
 
     private H2Store store;
+    public static final String name = "H2 store";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public void started(Evolution evolution) {

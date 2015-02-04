@@ -12,6 +12,13 @@ import org.clueminer.dataset.api.Instance;
 public interface MetaFeed extends EvolutionListener {
 
     /**
+     * Name should uniquely identify the type of storage/processing engine
+     *
+     * @return unique name of the provider
+     */
+    String getName();
+
+    /**
      * Triggered when individual added to population
      *
      * @param dataset
