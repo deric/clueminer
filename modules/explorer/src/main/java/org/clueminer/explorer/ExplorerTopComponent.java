@@ -14,14 +14,15 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.evolution.api.Evolution;
-import org.clueminer.evolution.api.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMI;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionFactory;
 import org.clueminer.evolution.api.UpdateFeed;
+import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -245,8 +246,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 });
                 alg.setProgressHandle(ph);
                 alg.addEvolutionListener(children);
+                UpdateFeedFactory uf = UpdateFeedFactory.getInstance();
                 //TODO: we could optionally disable storing data in meta-database
-                UpdateFeed feed = getLookup().lookup(UpdateFeed.class);
+                UpdateFeed feed = uf.getDefault();
                 if(feed != null){
                     alg.addUpdateListener(feed);
                 }
