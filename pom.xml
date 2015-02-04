@@ -221,6 +221,7 @@
         <module>modules/evaluation-plot</module>
         <module>modules/meta-h2</module>
         <module>modules/evolution-api</module>
+        <module>modules/meta-view</module>
     </modules>
     <reporting>
         <plugins>
