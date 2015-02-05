@@ -159,6 +159,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
             Clustering<Cluster> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
             fireBestIndividual(g, population);
+            fireResultUpdate(population.getIndividuals());
             if (ph != null) {
                 ph.progress(g);
             }

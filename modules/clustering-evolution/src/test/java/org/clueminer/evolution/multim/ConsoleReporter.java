@@ -1,8 +1,5 @@
 package org.clueminer.evolution.multim;
 
-import java.util.Collection;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
@@ -34,11 +31,11 @@ public class ConsoleReporter implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+    public void started(Evolution evolution) {
     }
 
     @Override
-    public void started(Evolution evolution) {
+    public void resultUpdate(Individual[] result) {
     }
 
 }

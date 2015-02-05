@@ -1,10 +1,6 @@
 package org.clueminer.evolution.api;
 
-import org.clueminer.evolution.api.Evolution;
-import java.util.Collection;
 import java.util.EventListener;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
 
 /**
  *
@@ -19,7 +15,12 @@ public interface EvolutionListener extends EventListener {
      */
     void started(Evolution evolution);
 
-    void resultUpdate(Collection<Clustering<? extends Cluster>> result);
+    /**
+     * Called after each iteration of evolution
+     *
+     * @param result
+     */
+    void resultUpdate(Individual[] result);
 
     /**
      * Best individual found in a generation

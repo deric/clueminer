@@ -1,6 +1,5 @@
 package org.clueminer.explorer;
 
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -78,8 +77,8 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-        //TODO: implement
+    public void resultUpdate(Individual[] result) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

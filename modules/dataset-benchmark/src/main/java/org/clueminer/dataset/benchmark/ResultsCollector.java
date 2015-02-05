@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
@@ -73,7 +70,7 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+    public void resultUpdate(Individual[] result) {
         //we are mostly interested for final set of clusterings, not incremental updates
     }
 }

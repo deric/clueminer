@@ -114,4 +114,10 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
+    protected void fireResultUpdate(Individual[] population) {
+        for (EvolutionListener listener : evoListeners) {
+            listener.resultUpdate(population);
+        }
+    }
+
 }

@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -350,11 +349,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.plotDumpMod = plotDumpMod;
     }
 
-    @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-
-    }
-
     public void setCustomTitle(String customTitle) {
         this.customTitle = customTitle;
     }
@@ -374,6 +368,11 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     @Override
     public void started(Evolution evolution) {
+    }
+
+    @Override
+    public void resultUpdate(Individual[] result) {
+        //not much to do
     }
 
 }
