@@ -1,5 +1,7 @@
 package org.clueminer.explorer;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -22,6 +24,7 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     private Lookup.Result<Clustering> result;
     private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
+    private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
     //private Set<Clustering> all = new HashSet<Clustering>(5);
 
     public ClustSorted() {
@@ -45,22 +48,13 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, population.getAvgFitness(), external});
-        final ClusteringNode[] nodesAry = new ClusteringNode[1];
-        nodesAry[0] = new ClusteringNode(population.getBestIndividual().getClustering());
-
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                add(nodesAry);
-            }
-        });
-
+        addClustering(population.getBestIndividual().getClustering());
     }
 
     public void addClustering(Clustering<? extends Cluster> clustering) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
         nodesAry[0] = new ClusteringNode((Clustering<Cluster>) clustering);
+        map.put(nodesAry, clustering.hashCode());
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -73,12 +67,41 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //nothing to do
     }
 
     @Override
     public void resultUpdate(Individual[] result) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //worst case hash set size
+        ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
+        int hash;
+        Clustering<? extends Cluster> c;
+        for (Individual ind : result) {
+            c = ind.getClustering();
+            hash = c.hashCode();
+            //new clustering
+            if (!map.containsValue(hash)) {
+                addClustering(c);
+            }
+            if (!toKeep.contains(c)) {
+                toKeep.add(c);
+            }
+
+        }
+        //go through all current nodes and remove old nodes
+        for (final ClusteringNode[] n : map.keySet()) {
+            if (!toKeep.contains(n[0].getClustering())) {
+                // System.out.println("want to remove: " + n[0].getClustering().getName() + " hash " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        remove(n);
+                    }
+                });
+                map.remove(n);
+            }
+        }
     }
 
 }

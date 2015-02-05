@@ -38,7 +38,6 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
             evalName = evaluator.getName();
             clustNum = clust.size();
             if (hclust.isScoreCached(evalName, clustNum)) {
-                System.out.println("score cached");
                 score = hclust.getScore(evalName, clustNum);
             } else {
                 score = evaluator.score(clust, hclust.getDataset());

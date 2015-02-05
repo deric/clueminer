@@ -50,7 +50,6 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         CutoffStrategy strategy = getCutoffStrategy(params);
         double cut = rowsResult.findCutoff(strategy);
         logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
-        params.putDouble(AgglParams.CUTOFF, cut);
         return rowsResult;
     }
 

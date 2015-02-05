@@ -173,11 +173,16 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
 
     @Override
     public boolean isValid() {
+        boolean ret = true;
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
-            return aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
+            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
         }
-        return true;
+        if (clustering != null && clustering.size() < 2) {
+            //we don't want solutions with 0 or 1 cluster
+            return false;
+        }
+        return ret;
     }
 
     @Override

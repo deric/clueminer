@@ -380,6 +380,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
+        for (Cluster<E> e : this) {
+            sb.append(e.toString());
+        }
+
         return sb.append(getName()).toString();
     }
 
