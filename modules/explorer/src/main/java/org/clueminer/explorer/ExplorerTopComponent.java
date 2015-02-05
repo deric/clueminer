@@ -233,6 +233,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
                 alg.setGenerations(toolbar.getGenerations());
+                alg.setPopulationSize(30);
 
                 InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
                 alg.setEvaluator(fact.getDefault());
@@ -249,7 +250,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 UpdateFeedFactory uf = UpdateFeedFactory.getInstance();
                 //TODO: we could optionally disable storing data in meta-database
                 UpdateFeed feed = uf.getDefault();
-                if(feed != null){
+                if (feed != null) {
                     alg.addUpdateListener(feed);
                 }
                 //childern node will get all clustering results

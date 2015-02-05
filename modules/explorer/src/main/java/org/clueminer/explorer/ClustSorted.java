@@ -75,6 +75,7 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
         //worst case hash set size
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
         int hash;
+
         Clustering<? extends Cluster> c;
         for (Individual ind : result) {
             c = ind.getClustering();
@@ -86,22 +87,27 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
             if (!toKeep.contains(c)) {
                 toKeep.add(c);
             }
-
         }
+        System.out.println("map: " + map.size() + ", to keep: " + toKeep.size());
         //go through all current nodes and remove old nodes
-        for (final ClusteringNode[] n : map.keySet()) {
-            if (!toKeep.contains(n[0].getClustering())) {
-                // System.out.println("want to remove: " + n[0].getClustering().getName() + " hash " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
-                SwingUtilities.invokeLater(new Runnable() {
+    /*    ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
+         for (final ClusteringNode[] n : map.keySet()) {
+         if (!toKeep.contains(n[0].getClustering())) {
+         System.out.println("want to remove: " + n[0].getClustering().getName() + " precision " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
+         toRemove.add(n);
+         }
+         }
+         for (final ClusteringNode[] n : toRemove) {
+         SwingUtilities.invokeLater(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        remove(n);
-                    }
-                });
-                map.remove(n);
-            }
-        }
+         @Override
+         public void run() {
+         remove(n);
+         }
+         });
+         map.remove(n);
+         }*/
+
     }
 
 }

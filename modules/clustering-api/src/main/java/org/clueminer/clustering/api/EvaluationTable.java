@@ -23,6 +23,14 @@ public interface EvaluationTable {
     double getScore(ClusterEvaluation evaluator);
 
     /**
+     * Get score for given evaluator
+     *
+     * @param evaluator name of the evaluator
+     * @return
+     */
+    double getScore(String evaluator);
+
+    /**
      * Names of all available evaluators
      *
      * @return

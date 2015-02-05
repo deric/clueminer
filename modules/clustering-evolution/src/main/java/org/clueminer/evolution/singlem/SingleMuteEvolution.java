@@ -68,6 +68,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         evolutionStarted(this);
         clean();
         int stdMethods = standartizations.size();
+        System.out.println("evaluator: " + getEvaluator().getName());
 
         if (ph != null) {
             int workunits = getGenerations();
@@ -125,21 +126,18 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
             Individual[] nextGen = selected.toArray(new Individual[0]);
-            //  for (int i = 0; i < newIndsArr.length; i++) {
-            //      System.out.println(i + ": " + newIndsArr[i].getFitness());
-            //  }
             if (maximizedFitness) {
-                Arrays.sort(nextGen, Collections.reverseOrder());
-            } else {
                 //natural ordering
                 Arrays.sort(nextGen);
+            } else {
+                Arrays.sort(nextGen, Collections.reverseOrder());
             }
 
             int indsToCopy;
             if (nextGen.length > population.size()) {
-                indsToCopy = population.size();
+                indsToCopy = population.size() / 2;
             } else {
-                indsToCopy = nextGen.length;
+                indsToCopy = nextGen.length / 2;
             }
             if (ph != null) {
                 ph.progress(indsToCopy + " new individuals in population. generation: " + g);
@@ -147,10 +145,19 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
             if (indsToCopy > 0) {
                 System.out.println("copying " + indsToCopy + " new inds: " + nextGen.length);
                 //TODO: old population should be sorted as well? take only part of the new population?
-                System.arraycopy(nextGen, 0, population.getIndividuals(), 0, indsToCopy);
+                //replace worser part of population by new ones
+                System.out.println("arraycopy: " + (populationSize - indsToCopy - 1) + ", p: " + (populationSize - 1));
+                System.arraycopy(nextGen, 0, population.getIndividuals(), populationSize - indsToCopy - 1, indsToCopy);
             } else {
                 logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
                 //    throw new RuntimeException("no new individuals");
+            }
+            //sort whole population
+            if (maximizedFitness) {
+                //natural ordering
+                Arrays.sort(population.getIndividuals());
+            } else {
+                Arrays.sort(population.getIndividuals(), Collections.reverseOrder());
             }
 
             // print statistic

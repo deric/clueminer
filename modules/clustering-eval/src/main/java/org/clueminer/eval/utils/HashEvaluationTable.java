@@ -68,6 +68,17 @@ public class HashEvaluationTable implements EvaluationTable {
         }
     }
 
+    @Override
+    public double getScore(String evaluator) {
+        if (internalMap.containsKey(evaluator)) {
+            return getScore(internalMap.get(evaluator));
+        } else if (externalMap.containsKey(evaluator)) {
+            return getScore(externalMap.get(evaluator));
+        } else {
+            throw new RuntimeException("unknown evaluator");
+        }
+    }
+
     private Map<String, Double> evalToScoreMap(Object2ObjectMap<String, ClusterEvaluation> map) {
         HashMap<String, Double> res = new HashMap<>(map.size());
         for (ClusterEvaluation eval : map.values()) {
