@@ -14,7 +14,7 @@ public interface ToolbarListener {
 
     void evolutionAlgorithmChanged(ActionEvent evt);
 
-    void startEvolution(ActionEvent evt, String evolution);
+    void startEvolution(ActionEvent evt, final Evolution alg);
 
     void evaluatorChanged(ClusterEvaluation eval);
 

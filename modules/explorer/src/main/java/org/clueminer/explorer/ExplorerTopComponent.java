@@ -20,7 +20,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.evolution.api.Evolution;
-import org.clueminer.evolution.api.EvolutionFactory;
 import org.clueminer.evolution.api.UpdateFeed;
 import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
@@ -224,11 +223,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     @Override
-    public void startEvolution(ActionEvent evt, final String evolution) {
+    public void startEvolution(ActionEvent evt, final Evolution alg) {
         if (dataset != null) {
             //start evolution
-            EvolutionFactory ef = EvolutionFactory.getInstance();
-            alg = ef.getProvider(evolution);
             if (alg != null) {
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
