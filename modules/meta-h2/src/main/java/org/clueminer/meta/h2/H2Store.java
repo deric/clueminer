@@ -3,6 +3,7 @@ package org.clueminer.meta.h2;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
@@ -14,6 +15,7 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.api.Evolution;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
 import org.clueminer.meta.h2.dao.DatasetModel;
@@ -24,6 +26,7 @@ import org.clueminer.utils.FileUtils;
 import org.clueminer.utils.Props;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.openide.util.Exceptions;
+import org.openide.util.lookup.ServiceProvider;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
@@ -32,12 +35,14 @@ import org.skife.jdbi.v2.Handle;
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = MetaStorage.class)
 public class H2Store implements MetaStorage {
 
     private static H2Store instance;
     private Connection conn = null;
     private static final String dbName = "meta-db";
     private DBI dbi;
+    private static final String name = "H2 store";
 
     public static H2Store getInstance() {
         if (instance == null) {
@@ -46,7 +51,7 @@ public class H2Store implements MetaStorage {
         return instance;
     }
 
-    private H2Store() {
+    public H2Store() {
         String dir = getDbDir();
 
         File path = new File(dir);
@@ -64,6 +69,11 @@ public class H2Store implements MetaStorage {
 
     public static String getDbDir() {
         return FileUtils.LocalFolder() + File.separatorChar + "db";
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public DBI db() {
@@ -297,6 +307,11 @@ public class H2Store implements MetaStorage {
         if (conn != null) {
             conn.close();
         }
+    }
+
+    @Override
+    public Collection<? extends Evolution> getEvolutionaryAlgorithms() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
