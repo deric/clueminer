@@ -110,4 +110,17 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     }
 
+    public void clearAll() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                for (final ClusteringNode[] n : map.keySet()) {
+                    remove(n);
+                }
+                map.clear();
+            }
+        });
+    }
+
 }

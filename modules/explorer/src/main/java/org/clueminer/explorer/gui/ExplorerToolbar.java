@@ -36,6 +36,7 @@ public class ExplorerToolbar extends JToolBar {
     private JButton btnStart;
     private JButton btnFunction;
     private JButton btnExport;
+    private JButton btnTrash;
     private EvalFuncPanel functionPanel;
     private ExportPanel exportPanel;
     private ClusterAlgPanel algPanel;
@@ -111,6 +112,21 @@ public class ExplorerToolbar extends JToolBar {
             }
         });
         add(btnSettings);
+
+        btnTrash = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/trash16.png", false));
+        btnTrash.setToolTipText("Remove all clusterings");
+        btnTrash.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (listener != null) {
+                    listener.clearAll();
+                }
+            }
+        });
+        add(btnTrash);
+
         addSeparator();
 
         btnStart = new JButton("Start Clustering");

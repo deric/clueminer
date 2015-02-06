@@ -26,4 +26,9 @@ public interface ToolbarListener {
      */
     Evolution currentEvolution();
 
+    /**
+     * Remove all found clusterings from explorer
+     */
+    void clearAll();
+
 }

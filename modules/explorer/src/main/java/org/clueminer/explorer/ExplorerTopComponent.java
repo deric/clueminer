@@ -305,4 +305,9 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
         return alg;
     }
 
+    @Override
+    public void clearAll() {
+        children.clearAll();
+    }
+
 }
