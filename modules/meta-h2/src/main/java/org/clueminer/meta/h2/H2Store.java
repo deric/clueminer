@@ -169,10 +169,29 @@ public class H2Store implements MetaStorage {
 
     @Override
     public void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering) {
-        add(fetchDataset(dataset), clustering);
+        addClustering(fetchDataset(dataset), clustering);
     }
 
-    public void add(int datasetId, Clustering<? extends Cluster> clustering) {
+    /**
+     * {@inheritDoc }
+     *
+     * @param datasetId
+     * @param clustering
+     */
+    @Override
+    public void add(int runId, Clustering<? extends Cluster> clustering) {
+        //check that given run exists
+        int datasetId = findRunsDataset(runId);
+        addClustering(datasetId, clustering);
+    }
+
+    /**
+     * Inserts record about given clustering
+     *
+     * @param datasetId
+     * @param clustering
+     */
+    public void addClustering(int datasetId, Clustering<? extends Cluster> clustering) {
         int partitionId = fetchPartitioning(datasetId, clustering);
         Props p = clustering.getParams();
         int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
@@ -321,6 +340,25 @@ public class H2Store implements MetaStorage {
 
             if (id <= 0) {
                 id = em.insert(evolution);
+            }
+        }
+        return id;
+    }
+
+    /**
+     * Finds ID of the dataset
+     *
+     * @param runId
+     * @return dataset id
+     */
+    protected int findRunsDataset(int runId) {
+        int id;
+        try (Handle h = db().open()) {
+            RunModel em = h.attach(RunModel.class);
+            id = em.find(runId);
+
+            if (id <= 0) {
+                throw new RuntimeException("run with " + runId + " does not exist");
             }
         }
         return id;

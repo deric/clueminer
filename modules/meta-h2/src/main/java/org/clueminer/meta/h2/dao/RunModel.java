@@ -2,6 +2,7 @@ package org.clueminer.meta.h2.dao;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
 /**
@@ -23,4 +24,7 @@ public interface RunModel {
     @GetGeneratedKeys
     int insert(@Bind("evo_id") int evolutionId, @Bind("dataset_id") int datasetId);
 
+    //check that given run exists
+    @SqlQuery("SELECT dataset_id from runs WHERE id = :id")
+    int find(@Bind("k") int id);
 }

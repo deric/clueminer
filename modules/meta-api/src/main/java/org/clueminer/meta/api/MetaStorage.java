@@ -21,8 +21,6 @@ public interface MetaStorage {
      */
     String getName();
 
-    void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering);
-
     /**
      * Find score in previous results
      *
@@ -49,4 +47,19 @@ public interface MetaStorage {
      */
     int registerRun(Evolution evolution, Dataset<? extends Instance> dataset);
 
+    /**
+     * Stores information about dataset, clustering with all metrics available
+     *
+     * @param dataset
+     * @param clustering
+     */
+    void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering);
+
+    /**
+     * Associates result with given run of an evolutionary algorithm
+     *
+     * @param runId
+     * @param clustering
+     */
+    void add(int runId, Clustering<? extends Cluster> clustering);
 }
