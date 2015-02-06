@@ -86,17 +86,9 @@ public final class InfoPanelTopComponent extends TopComponent implements LookupL
 
             @Override
             public void select(Workspace workspace) {
-                logger.log(Level.INFO, "workspace: {0}", workspace.toString());
                 logger.log(Level.INFO, "infopanel selected");
-                System.out.println("workspace selected: got result (plate)");
-                htsResult = workspace.getLookup().lookupResult(HtsPlate.class);
-                System.out.println("lookup res= " + htsResult.toString());
 
-                HtsPlate plt = workspace.getLookup().lookup(HtsPlate.class);
-                System.out.println("got plate, size: " + plt);
-                //  result.addLookupListener(parent);
-
-                Dataset<Instance> dataset = workspace.getLookup().lookup(Dataset.class);
+                Dataset<? extends Instance> dataset = workspace.getLookup().lookup(Dataset.class);
                 if (dataset != null) {
                     logger.log(Level.INFO, "got dataset {0}", dataset.size());
                     /* System.out.println("well map");

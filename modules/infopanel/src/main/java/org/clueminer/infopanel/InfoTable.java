@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
 import javax.swing.*;
-import org.clueminer.utils.Dump;
 
 /**
  *
@@ -23,9 +22,10 @@ public class InfoTable extends JPanel {
     private static final long serialVersionUID = -1952564096062935412L;
     private JTable instaceJTable;
     private JScrollPane instanceListScrollPane;
-    private EventList<String[]> propertieList = new BasicEventList<String[]>();
+    private final EventList<String[]> propertieList;
 
     public InfoTable() {
+        this.propertieList = new BasicEventList<>();
         initComponents();
     }
 
@@ -36,11 +36,11 @@ public class InfoTable extends JPanel {
         // lock while creating the transformed models
         propertieList.getReadWriteLock().readLock().lock();
         try {
-            SortedList<String[]> sortedItems = new SortedList<String[]>(propertieList, new ElementComparator());
+            SortedList<String[]> sortedItems = new SortedList<>(propertieList, new ElementComparator());
 
-            FilterList<String[]> textFilteredIssues = new FilterList<String[]>(propertieList, new TextComponentMatcherEditor<String[]>(filterEdit, new StringTextFilterator()));
+            FilterList<String[]> textFilteredIssues = new FilterList<>(propertieList, new TextComponentMatcherEditor<>(filterEdit, new StringTextFilterator()));
 
-            DefaultEventTableModel<String[]> infoListModel = new DefaultEventTableModel<String[]>(textFilteredIssues, new InfoTableFormat());
+            DefaultEventTableModel<String[]> infoListModel = new DefaultEventTableModel<>(textFilteredIssues, new InfoTableFormat());
             instaceJTable = new JTable(infoListModel);
             TableComparatorChooser tableSorter = TableComparatorChooser.install(instaceJTable, sortedItems, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
         } finally {
