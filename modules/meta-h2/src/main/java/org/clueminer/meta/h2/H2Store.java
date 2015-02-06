@@ -19,8 +19,10 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
 import org.clueminer.meta.h2.dao.DatasetModel;
+import org.clueminer.meta.h2.dao.EvolutionModel;
 import org.clueminer.meta.h2.dao.PartitioningModel;
 import org.clueminer.meta.h2.dao.ResultModel;
+import org.clueminer.meta.h2.dao.RunModel;
 import org.clueminer.meta.h2.dao.TemplateModel;
 import org.clueminer.utils.FileUtils;
 import org.clueminer.utils.Props;
@@ -113,8 +115,16 @@ public class H2Store implements MetaStorage {
         try (Handle dh = dbi.open()) {
             dh.begin();
 
+            EvolutionModel et = dh.attach(EvolutionModel.class);
+            et.createTable();
+            dh.commit();
+
             DatasetModel dt = dh.attach(DatasetModel.class);
             dt.createTable();
+            dh.commit();
+
+            RunModel rut = dh.attach(RunModel.class);
+            rut.createTable();
             dh.commit();
 
             PartitioningModel pt = dh.attach(PartitioningModel.class);
