@@ -99,11 +99,14 @@ public class ExplorerToolbar extends JToolBar {
                 if (evoPanel == null) {
                     evoPanel = new EvolutionPanel();
                 }
-                DialogDescriptor dd = new DialogDescriptor(algPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
+                DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     Evolution ev = getEvolution();
                     evoPanel.updateAlgorithm(ev);
-
+                    //start evolution right away
+                    if (listener != null) {
+                        listener.startEvolution(e, ev);
+                    }
                 }
             }
         });
