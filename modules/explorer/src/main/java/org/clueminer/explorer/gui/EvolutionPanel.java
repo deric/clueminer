@@ -5,6 +5,7 @@ import javax.swing.DefaultComboBoxModel;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.evolution.api.Evolution;
 
 /**
  *
@@ -31,14 +32,18 @@ public class EvolutionPanel extends javax.swing.JPanel {
         String eval;
         ClusterEvaluation evaluator;
         if (rbExternal.isSelected()) {
-            eval = (String) cbExtern.getSelectedItem();
-            evaluator = ExternalEvaluatorFactory.getInstance().getProvider(eval);
+            return getExternal();
         } else {
             eval = (String) cbIntern.getSelectedItem();
             evaluator = InternalEvaluatorFactory.getInstance().getProvider(eval);
         }
 
         return evaluator;
+    }
+
+    private ClusterEvaluation getExternal() {
+        String eval = (String) cbExtern.getSelectedItem();
+        return ExternalEvaluatorFactory.getInstance().getProvider(eval);
     }
 
     private String[] initInternalEvaluator() {
@@ -48,7 +53,18 @@ public class EvolutionPanel extends javax.swing.JPanel {
     }
 
     public int getGenerations() {
-        return sliderGen.getValue();
+        return Integer.valueOf(tfGen.getText());
+    }
+
+    public int getPopulation() {
+        return Integer.valueOf(tfPop.getText());
+    }
+
+    public void updateAlgorithm(Evolution alg) {
+        alg.setGenerations(getGenerations());
+        alg.setPopulationSize(getPopulation());
+        alg.setEvaluator(getEvaluator());
+        alg.setExternal(getExternal());
     }
 
     /**
@@ -64,32 +80,39 @@ public class EvolutionPanel extends javax.swing.JPanel {
         evalGroup = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         sliderGen = new javax.swing.JSlider();
-        lbGen = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         sliderPop = new javax.swing.JSlider();
-        lbPop = new javax.swing.JLabel();
         rbInternal = new javax.swing.JRadioButton();
         rbExternal = new javax.swing.JRadioButton();
         cbIntern = new javax.swing.JComboBox();
         cbExtern = new javax.swing.JComboBox();
+        tfGen = new javax.swing.JTextField();
+        tfPop = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.jLabel1.text")); // NOI18N
 
         sliderGen.setMaximum(1000);
         sliderGen.setMinimum(1);
         sliderGen.setValue(10);
-
-        org.openide.awt.Mnemonics.setLocalizedText(lbGen, org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.lbGen.text")); // NOI18N
+        sliderGen.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderGenStateChanged(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.jLabel2.text")); // NOI18N
 
         sliderPop.setMaximum(1000);
         sliderPop.setMinimum(10);
         sliderPop.setValue(20);
-
-        org.openide.awt.Mnemonics.setLocalizedText(lbPop, org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.lbPop.text")); // NOI18N
+        sliderPop.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sliderPopStateChanged(evt);
+            }
+        });
 
         evalGroup.add(rbInternal);
+        rbInternal.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(rbInternal, org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.rbInternal.text")); // NOI18N
 
         evalGroup.add(rbExternal);
@@ -98,6 +121,22 @@ public class EvolutionPanel extends javax.swing.JPanel {
         cbIntern.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
 
         cbExtern.setModel(new DefaultComboBoxModel(initExternal()));
+
+        tfGen.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        tfGen.setText(org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.tfGen.text")); // NOI18N
+        tfGen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfGenActionPerformed(evt);
+            }
+        });
+        tfGen.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tfGenPropertyChange(evt);
+            }
+        });
+
+        tfPop.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        tfPop.setText(org.openide.util.NbBundle.getMessage(EvolutionPanel.class, "EvolutionPanel.tfPop.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -111,38 +150,40 @@ public class EvolutionPanel extends javax.swing.JPanel {
                             .addComponent(rbExternal)
                             .addComponent(rbInternal)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(sliderPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(4, 4, 4)
+                                        .addComponent(sliderGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(sliderPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbPop))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(4, 4, 4)
-                                .addComponent(sliderGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbGen))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tfGen, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+                                    .addComponent(tfPop)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(53, 53, 53)
                         .addComponent(cbIntern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(53, 53, 53)
                         .addComponent(cbExtern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbGen)
                     .addComponent(sliderGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(tfGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(sliderPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbPop))
+                    .addComponent(tfPop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(rbInternal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -151,9 +192,27 @@ public class EvolutionPanel extends javax.swing.JPanel {
                 .addComponent(rbExternal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cbExtern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void sliderGenStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderGenStateChanged
+        tfGen.setText(String.valueOf(sliderGen.getValue()));
+    }//GEN-LAST:event_sliderGenStateChanged
+
+    private void sliderPopStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderPopStateChanged
+        tfPop.setText(String.valueOf(sliderPop.getValue()));
+    }//GEN-LAST:event_sliderPopStateChanged
+
+    private void tfGenPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tfGenPropertyChange
+
+        int val = Integer.valueOf(tfGen.getText());
+        sliderGen.setValue(val);
+    }//GEN-LAST:event_tfGenPropertyChange
+
+    private void tfGenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfGenActionPerformed
+
+    }//GEN-LAST:event_tfGenActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbExtern;
@@ -161,11 +220,11 @@ public class EvolutionPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup evalGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel lbGen;
-    private javax.swing.JLabel lbPop;
     private javax.swing.JRadioButton rbExternal;
     private javax.swing.JRadioButton rbInternal;
     private javax.swing.JSlider sliderGen;
     private javax.swing.JSlider sliderPop;
+    private javax.swing.JTextField tfGen;
+    private javax.swing.JTextField tfPop;
     // End of variables declaration//GEN-END:variables
 }

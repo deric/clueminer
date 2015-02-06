@@ -102,10 +102,13 @@ public class ExplorerToolbar extends JToolBar {
                 DialogDescriptor dd = new DialogDescriptor(algPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     Evolution ev = getEvolution();
+                    evoPanel.updateAlgorithm(ev);
 
                 }
             }
         });
+        add(btnSettings);
+        addSeparator();
 
         btnStart = new JButton("Start Clustering");
 
@@ -116,7 +119,7 @@ public class ExplorerToolbar extends JToolBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
-                    listener.startEvolution(evt, evolution);
+                    listener.startEvolution(evt, getEvolution());
                 }
 
             }
