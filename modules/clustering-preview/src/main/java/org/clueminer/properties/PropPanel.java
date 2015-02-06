@@ -18,6 +18,8 @@ import org.openide.util.Exceptions;
  */
 public class PropPanel extends JPanel {
 
+    private static final long serialVersionUID = 4857071066201255289L;
+
     public PropPanel() {
         initialize();
     }
@@ -30,11 +32,8 @@ public class PropPanel extends JPanel {
     public void setNodes(Collection<? extends AbstractNode> allInstances) {
         if (allInstances.size() == 1) {
             removeAll();
-            System.out.println("size: " + getSize());
             AbstractNode node = allInstances.iterator().next();
-            System.out.println("node: " + node.toString());
             Node.PropertySet[] sets = node.getPropertySets();
-            System.out.println("prop sets: " + sets.length);
             int i = 0;
             for (Node.PropertySet set : sets) {
                 i = addSet(set, i);
