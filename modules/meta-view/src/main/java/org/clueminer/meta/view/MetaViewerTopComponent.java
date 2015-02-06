@@ -2,10 +2,18 @@ package org.clueminer.meta.view;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.util.Collection;
+import javax.swing.SwingUtilities;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -32,9 +40,11 @@ import org.openide.windows.TopComponent;
     "CTL_MetaViewerTopComponent=MetaViewer Window",
     "HINT_MetaViewerTopComponent=This is a MetaViewer window"
 })
-public final class MetaViewerTopComponent extends TopComponent {
+public final class MetaViewerTopComponent extends TopComponent implements LookupListener {
 
+    private static final long serialVersionUID = -950662751709594103L;
     private final MetaPanel panel;
+    private Lookup.Result<Dataset> result = null;
 
     public MetaViewerTopComponent() {
         initComponents();
@@ -59,7 +69,8 @@ public final class MetaViewerTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
+        result.addLookupListener(this);
     }
 
     @Override
@@ -77,5 +88,21 @@ public final class MetaViewerTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+
+        if (result != null) {
+            Collection<? extends Dataset> allDatasets = result.allInstances();
+            for (final Dataset<? extends Instance> d : allDatasets) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        panel.updateDataset(d);
+                    }
+                });
+            }
+        }
     }
 }
