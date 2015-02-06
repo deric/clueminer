@@ -20,7 +20,7 @@ public class InfoTableFormat implements TableFormat<String[]> {
         } else if (column == 1) {
             return "Value";
         }
-        
+
         throw new IllegalStateException();
     }
 
