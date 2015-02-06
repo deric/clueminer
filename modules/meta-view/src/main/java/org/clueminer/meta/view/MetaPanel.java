@@ -9,13 +9,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Arrays;
+import java.util.Collection;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.meta.api.MetaStorage;
 
 /**
  *
@@ -28,6 +31,8 @@ class MetaPanel extends JPanel {
     private JScrollPane instanceListScrollPane;
     private final EventList<String[]> resultsList;
     private Dataset<? extends Instance> dataset;
+    private MetaStorage storage;
+    private JComboBox<String> evolutions;
 
     public MetaPanel() {
         this.resultsList = new BasicEventList<>();
@@ -36,7 +41,7 @@ class MetaPanel extends JPanel {
 
     private void initialize() {
         setLayout(new GridBagLayout());
-        JTextField filterEdit = new JTextField(10);
+        evolutions = new JComboBox<>();
 
         // lock while creating the transformed models
         resultsList.getReadWriteLock().readLock().lock();
@@ -51,8 +56,8 @@ class MetaPanel extends JPanel {
             resultsList.getReadWriteLock().readLock().unlock();
         }
 
-        add(new JLabel("Filter: "), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
-        add(filterEdit, new GridBagConstraints(0, 0, 1, 1, 0.15, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 55, 5, 5), 0, 0));
+        add(new JLabel("Source: "), new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        add(evolutions, new GridBagConstraints(0, 0, 1, 1, 0.15, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 55, 5, 5), 0, 0));
         instanceListScrollPane = new JScrollPane(instaceJTable);
         add(instanceListScrollPane, new GridBagConstraints(0, 1, 1, 4, 0.85, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
     }
@@ -74,6 +79,17 @@ class MetaPanel extends JPanel {
             String[] stringArray = Arrays.copyOf(line, line.length, String[].class);
             resultsList.add(stringArray);
         }
+    }
+
+    public void setStorage(MetaStorage storage) {
+        this.storage = storage;
+        if (storage != null) {
+            Collection<String> algs = storage.getEvolutionaryAlgorithms();
+            if (algs.size() > 0) {
+                evolutions.setModel(new DefaultComboBoxModel<>(algs.toArray(new String[algs.size()])));
+            }
+        }
+
     }
 
 }

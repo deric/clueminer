@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.swing.SwingUtilities;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.meta.api.MetaStorageFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -71,6 +72,9 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
         result.addLookupListener(this);
+
+        MetaStorageFactory mf = MetaStorageFactory.getInstance();
+        panel.setStorage(mf.getDefault());
     }
 
     @Override
