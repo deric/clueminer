@@ -401,8 +401,12 @@ public class H2Store implements MetaStorage {
         int evoId = fetchEvolution(evolutionaryAlgorithm);
         try (Handle h = db().open()) {
             ResultModel rm = h.attach(ResultModel.class);
-            return rm.findAll(datasetId, evoId, score.getName());
+            return rm.findAll(datasetId, evoId, quoteVar(score.getName()));
         }
+    }
+
+    private String quoteVar(String var) {
+        return "\"" + var + "\"";
     }
 
 }

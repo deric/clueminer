@@ -28,7 +28,7 @@ public interface ResultModel {
             + ")")
     void createTable();
 
-    @SqlQuery("SELECT \":score\" from results WHERE partitioning_id = :pid AND dataset_id = :did")
+    @SqlQuery("SELECT :score from results WHERE partitioning_id = :pid AND dataset_id = :did")
     double score(@Bind("score") String score, @Bind("pid") int partitionId, @Bind("did") int datasetId);
 
     @SqlUpdate("insert into results (template_id, partitioning_id, dataset_id)"
@@ -42,7 +42,8 @@ public interface ResultModel {
     int insert(@Bind("template_id") int templateId, @Bind("partitioning_id") int partitioningId,
             @Bind("dataset_id") int datasetId, @Bind("run_id") int runId);
 
-    @SqlQuery("SELECT p.k, t.template, \"Precision\" FROM results AS r"
+    //:score must be quoted
+    @SqlQuery("SELECT p.k, t.template, :score FROM results AS r"
             + " LEFT JOIN templates t"
             + " ON r.template_id = t.id"
             + " LEFT JOIN partitionings p"
