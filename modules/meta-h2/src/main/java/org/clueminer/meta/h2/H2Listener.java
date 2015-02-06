@@ -1,7 +1,5 @@
 package org.clueminer.meta.h2;
 
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.UpdateFeed;
@@ -23,13 +21,14 @@ public class H2Listener implements UpdateFeed {
     }
 
     @Override
-    public void started(Evolution evolution) {
+    public int started(Evolution evolution) {
         store = H2Store.getInstance();
+        return store.registerRun(evolution);
     }
 
     @Override
-    public void individualCreated(Dataset<? extends Instance> dataset, Individual individual) {
-        store.add(dataset, individual.getClustering());
+    public void individualCreated(int runId, Individual individual) {
+        store.add(runId, individual.getClustering());
     }
 
 }

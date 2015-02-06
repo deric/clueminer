@@ -379,9 +379,9 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public int registerRun(Evolution evolution, Dataset<? extends Instance> dataset) {
+    public int registerRun(Evolution evolution) {
         int evoId = fetchEvoluton(evolution.getName());
-        int datasetId = fetchDataset(dataset);
+        int datasetId = fetchDataset(evolution.getDataset());
 
         try (Handle h = db().open()) {
             RunModel rm = h.attach(RunModel.class);

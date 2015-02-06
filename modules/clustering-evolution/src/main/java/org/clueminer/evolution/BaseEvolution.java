@@ -28,6 +28,10 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
 
     protected final transient ListenerList<EvolutionListener> evoListeners = new ListenerList<>();
     protected final transient ListenerList<UpdateFeed> metaListeners = new ListenerList<>();
+    /**
+     * for storing meta-data
+     */
+    protected int runId;
 
     /**
      * Hook that should be called when evolution starts
@@ -75,7 +79,8 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
         for (UpdateFeed listener : metaListeners) {
             if (listener != null) {
-                listener.started(e);
+                //TODO: doesn't work for multiple storages
+                runId = listener.started(e);
             }
         }
     }
@@ -83,7 +88,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
     protected void fireIndividualCreated(Dataset<? extends Instance> dataset, Individual individual) {
         for (UpdateFeed listener : metaListeners) {
             if (listener != null) {
-                listener.individualCreated(dataset, individual);
+                listener.individualCreated(runId, individual);
             }
         }
     }

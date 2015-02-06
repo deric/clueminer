@@ -41,11 +41,10 @@ public interface MetaStorage {
     /**
      * Creates new ID for run of an evolution on given dataset
      *
-     * @param evolution
-     * @param dataset
+     * @param evolution contains parameters and information about dataset
      * @return ID of the run
      */
-    int registerRun(Evolution evolution, Dataset<? extends Instance> dataset);
+    int registerRun(Evolution evolution);
 
     /**
      * Stores information about dataset, clustering with all metrics available
