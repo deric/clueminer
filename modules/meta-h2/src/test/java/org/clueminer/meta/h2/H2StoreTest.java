@@ -74,4 +74,16 @@ public class H2StoreTest {
     public void testClose() throws Exception {
     }
 
+    @Test
+    public void testFetchEvolution() {
+        int id = subject.fetchEvolution("test evolution");
+        assertEquals(true, id > 0);
+    }
+
+    @Test
+    public void testFetchAlgorithm() {
+        int id = subject.fetchAlgorithm("my alg");
+        assertEquals(true, id > 0);
+    }
+
 }

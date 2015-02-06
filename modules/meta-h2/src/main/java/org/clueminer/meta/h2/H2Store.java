@@ -332,7 +332,7 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    protected int fetchEvoluton(String evolution) {
+    protected int fetchEvolution(String evolution) {
         int id;
         try (Handle h = db().open()) {
             EvolutionModel em = h.attach(EvolutionModel.class);
@@ -380,7 +380,7 @@ public class H2Store implements MetaStorage {
 
     @Override
     public int registerRun(Evolution evolution) {
-        int evoId = fetchEvoluton(evolution.getName());
+        int evoId = fetchEvolution(evolution.getName());
         int datasetId = fetchDataset(evolution.getDataset());
 
         try (Handle h = db().open()) {

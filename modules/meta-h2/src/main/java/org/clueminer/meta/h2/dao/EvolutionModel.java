@@ -18,7 +18,7 @@ public interface EvolutionModel {
             + ")")
     void createTable();
 
-    @SqlUpdate("insert into runs (name) values (:name)")
+    @SqlUpdate("insert into evolutions (name) values (:name)")
     @GetGeneratedKeys
     int insert(@Bind("name") String name);
 
