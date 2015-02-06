@@ -2,6 +2,7 @@ package org.clueminer.meta.h2.dao;
 
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 
 /**
@@ -19,5 +20,8 @@ public interface EvolutionModel {
     @SqlUpdate("insert into runs (name) values (:name)")
     @GetGeneratedKeys
     int insert(@Bind("name") String name);
+
+    @SqlQuery("select id from evolutions where name = :name")
+    int find(@Bind("name") String name);
 
 }

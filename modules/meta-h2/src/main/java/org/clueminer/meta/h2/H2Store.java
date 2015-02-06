@@ -275,7 +275,7 @@ public class H2Store implements MetaStorage {
 
     @Override
     public double findScore(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
-        double res = Double.NaN;
+        double res;
         int datasetId = fetchDataset(dataset);
         int partitioningId = fetchPartitioning(datasetId, clustering);
 
@@ -313,6 +313,19 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
+    protected int fetchEvoluton(String evolution) {
+        int id;
+        try (Handle h = db().open()) {
+            EvolutionModel em = h.attach(EvolutionModel.class);
+            id = em.find(evolution);
+
+            if (id <= 0) {
+                id = em.insert(evolution);
+            }
+        }
+        return id;
+    }
+
     public void close() throws SQLException {
         if (conn != null) {
             conn.close();
@@ -322,6 +335,17 @@ public class H2Store implements MetaStorage {
     @Override
     public Collection<? extends Evolution> getEvolutionaryAlgorithms() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int registerRun(Evolution evolution, Dataset<? extends Instance> dataset) {
+        int evoId = fetchEvoluton(evolution.getName());
+        int datasetId = fetchDataset(dataset);
+
+        try (Handle h = db().open()) {
+            RunModel rm = h.attach(RunModel.class);
+            return rm.insert(evoId, datasetId);
+        }
     }
 
 }

@@ -40,4 +40,13 @@ public interface MetaStorage {
      */
     Collection<? extends Evolution> getEvolutionaryAlgorithms();
 
+    /**
+     * Creates new ID for run of an evolution on given dataset
+     *
+     * @param evolution
+     * @param dataset
+     * @return ID of the run
+     */
+    int registerRun(Evolution evolution, Dataset<? extends Instance> dataset);
+
 }
