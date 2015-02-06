@@ -1,5 +1,6 @@
 package org.clueminer.meta.h2.dao;
 
+import java.util.List;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
@@ -23,5 +24,8 @@ public interface EvolutionModel {
 
     @SqlQuery("select id from evolutions where name = :name")
     int find(@Bind("name") String name);
+
+    @SqlQuery("select name from evolutions")
+    List<String> findAll();
 
 }

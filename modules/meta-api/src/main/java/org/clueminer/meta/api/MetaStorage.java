@@ -36,7 +36,7 @@ public interface MetaStorage {
      *
      * @return list of known algorithms
      */
-    Collection<? extends Evolution> getEvolutionaryAlgorithms();
+    Collection<String> getEvolutionaryAlgorithms();
 
     /**
      * Creates new ID for run of an evolution on given dataset

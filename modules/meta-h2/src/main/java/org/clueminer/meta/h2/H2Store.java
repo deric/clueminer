@@ -371,8 +371,11 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public Collection<? extends Evolution> getEvolutionaryAlgorithms() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Collection<String> getEvolutionaryAlgorithms() {
+        try (Handle h = db().open()) {
+            EvolutionModel em = h.attach(EvolutionModel.class);
+            return em.findAll();
+        }
     }
 
     @Override
