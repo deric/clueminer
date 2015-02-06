@@ -61,4 +61,14 @@ public interface MetaStorage {
      * @param clustering
      */
     void add(int runId, Clustering<? extends Cluster> clustering);
+
+    /**
+     * Find all results of given algorithm sorted by an evaluation score
+     *
+     * @param dataset
+     * @param evolutionaryAlgorithm
+     * @param score
+     * @return
+     */
+    Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, ClusterEvaluation score);
 }

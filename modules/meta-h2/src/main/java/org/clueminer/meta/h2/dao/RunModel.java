@@ -13,6 +13,7 @@ public interface RunModel {
 
     @SqlUpdate("CREATE TABLE IF NOT EXISTS runs("
             + "id INT auto_increment PRIMARY KEY,"
+            + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
             + "evolution_id INT,"
             + "dataset_id INT,"
             + "FOREIGN KEY(evolution_id) REFERENCES public.evolutions(id),"

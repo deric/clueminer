@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
 import org.clueminer.meta.h2.dao.DatasetModel;
@@ -169,7 +170,7 @@ public class H2Store implements MetaStorage {
 
     @Override
     public void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering) {
-        addClustering(fetchDataset(dataset), clustering);
+        addClustering(fetchDataset(dataset), clustering, -1);
     }
 
     /**
@@ -182,7 +183,7 @@ public class H2Store implements MetaStorage {
     public void add(int runId, Clustering<? extends Cluster> clustering) {
         //check that given run exists
         int datasetId = findRunsDataset(runId);
-        addClustering(datasetId, clustering);
+        addClustering(datasetId, clustering, runId);
     }
 
     /**
@@ -191,7 +192,7 @@ public class H2Store implements MetaStorage {
      * @param datasetId
      * @param clustering
      */
-    public void addClustering(int datasetId, Clustering<? extends Cluster> clustering) {
+    public void addClustering(int datasetId, Clustering<? extends Cluster> clustering, int runId) {
         int partitionId = fetchPartitioning(datasetId, clustering);
         Props p = clustering.getParams();
         int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
@@ -199,7 +200,12 @@ public class H2Store implements MetaStorage {
 
         try (Handle h = db().open()) {
             ResultModel rm = h.attach(ResultModel.class);
-            int rId = rm.insert(templateId, partitionId, datasetId);
+            int rId;
+            if (runId > 0) {
+                rId = rm.insert(templateId, partitionId, datasetId, runId);
+            } else {
+                rId = rm.insert(templateId, partitionId, datasetId);
+            }
             EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
             if (evalTable != null) {
                 StringBuilder sb = new StringBuilder("UPDATE results SET ");
@@ -386,6 +392,16 @@ public class H2Store implements MetaStorage {
         try (Handle h = db().open()) {
             RunModel rm = h.attach(RunModel.class);
             return rm.insert(evoId, datasetId);
+        }
+    }
+
+    @Override
+    public Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, ClusterEvaluation score) {
+        int datasetId = fetchDataset(dataset);
+        int evoId = fetchEvolution(evolutionaryAlgorithm);
+        try (Handle h = db().open()) {
+            ResultModel rm = h.attach(ResultModel.class);
+            return rm.findAll(datasetId, evoId, score.getName());
         }
     }
 

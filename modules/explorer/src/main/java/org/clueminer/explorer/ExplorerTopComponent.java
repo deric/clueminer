@@ -17,7 +17,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
-import org.clueminer.eval.external.NMI;
+import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.UpdateFeed;
 import org.clueminer.evolution.api.UpdateFeedFactory;
@@ -140,7 +140,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
 
-        comparator = new ClustComparator(new NMI());
+        comparator = new ClustComparator(new Precision());
         children = new ClustSorted();
         children.setComparator(comparator);
 

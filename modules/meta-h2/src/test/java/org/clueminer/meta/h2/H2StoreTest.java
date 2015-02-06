@@ -1,12 +1,16 @@
 package org.clueminer.meta.h2;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
+import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.meta.api.MetaResult;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -90,6 +94,12 @@ public class H2StoreTest {
     public void testFetchRun() {
         //should throw an exception when record is not found
         subject.findRunsDataset(9999);
+    }
+
+    @Test
+    public void testFindResults() {
+        Collection<MetaResult> res = subject.findResults(FakeDatasets.irisDataset(), "single-mure", new Precision());
+        assertNotNull(res);
     }
 
 }
