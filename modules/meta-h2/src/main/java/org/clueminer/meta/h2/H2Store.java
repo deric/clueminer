@@ -102,7 +102,7 @@ public class H2Store implements MetaStorage {
      * @param name
      */
     public void deleteDb(String name) {
-        File f = new File(getDbDir() + File.separatorChar + name + ".db");
+        File f = new File(getDbDir() + File.separatorChar + name + ".mv.db");
         if (f.exists()) {
             f.deleteOnExit();
         }

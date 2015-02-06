@@ -86,4 +86,10 @@ public class H2StoreTest {
         assertEquals(true, id > 0);
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testFetchRun() {
+        //should throw an exception when record is not found
+        subject.findRunsDataset(9999);
+    }
+
 }

@@ -26,5 +26,5 @@ public interface RunModel {
 
     //check that given run exists
     @SqlQuery("SELECT dataset_id from runs WHERE id = :id")
-    int find(@Bind("k") int id);
+    int find(@Bind("id") int id);
 }
