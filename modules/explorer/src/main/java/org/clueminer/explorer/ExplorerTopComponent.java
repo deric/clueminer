@@ -14,6 +14,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
@@ -228,6 +229,10 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             if (alg != null) {
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
+                if (alg.getEvaluator() == null) {
+                    InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+                    alg.setEvaluator(ief.getDefault());
+                }
 
                 final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
 
