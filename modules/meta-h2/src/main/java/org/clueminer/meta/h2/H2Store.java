@@ -218,6 +218,15 @@ public class H2Store implements MetaStorage {
                 for (Entry<String, Double> entry : evalTable.getAll().entrySet()) {
                     val = entry.getValue();
                     if (!Double.isNaN(val)) {
+                        if (Double.isInfinite(val)) {
+                            if (Double.compare(val, Double.POSITIVE_INFINITY) == 0) {
+                                val = Double.MAX_VALUE;
+                            } else if (Double.compare(val, Double.NEGATIVE_INFINITY) == 0) {
+                                val = Double.MIN_VALUE;
+                            } else {
+                                throw new RuntimeException("bad, bad double");
+                            }
+                        }
                         //evaluators are in quotes, therefore names are case sensitive
                         if (i > 0) {
                             sb.append(",");
