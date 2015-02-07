@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import javax.sql.DataSource;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
@@ -48,6 +49,7 @@ public class H2Store implements MetaStorage {
     private static final String dbName = "meta-db";
     private DBI dbi;
     private static final String name = "H2 store";
+    private static final Logger logger = Logger.getLogger(H2Store.class.getName());
 
     public static H2Store getInstance() {
         if (instance == null) {
@@ -208,7 +210,7 @@ public class H2Store implements MetaStorage {
             } else {
                 rId = rm.insert(templateId, partitionId, datasetId);
             }
-            EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+            EvaluationTable evalTable = clustering.getEvaluationTable();
             if (evalTable != null) {
                 StringBuilder sb = new StringBuilder("UPDATE results SET ");
                 double val;
@@ -220,14 +222,16 @@ public class H2Store implements MetaStorage {
                         if (i > 0) {
                             sb.append(",");
                         }
-                        sb.append("\"").append(entry.getKey()).append("\"='").append(val).append("'");
+                        sb.append("\"").append(entry.getKey()).append("\"=").append(val).append("");
                         i++;
                     }
-                    if (i > 0) {
-                        sb.append(" WHERE id = ").append(rId);
-                        h.execute(sb.toString());
-                    }
                 }
+                if (i > 0) {
+                    sb.append(" WHERE id = ").append(rId);
+                    h.execute(sb.toString());
+                }
+            } else {
+                logger.severe("missing evaltable");
             }
         }
     }

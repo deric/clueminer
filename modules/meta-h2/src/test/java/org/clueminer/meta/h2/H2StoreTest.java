@@ -2,9 +2,13 @@ package org.clueminer.meta.h2;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.eval.external.Precision;
+import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.meta.api.MetaResult;
@@ -98,8 +102,18 @@ public class H2StoreTest {
 
     @Test
     public void testFindResults() {
-        Collection<MetaResult> res = subject.findResults(FakeDatasets.irisDataset(), "single-mure", new Precision());
+        Collection<MetaResult> res = subject.findResults(FakeDatasets.irisDataset(), "evo-test", new Precision());
         assertNotNull(res);
+    }
+
+    @Test
+    public void testAddResult() {
+        int datasetId = subject.fetchDataset(FakeDatasets.irisDataset());
+        Clustering<? extends Cluster> c = FakeClustering.iris();
+        EvaluationTable et = new HashEvaluationTable(c, FakeDatasets.irisDataset());
+        et.countAll();
+        c.setEvaluationTable(et);
+        subject.addClustering(datasetId, c, -1);
     }
 
 }
