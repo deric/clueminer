@@ -231,7 +231,7 @@ public class H2Store implements MetaStorage {
                         if (i > 0) {
                             sb.append(",");
                         }
-                        sb.append("\"").append(entry.getKey()).append("\"=").append(val).append("");
+                        sb.append("\"").append(entry.getKey()).append("\"='").append(val).append("'");
                         i++;
                     }
                 }
@@ -423,6 +423,7 @@ public class H2Store implements MetaStorage {
     public Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, final ClusterEvaluation score) {
         final int datasetId = fetchDataset(dataset);
         final int evoId = fetchEvolution(evolutionaryAlgorithm);
+        final String order = score.isMaximized() ? "DESC" : "ASC";
         List<MetaResult> res = db().withHandle(new HandleCallback<List<MetaResult>>() {
             @Override
             public List<MetaResult> withHandle(Handle h) {
@@ -433,7 +434,8 @@ public class H2Store implements MetaStorage {
                         + " ON r.partitioning_id = p.id"
                         + " LEFT JOIN runs ru"
                         + " ON r.run_id = ru.id"
-                        + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id")
+                        + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id"
+                        + " ORDER BY " + quoteVar(score.getName()) + " " + order)
                         .bind("dataset_id", datasetId)
                         .bind("evolution_id", evoId)
                         .map(new MetaResultMapper()).list();
