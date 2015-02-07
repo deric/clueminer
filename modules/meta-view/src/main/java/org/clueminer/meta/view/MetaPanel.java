@@ -25,6 +25,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
 import org.openide.util.Lookup;
 
 /**
@@ -125,7 +126,11 @@ class MetaPanel extends JPanel {
     private Dataset<? extends Instance> getDataset() {
         if (dataset == null) {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-            dataset = pc.getCurrentWorkspace().getLookup().lookup(Dataset.class);
+            Workspace w = pc.getCurrentWorkspace();
+            //when no project is opened, workspace is null
+            if (w != null) {
+                dataset = pc.getCurrentWorkspace().getLookup().lookup(Dataset.class);
+            }
         }
         return dataset;
     }
