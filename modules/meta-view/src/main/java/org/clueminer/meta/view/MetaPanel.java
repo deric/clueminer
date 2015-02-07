@@ -115,7 +115,7 @@ class MetaPanel extends JPanel {
         if (storage != null) {
             String evo = currentEvolution();
             ClusterEvaluation eval = currentEvaluator();
-            if (evo != null && eval != null) {
+            if (evo != null && eval != null && getDataset() != null) {
                 Collection<MetaResult> col = storage.findResults(getDataset(), evo, eval);
                 updateData(col);
             }

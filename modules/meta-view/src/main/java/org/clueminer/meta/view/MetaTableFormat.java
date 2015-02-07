@@ -29,7 +29,7 @@ public class MetaTableFormat implements TableFormat<String[]> {
 
     @Override
     public Object getColumnValue(String[] baseObject, int column) {
-        if (column < 0 || column > 1) {
+        if (column < 0 || column > 2) {
             throw new IllegalStateException();
         }
         return baseObject[column];
