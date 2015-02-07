@@ -76,6 +76,7 @@ public class MetaPanel extends JPanel {
             //FilterList<String[]> textFilteredIssues = new FilterList<>(propertieList, new TextComponentMatcherEditor<>(filterEdit, new StringTextFilterator()));
             DefaultEventTableModel<MetaResult> infoListModel = new DefaultEventTableModel<>(sortedItems, new MetaTableFormat());
             instaceJTable = new JTable(infoListModel);
+            instaceJTable.setDefaultRenderer(MetaResult.class, new ColorCellRenderer(sortedItems));
             TableComparatorChooser tableSorter = TableComparatorChooser.install(instaceJTable, sortedItems, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
         } finally {
             resultsList.getReadWriteLock().readLock().unlock();
@@ -201,10 +202,12 @@ public class MetaPanel extends JPanel {
         matched = 0;
         //compare with meta database
         for (Clustering c : res) {
-            m = map.get(c.getParams().toString());
-            if (m != null) {
-                m.setFlag(MetaFlag.MATCHED);
-                matched++;
+            if (c != null) {
+                m = map.get(c.getParams().toString());
+                if (m != null) {
+                    m.setFlag(MetaFlag.MATCHED);
+                    matched++;
+                }
             }
         }
         lbResults.setText("matched " + matched);
