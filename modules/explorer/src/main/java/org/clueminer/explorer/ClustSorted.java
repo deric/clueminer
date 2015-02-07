@@ -12,6 +12,8 @@ import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 
@@ -25,9 +27,12 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     private Lookup.Result<Clustering> result;
     private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
     private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
+    private final Project project;
     //private Set<Clustering> all = new HashSet<Clustering>(5);
 
     public ClustSorted() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        project = pc.getCurrentProject();
 
     }
 
@@ -55,6 +60,7 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
         nodesAry[0] = new ClusteringNode((Clustering<Cluster>) clustering);
         map.put(nodesAry, clustering.hashCode());
+        project.add(clustering);
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -117,6 +123,7 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
             public void run() {
                 for (final ClusteringNode[] n : map.keySet()) {
                     remove(n);
+                    project.remove(n[0].getClustering());
                 }
                 map.clear();
             }

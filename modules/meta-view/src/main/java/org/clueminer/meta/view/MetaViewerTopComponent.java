@@ -3,10 +3,17 @@ package org.clueminer.meta.view;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaStorageFactory;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.project.api.Workspace;
+import org.clueminer.project.api.WorkspaceListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -14,7 +21,6 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
@@ -45,7 +51,8 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
 
     private static final long serialVersionUID = -950662751709594103L;
     private final MetaPanel panel;
-    private Lookup.Result<Dataset> result = null;
+    private Lookup.Result<Clustering> result = null;
+    private static final Logger logger = Logger.getLogger(MetaViewerTopComponent.class.getName());
 
     public MetaViewerTopComponent() {
         initComponents();
@@ -70,12 +77,52 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
-        result.addLookupListener(this);
-        resultChanged(new LookupEvent(result));
-
         MetaStorageFactory mf = MetaStorageFactory.getInstance();
         panel.setStorage(mf.getDefault());
+
+        final MetaViewerTopComponent that = this;
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.addWorkspaceListener(new WorkspaceListener() {
+            @Override
+            public void initialize(Workspace workspace) {
+                logger.log(Level.INFO, "meta-panel initialized");
+            }
+
+            @Override
+            public void select(Workspace workspace) {
+                logger.log(Level.INFO, "meta-panel selected");
+
+                Dataset<? extends Instance> dataset = workspace.getLookup().lookup(Dataset.class);
+                if (dataset != null) {
+                    panel.updateDataset(dataset);
+                }
+
+            }
+
+            @Override
+            public void unselect(Workspace workspace) {
+                if (result != null) {
+                    //   result.removeLookupListener(parent);
+                }
+            }
+
+            @Override
+            public void close(Workspace workspace) {
+            }
+
+            @Override
+            public void disable() {
+
+            }
+
+            @Override
+            public void projectActivated(Project proj) {
+                result = proj.getLookup().lookupResult(Clustering.class);
+                result.addLookupListener(that);
+            }
+        });
+
     }
 
     @Override
@@ -101,17 +148,16 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
     public void resultChanged(LookupEvent ev) {
 
         if (result != null) {
-            Collection<? extends Dataset> allDatasets = result.allInstances();
-            for (final Dataset<? extends Instance> d : allDatasets) {
-                if (d != null) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            panel.updateDataset(d);
-                        }
-                    });
-                }
+            final Collection<? extends Clustering> res = result.allInstances();
+            if (res != null) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        panel.setReferenceClustering(res);
+                    }
+                });
             }
+
         }
     }
 }

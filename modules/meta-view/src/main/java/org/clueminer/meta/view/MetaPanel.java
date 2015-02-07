@@ -5,6 +5,8 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,16 +14,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.meta.api.MetaFlag;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.project.api.ProjectController;
@@ -43,6 +50,11 @@ public class MetaPanel extends JPanel {
     private JComboBox<String> evolutions;
     private JComboBox<String> evaluators;
     private ClusterEvaluation evaluator;
+    private JLabel lbResults;
+    private Collection<? extends Clustering> clusterings;
+    private static final Logger logger = Logger.getLogger(MetaPanel.class.getName());
+    private Object2ObjectMap<String, MetaResult> map;
+    private int matched;
 
     public MetaPanel() {
         this.resultsList = new BasicEventList<>();
@@ -90,8 +102,12 @@ public class MetaPanel extends JPanel {
         c.gridy = 1;
         c.insets = new Insets(5, 70, 5, 5);
         add(evaluators, c);
+        lbResults = new JLabel("Meta score");
+        c.gridx = 0;
+        c.gridy = 2;
+        add(lbResults, c);
         instanceListScrollPane = new JScrollPane(instaceJTable);
-        add(instanceListScrollPane, new GridBagConstraints(0, 2, 1, 4, 0.85, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        add(instanceListScrollPane, new GridBagConstraints(0, 3, 1, 4, 0.85, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
     }
 
     private String[] initEvaluators() {
@@ -102,6 +118,7 @@ public class MetaPanel extends JPanel {
 
     public void updateDataset(Dataset<? extends Instance> d) {
         this.dataset = d;
+        updateResult();
     }
 
     protected String currentEvolution() {
@@ -125,8 +142,17 @@ public class MetaPanel extends JPanel {
             String evo = currentEvolution();
             evaluator = currentEvaluator();
             if (evo != null && evaluator != null && getDataset() != null) {
-                Collection<MetaResult> col = storage.findResults(getDataset(), evo, evaluator);
-                updateData(col);
+                final Collection<MetaResult> col = storage.findResults(getDataset(), evo, evaluator);
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateData(col);
+                    }
+                });
+
+            } else {
+                logger.log(Level.SEVERE, "missing data, evo: {0}, eval: {1}, dataset: {2}", new Object[]{evo, evaluator, getDataset()});
             }
         }
     }
@@ -151,8 +177,11 @@ public class MetaPanel extends JPanel {
     }
 
     public void updateData(Collection<MetaResult> col) {
+        resultsList.clear();
+        map = new Object2ObjectOpenHashMap<>(col.size());
         for (MetaResult res : col) {
             resultsList.add(res);
+            map.put(res.getTemplate(), res);
         }
     }
 
@@ -164,6 +193,22 @@ public class MetaPanel extends JPanel {
                 evolutions.setModel(new DefaultComboBoxModel<>(algs.toArray(new String[algs.size()])));
             }
         }
+    }
+
+    public void setReferenceClustering(Collection<? extends Clustering> res) {
+        clusterings = res;
+        MetaResult m;
+        matched = 0;
+        //compare with meta database
+        for (Clustering c : res) {
+            m = map.get(c.getParams().toString());
+            if (m != null) {
+                m.setFlag(MetaFlag.MATCHED);
+                matched++;
+            }
+        }
+        lbResults.setText("matched " + matched);
+        logger.log(Level.INFO, "clustering matched {0} records in meta-db", matched);
     }
 
     private class QueryReloader implements ActionListener {

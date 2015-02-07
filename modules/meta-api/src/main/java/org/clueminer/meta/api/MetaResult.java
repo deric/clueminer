@@ -15,6 +15,8 @@ public class MetaResult implements Serializable {
 
     double score;
 
+    MetaFlag flag = MetaFlag.NONE;
+
     /**
      * number of partitions
      */
@@ -48,6 +50,14 @@ public class MetaResult implements Serializable {
 
     public void setK(int k) {
         this.k = k;
+    }
+
+    public MetaFlag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(MetaFlag flag) {
+        this.flag = flag;
     }
 
 }

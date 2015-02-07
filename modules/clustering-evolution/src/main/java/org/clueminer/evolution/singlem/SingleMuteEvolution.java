@@ -99,7 +99,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                 if (current.isValid()) {
                     if (!isItTabu(current.toString())) {
                         fitness = current.countFitness();
-                        System.out.println("curr| " + g + ": " + fitness);
+                        System.out.println("curr| " + current.getClustering().size() + ": " + fitness);
+                        System.out.println(Arrays.toString(current.getClustering().clusterSizes()));
                         if (!Double.isNaN(fitness)) {
                             // put mutated individual to the list of new individuals
                             children.add(current);
