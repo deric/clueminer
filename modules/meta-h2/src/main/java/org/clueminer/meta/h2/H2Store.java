@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
+import org.skife.jdbi.v2.tweak.HandleCallback;
 
 /**
  *
@@ -395,14 +397,36 @@ public class H2Store implements MetaStorage {
         }
     }
 
+    /**
+     * Currently we can't replace name of a column with a variable, therefore
+     * this inline SQL
+     *
+     * @param dataset
+     * @param evolutionaryAlgorithm
+     * @param score
+     * @return
+     */
     @Override
-    public Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, ClusterEvaluation score) {
-        int datasetId = fetchDataset(dataset);
-        int evoId = fetchEvolution(evolutionaryAlgorithm);
-        try (Handle h = db().open()) {
-            ResultModel rm = h.attach(ResultModel.class);
-            return rm.findAll(datasetId, evoId, quoteVar(score.getName()));
-        }
+    public Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, final ClusterEvaluation score) {
+        final int datasetId = fetchDataset(dataset);
+        final int evoId = fetchEvolution(evolutionaryAlgorithm);
+        List<MetaResult> res = db().withHandle(new HandleCallback<List<MetaResult>>() {
+            @Override
+            public List<MetaResult> withHandle(Handle h) {
+                return h.createQuery("SELECT p.k, t.template, r." + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                        + " LEFT JOIN templates t"
+                        + " ON r.template_id = t.id"
+                        + " LEFT JOIN partitionings p"
+                        + " ON r.partitioning_id = p.id"
+                        + " LEFT JOIN runs ru"
+                        + " ON r.run_id = ru.id"
+                        + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id")
+                        .bind("dataset_id", datasetId)
+                        .bind("evolution_id", evoId)
+                        .map(new MetaResultMapper()).list();
+            }
+        });
+        return res;
     }
 
     private String quoteVar(String var) {

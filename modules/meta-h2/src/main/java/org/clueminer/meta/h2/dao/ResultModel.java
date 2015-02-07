@@ -43,7 +43,7 @@ public interface ResultModel {
             @Bind("dataset_id") int datasetId, @Bind("run_id") int runId);
 
     //:score must be quoted
-    @SqlQuery("SELECT p.k, t.template, :score FROM results AS r"
+    @SqlQuery("SELECT p.k, t.template, r.* FROM results AS r"
             + " LEFT JOIN templates t"
             + " ON r.template_id = t.id"
             + " LEFT JOIN partitionings p"
