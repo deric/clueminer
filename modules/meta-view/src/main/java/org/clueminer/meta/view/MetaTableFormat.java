@@ -11,7 +11,7 @@ public class MetaTableFormat implements TableFormat<MetaResult> {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return 4;
     }
 
     @Override
