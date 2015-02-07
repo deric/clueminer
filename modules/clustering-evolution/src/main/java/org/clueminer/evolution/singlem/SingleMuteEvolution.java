@@ -58,12 +58,13 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
     }
 
     @Override
-    public Individual createIndividual() {
+    public SingleMuteIndividual createIndividual() {
         return new SingleMuteIndividual(this);
     }
 
     @Override
     public void run() {
+        logger.log(Level.INFO, "starting evolution {0}", this.getClass().getName());
         evolutionStarted(this);
         clean();
         int stdMethods = standartizations.size();
@@ -98,6 +99,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                 if (current.isValid()) {
                     if (!isItTabu(current.toString())) {
                         fitness = current.countFitness();
+                        System.out.println("curr| " + g + ": " + fitness);
                         if (!Double.isNaN(fitness)) {
                             // put mutated individual to the list of new individuals
                             children.add(current);

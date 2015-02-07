@@ -245,7 +245,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
     }
 
     @Override
-    public Individual createIndividual() {
+    public MultiMuteIndividual createIndividual() {
         return new MultiMuteIndividual(this);
     }
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
@@ -23,9 +24,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private Cluster<E>[] data;
     private Props params;
     private final HashMap<String, Integer> name2id;
+    private EvaluationTable table;
     /**
-     * (n - 1) is index of last inserted item, n itself represents current
-     * number of instances in this dataset
+     * (n - 1) is index of last inserted item, n itself represents
+     * current number of instances in this dataset
      */
     private int n = 0;
     //Lookup
@@ -455,6 +457,26 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             return get(name2id.get(label));
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public EvaluationTable getEvaluationTable() {
+        return table;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param table
+     */
+    @Override
+    public void setEvaluationTable(EvaluationTable table) {
+        this.table = table;
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

@@ -54,4 +54,11 @@ public interface EvaluationTable {
      * @return all currently computed scores
      */
     HashMap<String, Double> getAll();
+
+    /**
+     * Count score that have not been evaluated so far
+     *
+     * @return map with all scores
+     */
+    HashMap<String, Double> countAll();
 }

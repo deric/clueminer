@@ -44,7 +44,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     private List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
     private int cnt;
-    private FakePopulation population = new FakePopulation();
+    private final FakePopulation population = new FakePopulation();
 
     public BruteForceHacEvolution() {
         instanceContent = new InstanceContent();
@@ -155,6 +155,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
             uniqueClusterings.add(clustering);
             instanceContent.add(clustering);
             SimpleIndividual current = new SimpleIndividual(clustering);
+            current.countFitness();
             population.setCurrent(current);
             //update meta-database
             fireIndividualCreated(current);

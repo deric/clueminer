@@ -189,4 +189,18 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     void setParams(Props params);
 
     void mergeParams(Props params);
+
+    /**
+     * By default evaluation table is null
+     *
+     * @return structure for storing evaluation results
+     */
+    EvaluationTable getEvaluationTable();
+
+    /**
+     * Set structure (hash-map) for storing results
+     *
+     * @param table
+     */
+    void setEvaluationTable(EvaluationTable table);
 }

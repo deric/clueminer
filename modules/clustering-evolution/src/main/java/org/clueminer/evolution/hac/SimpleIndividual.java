@@ -3,6 +3,7 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
@@ -26,12 +27,15 @@ public class SimpleIndividual extends BaseIndividual implements Individual {
 
     @Override
     public double countFitness() {
-        return Double.NaN;
+        EvaluationTable et = evaluationTable(clustering);
+        //this might take a while...
+        et.countAll();
+        return et.getScore("Precision");
     }
 
     @Override
     public double getFitness() {
-        return Double.NaN;
+        return clustering.getEvaluationTable().getScore("Precision");
     }
 
     @Override

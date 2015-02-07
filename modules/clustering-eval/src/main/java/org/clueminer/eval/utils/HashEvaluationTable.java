@@ -50,6 +50,17 @@ public class HashEvaluationTable implements EvaluationTable {
         return scores;
     }
 
+    @Override
+    public HashMap<String, Double> countAll() {
+        for (ClusterEvaluation eval : internalMap.values()) {
+            getScore(eval);
+        }
+        for (ClusterEvaluation eval : externalMap.values()) {
+            getScore(eval);
+        }
+        return getAll();
+    }
+
     /**
      * Computes evaluator score and caches the result
      *

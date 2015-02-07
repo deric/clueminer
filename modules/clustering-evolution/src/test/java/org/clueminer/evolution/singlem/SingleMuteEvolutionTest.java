@@ -34,8 +34,8 @@ public class SingleMuteEvolutionTest {
     @Test
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
-        subject.setGenerations(5);
-        subject.setPopulationSize(10);
+        subject.setGenerations(1);
+        subject.setPopulationSize(5);
         //subject.setAlgorithm(new ));
         subject.setEvaluator(new CalinskiHarabasz());
         ExternalEvaluator ext = new Precision();

@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
@@ -91,7 +92,11 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     @Override
     public double countFitness() {
         clustering = updateCustering();
-        fitness = evaluationTable(clustering).getScore(evolution.getEvaluator());
+        EvaluationTable et = evaluationTable(clustering);
+        if (et == null) {
+            throw new RuntimeException("missing eval table");
+        }
+        fitness = et.getScore(evolution.getEvaluator());
         return fitness;
     }
 
@@ -104,7 +109,6 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
      */
     private Clustering<? extends Cluster> updateCustering() {
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
-
         return clustering;
     }
 
