@@ -89,9 +89,10 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     @Override
-    public void countFitness() {
+    public double countFitness() {
         clustering = updateCustering();
         fitness = evaluationTable(clustering).getScore(evolution.getEvaluator());
+        return fitness;
     }
 
     /**

@@ -5,8 +5,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.AbstractEvolution;
 import org.clueminer.evolution.api.Evolution;
@@ -85,7 +83,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
-    protected void fireIndividualCreated(Dataset<? extends Instance> dataset, Individual individual) {
+    protected void fireIndividualCreated(Individual individual) {
         for (UpdateFeed listener : metaListeners) {
             if (listener != null) {
                 listener.individualCreated(runId, individual);

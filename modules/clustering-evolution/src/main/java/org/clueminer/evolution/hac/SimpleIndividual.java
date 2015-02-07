@@ -25,8 +25,8 @@ public class SimpleIndividual extends BaseIndividual implements Individual {
     }
 
     @Override
-    public void countFitness() {
-        //
+    public double countFitness() {
+        return Double.NaN;
     }
 
     @Override

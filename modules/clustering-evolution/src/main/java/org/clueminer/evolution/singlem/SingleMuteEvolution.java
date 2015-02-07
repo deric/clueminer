@@ -1,6 +1,5 @@
 package org.clueminer.evolution.singlem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -85,47 +84,33 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         avgFitness.a = population.getAvgFitness();
         Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
-        ArrayList<Individual> selected = new ArrayList<>(populationSize);
-        System.out.println("initialized population");
+        //ArrayList<Individual> selected = new ArrayList<>(populationSize);
 
         for (int g = 0; g < generations && !isFinished; g++) {
-
             // clear collection for new individuals
             children.clear();
             System.out.println("population size: " + population.size());
+            double fitness;
             // apply mutate operator
             for (int i = 0; i < population.size(); i++) {
                 Individual current = population.getIndividual(i).deepCopy();
                 current.mutate();
                 if (current.isValid()) {
                     if (!isItTabu(current.toString())) {
-                        // put mutated individual to the list of new individuals
-                        children.add(current);
-                        current.countFitness();
-                        //update meta-database
-                        fireIndividualCreated(dataset, current);
+                        fitness = current.countFitness();
+                        if (!Double.isNaN(fitness)) {
+                            // put mutated individual to the list of new individuals
+                            children.add(current);
+                            //update meta-database
+                            fireIndividualCreated(current);
+                        }
                     }
                 }
             }
-            double fitness;
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
-            selected.clear();
-            // merge new and old individuals
-            for (int i = children.size(); i < population.size(); i++) {
-                Individual tmpi = population.getIndividual(i).deepCopy();
-                tmpi.countFitness();
-                selected.add(tmpi);
-            }
-
-            for (Individual ind : children) {
-                fitness = ind.getFitness();
-                if (!Double.isNaN(fitness)) {
-                    selected.add(ind);
-                }
-            }
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
-            Individual[] nextGen = selected.toArray(new Individual[0]);
+            Individual[] nextGen = children.toArray(new Individual[0]);
             if (maximizedFitness) {
                 //natural ordering
                 Arrays.sort(nextGen);

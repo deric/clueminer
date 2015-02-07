@@ -145,15 +145,14 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
                     if (!isItTabu(current.toString())) {
                         // put mutated individual to the list of new individuals
                         children.add(current);
+                        current.countFitness();
+                        //update meta-database
+                        fireIndividualCreated(current);
                     }
                 }
             }
             double fitness;
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
-            for (Individual child : children) {
-                child.countFitness();
-                child.getFitness();
-            }
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {

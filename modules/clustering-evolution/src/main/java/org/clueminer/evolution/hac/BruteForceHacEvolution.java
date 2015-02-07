@@ -154,7 +154,10 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         } else {
             uniqueClusterings.add(clustering);
             instanceContent.add(clustering);
-            population.setCurrent(new SimpleIndividual(clustering));
+            SimpleIndividual current = new SimpleIndividual(clustering);
+            population.setCurrent(current);
+            //update meta-database
+            fireIndividualCreated(current);
             fireBestIndividual(gen++, population);
         }
     }

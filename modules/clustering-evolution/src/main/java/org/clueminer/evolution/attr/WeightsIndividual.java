@@ -57,9 +57,10 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     }
 
     @Override
-    public void countFitness() {
+    public double countFitness() {
         clustering = updateCustering();
         fitness = evaluationTable(clustering).getScore(evolution.getEvaluator());
+        return fitness;
     }
 
     /**

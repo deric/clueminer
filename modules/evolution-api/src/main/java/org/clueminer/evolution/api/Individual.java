@@ -24,9 +24,12 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
     Clustering<? extends Cluster> getClustering();
 
     /**
-     * Update fitness function value (counting fitness could be quite expensive)
+     * Update fitness function value (might take a while counting fitness could
+     * be quite expensive)
+     *
+     * @return computed fitness value
      */
-    void countFitness();
+    double countFitness();
 
     /**
      *
