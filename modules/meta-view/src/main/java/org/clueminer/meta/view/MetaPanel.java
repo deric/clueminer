@@ -24,6 +24,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
+import org.clueminer.project.api.ProjectController;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -114,10 +116,18 @@ class MetaPanel extends JPanel {
             String evo = currentEvolution();
             ClusterEvaluation eval = currentEvaluator();
             if (evo != null && eval != null) {
-                Collection<MetaResult> col = storage.findResults(dataset, evo, eval);
+                Collection<MetaResult> col = storage.findResults(getDataset(), evo, eval);
                 updateData(col);
             }
         }
+    }
+
+    private Dataset<? extends Instance> getDataset() {
+        if (dataset == null) {
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            dataset = pc.getCurrentWorkspace().getLookup().lookup(Dataset.class);
+        }
+        return dataset;
     }
 
     /**

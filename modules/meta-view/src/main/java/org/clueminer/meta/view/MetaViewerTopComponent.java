@@ -38,7 +38,7 @@ import org.openide.windows.TopComponent;
 )
 @Messages({
     "CTL_MetaViewerAction=MetaViewer",
-    "CTL_MetaViewerTopComponent=MetaViewer Window",
+    "CTL_MetaViewerTopComponent=Meta-data viewer",
     "HINT_MetaViewerTopComponent=This is a MetaViewer window"
 })
 public final class MetaViewerTopComponent extends TopComponent implements LookupListener {
@@ -72,6 +72,7 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Dataset.class);
         result.addLookupListener(this);
+        resultChanged(new LookupEvent(result));
 
         MetaStorageFactory mf = MetaStorageFactory.getInstance();
         panel.setStorage(mf.getDefault());
@@ -79,7 +80,9 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        if (result != null) {
+            result.removeLookupListener(this);
+        }
     }
 
     void writeProperties(java.util.Properties p) {
@@ -100,12 +103,14 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
         if (result != null) {
             Collection<? extends Dataset> allDatasets = result.allInstances();
             for (final Dataset<? extends Instance> d : allDatasets) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        panel.updateDataset(d);
-                    }
-                });
+                if (d != null) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            panel.updateDataset(d);
+                        }
+                    });
+                }
             }
         }
     }
