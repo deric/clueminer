@@ -5,6 +5,7 @@ import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.awt.GridBagConstraints;
@@ -54,6 +55,7 @@ public class MetaPanel extends JPanel {
     private Collection<? extends Clustering> clusterings;
     private static final Logger logger = Logger.getLogger(MetaPanel.class.getName());
     private Object2ObjectMap<String, MetaResult> map;
+    private Int2ObjectOpenHashMap<MetaResult> chash;
     private int matched;
 
     public MetaPanel() {
@@ -180,9 +182,11 @@ public class MetaPanel extends JPanel {
     public void updateData(Collection<MetaResult> col) {
         resultsList.clear();
         map = new Object2ObjectOpenHashMap<>(col.size());
+        chash = new Int2ObjectOpenHashMap<>(col.size());
         for (MetaResult res : col) {
             resultsList.add(res);
             map.put(res.getTemplate(), res);
+            chash.put(res.getHash(), res);
         }
     }
 
@@ -200,6 +204,7 @@ public class MetaPanel extends JPanel {
         clusterings = res;
         MetaResult m;
         matched = 0;
+        int hashMatch = 0;
         //compare with meta database
         for (Clustering c : res) {
             if (c != null) {
@@ -208,9 +213,14 @@ public class MetaPanel extends JPanel {
                     m.setFlag(MetaFlag.MATCHED);
                     matched++;
                 }
+                m = chash.get(c.hashCode());
+                if (m != null) {
+                    m.setFlag(MetaFlag.HASH);
+                    hashMatch++;
+                }
             }
         }
-        lbResults.setText("matched " + matched);
+        lbResults.setText("matched " + matched + " / " + map.size() + " hash: " + hashMatch);
         logger.log(Level.INFO, "clustering matched {0} records in meta-db", matched);
     }
 

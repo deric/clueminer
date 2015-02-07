@@ -8,6 +8,8 @@ public enum MetaFlag {
 
     NONE, //result not matched
     MATCHED,
+    HASH, //clustering hashCode match
+    FINGERPRINT,
     REJECTED
 
 }
