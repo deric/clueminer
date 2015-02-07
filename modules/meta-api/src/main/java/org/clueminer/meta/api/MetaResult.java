@@ -17,15 +17,24 @@ public class MetaResult implements Serializable {
 
     MetaFlag flag = MetaFlag.NONE;
 
+    String fingerprint;
+
+    /**
+     * Java hashcode of the clustering
+     */
+    int hash;
+
     /**
      * number of partitions
      */
     int k;
 
-    public MetaResult(int k, String template, double score) {
+    public MetaResult(int k, String template, double score, String fingerprint, int hash) {
         this.k = k;
         this.template = template;
         this.score = score;
+        this.fingerprint = fingerprint;
+        this.hash = hash;
     }
 
     public String getTemplate() {
@@ -58,6 +67,22 @@ public class MetaResult implements Serializable {
 
     public void setFlag(MetaFlag flag) {
         this.flag = flag;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(String fingerprint) {
+        this.fingerprint = fingerprint;
+    }
+
+    public int getHash() {
+        return hash;
+    }
+
+    public void setHash(int hash) {
+        this.hash = hash;
     }
 
 }

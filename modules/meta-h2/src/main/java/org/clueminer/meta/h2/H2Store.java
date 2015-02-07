@@ -307,7 +307,7 @@ public class H2Store implements MetaStorage {
         if (id <= 0) {
             try (Handle h = db().open()) {
                 PartitioningModel pm = h.attach(PartitioningModel.class);
-                id = pm.insert(clustering.size(), clustering.hashCode(), datasetId);
+                id = pm.insert(clustering.size(), clustering.hashCode(), clustering.fingerprint(), datasetId);
             }
         }
         return id;
@@ -427,7 +427,7 @@ public class H2Store implements MetaStorage {
         List<MetaResult> res = db().withHandle(new HandleCallback<List<MetaResult>>() {
             @Override
             public List<MetaResult> withHandle(Handle h) {
-                return h.createQuery("SELECT p.k, t.template, r." + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                return h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r." + quoteVar(score.getName()) + " \"score\" FROM results AS r"
                         + " LEFT JOIN templates t"
                         + " ON r.template_id = t.id"
                         + " LEFT JOIN partitionings p"

@@ -488,7 +488,33 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     public String fingerprint() {
         int[] sizes = clusterSizes();
         Arrays.sort(sizes);
-        return Arrays.toString(sizes);
+        return printArray(sizes);
+    }
+
+    /**
+     * Print element separated by comma, without any space
+     *
+     * @param a
+     * @return
+     */
+    private String printArray(int[] a) {
+        if (a == null) {
+            return "null";
+        }
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            return "[]";
+        }
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0;; i++) {
+            b.append(a[i]);
+            if (i == iMax) {
+                return b.append(']').toString();
+            }
+            b.append(',');
+        }
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

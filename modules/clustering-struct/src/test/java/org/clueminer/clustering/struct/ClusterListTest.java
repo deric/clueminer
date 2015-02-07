@@ -440,7 +440,7 @@ public class ClusterListTest {
         assertEquals("[3]", clusters.fingerprint());
 
         clusters = irisWrong();
-        assertEquals("[3, 5, 142]", clusters.fingerprint());
+        assertEquals("[3,5,142]", clusters.fingerprint());
         assertEquals(150, clusters.instancesCount());
     }
 

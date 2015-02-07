@@ -15,6 +15,7 @@ public interface PartitioningModel {
             + "id INT auto_increment PRIMARY KEY,"
             + "k INT," //number of clusters
             + "hash INT,"
+            + "fingerprint CLOB," //sizes of clusters, e.g. [1,3,5]
             + "num_occur INT,"
             + "dataset_id INT,"
             + "FOREIGN KEY(dataset_id) REFERENCES public.datasets(id)"
@@ -27,9 +28,10 @@ public interface PartitioningModel {
     @SqlQuery("SELECT id from partitionings WHERE k = :k AND hash=:hash")
     int find(@Bind("k") int k, @Bind("hash") int hash);
 
-    @SqlUpdate("insert into partitionings (k, hash, num_occur, dataset_id)"
-            + " values (:k, :hash, 1, :dataset_id)")
+    @SqlUpdate("insert into partitionings (k, hash, fingerprint, num_occur, dataset_id)"
+            + " values (:k, :hash, :fingerprint, 1, :dataset_id)")
     @GetGeneratedKeys
-    int insert(@Bind("k") int k, @Bind("hash") int hash, @Bind("dataset_id") int datasetId);
+    int insert(@Bind("k") int k, @Bind("hash") int hash,
+            @Bind("fingerprint") String fingerprint, @Bind("dataset_id") int datasetId);
 
 }

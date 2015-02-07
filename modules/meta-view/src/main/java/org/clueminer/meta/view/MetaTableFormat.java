@@ -22,6 +22,8 @@ public class MetaTableFormat implements TableFormat<MetaResult> {
             case 1:
                 return "score";
             case 2:
+                return "fingerprint";
+            case 3:
                 return "template";
             default:
                 throw new IllegalStateException();
@@ -36,6 +38,8 @@ public class MetaTableFormat implements TableFormat<MetaResult> {
             case 1:
                 return e.getScore();
             case 2:
+                return e.getFingerprint();
+            case 3:
                 return e.getTemplate();
             default:
                 throw new IllegalStateException();

@@ -14,7 +14,8 @@ public class MetaResultMapper implements ResultSetMapper<MetaResult> {
 
     @Override
     public MetaResult map(int index, ResultSet r, StatementContext ctx) throws SQLException {
-        return new MetaResult(r.getInt("k"), r.getString("template"), r.getDouble("score"));
+        return new MetaResult(r.getInt("k"), r.getString("template"),
+                r.getDouble("score"), r.getString("fingerprint"), r.getInt("hash"));
     }
 
 }
