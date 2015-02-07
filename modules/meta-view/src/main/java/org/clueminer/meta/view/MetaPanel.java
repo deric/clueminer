@@ -32,16 +32,17 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-class MetaPanel extends JPanel {
+public class MetaPanel extends JPanel {
 
     private static final long serialVersionUID = 6800384383501394578L;
     private JTable instaceJTable;
     private JScrollPane instanceListScrollPane;
-    private final EventList<String[]> resultsList;
+    private final EventList<MetaResult> resultsList;
     private Dataset<? extends Instance> dataset;
     private MetaStorage storage;
     private JComboBox<String> evolutions;
     private JComboBox<String> evaluators;
+    private ClusterEvaluation evaluator;
 
     public MetaPanel() {
         this.resultsList = new BasicEventList<>();
@@ -58,10 +59,10 @@ class MetaPanel extends JPanel {
         // lock while creating the transformed models
         resultsList.getReadWriteLock().readLock().lock();
         try {
-            SortedList<String[]> sortedItems = new SortedList<>(resultsList, new ElementComparator());
+            SortedList<MetaResult> sortedItems = new SortedList<>(resultsList, new ElementComparator(this));
 
             //FilterList<String[]> textFilteredIssues = new FilterList<>(propertieList, new TextComponentMatcherEditor<>(filterEdit, new StringTextFilterator()));
-            DefaultEventTableModel<String[]> infoListModel = new DefaultEventTableModel<>(sortedItems, new MetaTableFormat());
+            DefaultEventTableModel<MetaResult> infoListModel = new DefaultEventTableModel<>(sortedItems, new MetaTableFormat());
             instaceJTable = new JTable(infoListModel);
             TableComparatorChooser tableSorter = TableComparatorChooser.install(instaceJTable, sortedItems, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
         } finally {
@@ -107,6 +108,13 @@ class MetaPanel extends JPanel {
         return (String) evolutions.getSelectedItem();
     }
 
+    public ClusterEvaluation getEvaluator() {
+        if (evaluator == null) {
+            evaluator = currentEvaluator();
+        }
+        return evaluator;
+    }
+
     protected ClusterEvaluation currentEvaluator() {
         EvaluationFactory ef = EvaluationFactory.getInstance();
         return ef.getProvider((String) evaluators.getSelectedItem());
@@ -115,9 +123,9 @@ class MetaPanel extends JPanel {
     protected void updateResult() {
         if (storage != null) {
             String evo = currentEvolution();
-            ClusterEvaluation eval = currentEvaluator();
-            if (evo != null && eval != null && getDataset() != null) {
-                Collection<MetaResult> col = storage.findResults(getDataset(), evo, eval);
+            evaluator = currentEvaluator();
+            if (evo != null && evaluator != null && getDataset() != null) {
+                Collection<MetaResult> col = storage.findResults(getDataset(), evo, evaluator);
                 updateData(col);
             }
         }
@@ -144,7 +152,7 @@ class MetaPanel extends JPanel {
 
     public void updateData(Collection<MetaResult> col) {
         for (MetaResult res : col) {
-            resultsList.add(new String[]{String.valueOf(res.getK()), String.valueOf(res.getScore()), res.getTemplate()});
+            resultsList.add(res);
         }
     }
 

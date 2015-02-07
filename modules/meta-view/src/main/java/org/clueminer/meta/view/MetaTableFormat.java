@@ -1,12 +1,13 @@
 package org.clueminer.meta.view;
 
 import ca.odell.glazedlists.gui.TableFormat;
+import org.clueminer.meta.api.MetaResult;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MetaTableFormat implements TableFormat<String[]> {
+public class MetaTableFormat implements TableFormat<MetaResult> {
 
     @Override
     public int getColumnCount() {
@@ -28,10 +29,16 @@ public class MetaTableFormat implements TableFormat<String[]> {
     }
 
     @Override
-    public Object getColumnValue(String[] baseObject, int column) {
-        if (column < 0 || column > 2) {
-            throw new IllegalStateException();
+    public Object getColumnValue(MetaResult e, int column) {
+        switch (column) {
+            case 0:
+                return e.getK();
+            case 1:
+                return e.getScore();
+            case 2:
+                return e.getTemplate();
+            default:
+                throw new IllegalStateException();
         }
-        return baseObject[column];
     }
 }
