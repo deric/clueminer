@@ -479,6 +479,18 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         this.table = table;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return human readable fingerprint
+     */
+    @Override
+    public String fingerprint() {
+        int[] sizes = clusterSizes();
+        Arrays.sort(sizes);
+        return Arrays.toString(sizes);
+    }
+
     class ClusterIterator implements Iterator<Cluster<E>> {
 
         private int index = 0;
