@@ -32,7 +32,28 @@ public class AbstractExternalEvalTest {
 
         //first one is worser
         assertEquals(1, subject.compare(0.0, 0.9));
+    }
 
+    @Test
+    public void testCompareInfinite() {
+        //maximized. first one is greater
+        assertEquals(-1, subject.compare(2.0, Double.NaN));
+        assertEquals(-1, subject.compare(2.0, Double.NEGATIVE_INFINITY));
+        assertEquals(1, subject.compare(2.0, Double.POSITIVE_INFINITY));
+
+        //same
+        assertEquals(0, subject.compare(Double.NaN, Double.NaN));
+
+        //this values might cause strange behaviour
+        assertEquals(false, Double.isFinite(Double.NaN));
+        assertEquals(false, Double.isFinite(Double.POSITIVE_INFINITY));
+        assertEquals(false, Double.isFinite(Double.NEGATIVE_INFINITY));
+
+        assertEquals(0, subject.compare(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
+        assertEquals(0, subject.compare(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY));
+
+        //first one is worser
+        assertEquals(1, subject.compare(0.0, 0.9));
     }
 
     public class AbstractExternalEvalImpl extends AbstractExternalEval {
