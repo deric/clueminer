@@ -107,7 +107,11 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     private String generateName() {
         Clustering<? extends Cluster> clustering = getClustering();
         if (clustering != null) {
-            return clustering.getName();
+            String name = clustering.getName();
+            if (name.length() > 10) {
+                return name.substring(0, 7) + "...|" + clustering.size() + "|";
+            }
+            return name;
         }
         return "(missing)";
     }
