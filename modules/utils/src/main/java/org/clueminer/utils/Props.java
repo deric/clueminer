@@ -55,7 +55,11 @@ public class Props implements Map<String, String> {
     }
 
     public String put(PropType pt, String key, String value) {
-        return store.put(pt, key, key);
+        return store.put(pt, key, value);
+    }
+
+    public String put(PropType pt, String key, boolean value) {
+        return store.put(pt, key, String.valueOf(value));
     }
 
     @Override
@@ -69,13 +73,17 @@ public class Props implements Map<String, String> {
         }
     }
 
-    public String getString(String key) {
+    public String getString(PropType pt, String key) {
         // keys are in rows
         if (!store.containsRow(key)) {
             //TODO make it work for other rows
-            return store.get(PropType.MAIN, key);
+            return store.get(pt, key);
         }
         throw new IllegalArgumentException("Map key not found: " + key);
+    }
+
+    public String getString(String key) {
+        return getString(PropType.MAIN, key);
     }
 
     /**
@@ -115,7 +123,11 @@ public class Props implements Map<String, String> {
     }
 
     public boolean getBoolean(String key) {
-        String val = getString(key);
+        return getBoolean(PropType.MAIN, key);
+    }
+
+    public boolean getBoolean(PropType pt, String key) {
+        String val = getString(pt, key);
         return Boolean.parseBoolean(val);
     }
 
@@ -233,6 +245,10 @@ public class Props implements Map<String, String> {
     @Override
     public String get(Object key) {
         return store.get(PropType.MAIN, key);
+    }
+
+    public String get(PropType tp, Object key) {
+        return store.get(tp, key);
     }
 
     @Override

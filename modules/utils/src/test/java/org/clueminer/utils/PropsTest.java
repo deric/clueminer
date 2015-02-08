@@ -96,7 +96,11 @@ public class PropsTest {
     }
 
     @Test
-    public void testGet() {
+    public void testGetPerf() {
+        Props p = new Props();
+        p.put(PropType.PERFORMANCE, "keep-matrix", true);
+        boolean b = p.getBoolean(PropType.PERFORMANCE, "keep-matrix");
+        assertEquals(true, b);
     }
 
     @Test
