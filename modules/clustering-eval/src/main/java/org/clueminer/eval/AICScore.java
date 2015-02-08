@@ -33,7 +33,7 @@ public class AICScore extends AbstractEvaluator {
         // loglikelihood log(L)
         double l = likelihood.loglikelihoodsum(clusters);
         // AIC score
-        double aic = -2 * l + 2 * k;
+        double aic = 2 * k - 2 * l;
         return aic;
     }
 
@@ -50,10 +50,19 @@ public class AICScore extends AbstractEvaluator {
         return score(clusters, dataset);
     }
 
+    /**
+     * don't use abs values
+     *
+     * @link http://stats.stackexchange.com/questions/84076/negative-values-for-aic-in-general-mixed-model
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
     public boolean isBetter(double score1, double score2) {
         // should be minimalized
-        return Math.abs(score1) < Math.abs(score2);
+        return compare(score1, score2) < 0;
     }
 
     @Override
