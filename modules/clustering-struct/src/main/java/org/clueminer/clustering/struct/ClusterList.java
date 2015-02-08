@@ -51,7 +51,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String getName() {
         if (name == null) {
-            name = "|" + size() + "|";
+            name = fingerprint();
         }
         return name;
     }
