@@ -36,7 +36,7 @@ public class ScoreComparatorTest {
         sortNinf(values, 1.0, 8.3);
 
         values = new double[]{5, Double.NEGATIVE_INFINITY, 1, 8.3, Double.NaN, 2};
-        sortNinfNaN(values, 1.0, 8.3);
+        sortNinfNaN(values, Double.NaN, 8.3);
     }
 
     private void sortArray(double[] values, double min, double max) {
@@ -115,10 +115,11 @@ public class ScoreComparatorTest {
             if (e.isMaximized()) {
                 //first value is the best
                 assertEquals(max, ary[0].getValue(), delta);
-                assertEquals(Double.NEGATIVE_INFINITY, ary[ary.length - 1].getValue(), delta);
+                //NaN is the worst
+                assertEquals(min, ary[ary.length - 1].getValue(), delta);
             } else {
                 assertEquals(Double.NEGATIVE_INFINITY, ary[0].getValue(), delta);
-                assertEquals(Double.NaN, ary[ary.length - 1].getValue(), delta);
+                assertEquals(min, ary[ary.length - 1].getValue(), delta);
             }
         }
     }
