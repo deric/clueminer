@@ -51,13 +51,13 @@ public interface ClusterEvaluation {
 
     /**
      * Classical C-like comparator, return 0 when scores are equal, 1 when
-     * score1 is better, -1 otherwise.
+     * score1 is better than score2, -1 otherwise.
      *
      * @param score1
      * @param score2
      * @return
      */
-    int compareTo(double score1, double score2);
+    int compare(double score1, double score2);
 
     /**
      *
@@ -67,7 +67,10 @@ public interface ClusterEvaluation {
     boolean isExternal();
 
     /**
-     * Value is used for sorting results
+     * Value is used for sorting results.
+     *
+     * When true: Arrays.sort(a) -> [10, 9, 8, ... ]
+     * When false: Arrays.sort(a) -> [8, 9, 10]
      *
      * @return true when bigger is better
      */

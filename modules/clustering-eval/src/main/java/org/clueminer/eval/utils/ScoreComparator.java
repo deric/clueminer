@@ -26,7 +26,7 @@ public class ScoreComparator implements Comparator<Numeric> {
 
     @Override
     public int compare(Numeric s1, Numeric s2) {
-        return evaluator.compareTo(s1.getValue(), s2.getValue());
+        return evaluator.compare(s1.getValue(), s2.getValue());
     }
 
 }

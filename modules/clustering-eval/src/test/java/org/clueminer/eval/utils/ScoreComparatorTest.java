@@ -45,9 +45,10 @@ public class ScoreComparatorTest {
         for (InternalEvaluator e : eval) {
             subject.setEvaluator(e);
             Arrays.sort(ary, subject);
-            if (e.isMaximized()) {
+            if (e.isMaximized()) { // in fact this should be equal to Collections.reverseOrder()
                 //first value is the best
                 assertEquals(max, ary[0].getValue(), delta);
+                //last is the worst
                 assertEquals(min, ary[ary.length - 1].getValue(), delta);
             } else {
                 assertEquals(min, ary[0].getValue(), delta);

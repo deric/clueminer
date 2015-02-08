@@ -19,6 +19,7 @@ public class AICScore extends AbstractEvaluator {
 
     private static final String NAME = "AIC score";
     private static final long serialVersionUID = -8805325971847590600L;
+    private static final LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
 
     @Override
     public String getName() {
@@ -29,7 +30,6 @@ public class AICScore extends AbstractEvaluator {
     public double score(Clustering clusters, Dataset dataset) {
         // number of free parameters K
         double k = 1;
-        LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
         // loglikelihood log(L)
         double l = likelihood.loglikelihoodsum(clusters);
         // AIC score

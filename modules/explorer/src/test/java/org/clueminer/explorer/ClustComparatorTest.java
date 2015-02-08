@@ -15,9 +15,6 @@ public class ClustComparatorTest {
 
     private final ClustComparator subject = new ClustComparator(new NMI());
 
-    public ClustComparatorTest() {
-    }
-
     @Test
     public void testCompare() {
         Node n1 = new ClusteringNode(FakeClustering.iris());

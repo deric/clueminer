@@ -31,6 +31,8 @@ import org.openide.util.TaskListener;
  */
 public class SortedClusterings extends BPanel implements TaskListener {
 
+    private static final long serialVersionUID = -4456572592761477081L;
+
     Collection<? extends Clustering> clusterings;
     Clustering[] left;
     Clustering[] right;

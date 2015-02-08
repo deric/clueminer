@@ -10,6 +10,8 @@ import org.clueminer.distance.api.DistanceMeasure;
  */
 public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEvaluation {
 
+    private static final long serialVersionUID = 6345948849700989503L;
+
     protected DistanceMeasure dm;
     protected double eps = 1e-8;
 
@@ -28,8 +30,18 @@ public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEva
         return false;
     }
 
+    /**
+     * 0 when arguments are the same (within EPS range). 1 when score1 is bigger
+     * (depends if we maximize or minimize score)
+     * than score2. -1 when score1 is lower than score2. This behaviour is
+     * inverse to Java defaults because we use descending order by default
+     *
+     * @param score1
+     * @param score2
+     * @return
+     */
     @Override
-    public int compareTo(double score1, double score2) {
+    public int compare(double score1, double score2) {
         if (Double.isNaN(score1)) {
             score1 = replaceNaN(score1);
         }
@@ -40,11 +52,11 @@ public abstract class AbstractEvaluator implements InternalEvaluator, ClusterEva
         if (Math.abs(score1 - score2) < eps) {
             return 0;
         }
-        if (isMaximized()) {
+        if (isMaximized()) { //descending order [10, 9, 8, ...] (reversed order)
             if (score1 < score2) {
                 return 1;
             }
-        } else {
+        } else { // ascending order [1, 2, 3] (default Java order)
             if (score1 > score2) {
                 return 1;
             }
