@@ -1,10 +1,13 @@
 package org.clueminer.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * An advance string map. It's an extension of
@@ -17,37 +20,62 @@ import java.util.Properties;
  * <p>
  *
  */
-public class Props extends HashMap<String, String> {
+public class Props implements Map<String, String> {
 
-    private static final long serialVersionUID = 2211405016738281987L;
+    private static final long serialVersionUID = 2211405016738281988L;
+    private Table<PropType, String, String> store;
 
     public Props() {
+        init();
     }
 
     public Props(Properties props) {
+        init();
         fromProperties(props);
     }
 
     public Props(Map<String, String> map) {
-        putAll(map);
+        putAll(PropType.MAIN, map);
     }
 
-    public List<String> getGroupKeys(String groupKey) {
-        List<String> result = new ArrayList<>();
-        for (String key : keySet()) {
-            if (key.startsWith(groupKey)) {
-                result.add(key);
-            }
+    private void init() {
+        store = Tables.newCustomTable(
+                Maps.<PropType, Map<String, String>>newHashMap(),
+                new Supplier<Map<String, String>>() {
+                    @Override
+                    public Map<String, String> get() {
+                        return Maps.newTreeMap();
+                    }
+                });
+    }
+
+    @Override
+    public String put(String key, String value) {
+        return store.put(PropType.MAIN, key, value);
+    }
+
+    public String put(PropType pt, String key, String value) {
+        return store.put(pt, key, key);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends String> map) {
+        putAll(PropType.MAIN, map);
+    }
+
+    public final void putAll(PropType pt, Map<? extends String, ? extends String> map) {
+        for (Entry<? extends String, ? extends String> e : map.entrySet()) {
+            store.put(pt, e.getKey(), e.getValue());
         }
-        return result;
     }
 
     public String getString(String key) {
-        if (!containsKey(key)) {
-            throw new IllegalArgumentException("Map key not found: " + key);
+        // keys are in rows
+        if (!store.containsRow(key)) {
+            //TODO make it work for other rows
+            return store.get(PropType.MAIN, key);
         }
-        String result = this.get(key);
-        return result;
+        throw new IllegalArgumentException("Map key not found: " + key);
     }
 
     /**
@@ -131,7 +159,7 @@ public class Props extends HashMap<String, String> {
     private void fromProperties(Properties props) {
         @SuppressWarnings({"unchecked", "rawtypes"})
         Map<String, String> map = (Map) props;
-        super.putAll(map);
+        putAll(map);
     }
 
     /**
@@ -153,18 +181,82 @@ public class Props extends HashMap<String, String> {
     }
 
     @Override
+    public Props clone() {
+        Props c = new Props();
+        for (Table.Cell<PropType, String, String> e : store.cellSet()) {
+            c.put(e.getRowKey(), e.getColumnKey(), e.getValue());
+        }
+        return c;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (String key : this.keySet()) {
+        for (Entry<String, String> e : store.row(PropType.MAIN).entrySet()) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(key);
+            sb.append(e.getKey());
             sb.append(": ");
-            sb.append(get(key));
+            sb.append(e.getValue());
             i++;
         }
         return sb.toString();
+    }
+
+    /**
+     * Number of keys
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return store.columnKeySet().size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return store.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return store.containsColumn(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return store.containsValue(value);
+    }
+
+    @Override
+    public String get(Object key) {
+        return store.get(PropType.MAIN, key);
+    }
+
+    @Override
+    public String remove(Object key) {
+        return store.remove(PropType.MAIN, key);
+    }
+
+    @Override
+    public void clear() {
+        store.clear();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return store.columnKeySet();
+    }
+
+    @Override
+    public Collection<String> values() {
+        return store.values();
+    }
+
+    @Override
+    public Set<Entry<String, String>> entrySet() {
+        return store.row(PropType.MAIN).entrySet();
     }
 }
