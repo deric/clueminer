@@ -2,7 +2,6 @@ package org.clueminer.evolution.singlem;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +29,6 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
 
     private static final String name = "single-mute";
     private static final Logger logger = Logger.getLogger(SingleMuteEvolution.class.getName());
-    private HashSet<String> tabu;
     private boolean isFinished = false;
     private Population<? extends Individual> population;
 
@@ -90,25 +88,26 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         for (int g = 0; g < generations && !isFinished; g++) {
             // clear collection for new individuals
             children.clear();
-            System.out.println("population size: " + population.size());
             double fitness;
             // apply mutate operator
             for (int i = 0; i < population.size(); i++) {
                 Individual current = population.getIndividual(i).deepCopy();
-                current.mutate();
-                if (current.isValid()) {
-                    if (!isItTabu(current.toString())) {
-                        fitness = current.countFitness();
-                        System.out.println("curr| " + current.getClustering().size() + ": " + fitness);
-                        System.out.println(Arrays.toString(current.getClustering().clusterSizes()));
-                        if (!Double.isNaN(fitness)) {
-                            // put mutated individual to the list of new individuals
-                            children.add(current);
-                            //update meta-database
-                            fireIndividualCreated(current);
-                        }
+
+                do {
+                    do {
+                        current.mutate();
+                    } while (isItTabu(current.toString()));
+                    fitness = current.countFitness();
+                    System.out.println("curr| " + current.getClustering().size() + ": " + fitness);
+                    System.out.println(Arrays.toString(current.getClustering().clusterSizes()));
+                    if (!Double.isNaN(fitness)) {
+                        // put mutated individual to the list of new individuals
+                        children.add(current);
+                        tabu.add(current.toString());
+                        //update meta-database
+                        fireIndividualCreated(current);
                     }
-                }
+                } while (!current.isValid());
             }
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
 
@@ -161,10 +160,12 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         }
 
         time.b = System.currentTimeMillis();
+
         population.sortByFitness();
         avgFitness.b = population.getAvgFitness();
         best = population.getBestIndividual();
         bestFitness.b = best.getFitness();
+
         fireFinalResult(generations, best, time, bestFitness, avgFitness);
 
         finish();

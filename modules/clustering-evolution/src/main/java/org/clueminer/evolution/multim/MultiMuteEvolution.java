@@ -1,9 +1,9 @@
 package org.clueminer.evolution.multim;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -49,7 +49,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
     protected List<String> standartizations;
     protected final Random rand = new Random();
-    private HashSet<String> tabu;
+    protected ObjectOpenHashSet<String> tabu;
     private boolean isFinished = false;
     private Population<? extends Individual> population;
 
@@ -106,7 +106,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
         avgFitness = new Pair<>();
         bestFitness = new Pair<>();
         time = new Pair<>();
-        tabu = new HashSet<>();
+        tabu = new ObjectOpenHashSet<>();
     }
 
     @Override
