@@ -119,6 +119,17 @@ public class ARFFHandlerTest {
         AttrHolder a = arff.parseAttribute("@attribute 'Class' {opel,saab,bus,van}");
         assertEquals("Class", a.getName());
         assertEquals("opel,saab,bus,van", a.getAllowed());
+        assertEquals(true, "REAL".matches("^[A-Za-z]+"));
+        assertEquals(true, "\t".matches("^\\s(.*)"));
+        assertEquals(true, " ".matches("^\\s(.*)"));
+
+        a = arff.parseAttribute("@ATTRIBUTE	'K'	REAL");
+        assertEquals("K", a.getName());
+        assertEquals("REAL", a.getType());
+
+        a = arff.parseAttribute("@ATTRIBUTE sepallength	REAL");
+        assertEquals("sepallength", a.getName());
+        assertEquals("REAL", a.getType());
     }
 
 }

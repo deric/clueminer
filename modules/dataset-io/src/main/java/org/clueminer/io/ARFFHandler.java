@@ -29,6 +29,7 @@ public class ARFFHandler implements DatasetLoader {
      */
     public static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
     public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern singleWord = Pattern.compile("([\\w\\/]+)(.*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * matches attribute definition which might simply contain attribute name
@@ -47,6 +48,8 @@ public class ARFFHandler implements DatasetLoader {
      *
      */
     //normal regexp: ^@attribute\s+['\"]?([\w._\\/-]*)['\"]?\s+([\w]+)(\{[\w+|'[-\w+ ]',]+\}){0,1}(\s\[[\w\s,]+\]){0,1}
+    //use rather isValidAttributeDefinition() method
+    @Deprecated
     public static final Pattern attribute = Pattern.compile(
             "^@attribute\\s+['\\\"]?([\\w._\\\\/-]*)['\\\"]?\\s+([\\w]+)?(\\{[\\w+|'[-\\w+ ]',]+\\}){0,1}(\\s\\[[\\w\\s,]+\\])?",
             Pattern.CASE_INSENSITIVE);
@@ -151,7 +154,7 @@ public class ARFFHandler implements DatasetLoader {
                     if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
-                        System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                        //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
                         String attrName = amatch.group(1).toLowerCase().trim();
                         switch (attrName) {
                             case "class":
@@ -185,31 +188,30 @@ public class ARFFHandler implements DatasetLoader {
     }
 
     protected boolean isValidAttributeDefinition(String line) {
-        // return attribute.matcher(line).matches();
         try {
-            AttrHolder h = attrParse(line);
-            System.out.println("attr = " + h.toString());
+            attrParse(line);
         } catch (ParserError e) {
+            //Exceptions.printStackTrace(e);
+            //System.err.println(e.getMessage());
             return false;
         }
         return true;
     }
 
     private AttrHolder attrParse(String line) throws ParserError {
-        if (line.startsWith("@attribute ")) {
-            line = consume(line, "@attribute ");
+        if (line.startsWith("@attribute")) {
+            line = consume(line, "@attribute");
             AttrHolder attr = new AttrHolder();
             attrDef(line, attr);
             return attr;
-        }
-        if (line.startsWith("@ATTRIBUTE ")) {
-            line = consume(line, "@ATTRIBUTE ");
+        } else if (line.startsWith("@ATTRIBUTE")) {
+            line = consume(line, "@ATTRIBUTE");
             AttrHolder attr = new AttrHolder();
             attrDef(line, attr);
             return attr;
+        } else {
+            throw new ParserError("attribute definition must start with '@attribute'");
         }
-
-        throw new ParserError("attribute definition must start with '@attribute'");
     }
 
     protected String consume(String food, String meal) throws ParserError {
@@ -235,15 +237,18 @@ public class ARFFHandler implements DatasetLoader {
             line = attrName("\"", line, attr);
         } else {
             //suppose next string is the attribute's name
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            while (i < line.length() && line.charAt(i) != ' ') {
-                sb.append(line.charAt(i++));
+            Matcher m;
+            String name;
+            if ((m = singleWord.matcher(line)).matches()) {
+                name = m.group(1);
+                attr.setName(name);
+                line = consume(line, name);
+            } else {
+                throw new ParserError("type name error, got '" + line + "'");
             }
-            line = line.substring(i, line.length());
-            attr.setName(sb.toString());
+            line = removeWhitespace(line);
         }
-        line = line.trim();
+        line = removeWhitespace(line);
         line = attrType(line, attr);
         line = attrAllowed(line, attr);
         line = attrRange(line, attr);
@@ -317,16 +322,18 @@ public class ARFFHandler implements DatasetLoader {
         return line.replaceAll("^\\s+", "");
     }
 
-    private String attrType(String line, AttrHolder attr) {
-        if (line.matches("^[A-Za-z]")) {
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            while (i < line.length() && line.charAt(i) != ' ') {
-                sb.append(line.charAt(i++));
+    private String attrType(String line, AttrHolder attr) throws ParserError {
+        if (line.matches("^[A-Za-z](.*)")) {
+            Matcher m;
+            String type;
+            if ((m = singleWord.matcher(line)).matches()) {
+                type = m.group(1);
+                attr.setType(type);
+                line = consume(line, type);
+            } else {
+                throw new ParserError("type name error, got '" + line + "'");
             }
-            line = line.substring(i, line.length());
-            attr.setType(sb.toString());
-            line = line.trim();
+            line = removeWhitespace(line);
         }
         return line;
     }

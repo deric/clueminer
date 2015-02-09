@@ -45,7 +45,7 @@ public class AttrHolder {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("AttrHolder[");
         sb.append("name: ").append(getName()).append(", ")
                 .append("type: ").append(getType()).append(", ");
         if (range != null && !range.isEmpty()) {
@@ -54,6 +54,7 @@ public class AttrHolder {
         if (allowed != null && !allowed.isEmpty()) {
             sb.append("allowed: ").append(getAllowed());
         }
+        sb.append("]");
         return sb.toString();
     }
 
