@@ -41,12 +41,15 @@ public class ARFFHandler implements DatasetLoader {
      *
      * "@attribute class {cp,im,pp,imU,om,omL,imL,imS}"
      *
-     * or ranges in square bracets
+     * or ranges in square brackets
      *
      * "@attribute Mitoses integer [1,10]"
      *
      */
-    public static final Pattern attribute = Pattern.compile("^@attribute\\s+['\"]?([\\w ._\\\\/-]*)['\"]?\\s+([\\w]*|\\{[(\\w+)|'([-\\w+ ])',]+\\}|\\[[(\\w+),]+\\])", Pattern.CASE_INSENSITIVE);
+    //normal regexp: ^@attribute\s+['\"]?([\w._\\/-]*)['\"]?\s+([\w]+)(\{[\w+|'[-\w+ ]',]+\}){0,1}(\s\[[\w\s,]+\]){0,1}
+    public static final Pattern attribute = Pattern.compile(
+            "^@attribute\\s+['\\\"]?([\\w._\\\\/-]*)['\\\"]?\\s+([\\w]+)?(\\{[\\w+|'[-\\w+ ]',]+\\}){0,1}(\\s\\[[\\w\\s,]+\\])?",
+            Pattern.CASE_INSENSITIVE);
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -148,7 +151,7 @@ public class ARFFHandler implements DatasetLoader {
                     if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                         //tries to convert string to enum, at top level we should catch the
                         //exception
-                        //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                        System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
                         String attrName = amatch.group(1).toLowerCase().trim();
                         switch (attrName) {
                             case "class":
@@ -177,7 +180,154 @@ public class ARFFHandler implements DatasetLoader {
         return type;
     }
 
+    public AttrHolder parseAttribute(String line) throws ParserError {
+        return attrParse(line);
+    }
+
     protected boolean isValidAttributeDefinition(String line) {
-        return attribute.matcher(line).matches();
+        // return attribute.matcher(line).matches();
+        try {
+            AttrHolder h = attrParse(line);
+            System.out.println("attr = " + h.toString());
+        } catch (ParserError e) {
+            return false;
+        }
+        return true;
+    }
+
+    private AttrHolder attrParse(String line) throws ParserError {
+        if (line.startsWith("@attribute ")) {
+            line = consume(line, "@attribute ");
+            AttrHolder attr = new AttrHolder();
+            attrDef(line, attr);
+            return attr;
+        }
+        if (line.startsWith("@ATTRIBUTE ")) {
+            line = consume(line, "@ATTRIBUTE ");
+            AttrHolder attr = new AttrHolder();
+            attrDef(line, attr);
+            return attr;
+        }
+
+        throw new ParserError("attribute definition must start with '@attribute'");
+    }
+
+    protected String consume(String food, String meal) throws ParserError {
+        if (!food.startsWith(meal)) {
+            throw new ParserError("expected '" + meal + "' but got '" + food.substring(meal.length(), food.length()) + "'");
+        }
+        return food.substring(meal.length(), food.length());
+    }
+
+    /**
+     * Read attribute definition and store it into attr variable
+     *
+     * @param line
+     * @param attr
+     * @throws ParserError
+     */
+    private void attrDef(String line, AttrHolder attr) throws ParserError {
+        //remove whitespace
+        line = removeWhitespace(line);
+        if (line.startsWith("'")) {
+            line = attrName("'", line, attr);
+        } else if (line.startsWith("\"")) {
+            line = attrName("\"", line, attr);
+        } else {
+            //suppose next string is the attribute's name
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            while (i < line.length() && line.charAt(i) != ' ') {
+                sb.append(line.charAt(i++));
+            }
+            line = line.substring(i, line.length());
+            attr.setName(sb.toString());
+        }
+        line = line.trim();
+        line = attrType(line, attr);
+        line = attrAllowed(line, attr);
+        line = attrRange(line, attr);
+        if (!line.isEmpty()) {
+            throw new ParserError("expected empty string, but got '" + line + "'");
+        }
+    }
+
+    /**
+     * Reads attribute name from quotes, e.g.: 'MAX.LENGTH ASPECT RATIO'
+     * Any characters are allowed inside quotes, also whitespace.
+     *
+     * @param exp
+     * @param line
+     * @param attr
+     * @return
+     * @throws ParserError
+     */
+    private String attrName(String exp, String line, AttrHolder attr) throws ParserError {
+        line = consume(line, exp);
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        char needle = exp.charAt(0);
+        while (i < line.length() && line.charAt(i) != needle) {
+            sb.append(line.charAt(i++));
+        }
+        line = line.substring(i, line.length());
+        attr.setName(sb.toString());
+        return consume(line, exp);
+    }
+
+    private String attrAllowed(String line, AttrHolder attr) throws ParserError {
+        if (line.startsWith("{")) {
+            line = consume(line, "{");
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            char needle = '}';
+            while (i < line.length() && line.charAt(i) != needle) {
+                sb.append(line.charAt(i++));
+            }
+            line = line.substring(i, line.length());
+            attr.setAllowed(sb.toString());
+            return consume(line, "}");
+        }
+        return line;
+    }
+
+    private String attrRange(String line, AttrHolder attr) throws ParserError {
+        if (line.startsWith("[")) {
+            line = consume(line, "[");
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            char needle = ']';
+            while (i < line.length() && line.charAt(i) != needle) {
+                sb.append(line.charAt(i++));
+            }
+            line = line.substring(i, line.length());
+            attr.setRange(sb.toString());
+            return consume(line, "]");
+        }
+        return line;
+    }
+
+    /**
+     * We can not use just trim, because we want to remove also tabs
+     *
+     * @param line
+     * @return
+     */
+    private String removeWhitespace(String line) {
+        return line.replaceAll("^\\s+", "");
+    }
+
+    private String attrType(String line, AttrHolder attr) {
+        if (line.matches("^[A-Za-z]")) {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            while (i < line.length() && line.charAt(i) != ' ') {
+                sb.append(line.charAt(i++));
+            }
+            line = line.substring(i, line.length());
+            attr.setType(sb.toString());
+            line = line.trim();
+        }
+        return line;
     }
 }

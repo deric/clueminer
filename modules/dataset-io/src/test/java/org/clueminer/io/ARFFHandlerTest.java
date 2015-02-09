@@ -94,6 +94,31 @@ public class ARFFHandlerTest {
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { 'build wind float', 'build wind non-float', 'vehic wind float', 'vehic wind non-float', containers, tableware, headlamps}"));
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build-wind }"));
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build_wind }"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute HAIR integer [0, 1]"));
+    }
+
+    @Test
+    public void testLoadZoo2() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(100, 16);
+        arff.load(tf.zoo2Arff(), data);
+        assertEquals(16, data.attributeCount());
+        assertEquals(101, data.size());
+    }
+
+    @Test
+    public void testConsume() throws ParserError {
+        String res = arff.consume("verylongstring", "very");
+        assertEquals("longstring", res);
+
+        res = arff.consume("'aaa", "'");
+        assertEquals("aaa", res);
+    }
+
+    @Test
+    public void testAttrDefinition() throws ParserError {
+        AttrHolder a = arff.parseAttribute("@attribute 'Class' {opel,saab,bus,van}");
+        assertEquals("Class", a.getName());
+        assertEquals("opel,saab,bus,van", a.getAllowed());
     }
 
 }
