@@ -24,7 +24,7 @@ public class AttrHolder {
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = type.toUpperCase();
     }
 
     public String getRange() {

@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.utils.DatasetLoader;
+import org.openide.util.Exceptions;
 
 /**
  * Provides method to load data from ARFF formatted files.
@@ -149,21 +150,26 @@ public class ARFFHandler implements DatasetLoader {
             } else {
                 if ((rmatch = relation.matcher(line)).matches()) {
                     out.setName(rmatch.group(1));
-                } else if ((amatch = attribute.matcher(line)).matches()) {
-                    //System.out.println(line);
+                } else if (isValidAttributeDefinition(line)) {
                     if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
-                        //tries to convert string to enum, at top level we should catch the
-                        //exception
-                        //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
-                        String attrName = amatch.group(1).toLowerCase().trim();
-                        switch (attrName) {
-                            case "class":
-                            case "type":
-                                classIndex = numAttr;
-                                break;
-                            default:
-                                out.attributeBuilder().create(attrName, convertType(amatch.group(2).toUpperCase()));
+                        AttrHolder ah;
+                        try {
+                            //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                            ah = parseAttribute(line);
+                            String attrName = ah.getName().toLowerCase();
+                            switch (attrName) {
+                                case "class":
+                                case "type":
+                                    classIndex = numAttr;
+                                    break;
+                                default:
+                                    //TODO: use range and set of valid value for further parsing
+                                    out.attributeBuilder().create(ah.getName(), ah.getType());
+                            }
+                        } catch (ParserError ex) {
+                            Exceptions.printStackTrace(ex);
                         }
+
                         numAttr++;
                     }
                     headerLine++;
@@ -214,11 +220,19 @@ public class ARFFHandler implements DatasetLoader {
         }
     }
 
-    protected String consume(String food, String meal) throws ParserError {
-        if (!food.startsWith(meal)) {
-            throw new ParserError("expected '" + meal + "' but got '" + food.substring(meal.length(), food.length()) + "'");
+    /**
+     * Removes string subpart 'meal' from a 'food' string
+     *
+     * @param food    the whole thing
+     * @param starter a starting meal
+     * @return
+     * @throws ParserError
+     */
+    protected String consume(String food, String starter) throws ParserError {
+        if (!food.startsWith(starter)) {
+            throw new ParserError("expected '" + starter + "' but got '" + food.substring(starter.length(), food.length()) + "'");
         }
-        return food.substring(meal.length(), food.length());
+        return food.substring(starter.length(), food.length());
     }
 
     /**
