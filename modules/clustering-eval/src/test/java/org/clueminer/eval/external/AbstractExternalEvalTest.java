@@ -45,9 +45,9 @@ public class AbstractExternalEvalTest {
         assertEquals(0, subject.compare(Double.NaN, Double.NaN));
 
         //this values might cause strange behaviour
-        assertEquals(false, Double.isFinite(Double.NaN));
-        assertEquals(false, Double.isFinite(Double.POSITIVE_INFINITY));
-        assertEquals(false, Double.isFinite(Double.NEGATIVE_INFINITY));
+        assertEquals(false, subject.isFinite(Double.NaN));
+        assertEquals(false, subject.isFinite(Double.POSITIVE_INFINITY));
+        assertEquals(false, subject.isFinite(Double.NEGATIVE_INFINITY));
 
         assertEquals(0, subject.compare(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
         assertEquals(0, subject.compare(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY));

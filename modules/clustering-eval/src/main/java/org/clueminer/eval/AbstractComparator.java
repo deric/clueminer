@@ -74,7 +74,7 @@ public abstract class AbstractComparator implements ClusterEvaluation {
      * @param d
      * @return
      */
-    protected boolean isFinite(double d) {
+    public boolean isFinite(double d) {
         return Math.abs(d) <= Double.MAX_VALUE;
     }
 
