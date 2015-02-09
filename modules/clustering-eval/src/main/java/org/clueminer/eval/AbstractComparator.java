@@ -23,10 +23,10 @@ public abstract class AbstractComparator implements ClusterEvaluation {
      */
     @Override
     public int compare(double score1, double score2) {
-        if (!Double.isFinite(score1)) {
+        if (!isFinite(score1)) {
             score1 = replaceNaN(score1);
         }
-        if (!Double.isFinite(score2)) {
+        if (!isFinite(score2)) {
             score2 = replaceNaN(score2);
         }
 
@@ -66,6 +66,16 @@ public abstract class AbstractComparator implements ClusterEvaluation {
                 return Double.MAX_VALUE;
             }
         }
+    }
+
+    /**
+     * Could be replace by Double.isFinite which is available in Java 8
+     *
+     * @param d
+     * @return
+     */
+    protected boolean isFinite(double d) {
+        return Math.abs(d) <= Double.MAX_VALUE;
     }
 
 }
