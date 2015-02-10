@@ -1,5 +1,7 @@
 package org.clueminer.io;
 
+import java.util.regex.Pattern;
+
 /**
  *
  * @author Tomas Barton
@@ -11,6 +13,19 @@ public class AttrHolder {
     private String range;
     private String allowed;
 
+    public static final Pattern integerSet = Pattern.compile("([\\d\\s,]+)", Pattern.CASE_INSENSITIVE);
+
+    public AttrHolder() {
+
+    }
+
+    public AttrHolder(String name, String type, String range, String allowed) {
+        this.name = name;
+        setType(type);
+        setRange(range);
+        setAllowed(allowed);
+    }
+
     public String getName() {
         return name;
     }
@@ -20,18 +35,31 @@ public class AttrHolder {
     }
 
     public String getType() {
+        if (type == null) {
+            if (allowed != null) {
+                if (integerSet.matcher(allowed).matches()) {
+                    setType("INTEGER");
+                }
+            } else if (range != null) {
+                if (integerSet.matcher(range).matches()) {
+                    setType("INTEGER");
+                }
+            }
+        }
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type.toUpperCase();
+    public final void setType(String type) {
+        if (type != null) {
+            this.type = type.toUpperCase();
+        }
     }
 
     public String getRange() {
         return range;
     }
 
-    public void setRange(String range) {
+    public final void setRange(String range) {
         this.range = range;
     }
 
@@ -39,7 +67,7 @@ public class AttrHolder {
         return allowed;
     }
 
-    public void setAllowed(String allowed) {
+    public final void setAllowed(String allowed) {
         this.allowed = allowed;
     }
 

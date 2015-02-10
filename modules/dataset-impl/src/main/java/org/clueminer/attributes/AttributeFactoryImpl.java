@@ -33,6 +33,12 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
 
     @Override
     public Attribute create(String name, String type) {
+        if (name == null || name.isEmpty()) {
+            throw new RuntimeException("attribute name can not be empty");
+        }
+        if (type == null || type.isEmpty()) {
+            throw new RuntimeException("attribute type can not be empty");
+        }
         return create(name, BasicAttrType.valueOf(type));
     }
 

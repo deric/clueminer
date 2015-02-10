@@ -3,14 +3,16 @@ package org.clueminer.io;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -130,6 +132,37 @@ public class ARFFHandlerTest {
         a = arff.parseAttribute("@ATTRIBUTE sepallength	REAL");
         assertEquals("sepallength", a.getName());
         assertEquals("REAL", a.getType());
+
+        a = arff.parseAttribute("@attribute erythema {0,1,2,3}");
+        assertEquals("erythema", a.getName());
+        assertEquals("0,1,2,3", a.getAllowed());
+    }
+
+    @Test
+    public void testGuessType() throws ParserError {
+        AttrHolder a = arff.parseAttribute("@attribute erythema {0,1,2,3}");
+        assertEquals("erythema", a.getName());
+        assertEquals("0,1,2,3", a.getAllowed());
+
+        a = arff.parseAttribute("@attribute saw-tooth_appearance_of_retes {0,1,2,3}");
+        assertEquals("saw-tooth_appearance_of_retes", a.getName());
+        assertEquals("0,1,2,3", a.getAllowed());
+        assertEquals("INTEGER", a.getType());
+    }
+
+    @Test
+    public void testDermatology() throws ParserError, FileNotFoundException, IOException {
+        Dataset<Instance> data = new ArrayDataset<>(366, 33);
+
+        String datasetName = "dermatology";
+        arff.load(tf.dermatologyArff(), data, 33);
+        for (Attribute a : data.getAttributes().values()) {
+            System.out.println(a.toString());
+        }
+        assertEquals(33, data.attributeCount());
+        assertEquals(366, data.size());
+        data.setName(datasetName);
+
     }
 
 }

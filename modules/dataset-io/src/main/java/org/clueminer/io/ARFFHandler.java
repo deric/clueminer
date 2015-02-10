@@ -105,7 +105,6 @@ public class ARFFHandler implements DatasetLoader {
         it.setSkipComments(true);
 
         Matcher rmatch;
-        Matcher amatch;
 
         int headerLine = 0;
         int numAttr = 0;
@@ -197,8 +196,6 @@ public class ARFFHandler implements DatasetLoader {
         try {
             attrParse(line);
         } catch (ParserError e) {
-            //Exceptions.printStackTrace(e);
-            //System.err.println(e.getMessage());
             return false;
         }
         return true;
