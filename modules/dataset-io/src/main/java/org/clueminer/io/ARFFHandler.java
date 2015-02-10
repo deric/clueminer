@@ -192,7 +192,7 @@ public class ARFFHandler implements DatasetLoader {
         return attrParse(line);
     }
 
-    protected boolean isValidAttributeDefinition(String line) {
+    public boolean isValidAttributeDefinition(String line) {
         try {
             attrParse(line);
         } catch (ParserError e) {

@@ -12,6 +12,8 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.AttrHolder;
+import org.clueminer.io.ParserError;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -43,6 +45,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     private static final Pattern klassAttr = Pattern.compile("^@attribute ['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
     private ArrayList<Integer> skippedIndexes = new ArrayList<>();
     private int numInstances;
+    private final ARFFHandler arff = new ARFFHandler();
 
     /**
      * if line starts with following string, it will be ignored
@@ -124,6 +127,8 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
             line = reader.readLine();
             if ((rmatch = ARFFHandler.relation.matcher(line)).matches()) {
                 loader.setName(rmatch.group(1));
+            } else if (line.equalsIgnoreCase("@data")) {
+                return;
             } else if ((amatch = klassAttr.matcher(line)).matches()) {
                 //at which index we have the class attribute
                 attrd = loader.createAttribute(attrNum, amatch.group(1));
@@ -131,20 +136,23 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
                 attrd.setRole(BasicAttrRole.CLASS);
                 attrd.setType(String.class);
                 attrNum++;
-            } else if ((amatch = ARFFHandler.attribute.matcher(line)).matches()) {
+            } else if (arff.isValidAttributeDefinition(line)) {
                 //System.out.println(line);
                 if (!skippedIndexes.contains(headerLine)) {
-                    //tries to convert string to enum, at top level we should catch the
-                    //exception
-                    //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
-                    attrd = loader.createAttribute(attrNum, amatch.group(1));
-                    //convertType(amatch.group(2).toUpperCase()))
-                    attrd.setRole(BasicAttrRole.INPUT);
+                    try {
+                        //tries to convert string to enum, at top level we should catch the
+                        //exception
+                        //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
+                        AttrHolder ah = arff.parseAttribute(line);
+                        attrd = loader.createAttribute(attrNum, ah.getName());
+                        attrd.setType(convertType(ah.getType()));
+                        attrd.setRole(BasicAttrRole.INPUT);
+                    } catch (ParserError ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                     attrNum++;
                 }
                 headerLine++;
-            } else if (line.equalsIgnoreCase("@data")) {
-                return;
             }
         }
     }
@@ -159,11 +167,20 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
         return klassAttr.matcher(line).matches();
     }
 
-    protected String convertType(String type) {
-        if ((ARFFHandler.attrTypes.matcher(type)).matches()) {
-            return "REAL";
+    protected Class<?> convertType(String type) {
+        switch (type) {
+            case "INTEGER":
+                return Integer.class;
+            case "REAL":
+            case "DOUBLE":
+                return Double.class;
+            case "FLOAT":
+                return Float.class;
+            case "BOOLEAN":
+                return Boolean.class;
+            default:
+                return String.class;
         }
-        return type;
     }
 
     protected void importData(ContainerLoader loader, LineNumberReader reader) throws IOException {
