@@ -3,7 +3,6 @@ package org.clueminer.io;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -39,6 +38,12 @@ public class ARFFHandlerTest {
         assertTrue(arff.isValidAttributeDefinition("@attribute definite_borders {0,1,2,3}"));
         assertTrue(arff.isValidAttributeDefinition("@attribute OD280/OD315_of_diluted_wines REAL"));
         assertTrue(arff.isValidAttributeDefinition("@attribute F22 {0,1}"));
+    }
+
+    @Test
+    public void testAttributeDefinitionCase() throws Exception {
+        //definition should be case-insensitive (be benevolent)
+        assertTrue(arff.isValidAttributeDefinition("@Attribute F22 {0,1}"));
     }
 
     /**
@@ -156,9 +161,6 @@ public class ARFFHandlerTest {
 
         String datasetName = "dermatology";
         arff.load(tf.dermatologyArff(), data, 33);
-        for (Attribute a : data.getAttributes().values()) {
-            System.out.println(a.toString());
-        }
         assertEquals(33, data.attributeCount());
         assertEquals(366, data.size());
         data.setName(datasetName);

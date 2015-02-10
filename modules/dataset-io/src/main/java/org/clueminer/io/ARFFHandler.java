@@ -55,6 +55,8 @@ public class ARFFHandler implements DatasetLoader {
             "^@attribute\\s+['\\\"]?([\\w._\\\\/-]*)['\\\"]?\\s+([\\w]+)?(\\{[\\w+|'[-\\w+ ]',]+\\}){0,1}(\\s\\[[\\w\\s,]+\\])?",
             Pattern.CASE_INSENSITIVE);
 
+    public static final Pattern attrDef = Pattern.compile("^@attribute(.*)", Pattern.CASE_INSENSITIVE);
+
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
      * Java-ML design only numeric attributes can be read. This method does not
@@ -91,8 +93,7 @@ public class ARFFHandler implements DatasetLoader {
      * @param out
      * @param classIndex     - indexed from zero!
      * @param separator      - for eliminating all white characters (" ",\n, \t)
-     *                       use
-     *                       "\\s+"
+     *                       use "\\s+"
      * @param skippedIndexes - indexes of columns that won't be imported
      * @return
      * @throws IllegalArgumentException when type is not convertible to Enum
@@ -193,6 +194,9 @@ public class ARFFHandler implements DatasetLoader {
     }
 
     public boolean isValidAttributeDefinition(String line) {
+        if (!attrDef.matcher(line).matches()) {
+            return false;
+        }
         try {
             attrParse(line);
         } catch (ParserError e) {
@@ -202,19 +206,16 @@ public class ARFFHandler implements DatasetLoader {
     }
 
     private AttrHolder attrParse(String line) throws ParserError {
-        if (line.startsWith("@attribute")) {
-            line = consume(line, "@attribute");
-            AttrHolder attr = new AttrHolder();
+        AttrHolder attr;
+        if (attrDef.matcher(line).matches()) {
+            //remove @attribute
+            line = line.substring(10, line.length());
+            attr = new AttrHolder();
             attrDef(line, attr);
-            return attr;
-        } else if (line.startsWith("@ATTRIBUTE")) {
-            line = consume(line, "@ATTRIBUTE");
-            AttrHolder attr = new AttrHolder();
-            attrDef(line, attr);
-            return attr;
         } else {
             throw new ParserError("attribute definition must start with '@attribute'");
         }
+        return attr;
     }
 
     /**
@@ -269,8 +270,8 @@ public class ARFFHandler implements DatasetLoader {
     }
 
     /**
-     * Reads attribute name from quotes, e.g.: 'MAX.LENGTH ASPECT RATIO'
-     * Any characters are allowed inside quotes, also whitespace.
+     * Reads attribute name from quotes, e.g.: 'MAX.LENGTH ASPECT RATIO' Any
+     * characters are allowed inside quotes, also whitespace.
      *
      * @param exp
      * @param line
