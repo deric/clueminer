@@ -30,7 +30,7 @@ public class ARFFHandler implements DatasetLoader {
      */
     public static final Pattern relation = Pattern.compile("^@relation\\s+(\\w*)", Pattern.CASE_INSENSITIVE);
     public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
-    public static final Pattern singleWord = Pattern.compile("([\\w\\/]+)(.*)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern singleWord = Pattern.compile("([\\w\\/-]+)(.*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * matches attribute definition which might simply contain attribute name

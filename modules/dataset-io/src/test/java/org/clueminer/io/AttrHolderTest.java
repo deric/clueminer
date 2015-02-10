@@ -9,23 +9,6 @@ import org.junit.Test;
  */
 public class AttrHolderTest {
 
-    private static AttrHolder subject;
-
-    public AttrHolderTest() {
-    }
-
-    @Test
-    public void testGetName() {
-    }
-
-    @Test
-    public void testSetName() {
-    }
-
-    @Test
-    public void testGetType() {
-    }
-
     @Test
     public void testGuessType() throws ParserError {
         AttrHolder a = new AttrHolder("erythema", null, null, "0,1,2,3");
@@ -42,26 +25,5 @@ public class AttrHolderTest {
         assertEquals("INTEGER", a.getType());
 
     }
-
-    @Test
-    public void testSetType() {
-    }
-
-    @Test
-    public void testGetRange() {
-    }
-
-    @Test
-    public void testSetRange() {
-    }
-
-    @Test
-    public void testGetAllowed() {
-    }
-
-    @Test
-    public void testSetAllowed() {
-    }
-
 
 }
