@@ -1,17 +1,19 @@
 package org.clueminer.evolution.mo;
 
 import org.clueminer.evolution.singlem.SingleMuteIndividual;
+import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.solution.Solution;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MoSolution implements Solution<String> {
+public class MoSolution implements IntegerSolution {
 
     private final SingleMuteIndividual individual;
     private final MoProblem problem;
     private double[] objectives;
+    private int[] solution;
     private double constraintViolationDegree = 0;
     private int numViolatedDegrees = 0;
 
@@ -19,12 +21,15 @@ public class MoSolution implements Solution<String> {
         this.individual = individual;
         this.problem = problem;
         this.objectives = new double[problem.evolution.getNumObjectives()];
+        this.solution = new int[problem.getNumVars()];
+        for (int i = 0; i < solution.length; i++) {
+
+        }
     }
 
     public void evaluate() {
         for (int i = 0; i < objectives.length; i++) {
             objectives[i] = individual.countFitness(problem.evolution.getObjective(i));
-
         }
     }
 
@@ -39,12 +44,13 @@ public class MoSolution implements Solution<String> {
     }
 
     @Override
-    public String getVariableValue(int index) {
-        return individual.getGen(problem.getVar(index));
+    public Integer getVariableValue(int index) {
+        return solution[index];
+        //return individual.getGen(problem.getVar(index));
     }
 
     @Override
-    public void setVariableValue(int index, String value) {
+    public void setVariableValue(int index, Integer value) {
         individual.setAlgorithm(null);
     }
 
@@ -96,6 +102,16 @@ public class MoSolution implements Solution<String> {
     @Override
     public Object getAttribute(Object id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getLowerBound(int index) {
+        return problem.getLowerBound(index);
+    }
+
+    @Override
+    public Integer getUpperBound(int index) {
+        return problem.getUpperBound(index);
     }
 
 }

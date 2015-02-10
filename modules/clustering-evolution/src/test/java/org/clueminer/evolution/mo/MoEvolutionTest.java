@@ -8,6 +8,7 @@ import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,14 @@ public class MoEvolutionTest {
     }
 
     @Test
+    public void testGetName() {
+        assertNotNull(subject.getName());
+    }
+
+    /**
+     * TODO: implement all operators
+     */
+    //@Test
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
         subject.setGenerations(1);

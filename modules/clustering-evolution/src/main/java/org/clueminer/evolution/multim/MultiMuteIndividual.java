@@ -8,6 +8,8 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
@@ -54,7 +56,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         genom.put(AgglParams.STD, std(rand));
         genom.putBoolean(AgglParams.CLUSTER_ROWS, true);
         genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
-        genom.put(AgglParams.CUTOFF_SCORE, evolution.getEvaluator().getName());
+        genom.put(AgglParams.CUTOFF_SCORE, evaluator().getName());
         do {
             genom.put(AgglParams.LINKAGE, linkage(rand));
         } while (!isValid());
@@ -83,6 +85,14 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         int size = ((MultiMuteEvolution) evolution).dist.size();
         int i = rand.nextInt(size);
         return ((MultiMuteEvolution) evolution).dist.get(i).getName();
+    }
+
+    public InternalEvaluator evaluator() {
+        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+        List<InternalEvaluator> evals = ief.getAll();
+        int size = evals.size();
+        int i = rand.nextInt(size);
+        return evals.get(i);
     }
 
     @Override

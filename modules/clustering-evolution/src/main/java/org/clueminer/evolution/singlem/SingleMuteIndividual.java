@@ -8,7 +8,6 @@ import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.multim.MultiMuteIndividual;
 import org.clueminer.utils.ServiceFactory;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -54,26 +53,23 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
                 }
 
                 try {
-                    Class<?> clazz = Class.forName(p.getFactory());
-                    Method meth = clazz.getMethod("getInstance");
-                    try {
-                        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
-                        String[] list = f.getProvidersArray();
-                        String prev = genom.get(p.getName());
-                        int i = 0;
-                        int idx;
-                        do {
-                            //choose random number between 0 and number of possible providers
-                            idx = rand.nextInt(list.length);
-                            //we have 3 tries to find different value than previous one
-                            i++;
-                        } while (list[idx].equals(prev) && i < 3);
-                        genom.put(p.getName(), list[idx]);
-                        System.out.println("==== mutated " + p.getName() + " from: " + prev + " to: " + list[idx]);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                } catch (ClassNotFoundException | NoSuchMethodException | SecurityException ex) {
+                    ServiceFactory f = getFactory(p);
+                    String[] list = f.getProvidersArray();
+                    String prev = genom.get(p.getName());
+                    int i = 0;
+                    int idx;
+                    do {
+                        //choose random number between 0 and number of possible providers
+                        idx = rand.nextInt(list.length);
+                        //we have 3 tries to find different value than previous one
+                        i++;
+                    } while (list[idx].equals(prev) && i < 3);
+                    genom.put(p.getName(), list[idx]);
+                    System.out.println("==== mutated " + p.getName() + " from: " + prev + " to: " + list[idx]);
+
+                } catch (ClassNotFoundException | NoSuchMethodException |
+                        SecurityException | IllegalAccessException |
+                        IllegalArgumentException | InvocationTargetException ex) {
                     throw new RuntimeException("factory '" + p.getName() + "' was not found");
                 }
                 break;
@@ -93,6 +89,24 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
     public SingleMuteIndividual deepCopy() {
         SingleMuteIndividual newOne = new SingleMuteIndividual(this);
         return newOne;
+    }
+
+    /**
+     * Get instance of service factory if available for given parameter
+     *
+     * @param param
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
+    public static ServiceFactory getFactory(Parameter param) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class<?> clazz = Class.forName(param.getFactory());
+        Method meth = clazz.getMethod("getInstance");
+        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
+        return f;
     }
 
 }
