@@ -5,6 +5,7 @@ import java.util.Random;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.evolution.BaseIndividual;
@@ -98,6 +99,23 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         }
         fitness = et.getScore(evolution.getEvaluator());
         return fitness;
+    }
+
+    /**
+     * Clustering should be updated after each mutation
+     *
+     * @param eval
+     * @return
+     */
+    public double countFitness(ClusterEvaluation eval) {
+        if (clustering == null) {
+            updateCustering();
+        }
+        EvaluationTable et = evaluationTable(clustering);
+        if (et == null) {
+            throw new RuntimeException("missing eval table");
+        }
+        return et.getScore(eval);
     }
 
     /**

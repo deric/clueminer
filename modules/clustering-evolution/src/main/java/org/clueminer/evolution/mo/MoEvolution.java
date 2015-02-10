@@ -84,13 +84,6 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         MutationOperator mutation;
         SelectionOperator selection;
 
-        Front front = new ArrayFront(numberOfPoints, objectives.size());
-
-        Hypervolume hypervolume = new Hypervolume();
-        hypervolume.execute(null, front);
-
-        NSGAIIBuilder builder = new NSGAIIBuilder(null);
-
         double crossoverProbability = 0.9;
         double crossoverDistributionIndex = 20.0;
         crossover = new SBXCrossover(crossoverProbability, crossoverDistributionIndex);
@@ -116,6 +109,13 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
         long computingTime = algorithmRunner.getComputingTime();
         System.out.println("computing time: " + computingTime);
+
+        int numberOfDimensions = getNumObjectives();
+        Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
+        Front frontB = new ArrayFront(numberOfPoints, numberOfDimensions);
+
+        Hypervolume hypervolume = new Hypervolume();
+        hypervolume.execute(frontA, frontB);
 
     }
 

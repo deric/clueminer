@@ -28,8 +28,8 @@ public class MoEvolutionTest {
     @Before
     public void setUp() {
         subject = new MoEvolution(new ClusteringExecutorCached());
-        report = new ConsoleReporter();
-        subject.addEvolutionListener(report);
+        //report = new ConsoleReporter();
+        //subject.addEvolutionListener(report);
         mem = new MemInfo();
     }
 

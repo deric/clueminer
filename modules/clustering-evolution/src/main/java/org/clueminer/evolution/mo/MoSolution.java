@@ -12,6 +12,8 @@ public class MoSolution implements Solution<String> {
     private final SingleMuteIndividual individual;
     private final MoProblem problem;
     private double[] objectives;
+    private double constraintViolationDegree = 0;
+    private int numViolatedDegrees = 0;
 
     public MoSolution(MoProblem problem, SingleMuteIndividual individual) {
         this.individual = individual;
@@ -20,7 +22,10 @@ public class MoSolution implements Solution<String> {
     }
 
     public void evaluate() {
+        for (int i = 0; i < objectives.length; i++) {
+            objectives[i] = individual.countFitness(problem.evolution.getObjective(i));
 
+        }
     }
 
     @Override
@@ -60,22 +65,22 @@ public class MoSolution implements Solution<String> {
 
     @Override
     public double getOverallConstraintViolationDegree() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return constraintViolationDegree;
     }
 
     @Override
     public void setOverallConstraintViolationDegree(double violationDegree) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.constraintViolationDegree = violationDegree;
     }
 
     @Override
     public int getNumberOfViolatedConstraints() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return numViolatedDegrees;
     }
 
     @Override
     public void setNumberOfViolatedConstraints(int numberOfViolatedConstraints) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.numViolatedDegrees = numberOfViolatedConstraints;
     }
 
     @Override
