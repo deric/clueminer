@@ -146,11 +146,11 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> dermatology() {
-        Dataset<Instance> data = new ArrayDataset<>(366, 34);
+        Dataset<Instance> data = new ArrayDataset<>(366, 33);
         try {
             String datasetName = "dermatology";
             ARFFHandler arff = new ARFFHandler();
-            arff.load(tf.dermatologyArff(), data, 34);
+            arff.load(tf.dermatologyArff(), data, 33);
             data.setName(datasetName);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
