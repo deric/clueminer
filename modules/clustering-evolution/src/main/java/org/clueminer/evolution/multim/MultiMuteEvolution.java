@@ -47,11 +47,11 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
     protected List<DistanceMeasure> dist;
     protected List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
-    protected List<String> standartizations;
+    protected List<String> stds;
     protected final Random rand = new Random();
     protected ObjectOpenHashSet<String> tabu;
-    private boolean isFinished = false;
-    private Population<? extends Individual> population;
+    protected boolean isFinished = false;
+    protected Population<? extends Individual> population;
 
     /**
      * for start and final average fitness
@@ -68,16 +68,15 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
     public MultiMuteEvolution() {
         //cache normalized datasets
-        this.exec = new ClusteringExecutorCached();
-        init();
+        init(new ClusteringExecutorCached());
     }
 
     public MultiMuteEvolution(Executor executor) {
-        this.exec = executor;
-        init();
+        init(executor);
     }
 
-    private void init() {
+    protected final void init(Executor executor) {
+        this.exec = executor;
         algorithm = new HACLW();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
@@ -91,11 +90,19 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
     protected void prepare() {
         StandardisationFactory sf = StandardisationFactory.getInstance();
-        standartizations = sf.getProviders();
+        stds = sf.getProviders();
         DistanceFactory df = DistanceFactory.getInstance();
         dist = df.getAll();
         LinkageFactory lf = LinkageFactory.getInstance();
         linkage = lf.getAll();
+        prepareHook();
+    }
+
+    /**
+     * Could be overridden by inheriting classes
+     */
+    protected void prepareHook() {
+
     }
 
     protected void clean() {
@@ -109,20 +116,22 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
         tabu = new ObjectOpenHashSet<>();
     }
 
-    @Override
-    public void run() {
-        evolutionStarted(this);
-        clean();
-        int stdMethods = standartizations.size();
-
+    protected void printStarted() {
         if (ph != null) {
             int workunits = getGenerations();
-            logger.log(Level.INFO, "stds: {0}", stdMethods);
+            logger.log(Level.INFO, "stds: {0}", stds.size());
             logger.log(Level.INFO, "distances: {0}", dist.size());
             logger.log(Level.INFO, "linkages: {0}", linkage.size());
             ph.start(workunits);
             ph.progress("starting " + getName() + "evolution...");
         }
+    }
+
+    @Override
+    public void run() {
+        evolutionStarted(this);
+        clean();
+        printStarted();
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();

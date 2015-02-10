@@ -67,9 +67,9 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     protected String std(Random rand) {
-        int size = ((MultiMuteEvolution) evolution).standartizations.size();
+        int size = ((MultiMuteEvolution) evolution).stds.size();
         int i = rand.nextInt(size);
-        return ((MultiMuteEvolution) evolution).standartizations.get(i);
+        return ((MultiMuteEvolution) evolution).stds.get(i);
     }
 
     protected String linkage(Random rand) {
@@ -159,7 +159,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
 
     @Override
     public boolean isCompatible(Individual other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.getClass() == other.getClass();
     }
 
     @Override
@@ -193,5 +193,13 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     @Override
     public Props getProps() {
         return genom;
+    }
+
+    public String getGen(String key) {
+        return genom.get(key);
+    }
+
+    public void setGen(String key, String value) {
+        genom.put(key, value);
     }
 }

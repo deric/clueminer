@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
@@ -16,8 +15,6 @@ import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,20 +31,11 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
 
     public SingleMuteEvolution() {
         //cache normalized datasets
-        this.exec = new ClusteringExecutorCached();
-        init();
+        init(new ClusteringExecutorCached());
     }
 
     public SingleMuteEvolution(Executor executor) {
-        this.exec = executor;
-        init();
-    }
-
-    private void init() {
-        algorithm = new HACLW();
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
-        prepare();
+        init(executor);
     }
 
     @Override
@@ -65,17 +53,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         logger.log(Level.INFO, "starting evolution {0}", this.getClass().getName());
         evolutionStarted(this);
         clean();
-        int stdMethods = standartizations.size();
-        System.out.println("evaluator: " + getEvaluator().getName());
 
-        if (ph != null) {
-            int workunits = getGenerations();
-            logger.log(Level.INFO, "stds: {0}", stdMethods);
-            logger.log(Level.INFO, "distances: {0}", dist.size());
-            logger.log(Level.INFO, "linkages: {0}", linkage.size());
-            ph.start(workunits);
-            ph.progress("starting " + getName() + "evolution...");
-        }
+        printStarted();
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
