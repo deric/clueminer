@@ -13,14 +13,14 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
-import org.clueminer.evolution.api.Evolution;
-import org.clueminer.evolution.api.Individual;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.evolution.BaseEvolution;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
@@ -132,8 +132,11 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
             for (DistanceMeasure dm : dist) {
                 params.put(AgglParams.DIST, dm.getName());
                 clustering = exec.clusterRows(dataset, params);
-                clustering.setName("#" + cnt);
-                individualCreated(clustering);
+                //make sure the clustering is valid
+                if (clustering.instancesCount() == dataset.size()) {
+                    clustering.setName("#" + cnt);
+                    individualCreated(clustering);
+                }
                 if (ph != null) {
                     ph.progress(cnt++);
                 }
