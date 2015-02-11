@@ -207,6 +207,12 @@ public class MetaPanel extends JPanel {
         int hashMatch = 0;
         String templ;
         int hash;
+        if (map == null) {
+            map = new Object2ObjectOpenHashMap<>(res.size());
+        }
+        if (chash == null) {
+            chash = new Int2ObjectOpenHashMap<>(res.size());
+        }
         //compare with meta database
         for (Clustering c : res) {
             if (c != null) {
