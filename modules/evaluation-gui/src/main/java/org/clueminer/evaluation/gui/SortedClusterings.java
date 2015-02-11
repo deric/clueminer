@@ -1,6 +1,7 @@
 package org.clueminer.evaluation.gui;
 
 import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -17,6 +18,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AICScore;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.gui.BPanel;
@@ -34,7 +37,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
     private static final long serialVersionUID = -4456572592761477081L;
 
-    Collection<? extends Clustering> clusterings;
+    private Collection<? extends Clustering> clusterings;
     Clustering[] left;
     Clustering[] right;
     ClusteringComparator cLeft;
@@ -57,6 +60,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     private double midDist;
     private double maxDist;
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
+    private Object2DoubleOpenHashMap<String> results;
 
     public SortedClusterings() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -66,6 +70,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
         cLeft = new ClusteringComparator(new AICScore());
         cRight = new ClusteringComparator(new AICScore());
         colorScheme = new ColorSchemeImpl(Color.green, Color.BLACK, Color.RED);
+        results = new Object2DoubleOpenHashMap<>();
     }
 
     void setEvaluatorX(final ClusterEvaluation provider) {
@@ -80,6 +85,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
                     cLeft.setEvaluator(provider);
                     clusteringChanged();
                     ph.finish();
+                    results = new Object2DoubleOpenHashMap<>();
                 }
             });
 
@@ -120,7 +126,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
             @Override
             public void run() {
-
+                results = new Object2DoubleOpenHashMap<>();
                 left = clusters.toArray(new Clustering[clusters.size()]);
                 Arrays.sort(left, cLeft);
 
@@ -148,14 +154,17 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //row index corresponding to a clustering
             clust = right[i];
             matching.put(clust, i);
-            score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
-            //occurences of given number in table
-            if (rightScore.containsKey(score)) {
-                cnt = rightScore.get(score) + 1;
-            } else {
-                cnt = 0;
+
+            if (clust.getEvaluationTable() != null) {
+                score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+                //occurences of given number in table
+                if (rightScore.containsKey(score)) {
+                    cnt = rightScore.get(score) + 1;
+                } else {
+                    cnt = 0;
+                }
+                rightScore.put(score, cnt);
             }
-            rightScore.put(score, cnt);
         }
     }
 
@@ -201,15 +210,17 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
             //right clustering
             rowB = matching.getInt(clust);
-            score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
-            if (curr == score) {
-                offset--;
-            } else {
-                offset = rightScore.get(score) + 1;
-                curr = score;
+            if (clust.getEvaluationTable() != null) {
+                score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+                if (curr == score) {
+                    offset--;
+                } else {
+                    offset = rightScore.get(score) + 1;
+                    curr = score;
+                }
+                rowB -= offset;
+                rowB += 1;
             }
-            rowB -= offset;
-            rowB += 1;
 
             drawClustering(g, clust, xB, rowB, headerHeight);
 
@@ -220,6 +231,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //dist = distance(x1, y1, xB, y2);
             //row distance (relative) - difference of row indexes
             dist = Math.abs(row - rowB);
+            results.put(cRight.getEvaluator().getName(), dist);
             total += dist;
             g.setColor(colorScheme.getColor(dist, minDist, midDist, maxDist));
             g.draw(line);
@@ -387,5 +399,22 @@ public class SortedClusterings extends BPanel implements TaskListener {
     public boolean isAntiAliasing() {
         return true;
     }
+
+    public Object2DoubleOpenHashMap<String> getResults() {
+        return results;
+    }
+
+    public Dataset<? extends Instance> getDataset() {
+        if (clusterings != null && clusterings.size() > 0) {
+            Clustering c = clusterings.iterator().next();
+            return c.getLookup().lookup(Dataset.class);
+        }
+        return null;
+    }
+
+    public Collection<? extends Clustering> getClusterings() {
+        return clusterings;
+    }
+
 
 }

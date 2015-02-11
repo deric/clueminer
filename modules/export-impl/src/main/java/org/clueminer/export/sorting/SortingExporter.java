@@ -2,9 +2,12 @@ package org.clueminer.export.sorting;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import java.io.File;
+import java.util.Collection;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.export.impl.AbstractExporter;
@@ -21,6 +24,8 @@ public class SortingExporter extends AbstractExporter {
     private SortingOptions options;
     private Object2DoubleOpenHashMap<String> results;
     private Dataset<? extends Instance> dataset;
+    private Collection<? extends Clustering> clusterings;
+    private ClusterEvaluation evaluator;
 
     public SortingExporter() {
     }
@@ -77,8 +82,38 @@ public class SortingExporter extends AbstractExporter {
 
     @Override
     public Runnable getRunner(File file, Preferences pref, ProgressHandle ph) {
-        return new SortingRunner(file, dataset, results, pref, ph);
+        return new SortingRunner(file, this, pref, ph);
     }
 
+    public Object2DoubleOpenHashMap<String> getResults() {
+        return results;
+    }
 
+    public void setResults(Object2DoubleOpenHashMap<String> results) {
+        this.results = results;
+    }
+
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        this.dataset = dataset;
+    }
+
+    public void setClusterings(Collection<? extends Clustering> clusterings) {
+        this.clusterings = clusterings;
+    }
+
+    public Collection<? extends Clustering> getClusterings() {
+        return clusterings;
+    }
+
+    public void setReference(ClusterEvaluation evaluator) {
+        this.evaluator = evaluator;
+    }
+
+    public ClusterEvaluation getEvaluator() {
+        return evaluator;
+    }
 }

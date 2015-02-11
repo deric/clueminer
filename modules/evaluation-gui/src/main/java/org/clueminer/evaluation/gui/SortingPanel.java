@@ -3,13 +3,18 @@ package org.clueminer.evaluation.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.export.sorting.SortingExporter;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -20,6 +25,7 @@ public class SortingPanel extends JPanel {
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
     private SortedClusterings plot;
+    private JButton export;
 
     public SortingPanel() {
         initComponents();
@@ -60,6 +66,24 @@ public class SortingPanel extends JPanel {
         c.insets = new Insets(5, 0, 5, 5);
         c.gridx = 1;
         add(comboEvaluatorY, c);
+
+        export = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/save16.png", false));
+        export.setToolTipText("Export current results");
+        c.gridx = 2;
+        add(export, c);
+
+        export.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                SortingExporter exp = new SortingExporter();
+                exp.setDataset(plot.getDataset());
+                exp.setResults(plot.getResults());
+                exp.setClusterings(plot.getClusterings());
+                exp.setReference(plot.cLeft.getEvaluator());
+                exp.showDialog();
+            }
+        });
 
         //left list
         plot = new SortedClusterings();

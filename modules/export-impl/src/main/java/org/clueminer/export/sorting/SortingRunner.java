@@ -8,8 +8,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.prefs.Preferences;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 
@@ -23,14 +21,13 @@ public class SortingRunner implements Runnable {
     private ProgressHandle ph;
     private boolean includeHeader;
     private Object2DoubleOpenHashMap<String> results;
-    private Dataset<? extends Instance> dataset;
     private DecimalFormat df;
+    private SortingExporter exp;
 
-    public SortingRunner(File file, Dataset<? extends Instance> dataset, Object2DoubleOpenHashMap<String> results, Preferences pref, ProgressHandle ph) {
+    public SortingRunner(File file, SortingExporter exp, Preferences pref, ProgressHandle ph) {
         this.file = file;
         this.ph = ph;
-        this.dataset = dataset;
-        this.results = results;
+        this.exp = exp;
         df = initFormat(3);
         parsePref(pref);
     }
@@ -67,6 +64,9 @@ public class SortingRunner implements Runnable {
                     sb.append(s);
                     j++;
                 }
+                sb.append(",").append("dataset");
+                sb.append(",").append("clusterings");
+                sb.append(",").append("reference");
                 sb.append("\n");
                 fw.write(sb.toString());
             }
@@ -75,14 +75,16 @@ public class SortingRunner implements Runnable {
             for (Double score : results.values()) {
 
                 if (i > 0) {
-                        sb.append(",");
-                    }
-                sb.append(df.format(df));
+                    sb.append(",");
+                }
+                sb.append(score);
                 if (ph != null) {
                     ph.progress(cnt++);
                 }
             }
-            sb.append(",").append(dataset.getName());
+            sb.append(",").append(exp.getDataset().getName());
+            sb.append(",").append(exp.getClusterings().size());
+            sb.append(",").append(exp.getEvaluator().getName());
             sb.append("\n");
             fw.write(sb.toString());
 

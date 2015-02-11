@@ -129,6 +129,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.export.impl</publicPackage>
+                        <publicPackage>org.clueminer.export.sorting</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
