@@ -205,16 +205,20 @@ public class MetaPanel extends JPanel {
         MetaResult m;
         matched = 0;
         int hashMatch = 0;
+        String templ;
+        int hash;
         //compare with meta database
         for (Clustering c : res) {
             if (c != null) {
-                m = map.get(c.getParams().toString());
-                if (m != null) {
+                templ = c.getParams().toString();
+                if (map.containsKey(templ)) {
+                    m = map.get(templ);
                     m.setFlag(MetaFlag.MATCHED);
                     matched++;
                 }
-                m = chash.get(c.hashCode());
-                if (m != null) {
+                hash = c.hashCode();
+                if (chash.containsKey(hash)) {
+                    m = chash.get(hash);
                     m.setFlag(MetaFlag.HASH);
                     hashMatch++;
                 }
