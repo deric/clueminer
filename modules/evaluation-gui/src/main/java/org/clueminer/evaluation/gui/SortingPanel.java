@@ -122,4 +122,8 @@ public class SortingPanel extends JPanel {
         }
     }
 
+    public Collection<? extends Clustering> getClusterings() {
+        return plot.getClusterings();
+    }
+
 }
