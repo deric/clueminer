@@ -30,7 +30,7 @@ public class SortingPanel extends JPanel {
         //setSize(new Dimension(800, 600));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.NORTH;
         c.weightx = 1.0;
         //component in last row should be streatched to fill space at the bottom
         c.weighty = 0.1;
@@ -69,7 +69,7 @@ public class SortingPanel extends JPanel {
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.anchor = GridBagConstraints.NORTH;
         c.insets = new Insets(0, 0, 0, 0);
         add(plot, c);
 

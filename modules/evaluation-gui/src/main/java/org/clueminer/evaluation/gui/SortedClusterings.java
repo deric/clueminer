@@ -1,8 +1,8 @@
 package org.clueminer.evaluation.gui;
 
+import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.BasicStroke;
-import org.clueminer.eval.utils.ClusteringComparator;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,6 +18,7 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.eval.AICScore;
+import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.gui.BPanel;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
@@ -48,6 +49,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     private int maxWidth;
     private Insets insets = new Insets(5, 5, 5, 5);
     private Object2IntOpenHashMap<Clustering> matching;
+    private Double2IntOpenHashMap rightScore;
     static BasicStroke wideStroke = new BasicStroke(8.0f);
     private double strokeW;
     private ColorScheme colorScheme;
@@ -137,9 +139,23 @@ public class SortedClusterings extends BPanel implements TaskListener {
     }
 
     private void updateMatching() {
-        matching = new Object2IntOpenHashMap<>();
+        matching = new Object2IntOpenHashMap<>(right.length);
+        rightScore = new Double2IntOpenHashMap(right.length);
+        int cnt;
+        double score;
+        Clustering clust;
         for (int i = 0; i < right.length; i++) {
-            matching.put(right[i], i);
+            //row index corresponding to a clustering
+            clust = right[i];
+            matching.put(clust, i);
+            score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+            //occurences of given number in table
+            if (rightScore.containsKey(score)) {
+                cnt = rightScore.get(score) + 1;
+            } else {
+                cnt = 0;
+            }
+            rightScore.put(score, cnt);
         }
     }
 
@@ -158,8 +174,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
     @Override
     public void render(Graphics2D g) {
-        g.setColor(Color.BLACK);
-
+        Color defaultFg = g.getColor();
         float xA = 0.0f, xB = getSize().width - maxWidth;
         Clustering clust;
         int rowB;
@@ -174,15 +189,28 @@ public class SortedClusterings extends BPanel implements TaskListener {
         headerHeight = drawHeader(g);
         //set font for rendering rows
         g.setFont(defaultFont);
+        int offset = 0;
+        double curr = Double.NaN;
+        double score;
         //draw
         for (int row = 0; row < left.length; row++) {
             //left clustering
             clust = left[row];
-            g.setColor(Color.BLACK);
+            g.setColor(defaultFg);
             drawClustering(g, clust, xA, row, headerHeight);
 
             //right clustering
             rowB = matching.getInt(clust);
+            score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+            if (curr == score) {
+                offset--;
+            } else {
+                offset = rightScore.get(score) + 1;
+                curr = score;
+            }
+            rowB -= offset;
+            rowB += 1;
+
             drawClustering(g, clust, xB, rowB, headerHeight);
 
             g.setStroke(wideStroke);
@@ -192,7 +220,6 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //dist = distance(x1, y1, xB, y2);
             //row distance (relative) - difference of row indexes
             dist = Math.abs(row - rowB);
-            //System.out.println("dist: " + dist);
             total += dist;
             g.setColor(colorScheme.getColor(dist, minDist, midDist, maxDist));
             g.draw(line);
@@ -200,6 +227,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
             // g.setStroke(wideStroke);
             //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
         }
+        g.setColor(defaultFg);
         //average distance per item
         drawDistance(g, total / (double) left.length);
         //System.out.println("distance: " + dist);
@@ -254,7 +282,6 @@ public class SortedClusterings extends BPanel implements TaskListener {
         int colWidth = getSize().width / 3;
         String str = String.format("%.2f", distance);
         g2.setFont(headerFont);
-        g2.setColor(Color.BLACK);
         int strWidth = stringWidth(headerFont, g, str);
         // 2nd column
         int x = colWidth + (colWidth - strWidth) / 2;
