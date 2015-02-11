@@ -1,6 +1,5 @@
 package org.clueminer.export.sorting;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,12 +16,11 @@ import org.openide.util.Exceptions;
  */
 public class SortingRunner implements Runnable {
 
-    private File file;
+    private final File file;
     private ProgressHandle ph;
     private boolean includeHeader;
-    private Object2DoubleOpenHashMap<String> results;
     private DecimalFormat df;
-    private SortingExporter exp;
+    private final SortingExporter exp;
 
     public SortingRunner(File file, SortingExporter exp, Preferences pref, ProgressHandle ph) {
         this.file = file;
@@ -37,9 +35,9 @@ public class SortingRunner implements Runnable {
     }
 
     private DecimalFormat initFormat(int d) {
-        DecimalFormat format = new DecimalFormat();
+        DecimalFormat format = new DecimalFormat("#.###");
         format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-        format.setMinimumIntegerDigits(1);
+         format.setMinimumIntegerDigits(1);
         format.setMaximumFractionDigits(d);
         format.setMinimumFractionDigits(d);
         format.setGroupingUsed(false);
@@ -52,12 +50,12 @@ public class SortingRunner implements Runnable {
             StringBuilder sb;
             int cnt = 0;
             if (ph != null) {
-                ph.start(results.size());
+                ph.start(exp.getResults().size());
             }
             if (includeHeader) {
                 sb = new StringBuilder();
                 int j = 0;
-                for (String s : results.keySet()) {
+                for (String s : exp.getResults().keySet()) {
                     if (j > 0) {
                         sb.append(",");
                     }
@@ -72,15 +70,17 @@ public class SortingRunner implements Runnable {
             }
             sb = new StringBuilder();
             int i = 0;
-            for (Double score : results.values()) {
+            for (Double score : exp.getResults().values()) {
 
                 if (i > 0) {
                     sb.append(",");
                 }
-                sb.append(score);
+                sb.append(df.format(score));
+                System.out.println("value = " + score);
                 if (ph != null) {
                     ph.progress(cnt++);
                 }
+                i++;
             }
             sb.append(",").append(exp.getDataset().getName());
             sb.append(",").append(exp.getClusterings().size());
