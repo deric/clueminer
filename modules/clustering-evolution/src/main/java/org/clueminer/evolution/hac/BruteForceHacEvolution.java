@@ -12,7 +12,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -45,6 +47,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     private List<DistanceMeasure> dist;
     private List<ClusterLinkage> linkage;
     private List<CutoffStrategy> cutoff;
+    private List<InternalEvaluator> evaluators;
     private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
     private int cnt;
     private final FakePopulation population = new FakePopulation();
@@ -80,11 +83,13 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         linkage = lf.getAll();
         CutoffStrategyFactory cf = CutoffStrategyFactory.getInstance();
         cutoff = cf.getAll();
+        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+        evaluators = ief.getAll();
 
         int stdMethods = standartizations.size();
 
         if (ph != null) {
-            int workunits = stdMethods * 2 * dist.size() * linkage.size() * cutoff.size();
+            int workunits = stdMethods * 2 * dist.size() * linkage.size() * cutoff.size() * evaluators.size();
             logger.log(Level.INFO, "stds: {0}", stdMethods);
             logger.log(Level.INFO, "distances: {0}", dist.size());
             logger.log(Level.INFO, "linkages: {0}", linkage.size());
@@ -124,21 +129,23 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         params.putBoolean(AgglParams.LOG, logscale);
         params.put(AgglParams.STD, std);
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        params.put(AgglParams.CUTOFF_SCORE, evaluator.getName());
         params.put(AgglParams.LINKAGE, link.getName());
 
         for (CutoffStrategy cut : cutoff) {
             params.put(AgglParams.CUTOFF_STRATEGY, cut.getName());
             for (DistanceMeasure dm : dist) {
                 params.put(AgglParams.DIST, dm.getName());
-                clustering = exec.clusterRows(dataset, params);
-                //make sure the clustering is valid
-                if (clustering.instancesCount() == dataset.size()) {
-                    clustering.setName("#" + cnt);
-                    individualCreated(clustering);
-                }
-                if (ph != null) {
-                    ph.progress(cnt++);
+                for (InternalEvaluator ie : evaluators) {
+                    params.put(AgglParams.CUTOFF_SCORE, ie.getName());
+                    clustering = exec.clusterRows(dataset, params);
+                    //make sure the clustering is valid
+                    if (clustering.instancesCount() == dataset.size()) {
+                        clustering.setName("#" + cnt);
+                        individualCreated(clustering);
+                    }
+                    if (ph != null) {
+                        ph.progress(cnt++);
+                    }
                 }
             }
         }
