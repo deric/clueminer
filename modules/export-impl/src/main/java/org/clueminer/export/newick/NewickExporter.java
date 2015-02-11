@@ -6,7 +6,6 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.gui.ClusteringExport;
-import org.clueminer.export.impl.AbstractExporter;
 import org.clueminer.export.impl.ClusteringExporter;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
