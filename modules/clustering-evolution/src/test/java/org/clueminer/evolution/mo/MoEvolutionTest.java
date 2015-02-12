@@ -22,7 +22,6 @@ public class MoEvolutionTest {
     protected ConsoleReporter report;
     protected MemInfo mem;
 
-
     public MoEvolutionTest() {
     }
 

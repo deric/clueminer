@@ -150,7 +150,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
             for (int i = 0; i < population.size(); i++) {
                 Individual current = population.getIndividual(i).deepCopy();
                 current.mutate();
-                if (current.isValid()) {
+                if (this.isValid(current) && current.isValid()) {
                     if (!isItTabu(current.toString())) {
                         // put mutated individual to the list of new individuals
                         children.add(current);

@@ -86,7 +86,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
                         //update meta-database
                         fireIndividualCreated(current);
                     }
-                } while (!current.isValid());
+                } while (!current.isValid() && !this.isValid(current));
             }
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
 

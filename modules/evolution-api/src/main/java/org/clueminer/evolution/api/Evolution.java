@@ -117,4 +117,12 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      * @return
      */
     String getDefaultParam(String key);
+
+    /**
+     * Validates individual in context of whole evolution process
+     *
+     * @param individual
+     * @return
+     */
+    boolean isValid(Individual individual);
 }

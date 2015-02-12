@@ -123,4 +123,15 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
+    /**
+     * No validation by default
+     *
+     * @param individual
+     * @return
+     */
+    @Override
+    public boolean isValid(Individual individual) {
+        return individual != null;
+    }
+
 }
