@@ -174,12 +174,12 @@ public class SortedClusterings extends BPanel implements TaskListener {
                     System.err.println("sorting error during " + eval.getName());
                 }
                 updateMatching();
-                updateResults();
+                updateResults(eval);
             }
         }
     }
 
-    private void updateResults() {
+    private void updateResults(ClusterEvaluation eval) {
         Clustering clust;
         int rowB;
 
@@ -194,7 +194,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //right clustering
             rowB = matching.getInt(clust);
             if (clust.getEvaluationTable() != null) {
-                score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+                score = clust.getEvaluationTable().getScore(eval);
                 if (curr == score) {
                     offset--;
                 } else {
@@ -211,7 +211,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
             total += dist;
         }
         double sc = total / (double) left.length;
-        results.put(cRight.getEvaluator().getName(), sc);
+        results.put(eval.getName(), sc);
     }
 
     @Override
