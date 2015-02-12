@@ -22,6 +22,8 @@ import org.openide.util.ImageUtilities;
  */
 public class SortingPanel extends JPanel {
 
+    private static final long serialVersionUID = 8757022805479436474L;
+
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
     private SortedClusterings plot;

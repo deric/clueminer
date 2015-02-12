@@ -12,6 +12,9 @@ import java.awt.Insets;
 import java.awt.geom.Line2D;
 import java.util.Arrays;
 import java.util.Collection;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -25,6 +28,7 @@ import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.gui.BPanel;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
@@ -61,6 +65,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     private double maxDist;
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
     private Object2DoubleOpenHashMap<String> results;
+    private Color fontColor;
 
     public SortedClusterings() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -71,6 +76,19 @@ public class SortedClusterings extends BPanel implements TaskListener {
         cRight = new ClusteringComparator(new AICScore());
         colorScheme = new ColorSchemeImpl(Color.green, Color.BLACK, Color.RED);
         results = new Object2DoubleOpenHashMap<>();
+        try {
+            initialize();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+        fontColor = defaults.getColor("controlText");
+        setBackground(defaults.getColor("window"));
     }
 
     void setEvaluatorX(final ClusterEvaluation provider) {
@@ -183,7 +201,6 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
     @Override
     public void render(Graphics2D g) {
-        Color defaultFg = g.getColor();
         float xA = 0.0f, xB = getSize().width - maxWidth;
         Clustering clust;
         int rowB;
@@ -205,7 +222,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
         for (int row = 0; row < left.length; row++) {
             //left clustering
             clust = left[row];
-            g.setColor(defaultFg);
+            g.setColor(fontColor);
             drawClustering(g, clust, xA, row, headerHeight);
 
             //right clustering
@@ -239,7 +256,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
             // g.setStroke(wideStroke);
             //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
         }
-        g.setColor(defaultFg);
+        g.setColor(fontColor);
         //average distance per item
         drawDistance(g, total / (double) left.length);
         //System.out.println("distance: " + dist);
@@ -267,6 +284,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
      * @return height of drawn header
      */
     private int drawHeader(Graphics2D g) {
+        g.setColor(fontColor);
         //approx one third
         int colWidth = getSize().width / 3;
         g.setFont(headerFont);
@@ -291,6 +309,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     }
 
     private void drawDistance(Graphics2D g2, double distance) {
+        g2.setColor(fontColor);
         int colWidth = getSize().width / 3;
         String str = String.format("%.2f", distance);
         g2.setFont(headerFont);
@@ -415,6 +434,5 @@ public class SortedClusterings extends BPanel implements TaskListener {
     public Collection<? extends Clustering> getClusterings() {
         return clusterings;
     }
-
 
 }
