@@ -20,6 +20,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -156,6 +157,63 @@ public class SortedClusterings extends BPanel implements TaskListener {
         task.addTaskListener(this);
     }
 
+    /**
+     * Compute sorting distance for all evaluation metrics
+     */
+    private void computeAll() {
+        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+        ClusteringComparator compare = new ClusteringComparator();
+        for (ClusterEvaluation eval : ief.getAll()) {
+
+            if (!results.containsKey(eval.getName())) {
+                System.out.println("computing " + eval.getName());
+                compare.setEvaluator(eval);
+                try {
+                    Arrays.sort(right, compare);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("sorting error during " + eval.getName());
+                }
+                updateMatching();
+                updateResults();
+            }
+        }
+    }
+
+    private void updateResults() {
+        Clustering clust;
+        int rowB;
+
+        double total = 0.0, dist;
+        int offset = 0;
+        double curr = Double.NaN;
+        double score;
+        //draw
+        for (int row = 0; row < left.length; row++) {
+            //left clustering
+            clust = left[row];
+            //right clustering
+            rowB = matching.getInt(clust);
+            if (clust.getEvaluationTable() != null) {
+                score = clust.getEvaluationTable().getScore(cRight.getEvaluator());
+                if (curr == score) {
+                    offset--;
+                } else {
+                    offset = rightScore.get(score) + 1;
+                    curr = score;
+                }
+                rowB -= offset;
+                rowB += 1;
+            }
+
+            //dist = distance(x1, y1, xB, y2);
+            //row distance (relative) - difference of row indexes
+            dist = Math.abs(row - rowB);
+            total += dist;
+        }
+        double sc = total / (double) left.length;
+        results.put(cRight.getEvaluator().getName(), sc);
+    }
+
     @Override
     public void taskFinished(Task task) {
         updateMatching();
@@ -248,18 +306,17 @@ public class SortedClusterings extends BPanel implements TaskListener {
             //dist = distance(x1, y1, xB, y2);
             //row distance (relative) - difference of row indexes
             dist = Math.abs(row - rowB);
-            results.put(cRight.getEvaluator().getName(), dist);
             total += dist;
             g.setColor(colorScheme.getColor(dist, minDist, midDist, maxDist));
             g.draw(line);
-
             // g.setStroke(wideStroke);
             //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
         }
         g.setColor(fontColor);
         //average distance per item
-        drawDistance(g, total / (double) left.length);
-        //System.out.println("distance: " + dist);
+        double res = total / (double) left.length;
+        drawDistance(g, res);
+        results.put(cRight.getEvaluator().getName(), res);
         g.dispose();
     }
 
@@ -419,7 +476,14 @@ public class SortedClusterings extends BPanel implements TaskListener {
         return true;
     }
 
+    /**
+     * Computes sorting distance for all measures available (might take a while)
+     *
+     * @return
+     */
     public Object2DoubleOpenHashMap<String> getResults() {
+        //make sure everything is computed
+        computeAll();
         return results;
     }
 
