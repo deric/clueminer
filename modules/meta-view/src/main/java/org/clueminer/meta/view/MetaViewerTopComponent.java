@@ -90,14 +90,19 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
             }
 
             @Override
-            public void select(Workspace workspace) {
+            public void select(final Workspace workspace) {
                 logger.log(Level.INFO, "meta-panel selected");
 
-                Dataset<? extends Instance> dataset = workspace.getLookup().lookup(Dataset.class);
-                if (dataset != null) {
-                    panel.updateDataset(dataset);
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
 
+                        Dataset<? extends Instance> dataset = workspace.getLookup().lookup(Dataset.class);
+                        if (dataset != null) {
+                            panel.updateDataset(dataset);
+                        }
+                    }
+                });
             }
 
             @Override

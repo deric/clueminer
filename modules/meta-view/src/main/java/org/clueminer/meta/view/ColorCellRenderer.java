@@ -29,6 +29,7 @@ public class ColorCellRenderer extends DefaultTableCellRenderer {
             if (m.getFlag() == MetaFlag.MATCHED) {
                 c.setBackground(Color.green);
             }
+            c.setBackground(Color.RED);
         }
         return c;
     }
