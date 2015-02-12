@@ -368,7 +368,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
     private void drawDistance(Graphics2D g2, double distance) {
         g2.setColor(fontColor);
         int colWidth = getSize().width / 3;
-        String str = String.format("%.2f", distance);
+        String str = String.format("%.2f", distance) + " (" + clusterings.size() + ")";
         g2.setFont(headerFont);
         int strWidth = stringWidth(headerFont, g, str);
         // 2nd column
