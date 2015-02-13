@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.config.Parameter;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.singlem.SingleMuteIndividual;
 import static org.clueminer.evolution.singlem.SingleMuteIndividual.getFactory;
 import org.clueminer.utils.Props;
@@ -228,6 +229,10 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
     @Override
     public Integer getUpperBound(int index) {
         return problem.getUpperBound(index);
+    }
+
+    public Individual getIndividual() {
+        return individual;
     }
 
 }

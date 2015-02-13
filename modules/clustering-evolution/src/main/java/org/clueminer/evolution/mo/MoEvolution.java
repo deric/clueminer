@@ -7,6 +7,7 @@ import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -122,6 +123,13 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
          Hypervolume hypervolume = new Hypervolume();
          hypervolume.execute(frontA, frontB);*/
 
+        Individual[] pop = new Individual[moPop.size()];
+        for (int j = 0; j < moPop.size(); j++) {
+            MoSolution b = (MoSolution) moPop.get(0);
+            pop[j] = b.getIndividual();
+        }
+
+        fireResultUpdate(pop);
     }
 
 }

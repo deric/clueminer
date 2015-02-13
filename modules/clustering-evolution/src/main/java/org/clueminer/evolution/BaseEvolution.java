@@ -59,6 +59,10 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         return cg;
     }
 
+    public ListenerList<EvolutionListener> getEvolutionListeners() {
+        return evoListeners;
+    }
+
     @Override
     public void addEvolutionListener(EvolutionListener listener) {
         evoListeners.add(listener);
