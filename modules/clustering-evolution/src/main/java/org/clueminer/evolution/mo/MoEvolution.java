@@ -9,22 +9,26 @@ import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
-import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
+import org.uma.jmetal.operator.impl.selection.NaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.AlgorithmRunner;
-import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
+import org.uma.jmetal.util.comparator.DominanceComparator;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = Evolution.class)
 public class MoEvolution extends MultiMuteEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "MOE";
@@ -87,20 +91,27 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         double mutationDistributionIndex = 20.0;
         mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
 
-        selection = new BinaryTournamentSelection();
+        int numSolutions = 10;
+
+        selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
 
         moAlg = new NSGAIIBuilder(problem)
                 .setCrossoverOperator(crossover)
                 .setMutationOperator(mutation)
                 .setSelectionOperator(selection)
-                .setMaxIterations(250)
-                .setPopulationSize(100)
-                .setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
+                .setMaxIterations(15)
+                .setPopulationSize(15)
+                //.setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();
 
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
 
-        // List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        int i = 0;
+        for (Solution s : moPop) {
+            System.out.println(i + ": " + s.getObjective(0) + ", " + s.getObjective(1));
+            i++;
+        }
         long computingTime = algorithmRunner.getComputingTime();
         System.out.println("computing time: " + computingTime);
         /*
