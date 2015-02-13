@@ -135,7 +135,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
      *
      * @return clustering according to current parameters
      */
-    private Clustering<? extends Cluster> updateCustering() {
+    public Clustering<? extends Cluster> updateCustering() {
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
         return clustering;
     }

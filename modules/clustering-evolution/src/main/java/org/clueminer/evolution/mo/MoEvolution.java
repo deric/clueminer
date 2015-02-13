@@ -10,7 +10,6 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -19,12 +18,8 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
-import org.uma.jmetal.qualityindicator.impl.Hypervolume;
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
-import org.uma.jmetal.util.front.Front;
-import org.uma.jmetal.util.front.imp.ArrayFront;
 
 /**
  *
@@ -103,19 +98,18 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 .setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();
 
-        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg)
-                .execute();
+        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
 
-        List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        // List<Solution> moPop = ((NSGAII) moAlg).getResult();
         long computingTime = algorithmRunner.getComputingTime();
         System.out.println("computing time: " + computingTime);
+        /*
+         int numberOfDimensions = getNumObjectives();
+         Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
+         Front frontB = new ArrayFront(numberOfPoints, numberOfDimensions);
 
-        int numberOfDimensions = getNumObjectives();
-        Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
-        Front frontB = new ArrayFront(numberOfPoints, numberOfDimensions);
-
-        Hypervolume hypervolume = new Hypervolume();
-        hypervolume.execute(frontA, frontB);
+         Hypervolume hypervolume = new Hypervolume();
+         hypervolume.execute(frontA, frontB);*/
 
     }
 

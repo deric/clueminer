@@ -24,6 +24,7 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     protected Int2ObjectOpenHashMap<String> mapping;
     protected int[] lowerLimit;
     protected int[] upperLimit;
+    protected Parameter[] params;
 
     public MoProblem(MoEvolution evolution) {
         this.evolution = evolution;
@@ -42,7 +43,7 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     }
 
     private void initializeGenomMapping(ClusteringAlgorithm algorithm) {
-        Parameter[] params = algorithm.getParameters();
+        params = algorithm.getParameters();
         mapping = new Int2ObjectOpenHashMap(params.length);
         int i = 0;
         lowerLimit = new int[params.length];
@@ -51,7 +52,6 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
             try {
                 mapping.put(i, p.getName());
                 lowerLimit[i] = 0;
-                System.out.println("p name: " + p.getName());
                 switch (p.getType()) {
                     case STRING:
                         ServiceFactory f = getFactory(p);
@@ -79,10 +79,6 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     @Override
     public Integer getLowerBound(int index) {
         return lowerLimit[index];
-    }
-
-    public int getNumVars() {
-        return mapping.size();
     }
 
     /**
