@@ -18,6 +18,8 @@ import org.uma.jmetal.solution.IntegerSolution;
  */
 public class MoProblem extends AbstractGenericProblem<IntegerSolution> implements IntegerProblem {
 
+    private static final long serialVersionUID = 5458227476117018712L;
+
     protected final MoEvolution evolution;
     protected Int2ObjectOpenHashMap<String> mapping;
     protected int[] lowerLimit;
@@ -49,8 +51,19 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
             try {
                 mapping.put(i, p.getName());
                 lowerLimit[i] = 0;
-                ServiceFactory f = getFactory(p);
-                upperLimit[i] = f.getAll().size();
+                System.out.println("p name: " + p.getName());
+                switch (p.getType()) {
+                    case STRING:
+                        ServiceFactory f = getFactory(p);
+                        upperLimit[i] = f.getAll().size();
+                        break;
+                    case BOOLEAN:
+                        upperLimit[i] = 1;
+                        break;
+                    default:
+                        throw new RuntimeException(p.getType() + " is not supported yet");
+                }
+
                 i++;
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
