@@ -106,10 +106,20 @@ public class ARFFHandlerTest {
 
     @Test
     public void testLoadZoo2() throws FileNotFoundException, IOException {
-        Dataset<? extends Instance> data = new ArrayDataset(100, 16);
+        Dataset<? extends Instance> data = new ArrayDataset(101, 16);
         arff.load(tf.zoo2Arff(), data);
         assertEquals(16, data.attributeCount());
         assertEquals(101, data.size());
+    }
+
+    @Test
+    public void testLoadGlass() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(217, 9);
+        arff.load(tf.glassArff(), data);
+        assertEquals(9, data.attributeCount());
+        assertEquals(214, data.size());
+        //dataset info list 7 classes, but there are only 6 of them
+        assertEquals(6, data.getClasses().size());
     }
 
     @Test
