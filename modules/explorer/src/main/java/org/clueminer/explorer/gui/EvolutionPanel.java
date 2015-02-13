@@ -6,12 +6,13 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.explorer.EvolutionUI;
 
 /**
  *
  * @author deric
  */
-public class EvolutionPanel extends javax.swing.JPanel {
+public class EvolutionPanel extends javax.swing.JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -8908500509479257849L;
 
