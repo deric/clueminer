@@ -27,8 +27,8 @@ public class AdjListGraph implements Graph {
 		edges.put(edge.getId(), (AdjListEdge) edge);
 		AdjListNode source = (AdjListNode) edge.getSource();
 		AdjListNode target = (AdjListNode) edge.getTarget();
-		source.addEdgeOut(edge);
-		target.addEdgeIn(edge);
+		source.addEdge(edge);
+		target.addEdge(edge);
 		return true;
 	}
 
@@ -108,7 +108,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public Edge getEdge(Node node1, Node node2) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return ((AdjListNode) node1).getEdge(node2);
 	}
 
 	@Override
@@ -118,12 +118,12 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public NodeIterable getNodes() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListNodeIterable(nodes);
 	}
 
 	@Override
 	public EdgeIterable getEdges() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return new AdjListEdgeIterable(edges);
 	}
 
 	@Override
@@ -133,7 +133,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public NodeIterable getNeighbors(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return ((AdjListNode) node).getNeighbors();
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public EdgeIterable getEdges(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return ((AdjListNode) node).getEdges();
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public int getDegree(Node node) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return ((AdjListNode) node).getDegree();
 	}
 
 	@Override
@@ -183,12 +183,12 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public boolean isDirected(Edge edge) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edge.isDirected();
 	}
 
 	@Override
 	public boolean isAdjacent(Node node1, Node node2) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return ((AdjListNode) node1).isAdjacent(node2);
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public boolean isIncident(Node node, Edge edge) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return edge.getSource() == node || edge.getTarget() == node;
 	}
 
 	@Override
@@ -244,7 +244,7 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public GraphFactory getFactory() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return AdjListFactory.getInstance();
 	}
 
 	@Override
