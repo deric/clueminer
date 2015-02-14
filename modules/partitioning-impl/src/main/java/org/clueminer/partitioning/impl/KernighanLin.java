@@ -24,13 +24,26 @@ public class KernighanLin implements Bisection {
     private double maxCost;
     private int usedNodes;
     private Graph graph;
+    /**
+     * whether the algorithm uses edge weights
+     */
+    private boolean weightedEdges;
 
     public KernighanLin() {
+        this(true);
+    }
 
+    public KernighanLin(boolean weightedEdges) {
+        this.weightedEdges = weightedEdges;
     }
 
     public KernighanLin(Graph g) {
+        this(g, true);
+    }
+
+    public KernighanLin(Graph g, boolean weightedEdges) {
         graph = g;
+        this.weightedEdges = weightedEdges;
     }
 
     @Override
@@ -141,10 +154,11 @@ public class KernighanLin implements Bisection {
         for (int i = 0; i <= 1; i++) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(swapPair[i].node).toCollection();
             for (Node neighbor : neighbors) {
+                double weight = weightedEdges ? graph.getEdge(swapPair[i].node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(neighbor)].cluster == swapPair[i].cluster) {
-                    vertexes[graph.getIndex(neighbor)].difference += 2 * graph.getEdge(swapPair[i].node, neighbor).getWeight();
+                    vertexes[graph.getIndex(neighbor)].difference += 2 * weight;
                 } else {
-                    vertexes[graph.getIndex(neighbor)].difference -= 2 * graph.getEdge(swapPair[i].node, neighbor).getWeight();
+                    vertexes[graph.getIndex(neighbor)].difference -= 2 * weight;
                 }
             }
         }
@@ -157,10 +171,11 @@ public class KernighanLin implements Bisection {
         for (Node node : nodes) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(node).toCollection();
             for (Node neighbor : neighbors) {
+                double weight = weightedEdges ? graph.getEdge(node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(node)].cluster == vertexes[graph.getIndex(neighbor)].cluster) {
-                    vertexes[graph.getIndex(node)].internalCost += graph.getEdge(node, neighbor).getWeight();
+                    vertexes[graph.getIndex(node)].internalCost += weight;
                 } else {
-                    vertexes[graph.getIndex(node)].externalCost += graph.getEdge(node, neighbor).getWeight();
+                    vertexes[graph.getIndex(node)].externalCost += weight;
                 }
 
             }
@@ -181,7 +196,7 @@ public class KernighanLin implements Bisection {
                 }
                 double edgeWeight;
                 if (graph.getEdge(nodes[i], nodes[j]) != null) {
-                    edgeWeight = graph.getEdge(nodes[i], nodes[j]).getWeight();
+                    edgeWeight = weightedEdges ? graph.getEdge(nodes[i], nodes[j]).getWeight() : 1;
                 } else {
                     edgeWeight = 0;
                 }
