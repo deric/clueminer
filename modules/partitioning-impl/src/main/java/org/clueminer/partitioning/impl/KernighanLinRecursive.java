@@ -15,7 +15,8 @@ public class KernighanLinRecursive implements Partitioning {
 
     int maxNodesInCluster;
     Graph graph;
-    ArrayList<LinkedList<Node>> finalResult;
+    boolean marked[];
+    ArrayList<LinkedList<Node>> clusters;
 
     public KernighanLinRecursive() {
 
@@ -28,12 +29,15 @@ public class KernighanLinRecursive implements Partitioning {
         if (graph.getNodeCount() < maxNodesInCluster) {
             return null; //create one list with nodes
         } else {
-            return recursivePartition(graph);
+            clusters = recursivePartition(graph);
         }
+        Graph clusteredGraph = removeUnusedEdges();
+        FloodFill f = new FloodFill();
+        return f.findSubgraphs(clusteredGraph);
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin(g);
+        KernighanLin kl = new KernighanLin(g, false);
         ArrayList<LinkedList<Node>> result = kl.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
@@ -44,7 +48,6 @@ public class KernighanLinRecursive implements Partitioning {
                 output.addAll(recursivePartition(newGraph));
             }
         }
-        finalResult = output;
         return output;
     }
 
@@ -74,11 +77,11 @@ public class KernighanLinRecursive implements Partitioning {
             g.addNode(node);
         }
 
-        for (int k = 0; k < finalResult.size(); k++) {
-            for (int i = 0; i < finalResult.get(k).size(); i++) {
-                for (int j = i + 1; j < finalResult.get(k).size(); j++) {
-                    if (graph.isAdjacent(finalResult.get(k).get(i), finalResult.get(k).get(j))) {
-                        g.addEdge(graph.getEdge(finalResult.get(k).get(i), finalResult.get(k).get(j)));
+        for (int k = 0; k < clusters.size(); k++) {
+            for (int i = 0; i < clusters.get(k).size(); i++) {
+                for (int j = i + 1; j < clusters.get(k).size(); j++) {
+                    if (graph.isAdjacent(clusters.get(k).get(i), clusters.get(k).get(j))) {
+                        g.addEdge(graph.getEdge(clusters.get(k).get(i), clusters.get(k).get(j)));
                     }
                 }
             }
