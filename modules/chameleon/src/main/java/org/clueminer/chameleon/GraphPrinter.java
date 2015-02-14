@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.clueminer.chameleon;
 
 import java.awt.Color;
@@ -12,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.graph.api.Edge;
@@ -20,7 +16,7 @@ import org.clueminer.graph.api.Node;
 
 /**
  *
- * @author tomas
+ * @author Tomas Bruna
  */
 public class GraphPrinter {
 
@@ -56,6 +52,22 @@ public class GraphPrinter {
      */
     public void printClusters(Graph graph, double scale, int nodeToCluster[], int clusterCount, String path, String output) throws UnsupportedEncodingException, IOException, FileNotFoundException, InterruptedException {
         generateImage(graphVizClusterExport(scale, graph, nodeToCluster, clusterCount), path, output);
+    }
+
+    /**
+     *
+     * @param graph Graph to export
+     * @param scale Scale of the graph
+     * @param clusters Lists of nodes in each cluster
+     * @param path Path to output folder
+     * @param output Output file name
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws InterruptedException
+     */
+    public void printClusters(Graph graph, double scale, ArrayList<LinkedList<Node>> clusters, String path, String output) throws UnsupportedEncodingException, IOException, FileNotFoundException, InterruptedException {
+        generateImage(graphVizClusterExport(scale, graph, clusters), path, output);
     }
 
     /**
@@ -112,6 +124,22 @@ public class GraphPrinter {
     }
 
     /**
+     * Exports clusters to Graphviz
+     *
+     * @param scale Scale of the graph
+     * @param graph Graph to export
+     * @param clusters Lists of nodes in each cluster
+     * @return Graphviz source code describing graph's clusters
+     */
+    private String graphVizClusterExport(double scale, Graph graph, ArrayList<LinkedList<Node>> clusters) {
+        String result = "Graph G {\n";
+        Color[] scheme = generateColorScheme(clusters.size());
+        result += exportNodes(scale, graph, clusters, scheme);
+        result += "}\n";
+        return result;
+    }
+
+    /**
      * Generates colors for clusters
      *
      * @param size Number of colors to generate
@@ -136,6 +164,21 @@ public class GraphPrinter {
                             scheme[nodeToCluster[graph.getIndex(node)]].getGreen(),
                             scheme[nodeToCluster[graph.getIndex(node)]].getBlue())
                     + "\"]\n";
+        }
+        return result;
+    }
+
+    private String exportNodes(double scale, Graph graph, ArrayList<LinkedList<Node>> clusters, Color[] scheme) {
+        String result = "";
+        for (int i = 0; i < clusters.size(); i++) {
+            for (Node node : clusters.get(i)) {
+                result += "    " + graph.getIndex(node) + "[fontsize=11 pos=\"" + node.getInstance().get(0) * scale + ","
+                        + node.getInstance().get(1) * scale + "!\" width=0.1 height=0.1 shape=point color=\"#"
+                        + String.format("%02x%02x%02x", scheme[i].getRed(),
+                                scheme[i].getGreen(),
+                                scheme[i].getBlue())
+                        + "\"]\n";
+            }
         }
         return result;
     }
