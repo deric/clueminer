@@ -66,7 +66,13 @@ public class Cluster {
                 }
             }
         }
-        ICL = IIC / counter;
+        // If there is only one node in cluster, set the values to one
+        if (counter == 0) {
+            ICL = IIC = 1;
+        } else {
+            ICL = IIC / counter;
+        }
+
     }
 
     /**
