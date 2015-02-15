@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 public abstract class AbstractIndividual<T extends Individual> implements Individual<T> {
 
     protected ClusteringAlgorithm algorithm;
-    protected Evolution evolution;
+    protected EvolutionSO evolution;
 
     @Override
     public ClusteringAlgorithm getAlgorithm() {

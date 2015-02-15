@@ -13,7 +13,7 @@ import org.openide.util.lookup.InstanceContent;
  * @author Tomas Barton
  * @param <T>
  */
-public abstract class AbstractEvolution<T extends Individual> implements Evolution<T> {
+public abstract class AbstractEvolution<T extends Individual> implements EvolutionSO<T> {
 
     protected int generations = 10;
     protected ClusterEvaluation external;
@@ -37,7 +37,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
      * Probability of crossover
      */
     protected double crossoverProbability = 0.3;
-
 
     @Override
     public boolean isMaximizedFitness() {
@@ -83,7 +82,6 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     public ClusteringAlgorithm getAlgorithm() {
         return algorithm;
     }
-
 
     @Override
     public ClusterEvaluation getEvaluator() {

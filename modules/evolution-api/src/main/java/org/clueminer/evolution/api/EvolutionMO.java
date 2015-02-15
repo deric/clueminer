@@ -1,0 +1,41 @@
+package org.clueminer.evolution.api;
+
+import java.util.List;
+import org.clueminer.clustering.api.ClusterEvaluation;
+
+/**
+ *
+ * @author Tomas Barton
+ * @param <T>
+ */
+public interface EvolutionMO<T extends Individual> extends Evolution<T> {
+
+    /**
+     * Number of objectives that is evolution trying to optimize
+     *
+     * @return
+     */
+    int getNumObjectives();
+
+    /**
+     * Add objective function to evolution process
+     *
+     * @param objective
+     */
+    void addObjective(ClusterEvaluation objective);
+
+    /**
+     * Removes given objective
+     *
+     * @param objective
+     */
+    void removeObjective(ClusterEvaluation objective);
+
+    /**
+     * Objectives that are being used in evolution process
+     *
+     * @return
+     */
+    List<ClusterEvaluation> getObjectives();
+
+}

@@ -58,12 +58,13 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
 
     void setAlgorithm(ClusteringAlgorithm algorithm);
 
-    ClusterEvaluation getEvaluator();
-
-    void setEvaluator(ClusterEvaluation evaluator);
-
     ClusterEvaluation getExternal();
 
+    /**
+     * Set external objective function
+     *
+     * @param external
+     */
     void setExternal(ClusterEvaluation external);
 
     int getPopulationSize();
