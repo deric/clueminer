@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.UpdateFeed;
 import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
@@ -229,9 +230,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             if (alg != null) {
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
-                if (alg.getEvaluator() == null) {
-                    InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
-                    alg.setEvaluator(ief.getDefault());
+                if (alg instanceof EvolutionSO) {
+                    EvolutionSO evoSo = (EvolutionSO) alg;
+                    if (evoSo.getEvaluator() == null) {
+                        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+                        evoSo.setEvaluator(ief.getDefault());
+                    }
                 }
 
                 final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {

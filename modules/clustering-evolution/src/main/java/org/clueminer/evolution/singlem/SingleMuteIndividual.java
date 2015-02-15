@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Random;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.multim.MultiMuteIndividual;
 import org.clueminer.utils.ServiceFactory;
 
@@ -17,7 +17,7 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
     private Random rand = new Random();
 
-    public SingleMuteIndividual(Evolution evolution) {
+    public SingleMuteIndividual(EvolutionSO evolution) {
         super(evolution);
         System.out.println("SM ind: " + genom.toString());
     }
@@ -68,8 +68,8 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
                     System.out.println("==== mutated " + p.getName() + " from: " + prev + " to: " + list[idx]);
 
                 } catch (ClassNotFoundException | NoSuchMethodException |
-                        SecurityException | IllegalAccessException |
-                        IllegalArgumentException | InvocationTargetException ex) {
+                         SecurityException | IllegalAccessException |
+                         IllegalArgumentException | InvocationTargetException ex) {
                     throw new RuntimeException("factory '" + p.getName() + "' was not found");
                 }
                 break;

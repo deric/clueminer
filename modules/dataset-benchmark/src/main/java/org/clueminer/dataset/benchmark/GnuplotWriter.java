@@ -18,6 +18,7 @@ import org.clueminer.evolution.api.Population;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -91,7 +92,13 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        plotFitness(dataDir, results, evolution.getEvaluator());
+
+        if (evolution instanceof EvolutionSO) {
+            EvolutionSO evoso = (EvolutionSO) evolution;
+            plotFitness(dataDir, results, evoso.getEvaluator());
+        } else {
+            throw new RuntimeException("MO evolution is not supported yet");
+        }
 
         try {
             bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set term pdf font 'Times-New-Roman,8'", "pdf");

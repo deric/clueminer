@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
 
@@ -25,7 +26,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     private Clustering<? extends Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
-        this.evolution = evolution;
+        this.evolution = (EvolutionSO) evolution;
         this.algorithm = evolution.getAlgorithm();
         init();
     }

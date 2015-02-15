@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
@@ -38,7 +39,14 @@ public class ResultsCollector implements EvolutionListener {
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        table.put(evolution.getDataset().getName(), evolution.getEvaluator().getName(), external);
+
+        if (evolution instanceof EvolutionSO) {
+            EvolutionSO evoso = (EvolutionSO) evolution;
+            table.put(evolution.getDataset().getName(), evoso.getEvaluator().getName(), external);
+        } else {
+            throw new RuntimeException("MO evolution is not supported yet");
+        }
+
     }
 
     public void writeToCsv(String filename) {

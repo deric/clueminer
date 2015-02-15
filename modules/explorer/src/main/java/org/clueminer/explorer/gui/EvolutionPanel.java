@@ -6,6 +6,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.explorer.EvolutionUI;
 
 /**
@@ -53,19 +54,23 @@ public class EvolutionPanel extends javax.swing.JPanel implements EvolutionUI {
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     public int getGenerations() {
         return Integer.valueOf(tfGen.getText());
     }
 
+    @Override
     public int getPopulation() {
         return Integer.valueOf(tfPop.getText());
     }
 
+    @Override
     public void updateAlgorithm(Evolution alg) {
-        alg.setGenerations(getGenerations());
-        alg.setPopulationSize(getPopulation());
-        alg.setEvaluator(getEvaluator());
-        alg.setExternal(getExternal());
+        EvolutionSO evoSo = (EvolutionSO) alg;
+        evoSo.setGenerations(getGenerations());
+        evoSo.setPopulationSize(getPopulation());
+        evoSo.setEvaluator(getEvaluator());
+        evoSo.setExternal(getExternal());
     }
 
     /**

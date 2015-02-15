@@ -40,9 +40,14 @@ public class MoPanel extends JPanel implements EvolutionUI {
 
         boxes = new JCheckBox[internal.size()];
         int i = 0;
+        int col2 = boxes.length / 2;
         for (InternalEvaluator eval : internal) {
             boxes[i] = new JCheckBox(eval.getName());
             c.gridy = i;
+            if (i > col2) {
+                c.gridx = 1;
+                c.gridy -= col2 + 1;
+            }
             add(boxes[i], c);
             i++;
         }

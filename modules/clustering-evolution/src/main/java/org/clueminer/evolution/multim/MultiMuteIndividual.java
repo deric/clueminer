@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.BaseIndividual;
-import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
 
@@ -30,7 +30,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
 
     }
 
-    public MultiMuteIndividual(Evolution evolution) {
+    public MultiMuteIndividual(EvolutionSO evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         this.genom = new Props();

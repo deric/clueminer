@@ -10,7 +10,6 @@ import java.util.Map;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.evolution.api.Evolution;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.ConsoleDump;
@@ -20,6 +19,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.benchmark.Bench;
 import org.clueminer.eval.external.JaccardIndex;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.utils.FileUtils;
 import org.openide.util.NbBundle;
@@ -30,7 +30,7 @@ import org.openide.util.NbBundle;
  */
 public class Data extends Bench {
 
-    private Evolution test;
+    private EvolutionSO test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
     private static ResultsCollector rc;

@@ -7,6 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.evolution.api.AbstractIndividual;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 
 /**
@@ -15,6 +16,8 @@ import org.clueminer.evolution.api.Individual;
  * @param <T>
  */
 public abstract class BaseIndividual<T extends Individual> extends AbstractIndividual<T> {
+
+    protected EvolutionSO evolution;
 
     /**
      * Hash table with various evaluations scores (eliminates repeated
@@ -36,6 +39,22 @@ public abstract class BaseIndividual<T extends Individual> extends AbstractIndiv
             clustering.setEvaluationTable(evalTable);
         }
         return evalTable;
+    }
+
+    @Override
+    public int compareTo(Individual another) {
+        double otherFitness = another.getFitness();
+        double thisFitness = this.getFitness();
+
+        if (thisFitness == otherFitness) {
+            return 0;
+        }
+
+        if (evolution.getEvaluator().isBetter(thisFitness, otherFitness)) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 
 }
