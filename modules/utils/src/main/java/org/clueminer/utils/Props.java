@@ -177,8 +177,7 @@ public class Props implements Map<String, String> {
     }
 
     public boolean getBoolean(String key, boolean def) {
-        String val = get(key, String.valueOf(def));
-        return Boolean.parseBoolean(val);
+        return getBoolean(PropType.MAIN, key, def);
     }
 
     public long getLong(String key) {

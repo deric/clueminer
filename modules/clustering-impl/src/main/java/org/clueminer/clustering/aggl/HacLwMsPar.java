@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 
 /**
@@ -72,7 +73,7 @@ public class HacLwMsPar extends HACLWMS {
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 

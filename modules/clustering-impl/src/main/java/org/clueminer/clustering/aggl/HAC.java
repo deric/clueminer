@@ -28,6 +28,7 @@ import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -114,7 +115,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 
