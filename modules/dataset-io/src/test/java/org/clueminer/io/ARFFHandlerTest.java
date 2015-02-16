@@ -174,7 +174,20 @@ public class ARFFHandlerTest {
         assertEquals(33, data.attributeCount());
         assertEquals(366, data.size());
         data.setName(datasetName);
+    }
 
+    @Test
+    public void testLoadIonosphere() throws FileNotFoundException, IOException {
+        Dataset<? extends Instance> data = new ArrayDataset(351, 34);
+        arff.load(tf.ionosphereArff(), data);
+        assertEquals(34, data.attributeCount());
+        assertEquals(351, data.size());
+
+        //another version of ionosphere
+        data = new ArrayDataset(351, 34);
+        arff.load(tf.ionosphereArff2(), data);
+        assertEquals(34, data.attributeCount());
+        assertEquals(351, data.size());
     }
 
 }
