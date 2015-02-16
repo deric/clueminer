@@ -35,6 +35,7 @@ public class Props implements Map<String, String> {
     }
 
     public Props(Map<String, String> map) {
+        init();
         putAll(PropType.MAIN, map);
     }
 
@@ -314,5 +315,17 @@ public class Props implements Map<String, String> {
     @Override
     public Set<Entry<String, String>> entrySet() {
         return store.row(PropType.MAIN).entrySet();
+    }
+
+    /**
+     * Merge /other/ Props into this one. Same keys will be overwritten by
+     * /other/ values
+     *
+     * @param other
+     */
+    public void merge(Props other) {
+        for (Table.Cell<PropType, String, String> cell : other.store.cellSet()) {
+            put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
+        }
     }
 }

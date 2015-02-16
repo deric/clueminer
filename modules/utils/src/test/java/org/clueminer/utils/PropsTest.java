@@ -1,5 +1,6 @@
 package org.clueminer.utils;
 
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,10 @@ public class PropsTest {
     @Before
     public void setUp() {
         subject = new Props();
+    }
+
+    @After
+    public void tearDown() throws Exception {
     }
 
     @Test
@@ -122,6 +127,139 @@ public class PropsTest {
         subject.put("some keeeey", "value");
         String str = subject.toString();
         System.out.println("toString: " + str);
+    }
+
+    @Test
+    public void testPut_String_String() {
+    }
+
+    @Test
+    public void testPut_3args_1() {
+    }
+
+    @Test
+    public void testPut_3args_2() {
+    }
+
+    @Test
+    public void testPutAll_Map() {
+    }
+
+    @Test
+    public void testPutAll_PropType_Map() {
+    }
+
+    @Test
+    public void testGet_PropType_String() {
+    }
+
+    @Test
+    public void testGet_String() {
+    }
+
+    @Test
+    public void testGet_String_String() {
+    }
+
+    @Test
+    public void testGet_3args() {
+    }
+
+    @Test
+    public void testGetBoolean_PropType_String() {
+    }
+
+    @Test
+    public void testGetBoolean_3args() {
+    }
+
+    @Test
+    public void testCopy() {
+    }
+
+    @Test
+    public void testClone() {
+        Props p = new Props();
+        p.put("foo", "foo");
+        Props clone = p.clone();
+        clone.put("foo", "bar");
+        assertEquals("bar", clone.get("foo"));
+        assertEquals("foo", p.get("foo"));
+    }
+
+    @Test
+    public void testSize() {
+        Props p = new Props();
+        assertEquals(0, p.size());
+        p.putBoolean("aaa", true);
+        assertEquals(1, p.size());
+    }
+
+    @Test
+    public void testIsEmpty() {
+        Props p = new Props();
+        assertEquals(true, p.isEmpty());
+        p.put(PropType.PERFORMANCE, "foo", "foo");
+        assertEquals(false, p.isEmpty());
+    }
+
+    @Test
+    public void testContainsKey() {
+    }
+
+    @Test
+    public void testContainsValue() {
+    }
+
+    @Test
+    public void testGet_Object() {
+    }
+
+    @Test
+    public void testGet_PropType_Object() {
+    }
+
+    @Test
+    public void testRemove() {
+    }
+
+    @Test
+    public void testClear() {
+        Props p = new Props();
+        p.put("foo", "x");
+        assertEquals(1, p.size());
+        p.clear();
+        assertEquals(0, p.size());
+    }
+
+    @Test
+    public void testKeySet() {
+    }
+
+    @Test
+    public void testValues() {
+    }
+
+    @Test
+    public void testEntrySet() {
+    }
+
+    @Test
+    public void testMerge() {
+        Props p = new Props();
+        p.put("foo", "x");
+        p.put("bar", "y");
+        Props other = new Props();
+        other.put("foo", "a");
+        other.put("baz", "c");
+        other.put(PropType.PERFORMANCE, "perf", "ormance");
+
+        p.merge(other);
+        assertEquals("a", p.get("foo"));
+        assertEquals("y", p.get("bar"));
+        assertEquals("c", p.get("baz"));
+        assertEquals("ormance", p.get(PropType.PERFORMANCE, "perf"));
+
     }
 
 }

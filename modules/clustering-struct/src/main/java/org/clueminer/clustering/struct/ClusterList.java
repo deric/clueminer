@@ -446,9 +446,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public void mergeParams(Props other) {
-        for (String key : other.keySet()) {
-            params.put(key, other.get(key));
-        }
+        params.merge(other);
     }
 
     @Override
