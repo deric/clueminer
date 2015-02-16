@@ -42,7 +42,7 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     public static final String name = "ARFF";
     private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());
 
-    private static final Pattern klassAttr = Pattern.compile("^@attribute ['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
+    private static final Pattern klassAttr = Pattern.compile("^@attribute\\s+['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
     private ArrayList<Integer> skippedIndexes = new ArrayList<>();
     private int numInstances;
     private final ARFFHandler arff = new ARFFHandler();
@@ -168,6 +168,9 @@ public class ArffImporter extends AbstractImporter implements FileImporter, Long
     }
 
     protected Class<?> convertType(String type) {
+        if (type == null) {
+            return String.class;
+        }
         switch (type) {
             case "INTEGER":
                 return Integer.class;

@@ -44,6 +44,8 @@ public class AttrHolder {
                 if (integerSet.matcher(range).matches()) {
                     setType("INTEGER");
                 }
+            } else {
+                setType("REAL");
             }
         }
         return type;
