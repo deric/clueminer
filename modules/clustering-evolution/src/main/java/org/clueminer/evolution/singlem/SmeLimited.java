@@ -21,7 +21,7 @@ public class SmeLimited extends MultiMuteEvolution implements Runnable, Evolutio
     }
 
     @Override
-    protected void prepareHook() {
+    protected void beforeRunHook() {
         maxK = (int) Math.sqrt(getDataset().size());
     }
 

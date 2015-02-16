@@ -102,7 +102,11 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
      * Could be overridden by inheriting classes
      */
     protected void prepareHook() {
+        //is initialized before starting evolution
+    }
 
+    protected void beforeRunHook() {
+        //executed when evolution starts
     }
 
     protected void clean() {
@@ -129,6 +133,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
     @Override
     public void run() {
+        beforeRunHook();
         evolutionStarted(this);
         clean();
         printStarted();
