@@ -54,6 +54,14 @@ public class Props implements Map<String, String> {
         return store.put(PropType.MAIN, key, value);
     }
 
+    /**
+     * Store property into given {pt} category
+     *
+     * @param pt
+     * @param key
+     * @param value
+     * @return
+     */
     public String put(PropType pt, String key, String value) {
         return store.put(pt, key, value);
     }
@@ -73,7 +81,7 @@ public class Props implements Map<String, String> {
         }
     }
 
-    public String getString(PropType pt, String key) {
+    public String get(PropType pt, String key) {
         // keys are in rows
         if (!store.containsRow(key)) {
             //TODO make it work for other rows
@@ -82,13 +90,13 @@ public class Props implements Map<String, String> {
         throw new IllegalArgumentException("Map key not found: " + key);
     }
 
-    public String getString(String key) {
-        return getString(PropType.MAIN, key);
+    public String get(String key) {
+        return get(PropType.MAIN, key);
     }
 
     /**
      * This might be a get operation which modifies HashMap, however in context
-     * of algorithms parameters it makes sense.
+     * of algorithm parameters it makes sense.
      *
      * @param key
      * @param def
@@ -106,12 +114,33 @@ public class Props implements Map<String, String> {
         return result;
     }
 
+    /**
+     * Fetches requested parameter from given category, if it does not exist,
+     * returns default value
+     *
+     * @param pt
+     * @param key
+     * @param def
+     * @return
+     */
+    public String get(PropType pt, String key, String def) {
+        String result = this.get(key);
+        if (result == null) {
+            result = def;
+            /**
+             * store the value, so that we know which default value was used
+             */
+            put(pt, key, result);
+        }
+        return result;
+    }
+
     public void putInt(String key, int i) {
         put(key, String.valueOf(i));
     }
 
     public int getInt(String key) {
-        String val = getString(key);
+        String val = get(key);
         int ret = Integer.parseInt(val);
         return ret;
     }
@@ -126,8 +155,20 @@ public class Props implements Map<String, String> {
         return getBoolean(PropType.MAIN, key);
     }
 
+    /**
+     * Retrieve key from given {pt} category
+     *
+     * @param pt
+     * @param key
+     * @return
+     */
     public boolean getBoolean(PropType pt, String key) {
-        String val = getString(pt, key);
+        String val = get(pt, key);
+        return Boolean.parseBoolean(val);
+    }
+
+    public boolean getBoolean(PropType pt, String key, boolean def) {
+        String val = get(pt, key, String.valueOf(def));
         return Boolean.parseBoolean(val);
     }
 
@@ -141,7 +182,7 @@ public class Props implements Map<String, String> {
     }
 
     public long getLong(String key) {
-        String val = getString(key);
+        String val = get(key);
         long ret = Long.parseLong(val);
         return ret;
     }
@@ -157,7 +198,7 @@ public class Props implements Map<String, String> {
     }
 
     public double getDouble(String key) {
-        String val = getString(key);
+        String val = get(key);
         double ret = Double.parseDouble(val);
         return ret;
     }

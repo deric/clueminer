@@ -1,9 +1,8 @@
 package org.clueminer.utils;
 
-import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -20,10 +19,6 @@ public class PropsTest {
     @Before
     public void setUp() {
         subject = new Props();
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -100,6 +95,9 @@ public class PropsTest {
         Props p = new Props();
         p.put(PropType.PERFORMANCE, "keep-matrix", true);
         boolean b = p.getBoolean(PropType.PERFORMANCE, "keep-matrix");
+        assertEquals(true, b);
+
+        b = p.getBoolean(PropType.PERFORMANCE, "some-non-existing-key", true);
         assertEquals(true, b);
     }
 
