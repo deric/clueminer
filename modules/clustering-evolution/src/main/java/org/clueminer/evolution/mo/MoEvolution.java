@@ -2,6 +2,7 @@ package org.clueminer.evolution.mo;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -56,10 +57,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         this.objectives = Lists.newLinkedList();
     }
 
+    @Override
     public void addObjective(ClusterEvaluation eval) {
         objectives.add(eval);
     }
 
+    @Override
     public void removeObjective(ClusterEvaluation eval) {
         objectives.remove(eval);
     }
@@ -68,10 +71,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         return objectives.get(idx);
     }
 
+    @Override
     public List<ClusterEvaluation> getObjectives() {
         return objectives;
     }
 
+    @Override
     public int getNumObjectives() {
         return objectives.size();
     }
@@ -84,6 +89,11 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         CrossoverOperator crossover;
         MutationOperator mutation;
         SelectionOperator selection;
+        logger.log(Level.INFO, "starting evolution {0}", getName());
+        logger.log(Level.INFO, "objectives: ", getNumObjectives());
+        for (int i = 0; i < getNumObjectives(); i++) {
+            System.out.println("objective: " + getObjective(i).getName());
+        }
 
         double crossoverProbability = 0.9;
         double crossoverDistributionIndex = 20.0;
@@ -101,8 +111,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 .setCrossoverOperator(crossover)
                 .setMutationOperator(mutation)
                 .setSelectionOperator(selection)
-                .setMaxIterations(15)
-                .setPopulationSize(15)
+                .setMaxIterations(this.getGenerations())
+                .setPopulationSize(this.getPopulationSize())
                 //.setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();
 
