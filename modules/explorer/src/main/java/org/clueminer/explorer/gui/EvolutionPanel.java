@@ -7,12 +7,14 @@ import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionSO;
-import org.clueminer.evolution.api.EvolutionUI;
+import org.clueminer.evolution.gui.EvolutionUI;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = EvolutionUI.class)
 public class EvolutionPanel extends javax.swing.JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -8908500509479257849L;

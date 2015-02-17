@@ -1,10 +1,19 @@
-package org.clueminer.evolution.api;
+package org.clueminer.evolution.gui;
+
+import org.clueminer.evolution.api.Evolution;
 
 /**
  *
  * @author Tomas Barton
  */
 public interface EvolutionUI {
+
+    /**
+     * Identifier of this UI
+     *
+     * @return
+     */
+    String getName();
 
     /**
      * Update algorithm settings

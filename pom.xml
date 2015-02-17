@@ -252,5 +252,6 @@
     <properties>
         <netbeans.version>RELEASE80</netbeans.version>
         <brandingToken>clueminer</brandingToken>
+        <project.organization>clueminer.org</project.organization>
     </properties>
 </project>

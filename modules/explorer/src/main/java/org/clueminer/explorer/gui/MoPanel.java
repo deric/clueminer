@@ -17,12 +17,14 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
-import org.clueminer.evolution.api.EvolutionUI;
+import org.clueminer.evolution.gui.EvolutionUI;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = EvolutionUI.class)
 public class MoPanel extends JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -2664655185671435048L;

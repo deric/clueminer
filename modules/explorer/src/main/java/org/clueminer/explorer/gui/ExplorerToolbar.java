@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionFactory;
+import org.clueminer.evolution.gui.EvolutionUI;
 import org.clueminer.evolution.gui.EvolutionExport;
 import org.clueminer.explorer.ToolbarListener;
 import org.clueminer.utils.Props;
@@ -40,7 +41,7 @@ public class ExplorerToolbar extends JToolBar {
     private EvalFuncPanel functionPanel;
     private ExportPanel exportPanel;
     private ClusterAlgPanel algPanel;
-    private EvolutionPanel evoPanel;
+    private EvolutionUI evoPanel;
     private Evolution evolution;
 
     public ExplorerToolbar() {
