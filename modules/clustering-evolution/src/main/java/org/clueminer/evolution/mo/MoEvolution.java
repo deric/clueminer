@@ -95,9 +95,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
             System.out.println("objective: " + getObjective(i).getName());
         }
 
-        double crossoverProbability = 0.9;
         double crossoverDistributionIndex = 20.0;
-        crossover = new IntegerSBXCrossover(crossoverProbability, crossoverDistributionIndex);
+        crossover = new IntegerSBXCrossover(getCrossoverProbability(), crossoverDistributionIndex);
 
         double mutationProbability = 1.0 / problem.getNumberOfVariables();
         double mutationDistributionIndex = 20.0;
@@ -121,7 +120,13 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
         int i = 0;
         for (Solution s : moPop) {
-            System.out.println(i + ": " + s.getObjective(0) + ", " + s.getObjective(1));
+            System.out.print(i + ": ");
+            for (int j = 0; j < getNumObjectives(); j++) {
+                if (j > 0) {
+                    System.out.print(", ");
+                }
+                System.out.print(s.getObjective(j));
+            }
             i++;
         }
         long computingTime = algorithmRunner.getComputingTime();

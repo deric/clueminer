@@ -3,16 +3,17 @@ package org.clueminer.explorer.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
@@ -34,6 +35,7 @@ public class MoPanel extends JPanel implements EvolutionUI {
     private JSlider slPop;
     private JTextField tfGen;
     private JTextField tfPop;
+    private JTextField tfCrossover;
 
     public MoPanel() {
         initialize();
@@ -58,27 +60,11 @@ public class MoPanel extends JPanel implements EvolutionUI {
         slGen.setMinimum(0);
         slGen.setMaximum(1000);
         slGen.setValue(20);
-        slGen.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent ce) {
-                if (tfGen != null) {
-                    tfGen.setText(String.valueOf(slGen.getValue()));
-                }
-            }
-
-        });
+        slGen.addChangeListener(new GenerationUpdater());
         c.gridx = 1;
         add(slGen, c);
         tfGen = new JTextField(slGen.getValue());
-        tfGen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                int val = Integer.valueOf(tfGen.getText());
-                slGen.setValue(val);
-            }
-        });
+        tfGen.getDocument().addDocumentListener(new GenerationListener());
         c.gridx = 2;
         c.weightx = 0.1;
         add(tfGen, c);
@@ -92,30 +78,23 @@ public class MoPanel extends JPanel implements EvolutionUI {
         slPop.setMinimum(0);
         slPop.setMaximum(1000);
         slPop.setValue(20);
-        slPop.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent ce) {
-                if (tfPop != null) {
-                    tfPop.setText(String.valueOf(slPop.getValue()));
-                }
-            }
-        });
+        slPop.addChangeListener(new PopulationUpdater());
         c.gridx = 1;
         c.gridy = 1;
         add(slPop, c);
         tfPop = new JTextField(slPop.getValue());
-        tfPop.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                int val = Integer.valueOf(tfPop.getText());
-                slPop.setValue(val);
-            }
-        });
+        tfPop.getDocument().addDocumentListener(new PopulationListener());
         c.gridx = 2;
         c.weightx = 0.1;
         add(tfPop, c);
+
+        c.gridy = 2;
+        c.gridx = 0;
+        JLabel lb = new JLabel("Crossover prob.: ");
+        add(lb, c);
+        c.gridx = 1;
+        tfCrossover = new JTextField("0.9");
+        add(tfCrossover, c);
 
         c.gridx = 0;
         c.weightx = 0.5;
@@ -124,7 +103,7 @@ public class MoPanel extends JPanel implements EvolutionUI {
         int col2 = boxes.length / 2;
         for (InternalEvaluator eval : internal) {
             boxes[i] = new JCheckBox(eval.getName());
-            c.gridy = i + 2;
+            c.gridy = i + 3;
             if (i > col2) {
                 c.gridx = 1;
                 c.gridy -= col2 + 1;
@@ -133,6 +112,24 @@ public class MoPanel extends JPanel implements EvolutionUI {
             i++;
         }
 
+    }
+
+    private void parseGeneration() {
+        try {
+            int val = Integer.valueOf(tfGen.getText());
+            slGen.setValue(val);
+        } catch (NumberFormatException e) {
+            //can't parse number
+        }
+    }
+
+    private void parsePopulation() {
+        try {
+            int val = Integer.valueOf(tfPop.getText());
+            slPop.setValue(val);
+        } catch (NumberFormatException e) {
+            //can't parse number
+        }
     }
 
     private void initInternalEvaluator() {
@@ -154,6 +151,15 @@ public class MoPanel extends JPanel implements EvolutionUI {
         }
         moAlg.setGenerations(getGenerations());
         moAlg.setPopulationSize(getPopulation());
+        moAlg.setCrossoverProbability(getCrossover());
+    }
+
+    public double getCrossover() {
+        double cross = Double.parseDouble(tfCrossover.getText());
+        if (Double.isNaN(cross) | cross < 0.0) {
+            cross = 0.0;
+        }
+        return cross;
     }
 
     @Override
@@ -175,6 +181,74 @@ public class MoPanel extends JPanel implements EvolutionUI {
     @Override
     public boolean isUIfor(Evolution evolve) {
         return evolve instanceof EvolutionMO;
+    }
+
+    private class PopulationListener implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent de) {
+            parsePopulation();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent de) {
+            parsePopulation();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent de) {
+            parsePopulation();
+        }
+    }
+
+    private class GenerationListener implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent de) {
+            parseGeneration();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent de) {
+            parseGeneration();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent de) {
+            parseGeneration();
+        }
+    }
+
+    private class PopulationUpdater implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent ce) {
+            if (tfPop != null && ce.getSource() != tfPop) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        tfPop.setText(String.valueOf(slPop.getValue()));
+                    }
+                });
+            }
+        }
+    }
+
+    private class GenerationUpdater implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent ce) {
+            if (tfPop != null && ce.getSource() != tfPop) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        tfGen.setText(String.valueOf(slGen.getValue()));
+                    }
+                });
+            }
+        }
     }
 
 }
