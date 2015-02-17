@@ -32,6 +32,11 @@ public interface EvolutionMO<T extends Individual> extends Evolution<T> {
     void removeObjective(ClusterEvaluation objective);
 
     /**
+     * Remove all objectives
+     */
+    void removeAll();
+
+    /**
      * Objectives that are being used in evolution process
      *
      * @return

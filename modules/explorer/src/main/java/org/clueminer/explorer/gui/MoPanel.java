@@ -142,14 +142,18 @@ public class MoPanel extends JPanel implements EvolutionUI {
 
     @Override
     public void updateAlgorithm(Evolution alg) {
+        EvolutionMO moAlg = (EvolutionMO) alg;
         alg.setGenerations(getGenerations());
         alg.setPopulationSize(getPopulation());
+        moAlg.removeAll();
         for (int i = 0; i < boxes.length; i++) {
             if (boxes[i].isSelected()) {
                 //TODO add objective functions
+                moAlg.addObjective(internal.get(i));
             }
-
         }
+        moAlg.setGenerations(getGenerations());
+        moAlg.setPopulationSize(getPopulation());
     }
 
     @Override

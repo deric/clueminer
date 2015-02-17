@@ -7,6 +7,7 @@ import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
@@ -30,7 +31,7 @@ import org.uma.jmetal.util.comparator.DominanceComparator;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class MoEvolution extends MultiMuteEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MoEvolution extends MultiMuteEvolution implements Runnable, EvolutionMO, Lookup.Provider {
 
     private static final String name = "MOE";
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
@@ -130,6 +131,13 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         }
 
         fireResultUpdate(pop);
+    }
+
+    @Override
+    public void removeAll() {
+        if (objectives != null && !objectives.isEmpty()) {
+            objectives.clear();
+        }
     }
 
 }
