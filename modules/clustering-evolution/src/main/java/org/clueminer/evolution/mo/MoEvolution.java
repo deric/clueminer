@@ -83,7 +83,6 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
 
     @Override
     public void run() {
-
         Problem problem = new MoProblem(this);
         Algorithm moAlg;
         CrossoverOperator crossover;
@@ -92,7 +91,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         logger.log(Level.INFO, "starting evolution {0}", getName());
         logger.log(Level.INFO, "objectives: ", getNumObjectives());
         for (int i = 0; i < getNumObjectives(); i++) {
-            System.out.println("objective: " + getObjective(i).getName());
+            logger.log(Level.INFO, "objective: {0}", getObjective(i).getName());
         }
 
         double crossoverDistributionIndex = 20.0;
@@ -127,6 +126,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 }
                 System.out.print(s.getObjective(j));
             }
+            System.out.print("\n");
+            System.out.println("prop: " + ((MoSolution) s).getIndividual().getProps().toString());
             i++;
         }
         long computingTime = algorithmRunner.getComputingTime();

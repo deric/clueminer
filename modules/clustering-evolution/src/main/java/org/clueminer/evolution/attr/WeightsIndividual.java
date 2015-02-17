@@ -71,7 +71,8 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
      *
      * @return clustering according to current parameters
      */
-    private Clustering<? extends Cluster> updateCustering() {
+    @Override
+    public Clustering<? extends Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
         Instance copy;
         Dataset<? extends Instance> orig = evolution.getDataset();

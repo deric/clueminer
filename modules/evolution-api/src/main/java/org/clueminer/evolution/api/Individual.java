@@ -113,4 +113,11 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @return
      */
     EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering);
+
+    /**
+     * Run clustering according to its genom
+     *
+     * @return resulting clustering
+     */
+    Clustering<? extends Cluster> updateCustering();
 }

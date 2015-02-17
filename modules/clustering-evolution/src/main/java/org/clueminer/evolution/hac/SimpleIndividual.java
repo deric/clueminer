@@ -73,4 +73,10 @@ public class SimpleIndividual extends BaseIndividual implements Individual {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Clustering updateCustering() {
+        //nothing to do
+        return clustering;
+    }
+
 }

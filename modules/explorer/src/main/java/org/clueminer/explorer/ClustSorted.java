@@ -89,6 +89,8 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
             //new clustering
             if (!map.containsValue(hash)) {
                 addClustering(c);
+            } else {
+                logger.log(Level.INFO, "ignoring {0} clust: {1}", new Object[]{hash, c.getName()});
             }
             if (!toKeep.contains(c)) {
                 toKeep.add(c);

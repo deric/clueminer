@@ -1,5 +1,7 @@
 package org.clueminer.evolution.singlem;
 
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
@@ -28,10 +30,18 @@ public class SmeLimited extends MultiMuteEvolution implements Runnable, Evolutio
     @Override
     protected void beforeRunHook() {
         maxK = (int) Math.sqrt(getDataset().size());
+        System.out.println("setting maxK to " + maxK);
     }
 
     @Override
     public boolean isValid(Individual individual) {
-        return individual.getClustering().size() <= maxK;
+        Clustering<? extends Cluster> c = null;
+        if (individual != null && individual.getClustering() == null) {
+            c = individual.updateCustering();
+        }
+        if (c != null) {
+            return c.size() <= maxK;
+        }
+        return false;
     }
 }

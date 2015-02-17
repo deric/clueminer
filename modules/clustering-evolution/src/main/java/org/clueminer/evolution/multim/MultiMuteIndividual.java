@@ -2,6 +2,8 @@ package org.clueminer.evolution.multim;
 
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -25,6 +27,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     protected static Random rand = new Random();
     protected Clustering<? extends Cluster> clustering;
     protected Props genom;
+    private static final Logger logger = Logger.getLogger(MultiMuteIndividual.class.getName());
 
     public MultiMuteIndividual() {
 
@@ -135,7 +138,9 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
      *
      * @return clustering according to current parameters
      */
+    @Override
     public Clustering<? extends Cluster> updateCustering() {
+        logger.log(Level.INFO, "running clustering {0}", genom.toString());
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
         return clustering;
     }

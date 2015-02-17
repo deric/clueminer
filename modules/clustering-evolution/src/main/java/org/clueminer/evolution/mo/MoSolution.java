@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.singlem.SingleMuteIndividual;
@@ -33,6 +35,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
     private int numberOfViolatedConstraints = 0;
     protected final JMetalRandom randomGenerator;
     protected Map<Object, Object> attributes;
+    private static final Logger logger = Logger.getLogger(MoSolution.class.getName());
 
     public MoSolution(MoProblem problem, SingleMuteIndividual individual) {
         randomGenerator = JMetalRandom.getInstance();
@@ -54,6 +57,8 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
     }
 
     public void evaluate() {
+        individual.updateCustering();
+        logger.info("evaluating clustering");
         for (int i = 0; i < objectives.length; i++) {
             objectives[i] = individual.countFitness(problem.evolution.getObjective(i));
         }
@@ -142,18 +147,22 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
                     ServiceFactory f = getFactory(param);
                     List<String> list = f.getProviders();
                     prop.put(param.getName(), list.get(value));
+                    logger.log(Level.INFO, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
                     break;
                 case BOOLEAN:
+                    logger.log(Level.INFO, "mutated {0} to !{1}", new Object[]{param.getName(), value});
                     prop.putBoolean(param.getName(), (value != 0));
                     break;
 
                 default:
                     throw new RuntimeException(param.getType() + " is not supported yet");
             }
+
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
         if (update) {
+            logger.info("updating clustering ");
             individual.updateCustering();
         }
     }
