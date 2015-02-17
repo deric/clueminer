@@ -12,8 +12,9 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionFactory;
-import org.clueminer.evolution.gui.EvolutionUI;
 import org.clueminer.evolution.gui.EvolutionExport;
+import org.clueminer.evolution.gui.EvolutionUI;
+import org.clueminer.evolution.gui.EvolutionUIFactory;
 import org.clueminer.explorer.ToolbarListener;
 import org.clueminer.utils.Props;
 import org.openide.DialogDescriptor;
@@ -98,8 +99,13 @@ public class ExplorerToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (evoPanel == null) {
-                    evoPanel = new EvolutionPanel();
+                if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
+                    EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
+                    for (EvolutionUI ui : factory.getAll()) {
+                        if (ui.isUIfor(evolution)) {
+                            evoPanel = ui;
+                        }
+                    }
                 }
                 DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
