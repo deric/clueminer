@@ -142,7 +142,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
 
         Individual[] pop = new Individual[moPop.size()];
         for (int j = 0; j < moPop.size(); j++) {
-            MoSolution b = (MoSolution) moPop.get(0);
+            MoSolution b = (MoSolution) moPop.get(j);
             pop[j] = b.getIndividual();
         }
 
