@@ -1,6 +1,4 @@
-package org.clueminer.explorer;
-
-import org.clueminer.evolution.api.Evolution;
+package org.clueminer.evolution.api;
 
 /**
  *
@@ -28,4 +26,12 @@ public interface EvolutionUI {
      * @return
      */
     int getPopulation();
+
+    /**
+     * Test whether given algorithm is supported by the UI
+     *
+     * @param evolve
+     * @return
+     */
+    boolean isUIfor(Evolution evolve);
 }
