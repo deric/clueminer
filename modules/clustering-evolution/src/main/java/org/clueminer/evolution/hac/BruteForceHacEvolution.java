@@ -42,15 +42,15 @@ import org.openide.util.lookup.ServiceProvider;
 public class BruteForceHacEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "Brute-force HAC";
-    private final Executor exec;
-    private int gen;
+    protected final Executor exec;
+    protected int gen;
     private List<DistanceMeasure> dist;
-    private List<ClusterLinkage> linkage;
-    private List<CutoffStrategy> cutoff;
-    private List<InternalEvaluator> evaluators;
+    protected List<ClusterLinkage> linkage;
+    protected List<CutoffStrategy> cutoff;
+    protected List<InternalEvaluator> evaluators;
     private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
-    private int cnt;
-    private final FakePopulation population = new FakePopulation();
+    protected int cnt;
+    protected final FakePopulation population = new FakePopulation();
 
     public BruteForceHacEvolution() {
         instanceContent = new InstanceContent();
@@ -65,7 +65,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         return name;
     }
 
-    private void prepare() {
+    protected void prepare() {
         if (dataset == null) {
             throw new RuntimeException("missing data");
         }
