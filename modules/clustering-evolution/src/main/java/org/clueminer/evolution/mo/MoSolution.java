@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.singlem.SingleMuteIndividual;
@@ -59,8 +60,14 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
     public void evaluate() {
         individual.updateCustering();
         logger.info("evaluating clustering");
+        ClusterEvaluation eval;
         for (int i = 0; i < objectives.length; i++) {
-            objectives[i] = individual.countFitness(problem.evolution.getObjective(i));
+            eval = problem.evolution.getObjective(i);
+            if (eval.isMaximized()) {
+                objectives[i] = -individual.countFitness(eval);
+            } else {
+                objectives[i] = individual.countFitness(eval);
+            }
         }
     }
 
