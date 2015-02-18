@@ -129,15 +129,15 @@ public class ArffImporterTest {
         assertEquals(35, loader.getAttributeCount());
         assertEquals(351, loader.getInstanceCount());
 
-        int i = 0;
-        for (AttributeDraft attrd : loader.getAttributes()) {
+        AttributeDraft attrd;
+        for (int i = 0; i < loader.getAttributeCount(); i++) {
+            attrd = loader.getAttribute(i);
             if (i < 34) {
                 System.out.println("attr " + i + ": " + attrd.getRole().toString());
                 assertEquals(BasicAttrRole.INPUT, attrd.getRole());
             } else {
                 assertEquals(BasicAttrRole.CLASS, attrd.getRole());
             }
-            i++;
         }
     }
 

@@ -1,11 +1,13 @@
 package org.clueminer.importer.impl;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeBuilder;
@@ -33,9 +35,9 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     protected static final int NULL_INDEX = -1;
 
     private ObjectList<InstanceDraft> instanceList;
-    private HashMap<Integer, AttributeDraft> attributeList;
+    private Int2ObjectOpenHashMap<AttributeDraft> attributeList;
     private Dataset<? extends Instance> dataset;
-    private HashMap<String, AttributeDraft> attributeMap;
+    private Object2ObjectMap<String, AttributeDraft> attributeMap;
     private Report report;
     private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
@@ -48,8 +50,8 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     public ImportContainerImpl() {
         report = new Report();
         instanceList = new ObjectArrayList<>();
-        attributeList = new HashMap<>();
-        attributeMap = new HashMap<>();
+        attributeList = new Int2ObjectOpenHashMap<>();
+        attributeMap = new Object2ObjectOpenHashMap<>();
         instanceMap = new Object2IntOpenHashMap<>();
         instanceMap.defaultReturnValue(NULL_INDEX);
     }
@@ -78,7 +80,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
         if (instanceMap.containsKey(instance.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class,
-                                                 "ImportContainerException_instanceExist", instance.getId(), row);
+                    "ImportContainerException_instanceExist", instance.getId(), row);
             report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
@@ -94,8 +96,8 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
         if (!attr.getType().equals(typeClass)) {
             report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class,
-                                                          "ImportContainerException_Attribute_Type_Mismatch",
-                                                          key, attr.getClass()), Level.SEVERE));
+                    "ImportContainerException_Attribute_Type_Mismatch",
+                    key, attr.getClass()), Level.SEVERE));
 
         }
         return attr;
@@ -157,7 +159,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
      */
     @Override
     public Iterable<AttributeDraft> getAttributes() {
-        return attributeList.values();
+        return (Iterable<AttributeDraft>) attributeList.values();
     }
 
     /**
@@ -333,8 +335,8 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
     @Override
     public void resetAttributes() {
-        attributeList = new HashMap<Integer, AttributeDraft>();
-        attributeMap = new HashMap<String, AttributeDraft>();
+        attributeList = new Int2ObjectOpenHashMap<>();
+        attributeMap = new Object2ObjectOpenHashMap<>();
     }
 
     @Override
@@ -367,7 +369,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
         @Override
         public Iterator<T> iterator() {
-            return new NullFilterIterator<T>(collection);
+            return new NullFilterIterator<>(collection);
         }
     }
 
