@@ -18,9 +18,11 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
-    @Param(name = AgglParams.DIST,
-           factory = "org.clueminer.distance.api.DistanceFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+    // don't mutate distance by default - most of evaluation metrics are not
+    // adjusted for this
+    //@Param(name = AgglParams.DIST,
+    //       factory = "org.clueminer.distance.api.DistanceFactory",
+    //       type = org.clueminer.clustering.params.ParamType.STRING)
     protected DistanceMeasure distanceFunction;
 
     //standartization method that is used as part of preprocessing
