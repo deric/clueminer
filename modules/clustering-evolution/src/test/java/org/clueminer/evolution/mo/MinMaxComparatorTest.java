@@ -32,12 +32,12 @@ public class MinMaxComparatorTest {
     private MinMaxComparator subject;
 
     public MinMaxComparatorTest() {
-        this.subject = new MinMaxComparator();
+
     }
 
     @Before
     public void setUp() {
-
+        this.subject = new MinMaxComparator();
     }
 
     @Test
@@ -69,6 +69,38 @@ public class MinMaxComparatorTest {
         //3 does not dominate over 1 or 2
         assertEquals(1, subject.compare(solution3, solution1));
         assertEquals(1, subject.compare(solution3, solution2));
+    }
+
+    @Test
+    public void testMaxMax() {
+        subject.setMaximize(new boolean[]{true, true});
+        Solution s1 = mock(Solution.class);
+        Mockito.when(s1.getNumberOfObjectives()).thenReturn(2);
+        Solution s2 = mock(Solution.class);
+        Mockito.when(s2.getNumberOfObjectives()).thenReturn(2);
+        Solution s3 = mock(Solution.class);
+        Mockito.when(s3.getNumberOfObjectives()).thenReturn(2);
+
+        //dominative
+        Mockito.when(s1.getObjective(0)).thenReturn(5.0);
+        Mockito.when(s1.getObjective(1)).thenReturn(3.0);
+
+        //dominative
+        Mockito.when(s2.getObjective(0)).thenReturn(4.0);
+        Mockito.when(s2.getObjective(1)).thenReturn(4.0);
+
+        //non-dominative
+        Mockito.when(s3.getObjective(0)).thenReturn(4.0);
+        Mockito.when(s3.getObjective(1)).thenReturn(3.0);
+
+        //1 and 2 forms Pareto front
+        assertEquals(0, subject.compare(s1, s2));
+        //1 and 2 domninates over 3
+        assertEquals(-1, subject.compare(s1, s3));
+        assertEquals(-1, subject.compare(s2, s3));
+        //3 does not dominate over 1 or 2
+        assertEquals(1, subject.compare(s3, s1));
+        assertEquals(1, subject.compare(s3, s2));
     }
 
 }

@@ -89,6 +89,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         MutationOperator mutation;
         SelectionOperator selection;
         logger.log(Level.INFO, "starting evolution {0}", getName());
+        logger.log(Level.INFO, "variables: ", problem.getNumberOfVariables());
         logger.log(Level.INFO, "objectives: ", getNumObjectives());
         for (int i = 0; i < getNumObjectives(); i++) {
             logger.log(Level.INFO, "objective: {0}", getObjective(i).getName());

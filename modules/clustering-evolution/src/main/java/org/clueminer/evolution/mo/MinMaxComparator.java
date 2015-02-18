@@ -77,28 +77,49 @@ public class MinMaxComparator implements Comparator<Solution> {
         int result;
         result = constraintViolationComparator.compare(solution1, solution2);
         if (result == 0) {
-            result = dominanceTest(solution1, solution2);
+            if (maximize == null) {
+                result = dominanceTest(solution1, solution2);
+            } else {
+                result = dominanceTest(solution1, solution2, maximize);
+            }
         }
-
         return result;
     }
 
-    private int dominanceTest(Solution solution1, Solution solution2) {
-        int result;
+    private int dominanceTest(Solution solution1, Solution solution2, boolean[] max) {
         boolean solution1Dominates = false;
         boolean solution2Dominates = false;
 
         int flag;
         double value1, value2;
+        double diff;
         for (int i = 0; i < solution1.getNumberOfObjectives(); i++) {
             value1 = solution1.getObjective(i);
             value2 = solution2.getObjective(i);
-            if (value1 / (1 + epsilon) < value2) {
-                flag = -1;
-            } else if (value1 / (1 + epsilon) > value2) {
-                flag = 1;
-            } else {
+
+            diff = value1 - value2;
+            if (Math.abs(diff) <= epsilon) {
+                //same with epsilon tolerance
                 flag = 0;
+            } else {
+                //maximize objective
+                if (max[i]) {
+                    if (diff > 0.0) {
+                        //solution 1 dominates
+                        flag = -1;
+                    } else {
+                        flag = 1;
+                    }
+
+                } else {
+                    //minimize objective
+                    if (diff > 0.0) {
+                        //solution 1 dominates
+                        flag = 1;
+                    } else {
+                        flag = -1;
+                    }
+                }
             }
 
             if (flag == -1) {
@@ -109,7 +130,11 @@ public class MinMaxComparator implements Comparator<Solution> {
                 solution2Dominates = true;
             }
         }
+        return dominance2int(solution1Dominates, solution2Dominates);
+    }
 
+    private int dominance2int(boolean solution1Dominates, boolean solution2Dominates) {
+        int result;
         if (solution1Dominates == solution2Dominates) {
             // non-dominated solutions
             result = 0;
@@ -121,6 +146,41 @@ public class MinMaxComparator implements Comparator<Solution> {
             result = 1;
         }
         return result;
+    }
+
+    private int dominanceTest(Solution solution1, Solution solution2) {
+        boolean solution1Dominates = false;
+        boolean solution2Dominates = false;
+
+        int flag;
+        double value1, value2, diff;
+        for (int i = 0; i < solution1.getNumberOfObjectives(); i++) {
+            value1 = solution1.getObjective(i);
+            value2 = solution2.getObjective(i);
+
+            diff = value1 - value2;
+            if (Math.abs(diff) <= epsilon) {
+                //same with epsilon tolerance
+                flag = 0;
+            } else {
+                //minimize objective
+                if (diff > 0.0) {
+                    //solution 1 dominates
+                    flag = 1;
+                } else {
+                    flag = -1;
+                }
+            }
+
+            if (flag == -1) {
+                solution1Dominates = true;
+            }
+
+            if (flag == 1) {
+                solution2Dominates = true;
+            }
+        }
+        return dominance2int(solution1Dominates, solution2Dominates);
     }
 
     public boolean[] getMaximize() {
