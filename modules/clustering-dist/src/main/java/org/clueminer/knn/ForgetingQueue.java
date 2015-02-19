@@ -16,28 +16,64 @@
  */
 package org.clueminer.knn;
 
-import java.lang.reflect.Array;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
+import it.unimi.dsi.fastutil.doubles.Double2ObjectSortedMap;
+import java.util.Map;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 
 /**
  *
  * @author Tomas Barton
+ *
  */
-public class ForgetingQueue<T> {
+public class ForgetingQueue {
 
-    private T[] data;
+    private final Double2ObjectSortedMap<Instance> queue;
     //from smallest values
     private boolean asc;
-    private DistanceMeasure dm;
+    private final DistanceMeasure dm;
+    private final Instance target;
+    private final int k;
 
-    public ForgetingQueue(Class<T> klass, int k, DistanceMeasure dm) {
+    public ForgetingQueue(int k, DistanceMeasure dm, Instance target) {
         this.dm = dm;
-        this.data = (T[]) Array.newInstance(klass, k);
+        this.queue = new Double2ObjectRBTreeMap<>();
+        this.target = target;
+        this.k = k;
     }
 
     public void check(Instance inst) {
-        //TODO: implement
+        double dist = dm.measure(target, inst);
+        while (queue.size() < k) {
+            queue.put(dist, inst);
+            return;
+        }
+
+        double last = queue.lastDoubleKey();
+        //compare against worst element
+        if (dm.compare(dist, last)) {
+            queue.remove(last);
+            queue.put(dist, inst);
+        }
+    }
+
+    public Instance[] getResult() {
+        return queue.values().toArray(new Instance[0]);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (Map.Entry<Double, Instance> entry : queue.entrySet()) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey());
+            i++;
+        }
+        return sb.toString();
     }
 
 }

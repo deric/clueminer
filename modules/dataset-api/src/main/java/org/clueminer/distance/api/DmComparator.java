@@ -54,4 +54,12 @@ public class DmComparator implements Comparator<Double> {
         this.delta = delta;
     }
 
+    public DistanceMeasure getMeasure() {
+        return dm;
+    }
+
+    public void setMeasure(DistanceMeasure dm) {
+        this.dm = dm;
+    }
+
 }

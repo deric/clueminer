@@ -16,11 +16,13 @@
  */
 package org.clueminer.knn;
 
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.distance.api.KNN;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class CachingKNN implements KNN {
 
     @Override
-    public int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset) {
-        Instance[] nn = nn(idx, k, dataset);
+    public int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
+        Instance[] nn = nn(idx, k, dataset, params);
         int[] res = new int[k];
         for (int i = 0; i < k; i++) {
             res[i] = nn[i].getIndex();
@@ -41,17 +43,24 @@ public class CachingKNN implements KNN {
     }
 
     @Override
-    public Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset) {
+    public Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
         KnnCache cache = KnnCache.getInstance();
         if (cache.containsKey(dataset)) {
             return cache.get(dataset);
         }
+        String dmProvider = params.get(AgglParams.DIST, AgglParams.DEFAULT_DISTANCE_FUNCTION);
+        DistanceMeasure dm = DistanceFactory.getInstance().getProvider(dmProvider);
 
-        DistanceMeasure dm = DistanceFactory.getInstance().getProvider("Euclidean");
+        Instance target = dataset.get(idx);
+        ForgetingQueue queue = new ForgetingQueue(k, dm, target);
 
-        ForgetingQueue<Instance> queue = new ForgetingQueue<>(Instance.class, k, dm);
+        for (int i = 0; i < dataset.size(); i++) {
+            if (i != idx) {
+                queue.check(dataset.get(i));
+            }
+        }
 
-        return null;
+        return queue.getResult();
     }
 
 }

@@ -18,7 +18,7 @@ public class AgglParams {
      */
     public static final String LINKAGE = "hac-linkage";
 
-    private static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
+    public static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
 
     public static final String DEFAULT_LINKAGE = "Complete Linkage";
 
