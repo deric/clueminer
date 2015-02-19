@@ -2,6 +2,7 @@ package org.clueminer.distance.api;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  * k-nearest neighbors algorithm
@@ -16,16 +17,18 @@ public interface KNN {
      * @param idx
      * @param k
      * @param dataset
+     * @param params  key-value configuration
      * @return
      */
-    int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset);
+    int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset, Props params);
 
     /**
      *
      * @param idx
      * @param k
      * @param dataset
+     * @param params  key-value configuration (e.g. distance metric)
      * @return k nearest instances to given /idx/
      */
-    Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset);
+    Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset, Props params);
 }
