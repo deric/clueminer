@@ -16,8 +16,8 @@
  */
 package org.clueminer.knn;
 
-import it.unimi.dsi.fastutil.doubles.Double2ObjectRBTreeMap;
-import it.unimi.dsi.fastutil.doubles.Double2ObjectSortedMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleSortedMap;
 import java.util.Map;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -29,16 +29,18 @@ import org.clueminer.distance.api.DistanceMeasure;
  */
 public class ForgetingQueue {
 
-    private final Double2ObjectSortedMap<Instance> queue;
-    //from smallest values
-    private boolean asc;
+    /**
+     * queue can't be indexed by distances because it would not necessarily be
+     * an unique key
+     */
+    private final Object2DoubleSortedMap<Instance> queue;
     private final DistanceMeasure dm;
     private final Instance target;
     private final int k;
 
     public ForgetingQueue(int k, DistanceMeasure dm, Instance target) {
         this.dm = dm;
-        this.queue = new Double2ObjectRBTreeMap<>();
+        this.queue = new Object2DoubleLinkedOpenHashMap<>(k);
         this.target = target;
         this.k = k;
     }
@@ -46,31 +48,45 @@ public class ForgetingQueue {
     public void check(Instance inst) {
         double dist = dm.measure(target, inst);
         while (queue.size() < k) {
-            queue.put(dist, inst);
+            queue.put(inst, dist);
             return;
         }
 
-        double last = queue.lastDoubleKey();
+        Instance last = queue.lastKey();
+        double lastDist = queue.get(last);
         //compare against worst element
-        if (dm.compare(dist, last)) {
+        if (dm.compare(dist, lastDist)) {
             queue.remove(last);
-            queue.put(dist, inst);
+            queue.put(inst, dist);
         }
     }
 
     public Instance[] getResult() {
-        return queue.values().toArray(new Instance[0]);
+        return queue.keySet().toArray(new Instance[0]);
+    }
+
+    public String dumpInst() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (Map.Entry<Instance, Double> entry : queue.entrySet()) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey().getIndex());
+            i++;
+        }
+        return sb.toString();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (Map.Entry<Double, Instance> entry : queue.entrySet()) {
+        for (Map.Entry<Instance, Double> entry : queue.entrySet()) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(entry.getKey());
+            sb.append(entry.getValue());
             i++;
         }
         return sb.toString();

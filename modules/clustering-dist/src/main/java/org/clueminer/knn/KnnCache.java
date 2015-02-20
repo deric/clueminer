@@ -16,8 +16,8 @@
  */
 package org.clueminer.knn;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -28,10 +28,11 @@ import org.clueminer.dataset.api.Instance;
 public class KnnCache {
 
     private static KnnCache instance;
-    private Object2ObjectMap<Dataset<? extends Instance>, Instance[]> cache;
+
+    private Table<Dataset, Integer, Instance[]> cache;
 
     private KnnCache() {
-        cache = new Object2ObjectOpenHashMap<>();
+        cache = HashBasedTable.create();
     }
 
     public static KnnCache getInstance() {
@@ -42,10 +43,25 @@ public class KnnCache {
     }
 
     public boolean containsKey(Dataset<? extends Instance> dataset) {
-        return cache.containsKey(dataset);
+        return cache.containsRow(dataset);
     }
 
-    public Instance[] get(Dataset<? extends Instance> dataset) {
-        return cache.get(dataset);
+    public boolean contains(Dataset<? extends Instance> dataset, int id) {
+        return cache.contains(dataset, id);
+    }
+
+    public Instance[] get(Dataset<? extends Instance> dataset, int id) {
+        return cache.get(dataset, id);
+    }
+
+    /**
+     * Store k-nn result to cache
+     *
+     * @param dataset
+     * @param id
+     * @param inst
+     */
+    public void put(Dataset<? extends Instance> dataset, int id, Instance[] inst) {
+        cache.put(dataset, id, inst);
     }
 }

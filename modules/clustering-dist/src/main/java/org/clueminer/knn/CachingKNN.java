@@ -45,12 +45,27 @@ public class CachingKNN implements KNN {
     @Override
     public Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
         KnnCache cache = KnnCache.getInstance();
-        if (cache.containsKey(dataset)) {
-            return cache.get(dataset);
+        Instance[] res;
+        if (cache.contains(dataset, idx)) {
+            res = cache.get(dataset, idx);
+            if (res.length < k) {
+                res = updateNN(dataset, idx, k, cache, params);
+            }
+        } else {
+            res = updateNN(dataset, idx, k, cache, params);
         }
+        return res;
+    }
+
+    private Instance[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache, Props params) {
         String dmProvider = params.get(AgglParams.DIST, AgglParams.DEFAULT_DISTANCE_FUNCTION);
         DistanceMeasure dm = DistanceFactory.getInstance().getProvider(dmProvider);
+        Instance[] res = computeNN(dataset, idx, k, dm);
+        cache.put(dataset, idx, res);
+        return res;
+    }
 
+    private Instance[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, DistanceMeasure dm) {
         Instance target = dataset.get(idx);
         ForgetingQueue queue = new ForgetingQueue(k, dm, target);
 
@@ -59,7 +74,6 @@ public class CachingKNN implements KNN {
                 queue.check(dataset.get(i));
             }
         }
-
         return queue.getResult();
     }
 
