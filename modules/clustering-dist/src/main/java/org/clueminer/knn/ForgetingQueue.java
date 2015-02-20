@@ -16,8 +16,10 @@
  */
 package org.clueminer.knn;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleSortedMap;
+import it.unimi.dsi.fastutil.objects.AbstractObject2ObjectMap;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -33,14 +35,22 @@ public class ForgetingQueue {
      * queue can't be indexed by distances because it would not necessarily be
      * an unique key
      */
-    private final Object2DoubleSortedMap<Instance> queue;
+    //private final Object2DoubleSortedMap<Instance> queue;
+    //private List<Map.Entry<Instance, Double>> queue;
+    //private TreeMap<Instance, Double> queue;
+    private List<Map.Entry<Instance, Double>> queue;
     private final DistanceMeasure dm;
     private final Instance target;
     private final int k;
+    private final DmInstComparator comparator;
 
     public ForgetingQueue(int k, DistanceMeasure dm, Instance target) {
+        this.queue = new LinkedList<>();
         this.dm = dm;
-        this.queue = new Object2DoubleLinkedOpenHashMap<>(k);
+        this.comparator = new DmInstComparator(dm);
+        //this.queue = new Object2DoubleAVLTreeMap<>(new DmInstComparator(dm));
+        //queue = new TreeMap<>(new DmInstComparator<>(dm));
+        //queue = new LinkedList<AbstractObject2ObjectMap.BasicEntry<Instance, Double>>();
         this.target = target;
         this.k = k;
     }
@@ -48,27 +58,36 @@ public class ForgetingQueue {
     public void check(Instance inst) {
         double dist = dm.measure(target, inst);
         while (queue.size() < k) {
-            queue.put(inst, dist);
+            queue.add(new AbstractObject2ObjectMap.BasicEntry<>(inst, dist));
+            sort();
             return;
         }
 
-        Instance last = queue.lastKey();
-        double lastDist = queue.get(last);
+        Map.Entry<Instance, Double> last = queue.get(k - 1);
         //compare against worst element
-        if (dm.compare(dist, lastDist)) {
+        if (dm.compare(dist, last.getValue())) {
             queue.remove(last);
-            queue.put(inst, dist);
+            queue.add(new AbstractObject2ObjectMap.BasicEntry<>(inst, dist));
+            sort();
         }
     }
 
+    private void sort() {
+        Collections.sort(queue, comparator);
+    }
+
     public Instance[] getResult() {
-        return queue.keySet().toArray(new Instance[0]);
+        Instance[] res = new Instance[queue.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = queue.get(i).getKey();
+        }
+        return res;
     }
 
     public String dumpInst() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (Map.Entry<Instance, Double> entry : queue.entrySet()) {
+        for (Map.Entry<Instance, Double> entry : queue) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -82,7 +101,7 @@ public class ForgetingQueue {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (Map.Entry<Instance, Double> entry : queue.entrySet()) {
+        for (Map.Entry<Instance, Double> entry : queue) {
             if (i > 0) {
                 sb.append(", ");
             }

@@ -29,7 +29,7 @@ public class KnnCache {
 
     private static KnnCache instance;
 
-    private Table<Dataset, Integer, Instance[]> cache;
+    private final Table<Dataset, Integer, Instance[]> cache;
 
     private KnnCache() {
         cache = HashBasedTable.create();
