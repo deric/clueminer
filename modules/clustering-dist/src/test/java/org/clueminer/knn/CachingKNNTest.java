@@ -63,21 +63,14 @@ public class CachingKNNTest {
         //4.9,3.1,1.5,0.1, Iris-setosa
         Instance ref = d.get(9);
         //there are 3 same instances iris dataset
-        System.out.println("ref: " + ref.toString() + " index: " + ref.getIndex());
-        Instance tst = d.get(34);
-        System.out.println("tst: " + tst.toString() + " index: " + tst.getIndex());
+
+        //should find two very same instances (id: 34, 37)
         for (int i = 0; i < 2; i++) {
-            System.out.println(i + ": " + nn[i].toString() + " index: " + nn[i].getIndex());
-            /*   for (int j = 0; j < d.attributeCount(); j++) {
-             assertEquals(ref.get(j), nn[i].get(i), delta);
-             }*/
+            for (int j = 0; j < d.attributeCount(); j++) {
+                assertEquals(ref.get(j), nn[i].get(j), delta);
+            }
         }
-
         assertEquals(k, nn.length);
-        for (int i = 0; i < nn.length; i++) {
-            System.out.println(i + ": " + nn[i].toString() + " index: " + nn[i].getIndex());
-        }
-
     }
 
     public Dataset<? extends Instance> insectDataset() {

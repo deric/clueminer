@@ -36,9 +36,8 @@ public class ForgetingQueue {
      * an unique key
      */
     //private final Object2DoubleSortedMap<Instance> queue;
-    //private List<Map.Entry<Instance, Double>> queue;
-    //private TreeMap<Instance, Double> queue;
-    private List<Map.Entry<Instance, Double>> queue;
+    //sorted map would be nice, but we need to sort by value
+    private final List<Map.Entry<Instance, Double>> queue;
     private final DistanceMeasure dm;
     private final Instance target;
     private final int k;

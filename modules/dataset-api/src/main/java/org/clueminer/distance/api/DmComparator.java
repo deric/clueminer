@@ -38,10 +38,11 @@ public class DmComparator implements Comparator<Double> {
         if (Math.abs(diff) < delta) {
             return 0;
         } else {
+            //"unnatural" ordering
             if (dm.compare(d1, d2)) {
-                return 1;
-            } else {
                 return -1;
+            } else {
+                return 1;
             }
         }
     }

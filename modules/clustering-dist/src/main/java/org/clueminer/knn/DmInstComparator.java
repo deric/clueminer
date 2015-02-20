@@ -62,9 +62,9 @@ public class DmInstComparator<K extends Comparable<? super K>, V extends Double>
             return 0;
         } else {
             if (dm.compare(d1, d2)) {
-                return 1;
-            } else {
                 return -1;
+            } else {
+                return 1;
             }
         }
     }

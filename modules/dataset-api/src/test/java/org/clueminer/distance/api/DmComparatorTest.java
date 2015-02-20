@@ -42,7 +42,7 @@ public class DmComparatorTest {
 
     @Test
     public void testCompare() {
-        assertEquals(1, subject.compare(1.0, 5.0));
+        assertEquals(-1, subject.compare(1.0, 5.0));
     }
 
     @Test
