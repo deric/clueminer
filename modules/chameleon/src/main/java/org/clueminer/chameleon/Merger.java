@@ -180,17 +180,6 @@ public abstract class Merger {
     abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount);
 
     /**
-     * Prepares clusters for merging
-     */
-    public void initiateClustersForMerging() {
-        for (int i = 0; i < clusterCount; i++) {
-            clusters.get(i).offsprings = new LinkedList<>();
-            clusters.get(i).offsprings.add(clusters.get(i));
-            clusters.get(i).parent = clusters.get(i);
-        }
-    }
-
-    /**
      * Computes relative interconnectivity and closeness and returns their sum
      *
      * @param i index of the first cluster
@@ -210,64 +199,4 @@ public abstract class Merger {
         return RCL + RIC;
     }
 
-    protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
-        if (cluster1.parent.index == cluster2.parent.index) {
-            return;
-        }
-        if (cluster1.parent.offsprings.size() < cluster2.parent.offsprings.size()) {
-            Cluster temp = cluster1;
-            cluster1 = cluster2;
-            cluster2 = temp;
-        }
-        cluster1.parent.offsprings.addAll(cluster2.parent.offsprings);
-        Cluster parent = cluster2.parent;
-        for (Cluster cluster : parent.offsprings) {
-            cluster.parent = cluster1.parent;
-        }
-        parent.offsprings = null;
-    }
-
-    /**
-     * Creates lists of nodes according to new clusters
-     *
-     * @return lists of nodes in clusters
-     */
-    public ArrayList<LinkedList<Node>> getNewClusters() {
-        ArrayList<LinkedList<Node>> result = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
-            if (clusters.get(i).offsprings != null) {
-                LinkedList<Node> list = new LinkedList<>();
-                for (Cluster cluster : clusters.get(i).offsprings) {
-                    ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-                    for (Node node : nodes) {
-                        list.add(node);
-                    }
-                }
-                result.add(list);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns node to cluster assignment after merging
-     *
-     * @return node to cluster assignment
-     */
-    public int[] getNodeToCluster() {
-        int ntc[] = new int[graph.getNodeCount()];
-        int index = 0;
-        for (int i = 0; i < clusterCount; i++) {
-            if (clusters.get(index).offsprings != null) {
-                for (Cluster cluster : clusters.get(i).offsprings) {
-                    ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-                    for (Node node : nodes) {
-                        ntc[graph.getIndex(node)] = index;
-                    }
-                }
-                index++;
-            }
-        }
-        return ntc;
-    }
 }
