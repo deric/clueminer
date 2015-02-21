@@ -32,6 +32,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = KNN.class)
 public class CachingKNN implements KNN {
 
+    private static final String name = "caching k-nn";
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
         Instance[] nn = nn(idx, k, dataset, params);
@@ -76,5 +83,4 @@ public class CachingKNN implements KNN {
         }
         return queue.getResult();
     }
-
 }
