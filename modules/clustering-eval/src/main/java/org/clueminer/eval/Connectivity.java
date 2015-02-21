@@ -72,7 +72,7 @@ public class Connectivity extends AbstractEvaluator {
                 nn = knn.nn(j, L, dataset, params);
                 for (int k = 0; k < L; k++) {
                     if (c.contains(nn[k].getIndex())) {
-                        conn += 1 / (double) k;
+                        conn += 1.0 / (k + 1);
                     }
                 }
             }

@@ -53,7 +53,7 @@ public class ConnectivityTest {
         System.out.println("worser: " + scoreWorser);
 
         //should recognize better clustering
-        //assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
     @Test
