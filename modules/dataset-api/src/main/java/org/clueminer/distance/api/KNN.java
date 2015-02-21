@@ -12,6 +12,13 @@ import org.clueminer.utils.Props;
 public interface KNN {
 
     /**
+     * Unique algorithm identifier
+     *
+     * @return the name of algorithm implementation
+     */
+    String getName();
+
+    /**
      * Get /k/ nearest neighbors to given /idx/
      *
      * @param idx
