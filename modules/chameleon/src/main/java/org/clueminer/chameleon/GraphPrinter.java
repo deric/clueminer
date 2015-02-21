@@ -21,6 +21,21 @@ import org.clueminer.graph.api.Node;
 public class GraphPrinter {
 
     /**
+     * Whether the outputs are bitmap or vector images
+     *
+     * @param bitmap
+     */
+    private boolean bitmap;
+
+    public GraphPrinter() {
+        this(true);
+    }
+
+    public GraphPrinter(boolean bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    /**
      * Generates image of the graph
      *
      * @param scale Scale of the graph
@@ -198,7 +213,12 @@ public class GraphPrinter {
         try (PrintWriter writer = new PrintWriter(path + "/" + "tempfile", "UTF-8")) {
             writer.print(graph);
             writer.close();
-            Process p = Runtime.getRuntime().exec("neato -Tpng -o " + path + "/" + output + " -Gmode=KK " + path + "/" + "tempfile");
+            Process p;
+            if (bitmap) {
+                p = Runtime.getRuntime().exec("neato -Tpng -o " + path + "/" + output + ".png -Gmode=KK " + path + "/" + "tempfile");
+            } else {
+                p = Runtime.getRuntime().exec("neato -Tps -o " + path + "/" + output + ".eps -Gmode=KK " + path + "/" + "tempfile");
+            }
             p.waitFor();
             File file = new File(path + "/" + "tempfile");
             file.delete();
