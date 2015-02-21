@@ -33,12 +33,12 @@ public class Merger {
     /**
      * Clusters to merge.
      */
-    Cluster clusters[];
+    ArrayList<Cluster> clusters;
 
     /**
      * Matrix containing external properties of every 2 clusters.
      */
-    ExternalProperties clusterMatrix[][];
+    ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
     public Merger(Graph g) {
         this.graph = g;
@@ -50,11 +50,11 @@ public class Merger {
      */
     private void createClusters(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
-        clusters = new Cluster[clusterCount];
+        clusters = new ArrayList<>();
         int i = 0;
         for (LinkedList<Node> cluster : clusterList) {
-            clusters[i] = new Cluster(cluster, graph, i);
-            clusters[i].computeProperties(bisection);
+            clusters.add(new Cluster(cluster, graph, i));
+            clusters.get(i).computeProperties(bisection);
             i++;
         }
         assignNodesToClusters(clusterList);
@@ -65,10 +65,11 @@ public class Merger {
      * clusters.
      */
     private void inititateClusterMatrix() {
-        clusterMatrix = new ExternalProperties[clusterCount][clusterCount];
+        clusterMatrix = new ArrayList<>();
         for (int i = 0; i < clusterCount; i++) {
-            for (int j = i + 1; j < clusterCount; j++) {
-                clusterMatrix[i][j] = new ExternalProperties();
+            clusterMatrix.add(new ArrayList<ExternalProperties>());
+            for (int j = 0; j < i; j++) {
+                clusterMatrix.get(i).add(new ExternalProperties());
             }
         }
     }
@@ -106,13 +107,13 @@ public class Merger {
             int secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
             if (firstClusterID != secondClusterID) {
                 //Swap values if the first is bigger. Matrix is symmetric so only half is filled
-                if (firstClusterID > secondClusterID) {
+                if (secondClusterID > firstClusterID) {
                     int temp = firstClusterID;
                     firstClusterID = secondClusterID;
                     secondClusterID = temp;
                 }
                 //Update the values
-                ExternalProperties properties = clusterMatrix[firstClusterID][secondClusterID];
+                ExternalProperties properties = clusterMatrix.get(firstClusterID).get(secondClusterID);
                 properties.EIC += edge.getWeight();
                 properties.counter++;
                 properties.ECL = properties.EIC / properties.counter;
@@ -126,28 +127,29 @@ public class Merger {
                 System.out.print("    ");
             }
             for (int j = i + 1; j < clusterCount; j++) {
-                System.out.print(" EIC: " + clusterMatrix[i][j].EIC + " ECL: " + clusterMatrix[i][j].ECL);
+                //System.out.print(" EIC: " + clusterMatrix[i][j].EIC + " ECL: " + clusterMatrix[i][j].ECL);
+                System.out.print("R: " + computeSimilarity(i, j));
             }
             System.out.println("");
         }
     }
 
     public double getEIC(int firstClusterID, int secondClusterID) {
-        if (firstClusterID > secondClusterID) {
+        if (secondClusterID > firstClusterID) {
             int temp = firstClusterID;
             firstClusterID = secondClusterID;
             secondClusterID = temp;
         }
-        return clusterMatrix[firstClusterID][secondClusterID].EIC;
+        return clusterMatrix.get(firstClusterID).get(secondClusterID).EIC;
     }
 
     public double getECL(int firstClusterID, int secondClusterID) {
-        if (firstClusterID > secondClusterID) {
+        if (secondClusterID > firstClusterID) {
             int temp = firstClusterID;
             firstClusterID = secondClusterID;
             secondClusterID = temp;
         }
-        return clusterMatrix[firstClusterID][secondClusterID].ECL;
+        return clusterMatrix.get(firstClusterID).get(secondClusterID).ECL;
     }
 
     private class ExternalProperties {
@@ -198,7 +200,7 @@ public class Merger {
                     index = j;
                 }
             }
-            mergeTwoClusters(clusters[i], clusters[index]);
+            mergeTwoClusters(clusters.get(i), clusters.get(index));
         }
         return getNewClusters();
     }
@@ -208,9 +210,9 @@ public class Merger {
      */
     public void initiateClustersForMerging() {
         for (int i = 0; i < clusterCount; i++) {
-            clusters[i].offsprings = new LinkedList<>();
-            clusters[i].offsprings.add(clusters[i]);
-            clusters[i].parent = clusters[i];
+            clusters.get(i).offsprings = new LinkedList<>();
+            clusters.get(i).offsprings.add(clusters.get(i));
+            clusters.get(i).parent = clusters.get(i);
         }
     }
 
@@ -222,15 +224,15 @@ public class Merger {
      * @return sum of relative interconnectivity and closeness
      */
     private double computeSimilarity(int i, int j) {
-        if (i > j) {
+        if (j > i) {
             int temp = i;
             i = j;
             j = temp;
         }
-        double RIC = clusterMatrix[i][j].EIC / ((clusters[i].IIC + clusters[j].IIC) / 2);
-        double nc1 = clusters[i].graph.getNodeCount();
-        double nc2 = clusters[j].graph.getNodeCount();
-        double RCL = clusterMatrix[i][j].ECL / ((nc1 / (nc1 + nc2)) * clusters[i].ICL + (nc2 / (nc1 + nc2)) * clusters[j].ICL);
+        double RIC = clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).IIC + clusters.get(j).IIC) / 2);
+        double nc1 = clusters.get(i).graph.getNodeCount();
+        double nc2 = clusters.get(j).graph.getNodeCount();
+        double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).ICL + (nc2 / (nc1 + nc2)) * clusters.get(j).ICL);
         return RCL + RIC;
     }
 
@@ -259,9 +261,9 @@ public class Merger {
     public ArrayList<LinkedList<Node>> getNewClusters() {
         ArrayList<LinkedList<Node>> result = new ArrayList<>();
         for (int i = 0; i < clusterCount; i++) {
-            if (clusters[i].offsprings != null) {
+            if (clusters.get(i).offsprings != null) {
                 LinkedList<Node> list = new LinkedList<>();
-                for (Cluster cluster : clusters[i].offsprings) {
+                for (Cluster cluster : clusters.get(i).offsprings) {
                     ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
                     for (Node node : nodes) {
                         list.add(node);
@@ -282,8 +284,8 @@ public class Merger {
         int ntc[] = new int[graph.getNodeCount()];
         int index = 0;
         for (int i = 0; i < clusterCount; i++) {
-            if (clusters[i].offsprings != null) {
-                for (Cluster cluster : clusters[i].offsprings) {
+            if (clusters.get(index).offsprings != null) {
+                for (Cluster cluster : clusters.get(i).offsprings) {
                     ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
                     for (Node node : nodes) {
                         ntc[graph.getIndex(node)] = index;
@@ -294,5 +296,4 @@ public class Merger {
         }
         return ntc;
     }
-
 }
