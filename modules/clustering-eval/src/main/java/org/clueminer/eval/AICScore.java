@@ -51,6 +51,10 @@ public class AICScore extends AbstractEvaluator {
     }
 
     /**
+     * Compares the two scores AIC scores. Returns true if the first score is
+     * 'better' than the second score.
+     *
+     *
      * don't use abs values
      *
      * @link http://stats.stackexchange.com/questions/84076/negative-values-for-aic-in-general-mixed-model

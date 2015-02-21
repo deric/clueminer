@@ -43,7 +43,7 @@ public class KmeansBenchmark {
     private static Collection<? extends InternalEvaluator> evaluators;
     private static String benchmarkFolder;
     private static CommonFixture tf;
-    private final Map<String, String> classColors = new HashMap<String, String>();
+    private final Map<String, String> classColors = new HashMap<>();
     private int colorNum = 0;
     private static final String gnuplotExtension = ".gpt";
 

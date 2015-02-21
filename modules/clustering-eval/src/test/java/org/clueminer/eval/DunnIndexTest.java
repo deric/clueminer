@@ -2,8 +2,6 @@ package org.clueminer.eval;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
@@ -53,6 +51,7 @@ public class DunnIndexTest {
      */
     @Test
     public void testGetName() {
+        assertNotNull(test.getName());
     }
 
     /**
@@ -64,6 +63,7 @@ public class DunnIndexTest {
 
     /**
      * Test of score method, of class DunnIndex.
+     *
      * @throws java.io.IOException
      * @throws java.io.FileNotFoundException
      */
