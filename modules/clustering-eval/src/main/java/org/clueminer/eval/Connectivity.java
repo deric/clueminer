@@ -18,19 +18,20 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.KNN;
 import org.clueminer.distance.api.KnnFactory;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Connectivity as criterion for evaluation of clustering quality
+ * Connectivity as criterion for evaluation of clustering quality. As an
+ * objective should be minimized. Connectivity should not penalize clusters of
+ * arbitrary shapes (different than circles/spheres).
  *
- * @see Ding, Chris, and Xiaofeng He. "K-nearest-neighbor consistency in data
- * clustering: incorporating local information into global optimization."
- * Proceedings of the 2004 ACM symposium on Applied computing. ACM, 2004.
  *
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
@@ -38,10 +39,12 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class Connectivity extends AbstractEvaluator {
 
     private static final long serialVersionUID = 5416705978468100914L;
     private static final String name = "Connectivity";
+    private static final String PARAM = "connectivity.L";
 
     @Override
     public String getName() {
@@ -51,13 +54,16 @@ public class Connectivity extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
         double conn = 0.0;
+        //TODO: move as parameter
+        Props params = new Props();
+
         //parameter specifing number of neighbours that contribute to connectivity
-        int L = 10;
+        // value 10 is suggested by Handl, Knowles
+        int L = params.getInt(PARAM, 10);
         KNN knn = KnnFactory.getInstance().getDefault();
         if (knn == null) {
             throw new RuntimeException("missing k-nn implementation");
         }
-        Props params = new Props();
         Cluster c;
         Instance[] nn;
         for (int i = 0; i < clusters.size(); i++) {
@@ -77,17 +83,18 @@ public class Connectivity extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score(clusters, dataset);
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // should be minimzed.
+        return score1 < score2;
     }
 
     @Override
     public boolean isMaximized() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
 }
