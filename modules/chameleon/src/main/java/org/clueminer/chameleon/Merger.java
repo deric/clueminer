@@ -13,12 +13,14 @@ import org.clueminer.partitioning.impl.KernighanLin;
  *
  * @author Tomas Bruna
  */
-public class Merger {
+public abstract class Merger {
 
     /**
      * Original, not partitioned graph.
      */
     Graph graph;
+
+    Bisection bisection;
 
     /**
      * Assigns each node to cluster.
@@ -41,14 +43,19 @@ public class Merger {
     ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
     public Merger(Graph g) {
+        this(g, new KernighanLin());
+    }
+
+    public Merger(Graph g, Bisection bisection) {
         this.graph = g;
+        this.bisection = bisection;
     }
 
     /**
      * Creates clusters from lists of nodes
      *
      */
-    private void createClusters(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
+    protected void createClusters(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
         clusters = new ArrayList<>();
         int i = 0;
@@ -64,7 +71,7 @@ public class Merger {
      * Creates empty structure of external properties between every two
      * clusters.
      */
-    private void inititateClusterMatrix() {
+    protected void inititateClusterMatrix() {
         clusterMatrix = new ArrayList<>();
         for (int i = 0; i < clusterCount; i++) {
             clusterMatrix.add(new ArrayList<ExternalProperties>());
@@ -79,7 +86,7 @@ public class Merger {
      * Having clusters assigned to nodes can be advantageous in some cases
      *
      */
-    private void assignNodesToClusters(ArrayList<LinkedList<Node>> clusterList) {
+    protected void assignNodesToClusters(ArrayList<LinkedList<Node>> clusterList) {
         nodeToCluster = new int[graph.getNodeCount()];
         int i = 0;
         for (LinkedList<Node> cluster : clusterList) {
@@ -98,7 +105,7 @@ public class Merger {
      * external values are updated
      *
      */
-    private void computeExternalProperties() {
+    protected void computeExternalProperties() {
         inititateClusterMatrix();
         Iterator<Edge> edges = graph.getEdges().iterator();
         while (edges.hasNext()) {
@@ -152,7 +159,7 @@ public class Merger {
         return clusterMatrix.get(firstClusterID).get(secondClusterID).ECL;
     }
 
-    private class ExternalProperties {
+    protected class ExternalProperties {
 
         public double EIC, ECL;
         public int counter;
@@ -166,44 +173,11 @@ public class Merger {
      * Merges clusters. Each cluster is merged with the most similar one
      *
      * @param clusterList List of clusters to merge
+     * @param mergeCount Number of merges to be done
      *
      * @return Lists of nodes in each cluster
      */
-    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
-        return merge(clusterList, new KernighanLin());
-    }
-
-    /**
-     * Merges clusters. Each cluster is merged with the most similar one
-     *
-     * @param clusterList List of clusters to merge
-     * @param bisection Bisection algorithm used for computing internal cluster
-     * properties
-     *
-     * @return Lists of nodes in each cluster
-     */
-    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
-        initiateClustersForMerging();
-
-        for (int i = 0; i < clusterCount; i++) {
-            double max = Double.NEGATIVE_INFINITY;
-            int index = 0;
-            for (int j = 0; j < clusterCount; j++) {
-                if (i == j) {
-                    continue;
-                }
-                double value = computeSimilarity(i, j);
-                if (value > max) {
-                    max = value;
-                    index = j;
-                }
-            }
-            mergeTwoClusters(clusters.get(i), clusters.get(index));
-        }
-        return getNewClusters();
-    }
+    abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount);
 
     /**
      * Prepares clusters for merging
@@ -223,7 +197,7 @@ public class Merger {
      * @param j index of the second cluster
      * @return sum of relative interconnectivity and closeness
      */
-    private double computeSimilarity(int i, int j) {
+    protected double computeSimilarity(int i, int j) {
         if (j > i) {
             int temp = i;
             i = j;
@@ -236,7 +210,7 @@ public class Merger {
         return RCL + RIC;
     }
 
-    private void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
+    protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
         if (cluster1.parent.index == cluster2.parent.index) {
             return;
         }

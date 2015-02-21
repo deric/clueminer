@@ -76,7 +76,7 @@ public class MergerTest {
 
         KernighanLin kl = new KernighanLin(g);
         ArrayList<LinkedList<Node>> result = kl.bisect();
-        Merger m = new Merger(g);
+        OldMerger m = new OldMerger(g);
         m.merge(result);
 
         //Assert external interconnectivity
@@ -144,7 +144,7 @@ public class MergerTest {
         AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
         //printGraph(resultGraph.graphVizExport(1), "/home/tomas/Desktop", "paritioned.png");
 
-        Merger m = new Merger(g);
+        OldMerger m = new OldMerger(g);
         ArrayList<LinkedList<Node>> r = m.merge(result);
         // m.printExternalProperties();
         int nodeToCluster[] = m.getNodeToCluster();
@@ -159,30 +159,48 @@ public class MergerTest {
         DistanceMeasure distanceMeasure = new EuclideanDistance();
         data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
-        FileHandler.loadDataset(tf.irisData(), data, 2, ",");
+        FileHandler.loadDataset(tf.insectCsv(), data, ",");
 
         KNN knn = new KNN(5);
+
+        int scale = 2;
 
         AdjMatrixGraph g = new AdjMatrixGraph(data.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(data, g);
 
-        GraphPrinter gp = new GraphPrinter();
-        gp.printGraph(g, 5, "/home/tomas/Desktop", "knngraph.png");
+        GraphPrinter gp = new GraphPrinter(true);
+        gp.printGraph(g, scale, "/home/tomas/Desktop", "knngraph");
 
         KernighanLinRecursive klr = new KernighanLinRecursive();
         ArrayList<LinkedList<Node>> result = klr.partition(10, g);
 
-        gp.printClusters(g, 5, result, "/home/tomas/Desktop", "partitionedClusters.png");
+        gp.printClusters(g, scale, result, "/home/tomas/Desktop", "partitionedClusters");
         AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
-        gp.printGraph(resultGraph, 5, "/home/tomas/Desktop", "partitioned.png");
-
-        Merger m = new Merger(g);
-        ArrayList<LinkedList<Node>> r = m.merge(result);
-        r = m.merge(r);
+        gp.printGraph(resultGraph, scale, "/home/tomas/Desktop", "partitioned");
+//
+        Merger m = new PairMerger(g);
+//        ArrayList<LinkedList<Node>> r = m.merge(result, 3);
+//        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "first");
+//        r = m.merge(r);
+//        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "second");
+//        r = m.merge(r);
+//        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "third");
+//        r = m.merge(r);
+//        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "fourth");
+//        r = m.merge(r);
+//        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "fifth");
         m.printExternalProperties();
 
+        ArrayList<LinkedList<Node>> r = m.merge(result, 235);
+//        for (int i = 0; i < 240; i++) {
+//            r = m.mergeOnlyTwo(r);
+//            if (i > 230) {
+//                gp.printClusters(g, scale, r, "/home/tomas/Desktop", Integer.toString(i));
+//            }
+//
+//        }
         System.out.println(r.size());
-        gp.printClusters(g, 5, r, "/home/tomas/Desktop", "clusters.png");
+        gp.printClusters(g, scale, r, "/home/tomas/Desktop", "clusters");
 
     }
 }
