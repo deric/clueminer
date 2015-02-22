@@ -49,14 +49,6 @@ public class DeviationTest {
     }
 
     @Test
-    public void testScore_3args() {
-    }
-
-    @Test
-    public void testIsBetter() {
-    }
-
-    @Test
     public void testIsMaximized() {
         assertEquals(false, subject.isMaximized());
     }
