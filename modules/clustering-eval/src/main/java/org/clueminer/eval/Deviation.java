@@ -25,8 +25,8 @@ import org.clueminer.math.Matrix;
 
 /**
  * Deviation is meant for multi-objective optimization, using it as single
- * objective is not recommended. It would produce compact clusters (with minimal
- * distance to centroid).
+ * objective is not recommended. It would produce too many compact clusters
+ * (with minimal distance to centroid).
  *
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
