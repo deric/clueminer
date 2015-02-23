@@ -101,8 +101,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
         double cut = result.findCutoff(strategy);
-        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
-        logger.log(Level.INFO, "num clusters = {0}", result.getClustering().size());
+        logger.log(Level.FINE, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        logger.log(Level.FINE, "num clusters = {0}", result.getClustering().size());
     }
 
     /**

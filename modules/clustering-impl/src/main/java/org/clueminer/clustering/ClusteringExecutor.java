@@ -44,12 +44,12 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         //TODO: not very efficient
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        logger.log(Level.INFO, "clustering {0}", params.toString());
+        logger.log(Level.FINE, "clustering {0}", params.toString());
         HierarchicalResult rowsResult = algorithm.hierarchy(inData, params);
         rowsResult.setInputData(input);
         CutoffStrategy strategy = getCutoffStrategy(params);
         double cut = rowsResult.findCutoff(strategy);
-        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        logger.log(Level.FINE, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
         return rowsResult;
     }
 
