@@ -27,8 +27,6 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.benchmark.Bench;
 import static org.clueminer.clustering.benchmark.Bench.ensureFolder;
 import static org.clueminer.clustering.benchmark.Bench.printUsage;
-import org.clueminer.clustering.benchmark.evolve.EvolveExp;
-import org.clueminer.clustering.benchmark.evolve.EvolveParams;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -40,8 +38,8 @@ public class NsgaScore extends Bench {
 
     public static final String name = "nsga-scores";
 
-    protected static EvolveParams parseArguments(String[] args) {
-        EvolveParams params = new EvolveParams();
+    protected static NsgaParams parseArguments(String[] args) {
+        NsgaParams params = new NsgaParams();
         JCommander cmd = new JCommander(params);
         printUsage(args, cmd, params);
         return params;
@@ -49,7 +47,7 @@ public class NsgaScore extends Bench {
 
     @Override
     public void main(String[] args) {
-        EvolveParams params = parseArguments(args);
+        NsgaParams params = parseArguments(args);
         if (params.test) {
             loadIris();
         } else {
@@ -69,7 +67,7 @@ public class NsgaScore extends Bench {
         List<InternalEvaluator> eval = InternalEvaluatorFactory.getInstance().getAll();
         ClusterEvaluation[] scores = eval.toArray(new ClusterEvaluation[eval.size()]);
         System.out.println("scores size: " + scores.length);
-        EvolveExp exp = new EvolveExp(params, benchmarkFolder, scores, availableDatasets);
+        NsgaExp exp = new NsgaExp(params, benchmarkFolder, scores, availableDatasets);
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();
