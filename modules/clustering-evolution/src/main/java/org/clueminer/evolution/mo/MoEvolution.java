@@ -88,6 +88,9 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         CrossoverOperator crossover;
         MutationOperator mutation;
         SelectionOperator selection;
+        if (getNumObjectives() < 2) {
+            throw new RuntimeException("provide at least 2 objectives. currently we have just" + getNumObjectives());
+        }
         logger.log(Level.INFO, "starting evolution {0}", getName());
         logger.log(Level.INFO, "variables: ", problem.getNumberOfVariables());
         logger.log(Level.INFO, "objectives: ", getNumObjectives());

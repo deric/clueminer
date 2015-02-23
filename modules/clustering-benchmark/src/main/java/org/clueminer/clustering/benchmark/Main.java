@@ -25,7 +25,7 @@ public class Main {
         map.put("hclust-par", new HclusPar());
         map.put("hclust-par2", new HclusPar2());
         map.put("evolve-sc", new EvolveScores());
-        map.put("nsga-score", new NsgaScore());
+        map.put("nsga", new NsgaScore());
     }
 
     /**

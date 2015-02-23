@@ -99,6 +99,8 @@ public class NsgaExp implements Runnable {
             ensureFolder(benchmarkFolder + File.separatorChar + name);
 
             evolution = new MoEvolution();
+            evolution.addObjective(c1);
+            evolution.addObjective(c2);
             evolution.setDataset(d);
             evolution.setGenerations(params.generations);
             evolution.setPopulationSize(params.population);
