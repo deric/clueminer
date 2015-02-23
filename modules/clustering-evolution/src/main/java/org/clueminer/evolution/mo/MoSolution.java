@@ -59,7 +59,6 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
 
     public void evaluate() {
         individual.updateCustering();
-        logger.info("evaluating clustering");
         ClusterEvaluation eval;
         for (int i = 0; i < objectives.length; i++) {
             eval = problem.evolution.getObjective(i);

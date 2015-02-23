@@ -23,6 +23,8 @@ import com.google.common.collect.Tables;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import static org.clueminer.clustering.benchmark.Bench.ensureFolder;
@@ -48,6 +50,7 @@ public class NsgaExp implements Runnable {
     private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
     private final Table<String, String, Double> table;
+    private static final Logger logger = Logger.getLogger(NsgaExp.class.getName());
 
     public NsgaExp(NsgaParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
         this.params = params;
@@ -89,13 +92,12 @@ public class NsgaExp implements Runnable {
     private void runExperiment(ClusterEvaluation c1, ClusterEvaluation c2) {
         MoEvolution evolution;
         String name;
-        System.out.println("datasets size: " + datasets.size());
+        logger.log(Level.INFO, "datasets size: {0}", datasets.size());
         for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
             Dataset<? extends Instance> d = e.getValue().getKey();
             name = safeName(d.getName());
             String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
-            System.out.println("=== dataset " + name);
-            System.out.println("size: " + d.size());
+            logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
             ensureFolder(benchmarkFolder + File.separatorChar + name);
 
             evolution = new MoEvolution();

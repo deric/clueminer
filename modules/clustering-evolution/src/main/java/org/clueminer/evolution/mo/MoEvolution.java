@@ -37,7 +37,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     private static final String name = "MOE";
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
     protected List<ClusterEvaluation> objectives;
-    private int numberOfPoints = 10;
+    private int numSolutions = 15;
 
     public MoEvolution() {
         init(new ClusteringExecutorCached());
@@ -95,7 +95,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         logger.log(Level.INFO, "variables: ", problem.getNumberOfVariables());
         logger.log(Level.INFO, "objectives: ", getNumObjectives());
         for (int i = 0; i < getNumObjectives(); i++) {
-            logger.log(Level.INFO, "objective: {0}", getObjective(i).getName());
+            logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
         }
 
         double crossoverDistributionIndex = 20.0;
@@ -104,8 +104,6 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         double mutationProbability = 1.0 / problem.getNumberOfVariables();
         double mutationDistributionIndex = 20.0;
         mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
-
-        int numSolutions = 10;
 
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
 

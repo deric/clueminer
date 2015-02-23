@@ -140,7 +140,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
      */
     @Override
     public Clustering<? extends Cluster> updateCustering() {
-        logger.log(Level.INFO, "running clustering {0}", genom.toString());
+        logger.log(Level.FINE, "running clustering {0}", genom.toString());
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
         return clustering;
     }
