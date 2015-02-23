@@ -20,8 +20,10 @@ public class HclusPar extends Hclust {
     /**
      * @param args the command line arguments
      */
+    @Override
     public void main(String[] args) {
         BenchParams params = parseArguments(args);
+        setupLogging(params);
 
         benchmarkFolder = params.home + File.separatorChar + "benchmark" + File.separatorChar + "hclust-par";
         ensureFolder(benchmarkFolder);

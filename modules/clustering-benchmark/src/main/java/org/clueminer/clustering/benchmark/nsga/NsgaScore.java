@@ -54,6 +54,8 @@ public class NsgaScore extends Bench {
             loadDatasets();
         }
         System.out.println("loaded dataset");
+        setupLogging(params);
+
         int i = 0;
         for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : availableDatasets.entrySet()) {
             System.out.println((i++) + ":" + e.getKey());

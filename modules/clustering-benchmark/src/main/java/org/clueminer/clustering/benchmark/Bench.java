@@ -6,6 +6,10 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2ObjectMap;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.DatasetFixture;
@@ -67,6 +71,31 @@ public abstract class Bench {
 
     public static String safeName(String name) {
         return name.toLowerCase().replace(" ", "_");
+    }
+
+    public void setupLogging(AbsParams params) {
+        Logger log = LogManager.getLogManager().getLogger("");
+        for (Handler h : log.getHandlers()) {
+            switch (params.log.toUpperCase()) {
+                case "INFO":
+                    h.setLevel(Level.INFO);
+                    break;
+                case "SEVERE":
+                    h.setLevel(Level.SEVERE);
+                    break;
+                case "WARNING":
+                    h.setLevel(Level.WARNING);
+                    break;
+                case "ALL":
+                    h.setLevel(Level.ALL);
+                    break;
+                case "FINE":
+                    h.setLevel(Level.FINE);
+                    break;
+                default:
+                    throw new RuntimeException("log level " + log + " is not supported");
+            }
+        }
     }
 
 }

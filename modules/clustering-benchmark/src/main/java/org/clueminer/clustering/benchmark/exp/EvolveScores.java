@@ -37,6 +37,7 @@ public class EvolveScores extends Bench {
         } else {
             loadDatasets();
         }
+        setupLogging(params);
         System.out.println("loaded dataset");
         int i = 0;
         for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : availableDatasets.entrySet()) {

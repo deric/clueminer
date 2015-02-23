@@ -18,4 +18,7 @@ public class AbsParams {
     @Parameter(names = "--repeat", description = "number of repetitions of each experiment")
     public int repeat = 2;
 
+    @Parameter(names = "--log", description = "java log level")
+    public String log = "INFO";
+
 }
