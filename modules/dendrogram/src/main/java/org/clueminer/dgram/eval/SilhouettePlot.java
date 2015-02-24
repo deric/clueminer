@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -32,6 +34,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
     private final StdScale scale;
     private double[] score;
     private HierarchicalResult hierarchicalResult;
+    private static final Logger logger = Logger.getLogger(SilhouettePlot.class.getName());
 
     public SilhouettePlot(boolean fit) {
         super();
@@ -163,7 +166,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         if (d != null) {
             hierarchicalResult = d.getRowsResult();
         } else {
-            System.out.println("can't find hierarchical result in lookup, using: " + hierarchicalResult);
+            logger.log(Level.WARNING, "can''t find hierarchical result in lookup, using: {0}", hierarchicalResult);
         }
         updateScore();
         if (reqSize.width == 0) {

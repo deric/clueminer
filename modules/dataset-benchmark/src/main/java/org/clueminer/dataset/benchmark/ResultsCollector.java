@@ -6,14 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.EvolutionSO;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.openide.util.Exceptions;
 
 /**
@@ -30,6 +28,10 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
+    public void started(Evolution evolution) {
+    }
+
+    @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //we care only about final results
     }
@@ -37,7 +39,14 @@ public class ResultsCollector implements EvolutionListener {
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        table.put(evolution.getDataset().getName(), evolution.getEvaluator().getName(), external);
+
+        if (evolution instanceof EvolutionSO) {
+            EvolutionSO evoso = (EvolutionSO) evolution;
+            table.put(evolution.getDataset().getName(), evoso.getEvaluator().getName(), external);
+        } else {
+            throw new RuntimeException("MO evolution is not supported yet");
+        }
+
     }
 
     public void writeToCsv(String filename) {
@@ -69,7 +78,7 @@ public class ResultsCollector implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+    public void resultUpdate(Individual[] result) {
         //we are mostly interested for final set of clusterings, not incremental updates
     }
 }

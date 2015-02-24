@@ -5,7 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * Generic factory for service providers
+ * Generic factory for service providers. Classes extending ServiceFactory must
+ * implement "public static <? extends ServiceFactory> getInstance()" method.
+ * In Java we can't have abstract static methods, therefore this is just plain
+ * text contract.
  *
  * @author Tomas Barton
  * @param <T> class to be looked up

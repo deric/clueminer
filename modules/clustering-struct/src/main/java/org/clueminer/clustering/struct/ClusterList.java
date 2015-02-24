@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
@@ -23,9 +24,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private Cluster<E>[] data;
     private Props params;
     private final HashMap<String, Integer> name2id;
+    private EvaluationTable table;
     /**
-     * (n - 1) is index of last inserted item, n itself represents current
-     * number of instances in this dataset
+     * (n - 1) is index of last inserted item, n itself represents
+     * current number of instances in this dataset
      */
     private int n = 0;
     //Lookup
@@ -49,7 +51,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String getName() {
         if (name == null) {
-            name = "|" + size() + "|";
+            name = fingerprint();
         }
         return name;
     }
@@ -380,6 +382,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
+        for (Cluster<E> e : this) {
+            sb.append(e.toString());
+        }
+
         return sb.append(getName()).toString();
     }
 
@@ -440,9 +446,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public void mergeParams(Props other) {
-        for (String key : other.keySet()) {
-            params.put(key, other.get(key));
-        }
+        params.merge(other);
     }
 
     @Override
@@ -451,6 +455,64 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             return get(name2id.get(label));
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public EvaluationTable getEvaluationTable() {
+        return table;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param table
+     */
+    @Override
+    public void setEvaluationTable(EvaluationTable table) {
+        this.table = table;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return human readable fingerprint
+     */
+    @Override
+    public String fingerprint() {
+        int[] sizes = clusterSizes();
+        Arrays.sort(sizes);
+        return printArray(sizes);
+    }
+
+    /**
+     * Print element separated by comma, without any space
+     *
+     * @param a
+     * @return
+     */
+    private String printArray(int[] a) {
+        if (a == null) {
+            return "null";
+        }
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            return "[]";
+        }
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0;; i++) {
+            b.append(a[i]);
+            if (i == iMax) {
+                return b.append(']').toString();
+            }
+            b.append(',');
+        }
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

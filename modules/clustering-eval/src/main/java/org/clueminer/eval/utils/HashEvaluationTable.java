@@ -45,6 +45,22 @@ public class HashEvaluationTable implements EvaluationTable {
         scores = new HashMap<>(internalMap.size() + externalMap.size());
     }
 
+    @Override
+    public HashMap<String, Double> getAll() {
+        return scores;
+    }
+
+    @Override
+    public HashMap<String, Double> countAll() {
+        for (ClusterEvaluation eval : internalMap.values()) {
+            getScore(eval);
+        }
+        for (ClusterEvaluation eval : externalMap.values()) {
+            getScore(eval);
+        }
+        return getAll();
+    }
+
     /**
      * Computes evaluator score and caches the result
      *
@@ -60,6 +76,17 @@ public class HashEvaluationTable implements EvaluationTable {
             double score = evaluator.score(clustering, dataset);
             scores.put(key, score);
             return score;
+        }
+    }
+
+    @Override
+    public double getScore(String evaluator) {
+        if (internalMap.containsKey(evaluator)) {
+            return getScore(internalMap.get(evaluator));
+        } else if (externalMap.containsKey(evaluator)) {
+            return getScore(externalMap.get(evaluator));
+        } else {
+            throw new RuntimeException("unknown evaluator");
         }
     }
 

@@ -1,9 +1,9 @@
 package org.clueminer.evolution.multim;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -16,16 +16,16 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.LinkageFactory;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.evolution.AbstractEvolution;
+import org.clueminer.evolution.BaseEvolution;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
@@ -40,44 +40,43 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = Evolution.class)
-public class MultiMuteEvolution extends AbstractEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "muti-mute";
     protected Executor exec;
     protected List<DistanceMeasure> dist;
     protected List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
-    protected List<String> standartizations;
+    protected List<String> stds;
     protected final Random rand = new Random();
-    private HashSet<String> tabu;
-    private boolean isFinished = true;
-    private Population<? extends Individual> population;
+    protected ObjectOpenHashSet<String> tabu;
+    protected boolean isFinished = false;
+    protected Population<? extends Individual> population;
 
     /**
      * for start and final average fitness
      */
-    private Pair<Double, Double> avgFitness;
+    protected Pair<Double, Double> avgFitness;
     /**
      * for start and final best fitness in whole population
      */
-    private Pair<Double, Double> bestFitness;
+    protected Pair<Double, Double> bestFitness;
     /**
      * for star and final time
      */
-    private Pair<Long, Long> time;
+    protected Pair<Long, Long> time;
 
     public MultiMuteEvolution() {
         //cache normalized datasets
-        this.exec = new ClusteringExecutorCached();
-        init();
+        init(new ClusteringExecutorCached());
     }
 
     public MultiMuteEvolution(Executor executor) {
-        this.exec = executor;
-        init();
+        init(executor);
     }
 
-    private void init() {
+    protected final void init(Executor executor) {
+        this.exec = executor;
         algorithm = new HACLW();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
@@ -91,14 +90,26 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
 
     protected void prepare() {
         StandardisationFactory sf = StandardisationFactory.getInstance();
-        standartizations = sf.getProviders();
+        stds = sf.getProviders();
         DistanceFactory df = DistanceFactory.getInstance();
         dist = df.getAll();
         LinkageFactory lf = LinkageFactory.getInstance();
         linkage = lf.getAll();
+        prepareHook();
     }
 
-    private void clean() {
+    /**
+     * Could be overridden by inheriting classes
+     */
+    protected void prepareHook() {
+        //is initialized before starting evolution
+    }
+
+    protected void beforeRunHook() {
+        //executed when evolution starts
+    }
+
+    protected void clean() {
         if (dataset == null) {
             throw new RuntimeException("missing data");
         }
@@ -106,22 +117,26 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
         avgFitness = new Pair<>();
         bestFitness = new Pair<>();
         time = new Pair<>();
-        tabu = new HashSet<>();
+        tabu = new ObjectOpenHashSet<>();
     }
 
-    @Override
-    public void run() {
-        clean();
-        int stdMethods = standartizations.size();
-
+    protected void printStarted() {
         if (ph != null) {
             int workunits = getGenerations();
-            logger.log(Level.INFO, "stds: {0}", stdMethods);
+            logger.log(Level.INFO, "stds: {0}", stds.size());
             logger.log(Level.INFO, "distances: {0}", dist.size());
             logger.log(Level.INFO, "linkages: {0}", linkage.size());
             ph.start(workunits);
             ph.progress("starting " + getName() + "evolution...");
         }
+    }
+
+    @Override
+    public void run() {
+        beforeRunHook();
+        evolutionStarted(this);
+        clean();
+        printStarted();
 
         time.a = System.currentTimeMillis();
         LinkedList<Individual> children = new LinkedList<>();
@@ -140,19 +155,18 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
             for (int i = 0; i < population.size(); i++) {
                 Individual current = population.getIndividual(i).deepCopy();
                 current.mutate();
-                if (current.isValid()) {
+                if (this.isValid(current) && current.isValid()) {
                     if (!isItTabu(current.toString())) {
                         // put mutated individual to the list of new individuals
                         children.add(current);
+                        current.countFitness();
+                        //update meta-database
+                        fireIndividualCreated(current);
                     }
                 }
             }
             double fitness;
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
-            for (Individual child : children) {
-                child.countFitness();
-                child.getFitness();
-            }
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {
@@ -235,7 +249,7 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
      * @param config
      * @return
      */
-    private boolean isItTabu(String config) {
+    protected boolean isItTabu(String config) {
         return tabu.contains(config);
     }
 
@@ -245,7 +259,7 @@ public class MultiMuteEvolution extends AbstractEvolution implements Runnable, E
     }
 
     @Override
-    public Individual createIndividual() {
+    public MultiMuteIndividual createIndividual() {
         return new MultiMuteIndividual(this);
     }
 

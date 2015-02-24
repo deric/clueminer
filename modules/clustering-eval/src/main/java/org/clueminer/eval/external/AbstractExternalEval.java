@@ -4,12 +4,15 @@ import java.io.Serializable;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.eval.AbstractComparator;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class AbstractExternalEval implements ClusterEvaluation, ExternalEvaluator, Serializable {
+public abstract class AbstractExternalEval extends AbstractComparator implements ClusterEvaluation, ExternalEvaluator, Serializable {
+
+    private static final long serialVersionUID = 7150802573224388450L;
 
     protected DistanceMeasure dm;
 
@@ -41,23 +44,6 @@ public abstract class AbstractExternalEval implements ClusterEvaluation, Externa
             return score1 > score2;
         }
         return score1 < score2;
-    }
-
-    @Override
-    public int compareTo(double score1, double score2) {
-        if (score1 == score2) {
-            return 0;
-        }
-        if (isMaximized()) {
-            if (score1 < score2) {
-                return 1;
-            }
-        } else {
-            if (score1 > score2) {
-                return 1;
-            }
-        }
-        return -1;
     }
 
 }

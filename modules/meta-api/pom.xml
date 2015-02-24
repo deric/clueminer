@@ -7,6 +7,7 @@
         <version>0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
+    <groupId>org.clueminer</groupId>
     <artifactId>meta-api</artifactId>
     <packaging>nbm</packaging>
     <build>
@@ -15,6 +16,11 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.clueminer.meta.api</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -34,6 +40,26 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE80</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>evolution-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

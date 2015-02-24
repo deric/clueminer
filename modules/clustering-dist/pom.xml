@@ -105,6 +105,22 @@
             <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-io</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -122,6 +138,7 @@
                         <publicPackage>org.clueminer.exec</publicPackage>
                         <publicPackage>org.clueminer.hclust</publicPackage>
                         <publicPackage>org.clueminer.hclust.linkage</publicPackage>
+                        <publicPackage>org.clueminer.knn</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

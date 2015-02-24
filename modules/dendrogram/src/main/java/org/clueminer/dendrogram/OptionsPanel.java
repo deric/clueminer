@@ -7,7 +7,7 @@ import javax.swing.JComboBox;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringFactory;
-import org.clueminer.clustering.api.LinkageFactory;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 
 /**
  *

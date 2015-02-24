@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.LinkageFactory;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;

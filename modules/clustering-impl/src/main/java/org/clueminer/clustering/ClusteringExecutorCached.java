@@ -103,7 +103,6 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         double cut = result.findCutoff(strategy);
         logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
         logger.log(Level.INFO, "num clusters = {0}", result.getClustering().size());
-        params.putDouble(AgglParams.CUTOFF, cut);
     }
 
     /**

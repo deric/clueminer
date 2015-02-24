@@ -107,7 +107,11 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     private String generateName() {
         Clustering<? extends Cluster> clustering = getClustering();
         if (clustering != null) {
-            return clustering.getName();
+            String name = clustering.getName();
+            if (name.length() > 10) {
+                return name.substring(0, 7) + "...|" + clustering.size() + "|";
+            }
+            return name;
         }
         return "(missing)";
     }
@@ -176,7 +180,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+        EvaluationTable evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
             Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
@@ -184,7 +188,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
                 logger.warning("no dataset in lookup");
             }
             evalTable = new HashEvaluationTable(clustering, dataset);
-            clustering.lookupAdd(evalTable);
+            clustering.setEvaluationTable(evalTable);
         }
         return evalTable;
     }

@@ -31,7 +31,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
 
         double s1 = t1.getScore(evaluator);
         double s2 = t2.getScore(evaluator);
-        return evaluator.compareTo(s1, s2);
+        return evaluator.compare(s1, s2);
     }
 
     public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {

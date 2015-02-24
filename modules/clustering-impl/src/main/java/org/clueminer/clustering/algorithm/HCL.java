@@ -26,7 +26,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     private HCLResult result;
 
     public HCL() {
-        distanceMeasure = new EuclideanDistance();
+        distanceFunction = new EuclideanDistance();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
         System.out.println(map.toString());
-        TreeDataImpl treeData = new TreeDataImpl(distanceMeasure);
+        TreeDataImpl treeData = new TreeDataImpl(distanceFunction);
         result = new HCLResult(dataset);
         Matrix input = dataset.asMatrix();
         if (input == null) {
@@ -136,7 +136,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
          */
 
         //factor = (float) 1.0;  //factor is used as an optional scaling factor
-        factor = distanceMeasure.getSimilarityFactor();
+        factor = distanceFunction.getSimilarityFactor();
         //factor = (float) 1.0;
         if (ph != null) {
             ph.progress("creating similarity matrix");
@@ -162,11 +162,11 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
                 if (calculateRows) {
                     // SimilarityMatrix[i][j] = ExperimentUtil.distance(expMatrix, i, j, function, factor, absolute);//ExpMatrix.GeneDistance(i,j,null);
-                    SimilarityMatrix[i][j] = distanceMeasure.rows(input, i, j, factor);
+                    SimilarityMatrix[i][j] = distanceFunction.rows(input, i, j, factor);
                     //ExperimentUtil.geneDistance(expMatrix, null, i, j, function, factor, absolute);//ExpMatrix.GeneDistance(i,j,null);
                     /// System.out.println(i+";"+j+": dist "+SimilarityMatrix[i][j]);
                 } else {
-                    SimilarityMatrix[i][j] = distanceMeasure.columns(input, i, j, factor);
+                    SimilarityMatrix[i][j] = distanceFunction.columns(input, i, j, factor);
                     //ExperimentUtil.distance(expMatrix, i, j, function, factor, absolute); //ExpMatrix.ExperimentDistance(i,j);
                     /// System.out.println(i+";"+j+": dist "+SimilarityMatrix[i][j]);
                 }

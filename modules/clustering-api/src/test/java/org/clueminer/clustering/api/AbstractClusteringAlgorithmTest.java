@@ -56,6 +56,9 @@ public class AbstractClusteringAlgorithmTest {
         @Param(name = "k")
         int k = 5;
 
+        @Param(name = "x")
+        int x = 5;
+
         @Override
         public String getName() {
             return "dummy";

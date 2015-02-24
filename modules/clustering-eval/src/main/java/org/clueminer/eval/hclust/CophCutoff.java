@@ -32,16 +32,16 @@ public class CophCutoff implements CutoffStrategy {
         do {
             cutoff = hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
-            System.out.println("# level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
+            //System.out.println("# level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
             score = eval.score(hclust);
             if (cutoff < 0) {
-                System.out.println("negative cutoff " + cutoff + " stopping cutoff");
+                //System.out.println("negative cutoff " + cutoff + " stopping cutoff");
                 isClimbing = false;
             }
-            System.out.println("score = " + score + " prev= " + prev);
+            //System.out.println("score = " + score + " prev= " + prev);
             if (!Double.isNaN(prev)) {
                 if (score <= prev) {
-                    System.out.println("function is not climbing anymore, reverting to " + oldcut);
+                    //System.out.println("function is not climbing anymore, reverting to " + oldcut);
                     hclust.setCutoff(oldcut);
                     hclust.setClustering(prevClust);
                     return oldcut;
@@ -52,7 +52,6 @@ public class CophCutoff implements CutoffStrategy {
             prevClust = clust;
             oldcut = cutoff;
             level++;
-            System.out.println("res clustering size: " + hclust.getClustering().size());
 
         } while (level < (hclust.treeLevels() - 1) && isClimbing && !Double.isNaN(score));
         return cutoff;

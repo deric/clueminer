@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api.config.annotation;
 
+import org.clueminer.clustering.params.ParamType;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
@@ -29,7 +30,23 @@ public @interface Param {
 
     /**
      * Whether this option is required.
+     *
      * @return
      */
     boolean required() default false;
+
+    /**
+     * Service factory provider
+     *
+     * @return
+     */
+    String factory() default "";
+
+    /**
+     * Type of stored value, currently supported values are: double, string,
+     * boolean, integer
+     *
+     * @return
+     */
+    ParamType type() default ParamType.DOUBLE;
 }

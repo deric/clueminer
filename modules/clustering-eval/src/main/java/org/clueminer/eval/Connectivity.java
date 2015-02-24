@@ -1,0 +1,100 @@
+/*
+ * Copyright (C) 2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.clueminer.eval;
+
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.KNN;
+import org.clueminer.distance.api.KnnFactory;
+import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
+
+/**
+ * Connectivity as criterion for evaluation of clustering quality. As an
+ * objective should be minimized. Connectivity should not penalize clusters of
+ * arbitrary shapes (different than circles/spheres).
+ *
+ *
+ * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
+ * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
+ * 11.1 (2007): 56-76.
+ *
+ * @author Tomas Barton
+ */
+@ServiceProvider(service = InternalEvaluator.class)
+public class Connectivity extends AbstractEvaluator {
+
+    private static final long serialVersionUID = 5416705978468100914L;
+    private static final String name = "Connectivity";
+    private static final String PARAM = "connectivity.L";
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+        double conn = 0.0;
+        //TODO: move as parameter
+        Props params = new Props();
+
+        //parameter specifing number of neighbours that contribute to connectivity
+        // value 10 is suggested by Handl, Knowles
+        int L = params.getInt(PARAM, 10);
+        KNN knn = KnnFactory.getInstance().getDefault();
+        if (knn == null) {
+            throw new RuntimeException("missing k-nn implementation");
+        }
+        Cluster c;
+        Instance[] nn;
+        for (int i = 0; i < clusters.size(); i++) {
+            c = clusters.get(i);
+            for (int j = 0; j < c.size(); j++) {
+                nn = knn.nn(j, L, dataset, params);
+                for (int k = 0; k < L; k++) {
+                    if (c.contains(nn[k].getIndex())) {
+                        conn += 1.0 / (k + 1);
+                    }
+                }
+            }
+        }
+
+        return conn;
+    }
+
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
+        return score(clusters, dataset);
+    }
+
+    @Override
+    public boolean isBetter(double score1, double score2) {
+        // should be minimzed.
+        return score1 < score2;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
+
+}

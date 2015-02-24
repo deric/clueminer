@@ -62,7 +62,8 @@ public class ClassAssignment extends ClusterAssignment {
 
             while (i < dataset.size()) {
                 mapped = hieraRes.getMappedIndex(i);
-                if (!dataset.get(mapped).classValue().equals(currClass)) {
+                Object klass = dataset.get(mapped).classValue();
+                if (klass != null && !klass.equals(currClass)) {
                     drawClass(g, x, start, i, colorForClass(map, currClass, matching));
                     start = i; //index if new cluster start
                     currClass = dataset.get(mapped).classValue();
@@ -77,6 +78,9 @@ public class ClassAssignment extends ClusterAssignment {
 
     private Color colorForClass(Object2ObjectMap<Object, Color> map, Object klass, BiMap<String, String> matching) {
         if (!map.containsKey(klass)) {
+            if (klass == null) {
+                return Color.GRAY;
+            }
             String cls = klass.toString();
             if (matching.containsKey(cls)) {
                 String cluster = matching.get(cls);

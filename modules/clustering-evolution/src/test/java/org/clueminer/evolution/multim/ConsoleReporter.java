@@ -1,13 +1,10 @@
 package org.clueminer.evolution.multim;
 
-import java.util.Collection;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 
 /**
  *
@@ -26,12 +23,19 @@ public class ConsoleReporter implements EvolutionListener {
         System.out.println("===== evolution finished =============");
         System.out.println("evolution: " + evolution.getName());
         System.out.println("generations: " + g);
-        System.out.println("exter: " + external);
+        System.out.println("external: " + external);
+        System.out.println("internal: " + best.getFitness());
+        System.out.println("num clusters: " + best.getClustering().size());
+        System.out.println("best: " + best.getProps().toString());
         System.out.println("======================================");
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+    public void started(Evolution evolution) {
+    }
+
+    @Override
+    public void resultUpdate(Individual[] result) {
     }
 
 }

@@ -150,14 +150,14 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.erichseifert.gral</groupId>
-            <artifactId>gral-core</artifactId>
-            <version>0.10</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>guava</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>RELEASE80</version>
         </dependency>
     </dependencies>
 

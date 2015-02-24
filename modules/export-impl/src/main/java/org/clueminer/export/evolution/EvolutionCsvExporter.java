@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.gui.EvolutionExport;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.gui.EvolutionExport;
 import org.clueminer.export.impl.AbstractExporter;
-import static org.clueminer.export.sim.MatrixExporter.ext;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -21,6 +20,7 @@ public class EvolutionCsvExporter extends AbstractExporter implements EvolutionE
     private static final String name = "CSV";
     private CsvEvolutionOptions options;
     private Evolution evolution;
+    private static final String ext = ".csv";
 
     @Override
     public String getName() {

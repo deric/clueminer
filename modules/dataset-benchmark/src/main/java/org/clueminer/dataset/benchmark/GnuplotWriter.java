@@ -6,19 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -92,7 +92,13 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        plotFitness(dataDir, results, evolution.getEvaluator());
+
+        if (evolution instanceof EvolutionSO) {
+            EvolutionSO evoso = (EvolutionSO) evolution;
+            plotFitness(dataDir, results, evoso.getEvaluator());
+        } else {
+            throw new RuntimeException("MO evolution is not supported yet");
+        }
 
         try {
             bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
@@ -350,11 +356,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.plotDumpMod = plotDumpMod;
     }
 
-    @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-
-    }
-
     public void setCustomTitle(String customTitle) {
         this.customTitle = customTitle;
     }
@@ -370,6 +371,15 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
      */
     public void setTop(int n) {
         this.top = n;
+    }
+
+    @Override
+    public void started(Evolution evolution) {
+    }
+
+    @Override
+    public void resultUpdate(Individual[] result) {
+        //not much to do
     }
 
 }

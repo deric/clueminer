@@ -6,14 +6,15 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.evolution.EvolutionFactory;
-import org.clueminer.clustering.gui.EvolutionExport;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionFactory;
+import org.clueminer.evolution.gui.EvolutionExport;
+import org.clueminer.evolution.gui.EvolutionUI;
+import org.clueminer.evolution.gui.EvolutionUIFactory;
 import org.clueminer.explorer.ToolbarListener;
 import org.clueminer.utils.Props;
 import org.openide.DialogDescriptor;
@@ -28,16 +29,21 @@ import org.openide.util.NbBundle;
  */
 public class ExplorerToolbar extends JToolBar {
 
+    private static final long serialVersionUID = 2211255173237651641L;
+
     private JComboBox comboEvolution;
-    private javax.swing.JSlider sliderGenerations;
     private ToolbarListener listener;
     private JButton btnSingle;
+    private JButton btnSettings;
     private JButton btnStart;
     private JButton btnFunction;
     private JButton btnExport;
+    private JButton btnTrash;
     private EvalFuncPanel functionPanel;
     private ExportPanel exportPanel;
     private ClusterAlgPanel algPanel;
+    private EvolutionUI evoPanel;
+    private Evolution evolution;
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
@@ -79,20 +85,56 @@ public class ExplorerToolbar extends JToolBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
+                    evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
                     listener.evolutionAlgorithmChanged(evt);
                 }
             }
         });
-
         add(comboEvolution);
         addSeparator();
-        add(new JLabel("generations:"));
 
-        sliderGenerations = new JSlider(SwingConstants.HORIZONTAL);
-        sliderGenerations.setMaximum(200);
-        sliderGenerations.setMinimum(10);
-        sliderGenerations.setValue(1);
-        add(sliderGenerations);
+        btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/settings16.png", false));
+        btnSettings.setToolTipText("Setup evolution");
+        btnSettings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
+                    EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
+                    for (EvolutionUI ui : factory.getAll()) {
+                        if (ui.isUIfor(evolution)) {
+                            evoPanel = ui;
+                        }
+                    }
+                }
+                DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    Evolution ev = getEvolution();
+                    evoPanel.updateAlgorithm(ev);
+                    //start evolution right away
+                    if (listener != null) {
+                        listener.startEvolution(e, ev);
+                    }
+                }
+            }
+        });
+        add(btnSettings);
+
+        btnTrash = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/trash16.png", false));
+        btnTrash.setToolTipText("Remove all clusterings");
+        btnTrash.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (listener != null) {
+                    listener.clearAll();
+                }
+            }
+        });
+        add(btnTrash);
+
+        addSeparator();
 
         btnStart = new JButton("Start Clustering");
 
@@ -103,7 +145,7 @@ public class ExplorerToolbar extends JToolBar {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
-                    listener.startEvolution(evt, (String) comboEvolution.getSelectedItem());
+                    listener.startEvolution(evt, getEvolution());
                 }
 
             }
@@ -155,6 +197,13 @@ public class ExplorerToolbar extends JToolBar {
         addSeparator();
     }
 
+    private Evolution getEvolution() {
+        if (evolution == null) {
+            evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
+        }
+        return evolution;
+    }
+
     private String[] initEvolution() {
         EvolutionFactory ef = EvolutionFactory.getInstance();
         List<String> list = ef.getProviders();
@@ -175,7 +224,7 @@ public class ExplorerToolbar extends JToolBar {
     }
 
     public int getGenerations() {
-        return sliderGenerations.getValue();
+        return evoPanel.getGenerations();
     }
 
 }

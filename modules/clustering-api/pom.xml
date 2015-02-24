@@ -89,6 +89,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.clustering.api.*</publicPackage>
                         <publicPackage>org.clueminer.clustering.gui</publicPackage>
+                        <publicPackage>org.clueminer.clustering.params</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

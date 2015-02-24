@@ -3,13 +3,18 @@ package org.clueminer.evaluation.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.export.sorting.SortingExporter;
+import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -17,9 +22,12 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
  */
 public class SortingPanel extends JPanel {
 
+    private static final long serialVersionUID = 8757022805479436474L;
+
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
     private SortedClusterings plot;
+    private JButton export;
 
     public SortingPanel() {
         initComponents();
@@ -30,7 +38,7 @@ public class SortingPanel extends JPanel {
         //setSize(new Dimension(800, 600));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.NORTH;
         c.weightx = 1.0;
         //component in last row should be streatched to fill space at the bottom
         c.weighty = 0.1;
@@ -61,6 +69,24 @@ public class SortingPanel extends JPanel {
         c.gridx = 1;
         add(comboEvaluatorY, c);
 
+        export = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/save16.png", false));
+        export.setToolTipText("Export current results");
+        c.gridx = 2;
+        add(export, c);
+
+        export.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                SortingExporter exp = new SortingExporter();
+                exp.setDataset(plot.getDataset());
+                exp.setResults(plot.getResults());
+                exp.setClusterings(plot.getClusterings());
+                exp.setReference(plot.cLeft.getEvaluator());
+                exp.showDialog();
+            }
+        });
+
         //left list
         plot = new SortedClusterings();
         c.gridy = 1;
@@ -69,7 +95,7 @@ public class SortingPanel extends JPanel {
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
-        c.anchor = GridBagConstraints.NORTHWEST;
+        c.anchor = GridBagConstraints.NORTH;
         c.insets = new Insets(0, 0, 0, 0);
         add(plot, c);
 
@@ -96,6 +122,10 @@ public class SortingPanel extends JPanel {
         if (clusterings != null && clusterings.size() > 1) {
             plot.setClusterings((Collection<Clustering>) clusterings);
         }
+    }
+
+    public Collection<? extends Clustering> getClusterings() {
+        return plot.getClusterings();
     }
 
 }

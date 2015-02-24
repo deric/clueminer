@@ -40,7 +40,10 @@ public class HCLDialog extends ClusteringDialog {
 
     @Override
     public String getName() {
-        return algorihm.getName();
+        if (algorihm != null) {
+            return algorihm.getName();
+        }
+        return "(none)";
     }
 
     private void setDefaults() {

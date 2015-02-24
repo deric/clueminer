@@ -1,54 +1,41 @@
 package org.clueminer.evolution.singlem;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Executor;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Population;
+import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = Evolution.class)
 public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private static final String name = "single-mute";
     private static final Logger logger = Logger.getLogger(SingleMuteEvolution.class.getName());
-    private HashSet<String> tabu;
-    private boolean isFinished = true;
+    private boolean isFinished = false;
     private Population<? extends Individual> population;
-
-    /**
-     * for start and final average fitness
-     */
-    private Pair<Double, Double> avgFitness;
-    /**
-     * for start and final best fitness in whole population
-     */
-    private Pair<Double, Double> bestFitness;
-    /**
-     * for star and final time
-     */
-    private Pair<Long, Long> time;
 
     public SingleMuteEvolution() {
         //cache normalized datasets
-        this.exec = new ClusteringExecutorCached();
-        init();
+        init(new ClusteringExecutorCached());
     }
 
-    private void init() {
-        algorithm = new HACLW();
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
-        prepare();
+    public SingleMuteEvolution(Executor executor) {
+        init(executor);
     }
 
     @Override
@@ -57,13 +44,110 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
     }
 
     @Override
-    public Individual createIndividual() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public SingleMuteIndividual createIndividual() {
+        return new SingleMuteIndividual(this);
     }
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.log(Level.INFO, "starting evolution {0}", this.getClass().getName());
+        evolutionStarted(this);
+        clean();
+
+        printStarted();
+
+        time.a = System.currentTimeMillis();
+        LinkedList<Individual> children = new LinkedList<>();
+        population = new TournamentPopulation(this, populationSize, SingleMuteIndividual.class);
+        avgFitness.a = population.getAvgFitness();
+        Individual best = population.getBestIndividual();
+        bestFitness.a = best.getFitness();
+        //ArrayList<Individual> selected = new ArrayList<>(populationSize);
+
+        for (int g = 0; g < generations && !isFinished; g++) {
+            // clear collection for new individuals
+            children.clear();
+            double fitness;
+            // apply mutate operator
+            for (int i = 0; i < population.size(); i++) {
+                Individual current = population.getIndividual(i).deepCopy();
+
+                do {
+                    do {
+                        current.mutate();
+                    } while (isItTabu(current.toString()));
+                    fitness = current.countFitness();
+                    System.out.println("curr| " + current.getClustering().size() + ": " + fitness);
+                    System.out.println(Arrays.toString(current.getClustering().clusterSizes()));
+                    if (!Double.isNaN(fitness)) {
+                        // put mutated individual to the list of new individuals
+                        children.add(current);
+                        tabu.add(current.toString());
+                        //update meta-database
+                        fireIndividualCreated(current);
+                    }
+                } while (!current.isValid() && !this.isValid(current));
+            }
+            logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
+
+            // sort them by fitness (thanks to Individual implements interface Comparable)
+            Individual[] nextGen = children.toArray(new Individual[0]);
+            if (maximizedFitness) {
+                //natural ordering
+                Arrays.sort(nextGen);
+            } else {
+                Arrays.sort(nextGen, Collections.reverseOrder());
+            }
+
+            int indsToCopy;
+            if (nextGen.length > population.size()) {
+                indsToCopy = population.size() / 2;
+            } else {
+                indsToCopy = nextGen.length / 2;
+            }
+            if (ph != null) {
+                ph.progress(indsToCopy + " new individuals in population. generation: " + g);
+            }
+            if (indsToCopy > 0) {
+                System.out.println("copying " + indsToCopy + " new inds: " + nextGen.length);
+                //TODO: old population should be sorted as well? take only part of the new population?
+                //replace worser part of population by new ones
+                System.out.println("arraycopy: " + (populationSize - indsToCopy - 1) + ", p: " + (populationSize - 1));
+                System.arraycopy(nextGen, 0, population.getIndividuals(), populationSize - indsToCopy - 1, indsToCopy);
+            } else {
+                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                //    throw new RuntimeException("no new individuals");
+            }
+            //sort whole population
+            if (maximizedFitness) {
+                //natural ordering
+                Arrays.sort(population.getIndividuals());
+            } else {
+                Arrays.sort(population.getIndividuals(), Collections.reverseOrder());
+            }
+
+            // print statistic
+            // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
+            Individual bestInd = population.getBestIndividual();
+            Clustering<Cluster> clustering = bestInd.getClustering();
+            instanceContent.add(clustering);
+            fireBestIndividual(g, population);
+            fireResultUpdate(population.getIndividuals());
+            if (ph != null) {
+                ph.progress(g);
+            }
+        }
+
+        time.b = System.currentTimeMillis();
+
+        population.sortByFitness();
+        avgFitness.b = population.getAvgFitness();
+        best = population.getBestIndividual();
+        bestFitness.b = best.getFitness();
+
+        fireFinalResult(generations, best, time, bestFitness, avgFitness);
+
+        finish();
     }
 
 }

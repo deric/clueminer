@@ -1,6 +1,10 @@
 package org.clueminer.utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -15,15 +19,15 @@ public final class FileUtils {
     public static String LocalFolder() {
         String result = System.getProperty("user.home") + File.separator
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
-        createFolder(result);
+                        FileUtils.class,
+                        "FOLDER_Home");
+        ensureFolder(result);
         return result;
     }
 
     public static String LogFolder() {
         String result = LocalFolder() + File.separator + "log";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -41,7 +45,7 @@ public final class FileUtils {
 
     public static String SettingsFolder() {
         String result = LocalFolder() + File.separator + "settings";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -57,7 +61,7 @@ public final class FileUtils {
 
     public static String cacheFolder() {
         String result = LocalFolder() + File.separator + "cache";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -73,7 +77,7 @@ public final class FileUtils {
 
     public static String getHistoryFolder() {
         String result = LocalFolder() + File.separator + "history";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -84,7 +88,7 @@ public final class FileUtils {
 
     public static String templatesFolder() {
         String result = LocalFolder() + File.separator + "templates";
-        createFolder(result);
+        ensureFolder(result);
         return result;
     }
 
@@ -119,12 +123,15 @@ public final class FileUtils {
         }
     }
 
-    public static void createFolder(String path) {
+    public static void ensureFolder(String path) {
         File dir = new File(path);
-        try {
-            FileObject folder = FileUtil.createFolder(dir);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (!dir.exists()) {
+            try {
+                FileUtil.createFolder(dir);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("failed to create " + dir);
+            }
         }
     }
 

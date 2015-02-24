@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -13,7 +14,7 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public interface ClusteringAlgorithm {
 
-    public String getName();
+    String getName();
 
     /**
      *
@@ -21,31 +22,31 @@ public interface ClusteringAlgorithm {
      * @param props
      * @return
      */
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
+    Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
 
     /**
      *
      * @param dataset
      * @return
      */
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset);
+    Clustering<Cluster> cluster(Dataset<? extends Instance> dataset);
 
-    public DistanceMeasure getDistanceFunction();
+    DistanceMeasure getDistanceFunction();
 
-    public void setDistanceFunction(DistanceMeasure dm);
+    void setDistanceFunction(DistanceMeasure dm);
 
     /**
      * Algorithm responsible for assigning colors to new clusters
      *
      * @param cg
      */
-    public void setColorGenerator(ColorGenerator cg);
+    void setColorGenerator(ColorGenerator cg);
 
     /**
      *
      * @return
      */
-    public ColorGenerator getColorGenerator();
+    ColorGenerator getColorGenerator();
 
     /**
      * API for displaying progress in UI, if not set algorithm should work
@@ -53,5 +54,7 @@ public interface ClusteringAlgorithm {
      *
      * @param ph
      */
-    public void setProgressHandle(ProgressHandle ph);
+    void setProgressHandle(ProgressHandle ph);
+
+    Parameter[] getParameters();
 }

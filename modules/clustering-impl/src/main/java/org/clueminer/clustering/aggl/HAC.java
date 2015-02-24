@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
-import org.clueminer.clustering.api.AgglParams;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,12 +10,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -25,6 +28,7 @@ import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -54,6 +58,21 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     private final static String name = "HAC";
     private static final Logger logger = Logger.getLogger(HAC.class.getName());
 
+    @Param(name = AgglParams.LINKAGE,
+           factory = "org.clueminer.clustering.api.factory.LinkageFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected ClusterLinkage linkage;
+
+    @Param(name = AgglParams.CUTOFF_STRATEGY,
+           factory = "org.clueminer.clustering.api.factory.CutoffStrategyFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected CutoffStrategy cutoffStrategy;
+
+    @Param(name = AgglParams.CUTOFF_SCORE,
+           factory = "org.clueminer.clustering.api.factory.InternalEvaluatorFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    protected InternalEvaluator cutoffScore;
+
     @Override
     public String getName() {
         return name;
@@ -76,7 +95,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         checkParams(pref);
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
-        distanceMeasure = params.getDistanceMeasure();
+        distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = dataset.size();
         } else {
@@ -90,13 +109,13 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
 
         Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
-            similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
+            similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
         } else {
             logger.log(Level.INFO, "matrix columns: {0}", input.columnsCount());
-            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
+            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 
@@ -166,7 +185,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
                 //merge together and add as a new cluster
                 left.addAll(right);
                 updateDistances(node.getId(), left, similarityMatrix, assignments,
-                                pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
+                        pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }

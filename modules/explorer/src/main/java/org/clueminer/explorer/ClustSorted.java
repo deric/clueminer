@@ -1,16 +1,19 @@
 package org.clueminer.explorer;
 
-import java.util.Collection;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.clustering.api.evolution.Population;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 
@@ -23,10 +26,18 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     private Lookup.Result<Clustering> result;
     private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
+    private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
+    private final Project project;
     //private Set<Clustering> all = new HashSet<Clustering>(5);
 
     public ClustSorted() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        project = pc.getCurrentProject();
 
+    }
+
+    @Override
+    public void started(Evolution evolution) {
     }
 
     @Override
@@ -42,22 +53,14 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, population.getAvgFitness(), external});
-        final ClusteringNode[] nodesAry = new ClusteringNode[1];
-        nodesAry[0] = new ClusteringNode(population.getBestIndividual().getClustering());
-
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                add(nodesAry);
-            }
-        });
-
+        addClustering(population.getBestIndividual().getClustering());
     }
 
     public void addClustering(Clustering<? extends Cluster> clustering) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
         nodesAry[0] = new ClusteringNode((Clustering<Cluster>) clustering);
+        map.put(nodesAry, clustering.hashCode());
+        project.add(clustering);
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -70,12 +73,63 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
 
     @Override
     public void finalResult(Evolution evolution, int g, Individual best, Pair<Long, Long> time, Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //nothing to do
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-        //TODO: implement
+    public void resultUpdate(Individual[] result) {
+        //worst case hash set size
+        ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
+        int hash;
+
+        Clustering<? extends Cluster> c;
+        for (Individual ind : result) {
+            c = ind.getClustering();
+            hash = c.hashCode();
+            //new clustering
+            if (!map.containsValue(hash)) {
+                addClustering(c);
+            } else {
+                logger.log(Level.INFO, "ignoring {0} clust: {1}", new Object[]{hash, c.getName()});
+            }
+            if (!toKeep.contains(c)) {
+                toKeep.add(c);
+            }
+        }
+        System.out.println("map: " + map.size() + ", to keep: " + toKeep.size());
+        //go through all current nodes and remove old nodes
+    /*    ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
+         for (final ClusteringNode[] n : map.keySet()) {
+         if (!toKeep.contains(n[0].getClustering())) {
+         System.out.println("want to remove: " + n[0].getClustering().getName() + " precision " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
+         toRemove.add(n);
+         }
+         }
+         for (final ClusteringNode[] n : toRemove) {
+         SwingUtilities.invokeLater(new Runnable() {
+
+         @Override
+         public void run() {
+         remove(n);
+         }
+         });
+         map.remove(n);
+         }*/
+
+    }
+
+    public void clearAll() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                for (final ClusteringNode[] n : map.keySet()) {
+                    remove(n);
+                    project.remove(n[0].getClustering());
+                }
+                map.clear();
+            }
+        });
     }
 
 }

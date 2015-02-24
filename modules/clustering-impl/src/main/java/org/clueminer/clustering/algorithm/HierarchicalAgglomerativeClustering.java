@@ -34,7 +34,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.LinkageFactory;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -207,7 +207,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
 
         String linkageProp = props.get(CLUSTER_LINKAGE, DEFAULT_CLUSTER_LINKAGE);
         setLinkage(LinkageFactory.getInstance().getProvider(linkageProp));
-        getLinkage().setDistanceMeasure(distanceMeasure);
+        getLinkage().setDistanceMeasure(distanceFunction);
     }
 
     @Override
@@ -237,7 +237,7 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
             throw new IllegalArgumentException("Cannot specify both a fixed number of"
                     + " clusters AND a minimum cluster similarity as input properties");
         } else if (minSimProp != Double.NaN) {
-            HierarchicalResult res = cluster(matrix, minSimProp, linkage, distanceMeasure, -1);
+            HierarchicalResult res = cluster(matrix, minSimProp, linkage, distanceFunction, -1);
             res.setInputData(matrix);
             res.setNumClusters(-1);
             return res;
@@ -256,13 +256,13 @@ public class HierarchicalAgglomerativeClustering extends AbstractClusteringAlgor
      * @return
      */
     public HierarchicalResult cluster(Matrix data, int numClusters, Props props) {
-        if (linkage == null || distanceMeasure == null) {
+        if (linkage == null || distanceFunction == null) {
             parseLinkage(props);
         }
 
         double clustSimThreshold = props.getDouble(MIN_CLUSTER_SIMILARITY, DEFAULT_MIN_CLUSTER_SIMILARITY);
 
-        HierarchicalResult res = cluster(data, clustSimThreshold, linkage, distanceMeasure, numClusters);
+        HierarchicalResult res = cluster(data, clustSimThreshold, linkage, distanceFunction, numClusters);
         res.setInputData(data);
         res.setNumClusters(-1);
         return res;

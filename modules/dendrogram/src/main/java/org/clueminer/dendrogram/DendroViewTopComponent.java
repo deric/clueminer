@@ -4,10 +4,16 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringListener;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dgram.DgViewer;
+import org.clueminer.project.api.ProjectController;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -17,6 +23,9 @@ import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  * Top component which displays dendrograms
@@ -42,17 +51,20 @@ import org.openide.util.Utilities;
     "CTL_DendroViewTopComponent=DendroView Window",
     "HINT_DendroViewTopComponent=This is a DendroView window"
 })
-public final class DendroViewTopComponent extends TopComponent implements LookupListener {
+public final class DendroViewTopComponent extends TopComponent implements LookupListener, ClusteringListener {
 
     private static final long serialVersionUID = -1479282981915282578L;
     private Lookup.Result<Clustering> result = null;
     private DendroViewer frame;
     private DendroToolbar toolbar;
+    private final InstanceContent content = new InstanceContent();
+    private static final Logger logger = Logger.getLogger(DendroViewTopComponent.class.getName());
 
     public DendroViewTopComponent() {
         initComponents();
         setName(Bundle.CTL_DendroViewTopComponent());
         setToolTipText(Bundle.HINT_DendroViewTopComponent());
+        associateLookup(new AbstractLookup(content));
         initialize();
     }
 
@@ -69,7 +81,7 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
         c.weighty = 1.0;
         c.insets = new Insets(0, 0, 0, 0);
         add((Component) frame, c);
-
+        frame.addClusteringListener(this);
         toolbar = new DendroToolbar(frame);
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -131,5 +143,28 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
             }
 
         }
+    }
+
+    @Override
+    public void clusteringChanged(Clustering clust) {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        //add result to lookup
+        pc.getCurrentProject().add(Lookups.singleton(clust));
+        logger.log(Level.INFO, "adding to lookup clustring {0} - {1}", new Object[]{clust.size(), clust.getName()});
+        content.set(Collections.singleton(clust), null);
+    }
+
+    @Override
+    public void resultUpdate(HierarchicalResult hclust) {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        //add result to lookup
+        if (hclust != null) {
+            pc.getCurrentProject().add(Lookups.singleton(hclust));
+            //System.out.println("adding clustering result to lookup");
+            Clustering c = hclust.getClustering();
+            logger.log(Level.INFO, "hclust update: {0}", c.size());
+            content.set(Collections.singleton(c), null);
+        }
+
     }
 }

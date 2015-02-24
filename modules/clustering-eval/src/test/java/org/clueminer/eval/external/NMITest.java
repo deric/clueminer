@@ -2,10 +2,17 @@ package org.clueminer.eval.external;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -16,6 +23,7 @@ public class NMITest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
+    private static final double delta = 1e-9;
 
     public NMITest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
@@ -59,5 +67,31 @@ public class NMITest extends ExternalTest {
         assertTrue(subject.isBetter(1.0, 0.0));
         assertTrue(subject.isBetter(1.0, 0.5));
         assertTrue(subject.isBetter(1.0, 0.9999));
+    }
+
+    /**
+     * TODO: make sure this test is correct
+     */
+    @Ignore
+    public void testScore() {
+        Clustering c = new ClusterList(2);
+        Dataset<? extends Instance> d = new ArrayDataset(8, 2);
+        d.builder().create(new double[]{0, 0}, "0");
+        d.builder().create(new double[]{0, 0}, "0");
+        d.builder().create(new double[]{0, 0}, "0");
+        d.builder().create(new double[]{1, 1}, "0");
+        d.builder().create(new double[]{1, 1}, "1");
+        d.builder().create(new double[]{1, 1}, "1");
+        d.builder().create(new double[]{1, 1}, "1");
+        d.builder().create(new double[]{1, 1}, "1");
+        assertEquals(8, d.size());
+        Cluster a = c.createCluster(0, 4);
+        Cluster b = c.createCluster(1, 4);
+        for (int i = 0; i < 4; i++) {
+            a.add(d.get(i));
+            b.add(d.get(i + 4));
+        }
+        assertEquals(2, c.size());
+        assertEquals(0.14039740914097984, subject.score(c, d), delta);
     }
 }

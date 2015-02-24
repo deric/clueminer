@@ -48,9 +48,17 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
         registerStatistics(new NumericalStats(this));
     }
 
+    /**
+     * Clone constructor.
+     */
+    private TimePointAttribute(TimePointAttribute a, int index) {
+        super(a);
+        this.index = index;
+    }
+
     @Override
     public Object clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new TimePointAttribute(this, this.index);
     }
 
     @Override

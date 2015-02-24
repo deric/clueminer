@@ -108,6 +108,16 @@
             <artifactId>org-openide-util-lookup</artifactId>
             <version>RELEASE80</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>evolution-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -119,6 +129,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.export.impl</publicPackage>
+                        <publicPackage>org.clueminer.export.sorting</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

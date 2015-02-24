@@ -359,6 +359,40 @@ public class ClusterListTest {
         return iris;
     }
 
+    private Clustering irisWrong() throws IOException {
+        Dataset<? extends Instance> irisData = loadIris();
+        Clustering<Cluster> irisWrong = new ClusterList(3);
+        Cluster a = new BaseCluster(4);
+        a.setName("cluster 1");
+        a.setAttributes(irisData.getAttributes());
+        //add few instances to first cluster
+        a.add(irisData.instance(0));
+        a.add(irisData.instance(1));
+        a.add(irisData.instance(149));
+
+        Cluster b = new BaseCluster(50);
+        b.setName("cluster 2");
+        b.setAttributes(irisData.getAttributes());
+        b.add(irisData.instance(3));
+        b.add(irisData.instance(4));
+        b.add(irisData.instance(5));
+        b.add(irisData.instance(6));
+        b.add(irisData.instance(2));
+        Cluster c = new BaseCluster(50);
+        c.setName("cluster 3");
+        c.setAttributes(irisData.getAttributes());
+        //rest goes to the last cluster
+        for (int i = 7; i < 149; i++) {
+            c.add(irisData.instance(i));
+        }
+
+        irisWrong.add(c);
+        irisWrong.add(a);
+        irisWrong.add(b);
+
+        return irisWrong;
+    }
+
     @Test
     public void testCreateCluster_int_int() throws FileNotFoundException, IOException {
         ClusterList list = new ClusterList(3);
@@ -401,7 +435,13 @@ public class ClusterListTest {
     }
 
     @Test
-    public void testPut_Cluster() {
+    public void testFingerprint() throws IOException {
+        Clustering<Cluster> clusters = createClustersOrdered();
+        assertEquals("[3]", clusters.fingerprint());
+
+        clusters = irisWrong();
+        assertEquals("[3,5,142]", clusters.fingerprint());
+        assertEquals(150, clusters.instancesCount());
     }
 
     @Test

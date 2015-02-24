@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
@@ -17,7 +18,7 @@ public class AgglParams {
      */
     public static final String LINKAGE = "hac-linkage";
 
-    private static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
+    public static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
 
     public static final String DEFAULT_LINKAGE = "Complete Linkage";
 

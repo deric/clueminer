@@ -109,12 +109,15 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
     @Override
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".csv", NbBundle.getMessage(getClass(), "fileType_CSV_Name"));
-        return new FileType[]{ft};
+        FileType ft2 = new FileType(".data", NbBundle.getMessage(getClass(), "fileType_data_Name"));
+        FileType ft3 = new FileType(".txt", NbBundle.getMessage(getClass(), "fileType_TXT_Name"));
+        return new FileType[]{ft, ft2, ft3};
     }
 
     @Override
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.getExt().equalsIgnoreCase("csv");
+        String ext = fileObject.getExt();
+        return ext.equalsIgnoreCase("csv") || ext.equalsIgnoreCase("txt") || ext.equalsIgnoreCase("data");
     }
 
     protected void importData(LineNumberReader reader) throws IOException {

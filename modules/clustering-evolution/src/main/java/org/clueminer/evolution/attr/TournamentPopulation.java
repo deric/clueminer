@@ -1,23 +1,24 @@
 package org.clueminer.evolution.attr;
 
 import java.lang.reflect.Array;
-import org.clueminer.clustering.api.evolution.Individual;
 import java.util.ArrayList;
 import java.util.List;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.evolution.AbstractIndividual;
-import org.clueminer.evolution.AbstractPopulation;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Population;
+import org.clueminer.evolution.api.AbstractIndividual;
+import org.clueminer.evolution.api.AbstractPopulation;
+import org.clueminer.evolution.api.EvolutionSO;
 
 /**
  *
  * @author Tomas Barton
  * @param <T>
  */
-public class TournamentPopulation<T extends AbstractIndividual> extends AbstractPopulation<T> {
+public class TournamentPopulation<T extends AbstractIndividual> extends AbstractPopulation<T> implements Population<T> {
 
-    private final Evolution<T> evolution;
+    private final EvolutionSO<T> evolution;
 
-    public TournamentPopulation(Evolution evolve, int size, Class<?> klass) {
+    public TournamentPopulation(EvolutionSO evolve, int size, Class<?> klass) {
         this.evolution = evolve;
         individuals = (T[]) Array.newInstance(klass, size);
         for (int i = 0; i < individuals.length; i++) {

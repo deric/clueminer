@@ -22,26 +22,27 @@ import org.junit.Test;
  * @author deric
  */
 public class PCATest {
-    
+
     public PCATest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-  /**
+
+    /**
      * Test of getSpaces method, of class PCA.
      */
     @Test
@@ -57,8 +58,10 @@ public class PCATest {
             StreamTokenizer st = new StreamTokenizer(bis);
 
             // Row and column sizes, read in first
-            st.nextToken();  int n = (int)st.nval;
-            st.nextToken();  int m = (int)st.nval;
+            st.nextToken();
+            int n = (int) st.nval;
+            st.nextToken();
+            int m = (int) st.nval;
 
             System.out.println(" No. of rows, n = " + n);
             System.out.println(" No. of cols, m = " + m);
@@ -72,7 +75,7 @@ public class PCATest {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < m; j++) {
                     st.nextToken();
-                    inval =  st.nval;
+                    inval = st.nval;
                     indat[i][j] = inval;
                     if (i < 2 && j < 2) {
                         System.out.println(" value = " + inval);
@@ -82,9 +85,9 @@ public class PCATest {
             System.out.println();
 
             //-------------------------------------------------------------------
-            // Data preprocessing - standardization and determining correlations 
+            // Data preprocessing - standardization and determining correlations
             double[][] indatstd = PCA.Standardize(n, m, indat);
-            // use Jama matrix class  
+            // use Jama matrix class
             Matrix X = new JMatrix(indatstd);
 
             // Sums of squares and cross-products matrix
@@ -92,13 +95,13 @@ public class PCATest {
             Matrix SSCP = Xprime.times(X);
             // Note the following:
             // - with no preprocessing of the input data, we have an SSCP matrix
-            // - with centering of columns (i.e. each col. has col. mean 
+            // - with centering of columns (i.e. each col. has col. mean
             //   [vector in row-space] subtracted) we have variances/covariances
             // - with centering and reduction to unit variance [i.e. centered
             //   cols. are divided by std. dev.] we have correlations
             // Note: the current version supports correlations only
 
-            // Print out SSCP matrix 
+            // Print out SSCP matrix
             // Parameters: floating value width, and no. of decimal places
             // Comment out this line for large data sets, and/or diff. precision
             System.out.println();
@@ -180,7 +183,6 @@ public class PCATest {
 
             //-------------------------------------------------------------------
             // That's it.
-
         } catch (IOException e) {
             out.println("error: " + e);
             System.exit(1);
