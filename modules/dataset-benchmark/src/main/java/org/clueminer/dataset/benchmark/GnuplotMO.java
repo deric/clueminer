@@ -17,6 +17,7 @@
 package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -143,19 +145,23 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
         writer.writeNext(header);
         Clustering clust;
+        Set<Clustering> blacklist = Sets.newHashSet();
         String[] line = new String[header.length];
         for (OpSolution solution : result) {
             clust = solution.getClustering();
-            for (i = 0; i < objectives.size(); i++) {
-                line[i] = String.valueOf(solution.getObjective(i));
-            }
-            line[i++] = String.valueOf(clust.size());
-            line[i++] = clust.fingerprint();
+            if (!blacklist.contains(clust)) {
+                for (i = 0; i < objectives.size(); i++) {
+                    line[i] = String.valueOf(solution.getObjective(i));
+                }
+                line[i++] = String.valueOf(clust.size());
+                line[i++] = clust.fingerprint();
 
-            for (ExternalEvaluator e : eval) {
-                line[i++] = String.valueOf(clust.getEvaluationTable().getScore(e));
+                for (ExternalEvaluator e : eval) {
+                    line[i++] = String.valueOf(clust.getEvaluationTable().getScore(e));
+                }
+                writer.writeNext(line);
+                blacklist.add(clust);
             }
-            writer.writeNext(line);
         }
     }
 
