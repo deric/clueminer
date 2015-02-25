@@ -125,6 +125,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 //.setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();
 
+        fireEvolutionStarted(this);
+
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
 
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
@@ -172,6 +174,15 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         moListeners.add(listener);
     }
 
+    protected void fireEvolutionStarted(EvolutionMO evo) {
+        if (evoListeners != null) {
+            for (OpListener listener : moListeners) {
+                listener.started(evo);
+            }
+        }
+
+    }
+
     protected void fireFinalResult(List<Solution> res) {
         SolTransformer trans = SolTransformer.getInstance();
         List<OpSolution> solutions = trans.transform(res, new LinkedList<OpSolution>());
@@ -199,6 +210,5 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     public void setNumSolutions(int numSolutions) {
         this.numSolutions = numSolutions;
     }
-
 
 }
