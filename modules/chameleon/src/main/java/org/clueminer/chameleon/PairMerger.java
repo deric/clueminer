@@ -4,8 +4,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DLeaf;
+import org.clueminer.hclust.DTreeNode;
+import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
@@ -15,6 +23,12 @@ import org.clueminer.partitioning.api.Bisection;
  * @author Tomas Bruna
  */
 public class PairMerger extends Merger {
+
+    DendroNode[] nodes;
+
+    int idCounter;
+
+    double height;
 
     public PairMerger(Graph g) {
         super(g);
@@ -32,6 +46,31 @@ public class PairMerger extends Merger {
             singleMerge(clusterList);
         }
         return getResult();
+    }
+
+    public HierarchicalResult hierarchy(ArrayList<LinkedList<Node>> clusterList) {
+        createClusters(clusterList, bisection);
+        computeExternalProperties();
+        initiateTree(clusterList);
+
+        for (int i = 0; i < clusterList.size() - 1; i++) {
+            singleMerge(clusterList);
+        }
+
+        DendroTreeData treeData = new DynamicTreeData(nodes[2 * clusterList.size() - 2]);
+
+        treeData.print();
+        return null;
+    }
+
+    private void initiateTree(ArrayList<LinkedList<Node>> clusterList) {
+        nodes = new DendroNode[(2 * clusterList.size() - 1)];
+        idCounter = clusterList.size();
+        height = 1;
+        for (int i = 0; i < clusterList.size(); i++) {
+            nodes[i] = new DLeaf(i, clusterList.get(i).getFirst().getInstance());
+            nodes[i].setHeight(0);
+        }
     }
 
     private void singleMerge(ArrayList<LinkedList<Node>> clusterList) {
@@ -87,9 +126,21 @@ public class PairMerger extends Merger {
         LinkedList<Node> mergedNodes = new LinkedList<>();
         mergedNodes.addAll(nodes1);
         mergedNodes.addAll(nodes2);
-        clusters.set(clusterIndex1, new Cluster(mergedNodes, graph, clusterIndex1));
+        addIntoTree(clusterIndex1, clusterIndex2);
+        clusters.set(clusterIndex1, new Cluster(mergedNodes, graph, idCounter++));
         clusters.get(clusterIndex1).computeProperties(bisection);
         clusters.remove(clusterIndex2);
+    }
+
+    //Adds node representing new cluster (the one created by merging) to dendroTree
+    private void addIntoTree(int clusterIndex1, int clusterIndex2) {
+        DendroNode left = nodes[clusters.get(clusterIndex1).id];
+        DendroNode right = nodes[clusters.get(clusterIndex2).id];
+        DTreeNode newNode = new DTreeNode(idCounter);
+        newNode.setLeft(left);
+        newNode.setRight(right);
+        newNode.setHeight(height++);
+        nodes[idCounter] = newNode;
     }
 
     //Updates ECL and EIC of all clusters adjacent to the merged one and thus the external properties of the newly created cluster
@@ -133,9 +184,9 @@ public class PairMerger extends Merger {
         ArrayList<LinkedList<Node>> result = new ArrayList<>();
         for (Cluster cluster : clusters) {
             ArrayList<Node> nodesArr = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-            LinkedList<Node> nodes = new LinkedList<>();
-            nodes.addAll(nodesArr);
-            result.add(nodes);
+            LinkedList<Node> graphNodes = new LinkedList<>();
+            graphNodes.addAll(nodesArr);
+            result.add(graphNodes);
         }
         return result;
     }

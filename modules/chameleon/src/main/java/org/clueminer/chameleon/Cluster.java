@@ -37,16 +37,16 @@ public class Cluster {
 
     public LinkedList<Cluster> offsprings;
 
-    public int index;
+    public int id;
 
     public Cluster(LinkedList<Node> n, Graph g, int index) {
         buildGraphFromCluster(n, g);
-        this.index = index;
+        this.id = index;
     }
 
     public Cluster(Graph g, int index) {
         graph = g;
-        this.index = index;
+        this.id = index;
     }
 
     /**

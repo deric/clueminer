@@ -66,7 +66,7 @@ public class MultipleMerger extends Merger {
     }
 
     protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
-        if (cluster1.parent.index == cluster2.parent.index) {
+        if (cluster1.parent.id == cluster2.parent.id) {
             return;
         }
         if (cluster1.parent.offsprings.size() < cluster2.parent.offsprings.size()) {
