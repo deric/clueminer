@@ -1,7 +1,9 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -136,6 +138,20 @@ public class PairMerger extends Merger {
             result.add(nodes);
         }
         return result;
+    }
+
+    private Clustering<org.clueminer.clustering.api.Cluster> getClusterResult() {
+        Clustering output = new ClusterList(clusters.size());
+        for (Cluster c : clusters) {
+            BaseCluster cluster = new BaseCluster(c.graph.getNodeCount());
+            ArrayList<Node> nodesArr = (ArrayList<Node>) c.graph.getNodes().toCollection();
+            Iterator<Node> graphNodes = c.graph.getNodes().iterator();
+            while (graphNodes.hasNext()) {
+                cluster.add(graphNodes.next().getInstance());
+            }
+            output.add(cluster);
+        }
+        return output;
     }
 
     private int max(int n1, int n2) {

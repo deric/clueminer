@@ -18,8 +18,17 @@ public class KernighanLinRecursive implements Partitioning {
     boolean marked[];
     ArrayList<LinkedList<Node>> clusters;
 
-    public KernighanLinRecursive() {
+    /**
+     * whether the algorithm uses edge weights
+     */
+    boolean weightedEdges;
 
+    public KernighanLinRecursive() {
+        this(true);
+    }
+
+    public KernighanLinRecursive(boolean weightedEdges) {
+        this.weightedEdges = weightedEdges;
     }
 
     @Override
@@ -37,7 +46,7 @@ public class KernighanLinRecursive implements Partitioning {
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin(g, false);
+        KernighanLin kl = new KernighanLin(g, weightedEdges);
         ArrayList<LinkedList<Node>> result = kl.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
