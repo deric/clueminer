@@ -37,4 +37,7 @@ public class NsgaParams extends AbsParams {
     @Parameter(names = "--solutions", description = "number of final solutions which will be returned as result")
     public int solutions = 5;
 
+    @Parameter(names = "--supervised", description = "supervised criterion for external evaluation")
+    public String supervised = "Adjusted Rand";
+
 }

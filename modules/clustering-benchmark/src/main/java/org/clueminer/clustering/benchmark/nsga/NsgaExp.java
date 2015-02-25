@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.factory.EvaluationFactory;
 import static org.clueminer.clustering.benchmark.Bench.safeName;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -74,6 +75,7 @@ public class NsgaExp implements Runnable {
             evolution.setGenerations(params.generations);
             evolution.setPopulationSize(params.population);
             evolution.setNumSolutions(params.solutions);
+            evolution.setExternal(EvaluationFactory.getInstance().getProvider(params.supervised));
             ClusterEvaluation c1, c2;
 
             GnuplotMO gw = new GnuplotMO();

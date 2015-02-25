@@ -46,9 +46,11 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private String createName(EvolutionMO evo) {
         StringBuilder sb = new StringBuilder();
-        List<ClusterEvaluation> objectives = evo.getObjectives();
-        for (ClusterEvaluation eval : objectives) {
-            sb.append(eval.getName()).append("-");
+        for (int i = 0; i < evo.getNumObjectives(); i++) {
+            if (i > 0) {
+                sb.append("-");
+            }
+            sb.append(((ClusterEvaluation) evo.getObjectives().get(i)).getName());
         }
         return safeName(sb.toString());
     }
@@ -79,10 +81,11 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
     }
 
     public void toCsv(DatasetWriter writer, List<OpSolution> result) {
-        String[] header = new String[evolution.getNumObjectives() + 2];
+        int offset = 3;
+        String[] header = new String[evolution.getNumObjectives() + offset];
         header[0] = "k";
         header[1] = "fingerprint";
-        int offset = 2;
+        header[2] = evolution.getExternal().getName();
         List<ClusterEvaluation> objectives = evolution.getObjectives();
         for (int i = 0; i < evolution.getNumObjectives(); i++) {
             header[i + offset] = objectives.get(i).getName();
@@ -95,6 +98,7 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
             clust = solution.getIndividual().getClustering();
             line[0] = String.valueOf(clust.size());
             line[1] = clust.fingerprint();
+            line[2] = String.valueOf(clust.getEvaluationTable().getScore(evolution.getExternal()));
             for (int i = 0; i < objectives.size(); i++) {
                 line[i + offset] = String.valueOf(solution.getObjective(i));
             }
