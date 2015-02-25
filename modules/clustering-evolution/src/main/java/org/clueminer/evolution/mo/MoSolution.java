@@ -247,6 +247,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         return problem.getUpperBound(index);
     }
 
+    @Override
     public Individual getIndividual() {
         return individual;
     }

@@ -16,10 +16,20 @@
  */
 package org.clueminer.dataset.benchmark;
 
+import au.com.bytecode.opencsv.CSVWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
+import org.clueminer.utils.DatasetWriter;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -27,18 +37,71 @@ import org.clueminer.oo.api.OpSolution;
  */
 public class GnuplotMO extends GnuplotHelper implements OpListener {
 
-    private Evolution evolution;
+    private EvolutionMO evolution;
 
     @Override
     public void started(Evolution evolution) {
-        this.evolution = evolution;
+        this.evolution = (EvolutionMO) evolution;
+    }
+
+    private String createName(EvolutionMO evo) {
+        StringBuilder sb = new StringBuilder();
+        List<ClusterEvaluation> objectives = evo.getObjectives();
+        for (ClusterEvaluation eval : objectives) {
+            sb.append(eval.getName()).append("-");
+        }
+        return safeName(sb.toString());
     }
 
     @Override
     public void finalResult(List<OpSolution> result) {
-        for (OpSolution sol : result) {
-            //TODO: implement
+        String expName = createName(evolution);
+        String dataFile = writeData(expName, getCurrentDir(), result);
+    }
+
+    private String writeData(String ident, String dataDir, List<OpSolution> result) {
+        PrintWriter writer = null;
+        String dataFile = "data-" + ident + ".csv";
+        try {
+            writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
+            CSVWriter csv = new CSVWriter(writer, ',');
+            toCsv(csv, result);
+            writer.close();
+
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+        return dataFile;
+    }
+
+    public void toCsv(DatasetWriter writer, List<OpSolution> result) {
+        String[] header = new String[evolution.getNumObjectives() + 2];
+        header[0] = "k";
+        header[1] = "fingerprint";
+        int offset = 2;
+        List<ClusterEvaluation> objectives = evolution.getObjectives();
+        for (int i = 0; i < evolution.getNumObjectives(); i++) {
+            header[i + offset] = objectives.get(i).getName();
+
+        }
+        writer.writeNext(header);
+        Clustering clust;
+        String[] line = new String[header.length];
+        for (OpSolution solution : result) {
+            clust = solution.getIndividual().getClustering();
+            line[0] = String.valueOf(clust.size());
+            line[1] = clust.fingerprint();
+            for (int i = 0; i < objectives.size(); i++) {
+                line[i + offset] = String.valueOf(solution.getObjective(i));
+            }
+
+            writer.writeNext(line);
         }
     }
+
 
 }

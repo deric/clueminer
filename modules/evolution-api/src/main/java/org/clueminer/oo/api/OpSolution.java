@@ -17,6 +17,7 @@
 package org.clueminer.oo.api;
 
 import java.io.Serializable;
+import org.clueminer.evolution.api.Individual;
 
 /**
  * An interface for representing solution of an objective optimization problem
@@ -57,4 +58,10 @@ public interface OpSolution<T> extends Serializable {
     void setAttribute(Object id, Object value);
 
     Object getAttribute(Object id);
+
+    /**
+     *
+     * @return individual encodes "genetic" information
+     */
+    Individual getIndividual();
 }
