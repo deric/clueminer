@@ -103,6 +103,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         for (int i = 0; i < getNumObjectives(); i++) {
             logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
         }
+        MoSolution.setSolutionsCount(0);
 
         double crossoverDistributionIndex = problem.getNumberOfVariables();
         crossover = new IntegerSBXCrossover(getCrossoverProbability(), crossoverDistributionIndex);
@@ -124,11 +125,11 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 .build();
 
         fireEvolutionStarted(this);
-
+        logger.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
         moAlg.run();
-
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        logger.log(Level.INFO, "result size: {0}", moPop.size());
         fireFinalResult(moPop);
         int i = 0;
         for (Solution s : moPop) {
@@ -155,12 +156,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
          hypervolume.execute(frontA, frontB);*/
         /*
          Individual[] pop = new Individual[moPop.size()];
-        for (int j = 0; j < moPop.size(); j++) {
-            MoSolution b = (MoSolution) moPop.get(j);
-            pop[j] = b.getIndividual();
-        }
+         for (int j = 0; j < moPop.size(); j++) {
+         MoSolution b = (MoSolution) moPop.get(j);
+         pop[j] = b.getIndividual();
+         }
 
-        fireResultUpdate(pop);*/
+         fireResultUpdate(pop);*/
     }
 
     @Override
@@ -170,7 +171,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         }
     }
 
-    public void addEvolutionListener(OpListener listener) {
+    public void addMOEvolutionListener(OpListener listener) {
         moListeners.add(listener);
     }
 
@@ -186,13 +187,14 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     protected void fireFinalResult(List<Solution> res) {
         SolTransformer trans = SolTransformer.getInstance();
         List<OpSolution> solutions = trans.transform(res, new LinkedList<OpSolution>());
-
         if (solutions != null && solutions.size() > 0) {
-            if (evoListeners != null) {
+            if (moListeners != null) {
                 for (OpListener listener : moListeners) {
                     listener.finalResult(solutions);
                 }
             }
+        } else {
+            throw new RuntimeException("transforming solutions failed");
         }
     }
 

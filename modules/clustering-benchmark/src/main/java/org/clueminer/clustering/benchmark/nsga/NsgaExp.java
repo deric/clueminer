@@ -82,7 +82,7 @@ public class NsgaExp implements Runnable {
             //gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
             //collect data from evolution
             evolution.addEvolutionListener(new ConsoleDump());
-            evolution.addEvolutionListener(gw);
+            evolution.addMOEvolutionListener(gw);
             evolution.addEvolutionListener(rc);
 
             String name;

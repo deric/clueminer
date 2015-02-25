@@ -329,7 +329,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
 
     @Override
     public Clustering<? extends Cluster> getClustering() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return clustering;
     }
 
     /**
@@ -359,5 +359,9 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
 
     public static int getSolutionsCount() {
         return counter;
+    }
+
+    public static void setSolutionsCount(int cnt) {
+        counter = cnt;
     }
 }
