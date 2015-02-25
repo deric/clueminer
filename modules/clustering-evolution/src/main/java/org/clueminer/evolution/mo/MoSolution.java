@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.singlem.SingleMuteIndividual;
 import static org.clueminer.evolution.singlem.SingleMuteIndividual.getFactory;
+import org.clueminer.oo.api.OpSolution;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
@@ -24,7 +25,7 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
  *
  * @author Tomas Barton
  */
-public class MoSolution implements IntegerSolution, Solution<Integer> {
+public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolution<Integer> {
 
     private static final long serialVersionUID = -523309284446031981L;
 

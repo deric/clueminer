@@ -17,6 +17,7 @@ public class GnuplotHelper {
 
     public static final String gnuplotExtension = ".gpt";
     protected char separator = ',';
+    protected String customTitle;
 
     public String mkdir(String folder) {
         File file = new File(folder);
@@ -81,6 +82,24 @@ public class GnuplotHelper {
 
     public void setSeparator(char separator) {
         this.separator = separator;
+    }
+
+    public void setCustomTitle(String customTitle) {
+        this.customTitle = customTitle;
+    }
+
+    public String getCustomTitle() {
+        return customTitle;
+    }
+
+    protected String getDataDir(String dir) {
+        return mkdir(dir) + File.separatorChar + "data" + File.separatorChar;
+    }
+
+    public void setCurrentDir(String benchmarkDir, String subDirectory) {
+        String outputDir = benchmarkDir + File.separatorChar + subDirectory;
+        String dataDir = getDataDir(outputDir);
+        mkdir(dataDir);
     }
 
 }

@@ -1,16 +1,20 @@
 package org.clueminer.evolution.mo;
 
 import com.google.common.collect.Lists;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
+import org.clueminer.oo.api.OpListener;
+import org.clueminer.oo.api.OpSolution;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.uma.jmetal.algorithm.Algorithm;
@@ -38,6 +42,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
     protected List<ClusterEvaluation> objectives;
     private int numSolutions = 15;
+    protected final transient ListenerList<OpListener> moListeners = new ListenerList<>();
 
     public MoEvolution() {
         init(new ClusteringExecutorCached());
@@ -119,6 +124,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
 
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        fireFinalResult(moPop);
         int i = 0;
         for (Solution s : moPop) {
             System.out.print(i + ": ");
@@ -152,9 +158,26 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     }
 
     @Override
-    public void removeAll() {
+    public void clearObjectives() {
         if (objectives != null && !objectives.isEmpty()) {
             objectives.clear();
+        }
+    }
+
+    public void addEvolutionListener(OpListener listener) {
+        moListeners.add(listener);
+    }
+
+    protected void fireFinalResult(List<Solution> res) {
+        SolTransformer trans = SolTransformer.getInstance();
+        List<OpSolution> solutions = trans.transform(res, new LinkedList<OpSolution>());
+
+        if (solutions != null && solutions.size() > 0) {
+            if (evoListeners != null) {
+                for (OpListener listener : moListeners) {
+                    listener.finalResult(solutions);
+                }
+            }
         }
     }
 

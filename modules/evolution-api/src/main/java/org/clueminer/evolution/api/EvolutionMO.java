@@ -34,7 +34,7 @@ public interface EvolutionMO<T extends Individual> extends Evolution<T> {
     /**
      * Remove all objectives
      */
-    void removeAll();
+    void clearObjectives();
 
     /**
      * Objectives that are being used in evolution process

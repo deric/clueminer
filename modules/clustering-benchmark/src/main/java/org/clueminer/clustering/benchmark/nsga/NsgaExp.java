@@ -25,14 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import static org.clueminer.clustering.benchmark.Bench.ensureFolder;
 import static org.clueminer.clustering.benchmark.Bench.safeName;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.ConsoleDump;
-import org.clueminer.dataset.benchmark.GnuplotWriter;
+import org.clueminer.dataset.benchmark.GnuplotMO;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.evolution.mo.MoEvolution;
 import org.openide.util.Exceptions;
@@ -72,51 +70,49 @@ public class NsgaExp implements Runnable {
     @Override
     public void run() {
         try {
-
-            ClusterEvaluation c1, c2;
-            for (int i = 0; i < scores.length; i++) {
-                c1 = scores[i];
-                for (int j = 1; j < scores.length; j++) {
-                    if (i != j) {
-                        c2 = scores[j];
-                        runExperiment(c1, c2);
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
-        }
-    }
-
-    private void runExperiment(ClusterEvaluation c1, ClusterEvaluation c2) {
-        MoEvolution evolution;
-        String name;
-        logger.log(Level.INFO, "datasets size: {0}", datasets.size());
-        for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
-            Dataset<? extends Instance> d = e.getValue().getKey();
-            name = safeName(d.getName());
-            String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
-            logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
-            ensureFolder(benchmarkFolder + File.separatorChar + name);
-
-            evolution = new MoEvolution();
-            evolution.addObjective(c1);
-            evolution.addObjective(c2);
-            evolution.setDataset(d);
+            MoEvolution evolution = new MoEvolution();
             evolution.setGenerations(params.generations);
             evolution.setPopulationSize(params.population);
-            GnuplotWriter gw = new GnuplotWriter(evolution, benchmarkFolder, name + File.separatorChar + safeName(c1.getName()) + "-" + safeName(c2.getName()));
-            gw.setPlotDumpMod(50);
-            gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
+            ClusterEvaluation c1, c2;
+
+            GnuplotMO gw = new GnuplotMO();
+            //gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
             //collect data from evolution
             evolution.addEvolutionListener(new ConsoleDump());
             evolution.addEvolutionListener(gw);
             evolution.addEvolutionListener(rc);
-            evolution.run();
-            System.out.println("## updating results in: " + csvRes);
-            rc.writeToCsv(csvRes);
 
+            String name;
+            logger.log(Level.INFO, "datasets size: {0}", datasets.size());
+            for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
+                Dataset<? extends Instance> d = e.getValue().getKey();
+                name = safeName(d.getName());
+                String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
+                logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
+                //ensureFolder(benchmarkFolder + File.separatorChar + name);
+
+                gw.setCurrentDir(benchmarkFolder, name);
+
+                evolution.setDataset(d);
+
+                for (int i = 0; i < scores.length; i++) {
+                    c1 = scores[i];
+                    for (int j = 1; j < scores.length; j++) {
+                        if (i != j) {
+                            c2 = scores[j];
+                            evolution.clearObjectives();
+                            evolution.addObjective(c1);
+                            evolution.addObjective(c2);
+                            //run!
+                            evolution.run();
+                        }
+                    }
+                }
+                System.out.println("## updating results in: " + csvRes);
+                rc.writeToCsv(csvRes);
+            }
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
         }
     }
 }
