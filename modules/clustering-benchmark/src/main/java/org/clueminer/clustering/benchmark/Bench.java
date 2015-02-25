@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2ObjectMap;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -13,6 +14,7 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.DatasetFixture;
+import org.clueminer.log.ClmFormatter;
 
 /**
  *
@@ -75,7 +77,11 @@ public abstract class Bench {
 
     public void setupLogging(AbsParams params) {
         Logger log = LogManager.getLogManager().getLogger("");
+        Formatter formater = new ClmFormatter();
+
         for (Handler h : log.getHandlers()) {
+            System.out.println("logging handler: " + h.getClass().getName());
+            h.setFormatter(formater);
             switch (params.log.toUpperCase()) {
                 case "INFO":
                     h.setLevel(Level.INFO);
@@ -96,6 +102,8 @@ public abstract class Bench {
                     throw new RuntimeException("log level " + log + " is not supported");
             }
         }
+        //remove date line from logger
+        log.setUseParentHandlers(false);
     }
 
 }
