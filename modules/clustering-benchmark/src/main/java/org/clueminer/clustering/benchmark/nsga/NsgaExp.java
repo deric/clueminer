@@ -108,6 +108,7 @@ public class NsgaExp implements Runnable {
                             evolution.addObjective(c2);
                             //run!
                             evolution.run();
+                            logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
                         }
                     }
                 }

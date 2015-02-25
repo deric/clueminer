@@ -17,7 +17,10 @@
 package org.clueminer.oo.api;
 
 import java.io.Serializable;
-import org.clueminer.evolution.api.Individual;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.utils.Props;
 
 /**
  * An interface for representing solution of an objective optimization problem
@@ -60,8 +63,43 @@ public interface OpSolution<T> extends Serializable {
     Object getAttribute(Object id);
 
     /**
-     *
-     * @return individual encodes "genetic" information
+     * *
+     * TODO: we might move methods bellow to ClusteringSolution interface which
+     * would extends generalized objective optimization problem
      */
-    Individual getIndividual();
+    /**
+     * Some mutations might bring us to invalid state
+     *
+     * @return true when fitness could be counted
+     */
+    boolean isValid();
+
+    /**
+     * Algorithm properties
+     *
+     * @return
+     */
+    Props getProps();
+
+    /**
+     *
+     * @param clustering
+     * @return
+     */
+    EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering);
+
+    /**
+     * Run clustering according to its genom
+     *
+     * @return resulting clustering
+     */
+    Clustering<? extends Cluster> updateCustering();
+
+    /**
+     * From encoded information about clustering should generate real
+     * assignments to clusters
+     *
+     * @return final clustering
+     */
+    Clustering<? extends Cluster> getClustering();
 }

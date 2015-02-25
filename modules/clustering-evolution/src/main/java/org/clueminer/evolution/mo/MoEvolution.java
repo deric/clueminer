@@ -11,7 +11,6 @@ import org.clueminer.clustering.api.Executor;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
-import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
@@ -28,7 +27,6 @@ import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.NaryTournamentSelection;
 import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
-import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 
 /**
@@ -127,7 +125,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
 
         fireEvolutionStarted(this);
 
-        AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
+        //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
+        moAlg.run();
 
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
         fireFinalResult(moPop);
@@ -141,11 +140,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
                 System.out.print(s.getObjective(j));
             }
             System.out.print("\n");
-            System.out.println("prop: " + ((MoSolution) s).getIndividual().getProps().toString());
+            System.out.println("prop: " + ((MoSolution) s).getProps().toString());
             i++;
         }
-        long computingTime = algorithmRunner.getComputingTime();
-        System.out.println("computing time: " + computingTime);
+        //long computingTime = algorithmRunner.getComputingTime();
+        //System.out.println("computing time: " + computingTime);
+        logger.log(Level.INFO, "explored solutions: {0}", MoSolution.getSolutionsCount());
         /*
          int numberOfDimensions = getNumObjectives();
          Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
@@ -153,14 +153,14 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
 
          Hypervolume hypervolume = new Hypervolume();
          hypervolume.execute(frontA, frontB);*/
-
-        Individual[] pop = new Individual[moPop.size()];
+        /*
+         Individual[] pop = new Individual[moPop.size()];
         for (int j = 0; j < moPop.size(); j++) {
             MoSolution b = (MoSolution) moPop.get(j);
             pop[j] = b.getIndividual();
         }
 
-        fireResultUpdate(pop);
+        fireResultUpdate(pop);*/
     }
 
     @Override

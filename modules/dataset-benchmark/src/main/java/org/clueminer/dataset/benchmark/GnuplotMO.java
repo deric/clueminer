@@ -95,7 +95,7 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
         Clustering clust;
         String[] line = new String[header.length];
         for (OpSolution solution : result) {
-            clust = solution.getIndividual().getClustering();
+            clust = solution.getClustering();
             line[0] = String.valueOf(clust.size());
             line[1] = clust.fingerprint();
             line[2] = String.valueOf(clust.getEvaluationTable().getScore(evolution.getExternal()));
