@@ -69,6 +69,7 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
                 Exceptions.printStackTrace(ex);
             }
         }
+        setNumberOfVariables(params.length);
     }
 
     @Override

@@ -29,9 +29,12 @@ public class NsgaParams extends AbsParams {
     public boolean test = false;
 
     @Parameter(names = "--generations", description = "number of generations in evolution")
-    public int generations = 10;
+    public int generations = 15;
 
     @Parameter(names = "--population", description = "size of population in each generation")
-    public int population = 10;
+    public int population = 15;
+
+    @Parameter(names = "--solutions", description = "number of final solutions which will be returned as result")
+    public int solutions = 5;
 
 }

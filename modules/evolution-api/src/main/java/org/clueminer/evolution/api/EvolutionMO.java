@@ -43,4 +43,18 @@ public interface EvolutionMO<T extends Individual> extends Evolution<T> {
      */
     List<ClusterEvaluation> getObjectives();
 
+    /**
+     * Number of solution which will be returned from evolution
+     *
+     * @return
+     */
+    int getNumSolutions();
+
+    /**
+     * Number of solution which will be returned from evolution
+     *
+     * @param numSolutions
+     */
+    void setNumSolutions(int numSolutions);
+
 }

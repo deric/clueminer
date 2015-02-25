@@ -41,7 +41,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     private static final String name = "MOE";
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
     protected List<ClusterEvaluation> objectives;
-    private int numSolutions = 15;
+    private int numSolutions = 5;
     protected final transient ListenerList<OpListener> moListeners = new ListenerList<>();
 
     public MoEvolution() {
@@ -97,8 +97,11 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
             throw new RuntimeException("provide at least 2 objectives. currently we have just" + getNumObjectives());
         }
         logger.log(Level.INFO, "starting evolution {0}", getName());
-        logger.log(Level.INFO, "variables: ", problem.getNumberOfVariables());
-        logger.log(Level.INFO, "objectives: ", getNumObjectives());
+        logger.log(Level.INFO, "variables: {0}", problem.getNumberOfVariables());
+        logger.log(Level.INFO, "objectives: {0}", getNumObjectives());
+        logger.log(Level.INFO, "generations: {0}", getGenerations());
+        logger.log(Level.INFO, "population: {0}", getPopulationSize());
+        logger.log(Level.INFO, "requested solutions: {0}", getNumSolutions());
         for (int i = 0; i < getNumObjectives(); i++) {
             logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
         }
@@ -111,7 +114,8 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
 
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
-
+        System.out.println("mutation: " + mutationProbability);
+        System.out.println("crossover: " + getCrossoverProbability());
         moAlg = new NSGAIIBuilder(problem)
                 .setCrossoverOperator(crossover)
                 .setMutationOperator(mutation)
@@ -180,5 +184,21 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
             }
         }
     }
+
+    @Override
+    public int getNumSolutions() {
+        return numSolutions;
+    }
+
+    /**
+     * Number of solutions to be returned from evolution
+     *
+     * @param numSolutions should be lower than population size
+     */
+    @Override
+    public void setNumSolutions(int numSolutions) {
+        this.numSolutions = numSolutions;
+    }
+
 
 }

@@ -73,6 +73,7 @@ public class NsgaExp implements Runnable {
             MoEvolution evolution = new MoEvolution();
             evolution.setGenerations(params.generations);
             evolution.setPopulationSize(params.population);
+            evolution.setNumSolutions(params.solutions);
             ClusterEvaluation c1, c2;
 
             GnuplotMO gw = new GnuplotMO();
