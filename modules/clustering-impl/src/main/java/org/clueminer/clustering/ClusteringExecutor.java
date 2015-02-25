@@ -40,16 +40,18 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
+        logger.log(Level.INFO, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         //TODO: not very efficient
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
-        logger.log(Level.FINE, "clustering {0}", params.toString());
+        logger.log(Level.INFO, "clustering {0}", params.toString());
         HierarchicalResult rowsResult = algorithm.hierarchy(inData, params);
         rowsResult.setInputData(input);
         CutoffStrategy strategy = getCutoffStrategy(params);
+        logger.log(Level.INFO, "cutting dendrogram with {0}", strategy.getName());
         double cut = rowsResult.findCutoff(strategy);
-        logger.log(Level.FINE, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
+        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
         return rowsResult;
     }
 

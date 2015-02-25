@@ -78,32 +78,51 @@ public abstract class Bench {
     public void setupLogging(AbsParams params) {
         Logger log = LogManager.getLogManager().getLogger("");
         Formatter formater = new ClmFormatter();
+        Level level;
 
-        for (Handler h : log.getHandlers()) {
-            System.out.println("logging handler: " + h.getClass().getName());
-            h.setFormatter(formater);
-            switch (params.log.toUpperCase()) {
-                case "INFO":
-                    h.setLevel(Level.INFO);
-                    break;
-                case "SEVERE":
-                    h.setLevel(Level.SEVERE);
-                    break;
-                case "WARNING":
-                    h.setLevel(Level.WARNING);
-                    break;
-                case "ALL":
-                    h.setLevel(Level.ALL);
-                    break;
-                case "FINE":
-                    h.setLevel(Level.FINE);
-                    break;
-                default:
-                    throw new RuntimeException("log level " + log + " is not supported");
-            }
+        switch (params.log.toUpperCase()) {
+            case "INFO":
+                level = Level.INFO;
+                break;
+            case "SEVERE":
+                level = Level.SEVERE;
+                break;
+            case "WARNING":
+                level = Level.WARNING;
+                break;
+            case "ALL":
+                level = Level.ALL;
+                break;
+            case "FINE":
+                level = Level.FINE;
+                break;
+            case "FINER":
+                level = Level.FINER;
+                break;
+            case "FINEST":
+                level = Level.FINEST;
+                break;
+            default:
+                throw new RuntimeException("log level " + log + " is not supported");
         }
+        setupHandlers(log, level, formater);
+
         //remove date line from logger
         log.setUseParentHandlers(false);
+    }
+
+    private void setupHandlers(Logger logger, Level level, Formatter formater) {
+        for (Handler handler : logger.getHandlers()) {
+            handler.setLevel(level);
+            handler.setFormatter(formater);
+        }
+        Logger parentLogger = logger.getParent();
+        if (null != parentLogger) {
+            for (Handler handler : parentLogger.getHandlers()) {
+                handler.setLevel(level);
+                handler.setFormatter(formater);
+            }
+        }
     }
 
 }
