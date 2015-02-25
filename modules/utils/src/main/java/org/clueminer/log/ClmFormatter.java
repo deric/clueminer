@@ -31,7 +31,9 @@ public class ClmFormatter extends Formatter {
     @Override
     public String format(final LogRecord r) {
         StringBuilder sb = new StringBuilder();
-        sb.append(r.getLevel().getName()).append(": ");
+
+        sb.append(formatTime(r.getMillis())).append(" [");
+        sb.append(r.getLevel().getName()).append("] ");
         sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
         if (null != r.getThrown()) {
             sb.append("Throwable occurred: "); //$NON-NLS-1$
@@ -53,5 +55,13 @@ public class ClmFormatter extends Formatter {
             }
         }
         return sb.toString();
+    }
+
+    private String formatTime(long millis) {
+        long second = (millis / 1000) % 60;
+        long minute = (millis / (1000 * 60)) % 60;
+        long hour = (millis / (1000 * 60 * 60)) % 24;
+
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 }
