@@ -195,6 +195,32 @@ public class DTreeNode implements DendroNode {
         }
     }
 
+    @Override
+    public void printTreeWithHeight(OutputStreamWriter out, boolean isRight, String indent) throws IOException {
+        String spaces = "";
+        String dashes = "";
+        for (int i = 0; i < parent.getHeight() - height - 1; i++) {
+            spaces += "      ";
+            dashes += "------";
+        }
+
+        if (left != null) {
+            left.printTreeWithHeight(out, false, indent + (isRight ? " |    " : "      ") + spaces);
+        }
+
+        out.write(indent);
+        if (isRight) {
+            out.write(" \\");
+        } else {
+            out.write(" /");
+        }
+        out.write(dashes + "----- ");
+        printNodeValue(out);
+        if (right != null) {
+            right.printTreeWithHeight(out, true, indent + (isRight ? "      " : " |    ") + spaces);
+        }
+    }
+
     /**
      * Valid only for leaves
      *

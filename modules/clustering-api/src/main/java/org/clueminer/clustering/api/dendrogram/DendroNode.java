@@ -123,6 +123,16 @@ public interface DendroNode {
     void printTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
 
     /**
+     * printing helper
+     *
+     * @param out
+     * @param isRight
+     * @param indent
+     * @throws IOException
+     */
+    void printTreeWithHeight(OutputStreamWriter out, boolean isRight, String indent) throws IOException;
+
+    /**
      * minimum distance in subtree - used for ordering dendrogram
      *
      * @param min

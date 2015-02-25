@@ -27,7 +27,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param root
      * @param hintSize estimated number number of nodes (doesn't have to be
-     *                 accurate)
+     * accurate)
      */
     public DynamicTreeData(DendroNode root, int hintSize) {
         this.root = root;
@@ -148,6 +148,30 @@ public class DynamicTreeData implements DendroTreeData {
         try {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
             printTree(out, treeRoot);
+            out.flush();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void printTreeWithHeight(OutputStreamWriter out, DendroNode treeRoot) throws IOException {
+        DendroNode node = treeRoot.getLeft();
+        if (node != null) {
+            node.printTreeWithHeight(out, false, "");
+        }
+        ((DTreeNode) treeRoot).printNodeValue(out);
+
+        node = treeRoot.getRight();
+        if (node != null) {
+            node.printTreeWithHeight(out, true, "");
+        }
+    }
+
+    @Override
+    public void printWithHeight() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTreeWithHeight(out, getRoot());
             out.flush();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
