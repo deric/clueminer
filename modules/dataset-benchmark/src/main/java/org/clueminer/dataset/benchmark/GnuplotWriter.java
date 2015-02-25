@@ -171,24 +171,11 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         }
 
         writeGnuplot(dir, scriptFile, gnuplotFitness(dataFile, validator, evolution.getExternal()));
+        plots.add(scriptFile);
         writeGnuplot(dir, scriptExtern, gnuplotExternal(dataFile, evolution.getExternal()));
+        plots.add(scriptExtern);
         writeGnuplot(dir, scriptTopFile, gnuplotTop(dataFile, validator, evolution.getExternal()));
-    }
-
-    private void writeGnuplot(String dir, String scriptFile, String content) {
-        PrintWriter template = null;
-        String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
-        try {
-            template = new PrintWriter(script, "UTF-8");
-            template.write(content);
-            plots.add(scriptFile);
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (template != null) {
-                template.close();
-            }
-        }
+        plots.add(scriptTopFile);
     }
 
     private String getTitle(ClusterEvaluation validator) {

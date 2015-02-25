@@ -19,8 +19,10 @@ package org.clueminer.dataset.benchmark;
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -32,12 +34,19 @@ import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
 /**
+ * Class for generating Gnuplot scripts. It collects results from multiple
+ * evolution runs.
  *
  * @author deric
  */
 public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private EvolutionMO evolution;
+    private LinkedList<String> plots;
+
+    public GnuplotMO() {
+        plots = new LinkedList<>();
+    }
 
     @Override
     public void started(Evolution evolution) {
@@ -55,15 +64,49 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
         return safeName(sb.toString());
     }
 
+    private String gptDir() {
+        return getCurrentDir() + File.separatorChar + "gpt";
+    }
+
+    private String dataDir() {
+        return getCurrentDir() + File.separatorChar + "data";
+    }
+
+    /**
+     * Result from single evolution run
+     *
+     * @param result
+     */
     @Override
     public void finalResult(List<OpSolution> result) {
         String expName = createName(evolution);
-        String dataFile = writeData(expName, getCurrentDir(), result);
+        mkdir(dataDir());
+        mkdir(gptDir());
+        String dataFile = writeData(expName, dataDir(), result);
+
+        writeGnuplot(gptDir(), expName, gnuplotParetoFront(dataFile, evolution.getObjective(0), evolution.getObjective(1)));
+        plots.add(expName);
+
+        writeBashScripts();
+    }
+
+    public void writeBashScripts() {
+
+        try {
+            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            System.err.println("failed to write gnuplot scripts");
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     private String writeData(String ident, String dataDir, List<OpSolution> result) {
         PrintWriter writer = null;
-        String dataFile = "data-" + ident + ".csv";
+        String dataFile = ident + ".csv";
         try {
             writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
             CSVWriter csv = new CSVWriter(writer, ',');
@@ -107,5 +150,36 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
         }
     }
 
+    private String getTitle() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(evolution.getAlgorithm().getName());
+        sb.append(" generations: ").append(evolution.getGenerations());
+        sb.append(" population: ").append(evolution.getPopulationSize());
+        sb.append(" crossover: ").append(evolution.getCrossoverProbability());
+        sb.append(" mutation: ").append(evolution.getMutationProbability());
+        return sb.toString();
+    }
+
+    /**
+     *
+     * @param dataFile
+     * @param c1
+     * @param c2
+     * @return
+     */
+    private String gnuplotParetoFront(String dataFile, ClusterEvaluation c1, ClusterEvaluation c2) {
+        String res = "set title '" + getTitle() + "'\n"
+                + "set grid \n"
+                + "set size 1.0, 1.0\n"
+                + "set key outside bottom horizontal box\n"
+                + "set datafile separator \",\"\n"
+                + "set datafile missing \"NaN\"\n"
+                + "set ylabel '" + c1.getName() + "'\n"
+                + "set xlabel \"" + c2.getName() + "\"\n"
+                + "plot '" + "data" + File.separatorChar + dataFile
+                + "' u 4:5 title 'pareto front' with points pointtype 7 pointsize 0.7";
+
+        return res;
+    }
 
 }

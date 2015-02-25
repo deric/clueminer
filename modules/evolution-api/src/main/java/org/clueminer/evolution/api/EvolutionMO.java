@@ -32,6 +32,14 @@ public interface EvolutionMO<T extends Individual> extends Evolution<T> {
     void removeObjective(ClusterEvaluation objective);
 
     /**
+     * Get i-th objectives, first one is at index 0
+     *
+     * @param i
+     * @return i-th objective
+     */
+    ClusterEvaluation getObjective(int i);
+
+    /**
      * Remove all objectives
      */
     void clearObjectives();
