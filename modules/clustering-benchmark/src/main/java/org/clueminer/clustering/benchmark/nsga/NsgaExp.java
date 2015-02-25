@@ -83,7 +83,7 @@ public class NsgaExp implements Runnable {
             //collect data from evolution
             evolution.addEvolutionListener(new ConsoleDump());
             evolution.addMOEvolutionListener(gw);
-            evolution.addEvolutionListener(rc);
+            evolution.addMOEvolutionListener(rc);
 
             String name;
             logger.log(Level.INFO, "datasets size: {0}", datasets.size());
@@ -109,11 +109,10 @@ public class NsgaExp implements Runnable {
                             //run!
                             evolution.run();
                             logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
+                            rc.writeToCsv(csvRes);
                         }
                     }
                 }
-                System.out.println("## updating results in: " + csvRes);
-                rc.writeToCsv(csvRes);
             }
         } catch (Exception e) {
             Exceptions.printStackTrace(e);

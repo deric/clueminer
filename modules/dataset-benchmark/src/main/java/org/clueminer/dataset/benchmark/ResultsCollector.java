@@ -6,22 +6,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.oo.api.OpListener;
+import org.clueminer.oo.api.OpSolution;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ResultsCollector implements EvolutionListener {
+public class ResultsCollector implements EvolutionListener, OpListener {
 
     //reference to results table
     private final Table<String, String, Double> table;
+    private Evolution evolution;
 
     public ResultsCollector(Table<String, String, Double> table) {
         this.table = table;
@@ -29,6 +36,7 @@ public class ResultsCollector implements EvolutionListener {
 
     @Override
     public void started(Evolution evolution) {
+        this.evolution = evolution;
     }
 
     @Override
@@ -80,5 +88,19 @@ public class ResultsCollector implements EvolutionListener {
     @Override
     public void resultUpdate(Individual[] result) {
         //we are mostly interested for final set of clusterings, not incremental updates
+    }
+
+    @Override
+    public void finalResult(List<OpSolution> result) {
+        ExternalEvaluatorFactory ef = ExternalEvaluatorFactory.getInstance();
+        List<ExternalEvaluator> eval = ef.getAll();
+
+        Clustering clust;
+        for (OpSolution sol : result) {
+            clust = sol.getClustering();
+            for (ExternalEvaluator e : eval) {
+                table.put(evolution.getDataset().getName(), e.getName(), clust.getEvaluationTable().getScore(e));
+            }
+        }
     }
 }
