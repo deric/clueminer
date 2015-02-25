@@ -80,6 +80,7 @@
                         <publicPackage>org.clueminer.events</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
                         <publicPackage>org.clueminer.gui</publicPackage>
+                        <publicPackage>org.clueminer.log</publicPackage>
                         <publicPackage>org.clueminer.longtask</publicPackage>
                         <publicPackage>org.clueminer.longtask.spi</publicPackage>
                         <publicPackage>org.clueminer.utils</publicPackage>
