@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.oo.api.OpListener;
@@ -124,28 +126,35 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
     }
 
     public void toCsv(DatasetWriter writer, List<OpSolution> result) {
-        int offset = 3;
-        String[] header = new String[evolution.getNumObjectives() + offset];
-        header[0] = "k";
-        header[1] = "fingerprint";
-        header[2] = evolution.getExternal().getName();
+        int offset = 2;
+        ExternalEvaluatorFactory ef = ExternalEvaluatorFactory.getInstance();
+        List<ExternalEvaluator> eval = ef.getAll();
+        String[] header = new String[evolution.getNumObjectives() + eval.size() + offset];
         List<ClusterEvaluation> objectives = evolution.getObjectives();
-        for (int i = 0; i < evolution.getNumObjectives(); i++) {
-            header[i + offset] = objectives.get(i).getName();
-
+        int i;
+        for (i = 0; i < evolution.getNumObjectives(); i++) {
+            header[i] = objectives.get(i).getName();
         }
+        header[i++] = "k";
+        header[i++] = "fingerprint";
+        for (ExternalEvaluator e : eval) {
+            header[i++] = e.getName();
+        }
+
         writer.writeNext(header);
         Clustering clust;
         String[] line = new String[header.length];
         for (OpSolution solution : result) {
             clust = solution.getClustering();
-            line[0] = String.valueOf(clust.size());
-            line[1] = clust.fingerprint();
-            line[2] = String.valueOf(clust.getEvaluationTable().getScore(evolution.getExternal()));
-            for (int i = 0; i < objectives.size(); i++) {
-                line[i + offset] = String.valueOf(solution.getObjective(i));
+            for (i = 0; i < objectives.size(); i++) {
+                line[i] = String.valueOf(solution.getObjective(i));
             }
+            line[i++] = String.valueOf(clust.size());
+            line[i++] = clust.fingerprint();
 
+            for (ExternalEvaluator e : eval) {
+                line[i++] = String.valueOf(clust.getEvaluationTable().getScore(e));
+            }
             writer.writeNext(line);
         }
     }
@@ -168,7 +177,9 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
      * @return
      */
     private String gnuplotParetoFront(String dataFile, ClusterEvaluation c1, ClusterEvaluation c2) {
-        String res = "set title '" + getTitle() + "'\n"
+        //this will work in case of AUC, Precision, Jaccard... but not Adjusted Rand
+        String res = "set palette model RGB defined (0 \"red\",0.5 \"black\", 1 \"green\")\n"
+                + "set title '" + getTitle() + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -177,7 +188,7 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
                 + "set ylabel '" + c1.getName() + "'\n"
                 + "set xlabel \"" + c2.getName() + "\"\n"
                 + "plot '" + "data" + File.separatorChar + dataFile
-                + "' u 4:5 title 'pareto front' with points pointtype 7 pointsize 0.7";
+                + "' u 1:2:5 title 'pareto front' with points pointtype 7 pointsize 0.7 palette";
 
         return res;
     }
