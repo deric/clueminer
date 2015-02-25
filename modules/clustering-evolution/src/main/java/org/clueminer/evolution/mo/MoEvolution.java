@@ -106,11 +106,11 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
             logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
         }
 
-        double crossoverDistributionIndex = 20.0;
+        double crossoverDistributionIndex = problem.getNumberOfVariables();
         crossover = new IntegerSBXCrossover(getCrossoverProbability(), crossoverDistributionIndex);
 
         double mutationProbability = 1.0 / problem.getNumberOfVariables();
-        double mutationDistributionIndex = 20.0;
+        double mutationDistributionIndex = problem.getNumberOfVariables();
         mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
 
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());

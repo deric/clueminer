@@ -55,7 +55,8 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
                 switch (p.getType()) {
                     case STRING:
                         ServiceFactory f = getFactory(p);
-                        upperLimit[i] = f.getAll().size();
+                        //indexed from zero, must be size - 1
+                        upperLimit[i] = f.getAll().size() - 1;
                         break;
                     case BOOLEAN:
                         upperLimit[i] = 1;

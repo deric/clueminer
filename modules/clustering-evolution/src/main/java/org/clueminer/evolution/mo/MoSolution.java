@@ -169,7 +169,6 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             Exceptions.printStackTrace(ex);
         }
         if (update) {
-            logger.info("updating clustering ");
             individual.updateCustering();
         }
     }
