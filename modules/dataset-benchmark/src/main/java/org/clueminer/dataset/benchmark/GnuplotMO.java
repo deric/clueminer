@@ -162,9 +162,9 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
     private String getTitle() {
         StringBuilder sb = new StringBuilder();
         sb.append(evolution.getAlgorithm().getName());
-        sb.append(" generations: ").append(evolution.getGenerations());
-        sb.append(" population: ").append(evolution.getPopulationSize());
-        sb.append(" crossover: ").append(evolution.getCrossoverProbability());
+        sb.append(" generations: ").append(evolution.getGenerations()).append(", ");
+        sb.append(" population: ").append(evolution.getPopulationSize()).append(", ");
+        sb.append(" crossover: ").append(evolution.getCrossoverProbability()).append(", ");
         sb.append(" mutation: ").append(evolution.getMutationProbability());
         return sb.toString();
     }
@@ -178,17 +178,20 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
      */
     private String gnuplotParetoFront(String dataFile, ClusterEvaluation c1, ClusterEvaluation c2) {
         //this will work in case of AUC, Precision, Jaccard... but not Adjusted Rand
-        String res = "set palette model RGB defined (0 \"red\",0.5 \"black\", 1 \"green\")\n"
+        String res = "set cbrange [-1:1]\n"
+                + "set palette model RGB defined (-1 \"red\",0.0 \"black\", 1 \"green\")\n"
+                //"set palette model RGB defined (0 \"red\",0.5 \"black\", 1 \"green\")\n"
                 + "set title '" + getTitle() + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
                 + "set datafile separator \",\"\n"
                 + "set datafile missing \"NaN\"\n"
-                + "set ylabel '" + c1.getName() + "'\n"
-                + "set xlabel \"" + c2.getName() + "\"\n"
-                + "plot '" + "data" + File.separatorChar + dataFile
-                + "' u 1:2:5 title 'pareto front' with points pointtype 7 pointsize 0.7 palette";
+                + "set ylabel '" + c2.getName() + "'\n"
+                + "set xlabel \"" + c1.getName() + "\"\n"
+                + "set y2label \"Adjusted Rand\"\n"
+                + "plot '" + "data" + File.separatorChar + dataFile + "'"
+                + " u 1:2:7 title 'pareto front' with points pointtype 7 pointsize 1.1 palette";
 
         return res;
     }
