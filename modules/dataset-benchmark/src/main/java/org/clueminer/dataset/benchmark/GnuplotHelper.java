@@ -61,7 +61,7 @@ public class GnuplotHelper {
      */
     public void bashPlotScript(String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
         //bash script to generate results
-        String shFile = dir + File.separatorChar + "plot-" + ext;
+        String shFile = dir + File.separatorChar + "_plot-" + ext;
         try (PrintWriter template = new PrintWriter(shFile, "UTF-8")) {
             template.write("#!/bin/bash\n"
                     + "PWD=\"$(pwd)\"\n");

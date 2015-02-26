@@ -90,7 +90,7 @@ public class NsgaExp implements Runnable {
             for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
                 Dataset<? extends Instance> d = e.getValue().getKey();
                 name = safeName(d.getName());
-                String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + name + ".csv";
+                String csvRes = benchmarkFolder + File.separatorChar + "_" + name + File.separatorChar + name + ".csv";
                 logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
                 //ensureFolder(benchmarkFolder + File.separatorChar + name);
 
