@@ -167,13 +167,13 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private String getTitle() {
         StringBuilder sb = new StringBuilder();
-        sb.append(evolution.getDataset().getName()).append(" [ ");
-        sb.append(evolution.getAlgorithm().getName());
+        sb.append(evolution.getDataset().getName()).append(" [");
+        sb.append(evolution.getAlgorithm().getName()).append(", ");
         sb.append(" generations: ").append(evolution.getGenerations()).append(", ");
         sb.append(" population: ").append(evolution.getPopulationSize()).append(", ");
         sb.append(" crossover: ").append(evolution.getCrossoverProbability()).append(", ");
         sb.append(" mutation: ").append(evolution.getMutationProbability());
-        sb.append(" ]");
+        sb.append("]");
         return sb.toString();
     }
 
@@ -200,7 +200,7 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
                 + "set y2label \"Adjusted Rand\"\n"
                 + "plot '" + "data" + File.separatorChar + dataFile + "'"
                 + " u 1:2:7 title 'pareto front' with points pointtype 7 pointsize 1.1 palette, \\\n"
-                + " '' using ($1):($2):($3) with labels offset 2"; //plot number of clusters next to colored point
+                + " '' using ($1):($2):($3) with labels offset 2 notitle"; //plot number of clusters next to colored point
 
         return res;
     }
