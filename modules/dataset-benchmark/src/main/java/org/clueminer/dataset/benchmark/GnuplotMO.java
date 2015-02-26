@@ -167,11 +167,13 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private String getTitle() {
         StringBuilder sb = new StringBuilder();
+        sb.append(evolution.getDataset().getName()).append(" [ ");
         sb.append(evolution.getAlgorithm().getName());
         sb.append(" generations: ").append(evolution.getGenerations()).append(", ");
         sb.append(" population: ").append(evolution.getPopulationSize()).append(", ");
         sb.append(" crossover: ").append(evolution.getCrossoverProbability()).append(", ");
         sb.append(" mutation: ").append(evolution.getMutationProbability());
+        sb.append(" ]");
         return sb.toString();
     }
 
