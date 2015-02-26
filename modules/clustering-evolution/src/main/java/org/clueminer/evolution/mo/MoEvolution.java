@@ -183,12 +183,22 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     }
 
     protected void fireEvolutionStarted(EvolutionMO evo) {
-        if (evoListeners != null) {
+        if (moListeners != null) {
             for (OpListener listener : moListeners) {
                 listener.started(evo);
             }
         }
+    }
 
+    /**
+     * Fired when repetitive run of same datasets was finished
+     */
+    public void fireFinishedBatch() {
+        if (moListeners != null) {
+            for (OpListener listener : moListeners) {
+                listener.finishedBatch();
+            }
+        }
     }
 
     protected void fireFinalResult(List<Solution> res) {

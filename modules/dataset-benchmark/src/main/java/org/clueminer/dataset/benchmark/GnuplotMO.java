@@ -48,9 +48,11 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private EvolutionMO evolution;
     private LinkedList<String> plots;
+    private Set<Clustering> blacklist;
 
     public GnuplotMO() {
         plots = new LinkedList<>();
+        blacklist = Sets.newHashSet();
     }
 
     @Override
@@ -163,7 +165,6 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
         writer.writeNext(header);
         Clustering clust;
-        Set<Clustering> blacklist = Sets.newHashSet();
         String[] line = new String[header.length];
         for (OpSolution solution : result) {
             clust = solution.getClustering();
@@ -221,6 +222,11 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
                 + " '' using ($1):($2):($3) with labels offset 2 notitle"; //plot number of clusters next to colored point
 
         return res;
+    }
+
+    @Override
+    public void finishedBatch() {
+        blacklist = Sets.newHashSet();
     }
 
 }

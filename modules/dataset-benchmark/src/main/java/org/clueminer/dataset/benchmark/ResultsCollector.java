@@ -1,12 +1,16 @@
 package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -30,7 +34,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
 
     //reference to results table
     //we convert the table to CSV, so in the end it's going to be string
-    private final Table<String, String, Double> table;
+    private Table<String, String, Double> table;
     private Evolution evolution;
 
     public ResultsCollector(Table<String, String, Double> table) {
@@ -125,5 +129,17 @@ public class ResultsCollector implements EvolutionListener, OpListener {
             sb.append(evals.get(i).getName());
         }
         return sb.toString();
+    }
+
+    @Override
+    public void finishedBatch() {
+        table = Tables.newCustomTable(
+                Maps.<String, Map<String, Double>>newHashMap(),
+                new Supplier<Map<String, Double>>() {
+                    @Override
+                    public Map<String, Double> get() {
+                        return Maps.newHashMap();
+                    }
+                });
     }
 }

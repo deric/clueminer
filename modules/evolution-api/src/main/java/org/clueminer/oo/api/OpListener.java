@@ -39,4 +39,9 @@ public interface OpListener extends EventListener {
      * @param result
      */
     void finalResult(List<OpSolution> result);
+
+    /**
+     * Called when set of same evolutions finishes
+     */
+    void finishedBatch();
 }

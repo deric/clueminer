@@ -115,6 +115,7 @@ public class NsgaExp implements Runnable {
                             logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
                             evolution.run();
                         }
+                        evolution.fireFinishedBatch();
                         logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
                         rc.writeToCsv(csvRes);
                     }
