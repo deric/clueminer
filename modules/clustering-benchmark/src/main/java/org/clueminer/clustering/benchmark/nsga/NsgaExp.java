@@ -48,7 +48,7 @@ public class NsgaExp implements Runnable {
     private ClusterEvaluation[] scores;
     private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
-    private final Table<String, String, Double> table;
+    private final Table<String, String, String> table;
     private static final Logger logger = Logger.getLogger(NsgaExp.class.getName());
 
     public NsgaExp(NsgaParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
@@ -58,10 +58,10 @@ public class NsgaExp implements Runnable {
         this.datasets = availableDatasets;
 
         table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
+                Maps.<String, Map<String, String>>newHashMap(),
+                new Supplier<Map<String, String>>() {
                     @Override
-                    public Map<String, Double> get() {
+                    public Map<String, String> get() {
                         return Maps.newHashMap();
                     }
                 });
@@ -100,17 +100,18 @@ public class NsgaExp implements Runnable {
 
                 for (int i = 0; i < scores.length; i++) {
                     c1 = scores[i];
-                    for (int j = 1; j < scores.length; j++) {
-                        if (i != j) {
-                            c2 = scores[j];
-                            evolution.clearObjectives();
-                            evolution.addObjective(c1);
-                            evolution.addObjective(c2);
-                            //run!
-                            evolution.run();
-                            logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
-                            rc.writeToCsv(csvRes);
-                        }
+                    //lower triangular matrix without diagonal
+                    //(doesn't matter which criterion is first, we want to try
+                    //all combinations)
+                    for (int j = 0; j < i; j++) {
+                        c2 = scores[j];
+                        evolution.clearObjectives();
+                        evolution.addObjective(c1);
+                        evolution.addObjective(c2);
+                        //run!
+                        evolution.run();
+                        logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
+                        rc.writeToCsv(csvRes);
                     }
                 }
             }

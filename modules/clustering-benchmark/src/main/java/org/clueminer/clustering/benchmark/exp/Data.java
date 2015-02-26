@@ -32,7 +32,7 @@ public class Data extends Bench {
 
     private EvolutionSO test;
     //table for keeping results from experiments
-    private Table<String, String, Double> table;
+    private Table<String, String, String> table;
     private static ResultsCollector rc;
     private static String csvOutput;
     private static Data instance;
@@ -101,10 +101,10 @@ public class Data extends Bench {
 
     private void init() {
         table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
+                Maps.<String, Map<String, String>>newHashMap(),
+                new Supplier<Map<String, String>>() {
                     @Override
-                    public Map<String, Double> get() {
+                    public Map<String, String> get() {
                         return Maps.newHashMap();
                     }
                 });

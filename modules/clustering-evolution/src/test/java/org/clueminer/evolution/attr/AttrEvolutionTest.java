@@ -42,25 +42,25 @@ public class AttrEvolutionTest {
     private static Dataset<Instance> irisDataset;
     private AttrEvolution test;
     //table for keeping results from experiments
-    private Table<String, String, Double> table;
+    private final Table<String, String, String> table;
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
 
     public AttrEvolutionTest() {
         table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
-            @Override
-            public Map<String, Double> get() {
-                return Maps.newHashMap();
-            }
-        });
+                Maps.<String, Map<String, String>>newHashMap(),
+                new Supplier<Map<String, String>>() {
+                    @Override
+                    public Map<String, String> get() {
+                        return Maps.newHashMap();
+                    }
+                });
 
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         createFolder(home);
         benchmarkFolder = home + File.separatorChar + "benchmark";
         createFolder(benchmarkFolder);
@@ -150,7 +150,7 @@ public class AttrEvolutionTest {
     public void testVariousMeasuresAndDatasets() {
         InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
         //just to make the test fast
         datasets.put(DatasetFixture.insect(), 3);
 

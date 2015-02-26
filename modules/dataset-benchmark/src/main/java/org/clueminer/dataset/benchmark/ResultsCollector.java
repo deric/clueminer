@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
@@ -27,10 +29,11 @@ import org.openide.util.Exceptions;
 public class ResultsCollector implements EvolutionListener, OpListener {
 
     //reference to results table
-    private final Table<String, String, Double> table;
+    //we convert the table to CSV, so in the end it's going to be string
+    private final Table<String, String, String> table;
     private Evolution evolution;
 
-    public ResultsCollector(Table<String, String, Double> table) {
+    public ResultsCollector(Table<String, String, String> table) {
         this.table = table;
     }
 
@@ -50,7 +53,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
 
         if (evolution instanceof EvolutionSO) {
             EvolutionSO evoso = (EvolutionSO) evolution;
-            table.put(evolution.getDataset().getName(), evoso.getEvaluator().getName(), external);
+            table.put(evolution.getDataset().getName(), evoso.getEvaluator().getName(), String.valueOf(external));
         } else {
             throw new RuntimeException("MO evolution is not supported yet");
         }
@@ -98,8 +101,20 @@ public class ResultsCollector implements EvolutionListener, OpListener {
         Clustering clust;
         for (OpSolution sol : result) {
             clust = sol.getClustering();
+
+            //store objectives
+            if (evolution instanceof EvolutionMO) {
+                EvolutionMO mo = (EvolutionMO) evolution;
+                List<ClusterEvaluation> objs = mo.getObjectives();
+                ClusterEvaluation e;
+                for (int i = 0; i < objs.size(); i++) {
+                    e = objs.get(i);
+                    table.put(evolution.getDataset().getName(), "objective " + (i + 1), e.getName());
+                }
+            }
+
             for (ExternalEvaluator e : eval) {
-                table.put(evolution.getDataset().getName(), e.getName(), clust.getEvaluationTable().getScore(e));
+                table.put(evolution.getDataset().getName(), e.getName(), String.valueOf(clust.getEvaluationTable().getScore(e)));
             }
         }
     }

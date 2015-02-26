@@ -35,7 +35,7 @@ public class EvolveExp implements Runnable {
     private ClusterEvaluation[] scores;
     private HashMap<String, Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
-    private final Table<String, String, Double> table;
+    private final Table<String, String, String> table;
 
     public EvolveExp(EvolveParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
         this.params = params;
@@ -44,10 +44,10 @@ public class EvolveExp implements Runnable {
         this.datasets = availableDatasets;
 
         table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
+                Maps.<String, Map<String, String>>newHashMap(),
+                new Supplier<Map<String, String>>() {
                     @Override
-                    public Map<String, Double> get() {
+                    public Map<String, String> get() {
                         return Maps.newHashMap();
                     }
                 });
