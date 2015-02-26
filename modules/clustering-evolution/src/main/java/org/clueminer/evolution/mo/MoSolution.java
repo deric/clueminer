@@ -183,6 +183,12 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
                     ServiceFactory f = getFactory(param);
                     List<String> list = f.getProviders();
                     genom.put(param.getName(), list.get(value));
+                    //check if configuration makes sense
+                    while (!isValid()) {
+                        logger.log(Level.INFO, "mutated from invalid config{0} to {1}", new Object[]{param.getName(), list.get(value)});
+                        value = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
+                        genom.put(param.getName(), list.get(value));
+                    }
                     logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
                     break;
                 case BOOLEAN:
@@ -197,6 +203,8 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
+        //finally set variable value
+        variables[id] = value;
         if (update) {
             updateCustering();
         }
@@ -275,6 +283,12 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         return problem.getUpperBound(index);
     }
 
+    /**
+     * Check if configuration is within constrains (could possibly produce some
+     * result)
+     *
+     * @return
+     */
     @Override
     public boolean isValid() {
         boolean ret = true;
@@ -282,7 +296,21 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
             ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
         }
-        if (clustering != null && clustering.size() < 2) {
+        return ret;
+    }
+
+    /**
+     *
+     * @param clust
+     * @return
+     */
+    public boolean isValid(Clustering clust) {
+        boolean ret = true;
+        if (clustering == null) {
+            return false;
+        }
+
+        if (clustering.size() < 2) {
             //we don't want solutions with 0 or 1 cluster
             return false;
         }
