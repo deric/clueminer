@@ -18,10 +18,12 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.math.Matrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Deviation is meant for multi-objective optimization, using it as single
@@ -33,6 +35,7 @@ import org.clueminer.math.Matrix;
  * 11.1 (2007): 56-76.
  * @author Tomas Barton
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class Deviation extends AbstractEvaluator {
 
     private static final long serialVersionUID = -1456624325537837873L;
