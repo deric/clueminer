@@ -14,6 +14,7 @@ import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.uma.jmetal.algorithm.Algorithm;
@@ -128,7 +129,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         fireEvolutionStarted(this);
         logger.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
-        moAlg.run();
+        try {
+            moAlg.run();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
+            Exceptions.printStackTrace(e);
+        }
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
         logger.log(Level.INFO, "result size: {0}", moPop.size());
         fireFinalResult(moPop);
