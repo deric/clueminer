@@ -290,7 +290,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
      * clustering
      */
     private void randomMutation() {
-        int id = randomGenerator.nextInt(0, problem.getNumberOfVariables());
+        int id = randomGenerator.nextInt(0, problem.getNumberOfVariables() - 1);
         int value = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
         setVariableValue(id, value, false);
     }
