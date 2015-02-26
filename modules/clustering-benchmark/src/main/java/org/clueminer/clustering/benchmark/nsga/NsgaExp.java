@@ -48,7 +48,7 @@ public class NsgaExp implements Runnable {
     private ClusterEvaluation[] scores;
     private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
-    private final Table<String, String, Double> table;
+    private Table<String, String, Double> table;
     private static final Logger logger = Logger.getLogger(NsgaExp.class.getName());
 
     public NsgaExp(NsgaParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
@@ -57,14 +57,7 @@ public class NsgaExp implements Runnable {
         this.scores = scores;
         this.datasets = availableDatasets;
 
-        table = Tables.newCustomTable(
-                Maps.<String, Map<String, Double>>newHashMap(),
-                new Supplier<Map<String, Double>>() {
-                    @Override
-                    public Map<String, Double> get() {
-                        return Maps.newHashMap();
-                    }
-                });
+        createTable();
         rc = new ResultsCollector(table);
     }
 
@@ -114,15 +107,27 @@ public class NsgaExp implements Runnable {
                         for (int k = 0; k < params.repeat; k++) {
                             logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
                             evolution.run();
+                            rc.writeToCsv(csvRes);
                         }
                         evolution.fireFinishedBatch();
                         logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
-                        rc.writeToCsv(csvRes);
                     }
                 }
+                createTable();
             }
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
+    }
+
+    private void createTable() {
+        table = Tables.newCustomTable(
+                Maps.<String, Map<String, Double>>newHashMap(),
+                new Supplier<Map<String, Double>>() {
+                    @Override
+                    public Map<String, Double> get() {
+                        return Maps.newHashMap();
+                    }
+                });
     }
 }
