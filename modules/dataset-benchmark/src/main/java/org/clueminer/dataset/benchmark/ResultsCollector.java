@@ -103,6 +103,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
         List<ExternalEvaluator> eval = ef.getAll();
 
         Clustering clust;
+        int i = 0;
         for (OpSolution sol : result) {
             clust = sol.getClustering();
 
@@ -114,7 +115,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
             }
 
             for (ExternalEvaluator e : eval) {
-                table.put(evolution.getDataset().getName() + " - " + key, e.getName(), clust.getEvaluationTable().getScore(e));
+                table.put(evolution.getDataset().getName() + " - " + key + " #" + (i++), e.getName(), clust.getEvaluationTable().getScore(e));
             }
         }
     }
