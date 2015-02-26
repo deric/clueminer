@@ -20,6 +20,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -108,16 +109,25 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
         }
     }
 
+    /**
+     * Write to new file or append to existing if file exists
+     *
+     * @param ident
+     * @param dataDir
+     * @param result
+     * @return
+     */
     private String writeData(String ident, String dataDir, List<OpSolution> result) {
         PrintWriter writer = null;
         String dataFile = ident + ".csv";
         try {
-            writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
+            File f = new File(dataDir + File.separatorChar + dataFile);
+            boolean append = f.exists();
+            writer = new PrintWriter(new FileOutputStream(f), append);
             CSVWriter csv = new CSVWriter(writer, ',');
-            toCsv(csv, result);
+            toCsv(csv, result, true);
             writer.close();
-
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+        } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } finally {
             if (writer != null) {
@@ -127,20 +137,28 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
         return dataFile;
     }
 
-    public void toCsv(DatasetWriter writer, List<OpSolution> result) {
+    /**
+     *
+     * @param writer
+     * @param result
+     * @param writeHeader
+     */
+    public void toCsv(DatasetWriter writer, List<OpSolution> result, boolean writeHeader) {
         int offset = 2;
         ExternalEvaluatorFactory ef = ExternalEvaluatorFactory.getInstance();
         List<ExternalEvaluator> eval = ef.getAll();
         String[] header = new String[evolution.getNumObjectives() + eval.size() + offset];
         List<ClusterEvaluation> objectives = evolution.getObjectives();
         int i;
-        for (i = 0; i < evolution.getNumObjectives(); i++) {
-            header[i] = objectives.get(i).getName();
-        }
-        header[i++] = "k";
-        header[i++] = "fingerprint";
-        for (ExternalEvaluator e : eval) {
-            header[i++] = e.getName();
+        if (writeHeader) {
+            for (i = 0; i < evolution.getNumObjectives(); i++) {
+                header[i] = objectives.get(i).getName();
+            }
+            header[i++] = "k";
+            header[i++] = "fingerprint";
+            for (ExternalEvaluator e : eval) {
+                header[i++] = e.getName();
+            }
         }
 
         writer.writeNext(header);

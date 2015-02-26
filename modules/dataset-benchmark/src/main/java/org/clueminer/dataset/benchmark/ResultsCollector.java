@@ -110,7 +110,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
             }
 
             for (ExternalEvaluator e : eval) {
-                table.put(evolution.getDataset().getName() + key, e.getName(), clust.getEvaluationTable().getScore(e));
+                table.put(evolution.getDataset().getName() + " - " + key, e.getName(), clust.getEvaluationTable().getScore(e));
             }
         }
     }

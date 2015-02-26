@@ -109,7 +109,10 @@ public class NsgaExp implements Runnable {
                         evolution.addObjective(c1);
                         evolution.addObjective(c2);
                         //run!
-                        evolution.run();
+                        for (int k = 0; k < params.repeat; k++) {
+                            logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
+                            evolution.run();
+                        }
                         logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
                         rc.writeToCsv(csvRes);
                     }

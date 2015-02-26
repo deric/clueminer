@@ -16,7 +16,7 @@ public class AbsParams {
             + NbBundle.getMessage(FileUtils.class, "FOLDER_Home");
 
     @Parameter(names = "--repeat", description = "number of repetitions of each experiment")
-    public int repeat = 2;
+    public int repeat = 5;
 
     @Parameter(names = "--log", description = "java log level")
     public String log = "INFO";
