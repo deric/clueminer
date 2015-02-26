@@ -67,7 +67,6 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             setVariableValue(i, value, false);
         }
         updateCustering();
-        counter++;
     }
 
     /**
@@ -90,7 +89,6 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
 
         System.arraycopy(other.variables, 0, variables, 0, problem.getNumberOfVariables());
         clustering = other.clustering;
-        counter++;
     }
 
     public void evaluate() {
@@ -185,9 +183,13 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
                     genom.put(param.getName(), list.get(value));
                     //check if configuration makes sense
                     while (!isValid()) {
-                        logger.log(Level.INFO, "mutated from invalid config{0} to {1}", new Object[]{param.getName(), list.get(value)});
-                        value = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
-                        genom.put(param.getName(), list.get(value));
+                        logger.log(Level.FINER, "mutated from {0}  with invalid value: {1}", new Object[]{param.getName(), list.get(value)});
+                        int newValue;
+                        do {
+                            newValue = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
+                        } while (newValue == value);
+                        genom.put(param.getName(), list.get(newValue));
+                        value = newValue;
                     }
                     logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
                     break;
@@ -284,6 +286,16 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     }
 
     /**
+     * Perform mutation of randomly selected attribute and don't update
+     * clustering
+     */
+    private void randomMutation() {
+        int id = randomGenerator.nextInt(0, problem.getNumberOfVariables());
+        int value = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
+        setVariableValue(id, value, false);
+    }
+
+    /**
      * Check if configuration is within constrains (could possibly produce some
      * result)
      *
@@ -314,6 +326,12 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             //we don't want solutions with 0 or 1 cluster
             return false;
         }
+
+        //strange clustering with missing items
+        if (clustering.instancesCount() != problem.evolution.getDataset().size()) {
+            return false;
+        }
+
         return ret;
     }
 
@@ -347,7 +365,15 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     @Override
     public final Clustering<? extends Cluster> updateCustering() {
         logger.log(Level.FINE, "starting clustering {0}", genom.toString());
+        //count number of clustering algorithm executions
+        counter++;
         clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+        while (!isValid(clustering)) {
+            randomMutation();
+            counter++;
+            clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+        }
+
         ClusterEvaluation eval = problem.evolution.getExternal();
         if (eval != null) {
             logger.log(Level.FINE, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
