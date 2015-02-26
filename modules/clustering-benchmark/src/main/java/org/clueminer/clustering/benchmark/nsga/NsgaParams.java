@@ -46,4 +46,7 @@ public class NsgaParams extends AbsParams {
     @Parameter(names = "--crossover", description = "probability of crossover")
     public double crossover = 0.5;
 
+    @Parameter(names = "--dataset", description = "use specific dataset")
+    public String dataset = null;
+
 }

@@ -33,7 +33,7 @@ public class EvolveScores extends Bench {
     public void main(String[] args) {
         EvolveParams params = parseArguments(args);
         if (params.test) {
-            loadIris();
+            load("iris");
         } else {
             loadDatasets();
         }

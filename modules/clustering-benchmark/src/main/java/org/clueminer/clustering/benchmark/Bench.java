@@ -2,7 +2,6 @@ package org.clueminer.clustering.benchmark;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import it.unimi.dsi.fastutil.objects.AbstractObject2ObjectMap;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,13 +61,19 @@ public abstract class Bench {
         }
     }
 
-    protected void loadIris() {
-        Dataset<? extends Instance> d = DatasetFixture.iris();
-        Map.Entry<Dataset<? extends Instance>, Integer> entry
-                = (Map.Entry<Dataset<? extends Instance>, Integer>) new AbstractObject2ObjectMap.BasicEntry<>(d, 3);
-
-        availableDatasets.put(d.getName(), entry);
-
+    /**
+     * Load specific dataset by name
+     *
+     * @param name
+     */
+    protected void load(String name) {
+        Map<Dataset<? extends Instance>, Integer> datasets = DatasetFixture.allDatasets();
+        for (Map.Entry<Dataset<? extends Instance>, Integer> entry : datasets.entrySet()) {
+            Dataset<? extends Instance> d = entry.getKey();
+            if (d.getName().equalsIgnoreCase(name)) {
+                availableDatasets.put(d.getName(), entry);
+            }
+        }
     }
 
     public static String safeName(String name) {
