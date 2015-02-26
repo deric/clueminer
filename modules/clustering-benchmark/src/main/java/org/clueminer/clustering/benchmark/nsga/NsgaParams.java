@@ -40,4 +40,10 @@ public class NsgaParams extends AbsParams {
     @Parameter(names = "--supervised", description = "supervised criterion for external evaluation")
     public String supervised = "Adjusted Rand";
 
+    @Parameter(names = "--mutation", description = "probability of mutation")
+    public double mutation = 0.5;
+
+    @Parameter(names = "--crossover", description = "probability of crossover")
+    public double crossover = 0.5;
+
 }
