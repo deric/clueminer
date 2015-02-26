@@ -1,12 +1,14 @@
 package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Set;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -32,9 +34,11 @@ public class ResultsCollector implements EvolutionListener, OpListener {
     //we convert the table to CSV, so in the end it's going to be string
     private Table<String, String, Double> table;
     private Evolution evolution;
+    private Set<Clustering> allSolutions;
 
     public ResultsCollector(Table<String, String, Double> table) {
         this.table = table;
+        allSolutions = Sets.newHashSet();
     }
 
     @Override
@@ -103,15 +107,19 @@ public class ResultsCollector implements EvolutionListener, OpListener {
         for (OpSolution sol : result) {
             clust = sol.getClustering();
 
-            String key = null;
-            //store objectives
-            if (evolution instanceof EvolutionMO) {
-                EvolutionMO mo = (EvolutionMO) evolution;
-                key = getKey(mo);
-            }
+            if (!allSolutions.contains(clust)) {
+                String key = null;
+                //store objectives
+                if (evolution instanceof EvolutionMO) {
+                    EvolutionMO mo = (EvolutionMO) evolution;
+                    key = getKey(mo);
+                }
 
-            for (ExternalEvaluator e : eval) {
-                table.put(evolution.getDataset().getName() + " - " + key + " #" + (i++), e.getName(), clust.getEvaluationTable().getScore(e));
+                for (ExternalEvaluator e : eval) {
+                    table.put(evolution.getDataset().getName() + " - " + key + " #" + i, e.getName(), clust.getEvaluationTable().getScore(e));
+                }
+                allSolutions.add(clust);
+                i++;
             }
         }
     }
@@ -130,6 +138,6 @@ public class ResultsCollector implements EvolutionListener, OpListener {
 
     @Override
     public void finishedBatch() {
-
+        allSolutions = Sets.newHashSet();
     }
 }
