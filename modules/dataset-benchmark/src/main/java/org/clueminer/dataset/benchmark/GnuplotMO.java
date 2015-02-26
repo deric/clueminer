@@ -197,7 +197,8 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
                 + "set xlabel \"" + c1.getName() + "\"\n"
                 + "set y2label \"Adjusted Rand\"\n"
                 + "plot '" + "data" + File.separatorChar + dataFile + "'"
-                + " u 1:2:7 title 'pareto front' with points pointtype 7 pointsize 1.1 palette";
+                + " u 1:2:7 title 'pareto front' with points pointtype 7 pointsize 1.1 palette, \\\n"
+                + " '' using ($1):($2):($3) with labels offset 2"; //plot number of clusters next to colored point
 
         return res;
     }
