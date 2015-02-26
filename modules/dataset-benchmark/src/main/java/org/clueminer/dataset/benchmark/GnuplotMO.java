@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -48,11 +49,11 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private EvolutionMO evolution;
     private LinkedList<String> plots;
-    private Set<Clustering> blacklist;
+    private Set<Clustering> allSolutions;
 
     public GnuplotMO() {
         plots = new LinkedList<>();
-        blacklist = Sets.newHashSet();
+        allSolutions = Sets.newHashSet();
     }
 
     @Override
@@ -162,25 +163,31 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
                 header[i++] = e.getName();
             }
         }
-
-        writer.writeNext(header);
         Clustering clust;
-        String[] line = new String[header.length];
+        //add unique solutions
         for (OpSolution solution : result) {
             clust = solution.getClustering();
-            if (!blacklist.contains(clust)) {
-                for (i = 0; i < objectives.size(); i++) {
-                    line[i] = String.valueOf(solution.getObjective(i));
-                }
-                line[i++] = String.valueOf(clust.size());
-                line[i++] = clust.fingerprint();
-
-                for (ExternalEvaluator e : eval) {
-                    line[i++] = String.valueOf(clust.getEvaluationTable().getScore(e));
-                }
-                writer.writeNext(line);
-                blacklist.add(clust);
+            if (!allSolutions.contains(clust)) {
+                allSolutions.add(clust);
             }
+        }
+
+        writer.writeNext(header);
+
+        String[] line = new String[header.length];
+        Iterator<Clustering> it = allSolutions.iterator();
+        while (it.hasNext()) {
+            clust = (Clustering) it.next();
+            for (i = 0; i < objectives.size(); i++) {
+                line[i] = String.valueOf(clust.getEvaluationTable().getScore(evolution.getObjective(i)));
+            }
+            line[i++] = String.valueOf(clust.size());
+            line[i++] = clust.fingerprint();
+
+            for (ExternalEvaluator e : eval) {
+                line[i++] = String.valueOf(clust.getEvaluationTable().getScore(e));
+            }
+            writer.writeNext(line);
         }
     }
 
@@ -226,7 +233,7 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     @Override
     public void finishedBatch() {
-        blacklist = Sets.newHashSet();
+        allSolutions = Sets.newHashSet();
     }
 
 }
