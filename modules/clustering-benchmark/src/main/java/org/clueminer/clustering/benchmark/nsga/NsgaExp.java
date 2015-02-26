@@ -48,7 +48,7 @@ public class NsgaExp implements Runnable {
     private ClusterEvaluation[] scores;
     private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
-    private final Table<String, String, String> table;
+    private final Table<String, String, Double> table;
     private static final Logger logger = Logger.getLogger(NsgaExp.class.getName());
 
     public NsgaExp(NsgaParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
@@ -58,10 +58,10 @@ public class NsgaExp implements Runnable {
         this.datasets = availableDatasets;
 
         table = Tables.newCustomTable(
-                Maps.<String, Map<String, String>>newHashMap(),
-                new Supplier<Map<String, String>>() {
+                Maps.<String, Map<String, Double>>newHashMap(),
+                new Supplier<Map<String, Double>>() {
                     @Override
-                    public Map<String, String> get() {
+                    public Map<String, Double> get() {
                         return Maps.newHashMap();
                     }
                 });
