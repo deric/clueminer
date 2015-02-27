@@ -41,9 +41,9 @@ public class NsgaGenParams extends AbsParams {
     public String dataset = null;
 
     @Parameter(names = "--c1", description = "criterion 1")
-    public String c1 = "AIC score";
+    public String c1 = "Davies-Bouldin";
 
     @Parameter(names = "--c2", description = "criterion 2")
-    public String c2 = "Davies-Bouldin";
+    public String c2 = "AIC score";
 
 }

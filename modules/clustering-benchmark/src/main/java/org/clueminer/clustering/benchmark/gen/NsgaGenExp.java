@@ -94,14 +94,17 @@ public class NsgaGenExp implements Runnable {
             evolution.addObjective(c1);
             evolution.addObjective(c2);
 
-            int[] generations = new int[]{1, 10, 50, 1000};
+            int[] generations = new int[]{1, 10, 50, 100, 1000};
 
             String name;
+            String folder;
             logger.log(Level.INFO, "datasets size: {0}", datasets.size());
             for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
                 Dataset<? extends Instance> d = e.getValue().getKey();
                 name = safeName(d.getName());
-                String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + "_" + name + ".csv";
+                folder = benchmarkFolder + File.separatorChar + name;
+                gw.mkdir(folder);
+                String csvRes = folder + File.separatorChar + "_" + name + ".csv";
                 logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
                 //ensureFolder(benchmarkFolder + File.separatorChar + name);
 
@@ -118,7 +121,6 @@ public class NsgaGenExp implements Runnable {
                     //}
                     evolution.fireFinishedBatch();
                 }
-
                 createTable();
             }
         } catch (Exception e) {
