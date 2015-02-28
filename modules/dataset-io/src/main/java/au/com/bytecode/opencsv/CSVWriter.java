@@ -72,7 +72,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
     /**
      * Constructs CSVWriter with supplied separator.
      *
-     * @param writer the writer to an underlying CSV source.
+     * @param writer    the writer to an underlying CSV source.
      * @param separator the delimiter to use for separating entries.
      */
     public CSVWriter(Writer writer, char separator) {
@@ -82,7 +82,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
     /**
      * Constructs CSVWriter with supplied separator and quote char.
      *
-     * @param writer the writer to an underlying CSV source.
+     * @param writer    the writer to an underlying CSV source.
      * @param separator the delimiter to use for separating entries
      * @param quotechar the character to use for quoted elements
      */
@@ -93,11 +93,11 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
     /**
      * Constructs CSVWriter with supplied separator and quote char.
      *
-     * @param writer the writer to an underlying CSV source.
-     * @param separator the delimiter to use for separating entries
-     * @param quotechar the character to use for quoted elements
+     * @param writer     the writer to an underlying CSV source.
+     * @param separator  the delimiter to use for separating entries
+     * @param quotechar  the character to use for quoted elements
      * @param escapechar the character to use for escaping quotechars or
-     * escapechars
+     *                   escapechars
      */
     public CSVWriter(Writer writer, char separator, char quotechar, char escapechar) {
         this(writer, separator, quotechar, escapechar, DEFAULT_LINE_END);
@@ -106,10 +106,10 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
     /**
      * Constructs CSVWriter with supplied separator and quote char.
      *
-     * @param writer the writer to an underlying CSV source.
+     * @param writer    the writer to an underlying CSV source.
      * @param separator the delimiter to use for separating entries
      * @param quotechar the character to use for quoted elements
-     * @param lineEnd the line feed terminator to use
+     * @param lineEnd   the line feed terminator to use
      */
     public CSVWriter(Writer writer, char separator, char quotechar, String lineEnd) {
         this(writer, separator, quotechar, DEFAULT_ESCAPE_CHARACTER, lineEnd);
@@ -119,12 +119,12 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * Constructs CSVWriter with supplied separator, quote char, escape char and
      * line ending.
      *
-     * @param writer the writer to an underlying CSV source.
-     * @param separator the delimiter to use for separating entries
-     * @param quotechar the character to use for quoted elements
+     * @param writer     the writer to an underlying CSV source.
+     * @param separator  the delimiter to use for separating entries
+     * @param quotechar  the character to use for quoted elements
      * @param escapechar the character to use for escaping quotechars or
-     * escapechars
-     * @param lineEnd the line feed terminator to use
+     *                   escapechars
+     * @param lineEnd    the line feed terminator to use
      */
     public CSVWriter(Writer writer, char separator, char quotechar, char escapechar, String lineEnd) {
         this.rawWriter = writer;
@@ -135,15 +135,25 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
         this.lineEnd = lineEnd;
     }
 
+    public CSVWriter(PrintWriter writer, char separator, char quotechar, char escapechar, String lineEnd) {
+        this.rawWriter = writer;
+        this.pw = writer;
+        this.separator = separator;
+        this.quotechar = quotechar;
+        this.escapechar = escapechar;
+        this.lineEnd = lineEnd;
+    }
+
     /**
      * Writes the entire list to a CSV file. The list is assumed to be a
      * String[]
      *
-     * @param allLines a List of String[], with each String[] representing a
-     * line of the file.
+     * @param allLines         a List of String[], with each String[]
+     *                         representing a
+     *                         line of the file.
      * @param applyQuotesToAll true if all values are to be quoted. false if
-     * quotes only to be applied to values which contain the separator, escape,
-     * quote or new line characters.
+     *                         quotes only to be applied to values which contain the separator, escape,
+     *                         quote or new line characters.
      */
     public void writeAll(List<String[]> allLines, boolean applyQuotesToAll) {
         for (String[] line : allLines) {
@@ -156,7 +166,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * String[]
      *
      * @param allLines a List of String[], with each String[] representing a
-     * line of the file.
+     *                 line of the file.
      */
     @Override
     public void writeAll(List<String[]> allLines) {
@@ -175,10 +185,10 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * <p/>
      * The caller is responsible for closing the ResultSet.
      *
-     * @param rs the recordset to write
+     * @param rs                 the recordset to write
      * @param includeColumnNames true if you want column names in the output,
-     * false otherwise
-     * @throws java.io.IOException thrown by getColumnValue
+     *                           false otherwise
+     * @throws java.io.IOException   thrown by getColumnValue
      * @throws java.sql.SQLException thrown by getColumnValue
      */
     /*   public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames) throws SQLException, IOException {
@@ -189,7 +199,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * <p/>
      * The caller is responsible for closing the ResultSet.
      *
-     * @throws java.io.IOException thrown by getColumnValue
+     * @throws java.io.IOException   thrown by getColumnValue
      * @throws java.sql.SQLException thrown by getColumnValue
      */
     /*   public void writeAll(java.sql.ResultSet rs, boolean includeColumnNames, boolean trim) throws SQLException, IOException {
@@ -206,11 +216,12 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
     /**
      * Writes the next line to the file.
      *
-     * @param nextLine a string array with each comma-separated element as a
-     * separate entry.
+     * @param nextLine         a string array with each comma-separated element
+     *                         as a
+     *                         separate entry.
      * @param applyQuotesToAll true if all values are to be quoted. false
-     * applies quotes only to values which contain the separator, escape, quote
-     * or new line characters.
+     *                         applies quotes only to values which contain the separator, escape, quote
+     *                         or new line characters.
      */
     @Override
     public void writeNext(String[] nextLine, boolean applyQuotesToAll) {
@@ -257,7 +268,7 @@ public class CSVWriter implements Closeable, Flushable, DatasetWriter {
      * Writes the next line to the file.
      *
      * @param nextLine a string array with each comma-separated element as a
-     * separate entry.
+     *                 separate entry.
      */
     @Override
     public void writeNext(String[] nextLine) {

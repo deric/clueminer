@@ -14,17 +14,18 @@ import java.util.concurrent.Future;
 public class ListUtils {
 
     /**
-     * This method takes a list and breaks it into <tt>count<tt> lists backed by
-     * the original
-     * list, with elements being equally spaced among the lists. The lists will
-     * be returned in
-     * order of the consecutive values they represent in the source list.
+     * This method takes a list and breaks it into <tt>count</tt> lists backed
+     * by the original list, with elements being equally spaced among the lists.
+     * The lists will be returned in order of the consecutive values they
+     * represent in the source list.
+     *
      * <br><br><b>NOTE</b>: Because the implementation uses {@link List#subList(int, int)
      * },
      * changes to the returned lists will be reflected in the source list.
      *
      * @param <T>    the type contained in the list
-     * @param source the source list that will be used to back the <tt>count<tt>
+     * @param source the source list that will be used to back the
+     * <tt>count</tt>
      * lists
      * @param count  the number of lists to partition the source into.
      * @return a lists of lists, each of with the same size with at most a
@@ -34,7 +35,7 @@ public class ListUtils {
         if (count <= 0) {
             throw new RuntimeException("Chunks must be greater then 0, not " + count);
         }
-        List<List<T>> chunks = new ArrayList<List<T>>(count);
+        List<List<T>> chunks = new ArrayList<>(count);
         int baseSize = source.size() / count;
         int remainder = source.size() % count;
         int start = 0;
@@ -75,7 +76,7 @@ public class ListUtils {
      * @throws InterruptedException
      */
     public static <T> List<T> collectFutures(Collection<Future<T>> futures) throws ExecutionException, InterruptedException {
-        ArrayList<T> collected = new ArrayList<T>(futures.size());
+        ArrayList<T> collected = new ArrayList<>(futures.size());
 
         for (Future<T> future : futures) {
             collected.add(future.get());
@@ -105,24 +106,6 @@ public class ListUtils {
         for (int i = start; i < to; i += step) {
             c.add(i);
         }
-    }
-
-    /**
-     * Obtains a random sample without replacement from a source list and places
-     * it in the destination list. This is done without modifying the source
-     * list.
-     *
-     * @param <T>     the list content type involved
-     * @param source  the source of values to randomly sample from
-     * @param dest    the list to store the random samples in. The list does not
-     *                need to be empty for the sampling to work correctly
-     * @param samples the number of samples to select from the source
-     * @param rand    the source of randomness for the sampling
-     * @throws IllegalArgumentException if the sample size is not positive or l
-     *                                  arger than the source population.
-     */
-    public static <T> void randomSample(List<T> source, List<T> dest, int samples, Random rand) {
-        randomSample(source, dest, samples, rand);
     }
 
     /**

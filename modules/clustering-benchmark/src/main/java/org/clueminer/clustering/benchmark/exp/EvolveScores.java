@@ -33,10 +33,11 @@ public class EvolveScores extends Bench {
     public void main(String[] args) {
         EvolveParams params = parseArguments(args);
         if (params.test) {
-            loadIris();
+            load("iris");
         } else {
             loadDatasets();
         }
+        setupLogging(params);
         System.out.println("loaded dataset");
         int i = 0;
         for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : availableDatasets.entrySet()) {

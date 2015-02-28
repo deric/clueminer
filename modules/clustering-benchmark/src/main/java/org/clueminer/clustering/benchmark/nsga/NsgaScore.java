@@ -48,12 +48,18 @@ public class NsgaScore extends Bench {
     @Override
     public void main(String[] args) {
         NsgaParams params = parseArguments(args);
-        if (params.test) {
-            loadIris();
+        if (params.test || params.dataset != null) {
+            if (params.test) {
+                load("iris");
+            } else {
+                load(params.dataset);
+            }
         } else {
             loadDatasets();
         }
         System.out.println("loaded dataset");
+        setupLogging(params);
+
         int i = 0;
         for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : availableDatasets.entrySet()) {
             System.out.println((i++) + ":" + e.getKey());

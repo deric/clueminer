@@ -7,11 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.evolution.api.Individual;
-import org.clueminer.evolution.singlem.SingleMuteIndividual;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.utils.HashEvaluationTable;
 import static org.clueminer.evolution.singlem.SingleMuteIndividual.getFactory;
+import org.clueminer.oo.api.OpSolution;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
@@ -24,49 +32,74 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
  *
  * @author Tomas Barton
  */
-public class MoSolution implements IntegerSolution, Solution<Integer> {
+public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolution<Integer> {
 
     private static final long serialVersionUID = -523309284446031981L;
 
-    private final SingleMuteIndividual individual;
+    protected Clustering<? extends Cluster> clustering;
+    protected ClusteringAlgorithm algorithm;
+    protected Props genom;
     private final MoProblem problem;
-    private double[] objectives;
-    private int[] variables;
+    private final double[] objectives;
+    private final int[] variables;
     private double overallConstraintViolationDegree = 0;
     private int numberOfViolatedConstraints = 0;
     protected final JMetalRandom randomGenerator;
     protected Map<Object, Object> attributes;
     private static final Logger logger = Logger.getLogger(MoSolution.class.getName());
+    private static int counter = 0;
 
-    public MoSolution(MoProblem problem, SingleMuteIndividual individual) {
+    public MoSolution(MoProblem problem) {
         randomGenerator = JMetalRandom.getInstance();
-        this.individual = individual;
         this.problem = problem;
         this.variables = new int[problem.getNumberOfVariables()];
         attributes = new HashMap<>();
-
+        algorithm = problem.evolution.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
+        genom = new Props();
 
         numberOfViolatedConstraints = 0;
         overallConstraintViolationDegree = 0.0;
 
+        int value;
         for (int i = 0; i < problem.getNumberOfVariables(); i++) {
-            variables[i] = randomGenerator.nextInt(problem.getLowerBound(i), problem.getUpperBound(i));
+            value = randomGenerator.nextInt(problem.getLowerBound(i), problem.getUpperBound(i));
+            setVariableValue(i, value, false);
         }
+        updateCustering();
+    }
 
-        individual.updateCustering();
+    /**
+     * Copying constructor
+     *
+     * @param problem
+     * @param other
+     */
+    public MoSolution(MoProblem problem, MoSolution other) {
+        randomGenerator = other.randomGenerator;
+        this.problem = problem;
+        this.variables = new int[problem.getNumberOfVariables()];
+        attributes = new HashMap<>();
+        algorithm = problem.evolution.getAlgorithm();
+        objectives = new double[problem.getNumberOfObjectives()];
+        genom = other.genom.clone();
+
+        numberOfViolatedConstraints = 0;
+        overallConstraintViolationDegree = 0.0;
+
+        System.arraycopy(other.variables, 0, variables, 0, problem.getNumberOfVariables());
+        clustering = other.clustering;
     }
 
     public void evaluate() {
-        individual.updateCustering();
-        logger.info("evaluating clustering");
+        updateCustering();
         ClusterEvaluation eval;
         for (int i = 0; i < objectives.length; i++) {
             eval = problem.evolution.getObjective(i);
             if (eval.isMaximized()) {
-                objectives[i] = -individual.countFitness(eval);
+                objectives[i] = -countFitness(eval);
             } else {
-                objectives[i] = individual.countFitness(eval);
+                objectives[i] = countFitness(eval);
             }
         }
     }
@@ -94,7 +127,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
 
     @Override
     public String getVariableValueString(int index) {
-        return individual.getGen(problem.getVar(index));
+        return getGen(problem.getVar(index));
     }
 
     @Override
@@ -129,12 +162,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
 
     @Override
     public Solution copy() {
-        MoSolution copy = new MoSolution(problem, individual.deepCopy());
-        int i = 0;
-        for (int o : variables) {
-            copy.variables[i] = o;
-            i++;
-        }
+        MoSolution copy = new MoSolution(problem, this);
         return copy;
     }
 
@@ -147,18 +175,27 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
      */
     public final void setVariableValue(int id, int value, boolean update) {
         try {
-            Props prop = individual.getProps();
             Parameter param = problem.params[id];
             switch (param.getType()) {
                 case STRING:
                     ServiceFactory f = getFactory(param);
                     List<String> list = f.getProviders();
-                    prop.put(param.getName(), list.get(value));
-                    logger.log(Level.INFO, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
+                    genom.put(param.getName(), list.get(value));
+                    //check if configuration makes sense
+                    while (!isValid()) {
+                        logger.log(Level.FINER, "mutated from {0}  with invalid value: {1}", new Object[]{param.getName(), list.get(value)});
+                        int newValue;
+                        do {
+                            newValue = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
+                        } while (newValue == value);
+                        genom.put(param.getName(), list.get(newValue));
+                        value = newValue;
+                    }
+                    logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
                     break;
                 case BOOLEAN:
-                    logger.log(Level.INFO, "mutated {0} to !{1}", new Object[]{param.getName(), value});
-                    prop.putBoolean(param.getName(), (value != 0));
+                    logger.log(Level.FINE, "mutated {0} to !{1}", new Object[]{param.getName(), value});
+                    genom.putBoolean(param.getName(), (value != 0));
                     break;
 
                 default:
@@ -168,9 +205,10 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
+        //finally set variable value
+        variables[id] = value;
         if (update) {
-            logger.info("updating clustering ");
-            individual.updateCustering();
+            updateCustering();
         }
     }
 
@@ -247,8 +285,137 @@ public class MoSolution implements IntegerSolution, Solution<Integer> {
         return problem.getUpperBound(index);
     }
 
-    public Individual getIndividual() {
-        return individual;
+    /**
+     * Perform mutation of randomly selected attribute and don't update
+     * clustering
+     */
+    private void randomMutation() {
+        int id = randomGenerator.nextInt(0, problem.getNumberOfVariables() - 1);
+        int value = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
+        setVariableValue(id, value, false);
     }
 
+    /**
+     * Check if configuration is within constrains (could possibly produce some
+     * result)
+     *
+     * @return
+     */
+    @Override
+    public boolean isValid() {
+        boolean ret = true;
+        if (algorithm instanceof AgglomerativeClustering) {
+            AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @param clust
+     * @return
+     */
+    public boolean isValid(Clustering clust) {
+        boolean ret = true;
+        if (clustering == null) {
+            return false;
+        }
+
+        if (clustering.size() < 2) {
+            //we don't want solutions with 0 or 1 cluster
+            return false;
+        }
+
+        //strange clustering with missing items
+        if (clustering.instancesCount() != problem.evolution.getDataset().size()) {
+            return false;
+        }
+
+        return ret;
+    }
+
+    @Override
+    public Props getProps() {
+        return genom;
+    }
+
+    /**
+     * Hash table with various evaluations scores (eliminates repeated
+     * computations)
+     *
+     * @param clustering
+     * @return
+     */
+    @Override
+    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
+        EvaluationTable evalTable = clustering.getEvaluationTable();
+        //we try to compute score just once, to eliminate delays
+        if (evalTable == null) {
+            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            if (dataset == null) {
+                throw new RuntimeException("no dataset associated with clustering");
+            }
+            evalTable = new HashEvaluationTable(clustering, dataset);
+            clustering.setEvaluationTable(evalTable);
+        }
+        return evalTable;
+    }
+
+    @Override
+    public final Clustering<? extends Cluster> updateCustering() {
+        logger.log(Level.FINE, "starting clustering {0}", genom.toString());
+        //count number of clustering algorithm executions
+        counter++;
+        clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+        while (!isValid(clustering)) {
+            randomMutation();
+            counter++;
+            clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+        }
+
+        ClusterEvaluation eval = problem.evolution.getExternal();
+        if (eval != null) {
+            logger.log(Level.FINE, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
+        }
+        return clustering;
+    }
+
+    @Override
+    public Clustering<? extends Cluster> getClustering() {
+        return clustering;
+    }
+
+    /**
+     * Clustering should be updated after each mutation
+     *
+     * @param eval
+     * @return
+     */
+    public double countFitness(ClusterEvaluation eval) {
+        if (clustering == null) {
+            updateCustering();
+        }
+        EvaluationTable et = evaluationTable(clustering);
+        if (et == null) {
+            throw new RuntimeException("missing eval table");
+        }
+        return et.getScore(eval);
+    }
+
+    public String getGen(String key) {
+        return genom.get(key);
+    }
+
+    public void setGen(String key, String value) {
+        genom.put(key, value);
+    }
+
+    public static int getSolutionsCount() {
+        return counter;
+    }
+
+    public static void setSolutionsCount(int cnt) {
+        counter = cnt;
+    }
 }

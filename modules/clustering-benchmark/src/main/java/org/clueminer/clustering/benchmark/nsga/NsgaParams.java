@@ -32,6 +32,21 @@ public class NsgaParams extends AbsParams {
     public int generations = 10;
 
     @Parameter(names = "--population", description = "size of population in each generation")
-    public int population = 10;
+    public int population = 20;
+
+    @Parameter(names = "--solutions", description = "number of final solutions which will be returned as result")
+    public int solutions = 10;
+
+    @Parameter(names = "--supervised", description = "supervised criterion for external evaluation")
+    public String supervised = "Adjusted Rand";
+
+    @Parameter(names = "--mutation", description = "probability of mutation")
+    public double mutation = 0.5;
+
+    @Parameter(names = "--crossover", description = "probability of crossover")
+    public double crossover = 0.5;
+
+    @Parameter(names = "--dataset", description = "use specific dataset")
+    public String dataset = null;
 
 }

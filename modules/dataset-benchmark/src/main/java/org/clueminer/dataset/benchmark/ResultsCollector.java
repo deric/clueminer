@@ -1,34 +1,49 @@
 package org.clueminer.dataset.benchmark;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Set;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.oo.api.OpListener;
+import org.clueminer.oo.api.OpSolution;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ResultsCollector implements EvolutionListener {
+public class ResultsCollector implements EvolutionListener, OpListener {
 
     //reference to results table
-    private final Table<String, String, Double> table;
+    //we convert the table to CSV, so in the end it's going to be string
+    private Table<String, String, Double> table;
+    private Evolution evolution;
+    private Set<Clustering> allSolutions;
 
     public ResultsCollector(Table<String, String, Double> table) {
         this.table = table;
+        allSolutions = Sets.newHashSet();
     }
 
     @Override
     public void started(Evolution evolution) {
+        this.evolution = evolution;
     }
 
     @Override
@@ -80,5 +95,49 @@ public class ResultsCollector implements EvolutionListener {
     @Override
     public void resultUpdate(Individual[] result) {
         //we are mostly interested for final set of clusterings, not incremental updates
+    }
+
+    @Override
+    public void finalResult(List<OpSolution> result) {
+        ExternalEvaluatorFactory ef = ExternalEvaluatorFactory.getInstance();
+        List<ExternalEvaluator> eval = ef.getAll();
+
+        Clustering clust;
+        int i = 0;
+        for (OpSolution sol : result) {
+            clust = sol.getClustering();
+
+            if (!allSolutions.contains(clust)) {
+                String key = null;
+                //store objectives
+                if (evolution instanceof EvolutionMO) {
+                    EvolutionMO mo = (EvolutionMO) evolution;
+                    key = getKey(mo);
+                }
+
+                for (ExternalEvaluator e : eval) {
+                    table.put(evolution.getDataset().getName() + " - " + key + " #" + i, e.getName(), clust.getEvaluationTable().getScore(e));
+                }
+                allSolutions.add(clust);
+                i++;
+            }
+        }
+    }
+
+    private String getKey(EvolutionMO evo) {
+        StringBuilder sb = new StringBuilder();
+        List<ClusterEvaluation> evals = evo.getObjectives();
+        for (int i = 0; i < evals.size(); i++) {
+            if (i > 0) {
+                sb.append(" & ");
+            }
+            sb.append(evals.get(i).getName());
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public void finishedBatch() {
+        allSolutions = Sets.newHashSet();
     }
 }

@@ -3,9 +3,12 @@ package org.clueminer.evolution.mo;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.evolution.singlem.SingleMuteIndividual;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
 import org.uma.jmetal.problem.IntegerProblem;
@@ -25,11 +28,14 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     protected int[] lowerLimit;
     protected int[] upperLimit;
     protected Parameter[] params;
+    private static final Logger logger = Logger.getLogger(MoProblem.class.getName());
+    protected Executor exec;
 
     public MoProblem(MoEvolution evolution) {
         this.evolution = evolution;
         setNumberOfObjectives(evolution.getNumObjectives());
         initializeGenomMapping(evolution.getAlgorithm());
+        exec = new ClusteringExecutorCached();
     }
 
     @Override
@@ -39,26 +45,31 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
 
     @Override
     public IntegerSolution createSolution() {
-        return (IntegerSolution) new MoSolution(this, new SingleMuteIndividual(evolution));
+        return (IntegerSolution) new MoSolution(this);
     }
 
     private void initializeGenomMapping(ClusteringAlgorithm algorithm) {
         params = algorithm.getParameters();
         mapping = new Int2ObjectOpenHashMap(params.length);
         int i = 0;
+        int combinations = 1;
         lowerLimit = new int[params.length];
         upperLimit = new int[params.length];
         for (Parameter p : params) {
             try {
                 mapping.put(i, p.getName());
+                logger.log(Level.INFO, "param {0}: {1}", new Object[]{i, p.getName()});
                 lowerLimit[i] = 0;
                 switch (p.getType()) {
                     case STRING:
                         ServiceFactory f = getFactory(p);
-                        upperLimit[i] = f.getAll().size();
+                        //indexed from zero, must be size - 1
+                        upperLimit[i] = f.getAll().size() - 1;
+                        combinations *= f.getAll().size();
                         break;
                     case BOOLEAN:
                         upperLimit[i] = 1;
+                        combinations *= 2;
                         break;
                     default:
                         throw new RuntimeException(p.getType() + " is not supported yet");
@@ -69,6 +80,8 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
                 Exceptions.printStackTrace(ex);
             }
         }
+        logger.log(Level.INFO, "number of combinations = {0}", combinations);
+        setNumberOfVariables(params.length);
     }
 
     @Override

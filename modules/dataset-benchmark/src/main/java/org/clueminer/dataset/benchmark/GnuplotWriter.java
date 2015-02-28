@@ -30,7 +30,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     private final Evolution evolution;
     private final Dataset<? extends Instance> dataset;
-    private final String benchmarkFolder;
     private final String outputDir;
     private final String dataDir;
     private final LinkedList<String> results;
@@ -38,7 +37,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     private int plotDumpMod = 10;
     private boolean plotIndividuals = false;
     private final LinkedList<String> plots;
-    private String customTitle;
     private int top = 5;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
@@ -47,7 +45,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
         this.outputDir = benchmarkDir + File.separatorChar + subDirectory;
-        this.benchmarkFolder = benchmarkDir;
         this.dataDir = getDataDir(outputDir);
         mkdir(dataDir);
     }
@@ -174,24 +171,11 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         }
 
         writeGnuplot(dir, scriptFile, gnuplotFitness(dataFile, validator, evolution.getExternal()));
+        plots.add(scriptFile);
         writeGnuplot(dir, scriptExtern, gnuplotExternal(dataFile, evolution.getExternal()));
+        plots.add(scriptExtern);
         writeGnuplot(dir, scriptTopFile, gnuplotTop(dataFile, validator, evolution.getExternal()));
-    }
-
-    private void writeGnuplot(String dir, String scriptFile, String content) {
-        PrintWriter template = null;
-        String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
-        try {
-            template = new PrintWriter(script, "UTF-8");
-            template.write(content);
-            plots.add(scriptFile);
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (template != null) {
-                template.close();
-            }
-        }
+        plots.add(scriptTopFile);
     }
 
     private String getTitle(ClusterEvaluation validator) {
@@ -312,10 +296,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return res;
     }
 
-    private String getDataDir(String dir) {
-        return mkdir(dir) + File.separatorChar + "data" + File.separatorChar;
-    }
-
     public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
         String[] header = new String[dataset.attributeCount() + 2];
         header[dataset.attributeCount()] = "label";
@@ -354,10 +334,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
      */
     public void setPlotDumpMod(int plotDumpMod) {
         this.plotDumpMod = plotDumpMod;
-    }
-
-    public void setCustomTitle(String customTitle) {
-        this.customTitle = customTitle;
     }
 
     public int getTop() {
