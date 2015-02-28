@@ -327,9 +327,17 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             return false;
         }
 
+        Dataset<? extends Instance> dataset = problem.evolution.getDataset();
         //strange clustering with missing items
-        if (clustering.instancesCount() != problem.evolution.getDataset().size()) {
+        if (clustering.instancesCount() != dataset.size()) {
             return false;
+        }
+
+        //limit maximum size of clusters allowed
+        if (problem.evolution.iskLimited()) {
+            if (clustering.size() > Math.sqrt(dataset.size())) {
+                return false;
+            }
         }
 
         return ret;

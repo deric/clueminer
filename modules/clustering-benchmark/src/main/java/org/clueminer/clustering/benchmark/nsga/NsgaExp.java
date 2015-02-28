@@ -71,6 +71,7 @@ public class NsgaExp implements Runnable {
             evolution.setExternal(EvaluationFactory.getInstance().getProvider(params.supervised));
             evolution.setMutationProbability(params.mutation);
             evolution.setCrossoverProbability(params.crossover);
+            evolution.setkLimit(params.limitK);
             ClusterEvaluation c1, c2;
 
             GnuplotMO gw = new GnuplotMO();

@@ -49,4 +49,7 @@ public class NsgaParams extends AbsParams {
     @Parameter(names = "--dataset", description = "use specific dataset")
     public String dataset = null;
 
+    @Parameter(names = "--limit-k", description = "limit max. clusterings size to sqrt(n)")
+    public boolean limitK = false;
+
 }
