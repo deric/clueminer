@@ -72,20 +72,21 @@ public class PointBiserial extends AbstractEvaluator {
         double meanDb = db / fb;
         // calculate standard deviation of all distances (sum inter and intra)
         double tmpSdw = 0, tmpSdb = 0;
+        double distance;
         for (int i = 0; i < clusters.size(); i++) {
             first = clusters.get(i);
             for (int j = 0; j < first.size(); j++) {
                 x = first.instance(j);
                 for (int k = j + 1; k < first.size(); k++) {
                     y = first.instance(k);
-                    double distance = dm.measure(x, y);
+                    distance = dm.measure(x, y);
                     tmpSdw += (distance - meanDw) * (distance - meanDw);
                 }
                 for (int k = i + 1; k < clusters.size(); k++) {
                     second = clusters.get(k);
                     for (int l = 0; l < second.size(); l++) {
                         y = second.instance(l);
-                        double distance = dm.measure(x, y);
+                        distance = dm.measure(x, y);
                         tmpSdb += (distance - meanDb) * (distance - meanDb);
                     }
                 }
