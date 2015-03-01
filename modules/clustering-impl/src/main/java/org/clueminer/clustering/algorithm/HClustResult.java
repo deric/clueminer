@@ -27,6 +27,7 @@ import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
@@ -244,6 +245,14 @@ public class HClustResult implements HierarchicalResult {
 
     private void checkCutoff(DendroNode node, double cutoff, Clustering clusters, int[] assign) {
         if (node.isLeaf()) {
+            if (treeData.containsClusters()) {
+                DClusterLeaf leaf = (DClusterLeaf) node;
+                Cluster clust = makeCluster(clusters);
+                for (Instance instance : leaf.getInstances()) {
+                    clust.add(instance);
+                    assign[instance.getIndex()] = clust.getClusterId();
+                }
+            }
             return;
         }
         if (node.getHeight() == cutoff) {
@@ -284,8 +293,16 @@ public class HClustResult implements HierarchicalResult {
 
     private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
         if (node.isLeaf()) {
-            c.add(((DendroLeaf) node).getData());
-            assign[node.getId()] = c.getClusterId();
+            if (treeData.containsClusters()) {
+                DClusterLeaf leaf = (DClusterLeaf) node;
+                for (Instance instance : leaf.getInstances()) {
+                    c.add(instance);
+                    assign[instance.getIndex()] = c.getClusterId();
+                }
+            } else {
+                c.add(((DendroLeaf) node).getData());
+                assign[node.getId()] = c.getClusterId();
+            }
         } else {
             subtreeToCluster(node.getLeft(), c, assign);
             subtreeToCluster(node.getRight(), c, assign);
