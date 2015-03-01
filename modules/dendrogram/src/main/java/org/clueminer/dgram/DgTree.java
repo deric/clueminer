@@ -18,6 +18,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.gui.BPanel;
+import org.clueminer.hclust.DLeaf;
 import org.clueminer.std.StdScale;
 
 /**
@@ -122,7 +123,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     protected void drawNode(Graphics2D g2, DendroNode node, int nx, int ny) {
         Ellipse2D.Double circle;
         if (node.isLeaf()) {
-            if (drawNodeCircle) {
+            if (drawNodeCircle && !isClusterLeaf(node)) {
                 circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
                 g2.fill(circle);
             }
@@ -136,6 +137,16 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
             circle = new Ellipse2D.Double(nx - diameter / 2.0, ny - diameter / 2.0, diameter, diameter);
             g2.fill(circle);
         }
+    }
+
+    protected boolean isClusterLeaf(DendroNode node) {
+        if (node != null && node.isLeaf()) {
+            DLeaf leaf = (DLeaf) node;
+            if (leaf.containsCluster()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
