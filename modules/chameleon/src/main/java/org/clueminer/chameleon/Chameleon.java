@@ -46,15 +46,15 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     MergingStrategy mergeStrategy;
 
     public Chameleon() {
-        this(-1, -1, true, MergingStrategy.MULTIPLE);
+        this(-1, -1, true, MergingStrategy.PAIR);
     }
 
     public Chameleon(int k) {
-        this(k, -1, true, MergingStrategy.MULTIPLE);
+        this(k, -1, true, MergingStrategy.PAIR);
     }
 
     public Chameleon(int k, int maxPartitionSize) {
-        this(k, maxPartitionSize, true, MergingStrategy.MULTIPLE);
+        this(k, maxPartitionSize, true, MergingStrategy.PAIR);
     }
 
     public Chameleon(int k, int maxPartitionSize, boolean weightedPartitioning, MergingStrategy mergeStrategy) {
@@ -118,7 +118,17 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        KNN knn = new KNN(k);
+
+        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
+        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
+
+        KernighanLinRecursive klr = new KernighanLinRecursive(weightedPartitioning);
+        ArrayList<LinkedList<Node>> partitioningResult = klr.partition(maxPartitionSize, g);
+
+        PairMerger m = new PairMerger(g);
+
+        return m.getHierarchy(partitioningResult, dataset);
     }
 
     @Override

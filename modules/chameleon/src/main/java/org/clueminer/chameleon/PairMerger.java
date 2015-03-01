@@ -3,17 +3,20 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DLeaf;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
-import org.clueminer.hclust.DynamicTreeData;
+import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
@@ -48,19 +51,24 @@ public class PairMerger extends Merger {
         return getResult();
     }
 
-    public HierarchicalResult hierarchy(ArrayList<LinkedList<Node>> clusterList) {
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         initiateTree(clusterList);
+        HierarchicalResult result = new HClustResult(dataset);
 
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
+            //GraphPrinter gp = new GraphPrinter(true);
+            // gp.printClusters(graph, 5, getResult(), "/home/tomas/Desktop", Integer.toString(i));
         }
 
-        DendroTreeData treeData = new DynamicTreeData(nodes[2 * clusterList.size() - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        treeData.printWithHeight();
+        treeData.createMapping(dataset.size(), treeData.getRoot());
 
-        treeData.print();
-        return null;
+        result.setTreeData(treeData);
+        return result;
     }
 
     private void initiateTree(ArrayList<LinkedList<Node>> clusterList) {
@@ -68,9 +76,17 @@ public class PairMerger extends Merger {
         idCounter = clusterList.size();
         height = 1;
         for (int i = 0; i < clusterList.size(); i++) {
-            nodes[i] = new DLeaf(i, clusterList.get(i).getFirst().getInstance());
+            nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
             nodes[i].setHeight(0);
         }
+    }
+
+    private LinkedList<Instance> createInstanceList(LinkedList<Node> nodes) {
+        LinkedList<Instance> out = new LinkedList<>();
+        for (Node node : nodes) {
+            out.add(node.getInstance());
+        }
+        return out;
     }
 
     private void singleMerge(ArrayList<LinkedList<Node>> clusterList) {
