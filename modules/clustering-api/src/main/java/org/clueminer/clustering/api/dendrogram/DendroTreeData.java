@@ -126,4 +126,11 @@ public interface DendroTreeData {
      */
     double updatePositions(DendroNode node);
 
+    /**
+     * Whether the tree leaves contain clusters.
+     *
+     * @return
+     */
+    public boolean containsClusters();
+
 }

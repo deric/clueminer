@@ -158,6 +158,12 @@
             <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.clueminer</groupId>
+            <artifactId>graph-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>

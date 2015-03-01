@@ -15,8 +15,8 @@ import org.openide.util.Exceptions;
 public class DynamicTreeData implements DendroTreeData {
 
     private DendroNode root;
-    private int[] mapping;
-    private DendroNode[] leaves;
+    protected int[] mapping;
+    protected DendroNode[] leaves;
 
     public DynamicTreeData() {
 
@@ -275,7 +275,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param capacity
      */
-    private void ensureCapacity(int capacity) {
+    protected void ensureCapacity(int capacity) {
         if (mapping == null) {
             mapping = new int[capacity];
             leaves = new DendroNode[capacity];
@@ -321,6 +321,11 @@ public class DynamicTreeData implements DendroTreeData {
         double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
         node.setPosition(position);
         return position;
+    }
+
+    @Override
+    public boolean containsClusters() {
+        return false;
     }
 
 }
