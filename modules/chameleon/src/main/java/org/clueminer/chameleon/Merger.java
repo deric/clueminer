@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.impl.KernighanLin;
 
@@ -199,4 +201,17 @@ public abstract class Merger {
         return RCL + RIC;
     }
 
+    protected Matrix createMatrix() {
+
+        Matrix m = new SymmetricMatrix(clusterMatrix.size(), clusterMatrix.size());
+
+        for (int i = 0; i < clusterMatrix.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                double similarity = computeSimilarity(i, j);
+                m.set(j, i, similarity);
+            }
+        }
+
+        return m;
+    }
 }
