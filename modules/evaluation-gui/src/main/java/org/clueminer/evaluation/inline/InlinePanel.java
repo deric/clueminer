@@ -98,7 +98,7 @@ public class InlinePanel extends JPanel {
             public void actionPerformed(ActionEvent ae) {
                 SortingExporter exp = new SortingExporter();
                 exp.setDataset(plot.getDataset());
-                exp.setResults(plot.getResults());
+                //  exp.setResults(plot.getResults());
                 exp.setClusterings(plot.getClusterings());
                 exp.showDialog();
             }
