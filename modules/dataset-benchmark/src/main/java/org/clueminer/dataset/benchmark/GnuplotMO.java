@@ -24,8 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -48,11 +48,11 @@ import org.openide.util.Exceptions;
 public class GnuplotMO extends GnuplotHelper implements OpListener {
 
     private EvolutionMO evolution;
-    private LinkedList<String> plots;
+    private HashSet<String> plots;
     private Set<Clustering> allSolutions;
 
     public GnuplotMO() {
-        plots = new LinkedList<>();
+        plots = new HashSet<>();
         allSolutions = Sets.newHashSet();
     }
 
