@@ -25,7 +25,6 @@ import java.util.HashSet;
 import javax.swing.JFrame;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
-import org.clueminer.evaluation.gui.SortingDemo;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.openide.util.Exceptions;
 
@@ -45,9 +44,10 @@ public class InlineDemo extends JFrame {
         EvaluationFactory ef = EvaluationFactory.getInstance();
 
         evalPlot.setEvaluatorX(ef.getProvider("NMI"));
-        evalPlot.setEvaluatorY(ef.getProvider("AIC Score"));
+        evalPlot.setEvaluatorY(ef.getProvider("AIC score"));
 
-        Collection<Clustering> clusterings = new HashSet<>(4);
+        Collection<Clustering> clusterings = new HashSet<>(6);
+        clusterings.add(FakeClustering.iris());
         clusterings.add(FakeClustering.irisWrong4());
         clusterings.add(FakeClustering.irisWrong());
         clusterings.add(FakeClustering.irisWrong2());
@@ -60,7 +60,7 @@ public class InlineDemo extends JFrame {
 
     // this function will be run from the EDT
     private static void createAndShowGUI() throws Exception {
-        SortingDemo gui = new SortingDemo();
+        InlineDemo gui = new InlineDemo();
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setSize(500, 500);
         gui.setVisible(true);
