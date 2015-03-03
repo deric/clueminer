@@ -41,6 +41,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
     protected List<ClusterEvaluation> objectives;
     private int numSolutions = 5;
+    private boolean kLimit;
     protected final transient ListenerList<OpListener> moListeners = new ListenerList<>();
 
     public MoEvolution() {
@@ -228,6 +229,14 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     @Override
     public void setNumSolutions(int numSolutions) {
         this.numSolutions = numSolutions;
+    }
+
+    public boolean iskLimited() {
+        return kLimit;
+    }
+
+    public void setkLimit(boolean kLimit) {
+        this.kLimit = kLimit;
     }
 
 }

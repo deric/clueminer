@@ -9,13 +9,10 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
- * @author Tomas Barton
- */
-/**
- * I_1 from the Zhao 2001 paper TODO uitleg
+ * I_1 from the Zhao 2001 paper
  *
  * @author Andreas De Rijcke
+ * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
@@ -57,7 +54,7 @@ public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return score(clusters, dataset);
     }
 
     @Override

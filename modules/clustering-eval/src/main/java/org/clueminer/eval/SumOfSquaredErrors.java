@@ -11,9 +11,9 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * I_3 from the Zhao 2001 paper
  *
- * TODO uitleg
  *
  * @author Andreas De Rijcke
+ * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class SumOfSquaredErrors extends AbstractEvaluator {
@@ -55,7 +55,7 @@ public class SumOfSquaredErrors extends AbstractEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return score(clusters, dataset);
     }
 
     @Override

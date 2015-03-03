@@ -48,6 +48,17 @@ public class ClusteringComparator implements Comparator<Clustering> {
         return evalTable;
     }
 
+    /**
+     * Searches for cached score, if missing computes score and stores it into
+     * the cache
+     *
+     * @param clustering
+     * @return score of given clustering with current evaluator
+     */
+    public double getScore(Clustering<? extends Cluster> clustering) {
+        return evaluationTable(clustering).getScore(evaluator);
+    }
+
     public ClusterEvaluation getEvaluator() {
         return evaluator;
     }

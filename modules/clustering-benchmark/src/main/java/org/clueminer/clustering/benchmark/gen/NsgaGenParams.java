@@ -14,31 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.benchmark.nsga;
+package org.clueminer.clustering.benchmark.gen;
 
 import com.beust.jcommander.Parameter;
 import org.clueminer.clustering.benchmark.AbsParams;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
-public class NsgaParams extends AbsParams {
-
-    @Parameter(names = "--test", description = "test only on one dataset")
-    public boolean test = false;
-
-    @Parameter(names = "--generations", description = "number of generations in evolution")
-    public int generations = 10;
+public class NsgaGenParams extends AbsParams {
 
     @Parameter(names = "--population", description = "size of population in each generation")
     public int population = 20;
 
     @Parameter(names = "--solutions", description = "number of final solutions which will be returned as result")
     public int solutions = 10;
-
-    @Parameter(names = "--supervised", description = "supervised criterion for external evaluation")
-    public String supervised = "Adjusted Rand";
 
     @Parameter(names = "--mutation", description = "probability of mutation")
     public double mutation = 0.5;
@@ -49,7 +40,10 @@ public class NsgaParams extends AbsParams {
     @Parameter(names = "--dataset", description = "use specific dataset")
     public String dataset = null;
 
-    @Parameter(names = "--limit-k", description = "limit max. clusterings size to sqrt(n)")
-    public boolean limitK = false;
+    @Parameter(names = "--c1", description = "criterion 1")
+    public String c1 = "Davies-Bouldin";
+
+    @Parameter(names = "--c2", description = "criterion 2")
+    public String c2 = "AIC score";
 
 }

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.benchmark.nsga;
+package org.clueminer.clustering.benchmark.gen;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
@@ -38,87 +38,29 @@ import org.openide.util.Exceptions;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
-public class NsgaExp implements Runnable {
+public class NsgaGenExp implements Runnable {
 
     private static ResultsCollector rc;
-    private NsgaParams params;
+    private NsgaGenParams params;
     private String benchmarkFolder;
-    private ClusterEvaluation[] scores;
     private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
-    private static final Logger logger = Logger.getLogger(NsgaExp.class.getName());
+    private ClusterEvaluation c1;
+    private ClusterEvaluation c2;
+    private static final Logger logger = Logger.getLogger(NsgaGenExp.class.getName());
 
-    public NsgaExp(NsgaParams params, String benchmarkFolder, ClusterEvaluation[] scores, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
+    public NsgaGenExp(NsgaGenParams params, String benchmarkFolder, ClusterEvaluation c1, ClusterEvaluation c2, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
         this.params = params;
         this.benchmarkFolder = benchmarkFolder;
-        this.scores = scores;
+        this.c1 = c1;
+        this.c2 = c2;
         this.datasets = availableDatasets;
 
         createTable();
         rc = new ResultsCollector(table);
-    }
-
-    @Override
-    public void run() {
-        try {
-            MoEvolution evolution = new MoEvolution();
-            evolution.setGenerations(params.generations);
-            evolution.setPopulationSize(params.population);
-            evolution.setNumSolutions(params.solutions);
-            evolution.setExternal(EvaluationFactory.getInstance().getProvider(params.supervised));
-            evolution.setMutationProbability(params.mutation);
-            evolution.setCrossoverProbability(params.crossover);
-            evolution.setkLimit(params.limitK);
-            ClusterEvaluation c1, c2;
-
-            GnuplotMO gw = new GnuplotMO();
-            //gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
-            //collect data from evolution
-            evolution.addEvolutionListener(new ConsoleDump());
-            evolution.addMOEvolutionListener(gw);
-            evolution.addMOEvolutionListener(rc);
-
-            String name;
-            logger.log(Level.INFO, "datasets size: {0}", datasets.size());
-            for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
-                Dataset<? extends Instance> d = e.getValue().getKey();
-                name = safeName(d.getName());
-                String csvRes = benchmarkFolder + File.separatorChar + name + File.separatorChar + "_" + name + ".csv";
-                logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
-                //ensureFolder(benchmarkFolder + File.separatorChar + name);
-
-                gw.setCurrentDir(benchmarkFolder, name);
-
-                evolution.setDataset(d);
-
-                for (int i = 0; i < scores.length; i++) {
-                    c1 = scores[i];
-                    //lower triangular matrix without diagonal
-                    //(doesn't matter which criterion is first, we want to try
-                    //all combinations)
-                    for (int j = 0; j < i; j++) {
-                        c2 = scores[j];
-                        evolution.clearObjectives();
-                        evolution.addObjective(c1);
-                        evolution.addObjective(c2);
-                        //run!
-                        for (int k = 0; k < params.repeat; k++) {
-                            logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
-                            evolution.run();
-                            rc.writeToCsv(csvRes);
-                        }
-                        evolution.fireFinishedBatch();
-                        logger.log(Level.INFO, "finished {0} & {1}", new Object[]{c1.getName(), c2.getName()});
-                    }
-                }
-                createTable();
-            }
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
-        }
     }
 
     private void createTable() {
@@ -131,4 +73,59 @@ public class NsgaExp implements Runnable {
                     }
                 });
     }
+
+    @Override
+    public void run() {
+        try {
+            MoEvolution evolution = new MoEvolution();
+
+            evolution.setPopulationSize(params.population);
+            evolution.setNumSolutions(params.solutions);
+            evolution.setExternal(EvaluationFactory.getInstance().getProvider("Jaccard"));
+            evolution.setMutationProbability(params.mutation);
+            evolution.setCrossoverProbability(params.crossover);
+
+            GnuplotMO gw = new GnuplotMO();
+            //gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
+            //collect data from evolution
+            evolution.addEvolutionListener(new ConsoleDump());
+            evolution.addMOEvolutionListener(gw);
+            evolution.addMOEvolutionListener(rc);
+            evolution.addObjective(c1);
+            evolution.addObjective(c2);
+
+            int[] generations = new int[]{1, 10, 50, 100, 1000};
+
+            String name;
+            String folder;
+            logger.log(Level.INFO, "datasets size: {0}", datasets.size());
+            for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
+                Dataset<? extends Instance> d = e.getValue().getKey();
+                name = safeName(d.getName());
+                folder = benchmarkFolder + File.separatorChar + name;
+                gw.mkdir(folder);
+                String csvRes = folder + File.separatorChar + "_" + name + ".csv";
+                logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
+                //ensureFolder(benchmarkFolder + File.separatorChar + name);
+
+                evolution.setDataset(d);
+
+                for (int i = 0; i < generations.length; i++) {
+                    int g = generations[i];
+                    evolution.setGenerations(g);
+                    gw.setCurrentDir(benchmarkFolder, name + "-" + g);
+                    //for (int k = 0; k < params.repeat; k++) {
+                    //   logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
+                    evolution.run();
+                    rc.writeToCsv(csvRes);
+                    //}
+                    evolution.fireFinishedBatch();
+                }
+                createTable();
+            }
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
+    }
+
 }

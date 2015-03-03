@@ -72,7 +72,7 @@ public class WB extends AbstractEvaluator {
 
     @Override
     public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return score(clusters, dataset);
     }
 
     @Override
