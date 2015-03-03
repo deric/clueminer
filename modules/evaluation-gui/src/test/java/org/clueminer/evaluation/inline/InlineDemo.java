@@ -48,11 +48,11 @@ public class InlineDemo extends JFrame {
 
         Collection<Clustering> clusterings = new HashSet<>(6);
         clusterings.add(FakeClustering.iris());
+        clusterings.add(FakeClustering.irisMostlyWrong());
         clusterings.add(FakeClustering.irisWrong4());
         clusterings.add(FakeClustering.irisWrong());
         clusterings.add(FakeClustering.irisWrong2());
         clusterings.add(FakeClustering.irisWrong5());
-        clusterings.add(FakeClustering.irisMostlyWrong());
 
         evalPlot.setClusterings(clusterings);
 

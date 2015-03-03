@@ -93,7 +93,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         this.preserveAlpha = true;
         compInternal = new ClusteringComparator(new AICScore());
         compExternal = new ClusteringComparator(new NMI());
-        colorScheme = new ColorSchemeImpl(Color.green, Color.BLACK, Color.RED);
+        colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         try {
             initialize();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
@@ -222,24 +222,22 @@ public class ScorePlot extends BPanel implements TaskListener {
     public void render(Graphics2D g) {
         //canvas dimensions
         int cxMin, cxMax, cyMin, cyMax;
-        cxMin = insets.left;
+        cxMin = insets.left + 20;
         cyMin = insets.top + 15;
         cyMax = getSize().height - insets.bottom;
-        int cyMid = (int) (cyMax / 2);
-        cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
-        int cxMid = (int) (cxMax / 2);
-        drawYLabel(g, compInternal.getEvaluator().getName(), cyMin, cxMid);
+        int cyMid = (int) ((cyMax - cyMin) / 2) + cyMin;
+        cxMax = drawXLabel(g, compInternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
+        int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
+        drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
 
-        Clustering clust;
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
-        System.out.println("internal isze: " + internal.length);
-        ymin = scoreMin(internal, compInternal);
-        ymax = scoreMax(internal, compInternal);
-        ymid = (ymax - ymin) / 2.0 + ymin;
-        xmin = scoreMin(external, compExternal);
-        xmax = scoreMax(external, compExternal);
+        xmin = scoreMin(internal, compInternal);
+        xmax = scoreMax(internal, compInternal);
         xmid = (xmax - xmin) / 2.0 + xmin;
+        ymin = scoreMin(external, compExternal);
+        ymax = scoreMax(external, compExternal);
+        ymid = (ymax - ymin) / 2.0 + ymin;
 
         //set font for rendering rows
         g.setFont(defaultFont);
@@ -247,49 +245,32 @@ public class ScorePlot extends BPanel implements TaskListener {
         int rectWidth = 10; //TODO: fix this
         //draw
         Rectangle2D rect;
-        System.out.println("component: " + getSize().toString());
-        System.out.println("xmin: " + xmin + ", xmax: " + xmax);
-        System.out.println("ymin: " + ymin + ", ymid: " + ymid + ", ymax: " + ymax);
         drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
-        drawVerticalScale(g, cyMin, cyMax, cxMid, ymax, ymin);
-        for (int col = 0; col < external.length; col++) {
-            //left clustering
-            clust = external[col];
+        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
 
-            score = compExternal.getScore(clust);
-            System.out.println("ext: " + score);
-            xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax);
+        for (Clustering clust : external) {
+            //left clustering
             score = compInternal.getScore(clust);
+            xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
+            score = compExternal.getScore(clust);
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
-            System.out.println(col + ": y =" + yVal);
-            // g.setColor(fontColor);
-            // drawClustering(g, clust, rectWidth, xVal, yVal, mid);
-//            g.setStroke(wideStroke);
-            System.out.println("rect: " + xVal + ", " + yVal);
             g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
             g.setColor(colorScheme.getColor(score, ymin, ymid, ymax));
-
-            int y = (int) yVal;
-            int xs;
             if (yVal < cyMid) {
-                xs = (int) (cyMid - yVal);
+                rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
             } else {
-                xs = (int) (cyMid + yVal);
+                rect = new Rectangle2D.Double(xVal, cyMid, rectWidth, yVal - cyMid);
             }
-
-            //g.drawRect((int) xVal, mid, rectWidth, y);
-            rect = new Rectangle2D.Double(xVal, xs, rectWidth, y);
             g.fill(rect);
             g.draw(rect);
             g.setComposite(AlphaComposite.SrcOver);
-
-            // g.setColor(colorScheme.getColor(dist, minDist, midDist, maxDist));
-            // g.draw(line);
-            // g.setStroke(wideStroke);
-            //  g.draw(new Line2D.Double(10.0, 50.0, 100.0, 50.0));
+            g.setColor(Color.black);
+            //drawNumberX(score, (int) xVal, (int) yVal);
+            drawNumberX(clust.size(), (int) xVal, (int) yVal);
         }
         g.setColor(fontColor);
+
         //average distance per item
         g.dispose();
     }
