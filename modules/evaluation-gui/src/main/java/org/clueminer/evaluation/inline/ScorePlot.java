@@ -220,10 +220,10 @@ public class ScorePlot extends BPanel implements TaskListener {
         //canvas dimensions
         double cxMin, cxMax, cyMin, cyMax;
         cxMin = 10.0;
-        cxMax = getSize().width;
         cyMin = 0.0;
         cyMax = getSize().height;
         int mid = (int) (cyMax / 2);
+        cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width, mid);
         Clustering clust;
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
@@ -235,7 +235,6 @@ public class ScorePlot extends BPanel implements TaskListener {
         xmax = scoreMax(external, compExternal);
         xmid = (xmax - xmin) / 2.0 + xmin;
 
-        headerHeight = drawHeader(g);
         //set font for rendering rows
         g.setFont(defaultFont);
         double xVal, yVal, score;
@@ -245,7 +244,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         System.out.println("component: " + getSize().toString());
         System.out.println("xmin: " + xmin + ", xmax: " + xmax);
         System.out.println("ymin: " + ymin + ", ymid: " + ymid + ", ymax: " + ymax);
-        g.drawLine(0, mid, (int) cxMax, mid);
+        g.drawLine((int) cxMin, mid, (int) cxMax, mid);
         for (int col = 0; col < external.length; col++) {
             //left clustering
             clust = external[col];
@@ -289,33 +288,34 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     /**
+     * Compute string width for given string
      *
-     * @param g
-     * @return height of drawn header
+     * @param f
+     * @param g2
+     * @param str
+     * @return
      */
-    private int drawHeader(Graphics2D g) {
-        g.setColor(fontColor);
-        //approx one third
-        int colWidth = getSize().width / 3;
-        g.setFont(headerFont);
-        String eval1 = compInternal.getEvaluator().getName();
-        String eval2 = compExternal.getEvaluator().getName();
-        updateHeaderFont(eval1, eval2, colWidth, g);
-
-        int strWidth = stringWidth(headerFont, g, eval1);
-        int x = (colWidth - strWidth) / 2;
-        int y = (int) (headerFontSize + g.getFontMetrics().getDescent() * 2);
-        g.drawString(eval1, x, y);
-
-        //3rd column
-        strWidth = stringWidth(headerFont, g, eval2);
-        x = 2 * colWidth + (colWidth - strWidth) / 2;
-        g.drawString(eval2, x, y);
-        return y + 20;
-    }
-
     private int stringWidth(Font f, Graphics2D g2, String str) {
         return (int) (f.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+    }
+
+    /**
+     *
+     * @param g2
+     * @param label
+     * @param xmax
+     * @param ymid
+     * @return position where should x axis end
+     */
+    private int drawXLabel(Graphics2D g2, String label, int xmax, int ymid) {
+        g2.setColor(fontColor);
+        g2.setFont(defaultFont);
+        int strWidth = stringWidth(defaultFont, g, label);
+        // 2nd column
+        int x = xmax - strWidth - 5;
+        int y = (int) (ymid - defaultFont.getSize() - g.getFontMetrics().getDescent() * 2.0);
+        g.drawString(label, x, y);
+        return x;
     }
 
     private void drawDistance(Graphics2D g2, double distance) {
@@ -388,7 +388,7 @@ public class ScorePlot extends BPanel implements TaskListener {
                 fontSize = (int) (0.8 * elemHeight);
                 strokeW = 0.05 * elemHeight;
                 wideStroke = new BasicStroke((float) strokeW);
-                defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
+                //defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
                 minDist = 0;
                 maxDist = itemsCnt();
                 //for euclidean distance
