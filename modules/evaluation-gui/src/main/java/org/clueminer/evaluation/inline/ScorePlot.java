@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.swing.UIDefaults;
@@ -81,6 +82,9 @@ public class ScorePlot extends BPanel implements TaskListener {
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
     private Color fontColor;
     private final StdScale scale;
+    private int scaleTickLength = 6;
+    protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private int labelOffset = 13;
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -106,7 +110,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         setBackground(defaults.getColor("window"));
     }
 
-    void setEvaluatorX(final ClusterEvaluation provider) {
+    protected void setEvaluatorY(final ClusterEvaluation provider) {
         if (internal != null && internal.length > 1) {
             final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RP.post(new Runnable() {
@@ -124,7 +128,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         }
     }
 
-    void setEvaluatorY(final ClusterEvaluation provider) {
+    protected void setEvaluatorX(final ClusterEvaluation provider) {
         if (external != null && external.length > 1) {
             final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RequestProcessor.Task task = RP.post(new Runnable() {
@@ -218,9 +222,9 @@ public class ScorePlot extends BPanel implements TaskListener {
     @Override
     public void render(Graphics2D g) {
         //canvas dimensions
-        double cxMin, cxMax, cyMin, cyMax;
-        cxMin = 10.0;
-        cyMin = 0.0;
+        int cxMin, cxMax, cyMin, cyMax;
+        cxMin = 10;
+        cyMin = 0;
         cyMax = getSize().height;
         int mid = (int) (cyMax / 2);
         cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width, mid);
@@ -244,7 +248,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         System.out.println("component: " + getSize().toString());
         System.out.println("xmin: " + xmin + ", xmax: " + xmax);
         System.out.println("ymin: " + ymin + ", ymid: " + ymid + ", ymax: " + ymax);
-        g.drawLine((int) cxMin, mid, (int) cxMax, mid);
+        drawHorizontalScale(g, cxMin, cxMax, mid, xmin, xmax);
         for (int col = 0; col < external.length; col++) {
             //left clustering
             clust = external[col];
@@ -285,6 +289,25 @@ public class ScorePlot extends BPanel implements TaskListener {
         g.setColor(fontColor);
         //average distance per item
         g.dispose();
+    }
+
+    private void drawHorizontalScale(Graphics2D g, int cxMin, int cxMax, int yPos, double scMin, double scMax) {
+        g.drawLine(cxMin, yPos, cxMax, yPos);
+        g.setColor(Color.black);
+
+        //min
+        g.drawLine(cxMin, yPos - scaleTickLength / 2, cxMin, yPos + scaleTickLength / 2);
+        drawNumber(scMin, cxMin, yPos + scaleTickLength / 2 + labelOffset);
+        //max
+        g.drawLine(cxMax, yPos - scaleTickLength / 2, cxMax, yPos + scaleTickLength / 2);
+        drawNumber(scMax, cxMax, yPos + scaleTickLength / 2 + labelOffset);
+    }
+
+    private void drawNumber(double value, int x, int y) {
+        String lb = decimalFormat.format(value);
+        int sw = stringWidth(defaultFont, g, lb);
+        //center the number
+        g.drawString(lb, x - sw / 2, y);
     }
 
     /**
@@ -328,30 +351,6 @@ public class ScorePlot extends BPanel implements TaskListener {
         int x = colWidth + (colWidth - strWidth) / 2;
         int y = (int) (headerFontSize + g.getFontMetrics().getDescent() * 2);
         g.drawString(str, x, y);
-    }
-
-    /**
-     * Adjust font size to given 3 columns layout
-     *
-     * @param s1
-     * @param s2
-     * @param colWidth
-     * @param g2
-     */
-    private void updateHeaderFont(String s1, String s2, int colWidth, Graphics2D g2) {
-        int maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
-        //decrease font size
-        while (maxW > (0.8 * colWidth)) {
-            headerFontSize *= 0.9;
-            headerFont = headerFont.deriveFont(headerFontSize);
-            maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
-        }
-        //increase font
-        while (maxW < (0.5 * colWidth)) {
-            headerFontSize *= 1.1;
-            headerFont = headerFont.deriveFont(headerFontSize);
-            maxW = Math.max(stringWidth(headerFont, g2, s1), stringWidth(headerFont, g2, s2));
-        }
     }
 
     private void drawClustering(Graphics2D g, Clustering clust, int rectWidth, double xVal, double yVal, int mid) {
