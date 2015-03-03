@@ -16,12 +16,12 @@
  */
 package org.clueminer.evaluation.inline;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.geom.Rectangle2D;
@@ -71,8 +71,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private int headerHeight;
     protected float headerFontSize = 10;
     private int maxWidth;
-    private Insets insets = new Insets(5, 5, 5, 5);
-    private Object2IntOpenHashMap<Clustering> matching;
+    private Insets insets = new Insets(5, 5, 10, 5);
     static BasicStroke wideStroke = new BasicStroke(8.0f);
     private double strokeW;
     private ColorScheme colorScheme;
@@ -223,11 +222,13 @@ public class ScorePlot extends BPanel implements TaskListener {
     public void render(Graphics2D g) {
         //canvas dimensions
         int cxMin, cxMax, cyMin, cyMax;
-        cxMin = 10;
-        cyMin = 0;
-        cyMax = getSize().height;
-        int mid = (int) (cyMax / 2);
-        cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width, mid);
+        cxMin = insets.left;
+        cyMin = insets.top;
+        cyMax = getSize().height - insets.bottom;
+        int cyMid = (int) (cyMax / 2);
+        cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
+        int cxMid = (int) (cxMax / 2);
+
         Clustering clust;
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
@@ -248,7 +249,8 @@ public class ScorePlot extends BPanel implements TaskListener {
         System.out.println("component: " + getSize().toString());
         System.out.println("xmin: " + xmin + ", xmax: " + xmax);
         System.out.println("ymin: " + ymin + ", ymid: " + ymid + ", ymax: " + ymax);
-        drawHorizontalScale(g, cxMin, cxMax, mid, xmin, xmax);
+        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
+        drawVerticalScale(g, cyMin, cyMax, cxMid, ymax, ymin);
         for (int col = 0; col < external.length; col++) {
             //left clustering
             clust = external[col];
@@ -269,10 +271,10 @@ public class ScorePlot extends BPanel implements TaskListener {
 
             int y = (int) yVal;
             int xs;
-            if (yVal < mid) {
-                xs = (int) (mid - yVal);
+            if (yVal < cyMid) {
+                xs = (int) (cyMid - yVal);
             } else {
-                xs = (int) (mid + yVal);
+                xs = (int) (cyMid + yVal);
             }
 
             //g.drawRect((int) xVal, mid, rectWidth, y);
@@ -291,23 +293,42 @@ public class ScorePlot extends BPanel implements TaskListener {
         g.dispose();
     }
 
+    private void drawVerticalScale(Graphics2D g, int cyMin, int cyMax, int xPos, double scMin, double scMax) {
+        g.drawLine(xPos, cyMin, xPos, cyMax);
+        g.setColor(Color.black);
+
+        //min
+        g.drawLine(xPos - scaleTickLength / 2, cyMin, xPos + scaleTickLength / 2, cyMin);
+        drawNumberY(scMin, xPos + scaleTickLength, cyMin, g.getFontMetrics());
+        //max
+        g.drawLine(xPos - scaleTickLength / 2, cyMax, xPos + scaleTickLength / 2, cyMax);
+        drawNumberY(scMax, xPos + scaleTickLength, cyMax, g.getFontMetrics());
+    }
+
     private void drawHorizontalScale(Graphics2D g, int cxMin, int cxMax, int yPos, double scMin, double scMax) {
         g.drawLine(cxMin, yPos, cxMax, yPos);
         g.setColor(Color.black);
 
         //min
         g.drawLine(cxMin, yPos - scaleTickLength / 2, cxMin, yPos + scaleTickLength / 2);
-        drawNumber(scMin, cxMin, yPos + scaleTickLength / 2 + labelOffset);
+        drawNumberX(scMin, cxMin, yPos + scaleTickLength / 2 + labelOffset);
         //max
         g.drawLine(cxMax, yPos - scaleTickLength / 2, cxMax, yPos + scaleTickLength / 2);
-        drawNumber(scMax, cxMax, yPos + scaleTickLength / 2 + labelOffset);
+        drawNumberX(scMax, cxMax, yPos + scaleTickLength / 2 + labelOffset);
     }
 
-    private void drawNumber(double value, int x, int y) {
+    private void drawNumberX(double value, int x, int y) {
         String lb = decimalFormat.format(value);
         int sw = stringWidth(defaultFont, g, lb);
         //center the number
         g.drawString(lb, x - sw / 2, y);
+    }
+
+    private void drawNumberY(double value, int x, int y, FontMetrics hfm) {
+        String lb = decimalFormat.format(value);
+
+        //center the number
+        g.drawString(lb, x, y + hfm.getHeight() / 2 - hfm.getDescent());
     }
 
     /**
@@ -381,23 +402,6 @@ public class ScorePlot extends BPanel implements TaskListener {
     @Override
     public void sizeUpdated(Dimension size) {
         if (hasData()) {
-            int h = (size.height - insets.top - insets.bottom) / itemsCnt();
-            if (h > 0) {
-                elemHeight = h;
-                fontSize = (int) (0.8 * elemHeight);
-                strokeW = 0.05 * elemHeight;
-                wideStroke = new BasicStroke((float) strokeW);
-                //defaultFont = defaultFont.deriveFont(Font.PLAIN, fontSize);
-                minDist = 0;
-                maxDist = itemsCnt();
-                //for euclidean distance
-                //minDist = size.width - 2 * maxWidth - insets.internal - insets.external - 20;
-                //maxDist = distance(maxWidth, elemHeight / 2.0, elemHeight * itemsCnt(), size.width - maxWidth);
-                midDist = (maxDist + minDist) / 2.0;
-                //System.out.println("min = " + minDist);
-                //System.out.println("mid = " + midDist);
-                //System.out.println("max = " + maxDist);
-            }
             //use maximum width avaiable
             realSize.width = size.width;
             maxWidth = 0;
