@@ -25,6 +25,7 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
@@ -152,6 +153,10 @@ public class InlinePanel extends JPanel {
 
     public Collection<? extends Clustering> getClusterings() {
         return plot.getClusterings();
+    }
+
+    public void setGolden(Clustering<? extends Cluster> clust) {
+        plot.goldenStd = clust;
     }
 
 }

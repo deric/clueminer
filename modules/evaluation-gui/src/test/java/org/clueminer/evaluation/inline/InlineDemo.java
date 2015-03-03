@@ -47,6 +47,7 @@ public class InlineDemo extends JFrame {
         evalPlot.setEvaluatorY(ef.getProvider("AIC score"));
 
         Collection<Clustering> clusterings = new HashSet<>(6);
+        //evalPlot.setGolden(FakeClustering.iris());
         clusterings.add(FakeClustering.iris());
         clusterings.add(FakeClustering.irisMostlyWrong());
         clusterings.add(FakeClustering.irisWrong4());
