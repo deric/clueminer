@@ -223,11 +223,12 @@ public class ScorePlot extends BPanel implements TaskListener {
         //canvas dimensions
         int cxMin, cxMax, cyMin, cyMax;
         cxMin = insets.left;
-        cyMin = insets.top;
+        cyMin = insets.top + 15;
         cyMax = getSize().height - insets.bottom;
         int cyMid = (int) (cyMax / 2);
         cxMax = drawXLabel(g, compExternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
         int cxMid = (int) (cxMax / 2);
+        drawYLabel(g, compInternal.getEvaluator().getName(), cyMin, cxMid);
 
         Clustering clust;
         double xmin, xmax, xmid, ymin, ymax, ymid;
@@ -260,7 +261,7 @@ public class ScorePlot extends BPanel implements TaskListener {
             xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax);
             score = compInternal.getScore(clust);
             //last one is min rect. height
-            yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax) + 10;
+            yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
             System.out.println(col + ": y =" + yVal);
             // g.setColor(fontColor);
             // drawClustering(g, clust, rectWidth, xVal, yVal, mid);
@@ -355,9 +356,19 @@ public class ScorePlot extends BPanel implements TaskListener {
         g2.setColor(fontColor);
         g2.setFont(defaultFont);
         int strWidth = stringWidth(defaultFont, g, label);
-        // 2nd column
         int x = xmax - strWidth - 5;
         int y = (int) (ymid - defaultFont.getSize() - g.getFontMetrics().getDescent() * 2.0);
+        g.drawString(label, x, y);
+        return x;
+    }
+
+    private int drawYLabel(Graphics2D g2, String label, int ymax, int xmid) {
+        g2.setColor(fontColor);
+        g2.setFont(defaultFont);
+        int strHeight = g2.getFontMetrics().getHeight() - g2.getFontMetrics().getDescent();
+        int strWidth = stringWidth(defaultFont, g2, label);
+        int y = ymax - strHeight;
+        int x = (int) (xmid - strWidth / 2.0);
         g.drawString(label, x, y);
         return x;
     }
