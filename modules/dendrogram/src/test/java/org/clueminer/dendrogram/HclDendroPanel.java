@@ -116,6 +116,7 @@ public class HclDendroPanel extends DendroPanel {
         long time = System.currentTimeMillis() - start;
         System.out.println(algorithm.getName() + " clustering took " + time + " ms");
 
+        double cutoff = rowsResult.findCutoff();
         //   double cutoff = rowsResult.findCutoff();
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
