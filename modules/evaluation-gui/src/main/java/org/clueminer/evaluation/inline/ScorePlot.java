@@ -93,7 +93,8 @@ public class ScorePlot extends BPanel implements TaskListener {
         this.preserveAlpha = true;
         compInternal = new ClusteringComparator(new AICScore());
         compExternal = new ClusteringComparator(new NMI());
-        colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
+        //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
+        colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
         try {
             initialize();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
@@ -241,7 +242,7 @@ public class ScorePlot extends BPanel implements TaskListener {
 
         //set font for rendering rows
         g.setFont(defaultFont);
-        double xVal, yVal, score;
+        double xVal, yVal, score, hypo, diff;
         int rectWidth = 10; //TODO: fix this
         //draw
         Rectangle2D rect;
@@ -253,10 +254,14 @@ public class ScorePlot extends BPanel implements TaskListener {
             score = compInternal.getScore(clust);
             xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
             score = compExternal.getScore(clust);
+            //color according to position difference to external score placement
+            hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
+            diff = Math.abs(xVal - hypo);
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
             g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-            g.setColor(colorScheme.getColor(score, ymin, ymid, ymax));
+            //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
+            g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
             if (yVal < cyMid) {
                 rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
             } else {
@@ -267,7 +272,7 @@ public class ScorePlot extends BPanel implements TaskListener {
             g.setComposite(AlphaComposite.SrcOver);
             g.setColor(Color.black);
             //drawNumberX(score, (int) xVal, (int) yVal);
-            drawNumberX(clust.size(), (int) xVal, (int) yVal);
+            //drawNumberX(diff, (int) xVal, (int) yVal);
         }
         g.setColor(fontColor);
 
