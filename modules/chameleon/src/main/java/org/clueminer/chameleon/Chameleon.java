@@ -3,6 +3,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -118,6 +119,11 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+        AgglParams params = new AgglParams(pref);
+        if (!params.clusterRows()) {
+            return null;
+        }
+
         KNN knn = new KNN(k);
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
