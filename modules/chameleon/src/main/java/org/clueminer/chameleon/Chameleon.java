@@ -58,6 +58,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         this(k, maxPartitionSize, true, MergingStrategy.PAIR);
     }
 
+    public Chameleon(int k, int maxPartitionSize, boolean weightedPartitioning) {
+        this(k, maxPartitionSize, weightedPartitioning, MergingStrategy.PAIR);
+    }
+
     public Chameleon(int k, int maxPartitionSize, boolean weightedPartitioning, MergingStrategy mergeStrategy) {
         //checks??
         this.k = k;
