@@ -73,8 +73,8 @@ public class MergerTest {
 
         KernighanLin kl = new KernighanLin(g);
         ArrayList<LinkedList<Node>> result = kl.bisect();
-        OldMerger m = new OldMerger(g);
-        m.merge(result);
+        MultipleMerger m = new MultipleMerger(g);
+        m.merge(result, 1);
 
         //Assert external interconnectivity
         assertEquals(m.getEIC(1, 0), 1 / (sqrt(2)) + 1 / (sqrt(10)) + 1 / (sqrt(5)) + 1 / (sqrt(8)) + 1 / (sqrt(5)), 0.0001);
@@ -141,12 +141,12 @@ public class MergerTest {
         AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
         //printGraph(resultGraph.graphVizExport(1), "/home/tomas/Desktop", "paritioned.png");
 
-        OldMerger m = new OldMerger(g);
-        ArrayList<LinkedList<Node>> r = m.merge(result);
+        Merger m = new MultipleMerger(g);
+        ArrayList<LinkedList<Node>> r = m.merge(result, 1);
         // m.printExternalProperties();
-        int nodeToCluster[] = m.getNodeToCluster();
+
         GraphPrinter gp = new GraphPrinter();
-        gp.printClusters(g, 1, nodeToCluster, r.size(), "/home/tomas/Desktop", "simple.png");
+        gp.printClusters(g, 1, result, "/home/tomas/Desktop", "simple.png");
     }
 
 //    @Test
