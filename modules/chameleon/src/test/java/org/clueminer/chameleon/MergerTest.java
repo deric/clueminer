@@ -17,7 +17,6 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.impl.KernighanLin;
 import org.clueminer.partitioning.impl.KernighanLinRecursive;
-import org.clueminer.utils.FileUtils;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -27,8 +26,7 @@ import org.junit.Test;
  */
 public class MergerTest {
 
-    String output = FileUtils.LocalFolder();
-
+    //String output = FileUtils.LogFolder();
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
@@ -95,19 +93,19 @@ public class MergerTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-        GraphPrinter gp = new GraphPrinter();
-        gp.printGraph(g, 1, output, "knn2.png");
+//        GraphPrinter gp = new GraphPrinter();
+//        gp.printGraph(g, 1, output, "knn2.png");
         KernighanLinRecursive klr = new KernighanLinRecursive();
         ArrayList<LinkedList<Node>> result = klr.partition(4, g);
 
-        gp.printClusters(g, 1, result, output, "partitionedClusters2OLD.png");
+//        gp.printClusters(g, 1, result, output, "partitionedClusters2OLD.png");
         AdjMatrixGraph resultGraph = (AdjMatrixGraph) klr.removeUnusedEdges();
-        gp.printGraph(resultGraph, 1, output, "paritioned.png");
+//        gp.printGraph(resultGraph, 1, output, "paritioned.png");
 
         Merger m = new MultipleMerger(g);
 
         ArrayList<LinkedList<Node>> result2 = m.merge(result, 1);
-        gp.printClusters(g, 1, result2, output, "aaa.png");
+//        gp.printClusters(g, 1, result2, output, "aaa.png");
 
 //        assertEquals(m.getEIC(1, 0), 1 / sqrt(1 + 1.5 * 1.5), 0.00001);
 //        assertEquals(m.getEIC(2, 0), 0, 0.00001);
@@ -148,8 +146,8 @@ public class MergerTest {
         ArrayList<LinkedList<Node>> r = m.merge(result, 1);
         // m.printExternalProperties();
 
-        GraphPrinter gp = new GraphPrinter();
-        gp.printClusters(g, 1, result, output, "simple.png");
+//        GraphPrinter gp = new GraphPrinter();
+//        gp.printClusters(g, 1, result, output, "simple.png");
     }
 
 //    @Test
