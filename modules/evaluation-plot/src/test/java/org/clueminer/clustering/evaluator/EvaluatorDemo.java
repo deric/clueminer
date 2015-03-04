@@ -23,10 +23,10 @@ public class EvaluatorDemo extends JFrame {
     public EvaluatorDemo() throws IOException {
         initComponents();
 
-        evalPlot.setEvaluatorX("AIC score");
-        evalPlot.setEvaluatorY("BIC score");
+        evalPlot.setEvaluatorX("AIC");
+        evalPlot.setEvaluatorY("BIC");
 
-        Collection<Clustering> clusterings = new HashSet<Clustering>(4);
+        Collection<Clustering> clusterings = new HashSet<>(4);
         clusterings.add(FakeClustering.irisWrong4());
         clusterings.add(FakeClustering.irisWrong());
         clusterings.add(FakeClustering.irisWrong2());
