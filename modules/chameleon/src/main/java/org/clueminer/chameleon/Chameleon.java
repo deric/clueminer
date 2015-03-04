@@ -123,9 +123,11 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
-        AgglParams params = new AgglParams(pref);
-        if (!params.clusterRows()) {
-            return null;
+        if (pref != null) {
+            AgglParams params = new AgglParams(pref);
+            if (!params.clusterRows()) {
+                return null;
+            }
         }
 
         KNN knn = new KNN(k);
