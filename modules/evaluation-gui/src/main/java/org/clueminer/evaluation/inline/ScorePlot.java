@@ -31,6 +31,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.SortedSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -94,6 +96,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private double goldenExt;
     private double goldenInt;
     private int rectWidth = 10;
+    private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -219,9 +222,19 @@ public class ScorePlot extends BPanel implements TaskListener {
                 int assign;
 
                 for (Instance inst : dataset) {
-                    assign = map.get(inst.classValue());
-                    c = golden.get(assign);
-                    c.add(inst);
+                    if (inst.classValue() == null) {
+                        logger.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
+                    } else {
+                        if (map.containsKey(inst.classValue())) {
+                            assign = map.get(inst.classValue());
+                            c = golden.get(assign);
+                        } else {
+                            c = golden.createCluster(i);
+                            c.setAttributes(dataset.getAttributes());
+                            map.put(inst.classValue(), i++);
+                        }
+                        c.add(inst);
+                    }
                 }
             }
         }

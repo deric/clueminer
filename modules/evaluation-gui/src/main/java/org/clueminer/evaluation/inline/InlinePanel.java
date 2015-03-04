@@ -29,7 +29,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evaluation.gui.EvaluatorComboBox;
 import org.clueminer.export.sorting.SortingExporter;
 import org.openide.util.ImageUtilities;
@@ -76,7 +75,7 @@ public class InlinePanel extends JPanel {
         add(comboEvaluatorX, c);
 
         comboEvaluatorY = new JComboBox();
-        comboEvaluatorY.setModel(new EvaluatorComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray()));
+        comboEvaluatorY.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
         comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
