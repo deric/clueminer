@@ -1,9 +1,9 @@
 package org.clueminer.eval;
 
-import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -17,7 +17,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class AICScore extends AbstractEvaluator {
 
-    private static final String NAME = "AIC score";
+    private static final String NAME = "AIC";
     private static final long serialVersionUID = -8805325971847590600L;
     private static final LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
 
