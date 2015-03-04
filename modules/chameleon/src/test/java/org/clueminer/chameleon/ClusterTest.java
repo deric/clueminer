@@ -21,6 +21,7 @@ import org.junit.Test;
  * @author Tomas Bruna
  */
 public class ClusterTest {
+//
 
     String output = FileUtils.LocalFolder();
 
@@ -47,8 +48,8 @@ public class ClusterTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
         //Print knn graph
-        GraphPrinter gp = new GraphPrinter();
-        gp.printGraph(g, 1, output, "knn.png");
+//        GraphPrinter gp = new GraphPrinter();
+//        gp.printGraph(g, 1, output, "knn.png");
         Cluster c = new Cluster(g, 1);
         c.computeProperties(new KernighanLin());
 
