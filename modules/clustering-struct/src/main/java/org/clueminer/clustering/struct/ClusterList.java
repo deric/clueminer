@@ -36,6 +36,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private String name;
 
     public ClusterList(int capacity) {
+        if (capacity < 1) {
+            //some default capacity, to avoid problems with zero array size
+            capacity = 3;
+        }
         data = new Cluster[capacity];
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);

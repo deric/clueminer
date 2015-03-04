@@ -12,7 +12,9 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -478,5 +480,13 @@ public class ClusterListTest {
         assertEquals(2, subject.getParams().size());
         assertEquals("bar", subject.getParams().get("bar"));
         assertEquals("foo", subject.getParams().get("foo"));
+    }
+
+    @Test
+    public void testAddingToZeroSize() {
+        //clustering with 0 capacity
+        Clustering<Cluster> clusters = new ClusterList(0);
+        clusters.createCluster(0);
+        assertEquals(1, clusters.size());
     }
 }
