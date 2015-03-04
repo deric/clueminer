@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class MergerTest {
 
-    String output = FileUtils.LogFolder();
+    String output = FileUtils.LocalFolder();
 
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);

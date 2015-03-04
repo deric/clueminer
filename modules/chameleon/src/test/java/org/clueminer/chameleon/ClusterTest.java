@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class ClusterTest {
 
-    String output = FileUtils.LogFolder();
+    String output = FileUtils.LocalFolder();
 
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
@@ -62,6 +62,6 @@ public class ClusterTest {
         //Bisection b = new KernighanLin(g);
         //b.bisect();
         //b.removeUnusedEdges();
-        //gp.printGraph(g, 1, "/home/tomas/Desktop", "bisected.png");
+        //gp.printGraph(g, 1, output, "bisected.png");
     }
 }
