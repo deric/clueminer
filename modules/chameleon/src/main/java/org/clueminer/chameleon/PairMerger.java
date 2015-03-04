@@ -60,11 +60,11 @@ public class PairMerger extends Merger {
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
             //GraphPrinter gp = new GraphPrinter(true);
-            // gp.printClusters(graph, 5, getResult(), "/home/tomas/Desktop", Integer.toString(i));
+            // gp.printClusters(graph, 5, getResult(), FileUtils.LogFolder(), Integer.toString(i));
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
-        treeData.printWithHeight();
+        // treeData.printWithHeight();
         treeData.createMapping(dataset.size(), treeData.getRoot());
 
         result.setTreeData(treeData);

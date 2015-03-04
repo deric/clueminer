@@ -12,6 +12,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.partitioning.impl.KernighanLin;
+import org.clueminer.utils.FileUtils;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -20,6 +21,8 @@ import org.junit.Test;
  * @author Tomas Bruna
  */
 public class ClusterTest {
+
+    String output = FileUtils.LogFolder();
 
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
@@ -45,7 +48,7 @@ public class ClusterTest {
 
         //Print knn graph
         GraphPrinter gp = new GraphPrinter();
-        gp.printGraph(g, 1, "/home/tomas/Desktop", "knn.png");
+        gp.printGraph(g, 1, output, "knn.png");
         Cluster c = new Cluster(g, 1);
         c.computeProperties(new KernighanLin());
 
