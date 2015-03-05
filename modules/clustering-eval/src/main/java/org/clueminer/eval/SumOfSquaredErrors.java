@@ -70,4 +70,14 @@ public class SumOfSquaredErrors extends AbstractEvaluator {
         return false;
     }
 
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
+
 }

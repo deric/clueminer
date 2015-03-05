@@ -52,4 +52,14 @@ public class BICScore extends AbstractEvaluator {
         return false;
     }
 
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
 }

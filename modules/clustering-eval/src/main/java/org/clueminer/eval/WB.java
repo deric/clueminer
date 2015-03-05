@@ -85,4 +85,14 @@ public class WB extends AbstractEvaluator {
     public boolean isMaximized() {
         return false;
     }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
 }

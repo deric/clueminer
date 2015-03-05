@@ -89,4 +89,14 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     public boolean isMaximized() {
         return false;
     }
+
+    @Override
+    public double getMin() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
 }

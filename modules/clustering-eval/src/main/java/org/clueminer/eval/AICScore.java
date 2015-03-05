@@ -73,4 +73,15 @@ public class AICScore extends AbstractEvaluator {
     public boolean isMaximized() {
         return false;
     }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
 }

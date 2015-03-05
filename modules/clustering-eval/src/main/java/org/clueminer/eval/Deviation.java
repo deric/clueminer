@@ -33,6 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
@@ -89,6 +90,21 @@ public class Deviation extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * Best value
+     *
+     * @return
+     */
+    @Override
+    public double getMax() {
+        return 0;
     }
 
 }

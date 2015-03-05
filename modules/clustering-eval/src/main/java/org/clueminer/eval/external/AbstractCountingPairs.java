@@ -15,6 +15,8 @@ import org.clueminer.math.Matrix;
  */
 public abstract class AbstractCountingPairs extends AbstractExternalEval {
 
+    private static final long serialVersionUID = -8708340302697665494L;
+
     public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, BiMap<String, String> matching);
 
     /**
@@ -61,5 +63,15 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
     }
 }

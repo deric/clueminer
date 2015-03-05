@@ -16,6 +16,7 @@ import org.clueminer.math.Matrix;
 public class PartitionCoeffcient extends AbstractEvaluator {
 
     private static final String name = "PC";
+    private static final long serialVersionUID = 888558324967098222L;
 
     @Override
     public String getName() {
@@ -51,6 +52,16 @@ public class PartitionCoeffcient extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getMax() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

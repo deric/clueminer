@@ -152,4 +152,14 @@ public class Silhouette extends AbstractEvaluator {
     public boolean isMaximized() {
         return true;
     }
+
+    @Override
+    public double getMin() {
+        return -1;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
+    }
 }

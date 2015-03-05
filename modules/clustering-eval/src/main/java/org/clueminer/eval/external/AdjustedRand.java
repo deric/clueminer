@@ -183,4 +183,14 @@ public class AdjustedRand extends AbstractExternalEval {
     public boolean isMaximized() {
         return true;
     }
+
+    @Override
+    public double getMin() {
+        return -1;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
+    }
 }
