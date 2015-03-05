@@ -75,17 +75,13 @@ public class ScorePlot extends BPanel implements TaskListener {
     protected Font headerFont;
     protected int lineHeight = 12;
     protected int elemHeight = 20;
-    protected int fontSize = 10;
+    protected int fontSize = 14;
     private int headerHeight;
     protected float headerFontSize = 10;
     private int maxWidth;
-    private Insets insets = new Insets(5, 5, 10, 5);
+    private Insets insets = new Insets(15, 5, 10, 5);
     static BasicStroke wideStroke = new BasicStroke(8.0f);
-    private double strokeW;
     private ColorScheme colorScheme;
-    private double minDist;
-    private double midDist;
-    private double maxDist;
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
     private Color fontColor;
     private final StdScale scale;
@@ -120,7 +116,9 @@ public class ScorePlot extends BPanel implements TaskListener {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIDefaults defaults = UIManager.getLookAndFeelDefaults();
         fontColor = defaults.getColor("controlText");
-        setBackground(defaults.getColor("window"));
+        //setBackground(defaults.getColor("window"));
+        //this.preserveAlpha = true;
+        setBackground(Color.white);
     }
 
     protected void setEvaluatorY(final ClusterEvaluation provider) {
@@ -324,8 +322,6 @@ public class ScorePlot extends BPanel implements TaskListener {
         double xVal, yVal, score, hypo, diff;
         //draw
         Rectangle2D rect;
-        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
-        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
 
         for (Clustering clust : external) {
             //left clustering
@@ -371,13 +367,16 @@ public class ScorePlot extends BPanel implements TaskListener {
             g.setComposite(AlphaComposite.SrcOver);
         }
 
+        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
+        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
+
         //average distance per item
         g.dispose();
     }
 
     private void drawVerticalScale(Graphics2D g, int cyMin, int cyMax, int xPos, double scMin, double scMax) {
-        g.drawLine(xPos, cyMin, xPos, cyMax);
         g.setColor(Color.black);
+        g.drawLine(xPos, cyMin, xPos, cyMax);
 
         //min
         g.drawLine(xPos - scaleTickLength / 2, cyMin, xPos + scaleTickLength / 2, cyMin);
@@ -388,8 +387,8 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     private void drawHorizontalScale(Graphics2D g, int cxMin, int cxMax, int yPos, double scMin, double scMax) {
-        g.drawLine(cxMin, yPos, cxMax, yPos);
         g.setColor(Color.black);
+        g.drawLine(cxMin, yPos, cxMax, yPos);
 
         //min
         g.drawLine(cxMin, yPos - scaleTickLength / 2, cxMin, yPos + scaleTickLength / 2);

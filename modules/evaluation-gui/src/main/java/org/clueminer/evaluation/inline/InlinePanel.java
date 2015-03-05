@@ -16,6 +16,7 @@
  */
 package org.clueminer.evaluation.inline;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -52,6 +53,7 @@ public class InlinePanel extends JPanel {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
+        setBackground(Color.WHITE);
         //setSize(new Dimension(800, 600));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
