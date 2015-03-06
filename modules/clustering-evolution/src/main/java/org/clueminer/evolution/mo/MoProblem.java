@@ -51,7 +51,7 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     private void initializeGenomMapping(ClusteringAlgorithm algorithm) {
         params = algorithm.getParameters();
         mapping = new Int2ObjectOpenHashMap(params.length);
-        int i = 0;
+        int i = 0, size;
         int combinations = 1;
         lowerLimit = new int[params.length];
         upperLimit = new int[params.length];
@@ -64,12 +64,15 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
                     case STRING:
                         ServiceFactory f = getFactory(p);
                         //indexed from zero, must be size - 1
-                        upperLimit[i] = f.getAll().size() - 1;
-                        combinations *= f.getAll().size();
+                        size = f.getAll().size();
+                        upperLimit[i] = size - 1;
+                        combinations *= size;
+                        logger.log(Level.INFO, "possible values: {0}", size);
                         break;
                     case BOOLEAN:
                         upperLimit[i] = 1;
                         combinations *= 2;
+                        logger.log(Level.INFO, "possible values: {0}", 2);
                         break;
                     default:
                         throw new RuntimeException(p.getType() + " is not supported yet");
