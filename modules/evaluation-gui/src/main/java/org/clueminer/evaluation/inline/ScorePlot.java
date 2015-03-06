@@ -79,7 +79,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private int headerHeight;
     protected float headerFontSize = 10;
     private int maxWidth;
-    private Insets insets = new Insets(15, 5, 10, 5);
+    private Insets insets = new Insets(15, 15, 10, 15);
     static BasicStroke wideStroke = new BasicStroke(8.0f);
     private ColorScheme colorScheme;
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
@@ -315,6 +315,15 @@ public class ScorePlot extends BPanel implements TaskListener {
         xmid = (xmax - xmin) / 2.0 + xmin;
         ymin = scoreMin(external, compExternal, goldenExt);
         ymax = scoreMax(external, compExternal, goldenExt);
+        //if we have clear bounds, use them
+        if (isFinite(compExternal.getEvaluator().getMin())) {
+            //for purpose of visualization min and max are reversed
+            ymax = compExternal.getEvaluator().getMin();
+        }
+        if (isFinite(compExternal.getEvaluator().getMax())) {
+            //for purpose of visualization min and max are reversed
+            ymin = compExternal.getEvaluator().getMax();
+        }
         ymid = (ymax - ymin) / 2.0 + ymin;
 
         //set font for rendering rows
@@ -497,6 +506,16 @@ public class ScorePlot extends BPanel implements TaskListener {
             realSize.width = size.width;
             maxWidth = 0;
         }
+    }
+
+    /**
+     * Could be replace by Double.isFinite which is available in Java 8
+     *
+     * @param d
+     * @return
+     */
+    public boolean isFinite(double d) {
+        return Math.abs(d) <= Double.MAX_VALUE;
     }
 
     @Override
