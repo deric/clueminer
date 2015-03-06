@@ -157,4 +157,17 @@ public class DatasetFixture {
         }
         return data;
     }
+
+    public static Dataset<Instance> zoo() {
+        Dataset<Instance> data = new ArrayDataset<>(101, 16);
+        try {
+            String datasetName = "zoo";
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.zoo2Arff(), data, 18);
+            data.setName(datasetName);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
 }

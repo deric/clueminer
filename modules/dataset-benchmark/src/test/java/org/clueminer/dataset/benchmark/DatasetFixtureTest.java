@@ -103,4 +103,11 @@ public class DatasetFixtureTest {
         assertEquals(8, dataset.attributeCount());
         assertEquals(1484, dataset.size());
     }
+
+    @Test
+    public void testZoo() {
+        Dataset<Instance> dataset = DatasetFixture.zoo();
+        assertEquals(16, dataset.attributeCount());
+        assertEquals(101, dataset.size());
+    }
 }
