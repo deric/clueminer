@@ -32,6 +32,7 @@ public class DatasetFixture {
         datasets.put(DatasetFixture.wine(), 3);
         datasets.put(DatasetFixture.vehicle(), 4);
         datasets.put(DatasetFixture.yeast(), 10);
+        datasets.put(DatasetFixture.zoo(), 6);
         return datasets;
     }
 
