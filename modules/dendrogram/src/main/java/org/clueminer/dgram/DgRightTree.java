@@ -1,5 +1,6 @@
 package org.clueminer.dgram;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -8,6 +9,7 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.hclust.DClusterLeaf;
 
 /**
  * Dendrogram tree with root on left side and leaves on right
@@ -21,11 +23,17 @@ public class DgRightTree extends DgTree {
     //for cutoffslider
     private int leftOffset;
 
+    BasicStroke normalStroke;
+    BasicStroke thickStroke;
+
     public DgRightTree(DendroPane panel) {
         super(panel);
         setBorder(border);
         insets.left = 0;
+
         leftOffset = panel.getSliderDiameter();
+        normalStroke = new BasicStroke(1);
+        thickStroke = new BasicStroke((float) 1.5);
     }
 
     @Override
@@ -41,16 +49,38 @@ public class DgRightTree extends DgTree {
 
             int rx = treeHeight - (int) scaleDistance(node.getRight().getHeight()) + leftOffset;
             int ry = (int) (node.getRight().getPosition() * elementHeight + halfElem);
+
             //we're drawing a U shape
             //straight line
+            g2.setStroke(normalStroke);
             g2.drawLine(nx, ly, nx, ry);
 
-            //left node
-            g2.drawLine(nx, ly, lx, ly);
+            if (isClusterLeaf(node.getRight())) {
+                drawCluster(g2, nx, ry, (DClusterLeaf) node.getRight());
+            } else {
+                g2.drawLine(nx, ry, rx, ry);
+            }
 
-            //right node
-            g2.drawLine(nx, ry, rx, ry);
+            if (isClusterLeaf(node.getLeft())) {
+                drawCluster(g2, nx, ly, (DClusterLeaf) node.getLeft());
+            } else {
+                g2.drawLine(nx, ly, lx, ly);
+            }
+
         }
+    }
+
+    private void drawCluster(Graphics2D g2, int x, int y, DClusterLeaf leaf) {
+        int splitStart = treeHeight - (int) scaleDistance(0.5) + leftOffset;
+        g2.drawLine(x, y, splitStart, y);
+        int clusterBottom = (int) (y + elementHeight * ((leaf.getInstances().size() - 1) / 2));
+        int clusterUp = (int) (y - elementHeight * ((leaf.getInstances().size()) / 2));
+        g2.setStroke(thickStroke);
+        g2.drawLine(splitStart, clusterUp, splitStart, clusterBottom);
+        g2.drawLine(splitStart, clusterUp, treeHeight + leftOffset * 3 + 1, clusterUp);
+        g2.drawLine(splitStart, clusterBottom, treeHeight + leftOffset * 3 + 1, clusterBottom);
+        g2.setStroke(normalStroke);
+
     }
 
     @Override
@@ -58,6 +88,9 @@ public class DgRightTree extends DgTree {
         this.dendroData = mapping;
         HierarchicalResult clustering = mapping.getRowsResult();
         setTreeData(clustering.getTreeData());
+        if (clustering.getTreeData().containsClusters()) {
+            leftOffset = panel.getSliderDiameter() / 3;
+        }
     }
 
     @Override

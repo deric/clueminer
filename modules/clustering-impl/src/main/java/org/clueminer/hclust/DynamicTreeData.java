@@ -15,8 +15,8 @@ import org.openide.util.Exceptions;
 public class DynamicTreeData implements DendroTreeData {
 
     private DendroNode root;
-    private int[] mapping;
-    private DendroNode[] leaves;
+    protected int[] mapping;
+    protected DendroNode[] leaves;
 
     public DynamicTreeData() {
 
@@ -27,7 +27,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param root
      * @param hintSize estimated number number of nodes (doesn't have to be
-     *                 accurate)
+     * accurate)
      */
     public DynamicTreeData(DendroNode root, int hintSize) {
         this.root = root;
@@ -154,6 +154,30 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    public void printTreeWithHeight(OutputStreamWriter out, DendroNode treeRoot) throws IOException {
+        DendroNode node = treeRoot.getLeft();
+        if (node != null) {
+            node.printTreeWithHeight(out, false, "");
+        }
+        ((DTreeNode) treeRoot).printNodeValue(out);
+
+        node = treeRoot.getRight();
+        if (node != null) {
+            node.printTreeWithHeight(out, true, "");
+        }
+    }
+
+    @Override
+    public void printWithHeight() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTreeWithHeight(out, getRoot());
+            out.flush();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
     @Override
     public void print() {
         try {
@@ -251,7 +275,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param capacity
      */
-    private void ensureCapacity(int capacity) {
+    protected void ensureCapacity(int capacity) {
         if (mapping == null) {
             mapping = new int[capacity];
             leaves = new DendroNode[capacity];
@@ -297,6 +321,11 @@ public class DynamicTreeData implements DendroTreeData {
         double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
         node.setPosition(position);
         return position;
+    }
+
+    @Override
+    public boolean containsClusters() {
+        return false;
     }
 
 }

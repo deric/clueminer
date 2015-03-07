@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
-
 /**
  * Factory for nodes and edges.
  * <p>
@@ -27,8 +26,8 @@ public interface GraphFactory {
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source   the source node
-     * @param target   the target node
+     * @param source the source node
+     * @param target the target node
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
@@ -37,9 +36,9 @@ public interface GraphFactory {
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source   the source node
-     * @param target   the target node
-     * @param type     the edge type
+     * @param source the source node
+     * @param target the target node
+     * @param type the edge type
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
@@ -48,10 +47,10 @@ public interface GraphFactory {
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source   the source node
-     * @param target   the target node
-     * @param type     the edge type
-     * @param weight   the edge weight
+     * @param source the source node
+     * @param target the target node
+     * @param type the edge type
+     * @param weight the edge weight
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
@@ -60,11 +59,11 @@ public interface GraphFactory {
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param id       the edge id
-     * @param source   the source node
-     * @param target   the target node
-     * @param type     the edge type
-     * @param weight   the edge weight
+     * @param id the edge id
+     * @param source the source node
+     * @param target the target node
+     * @param type the edge type
+     * @param weight the edge weight
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
@@ -84,8 +83,15 @@ public interface GraphFactory {
      * @return the new node
      */
     public Node newNode(Object label);
-    
-    
+
+    /**
+     * Creates and returns a node.
+     *
+     * @param i instance which the node represents
+     * @return the new node
+     */
+    public Node newNode(Instance i);
+
     /**
      * Creates nodes from the dataset
      *
@@ -93,5 +99,5 @@ public interface GraphFactory {
      * @return list of nodes
      */
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input);
-    
+
 }

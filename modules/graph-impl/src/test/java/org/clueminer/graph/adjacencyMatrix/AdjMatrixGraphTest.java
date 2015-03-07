@@ -1,7 +1,6 @@
 package org.clueminer.graph.adjacencyMatrix;
 
 import java.util.Collection;
-import java.util.Iterator;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
 import static org.junit.Assert.assertEquals;
@@ -56,10 +55,6 @@ public class AdjMatrixGraphTest {
         n1 = (AdjMatrixNode) f.newNode(coordinates);
         n2 = (AdjMatrixNode) f.newNode(2);
         n3 = (AdjMatrixNode) f.newNode(2);
-        n2.setCoordinate(0, 1);
-        n2.setCoordinate(1, 1);
-        n3.setCoordinate(0, 2);
-        n3.setCoordinate(1, 0);
         e1 = (AdjMatrixEdge) f.newEdge(n1, n2, 1, 2, false);
         e2 = (AdjMatrixEdge) f.newEdge(n3, n2, 1, 3, false);
         g = new AdjMatrixGraph(3);
@@ -78,10 +73,6 @@ public class AdjMatrixGraphTest {
         n2 = (AdjMatrixNode) f.newNode(2);
         n3 = (AdjMatrixNode) f.newNode(2);
         Node n4 = (AdjMatrixNode) f.newNode();
-        n2.setCoordinate(0, 1);
-        n2.setCoordinate(1, 1);
-        n3.setCoordinate(0, 2);
-        n3.setCoordinate(1, 0);
         e1 = (AdjMatrixEdge) f.newEdge(n1, n2, 1, 2, false);
         e2 = (AdjMatrixEdge) f.newEdge(n3, n2, 1, 3, false);
         g = new AdjMatrixGraph(3);

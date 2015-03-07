@@ -39,7 +39,7 @@ public class DendrogramData implements DendrogramMapping {
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
         this.dataset = dataset;
-        checkParams(matrix, rowResult, columnResult);
+        // checkParams(matrix, rowResult, columnResult);
         this.setMatrix(matrix);
         this.rowsResult = rowResult;
         this.colsResult = columnResult;
@@ -47,7 +47,7 @@ public class DendrogramData implements DendrogramMapping {
 
     public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
         this.dataset = dataset;
-        checkParams(matrix, rowResult, null);
+        // checkParams(matrix, rowResult, null);
         this.setMatrix(matrix);
         this.rowsResult = rowResult;
     }

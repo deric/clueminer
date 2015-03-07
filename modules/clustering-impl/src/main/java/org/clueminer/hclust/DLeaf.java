@@ -15,6 +15,10 @@ public class DLeaf<T extends DataVector> extends DTreeNode implements DendroLeaf
 
     private T data;
 
+    public DLeaf(int id) {
+        super(id);
+    }
+
     public DLeaf(int id, DataVector data) {
         super(id);
         this.data = (T) data;
@@ -34,7 +38,6 @@ public class DLeaf<T extends DataVector> extends DTreeNode implements DendroLeaf
         out.write('\n');
     }
 
-
     @Override
     public void setData(T data) {
         this.data = data;
@@ -51,6 +54,10 @@ public class DLeaf<T extends DataVector> extends DTreeNode implements DendroLeaf
     @Override
     public T getData() {
         return data;
+    }
+
+    public boolean containsCluster() {
+        return false;
     }
 
 }
