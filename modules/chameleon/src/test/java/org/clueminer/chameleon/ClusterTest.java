@@ -1,6 +1,5 @@
 package org.clueminer.chameleon;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -13,7 +12,6 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.partitioning.impl.KernighanLin;
-import org.clueminer.utils.FileUtils;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +26,7 @@ public class ClusterTest {
 
     @Before
     public void setUp() {
-        output = FileUtils.LocalFolder() + File.separatorChar + "chameleon";
+        //output = FileUtils.LocalFolder() + File.separatorChar + "chameleon";
     }
 
     private Dataset<? extends Instance> simpleData() {

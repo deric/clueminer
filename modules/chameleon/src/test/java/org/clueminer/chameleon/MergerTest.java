@@ -93,7 +93,7 @@ public class MergerTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-//        GraphPrinter gp = new GraphPrinter();
+        GraphPrinter gp = new GraphPrinter();
 //        gp.printGraph(g, 1, output, "knn2.png");
         KernighanLinRecursive klr = new KernighanLinRecursive();
         ArrayList<LinkedList<Node>> result = klr.partition(4, g);
