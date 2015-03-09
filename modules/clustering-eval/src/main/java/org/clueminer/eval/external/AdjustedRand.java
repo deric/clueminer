@@ -70,8 +70,33 @@ public class AdjustedRand extends AbstractExternalEval {
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
+        dumpTable(table);
         //WARNING the result is sensitive to matching rows/columns
         return countScore(extendedContingency(table));
+    }
+
+    public void dumpTable(Table<String, String, Integer> table) {
+        StringBuilder sb = new StringBuilder();
+        Set<String> rows = table.columnKeySet();
+        Set<String> cols = table.rowKeySet();
+        String separator = "   ";
+        //print header
+        sb.append(separator);
+        for (String col : cols) {
+            sb.append(col);
+            sb.append(separator);
+        }
+        sb.append("\n");
+        for (String row : rows) {
+            sb.append(row);
+            sb.append(separator);
+            for (String col : cols) {
+                sb.append(table.get(col, row));
+                sb.append(separator);
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
     }
 
     /**
@@ -97,7 +122,7 @@ public class AdjustedRand extends AbstractExternalEval {
      * @param table
      * @return
      */
-    private int[][] extendedContingency(Table<String, String, Integer> table) {
+    protected int[][] extendedContingency(Table<String, String, Integer> table) {
         BiMap<String, String> matching = CountingPairs.findMatching(table);
         Set<String> rows = table.rowKeySet();    //clusters
         Set<String> cols = table.columnKeySet(); //classes

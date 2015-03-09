@@ -101,12 +101,27 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testIris2() {
         double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
+        System.out.println("better table ");
+        dumpTable(table);
         System.out.println("better = " + scoreBetter);
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+        table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
+        System.out.println("worser table ");
+        dumpTable(table);
         System.out.println("worser = " + scoreWorser);
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    }
+
+    @Test
+    public void testContingency() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
+        int[][] extCont = ari.extendedContingency(table);
+        //should be eq to number of items in the dataset
+        assertEquals(150, extCont[extCont.length - 1][extCont.length - 1]);
     }
 
     public void dumpTable(Table<String, String, Integer> table) {
