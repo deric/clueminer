@@ -22,7 +22,7 @@ public class OverlayFactory extends ServiceFactory<Overlay> {
     }
 
     private OverlayFactory() {
-        providers = new LinkedHashMap<String, Overlay>();
+        providers = new LinkedHashMap<>();
         Collection<? extends Overlay> list = Lookup.getDefault().lookupAll(Overlay.class);
         for (Overlay c : list) {
             providers.put(c.getName(), c);

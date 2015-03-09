@@ -101,7 +101,9 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testIris2() {
         double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
+        System.out.println("better = " + scoreBetter);
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+        System.out.println("worser = " + scoreWorser);
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));

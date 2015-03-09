@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,6 +38,7 @@ public class AdjustedRand extends AbstractExternalEval {
         //extra row/column is used for storing sums - the last one
         int diamRow = contingency.length - 1;
         int diamCol = contingency[0].length - 1;
+        Dump.matrix(contingency, "contingency", 2);
         double a = 0;
         int b1 = 0;
         int b2 = 0;
@@ -64,7 +66,7 @@ public class AdjustedRand extends AbstractExternalEval {
      * Count Adjusted Rand index
      *
      * @param table contingency table where last column/row sums values in the
-     *              column/row
+     * column/row
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
