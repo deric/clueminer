@@ -98,6 +98,15 @@ public class AdjustedRandTest extends ExternalTest {
         System.out.println("clust(5) = " + score);
     }
 
+    @Test
+    public void testIris2() {
+        double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    }
+
     public void dumpTable(Table<String, String, Integer> table) {
         StringBuilder sb = new StringBuilder();
         Set<String> rows = table.columnKeySet();
