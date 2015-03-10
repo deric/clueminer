@@ -1,8 +1,6 @@
 package org.clueminer.eval.utils;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
@@ -116,8 +114,9 @@ public class CountingPairs {
      * @param table contingency table
      * @return
      */
-    public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = HashBiMap.create(table.size());
+    public static Matching findMatching(Table<String, String, Integer> table) {
+        //     class, cluster
+        Matching matching = new Matching();
 
         //sort clusters by number of diverse classes inside, clusters containing
         //only one class will have priority
@@ -163,24 +162,56 @@ public class CountingPairs {
                 }
             }
         }
+
+        //number of matching classes is lower than actual
+        if (matching.size() < table.columnKeySet().size()) {
+            //check if all classes has been assigned to a cluster
+            for (String klass : table.columnKeySet()) {
+                if (!matching.containsKey(klass)) {
+                    System.out.println("class '" + klass + "' is not assigned");
+                    System.out.println("match: " + matching.toString());
+                    int max = 0, value;
+                    String maxKey = null;
+                    for (String cluster : sortedClusters.keySet()) {
+                        Map<String, Integer> assign = table.row(cluster);
+                        if (assign.containsKey(klass)) {
+                            value = assign.get(klass);
+                            if (value > max) {
+                                max = value;
+                                maxKey = cluster;
+                            }
+                        }
+                    }
+                    if (maxKey != null) {
+                        matching.put(klass, maxKey);
+                    } else {
+                        System.out.println("failed to assign class to any cluster: " + klass);
+                    }
+
+                    //break;
+                }
+            }
+        }
+
         return matching;
     }
 
     /**
-     * - TP (true positive) - as the number of points that are present in the
-     * same cluster in both C1 and C2.
-     * - FP (false positive) - as the number of points that are present in the
-     * same cluster in C1 but not in C2.
-     * - FN (false negative) - as the number of points that are present in the
-     * same cluster in C2 but not in C1.
+     * - TP (true positive) - as the number of points that are present in
+     * the same cluster in both C1 and C2.
+     * - FP (false positive) - as the number of points that are present in
+     * the same cluster in C1 but not in C2.
+     * - FN (false negative) - as the number of points that are present in
+     * the same cluster in C2 but not in C1.
      * - TN (true negative) - as the number of points that are in different
      * clusters in both C1 and C2.
      *
      * @param table
      * @param realClass
      * @param clusterName
-     * @return table containing positive/negative assignments (usually used in
-     *         supervised learning)
+     * @return table containing positive/negative assignments (usually used
+     * in
+     * supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
