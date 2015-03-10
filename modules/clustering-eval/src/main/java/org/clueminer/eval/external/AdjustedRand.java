@@ -12,7 +12,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
-import org.clueminer.utils.Dump;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +37,6 @@ public class AdjustedRand extends AbstractExternalEval {
         //extra row/column is used for storing sums - the last one
         int diamRow = contingency.length - 1;
         int diamCol = contingency[0].length - 1;
-        Dump.matrix(contingency, "contingency", 2);
         double a = 0;
         int b1 = 0;
         int b2 = 0;
@@ -59,7 +57,65 @@ public class AdjustedRand extends AbstractExternalEval {
         score = (a - (bProd) / all) / ((b1 + b2) / 2.0 - (bProd) / all);
 
         return score;
+    }
 
+    public double scAlternate(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+        double ARI = 0;
+
+        //pairs that are in same community in both clusters and groundTruth
+        int a = 0;
+        //pairs that are in same community in groundTruth but not in clusters
+        int b = 0;
+        //pairs that are in same community in clusters but not in groundTruth
+        int c = 0;
+        //pairs that are in different community in both clusters and groundTruth
+        int d = 0;
+
+        Cluster cc1, cg1, cc2, cg2;
+
+        double np = 0;
+
+        /*  Iterator<Instance> iter = clusters.instancesIterator();
+         while (iter.hasNext()) {
+         Instance i = iter.next();
+         cc1 =;
+
+         cg1 = getCommunity(v1, groundTruth);
+
+         for (int j = i + 1; j < nodes.size(); j++) {
+         V v2 = nodes.get(j);
+
+         if (!v1.equals(v2)) {
+         np++;
+
+         cc2 = getCommunity(v2, partitioning);
+         cg2 = getCommunity(v2, groundTruth);
+
+         if (cc1 == null || cc2 == null) {
+         if (cg2.equals(cg1)) {
+         b++;
+         } else {
+         d++;
+         }
+         continue;
+         }
+
+         if (cc2.equals(cc1) && (cg2.equals(cg1))) {
+         a++;
+         } else if (!cc2.equals(cc1) && cg2.equals(cg1)) {
+         b++;
+         } else if (cc2.equals(cc1) && !cg2.equals(cg1)) {
+         c++;
+         } else if (!cc1.equals(cc2) && !cg1.equals(cg2)) {
+         d++;
+         }
+         }
+         }
+         }
+         double tmp = (a + b) * (a + c) + (c + d) * (b + d);
+         ARI = np * (a + d) - tmp;
+         ARI /= np * np - tmp;*/
+        return ARI;
     }
 
     /**
@@ -70,7 +126,6 @@ public class AdjustedRand extends AbstractExternalEval {
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
-        dumpTable(table);
         //WARNING the result is sensitive to matching rows/columns
         return countScore(extendedContingency(table));
     }

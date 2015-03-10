@@ -244,6 +244,22 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         return -1;
     }
 
+    /**
+     * {@inheritDoc }
+     *
+     * @param inst
+     * @return
+     */
+    @Override
+    public Cluster<? extends Instance> assignedCluster(Instance inst) {
+        for (Cluster<E> cluster : this) {
+            if (cluster.contains(inst.getIndex())) {
+                return cluster;
+            }
+        }
+        return null;
+    }
+
     @Override
     public Cluster<E> get(int index) {
         return data[index];

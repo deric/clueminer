@@ -128,6 +128,13 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     int assignedCluster(int instanceId);
 
     /**
+     *
+     * @param inst
+     * @return cluster to which is {@code inst} assigned
+     */
+    Cluster<? extends Instance> assignedCluster(Instance inst);
+
+    /**
      * Create new cluster on given index
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
@@ -146,7 +153,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity     cluster capacity
+     * @param capacity cluster capacity
      * @return newly created cluster
      */
     Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
@@ -156,7 +163,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * result
      *
      * @return lookup instance for accessing related objects (Dataset,
-     *         hierarchical clustering etc.)
+     * hierarchical clustering etc.)
      */
     Lookup getLookup();
 

@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.utils.Dump;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -100,13 +101,25 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testIris2() {
-        double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
+        AdjustedRand ari = (AdjustedRand) subject;
+        System.out.println("==== computing better");
+        double scoreBetter;
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
+        int[][] extc = ari.extendedContingency(table);
+        Dump.matrix(extc, "better extc", 2);
+        scoreBetter = ari.countScore(extc);
+        assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
         System.out.println("better table ");
         dumpTable(table);
         System.out.println("better = " + scoreBetter);
-        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+        System.out.println("==== computing worser");
+        double scoreWorser;
         table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
+        extc = ari.extendedContingency(table);
+        Dump.matrix(extc, "worser extc", 2);
+        scoreWorser = ari.countScore(extc);
+        //last cell in table should sum all counts in the table
+        assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
         System.out.println("worser table ");
         dumpTable(table);
         System.out.println("worser = " + scoreWorser);
@@ -121,7 +134,7 @@ public class AdjustedRandTest extends ExternalTest {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
         int[][] extCont = ari.extendedContingency(table);
         //should be eq to number of items in the dataset
-        assertEquals(150, extCont[extCont.length - 1][extCont.length - 1]);
+        assertEquals(150, extCont[extCont.length - 1][extCont[0].length - 1]);
     }
 
     public void dumpTable(Table<String, String, Integer> table) {

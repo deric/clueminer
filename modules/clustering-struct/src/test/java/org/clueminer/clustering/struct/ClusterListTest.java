@@ -211,6 +211,32 @@ public class ClusterListTest {
 
     @Test
     public void testAssignedCluster() {
+        Clustering<Cluster> clusters = new ClusterList(3);
+        instanceIter(clusters);
+        Cluster c1 = clusters.createCluster();
+        c1.attributeBuilder().create("x", "NUMERIC");
+        c1.attributeBuilder().create("y", "NUMERIC");
+        Instance i1 = new DoubleArrayDataRow(new double[]{1.0, 0.0});
+        i1.setIndex(0);
+        c1.add(i1);
+        Cluster c2 = clusters.createCluster();
+        c2.setAttributes(c1.getAttributes());
+        Instance i2 = new DoubleArrayDataRow(new double[]{5.0, 1.0});
+        i2.setIndex(1);
+        c2.add(i2);
+        Cluster c3 = clusters.createCluster();
+        c3.setAttributes(c1.getAttributes());
+        Instance i3 = new DoubleArrayDataRow(new double[]{1.0, 2.0});
+        i3.setIndex(2);
+        c3.add(i3);
+
+        assertEquals(c1, clusters.assignedCluster(i1));
+        assertEquals(c1.getClusterId(), clusters.assignedCluster(i1.getIndex()));
+        assertEquals(c2, clusters.assignedCluster(i2));
+        assertEquals(c2.getClusterId(), clusters.assignedCluster(i2.getIndex()));
+        assertEquals(c3, clusters.assignedCluster(i3));
+        assertEquals(c3.getClusterId(), clusters.assignedCluster(i3.getIndex()));
+
     }
 
     @Test
