@@ -22,6 +22,8 @@ import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A wrapper around a HashMap for class -> cluster assignment
@@ -61,6 +63,14 @@ public class Matching {
 
     public Collection<String> values() {
         return matching.values();
+    }
+
+    public Collection<String> keySet() {
+        return matching.keySet();
+    }
+
+    public Set<Entry<String, String>> entrySet() {
+        return matching.entrySet();
     }
 
     public boolean containsKey(String key) {
@@ -103,6 +113,7 @@ public class Matching {
         return null;
     }
 
+    @Override
     public String toString() {
         return matching.toString();
     }

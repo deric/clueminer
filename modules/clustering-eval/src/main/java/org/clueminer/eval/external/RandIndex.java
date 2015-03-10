@@ -2,11 +2,11 @@ package org.clueminer.eval.external;
 
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.utils.Matching;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +39,7 @@ public class RandIndex extends AbstractCountingPairs {
      */
     @Override
     public double countScore(Table<String, String, Integer> table,
-            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
+            Clustering<? extends Cluster> ref, Matching matching) {
         Map<String, Integer> res;
 
         int tp, fp, fn, tn;
