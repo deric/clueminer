@@ -122,7 +122,7 @@ public class CountingPairsTest {
         Map<String, Integer> res;
 
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            res = CountingPairs.countAssignments(table, matching.getByCluster(cluster), cluster);
             System.out.println("wrong table: " + res);
         }
 
@@ -141,7 +141,7 @@ public class CountingPairsTest {
         int tp, fp, fn, tn, sum;
         for (String cluster : matching.values()) {
             //System.out.println(cluster + " corresponds to " + matching.inverse().get(cluster));
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            res = CountingPairs.countAssignments(table, matching.getByCluster(cluster), cluster);
             assertEquals(4, res.size());
             tp = res.get("tp");
             fp = res.get("fp");
@@ -159,8 +159,8 @@ public class CountingPairsTest {
     public void testCountPairs2() {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
         Matching matching = CountingPairs.findMatching(table);
-        //only 2 classes could be paired, third one is paired in a random way
-        assertEquals(2, matching.size());
+        //just 2 clusters, so 2 classes must belong to 1 cluster
+        assertEquals(3, matching.size());
     }
 
     @Test

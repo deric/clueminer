@@ -16,9 +16,12 @@
  */
 package org.clueminer.eval.utils;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A wrapper around a HashMap for class -> cluster assignment
@@ -31,6 +34,8 @@ import java.util.HashMap;
 public class Matching {
 
     private final HashMap<String, String> matching;
+    //cached inversed index
+    private Multimap<String, String> inverse;
 
     public Matching() {
         this.matching = Maps.newHashMap();
@@ -41,9 +46,6 @@ public class Matching {
      * @return size of matched records
      */
     public int size() {
-        if (matching == null) {
-            return 0;
-        }
         return matching.size();
     }
 
@@ -66,7 +68,43 @@ public class Matching {
     }
 
     public String put(String klass, String cluster) {
+        inverse = null;
         return matching.put(klass, cluster);
+    }
+
+    /**
+     * Allows searching in map by value, a cluster might be mapped to multiple
+     * classes
+     *
+     * @return
+     */
+    public Multimap<String, String> inverse() {
+        Multimap<String, String> multi = ArrayListMultimap.create();
+        for (Map.Entry<String, String> e : matching.entrySet()) {
+            multi.put(e.getValue(), e.getKey());
+        }
+        inverse = multi;
+        return multi;
+    }
+
+    /**
+     *
+     * @param cluster
+     * @return class(es) mapped to given cluster, null if none
+     */
+    public String getByCluster(String cluster) {
+        if (inverse == null) {
+            inverse();
+        }
+        if (inverse.containsKey(cluster)) {
+            Collection res = inverse.get(cluster);
+            return res.toString();
+        }
+        return null;
+    }
+
+    public String toString() {
+        return matching.toString();
     }
 
 }
