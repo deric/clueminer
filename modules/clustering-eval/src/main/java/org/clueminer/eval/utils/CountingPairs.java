@@ -208,7 +208,7 @@ public class CountingPairs {
      * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     *         supervised learning)
+     * supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;

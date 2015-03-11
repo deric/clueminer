@@ -60,92 +60,57 @@ public class AdjustedRand extends AbstractExternalEval {
         return score;
     }
 
-    public int[] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        int[][] conf = new int[c1.size()][c2.size()];
-        Cluster<Instance> curr;
+    public double countAri(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        //pairs that are in the same cluster in both clusterings
+        int a = 0;
+        //pairs that are in same the cluster in C1 but not in C2
+        int b = 0;
+        //pairs that are in the same cluster in C2 but not in C1
+        int c = 0;
+        //pairs that are in different community in both clusterings
+        int d = 0;
 
-        for (int i = 0; i < c1.size(); i++) {
-            curr = c1.get(i);
-            for (Instance inst : curr) {
-                for (int j = 0; j < c2.size(); j++) {
-                    if (c2.get(j).contains(inst.getIndex())) {
-                        conf[i][j]++;
+        double ari, np = 0;
+
+        Instance x, y;
+        Cluster cx1, cx2, cy1, cy2;
+        for (int i = 0; i < c1.instancesCount(); i++) {
+            x = c1.instance(i);
+            cx1 = c1.assignedCluster(x);
+            cx2 = c2.assignedCluster(x);
+            for (int j = 0; j < i; j++) {
+                if (i != j) {
+                    y = c1.instance(j);
+                    cy1 = c1.assignedCluster(y);
+                    cy2 = c2.assignedCluster(y);
+                    //in C1 both are in the same cluster
+                    if (cx1.getClusterId() == cy1.getClusterId()) {
+                        if (cy1.getClusterId() == cy2.getClusterId()) {
+                            a++;
+                        } else {
+                            b++;
+                        }
+                    } else {
+                        if (cx2.getClusterId() == cy2.getClusterId()) {
+                            c++;
+                        } else {
+                            d++;
+                        }
                     }
                 }
             }
         }
-
-        //Dump.matrix(conf, "conf mat", 0);
-        return null;
-    }
-
-    public double scAlternate(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        double ARI = 0;
-
-        //pairs that are in same community in both clusters and groundTruth
-        int a = 0;
-        //pairs that are in same community in groundTruth but not in clusters
-        int b = 0;
-        //pairs that are in same community in clusters but not in groundTruth
-        int c = 0;
-        //pairs that are in different community in both clusters and groundTruth
-        int d = 0;
-
-        double np = 0;
-
-
-        /*        Cluster cc1, cg1, cc2, cg2;
-
-
-
-        Iterator<Instance> iter = clusters.instancesIterator();
-        while (iter.hasNext()) {
-            Instance i = iter.next();
-            cc1 =;
-
-            cg1 = getCommunity(v1, groundTruth);
-
-            for (int j = i + 1; j < nodes.size(); j++) {
-                V v2 = nodes.get(j);
-
-                if (!v1.equals(v2)) {
-                    np++;
-
-                    cc2 = getCommunity(v2, partitioning);
-                    cg2 = getCommunity(v2, groundTruth);
-
-                    if (cc1 == null || cc2 == null) {
-                        if (cg2.equals(cg1)) {
-                            b++;
-                        } else {
-                            d++;
-                        }
-                        continue;
-                    }
-
-                    if (cc2.equals(cc1) && (cg2.equals(cg1))) {
-                        a++;
-                    } else if (!cc2.equals(cc1) && cg2.equals(cg1)) {
-                        b++;
-                    } else if (cc2.equals(cc1) && !cg2.equals(cg1)) {
-                        c++;
-                    } else if (!cc1.equals(cc2) && !cg1.equals(cg2)) {
-                        d++;
-                    }
-                }
-            }
-        }*/
         double tmp = (a + b) * (a + c) + (c + d) * (b + d);
-        ARI = np * (a + d) - tmp;
-        ARI /= np * np - tmp;
-        return ARI;
+        ari = np * (a + d) - tmp;
+        ari /= np * np - tmp;
+        return ari;
     }
 
     /**
      * Count Adjusted Rand index
      *
      * @param table contingency table where last column/row sums values in the
-     *              column/row
+     * column/row
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
@@ -195,9 +160,6 @@ public class AdjustedRand extends AbstractExternalEval {
             ck[k] = c;
             k++;
         }
-
-        System.out.println("rows: " + rows.toString());
-        System.out.println("cols: " + cols.toString());
 
         //number of rows could be different if we compare clusters to classes
         if (rows.size() != cols.size()) {
@@ -257,8 +219,6 @@ public class AdjustedRand extends AbstractExternalEval {
      * @return
      */
     private Set<String> diff(Collection<String> a, Set<String> b) {
-        System.out.println("diffing: " + a.toString());
-        System.out.println("to: " + b);
         Set<String> res = new HashSet<>();
         for (String s : a) {
             if (!b.contains(s)) {

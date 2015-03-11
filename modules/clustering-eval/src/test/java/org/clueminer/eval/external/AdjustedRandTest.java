@@ -136,4 +136,12 @@ public class AdjustedRandTest extends ExternalTest {
         //should be eq to number of items in the dataset
         assertEquals(150, extCont[extCont.length - 1][extCont[0].length - 1]);
     }
+
+    @Test
+    public void testAri() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        double score = ari.countAri(FakeClustering.iris(), FakeClustering.iris());
+        assertEquals(1.0, score, delta);
+
+    }
 }
