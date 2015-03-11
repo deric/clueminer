@@ -114,6 +114,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     Instance getCentroid();
 
     /**
+     * Instances are numbered from 0 to {@code instancesCount()-1}
+     *
+     * @param i
+     * @return i-th instance in the clustering
+     */
+    Instance instance(int i);
+
+    /**
      *
      * @return sizes of all clusters
      */

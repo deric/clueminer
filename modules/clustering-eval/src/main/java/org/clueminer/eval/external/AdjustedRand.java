@@ -60,7 +60,26 @@ public class AdjustedRand extends AbstractExternalEval {
         return score;
     }
 
-    public double scAlternate(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public int[] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+        int[][] conf = new int[c1.size()][c2.size()];
+        Cluster<Instance> curr;
+
+        for (int i = 0; i < c1.size(); i++) {
+            curr = c1.get(i);
+            for (Instance inst : curr) {
+                for (int j = 0; j < c2.size(); j++) {
+                    if (c2.get(j).contains(inst.getIndex())) {
+                        conf[i][j]++;
+                    }
+                }
+            }
+        }
+
+        //Dump.matrix(conf, "conf mat", 0);
+        return null;
+    }
+
+    public double scAlternate(Clustering<Cluster> c1, Clustering<Cluster> c2) {
         double ARI = 0;
 
         //pairs that are in same community in both clusters and groundTruth
@@ -72,50 +91,53 @@ public class AdjustedRand extends AbstractExternalEval {
         //pairs that are in different community in both clusters and groundTruth
         int d = 0;
 
-        Cluster cc1, cg1, cc2, cg2;
-
         double np = 0;
 
-        /*  Iterator<Instance> iter = clusters.instancesIterator();
-         while (iter.hasNext()) {
-         Instance i = iter.next();
-         cc1 =;
 
-         cg1 = getCommunity(v1, groundTruth);
+        /*        Cluster cc1, cg1, cc2, cg2;
 
-         for (int j = i + 1; j < nodes.size(); j++) {
-         V v2 = nodes.get(j);
 
-         if (!v1.equals(v2)) {
-         np++;
 
-         cc2 = getCommunity(v2, partitioning);
-         cg2 = getCommunity(v2, groundTruth);
+        Iterator<Instance> iter = clusters.instancesIterator();
+        while (iter.hasNext()) {
+            Instance i = iter.next();
+            cc1 =;
 
-         if (cc1 == null || cc2 == null) {
-         if (cg2.equals(cg1)) {
-         b++;
-         } else {
-         d++;
-         }
-         continue;
-         }
+            cg1 = getCommunity(v1, groundTruth);
 
-         if (cc2.equals(cc1) && (cg2.equals(cg1))) {
-         a++;
-         } else if (!cc2.equals(cc1) && cg2.equals(cg1)) {
-         b++;
-         } else if (cc2.equals(cc1) && !cg2.equals(cg1)) {
-         c++;
-         } else if (!cc1.equals(cc2) && !cg1.equals(cg2)) {
-         d++;
-         }
-         }
-         }
-         }
-         double tmp = (a + b) * (a + c) + (c + d) * (b + d);
-         ARI = np * (a + d) - tmp;
-         ARI /= np * np - tmp;*/
+            for (int j = i + 1; j < nodes.size(); j++) {
+                V v2 = nodes.get(j);
+
+                if (!v1.equals(v2)) {
+                    np++;
+
+                    cc2 = getCommunity(v2, partitioning);
+                    cg2 = getCommunity(v2, groundTruth);
+
+                    if (cc1 == null || cc2 == null) {
+                        if (cg2.equals(cg1)) {
+                            b++;
+                        } else {
+                            d++;
+                        }
+                        continue;
+                    }
+
+                    if (cc2.equals(cc1) && (cg2.equals(cg1))) {
+                        a++;
+                    } else if (!cc2.equals(cc1) && cg2.equals(cg1)) {
+                        b++;
+                    } else if (cc2.equals(cc1) && !cg2.equals(cg1)) {
+                        c++;
+                    } else if (!cc1.equals(cc2) && !cg1.equals(cg2)) {
+                        d++;
+                    }
+                }
+            }
+        }*/
+        double tmp = (a + b) * (a + c) + (c + d) * (b + d);
+        ARI = np * (a + d) - tmp;
+        ARI /= np * np - tmp;
         return ARI;
     }
 

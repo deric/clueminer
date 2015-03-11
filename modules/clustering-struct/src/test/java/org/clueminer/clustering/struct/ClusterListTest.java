@@ -12,6 +12,7 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -27,6 +28,7 @@ public class ClusterListTest {
     private static ClusterList subject;
     private static final CommonFixture tf = new CommonFixture();
     private static final double delta = 1e-9;
+    private static Dataset<? extends Instance> irisCache;
 
     public ClusterListTest() {
     }
@@ -36,6 +38,10 @@ public class ClusterListTest {
         subject = new ClusterList(5);
         subject.createCluster();
         subject.createCluster();
+    }
+
+    @After
+    public void tearDown() throws Exception {
     }
 
     @Test
@@ -381,10 +387,12 @@ public class ClusterListTest {
     }
 
     private Dataset<? extends Instance> loadIris() throws FileNotFoundException, IOException {
-        Dataset<? extends Instance> iris = new ArrayDataset(150, 4);
-        ARFFHandler arff = new ARFFHandler();
-        arff.load(tf.irisArff(), iris, 4);
-        return iris;
+        if (irisCache == null) {
+            irisCache = new ArrayDataset(150, 4);
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.irisArff(), irisCache, 4);
+        }
+        return irisCache;
     }
 
     private Clustering irisWrong() throws IOException {
@@ -514,5 +522,82 @@ public class ClusterListTest {
         Clustering<Cluster> clusters = new ClusterList(0);
         clusters.createCluster(0);
         assertEquals(1, clusters.size());
+    }
+
+    @Test
+    public void testSetName() {
+    }
+
+    @Test
+    public void testPut_Cluster() {
+    }
+
+    /**
+     * Creates fake clustering of iris data with k clusters. Instances are
+     * assigned according to ordering in original dataset.
+     *
+     * @param k
+     * @return
+     * @throws IOException
+     */
+    public Clustering irisClustering(int k) throws IOException {
+        Dataset<? extends Instance> iris = loadIris();
+        Clustering clust = new ClusterList(k);
+        Cluster c = null;
+        int perCluster = iris.size() / k;
+        int j = 0;
+        for (int i = 0; i < iris.size(); i++) {
+            if (i % perCluster == 0) {
+                c = clust.createCluster(j++);
+            }
+            c.add(iris.get(i));
+        }
+        return clust;
+    }
+
+    /**
+     * TODO: fix test
+     *
+     * @throws IOException
+     */
+    //@Test
+    public void testInstance() throws IOException {
+        // iris clustering with 10 clusters
+        Clustering iris10 = irisClustering(10);
+        assertEquals(10, iris10.size());
+        assertEquals(150, iris10.instancesCount());
+
+        Dataset<? extends Instance> iris = loadIris();
+
+        for (int i = 0; i < iris.size(); i++) {
+            //i-th object in dataset should equal i-th object in clustering
+            //(no matter how many clusters do we have)
+            System.out.println("getting " + i);
+            assertEquals(iris.get(i), iris10.instance(i));
+        }
+    }
+
+    @Test
+    public void testAssignedCluster_int() {
+    }
+
+    @Test
+    public void testAssignedCluster_Instance() {
+    }
+
+    @Test
+    public void testGet_int() {
+    }
+
+    @Test
+    public void testGet_String() {
+    }
+
+    @Test
+    public void testGetEvaluationTable() {
+    }
+
+    @Test
+    public void testSetEvaluationTable() {
     }
 }

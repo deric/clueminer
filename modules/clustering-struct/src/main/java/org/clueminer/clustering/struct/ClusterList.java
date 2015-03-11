@@ -26,8 +26,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private final HashMap<String, Integer> name2id;
     private EvaluationTable table;
     /**
-     * (n - 1) is index of last inserted item, n itself represents
-     * current number of instances in this dataset
+     * (n - 1) is index of last inserted item, n itself represents current
+     * number of instances in this dataset
      */
     private int n = 0;
     //Lookup
@@ -176,6 +176,27 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             }
         }
         return cnt;
+    }
+
+    /**
+     * Instances are numbered from 0 to {@code instancesCount()-1}
+     *
+     * @param i
+     * @return i-th instance in the clustering
+     */
+    @Override
+    public Instance instance(int i) {
+        int offset = 0;
+        for (Cluster c : data) {
+            if (i <= offset) {
+                System.out.println("offset: " + offset);
+                System.out.println("i: " + i);
+                return c.get(i - offset);
+            }
+            offset += c.size();
+        }
+
+        return null;
     }
 
     /**
