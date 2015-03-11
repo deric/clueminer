@@ -556,11 +556,11 @@ public class ClusterListTest {
     }
 
     /**
-     * TODO: fix test
+     * Test access to instances in all clusters
      *
      * @throws IOException
      */
-    //@Test
+    @Test
     public void testInstance() throws IOException {
         // iris clustering with 10 clusters
         Clustering iris10 = irisClustering(10);
@@ -572,7 +572,6 @@ public class ClusterListTest {
         for (int i = 0; i < iris.size(); i++) {
             //i-th object in dataset should equal i-th object in clustering
             //(no matter how many clusters do we have)
-            System.out.println("getting " + i);
             assertEquals(iris.get(i), iris10.instance(i));
         }
     }

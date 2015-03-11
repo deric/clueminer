@@ -179,7 +179,8 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     /**
-     * Instances are numbered from 0 to {@code instancesCount()-1}
+     * Instances are numbered from 0 to {@code instancesCount() - 1}. This
+     * method allows access to instances no matter to which cluster are assigned
      *
      * @param i
      * @return i-th instance in the clustering
@@ -187,11 +188,11 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public Instance instance(int i) {
         int offset = 0;
+        int idx;
         for (Cluster c : data) {
-            if (i <= offset) {
-                System.out.println("offset: " + offset);
-                System.out.println("i: " + i);
-                return c.get(i - offset);
+            idx = i - offset;
+            if (idx < c.size()) {
+                return c.get(idx);
             }
             offset += c.size();
         }
