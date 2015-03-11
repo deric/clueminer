@@ -1,11 +1,11 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
 import com.google.common.collect.Table;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,7 +42,7 @@ public class Fmeasure extends AbstractCountingPairs {
             c = ref.get(entry.getValue());
             //clusters with size 1 should not increase accuracy
             if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.get(entry.getKey()), entry.getValue());
+                res = CountingPairs.countAssignments(table, entry.getKey(), entry.getValue());
                 tp = res.get("tp");
                 fp = res.get("fp");
                 fn = res.get("fn");

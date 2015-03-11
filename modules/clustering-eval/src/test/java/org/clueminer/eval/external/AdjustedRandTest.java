@@ -1,14 +1,14 @@
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
-import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Dump;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -87,11 +87,11 @@ public class AdjustedRandTest extends ExternalTest {
         System.out.println("clust(4) = " + score);
     }
 
-    @Test
+    //@Test
     public void testIris() {
         Clustering<Cluster> clustering = FakeClustering.irisWrong5();
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
-        dumpTable(table);
+        CountingPairs.dumpTable(table);
         AdjustedRand rand = (AdjustedRand) subject;
         double score = rand.countScore(table);
         //value based on experiments (not verified yet) - just to verify that we didnt break the functionality
@@ -99,7 +99,7 @@ public class AdjustedRandTest extends ExternalTest {
         System.out.println("clust(5) = " + score);
     }
 
-    @Test
+    //@Test
     public void testIris2() {
         AdjustedRand ari = (AdjustedRand) subject;
         System.out.println("==== computing better");
@@ -110,7 +110,7 @@ public class AdjustedRandTest extends ExternalTest {
         scoreBetter = ari.countScore(extc);
         assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
         System.out.println("better table ");
-        dumpTable(table);
+        CountingPairs.dumpTable(table);
         System.out.println("better = " + scoreBetter);
         System.out.println("==== computing worser");
         double scoreWorser;
@@ -121,7 +121,7 @@ public class AdjustedRandTest extends ExternalTest {
         //last cell in table should sum all counts in the table
         assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
         System.out.println("worser table ");
-        dumpTable(table);
+        CountingPairs.dumpTable(table);
         System.out.println("worser = " + scoreWorser);
 
         //should recognize better clustering
@@ -135,29 +135,5 @@ public class AdjustedRandTest extends ExternalTest {
         int[][] extCont = ari.extendedContingency(table);
         //should be eq to number of items in the dataset
         assertEquals(150, extCont[extCont.length - 1][extCont[0].length - 1]);
-    }
-
-    public void dumpTable(Table<String, String, Integer> table) {
-        StringBuilder sb = new StringBuilder();
-        Set<String> rows = table.columnKeySet();
-        Set<String> cols = table.rowKeySet();
-        String separator = "   ";
-        //print header
-        sb.append(separator);
-        for (String col : cols) {
-            sb.append(col);
-            sb.append(separator);
-        }
-        sb.append("\n");
-        for (String row : rows) {
-            sb.append(row);
-            sb.append(separator);
-            for (String col : cols) {
-                sb.append(table.get(col, row));
-                sb.append(separator);
-            }
-            sb.append("\n");
-        }
-        System.out.println(sb.toString());
     }
 }

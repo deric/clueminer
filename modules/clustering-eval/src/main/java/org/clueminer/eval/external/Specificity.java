@@ -38,7 +38,7 @@ public class Specificity extends AbstractCountingPairs {
             c = ref.get(entry.getValue());
             //clusters with size 1 should not increase accuracy
             if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.get(entry.getKey()), entry.getValue());
+                res = CountingPairs.countAssignments(table, entry.getKey(), entry.getValue());
                 tn = res.get("tn");
                 fp = res.get("fp");
                 specificity = tn / (double) (tn + fp);

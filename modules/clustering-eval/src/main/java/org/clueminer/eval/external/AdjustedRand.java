@@ -1,7 +1,8 @@
 package org.clueminer.eval.external;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
@@ -122,36 +123,12 @@ public class AdjustedRand extends AbstractExternalEval {
      * Count Adjusted Rand index
      *
      * @param table contingency table where last column/row sums values in the
-     * column/row
+     *              column/row
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
         //WARNING the result is sensitive to matching rows/columns
         return countScore(extendedContingency(table));
-    }
-
-    public void dumpTable(Table<String, String, Integer> table) {
-        StringBuilder sb = new StringBuilder();
-        Set<String> rows = table.columnKeySet();
-        Set<String> cols = table.rowKeySet();
-        String separator = "   ";
-        //print header
-        sb.append(separator);
-        for (String col : cols) {
-            sb.append(col);
-            sb.append(separator);
-        }
-        sb.append("\n");
-        for (String row : rows) {
-            sb.append(row);
-            sb.append(separator);
-            for (String col : cols) {
-                sb.append(table.get(col, row));
-                sb.append(separator);
-            }
-            sb.append("\n");
-        }
-        System.out.println(sb.toString());
     }
 
     /**
@@ -205,14 +182,14 @@ public class AdjustedRand extends AbstractExternalEval {
             //more clusters than classes
             if (rows.size() > cols.size()) {
                 //CollectionUtils.disjunction();
-                Set<String> unmatchedClusters = Sets.symmetricDifference(matching.values(), rows);
+                Set<String> unmatchedClusters = diff(matching.values(), rows);
                 System.out.println("unmatched rc: " + unmatchedClusters);
                 for (String str : unmatchedClusters) {
                     rk[k++] = str;
                 }
             } else {
                 //more classes than actual clusters
-                Set<String> unmatchedClasses = Sets.symmetricDifference(matching.keySet(), rows);
+                Set<String> unmatchedClasses = diff(matching.keySet(), cols);
                 System.out.println("unmatched cc: " + unmatchedClasses);
                 k = rows.size();
                 for (String str : unmatchedClasses) {
@@ -248,6 +225,25 @@ public class AdjustedRand extends AbstractExternalEval {
         }
 
         return contingency;
+    }
+
+    /**
+     * Perform a-b operation with sets
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    private Set<String> diff(Collection<String> a, Set<String> b) {
+        System.out.println("diffing: " + a.toString());
+        System.out.println("to: " + b);
+        Set<String> res = new HashSet<>();
+        for (String s : a) {
+            if (!b.contains(s)) {
+                res.add(s);
+            }
+        }
+        return res;
     }
 
     @Override

@@ -45,7 +45,7 @@ public class AUC extends AbstractCountingPairs {
             c = ref.get(entry.getValue());
             //clusters with size 1 should not increase accuracy
             if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.get(entry.getKey()), entry.getValue());
+                res = CountingPairs.countAssignments(table, entry.getKey(), entry.getValue());
                 tp = res.get("tp");
                 fp = res.get("fp");
                 tn = res.get("tn");
