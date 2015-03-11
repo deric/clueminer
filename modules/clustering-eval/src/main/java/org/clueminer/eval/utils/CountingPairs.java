@@ -7,12 +7,18 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -255,6 +261,48 @@ public class CountingPairs {
                 .build();
 
         return res;
+    }
+
+    public static Clustering<? extends Cluster> clusteringFromClasses(Clustering clust) {
+        Clustering<? extends Cluster> golden = null;
+
+        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        if (dataset != null) {
+            SortedSet set = dataset.getClasses();
+            golden = Clusterings.newList();
+            //golden.lookupAdd(dataset);
+            EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
+            golden.lookupAdd(evalTable);
+            HashMap<Object, Integer> map = new HashMap<>(set.size());
+            Object obj;
+            Iterator it = set.iterator();
+            int i = 0;
+            Cluster c;
+            while (it.hasNext()) {
+                obj = it.next();
+                c = golden.createCluster(i);
+                c.setAttributes(dataset.getAttributes());
+                map.put(obj, i++);
+            }
+            int assign;
+
+            for (Instance inst : dataset) {
+                if (inst.classValue() == null) {
+                    throw new RuntimeException("missing class value");
+                } else {
+                    if (map.containsKey(inst.classValue())) {
+                        assign = map.get(inst.classValue());
+                        c = golden.get(assign);
+                    } else {
+                        c = golden.createCluster(i);
+                        c.setAttributes(dataset.getAttributes());
+                        map.put(inst.classValue(), i++);
+                    }
+                    c.add(inst);
+                }
+            }
+        }
+        return golden;
     }
 
     public static void dumpTable(Table<String, String, Integer> table) {

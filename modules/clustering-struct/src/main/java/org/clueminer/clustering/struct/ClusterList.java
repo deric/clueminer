@@ -12,12 +12,14 @@ import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  * @param <E>
  */
+@ServiceProvider(service = Clustering.class)
 public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     private static final long serialVersionUID = 5866077228917808995L;
@@ -34,6 +36,16 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
     private String name;
+
+    public ClusterList() {
+        //some default capacity, to avoid problems with zero array size
+        int capacity = 3;
+        data = new Cluster[capacity];
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        params = new Props();
+        name2id = new HashMap<>(capacity);
+    }
 
     public ClusterList(int capacity) {
         if (capacity < 1) {

@@ -60,7 +60,7 @@ public class AdjustedRand extends AbstractExternalEval {
         return score;
     }
 
-    public double countAri(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public double countAri(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
         //pairs that are in the same cluster in both clusterings
         int a = 0;
         //pairs that are in same the cluster in C1 but not in C2
@@ -230,8 +230,11 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table);
+        // Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
+        //return countScore(table);
+        //reference clustering made up from class labels
+        Clustering<? extends Cluster> ref = CountingPairs.clusteringFromClasses(clusters);
+        return countAri(clusters, ref);
     }
 
     @Override
