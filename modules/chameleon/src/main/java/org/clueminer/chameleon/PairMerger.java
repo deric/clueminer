@@ -180,7 +180,10 @@ public class PairMerger extends Merger {
 
             properties1.EIC += properties2.EIC;
             properties1.counter += properties2.counter;
-            properties1.ECL = properties1.EIC / properties1.counter;
+            if (properties1.counter != 0) {
+                properties1.ECL = properties1.EIC / properties1.counter;
+            }
+
         }
     }
 
