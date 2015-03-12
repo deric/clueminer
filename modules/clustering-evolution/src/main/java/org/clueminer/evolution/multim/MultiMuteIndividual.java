@@ -12,6 +12,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
@@ -63,7 +65,8 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         do {
             genom.put(AgglParams.LINKAGE, linkage(rand));
         } while (!isValid());
-        genom.put(AgglParams.DIST, distance(rand));
+
+        //genom.put(AgglParams.DIST, distance(rand));
         //first we might want to mutate etc, then count fitness
         //countFitness();
     }
@@ -106,6 +109,9 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     @Override
     public double countFitness() {
         clustering = updateCustering();
+        if (!isValid()) {
+            return Double.NaN;
+        }
         EvaluationTable et = evaluationTable(clustering);
         if (et == null) {
             throw new RuntimeException("missing eval table");
@@ -123,6 +129,9 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     public double countFitness(ClusterEvaluation eval) {
         if (clustering == null) {
             updateCustering();
+            if (!isValid()) {
+                return Double.NaN;
+            }
         }
         EvaluationTable et = evaluationTable(clustering);
         if (et == null) {
@@ -174,9 +183,10 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         if (performMutation()) {
             genom.put(AgglParams.LINKAGE, linkage(rand));
         }
-        if (performMutation()) {
-            genom.put(AgglParams.DIST, distance(rand));
-        }
+        //mutating distance is complicated
+        /*if (performMutation()) {
+         genom.put(AgglParams.DIST, distance(rand));
+         }*/
     }
 
     @Override
@@ -220,10 +230,20 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
             ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
         }
-        if (clustering != null && clustering.size() < 2) {
-            //we don't want solutions with 0 or 1 cluster
-            return false;
+        if (clustering != null) {
+            if (clustering.size() < 2) {
+                //we don't want solutions with 0 or 1 cluster
+                return false;
+            }
+
+            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            if (dataset != null) {
+                if (clustering.instancesCount() != dataset.size()) {
+                    return false;
+                }
+            }
         }
+
         return ret;
     }
 

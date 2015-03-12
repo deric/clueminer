@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.InvalidClustering;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -393,11 +394,20 @@ public class CountingPairs {
         for (int i = 0; i < dataset.size() - 1; i++) {
             x = dataset.get(i);
             cx2 = clust.assignedCluster(x);
+            if (cx2 == null) {
+                throw new InvalidClustering("instance " + x.getIndex()
+                        + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+            }
             cx1 = x.classValue();
             for (int j = i + 1; j < dataset.size(); j++) {
                 y = dataset.get(j);
                 cy1 = y.classValue();
                 cy2 = clust.assignedCluster(y);
+                if (cy2 == null) {
+                    System.out.println("params: " + clust.getParams().toString());
+                    throw new InvalidClustering("instance " + y.getIndex()
+                            + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+                }
                 //in both instances have the same label
                 if (cx1.equals(cy1)) {
                     //both instances are assigned to the same cluster
