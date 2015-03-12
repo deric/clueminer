@@ -131,12 +131,12 @@ public abstract class Merger {
     }
 
     public void printExternalProperties() {
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusterMatrix.size(); i++) {
             for (int j = 0; j < i + 1; j++) {
                 System.out.print("    ");
             }
-            for (int j = i + 1; j < clusterCount; j++) {
-                //System.out.print(" EIC: " + clusterMatrix[i][j].EIC + " ECL: " + clusterMatrix[i][j].ECL);
+            for (int j = 0; j < i; j++) {
+                //System.out.print(" EIC: " + clusterMatrix.get(i).get(j).EIC + " ECL: " + clusterMatrix.get(i).get(j).ECL);
                 System.out.print("R: " + computeSimilarity(i, j));
             }
             System.out.println("");
