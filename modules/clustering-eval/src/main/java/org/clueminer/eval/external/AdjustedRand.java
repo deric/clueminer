@@ -228,7 +228,7 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double getMin() {
-        return -1;
+        return 0;
     }
 
     @Override

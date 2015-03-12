@@ -203,7 +203,7 @@ public class ScorePlot extends BPanel implements TaskListener {
             if (dataset != null) {
                 SortedSet set = dataset.getClasses();
                 golden = Clusterings.newList();
-                //golden.lookupAdd(dataset);
+                golden.lookupAdd(dataset);
                 EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
                 golden.lookupAdd(evalTable);
                 HashMap<Object, Integer> map = new HashMap<>(set.size());
