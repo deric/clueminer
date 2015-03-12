@@ -1,5 +1,7 @@
 package org.clueminer.eval.external;
 
+import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -18,7 +20,7 @@ public class AUCTest extends ExternalTest {
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("AUC (mw) = " + score);
-        assertEquals(true, score < 0.5);
+        assertEquals(true, score <= 0.5);
     }
 
     @Test
@@ -27,4 +29,11 @@ public class AUCTest extends ExternalTest {
         measure(FakeClustering.iris(), 1.0);
     }
 
+    @Test
+    public void testOneClassPerCluster() {
+        AUC auc = (AUC) subject;
+        PairMatch pm = CountingPairs.matchPairs(oneClassPerCluster());
+        pm.dump();
+        assertEquals(Double.NaN, auc.countScore(pm), delta);
+    }
 }

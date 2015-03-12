@@ -330,26 +330,29 @@ public class CountingPairs {
     }
 
     /**
-     * Match instances in two clusterings of the same dataset
+     * Match instances in two clusterings of the same dataset. From resulting
+     * table we can tell how close it the {@code curr} clustering to the
+     * reference one.
      *
-     * @param c1 first clustering
-     * @param c2 second clustering
+     * @param curr second clustering
+     * @param ref reference clustering,
+     *
      * @return
      */
-    public static PairMatch matchPairs(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
+    public static PairMatch matchPairs(Clustering<? extends Cluster> curr, Clustering<? extends Cluster> ref) {
         PairMatch pm = new PairMatch();
 
         Instance x, y;
         Cluster cx1, cx2, cy1, cy2;
-        for (int i = 0; i < c1.instancesCount() - 1; i++) {
-            x = c1.instance(i);
-            cx1 = c1.assignedCluster(x);
-            cx2 = c2.assignedCluster(x);
-            for (int j = i + 1; j < c1.instancesCount(); j++) {
+        for (int i = 0; i < ref.instancesCount() - 1; i++) {
+            x = ref.instance(i);
+            cx1 = ref.assignedCluster(x);
+            cx2 = curr.assignedCluster(x);
+            for (int j = i + 1; j < ref.instancesCount(); j++) {
 
-                y = c1.instance(j);
-                cy1 = c1.assignedCluster(y);
-                cy2 = c2.assignedCluster(y);
+                y = ref.instance(j);
+                cy1 = ref.assignedCluster(y);
+                cy2 = curr.assignedCluster(y);
                 //in C1 both are in the same cluster
                 if (cx1.getClusterId() == cy1.getClusterId()) {
                     if (cx2.getClusterId() == cy2.getClusterId()) {
