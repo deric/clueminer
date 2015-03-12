@@ -1,8 +1,7 @@
 package org.clueminer.clustering.api;
 
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  * Interface is used to evaluate quality of clusterings
@@ -18,24 +17,25 @@ public interface ClusterEvaluation {
     String getName();
 
     /**
-     * Returns the score the current clusterer obtains on the dataset.
+     * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
-     * @param dataset  - the original dataset
-     * @return the score the clusterer obtained on this particular dataset
+     * @param params a HashMap with parameter settings (many criterion does not
+     * take parameters)
+     * @return criterion value obtained on this particular clustering
      */
-    double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset);
+    double score(Clustering<? extends Cluster> clusters, Props params);
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
      * scores, especially if multiple scores are evaluated
      *
      * @param clusters
-     * @param dataset   - the original dataset
      * @param proximity matrix of distances between all points
+     * @param params optional parameters evaluation metric
      * @return
      */
-    double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity);
+    double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params);
 
     /**
      * Compares the two scores according to the criterion in the implementation.
@@ -45,7 +45,7 @@ public interface ClusterEvaluation {
      * @param score1 - the first score
      * @param score2 - the second score
      * @return true if the first score is better than the second, false in all
-     *         other cases
+     * other cases
      */
     boolean isBetter(double score1, double score2);
 
