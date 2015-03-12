@@ -64,13 +64,13 @@ public class AdjustedRand extends AbstractExternalEval {
      * Computation inspired by approach in:
      *
      * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
- Rand Index as tp Metric for Evaluating Supervised Classification
+     * Rand Index as tp Metric for Evaluating Supervised Classification
      *
      * @param pm
      * @return
      */
     public double score(PairMatch pm) {
-        double ari, np = 0;
+        double ari, np = pm.sum();
         double tmp = (pm.tp + pm.fp) * (pm.tp + pm.fn) + (pm.fn + pm.tn) * (pm.fp + pm.tn);
         ari = np * (pm.tp + pm.tn) - tmp;
         ari /= np * np - tmp;

@@ -25,9 +25,9 @@ public class PairMatch {
 
     //pairs that are in the same cluster in both clusterings (a)
     public int tp;
-    //pairs that are in same the cluster in C1 but not in C2
+    //pairs that are in same the cluster in C1 but not in C2 (b)
     public int fp;
-    //pairs that are in the same cluster in C2 but not in C1
+    //pairs that are in the same cluster in C2 but not in C1 (c)
     public int fn;
     //pairs that are in different community in both clusterings (d)
     public int tn;

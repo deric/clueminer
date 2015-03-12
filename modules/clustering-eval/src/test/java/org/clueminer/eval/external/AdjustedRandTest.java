@@ -37,7 +37,7 @@ public class AdjustedRandTest extends ExternalTest {
     public void testScore_Clustering_Clustering() {
         double score;
 
-        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.13473684210526315);
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.21052631578947367);
         measure(FakeClustering.wineClustering(), score);
     }
 
@@ -152,7 +152,7 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testTwoClusterings() {
         AdjustedRand ari = (AdjustedRand) subject;
-        PairMatch pm = CountingPairs.matchPairs(FakeClustering.iris(), FakeClustering.irisWrong());
+        PairMatch pm = CountingPairs.matchPairs(FakeClustering.irisWrong(), FakeClustering.iris());
 
         pm.dump();
         //number of pairs we can draw from 150 instances (150 \over 2)
@@ -173,6 +173,6 @@ public class AdjustedRandTest extends ExternalTest {
     public void testPcaData() {
         Clustering<? extends Cluster> clust = pcaData();
         double score = subject.score(clust);
-        assertEquals(0.313, score, delta);
+        assertEquals(0.3125734430082256, score, delta);
     }
 }
