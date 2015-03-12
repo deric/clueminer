@@ -328,4 +328,93 @@ public class CountingPairs {
         }
         System.out.println(sb.toString());
     }
+
+    /**
+     * Match instances in two clusterings of the same dataset
+     *
+     * @param c1 first clustering
+     * @param c2 second clustering
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
+        PairMatch pm = new PairMatch();
+
+        Instance x, y;
+        Cluster cx1, cx2, cy1, cy2;
+        for (int i = 0; i < c1.instancesCount(); i++) {
+            x = c1.instance(i);
+            cx1 = c1.assignedCluster(x);
+            cx2 = c2.assignedCluster(x);
+            for (int j = 0; j < i; j++) {
+                if (i != j) {
+                    y = c1.instance(j);
+                    cy1 = c1.assignedCluster(y);
+                    cy2 = c2.assignedCluster(y);
+                    //in C1 both are in the same cluster
+                    if (cx1.getClusterId() == cy1.getClusterId()) {
+                        if (cx2.getClusterId() == cy2.getClusterId()) {
+                            pm.a++;
+                        } else {
+                            pm.b++;
+                        }
+                    } else {
+                        if (cx2.getClusterId() == cy2.getClusterId()) {
+                            pm.c++;
+                        } else {
+                            pm.d++;
+                        }
+                    }
+                }
+            }
+        }
+        return pm;
+    }
+
+    /**
+     * Match clustering against class labels
+     *
+     * @param clust
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> clust) {
+        PairMatch pm = new PairMatch();
+
+        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing reference dataset");
+        }
+
+        Instance x, y;
+        Cluster cx2, cy2;
+        //class labels
+        Object cx1, cy1;
+        for (int i = 0; i < dataset.size(); i++) {
+            x = dataset.get(i);
+            cx2 = clust.assignedCluster(x);
+            cx1 = x.classValue();
+            for (int j = 0; j < i; j++) {
+                if (i != j) {
+                    y = dataset.get(j);
+                    cy1 = y.classValue();
+                    cy2 = clust.assignedCluster(y);
+                    //in both instances have the same label
+                    if (cx1.equals(cy1)) {
+                        //both instances are assigned to the same cluster
+                        if (cx2.getClusterId() == cy2.getClusterId()) {
+                            pm.a++;
+                        } else {
+                            pm.b++;
+                        }
+                    } else {
+                        if (cx2.getClusterId() == cy2.getClusterId()) {
+                            pm.c++;
+                        } else {
+                            pm.d++;
+                        }
+                    }
+                }
+            }
+        }
+        return pm;
+    }
 }

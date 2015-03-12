@@ -141,8 +141,10 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testAri() {
         AdjustedRand ari = (AdjustedRand) subject;
-        double score = ari.countAri(FakeClustering.iris(), FakeClustering.iris());
+        double score = ari.score(FakeClustering.iris(), FakeClustering.iris());
         assertEquals(1.0, score, delta);
 
+        //score = ari.score(FakeClustering.irisWrong());
+        //assertEquals(1.0, score, delta);
     }
 }

@@ -67,47 +67,6 @@ public class AdjustedRand extends AbstractExternalEval {
      * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
      * Rand Index as a Metric for Evaluating Supervised Classification
      *
-     * @param c1
-     * @param c2
-     * @return
-     */
-    public PairMatch countAri(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
-        PairMatch pm = new PairMatch();
-
-        Instance x, y;
-        Cluster cx1, cx2, cy1, cy2;
-        for (int i = 0; i < c1.instancesCount(); i++) {
-            x = c1.instance(i);
-            cx1 = c1.assignedCluster(x);
-            cx2 = c2.assignedCluster(x);
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    y = c1.instance(j);
-                    cy1 = c1.assignedCluster(y);
-                    cy2 = c2.assignedCluster(y);
-                    //in C1 both are in the same cluster
-                    if (cx1.getClusterId() == cy1.getClusterId()) {
-                        if (cy1.getClusterId() == cy2.getClusterId()) {
-                            pm.a++;
-                        } else {
-                            pm.b++;
-                        }
-                    } else {
-                        if (cx2.getClusterId() == cy2.getClusterId()) {
-                            pm.c++;
-                        } else {
-                            pm.d++;
-                        }
-                    }
-                }
-            }
-        }
-        return pm;
-    }
-
-    /**
-     * Adjusted Rand Index formula
-     *
      * @param pm
      * @return
      */
@@ -243,11 +202,7 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
-        // Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        //return countScore(table);
-        //reference clustering made up from class labels
-        Clustering<? extends Cluster> ref = CountingPairs.clusteringFromClasses(clusters);
-        PairMatch pm = countAri(clusters, ref);
+        PairMatch pm = CountingPairs.matchPairs(clusters);
         return score(pm);
     }
 
@@ -258,8 +213,8 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        return countScore(table);
+        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        return score(pm);
     }
 
     @Override
