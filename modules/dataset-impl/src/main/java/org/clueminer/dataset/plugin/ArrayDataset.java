@@ -365,6 +365,10 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     @Override
     public E set(int instanceIdx, E inst) {
+        ensureCapacity(instanceIdx);
+        if (instanceIdx > n) {
+            n = instanceIdx + 1;
+        }
         data[instanceIdx] = inst;
         return inst;
     }

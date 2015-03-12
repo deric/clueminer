@@ -455,6 +455,7 @@ public class ArrayDatasetTest {
         test.set(0, test.get(1));
         test.set(1, tmp);
         assertEquals(6.0, test.get(0, 0), delta);
+        assertEquals(2, test.size());
     }
 
     /**
@@ -462,6 +463,12 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testEnsureCapacity() {
+        Dataset<Instance> test = new ArrayDataset<>(data2x5);
+        Instance tmp = test.get(1);
+        test.set(5, tmp);
+        //not a sparse dataset, remaining positions will be filled with nulls
+        assertEquals(6, test.size());
+        assertEquals(tmp, test.instance(5));
     }
 
     /**
