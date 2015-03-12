@@ -41,8 +41,8 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AICScore;
@@ -202,7 +202,7 @@ public class ScorePlot extends BPanel implements TaskListener {
             Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
             if (dataset != null) {
                 SortedSet set = dataset.getClasses();
-                golden = new ClusterList(set.size());
+                golden = Clusterings.newList();
                 //golden.lookupAdd(dataset);
                 EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
                 golden.lookupAdd(evalTable);
