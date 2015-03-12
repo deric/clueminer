@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -60,17 +61,18 @@ public class AdjustedRand extends AbstractExternalEval {
         return score;
     }
 
-    public double countAri(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
-        //pairs that are in the same cluster in both clusterings
-        int a = 0;
-        //pairs that are in same the cluster in C1 but not in C2
-        int b = 0;
-        //pairs that are in the same cluster in C2 but not in C1
-        int c = 0;
-        //pairs that are in different community in both clusterings
-        int d = 0;
-
-        double ari, np = 0;
+    /**
+     * Computation inspired by approach in:
+     *
+     * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
+     * Rand Index as a Metric for Evaluating Supervised Classification
+     *
+     * @param c1
+     * @param c2
+     * @return
+     */
+    public PairMatch countAri(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
+        PairMatch pm = new PairMatch();
 
         Instance x, y;
         Cluster cx1, cx2, cy1, cy2;
@@ -86,22 +88,33 @@ public class AdjustedRand extends AbstractExternalEval {
                     //in C1 both are in the same cluster
                     if (cx1.getClusterId() == cy1.getClusterId()) {
                         if (cy1.getClusterId() == cy2.getClusterId()) {
-                            a++;
+                            pm.a++;
                         } else {
-                            b++;
+                            pm.b++;
                         }
                     } else {
                         if (cx2.getClusterId() == cy2.getClusterId()) {
-                            c++;
+                            pm.c++;
                         } else {
-                            d++;
+                            pm.d++;
                         }
                     }
                 }
             }
         }
-        double tmp = (a + b) * (a + c) + (c + d) * (b + d);
-        ari = np * (a + d) - tmp;
+        return pm;
+    }
+
+    /**
+     * Adjusted Rand Index formula
+     *
+     * @param pm
+     * @return
+     */
+    public double score(PairMatch pm) {
+        double ari, np = 0;
+        double tmp = (pm.a + pm.b) * (pm.a + pm.c) + (pm.c + pm.d) * (pm.b + pm.d);
+        ari = np * (pm.a + pm.d) - tmp;
         ari /= np * np - tmp;
         return ari;
     }
@@ -234,7 +247,8 @@ public class AdjustedRand extends AbstractExternalEval {
         //return countScore(table);
         //reference clustering made up from class labels
         Clustering<? extends Cluster> ref = CountingPairs.clusteringFromClasses(clusters);
-        return countAri(clusters, ref);
+        PairMatch pm = countAri(clusters, ref);
+        return score(pm);
     }
 
     @Override
