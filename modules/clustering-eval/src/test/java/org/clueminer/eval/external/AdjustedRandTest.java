@@ -1,6 +1,7 @@
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
@@ -153,11 +154,25 @@ public class AdjustedRandTest extends ExternalTest {
         AdjustedRand ari = (AdjustedRand) subject;
         PairMatch pm = CountingPairs.matchPairs(FakeClustering.iris(), FakeClustering.irisWrong());
 
-        System.out.println("tp: " + pm.a);
-        System.out.println("fp: " + pm.b);
-        System.out.println("fn: " + pm.c);
-        System.out.println("tn: " + pm.d);
-        assertEquals(150, pm.sum());
+        pm.dump();
+        //number of pairs we can draw from 150 instances (150 \over 2)
+        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum());
         System.out.println("ARI: " + ari.score(pm));
+    }
+
+    /**
+     * Based on Details of the Adjusted Rand index and Clustering algorithms
+     * Supplement to the paper “An empirical study on Principal
+     * Component Analysis for clustering gene expression data” (to
+     * appear in Bioinformatics)
+     *
+     * Ka Yee Yeung, Walter L. Ruzzo, 2001
+     *
+     */
+    @Test
+    public void testPcaData() {
+        Clustering<? extends Cluster> clust = pcaData();
+        double score = subject.score(clust);
+        assertEquals(0.313, score, delta);
     }
 }

@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.eval.external.ExternalTest;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
@@ -26,7 +27,7 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class CountingPairsTest {
+public class CountingPairsTest extends ExternalTest {
 
     private static Clustering clusters;
     private static final CommonFixture tf = new CommonFixture();
@@ -172,5 +173,41 @@ public class CountingPairsTest {
         System.out.println("matching: " + matching);
         //only 2 classes could be paired, third one is paired in a random way
         assertEquals(3, matching.size());
+    }
+
+    @Test
+    public void testContingencyTable_Clustering() {
+    }
+
+    @Test
+    public void testContingencyTable_Clustering_Clustering() {
+    }
+
+    @Test
+    public void testClusteringFromClasses() {
+    }
+
+    @Test
+    public void testDumpTable() {
+    }
+
+    @Test
+    public void testMatchPairs_Clustering_Clustering() {
+    }
+
+    @Test
+    public void testMatchPairs_Clustering() {
+        Clustering<? extends Cluster> clust = pcaData();
+
+        assertEquals(10, clust.instancesCount());
+        assertEquals(2, clust.get(0).size());
+        assertEquals(3, clust.get(1).size());
+        assertEquals(5, clust.get(2).size());
+
+        PairMatch pm = CountingPairs.matchPairs(clust);
+        assertEquals(7, pm.tp);
+        assertEquals(6, pm.fp);
+        assertEquals(7, pm.fn);
+        assertEquals(25, pm.tn);
     }
 }

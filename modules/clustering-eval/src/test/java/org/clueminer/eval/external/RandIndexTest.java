@@ -36,11 +36,13 @@ public class RandIndexTest extends ExternalTest {
     public void testScore_Clustering_Dataset() {
         measure(irisCorrect, 1.0);
 
-        measure(irisWrong, 0.6888888888888888);
+        measure(irisWrong, 0.7225950782997763);
 
         //this clustering shouldn't be better than the previous one, 142 items are in one
         //cluster, so not really the best solution - though the coefficient would prefere this one
-        measure(FakeClustering.irisWrong(), 0.5777777777777778);
+        measure(FakeClustering.irisWrong(), 0.36715883668903804);
+        measure(FakeClustering.irisWrong4(), 0.9463087248322147);
+        measure(FakeClustering.irisWrong5(), 0.7595525727069351);
     }
 
     /**
@@ -67,6 +69,7 @@ public class RandIndexTest extends ExternalTest {
             clust.add(inst);
             oneClass.add(clust);
         }
+        oneClass.lookupAdd(data);
         assertEquals(0.0, subject.score(oneClass), delta);
     }
 
@@ -74,6 +77,22 @@ public class RandIndexTest extends ExternalTest {
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("rand (mw): " + score);
-        assertEquals(true, score < 0.3);
+        assertEquals(true, score < 0.4);
+    }
+
+    /**
+     * Based on Details of the Adjusted Rand index and Clustering algorithms
+     * Supplement to the paper “An empirical study on Principal
+     * Component Analysis for clustering gene expression data” (to
+     * appear in Bioinformatics)
+     *
+     * Ka Yee Yeung, Walter L. Ruzzo, 2001
+     *
+     */
+    @Test
+    public void testPcaData() {
+        Clustering<? extends Cluster> clust = pcaData();
+        double score = subject.score(clust);
+        assertEquals(0.71111111111111, score, delta);
     }
 }

@@ -51,7 +51,7 @@ public class CountingPairs {
      * @return table with counts of items for each pair cluster, class
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
-        // a lookup table for storing correctly / incorrectly classified items
+        // tp lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -90,7 +90,7 @@ public class CountingPairs {
      * @return
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        // a lookup table for storing same / differently classified items
+        // tp lookup table for storing same / differently classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -156,7 +156,7 @@ public class CountingPairs {
                 throw new RuntimeException("this should not happen");
             }
         }
-        //some cluster hasn't been assigned to a class
+        //some cluster hasn't been assigned to tp class
         // matching.size() < sortedClusters.size()
         if (notAssigned.size() > 0) {
             for (String cluster : notAssigned) {
@@ -171,7 +171,7 @@ public class CountingPairs {
 
         //number of matching classes is lower than actual
         if (matching.size() < table.columnKeySet().size()) {
-            //check if all classes has been assigned to a cluster
+            //check if all classes has been assigned to tp cluster
             for (String klass : table.columnKeySet()) {
                 if (!matching.containsKey(klass)) {
                     System.out.println("class '" + klass + "' is not assigned");
@@ -341,28 +341,27 @@ public class CountingPairs {
 
         Instance x, y;
         Cluster cx1, cx2, cy1, cy2;
-        for (int i = 0; i < c1.instancesCount(); i++) {
+        for (int i = 0; i < c1.instancesCount() - 1; i++) {
             x = c1.instance(i);
             cx1 = c1.assignedCluster(x);
             cx2 = c2.assignedCluster(x);
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    y = c1.instance(j);
-                    cy1 = c1.assignedCluster(y);
-                    cy2 = c2.assignedCluster(y);
-                    //in C1 both are in the same cluster
-                    if (cx1.getClusterId() == cy1.getClusterId()) {
-                        if (cx2.getClusterId() == cy2.getClusterId()) {
-                            pm.a++;
-                        } else {
-                            pm.b++;
-                        }
+            for (int j = i + 1; j < c1.instancesCount(); j++) {
+
+                y = c1.instance(j);
+                cy1 = c1.assignedCluster(y);
+                cy2 = c2.assignedCluster(y);
+                //in C1 both are in the same cluster
+                if (cx1.getClusterId() == cy1.getClusterId()) {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
                     } else {
-                        if (cx2.getClusterId() == cy2.getClusterId()) {
-                            pm.c++;
-                        } else {
-                            pm.d++;
-                        }
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
                     }
                 }
             }
@@ -388,29 +387,27 @@ public class CountingPairs {
         Cluster cx2, cy2;
         //class labels
         Object cx1, cy1;
-        for (int i = 0; i < dataset.size(); i++) {
+        for (int i = 0; i < dataset.size() - 1; i++) {
             x = dataset.get(i);
             cx2 = clust.assignedCluster(x);
             cx1 = x.classValue();
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    y = dataset.get(j);
-                    cy1 = y.classValue();
-                    cy2 = clust.assignedCluster(y);
-                    //in both instances have the same label
-                    if (cx1.equals(cy1)) {
-                        //both instances are assigned to the same cluster
-                        if (cx2.getClusterId() == cy2.getClusterId()) {
-                            pm.a++;
-                        } else {
-                            pm.b++;
-                        }
+            for (int j = i + 1; j < dataset.size(); j++) {
+                y = dataset.get(j);
+                cy1 = y.classValue();
+                cy2 = clust.assignedCluster(y);
+                //in both instances have the same label
+                if (cx1.equals(cy1)) {
+                    //both instances are assigned to the same cluster
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
                     } else {
-                        if (cx2.getClusterId() == cy2.getClusterId()) {
-                            pm.c++;
-                        } else {
-                            pm.d++;
-                        }
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
                     }
                 }
             }

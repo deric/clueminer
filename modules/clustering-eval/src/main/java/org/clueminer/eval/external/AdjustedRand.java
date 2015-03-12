@@ -47,9 +47,9 @@ public class AdjustedRand extends AbstractExternalEval {
         for (int i = 0; i < squareSize; i++) {
             //diagonal item
             a += combinationOfTwo(contingency[i][i]);
-            //last column (sum over a row)
+            //last column (sum over tp row)
             b1 += combinationOfTwo(contingency[i][diamCol]);
-            //last row (sum over a column)
+            //last row (sum over tp column)
             b2 += combinationOfTwo(contingency[diamRow][i]);
         }
 
@@ -64,15 +64,15 @@ public class AdjustedRand extends AbstractExternalEval {
      * Computation inspired by approach in:
      *
      * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
-     * Rand Index as a Metric for Evaluating Supervised Classification
+ Rand Index as tp Metric for Evaluating Supervised Classification
      *
      * @param pm
      * @return
      */
     public double score(PairMatch pm) {
         double ari, np = 0;
-        double tmp = (pm.a + pm.b) * (pm.a + pm.c) + (pm.c + pm.d) * (pm.b + pm.d);
-        ari = np * (pm.a + pm.d) - tmp;
+        double tmp = (pm.tp + pm.fp) * (pm.tp + pm.fn) + (pm.fn + pm.tn) * (pm.fp + pm.tn);
+        ari = np * (pm.tp + pm.tn) - tmp;
         ari /= np * np - tmp;
         return ari;
     }
@@ -183,7 +183,7 @@ public class AdjustedRand extends AbstractExternalEval {
     }
 
     /**
-     * Perform a-b operation with sets
+     * Perform tp-fp operation with sets
      *
      * @param a
      * @param b
@@ -218,10 +218,6 @@ public class AdjustedRand extends AbstractExternalEval {
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
         PairMatch pm = CountingPairs.matchPairs(c1, c2);
-        System.out.println("tp: " + pm.a);
-        System.out.println("fp: " + pm.b);
-        System.out.println("fn: " + pm.c);
-        System.out.println("tn: " + pm.d);
         return score(pm);
     }
 

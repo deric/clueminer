@@ -1,12 +1,13 @@
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
-import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
+import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,36 +33,36 @@ public class RandIndex extends AbstractCountingPairs {
      * Should be maximized, lies in interval <0.0 ; 1.0> where 1.0 is the best
      * value
      *
-     * @param table
-     * @param ref
-     * @param matching
+     * @param clusters
+     * @param params
      * @return
      */
     @Override
-    public double countScore(Table<String, String, Integer> table,
-            Clustering<? extends Cluster> ref, Matching matching) {
-        Map<String, Integer> res;
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        PairMatch pm = CountingPairs.matchPairs(clusters);
+        return countScore(pm);
+    }
 
-        int tp, fp, fn, tn;
-        double index = 0.0;
-        double rand;
-        Cluster c;
-        //for each cluster we have score of quality
-        for (Map.Entry<String, String> entry : matching.entrySet()) {
-            c = ref.get(entry.getValue());
-            //clusters with size 1 should not increase precision
-            if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, entry.getKey(), entry.getValue());
-                tp = res.get("tp");
-                fp = res.get("fp");
-                fn = res.get("fn");
-                tn = res.get("tn");
-                rand = (tp + tn) / (double) (tp + fp + fn + tn);
-                index += rand;
-            }
-        }
+    /**
+     * In literature usually referred with letters
+     * tp = a, fp = b, fn = c, tn = d
+     *
+     * @param pm
+     * @return
+     */
+    private double countScore(PairMatch pm) {
+        return (pm.tp + pm.tn) / (double) (pm.tp + pm.fp + pm.fn + pm.tn);
+    }
 
-        //average value - divided by number of "real" classes
-        return index / table.columnKeySet().size();
+    @Override
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        return countScore(pm);
+    }
+
+    @Override
+    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, Matching matching) {
+        //not used for this index
+        throw new UnsupportedOperationException("Not supported.");
     }
 }
