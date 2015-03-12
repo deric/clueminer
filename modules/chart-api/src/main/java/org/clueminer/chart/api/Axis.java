@@ -17,7 +17,7 @@ import org.clueminer.chart.util.MathUtils;
  * <li>Administration of {@link AxisListener AxisListeners}</li>
  * </ul>
  */
-public class Axis implements Serializable {
+public abstract class Axis implements Serializable {
 
     /**
      * Version id for serialization.
@@ -49,7 +49,7 @@ public class Axis implements Serializable {
      * @param autoscaled {@code true} to turn automatic scaling on
      */
     private Axis(boolean autoscaled) {
-        axisListeners = new HashSet<AxisListener>();
+        axisListeners = new HashSet<>();
         this.autoscaled = autoscaled;
     }
 
@@ -183,7 +183,7 @@ public class Axis implements Serializable {
      * than using the axis's minimum and a maximum values.
      *
      * @param autoscaled Defines whether the axis should be automatically
-     *                   scaled to fit the current data.
+     * scaled to fit the current data.
      */
     public void setAutoscaled(boolean autoscaled) {
         if (this.autoscaled != autoscaled) {
@@ -195,7 +195,7 @@ public class Axis implements Serializable {
      * Returns whether the currently set minimum and maximum values are valid.
      *
      * @return {@code true} when minimum and maximum values are correct,
-     *         otherwise {@code false}
+     * otherwise {@code false}
      */
     public boolean isValid() {
         return MathUtils.isCalculatable(min) && MathUtils.isCalculatable(max);
@@ -217,6 +217,6 @@ public class Axis implements Serializable {
         in.defaultReadObject();
 
         // Handle transient fields
-        axisListeners = new HashSet<AxisListener>();
+        axisListeners = new HashSet<>();
     }
 }

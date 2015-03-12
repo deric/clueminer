@@ -103,4 +103,14 @@ public class Tau extends AbstractEvaluator {
         return true;
     }
 
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
+
 }

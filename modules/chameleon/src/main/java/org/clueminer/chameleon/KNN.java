@@ -5,9 +5,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixFactory;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixNode;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
@@ -62,7 +59,7 @@ public class KNN {
             int firsts = k;
             int index = 0;
             for (int j = 0; j < firsts; j++) {
-                //skip self as neighbour 
+                //skip self as neighbour
                 if (i == j) {
                     firsts++;
                     continue;
@@ -79,7 +76,7 @@ public class KNN {
                     continue;
                 }
                 //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
-                if (dm.measure(input.instance(i), input.instance(j)) < maxMinimalDistance ) {
+                if (dm.measure(input.instance(i), input.instance(j)) < maxMinimalDistance) {
                     nearests[i][k - 1] = j;
                     insert(k - 1, i);
                     maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
@@ -104,14 +101,12 @@ public class KNN {
             pos--;
         }
     }
-    
-    
+
     public int[][] getNeighborArray(Dataset<? extends Instance> dataset) {
         return findNeighbors(dataset);
     }
-    
-    
-     /**
+
+    /**
      * Create graph where connected nodes are neighbors
      *
      * @param dataset input dataset
@@ -126,7 +121,5 @@ public class KNN {
         g.addEdgesFromNeigborArray(nearests, k);
         return g;
     }
-    
-    
 
 }

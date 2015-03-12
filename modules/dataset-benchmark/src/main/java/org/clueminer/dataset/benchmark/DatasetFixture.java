@@ -32,6 +32,7 @@ public class DatasetFixture {
         datasets.put(DatasetFixture.wine(), 3);
         datasets.put(DatasetFixture.vehicle(), 4);
         datasets.put(DatasetFixture.yeast(), 10);
+        datasets.put(DatasetFixture.zoo(), 6);
         return datasets;
     }
 
@@ -151,6 +152,19 @@ public class DatasetFixture {
             String datasetName = "dermatology";
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.dermatologyArff(), data, 33);
+            data.setName(datasetName);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
+
+    public static Dataset<Instance> zoo() {
+        Dataset<Instance> data = new ArrayDataset<>(101, 16);
+        try {
+            String datasetName = "zoo";
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.zoo2Arff(), data, 18);
             data.setName(datasetName);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

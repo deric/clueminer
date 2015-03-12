@@ -1,6 +1,5 @@
 package org.clueminer.dendrogram.gui;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -16,6 +15,7 @@ import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.Matching;
 
 /**
  *
@@ -24,6 +24,7 @@ import org.clueminer.eval.utils.CountingPairs;
 public class ClassAssignment extends ClusterAssignment {
 
     private static final Logger logger = Logger.getLogger(ClassAssignment.class.getName());
+    private static final long serialVersionUID = 5843490511014364712L;
     private ColorBrewer colorGenerator = new ColorBrewer();
 
     public ClassAssignment(DendroPane panel) {
@@ -48,7 +49,7 @@ public class ClassAssignment extends ClusterAssignment {
              //logger.log(Level.WARNING, "no class information in data");
              return;
              }*/
-            BiMap<String, String> matching = getMatching(flatClust);
+            Matching matching = getMatching(flatClust);
             Object2ObjectMap<Object, Color> map = new Object2ObjectOpenHashMap(i);
 
             g.setFont(font);
@@ -76,7 +77,7 @@ public class ClassAssignment extends ClusterAssignment {
         g.dispose(); //finished drawing
     }
 
-    private Color colorForClass(Object2ObjectMap<Object, Color> map, Object klass, BiMap<String, String> matching) {
+    private Color colorForClass(Object2ObjectMap<Object, Color> map, Object klass, Matching matching) {
         if (!map.containsKey(klass)) {
             if (klass == null) {
                 return Color.GRAY;
@@ -121,8 +122,8 @@ public class ClassAssignment extends ClusterAssignment {
         }
     }
 
-    private BiMap<String, String> getMatching(Clustering<? extends Cluster> ref) {
-        BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
+    private Matching getMatching(Clustering<? extends Cluster> ref) {
+        Matching matching = ref.getLookup().lookup(Matching.class);
         if (matching == null) {
             Table<String, String, Integer> table = CountingPairs.contingencyTable(ref);
             matching = CountingPairs.findMatching(table);

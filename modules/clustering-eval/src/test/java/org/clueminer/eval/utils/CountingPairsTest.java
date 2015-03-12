@@ -1,6 +1,5 @@
 package org.clueminer.eval.utils;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -84,7 +83,7 @@ public class CountingPairsTest {
     @Test
     public void testFindMatching() {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(iris);
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        Matching matching = CountingPairs.findMatching(table);
         //we have 3 different classes
         assertEquals(3, matching.size());
 
@@ -110,7 +109,7 @@ public class CountingPairsTest {
         Clustering<Cluster> irisClusters = FakeClustering.irisWrong2();
 
         Table<String, String, Integer> table = CountingPairs.contingencyTable(irisClusters);
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        Matching matching = CountingPairs.findMatching(table);
 
         System.out.println("table: " + table);
         System.out.println("matching: " + matching);
@@ -123,7 +122,7 @@ public class CountingPairsTest {
         Map<String, Integer> res;
 
         for (String cluster : matching.values()) {
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            res = CountingPairs.countAssignments(table, matching.getByCluster(cluster), cluster);
             System.out.println("wrong table: " + res);
         }
 
@@ -136,13 +135,13 @@ public class CountingPairsTest {
     @Test
     public void testCountAssignments() {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(iris);
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        Matching matching = CountingPairs.findMatching(table);
         Map<String, Integer> res;
 
         int tp, fp, fn, tn, sum;
         for (String cluster : matching.values()) {
-            System.out.println(cluster + " corresponds to " + matching.inverse().get(cluster));
-            res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+            //System.out.println(cluster + " corresponds to " + matching.inverse().get(cluster));
+            res = CountingPairs.countAssignments(table, matching.getByCluster(cluster), cluster);
             assertEquals(4, res.size());
             tp = res.get("tp");
             fp = res.get("fp");
@@ -159,15 +158,15 @@ public class CountingPairsTest {
     @Test
     public void testCountPairs2() {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
-        //only 2 classes could be paired, third one is paired in a random way
-        assertEquals(2, matching.size());
+        Matching matching = CountingPairs.findMatching(table);
+        //just 2 clusters, so 2 classes must belong to 1 cluster
+        assertEquals(3, matching.size());
     }
 
     @Test
     public void testCountPairs3() {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisWrong4());
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+        Matching matching = CountingPairs.findMatching(table);
         System.out.println("iris wrong4:");
         System.out.println("table: " + table);
         System.out.println("matching: " + matching);

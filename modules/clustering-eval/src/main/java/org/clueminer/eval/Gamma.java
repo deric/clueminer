@@ -110,4 +110,14 @@ public class Gamma extends AbstractEvaluator {
         return true;
     }
 
+    @Override
+    public double getMin() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
+
 }

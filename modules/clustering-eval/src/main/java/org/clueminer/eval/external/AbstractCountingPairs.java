@@ -1,6 +1,6 @@
 package org.clueminer.eval.external;
 
-import com.google.common.collect.BiMap;
+import org.clueminer.eval.utils.Matching;
 import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -15,7 +15,9 @@ import org.clueminer.math.Matrix;
  */
 public abstract class AbstractCountingPairs extends AbstractExternalEval {
 
-    public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, BiMap<String, String> matching);
+    private static final long serialVersionUID = -8708340302697665494L;
+
+    public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, Matching matching);
 
     /**
      * Once matching classes <-> clusters are found result will be stored in
@@ -26,7 +28,7 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
      * @return
      */
     public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
-        BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
+        Matching matching = ref.getLookup().lookup(Matching.class);
         //we don't expect mapping to original to change, so we can store the result
         if (matching == null) {
             matching = CountingPairs.findMatching(table);
@@ -61,5 +63,15 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
     }
 }

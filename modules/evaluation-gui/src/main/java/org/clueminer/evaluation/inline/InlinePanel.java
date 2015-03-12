@@ -16,6 +16,7 @@
  */
 package org.clueminer.evaluation.inline;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,11 +26,10 @@ import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
-import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evaluation.gui.EvaluatorComboBox;
 import org.clueminer.export.sorting.SortingExporter;
 import org.openide.util.ImageUtilities;
@@ -53,6 +53,7 @@ public class InlinePanel extends JPanel {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
+        setBackground(Color.WHITE);
         //setSize(new Dimension(800, 600));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
@@ -66,7 +67,7 @@ public class InlinePanel extends JPanel {
         c.insets = new Insets(5, 5, 5, 10);
 
         comboEvaluatorX = new JComboBox();
-        comboEvaluatorX.setModel(new EvaluatorComboBox(ExternalEvaluatorFactory.getInstance().getProvidersArray()));
+        comboEvaluatorX.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
         comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,7 +77,7 @@ public class InlinePanel extends JPanel {
         add(comboEvaluatorX, c);
 
         comboEvaluatorY = new JComboBox();
-        comboEvaluatorY.setModel(new EvaluatorComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray()));
+        comboEvaluatorY.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
         comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,6 +154,10 @@ public class InlinePanel extends JPanel {
 
     public Collection<? extends Clustering> getClusterings() {
         return plot.getClusterings();
+    }
+
+    public void setGolden(Clustering<? extends Cluster> clust) {
+        plot.goldenStd = clust;
     }
 
 }

@@ -75,4 +75,18 @@ public interface ClusterEvaluation {
      * @return true when bigger is better
      */
     boolean isMaximized();
+
+    /**
+     * Minimal (worst) value of this index
+     *
+     * @return
+     */
+    double getMin();
+
+    /**
+     * Maximal (best) value of this index
+     *
+     * @return
+     */
+    double getMax();
 }

@@ -97,4 +97,18 @@ public class Connectivity extends AbstractEvaluator {
         return false;
     }
 
+    /**
+     *
+     * @return worst possible value
+     */
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return 0;
+    }
+
 }

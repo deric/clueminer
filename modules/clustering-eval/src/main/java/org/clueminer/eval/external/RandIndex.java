@@ -1,12 +1,12 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
-import org.clueminer.clustering.api.ExternalEvaluator;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Table;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.Matching;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +39,7 @@ public class RandIndex extends AbstractCountingPairs {
      */
     @Override
     public double countScore(Table<String, String, Integer> table,
-            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
+            Clustering<? extends Cluster> ref, Matching matching) {
         Map<String, Integer> res;
 
         int tp, fp, fn, tn;
@@ -47,10 +47,11 @@ public class RandIndex extends AbstractCountingPairs {
         double rand;
         Cluster c;
         //for each cluster we have score of quality
-        for (String cluster : matching.values()) {
-            c = ref.get(cluster);
+        for (Map.Entry<String, String> entry : matching.entrySet()) {
+            c = ref.get(entry.getValue());
+            //clusters with size 1 should not increase precision
             if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
+                res = CountingPairs.countAssignments(table, entry.getKey(), entry.getValue());
                 tp = res.get("tp");
                 fp = res.get("fp");
                 fn = res.get("fn");

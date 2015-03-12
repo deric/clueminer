@@ -182,4 +182,14 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
 
         return nmi;
     }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
+    }
 }

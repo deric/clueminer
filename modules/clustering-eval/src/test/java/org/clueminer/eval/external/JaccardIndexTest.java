@@ -11,8 +11,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -85,7 +85,7 @@ public class JaccardIndexTest extends ExternalTest {
     @Test
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
-        System.out.println("mostly wrong: " + score);
-        assertEquals(true, score < 0.2);
+        System.out.println("jaccard (mw): " + score);
+        assertEquals(true, score < 0.3);
     }
 }

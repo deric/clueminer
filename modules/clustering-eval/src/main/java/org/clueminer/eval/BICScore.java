@@ -1,16 +1,16 @@
 package org.clueminer.eval;
 
-import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = InternalEvaluator.class)
 public class BICScore extends AbstractEvaluator {
 
-    private static final String NAME = "BIC score";
+    private static final String NAME = "BIC";
     private static final long serialVersionUID = -8771446315217152042L;
 
     @Override
@@ -50,6 +50,16 @@ public class BICScore extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.NEGATIVE_INFINITY;
     }
 
 }

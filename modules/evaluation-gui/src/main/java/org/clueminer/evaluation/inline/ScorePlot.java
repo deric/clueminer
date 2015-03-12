@@ -28,19 +28,27 @@ import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AICScore;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.utils.ClusteringComparator;
+import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
 import org.netbeans.api.progress.ProgressHandle;
@@ -67,23 +75,24 @@ public class ScorePlot extends BPanel implements TaskListener {
     protected Font headerFont;
     protected int lineHeight = 12;
     protected int elemHeight = 20;
-    protected int fontSize = 10;
+    protected int fontSize = 14;
     private int headerHeight;
     protected float headerFontSize = 10;
     private int maxWidth;
-    private Insets insets = new Insets(5, 5, 10, 5);
+    private Insets insets = new Insets(15, 15, 10, 15);
     static BasicStroke wideStroke = new BasicStroke(8.0f);
-    private double strokeW;
     private ColorScheme colorScheme;
-    private double minDist;
-    private double midDist;
-    private double maxDist;
     private static final RequestProcessor RP = new RequestProcessor("sorting...", 100, false, true);
     private Color fontColor;
     private final StdScale scale;
     private int scaleTickLength = 6;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private int labelOffset = 13;
+    public Clustering<? extends Cluster> goldenStd;
+    private double goldenExt;
+    private double goldenInt;
+    private int rectWidth = 10;
+    private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -93,7 +102,8 @@ public class ScorePlot extends BPanel implements TaskListener {
         this.preserveAlpha = true;
         compInternal = new ClusteringComparator(new AICScore());
         compExternal = new ClusteringComparator(new NMI());
-        colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
+        //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
+        colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
         try {
             initialize();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
@@ -106,7 +116,9 @@ public class ScorePlot extends BPanel implements TaskListener {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIDefaults defaults = UIManager.getLookAndFeelDefaults();
         fontColor = defaults.getColor("controlText");
-        setBackground(defaults.getColor("window"));
+        //setBackground(defaults.getColor("window"));
+        //this.preserveAlpha = true;
+        setBackground(Color.white);
     }
 
     protected void setEvaluatorY(final ClusterEvaluation provider) {
@@ -183,36 +195,94 @@ public class ScorePlot extends BPanel implements TaskListener {
         }
     }
 
-    private int itemsCnt() {
-        if (clusterings == null) {
-            return 0;
+    private Clustering<? extends Cluster> goldenStandard() {
+        Clustering<? extends Cluster> golden = null;
+        if (clusterings != null && !clusterings.isEmpty()) {
+            Clustering<? extends Cluster> clust = clusterings.iterator().next();
+            Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+            if (dataset != null) {
+                SortedSet set = dataset.getClasses();
+                golden = new ClusterList(set.size());
+                //golden.lookupAdd(dataset);
+                EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
+                golden.lookupAdd(evalTable);
+                HashMap<Object, Integer> map = new HashMap<>(set.size());
+                Object obj;
+                Iterator it = set.iterator();
+                int i = 0;
+                Cluster c;
+                while (it.hasNext()) {
+                    obj = it.next();
+                    c = golden.createCluster(i);
+                    c.setAttributes(dataset.getAttributes());
+                    map.put(obj, i++);
+                }
+                int assign;
+
+                for (Instance inst : dataset) {
+                    if (inst.classValue() == null) {
+                        logger.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
+                    } else {
+                        if (map.containsKey(inst.classValue())) {
+                            assign = map.get(inst.classValue());
+                            c = golden.get(assign);
+                        } else {
+                            c = golden.createCluster(i);
+                            c.setAttributes(dataset.getAttributes());
+                            map.put(inst.classValue(), i++);
+                        }
+                        c.add(inst);
+                    }
+                }
+            }
         }
-        return clusterings.size();
+        return golden;
     }
 
-    private double scoreMin(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreMin(Clustering[] clust, ClusteringComparator comp, double ref) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = 0;
             while (Double.isNaN(res) && i < clust.length) {
                 res = comp.getScore(clust[i++]);
             }
-        } else {
-            System.out.println("missing data");
+            if (goldenStd != null) {
+                ClusterEvaluation eval = comp.getEvaluator();
+                if (eval.isMaximized()) {
+                    if (!eval.isBetter(ref, res)) {
+                        res = ref;
+                    }
+                } /*else {
+                 if (eval.isBetter(ref, res)) {
+                 res = ref;
+                 }
+                 }   */
+
+            }
         }
 
         return res;
     }
 
-    private double scoreMax(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreMax(Clustering[] clust, ClusteringComparator comp, double ref) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = clust.length - 1;
             while (Double.isNaN(res) && i >= 0) {
                 res = comp.getScore(clust[i--]);
             }
-        } else {
-            System.out.println("missing data");
+            if (goldenStd != null) {
+                ClusterEvaluation eval = comp.getEvaluator();
+                if (eval.isMaximized()) {
+                    /*if (!eval.isBetter(ref, res)) {
+                     res = ref;
+                     }*/
+                } else {
+                    if (!eval.isBetter(ref, res)) {
+                        res = ref;
+                    }
+                }
+            }
         }
 
         return res;
@@ -220,6 +290,14 @@ public class ScorePlot extends BPanel implements TaskListener {
 
     @Override
     public void render(Graphics2D g) {
+        if (goldenStd == null) {
+            goldenStd = goldenStandard();
+        }
+        if (goldenStd != null) {
+            goldenExt = compExternal.getScore(goldenStd);
+            goldenInt = compInternal.getScore(goldenStd);
+        }
+
         //canvas dimensions
         int cxMin, cxMax, cyMin, cyMax;
         cxMin = insets.left + 20;
@@ -232,31 +310,41 @@ public class ScorePlot extends BPanel implements TaskListener {
 
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
-        xmin = scoreMin(internal, compInternal);
-        xmax = scoreMax(internal, compInternal);
+        xmin = scoreMin(internal, compInternal, goldenInt);
+        xmax = scoreMax(internal, compInternal, goldenInt);
         xmid = (xmax - xmin) / 2.0 + xmin;
-        ymin = scoreMin(external, compExternal);
-        ymax = scoreMax(external, compExternal);
+        ymin = scoreMin(external, compExternal, goldenExt);
+        ymax = scoreMax(external, compExternal, goldenExt);
+        //if we have clear bounds, use them
+        if (isFinite(compExternal.getEvaluator().getMin())) {
+            //for purpose of visualization min and max are reversed
+            ymax = compExternal.getEvaluator().getMin();
+        }
+        if (isFinite(compExternal.getEvaluator().getMax())) {
+            //for purpose of visualization min and max are reversed
+            ymin = compExternal.getEvaluator().getMax();
+        }
         ymid = (ymax - ymin) / 2.0 + ymin;
 
         //set font for rendering rows
         g.setFont(defaultFont);
-        double xVal, yVal, score;
-        int rectWidth = 10; //TODO: fix this
+        double xVal, yVal, score, hypo, diff;
         //draw
         Rectangle2D rect;
-        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
-        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
 
         for (Clustering clust : external) {
             //left clustering
             score = compInternal.getScore(clust);
             xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
             score = compExternal.getScore(clust);
+            //color according to position difference to external score placement
+            hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
+            diff = Math.abs(xVal - hypo);
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
             g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-            g.setColor(colorScheme.getColor(score, ymin, ymid, ymax));
+            //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
+            g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
             if (yVal < cyMid) {
                 rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
             } else {
@@ -267,17 +355,37 @@ public class ScorePlot extends BPanel implements TaskListener {
             g.setComposite(AlphaComposite.SrcOver);
             g.setColor(Color.black);
             //drawNumberX(score, (int) xVal, (int) yVal);
-            drawNumberX(clust.size(), (int) xVal, (int) yVal);
+            //drawNumberX(diff, (int) xVal, (int) yVal);
         }
         g.setColor(fontColor);
+
+        if (goldenStd != null) {
+            xVal = scale.scaleToRange(goldenInt, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
+            //last one is min rect. height
+            yVal = scale.scaleToRange(goldenExt, ymin, ymax, cyMin, cyMax);
+            g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+            //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
+            g.setColor(Color.YELLOW);
+            if (yVal < cyMid) {
+                rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
+            } else {
+                rect = new Rectangle2D.Double(xVal, cyMid, rectWidth, yVal - cyMid);
+            }
+            g.fill(rect);
+            g.draw(rect);
+            g.setComposite(AlphaComposite.SrcOver);
+        }
+
+        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
+        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
 
         //average distance per item
         g.dispose();
     }
 
     private void drawVerticalScale(Graphics2D g, int cyMin, int cyMax, int xPos, double scMin, double scMax) {
-        g.drawLine(xPos, cyMin, xPos, cyMax);
         g.setColor(Color.black);
+        g.drawLine(xPos, cyMin, xPos, cyMax);
 
         //min
         g.drawLine(xPos - scaleTickLength / 2, cyMin, xPos + scaleTickLength / 2, cyMin);
@@ -288,8 +396,8 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     private void drawHorizontalScale(Graphics2D g, int cxMin, int cxMax, int yPos, double scMin, double scMax) {
-        g.drawLine(cxMin, yPos, cxMax, yPos);
         g.setColor(Color.black);
+        g.drawLine(cxMin, yPos, cxMax, yPos);
 
         //min
         g.drawLine(cxMin, yPos - scaleTickLength / 2, cxMin, yPos + scaleTickLength / 2);
@@ -398,6 +506,16 @@ public class ScorePlot extends BPanel implements TaskListener {
             realSize.width = size.width;
             maxWidth = 0;
         }
+    }
+
+    /**
+     * Could be replace by Double.isFinite which is available in Java 8
+     *
+     * @param d
+     * @return
+     */
+    public boolean isFinite(double d) {
+        return Math.abs(d) <= Double.MAX_VALUE;
     }
 
     @Override

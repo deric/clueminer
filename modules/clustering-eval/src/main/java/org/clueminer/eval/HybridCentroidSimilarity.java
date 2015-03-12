@@ -57,4 +57,14 @@ public class HybridCentroidSimilarity extends AbstractEvaluator {
     public boolean isMaximized() {
         return true;
     }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
 }

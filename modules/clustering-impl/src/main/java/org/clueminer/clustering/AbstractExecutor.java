@@ -36,7 +36,7 @@ public abstract class AbstractExecutor implements Executor {
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
-        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
+        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
         InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
         strategy.setEvaluator(eval);
 

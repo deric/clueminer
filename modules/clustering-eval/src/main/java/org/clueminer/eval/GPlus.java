@@ -104,4 +104,14 @@ public class GPlus extends AbstractEvaluator {
     public boolean isMaximized() {
         return false;
     }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return 0;
+    }
 }

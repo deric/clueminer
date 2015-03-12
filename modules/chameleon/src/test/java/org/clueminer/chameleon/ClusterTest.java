@@ -12,8 +12,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.partitioning.impl.KernighanLin;
-import org.clueminer.utils.FileUtils;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -21,9 +21,13 @@ import org.junit.Test;
  * @author Tomas Bruna
  */
 public class ClusterTest {
-//
 
-    String output = FileUtils.LocalFolder();
+    private String output;
+
+    @Before
+    public void setUp() {
+        //output = FileUtils.LocalFolder() + File.separatorChar + "chameleon";
+    }
 
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
