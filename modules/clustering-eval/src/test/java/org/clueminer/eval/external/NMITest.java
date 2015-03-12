@@ -9,7 +9,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
@@ -49,9 +48,9 @@ public class NMITest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(FakeClustering.iris(), FakeDatasets.irisDataset(), 1.0);
+        measure(FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, FakeDatasets.irisDataset(), 0.6496820278112178);
+        double score = measure(irisWrong, 0.6496820278112178);
         double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
 
         assertTrue(score2 < score);

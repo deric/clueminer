@@ -327,7 +327,7 @@ public class BenchmarkTest {
         runExperiment(datasetName, data, kmin, kmax, kreal);
     }
 
-    //  @Test
+    //@Test
     public void testWine() throws IOException, Exception {
         String datasetName = "wine";
         // 1st attribute is class identifier (1-3)

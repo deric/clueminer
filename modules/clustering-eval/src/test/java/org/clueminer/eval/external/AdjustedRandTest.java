@@ -4,6 +4,7 @@ import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.utils.Dump;
 import static org.junit.Assert.assertEquals;
@@ -31,12 +32,12 @@ public class AdjustedRandTest extends ExternalTest {
     /**
      * Test of score method, of class AdjustedRand.
      */
-    //@Test
+    @Test
     public void testScore_Clustering_Clustering() {
         double score;
 
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.13473684210526315);
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     /**
@@ -145,5 +146,18 @@ public class AdjustedRandTest extends ExternalTest {
 
         //score = ari.score(FakeClustering.irisWrong());
         //assertEquals(1.0, score, delta);
+    }
+
+    @Test
+    public void testTwoClusterings() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        PairMatch pm = CountingPairs.matchPairs(FakeClustering.iris(), FakeClustering.irisWrong());
+
+        System.out.println("tp: " + pm.a);
+        System.out.println("fp: " + pm.b);
+        System.out.println("fn: " + pm.c);
+        System.out.println("tn: " + pm.d);
+        assertEquals(150, pm.sum());
+        System.out.println("ARI: " + ari.score(pm));
     }
 }

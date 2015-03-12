@@ -218,6 +218,10 @@ public class AdjustedRand extends AbstractExternalEval {
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
         PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        System.out.println("tp: " + pm.a);
+        System.out.println("fp: " + pm.b);
+        System.out.println("fn: " + pm.c);
+        System.out.println("tn: " + pm.d);
         return score(pm);
     }
 

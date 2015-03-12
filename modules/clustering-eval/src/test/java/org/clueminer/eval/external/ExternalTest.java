@@ -2,8 +2,6 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.Matching;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +28,7 @@ public class ExternalTest {
         return score;
     }
 
-    protected double measure(Clustering c1, Dataset<? extends Instance> dataset, double expected) {
+    protected double measure(Clustering c1, double expected) {
         long start = System.currentTimeMillis();
         c1.lookupRemove(Matching.class);
         double score = subject.score(c1);

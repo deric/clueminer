@@ -8,7 +8,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -50,7 +49,7 @@ public class AUCTest extends ExternalTest {
     @Test
     public void testIrisCorrect() {
         //this is fixed clustering which correspods to true classes in dataset
-        measure(FakeClustering.iris(), FakeDatasets.irisDataset(), 1.0);
+        measure(FakeClustering.iris(), 1.0);
     }
 
 }

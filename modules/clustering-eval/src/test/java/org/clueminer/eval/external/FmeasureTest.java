@@ -34,18 +34,18 @@ public class FmeasureTest extends ExternalTest {
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6676094276094275);
 
         //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     /**
-     * Test of score method, of class Fmeasure.
+     * Test of score method, of class F-measure.
      */
     @Test
     public void testScore_3args() {
     }
 
     /**
-     * Test of isBetter method, of class Fmeasure.
+     * Test of isBetter method, of class F-measure.
      */
     @Test
     public void testCompareScore() {

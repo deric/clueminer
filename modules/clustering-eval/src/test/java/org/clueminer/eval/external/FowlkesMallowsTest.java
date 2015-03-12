@@ -10,7 +10,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -36,9 +35,9 @@ public class FowlkesMallowsTest extends ExternalTest {
     @Test
     public void testScore_Clustering_Dataset() {
         //this is fixed clustering which correspods to true classes in dataset
-        measure(irisCorrect, FakeDatasets.irisDataset(), 1.0);
+        measure(irisCorrect, 1.0);
 
-        measure(irisWrong, FakeDatasets.irisDataset(), 0.49390115014267694);
+        measure(irisWrong, 0.49390115014267694);
 
     }
 
@@ -60,7 +59,7 @@ public class FowlkesMallowsTest extends ExternalTest {
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6688096636728896);
 
         //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     @Test

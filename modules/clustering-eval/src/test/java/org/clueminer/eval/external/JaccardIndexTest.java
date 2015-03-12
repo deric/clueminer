@@ -10,7 +10,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -20,12 +19,12 @@ import org.junit.Test;
  */
 public class JaccardIndexTest extends ExternalTest {
 
-    private static Clustering clusters;
-    private static Clustering iris;
+    private static Clustering irisCorrect;
+    private static Clustering irisWrong;
 
     public JaccardIndexTest() throws FileNotFoundException, IOException {
-        clusters = FakeClustering.iris();
-        iris = FakeClustering.irisWrong();
+        irisCorrect = FakeClustering.iris();
+        irisWrong = FakeClustering.irisWrong();
         subject = new JaccardIndex();
     }
 
@@ -34,11 +33,11 @@ public class JaccardIndexTest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(clusters, FakeDatasets.irisDataset(), 1.0);
+        measure(irisCorrect, 1.0);
 
-        measure(iris, FakeDatasets.irisDataset(), 0.15032686686154664);
+        measure(irisWrong, 0.15032686686154664);
 
-        measure(FakeClustering.irisWrong2(), FakeDatasets.irisDataset(), 0.3666666666666667);
+        measure(FakeClustering.irisWrong2(), 0.3666666666666667);
     }
 
     /**
@@ -61,7 +60,7 @@ public class JaccardIndexTest extends ExternalTest {
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.5061813186813187);
 
         //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     @Test

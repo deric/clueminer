@@ -39,4 +39,8 @@ public class PairMatch {
         d = 0;
     }
 
+    public int sum() {
+        return a + b + c + d;
+    }
+
 }

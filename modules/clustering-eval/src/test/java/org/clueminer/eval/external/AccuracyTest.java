@@ -34,7 +34,7 @@ public class AccuracyTest extends ExternalTest {
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.77777777777);
 
         //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     @Test

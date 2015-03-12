@@ -10,7 +10,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,9 +33,9 @@ public class RecallTest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(irisCorrect, FakeDatasets.irisDataset(), 1.0);
+        measure(irisCorrect, 1.0);
 
-        measure(irisWrong, FakeDatasets.irisDataset(), 0.53403755868544);
+        measure(irisWrong, 0.53403755868544);
     }
 
     /**
@@ -63,7 +62,7 @@ public class RecallTest extends ExternalTest {
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.6574074074074074);
 
         //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     @Test

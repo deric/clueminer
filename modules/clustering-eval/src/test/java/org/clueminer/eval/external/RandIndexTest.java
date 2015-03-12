@@ -10,7 +10,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -35,13 +34,13 @@ public class RandIndexTest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(irisCorrect, FakeDatasets.irisDataset(), 1.0);
+        measure(irisCorrect, 1.0);
 
-        measure(irisWrong, FakeDatasets.irisDataset(), 0.6888888888888888);
+        measure(irisWrong, 0.6888888888888888);
 
         //this clustering shouldn't be better than the previous one, 142 items are in one
         //cluster, so not really the best solution - though the coefficient would prefere this one
-        measure(FakeClustering.irisWrong(), FakeDatasets.irisDataset(), 0.5777777777777778);
+        measure(FakeClustering.irisWrong(), 0.5777777777777778);
     }
 
     /**
