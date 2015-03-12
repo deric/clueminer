@@ -83,9 +83,7 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testScoreDataset() {
-        Clustering<Cluster> clustering = FakeClustering.irisWrong4();
-        double score = subject.score(clustering);
-        System.out.println("clust(4) = " + score);
+        measure(FakeClustering.irisWrong4(), 0.873083475298126);
     }
 
     @Test
