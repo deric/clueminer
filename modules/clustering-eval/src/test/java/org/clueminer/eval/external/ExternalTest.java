@@ -13,6 +13,7 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.eval.utils.Matching;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
@@ -90,6 +91,25 @@ public class ExternalTest {
 
     public Instance next(Random rand, InstanceBuilder<? extends Instance> builder, String klass) {
         return builder.create(new double[]{rand.nextDouble(), rand.nextDouble()}, klass);
+    }
+
+    @Test
+    public void testOneClassPerCluster() {
+        Clustering<Cluster> oneClass = new ClusterList(3);
+        int size = 10;
+        Dataset<? extends Instance> data = new ArrayDataset<>(size, 2);
+        data.attributeBuilder().create("x1", "NUMERIC");
+        data.attributeBuilder().create("x2", "NUMERIC");
+
+        for (int i = 0; i < size; i++) {
+            Instance inst = data.builder().create(new double[]{1, 2}, "same class");
+            //cluster with single class
+            BaseCluster clust = new BaseCluster(1);
+            clust.add(inst);
+            oneClass.add(clust);
+        }
+        oneClass.lookupAdd(data);
+        assertEquals(0.0, subject.score(oneClass), delta);
     }
 
 }
