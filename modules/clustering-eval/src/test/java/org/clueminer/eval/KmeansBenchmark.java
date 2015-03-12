@@ -198,7 +198,7 @@ public class KmeansBenchmark {
             double score;
             int j = 0;
             for (InternalEvaluator c : evaluators) {
-                score = c.score(clusters, data);
+                score = c.score(clusters);
                 results[j++][n - kmin] = score;
             }
             System.out.println("===========");
@@ -275,12 +275,12 @@ public class KmeansBenchmark {
 
     /**
      *
-     * @param data  the dataset
+     * @param data the dataset
      * @param kmin
      * @param kmax
      * @param kreal - known k for dataset
-     * @param x     - attribute on axis x (start from 1)
-     * @param y     - attribute on axis y (start from 1)
+     * @param x - attribute on axis x (start from 1)
+     * @param y - attribute on axis y (start from 1)
      * @throws IOException
      * @throws Exception
      */

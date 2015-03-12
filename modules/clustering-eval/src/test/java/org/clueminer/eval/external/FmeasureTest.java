@@ -66,12 +66,12 @@ public class FmeasureTest extends ExternalTest {
             clust.add(inst);
             oneClass.add(clust);
         }
-        assertEquals(0.0, subject.score(oneClass, data), delta);
+        assertEquals(0.0, subject.score(oneClass), delta);
     }
 
     @Test
     public void testMostlyWrong() {
-        double score = subject.score(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
+        double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("f-measure (mw) = " + score);
         assertEquals(true, score < 0.4);
     }

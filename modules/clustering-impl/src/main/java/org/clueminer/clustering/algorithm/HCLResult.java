@@ -223,7 +223,7 @@ public class HCLResult implements HierarchicalResult {
 
     @Override
     public double findCutoff() {
-        double cut = cutoffStrategy.findCutoff(this);
+        double cut = cutoffStrategy.findCutoff(this, getParams());
         updateCutoff(cut);
         System.out.println(treeData.toString());
         return cut;
@@ -231,7 +231,7 @@ public class HCLResult implements HierarchicalResult {
 
     @Override
     public double findCutoff(CutoffStrategy strategy) {
-        double cut = strategy.findCutoff(this);
+        double cut = strategy.findCutoff(this, getParams());
         updateCutoff(cut);
         return cut;
     }

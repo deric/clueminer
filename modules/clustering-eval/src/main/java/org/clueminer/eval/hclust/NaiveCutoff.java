@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -21,7 +22,7 @@ public class NaiveCutoff implements CutoffStrategy {
     }
 
     @Override
-    public double findCutoff(HierarchicalResult hclust) {
+    public double findCutoff(HierarchicalResult hclust, Props params) {
         double res;
         /**
          * TODO remove this in next version

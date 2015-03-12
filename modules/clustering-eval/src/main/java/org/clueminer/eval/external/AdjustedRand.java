@@ -8,12 +8,11 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -201,18 +200,23 @@ public class AdjustedRand extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         PairMatch pm = CountingPairs.matchPairs(clusters);
         return score(pm);
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        return score(clusters, dataset);
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
+    }
+
+    @Override
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
         PairMatch pm = CountingPairs.matchPairs(c1, c2);
         return score(pm);
     }

@@ -106,7 +106,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
 
     protected double externalValidation(Individual best) {
         if (external != null) {
-            return external.score(best.getClustering(), dataset);
+            return external.score(best.getClustering());
         }
         return Double.NaN;
     }

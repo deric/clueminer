@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  * Table with evaluation results, might perform caching or other optimizations
@@ -23,12 +24,28 @@ public interface EvaluationTable {
     double getScore(ClusterEvaluation evaluator);
 
     /**
+     *
+     * @param evaluator
+     * @param params optional parameters of evaluation metric
+     * @return
+     */
+    double getScore(ClusterEvaluation evaluator, Props params);
+
+    /**
      * Get score for given evaluator
      *
      * @param evaluator name of the evaluator
      * @return
      */
     double getScore(String evaluator);
+
+    /**
+     *
+     * @param evaluator
+     * @param params optional parameters of evaluation metric
+     * @return
+     */
+    double getScore(String evaluator, Props params);
 
     /**
      * Names of all available evaluators

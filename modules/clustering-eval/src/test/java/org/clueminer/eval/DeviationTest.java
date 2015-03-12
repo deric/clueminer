@@ -17,7 +17,6 @@
 package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -41,8 +40,8 @@ public class DeviationTest {
 
     @Test
     public void testScore_Clustering_Dataset() {
-        double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
-        double scoreWorser = subject.score(FakeClustering.irisWrong5(), FakeDatasets.irisDataset());
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisWrong5());
 
         //will not recognize "better" clustering
         assertEquals(false, subject.isBetter(scoreBetter, scoreWorser));

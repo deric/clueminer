@@ -1,10 +1,10 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -27,7 +27,7 @@ public class AICScore extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         // number of free parameters K
         double k = 1;
         // loglikelihood log(L)
@@ -35,19 +35,6 @@ public class AICScore extends AbstractEvaluator {
         // AIC score
         double aic = 2 * k - 2 * l;
         return aic;
-    }
-
-    /**
-     * Proximity matrix doesn't help here
-     *
-     * @param clusters
-     * @param dataset
-     * @param proximity
-     * @return
-     */
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
     }
 
     /**

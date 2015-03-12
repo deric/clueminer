@@ -5,7 +5,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Dump;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -83,7 +82,7 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testScoreDataset() {
         Clustering<Cluster> clustering = FakeClustering.irisWrong4();
-        double score = subject.score(clustering, FakeDatasets.irisDataset());
+        double score = subject.score(clustering);
         System.out.println("clust(4) = " + score);
     }
 
@@ -141,7 +140,7 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testAri() {
         AdjustedRand ari = (AdjustedRand) subject;
-        double score = ari.score(FakeClustering.iris(), FakeClustering.iris());
+        double score = ari.score(FakeClustering.iris());
         assertEquals(1.0, score, delta);
 
         //score = ari.score(FakeClustering.irisWrong());

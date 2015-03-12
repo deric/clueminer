@@ -1,10 +1,10 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = InternalEvaluator.class)
@@ -19,7 +19,7 @@ public class BICScore extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         // number of free parameters K
         double k = 1;
         // sampelsize N
@@ -34,11 +34,6 @@ public class BICScore extends AbstractEvaluator {
         // BIC score
         double bic = -2 * l + Math.log10(datasize) * k;
         return bic;
-    }
-
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
     }
 
     @Override

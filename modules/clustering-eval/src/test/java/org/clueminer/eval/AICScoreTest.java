@@ -1,7 +1,6 @@
 package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -19,8 +18,8 @@ public class AICScoreTest {
 
     @Test
     public void testIris() {
-        double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
-        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));

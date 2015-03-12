@@ -1,12 +1,13 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +34,7 @@ public class PointBiserial extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double dw = 0, fw = 0;
         double db = 0, fb = 0;
         double nd, sd, pb;
@@ -96,11 +97,6 @@ public class PointBiserial extends AbstractEvaluator {
         // calculate point biserial score
         pb = (meanDb - meanDw) * Math.sqrt(((fw * fb) / (nd * nd))) / sd;
         return pb;
-    }
-
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
     }
 
     @Override

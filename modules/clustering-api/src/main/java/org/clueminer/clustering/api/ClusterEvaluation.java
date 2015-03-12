@@ -20,6 +20,14 @@ public interface ClusterEvaluation {
      * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
+     * @return criterion value obtained on this particular clustering
+     */
+    double score(Clustering<? extends Cluster> clusters);
+
+    /**
+     * Returns score for given clustering.
+     *
+     * @param clusters - clustering to be evaluated
      * @param params a HashMap with parameter settings (many criterion does not
      * take parameters)
      * @return criterion value obtained on this particular clustering

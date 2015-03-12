@@ -74,7 +74,7 @@ public class DunnIndexTest {
         Dataset<Instance> iris = new SampleDataset();
         arff.load(tf.irisArff(), iris, 4);
         Clustering clusters = km.partition(iris);
-        System.out.println("dunn=" + test.score(clusters, iris));
+        System.out.println("dunn=" + test.score(clusters));
 
     }
 

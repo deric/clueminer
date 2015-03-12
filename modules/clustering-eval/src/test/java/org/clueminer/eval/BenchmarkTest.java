@@ -269,7 +269,7 @@ public class BenchmarkTest {
             double score;
             int j = 0;
             for (InternalEvaluator c : evaluators) {
-                score = c.score(clusters, data);
+                score = c.score(clusters);
                 results[j++][n - kmin] = score;
             }
             System.out.println("===========");

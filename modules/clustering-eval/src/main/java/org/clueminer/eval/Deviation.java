@@ -19,10 +19,9 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -52,7 +51,7 @@ public class Deviation extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double sum = 0;
         Cluster clust;
         double error, tmpSum;
@@ -68,11 +67,6 @@ public class Deviation extends AbstractEvaluator {
             sum += tmpSum / clust.size();
         }
         return sum;
-    }
-
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        return score(clusters, dataset);
     }
 
     /**

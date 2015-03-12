@@ -44,7 +44,7 @@ public class CalinskiHarabaszTest {
     @Test
     public void testScore_Clustering_Dataset() {
         long start = System.currentTimeMillis();
-        double score = subject.score(clusters, dataset);
+        double score = subject.score(clusters);
         System.out.println("Calinski-Harabasz = " + score);
         long end = System.currentTimeMillis();
         System.out.println("measuring took " + (end - start) + " ms");
@@ -56,9 +56,9 @@ public class CalinskiHarabaszTest {
      */
     @Test
     public void testIris() {
-        double s1 = subject.score(FakeClustering.iris(), dataset);
-        double s2 = subject.score(FakeClustering.irisMostlyWrong(), dataset);
-        double s3 = subject.score(FakeClustering.irisWrong5(), dataset);
+        double s1 = subject.score(FakeClustering.iris());
+        double s2 = subject.score(FakeClustering.irisMostlyWrong());
+        double s3 = subject.score(FakeClustering.irisWrong5());
         assertEquals(true, subject.isBetter(s1, s2));
         assertEquals(true, subject.isBetter(s1, s3));
     }

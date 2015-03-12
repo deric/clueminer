@@ -1,8 +1,11 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -27,6 +30,16 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
     @Override
     public boolean isExternal() {
         return false;
+    }
+
+    @Override
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
+    }
+
+    @Override
+    public double score(Clustering clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
     }
 
 }

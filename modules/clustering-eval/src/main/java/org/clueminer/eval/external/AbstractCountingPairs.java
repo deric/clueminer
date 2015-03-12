@@ -4,10 +4,9 @@ import org.clueminer.eval.utils.Matching;
 import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -38,21 +37,26 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
         //don't store mapping when comparing list of clusterings (too many posibilities)
         return countScore(table, c1, CountingPairs.findMatching(table));
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
         return countScore(table, clusters);
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        return score(clusters, dataset);
+    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
+    }
+
+    @Override
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
     }
 
     /**

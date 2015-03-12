@@ -23,7 +23,6 @@ public class NMITest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
-    private static final double delta = 1e-9;
 
     public NMITest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
@@ -92,6 +91,6 @@ public class NMITest extends ExternalTest {
             b.add(d.get(i + 4));
         }
         assertEquals(2, c.size());
-        assertEquals(0.14039740914097984, subject.score(c, d), delta);
+        assertEquals(0.14039740914097984, subject.score(c), delta);
     }
 }

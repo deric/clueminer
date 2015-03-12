@@ -9,10 +9,10 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +33,7 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
 
     /**
      *
-     * @param count    total number of elements N (in whole dataset)
+     * @param count total number of elements N (in whole dataset)
      * @param elements
      * @return
      */
@@ -55,11 +55,11 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
      * Computes score against class label (must be provided)
      *
      * @param clusters
-     * @param dataset
+     * @param params
      * @return
      */
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double nmi = 0.0;
         if (clusters.size() == 0) {
             return nmi;
@@ -109,7 +109,7 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
             clusterSizes[i++] = klassSizes.get(key);
         }
 
-        double classEntropy = entropy(dataset.size(), clusterSizes);
+        double classEntropy = entropy(clusters.instancesCount(), clusterSizes);
 
         nmi = mutualInformation / ((c1entropy + classEntropy) / 2);
 
@@ -117,8 +117,13 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
+    public double score(Clustering clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
+    }
+
+    @Override
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
     }
 
     /**
@@ -146,7 +151,7 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
      * @return
      */
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
         double nmi = 0.0;
         if (c1.size() == 0 || c2.size() == 0) {
             return nmi;

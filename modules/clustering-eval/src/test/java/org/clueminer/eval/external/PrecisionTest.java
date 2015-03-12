@@ -59,7 +59,7 @@ public class PrecisionTest extends ExternalTest {
             clust.add(inst);
             oneClass.add(clust);
         }
-        assertEquals(0.0, subject.score(oneClass, data), delta);
+        assertEquals(0.0, subject.score(oneClass), delta);
     }
 
     /**
@@ -87,7 +87,7 @@ public class PrecisionTest extends ExternalTest {
      */
     @Test
     public void testCountScore() {
-        double score = subject.score(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
+        double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("mostly wrong precision  = " + score);
         Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
         CountingPairs.dumpTable(table);
