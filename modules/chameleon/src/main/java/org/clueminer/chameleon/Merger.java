@@ -9,7 +9,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.partitioning.api.Bisection;
-import org.clueminer.partitioning.impl.KernighanLin;
+import org.clueminer.partitioning.impl.SpectralBisection;
 
 /**
  *
@@ -45,7 +45,7 @@ public abstract class Merger {
     ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
     public Merger(Graph g) {
-        this(g, new KernighanLin());
+        this(g, new SpectralBisection());
     }
 
     public Merger(Graph g, Bisection bisection) {

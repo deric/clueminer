@@ -15,7 +15,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.partitioning.impl.KernighanLinRecursive;
+import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.partitioning.impl.SpectralBisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -98,8 +99,8 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-        KernighanLinRecursive klr = new KernighanLinRecursive(weightedPartitioning);
-        ArrayList<LinkedList<Node>> partitioningResult = klr.partition(maxPartitionSize, g);
+        RecursiveBisection rb = new RecursiveBisection();
+        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
         Merger m;
 
@@ -135,10 +136,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-        KernighanLinRecursive klr = new KernighanLinRecursive(weightedPartitioning);
-        ArrayList<LinkedList<Node>> partitioningResult = klr.partition(maxPartitionSize, g);
+        RecursiveBisection rb = new RecursiveBisection();
+        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
-        PairMerger m = new PairMerger(g);
+        PairMerger m = new PairMerger(g, new SpectralBisection());
 
         return m.getHierarchy(partitioningResult, dataset);
     }
