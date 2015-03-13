@@ -55,6 +55,11 @@ public class Cluster {
      * @param bisection Bisection algorithm
      */
     public void computeProperties(Bisection bisection) {
+        //If bisection cannot be done, set values to 1
+        if (graph.getNodeCount() == 1) {
+            ICL = IIC = 1;
+            return;
+        }
         ArrayList<LinkedList<Node>> result = bisection.bisect(graph);
         IIC = ICL = 0;
         int counter = 0;
@@ -66,13 +71,7 @@ public class Cluster {
                 }
             }
         }
-        // If there is only one node in cluster, set the values to one
-        if (counter == 0) {
-            ICL = IIC = 1;
-        } else {
-            ICL = IIC / counter;
-        }
-
+        ICL = IIC / counter;
     }
 
     /**
