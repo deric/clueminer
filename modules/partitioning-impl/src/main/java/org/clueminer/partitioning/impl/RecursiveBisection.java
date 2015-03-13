@@ -5,32 +5,37 @@ import java.util.LinkedList;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 
 /**
  *
  * @author Tomas Bruna
  */
-public class KernighanLinRecursive implements Partitioning {
+public class RecursiveBisection implements Partitioning {
 
     int maxNodesInCluster;
     Graph graph;
     boolean marked[];
     ArrayList<LinkedList<Node>> clusters;
+    Bisection bisection;
 
     /**
      * whether the algorithm uses edge weights
      */
     boolean weightedEdges;
 
-    public KernighanLinRecursive() {
-        this(true);
+    public RecursiveBisection() {
+        this(new SpectralBisection());
     }
 
-    public KernighanLinRecursive(boolean weightedEdges) {
-        this.weightedEdges = weightedEdges;
+    public RecursiveBisection(Bisection bisection) {
+        this.bisection = bisection;
     }
 
+//    public RecursiveBisection(boolean weightedEdges) {
+//        this.weightedEdges = weightedEdges;
+//    }
     @Override
     public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
         maxNodesInCluster = max;
@@ -40,14 +45,14 @@ public class KernighanLinRecursive implements Partitioning {
         } else {
             clusters = recursivePartition(graph);
         }
+        // return clusters;
         Graph clusteredGraph = removeUnusedEdges();
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin(g, weightedEdges);
-        ArrayList<LinkedList<Node>> result = kl.bisect(g);
+        ArrayList<LinkedList<Node>> result = bisection.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
             if (result.get(i).size() <= maxNodesInCluster) {
