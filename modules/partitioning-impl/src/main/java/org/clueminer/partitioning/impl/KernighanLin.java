@@ -30,7 +30,7 @@ public class KernighanLin implements Bisection {
     private boolean weightedEdges;
 
     public KernighanLin() {
-        this(true);
+        this(false);
     }
 
     public KernighanLin(boolean weightedEdges) {
@@ -38,7 +38,7 @@ public class KernighanLin implements Bisection {
     }
 
     public KernighanLin(Graph g) {
-        this(g, true);
+        this(g, false);
     }
 
     public KernighanLin(Graph g, boolean weightedEdges) {
