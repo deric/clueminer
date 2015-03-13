@@ -148,6 +148,7 @@ public class NMI extends AbstractExternalEval implements ClusterEvaluation {
      *
      * @param c1
      * @param c2
+     * @param params
      * @return
      */
     @Override

@@ -15,7 +15,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class AICScore extends AbstractEvaluator {
+public class AIC extends AbstractEvaluator {
 
     private static final String NAME = "AIC";
     private static final long serialVersionUID = -8805325971847590600L;
@@ -30,6 +30,10 @@ public class AICScore extends AbstractEvaluator {
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         // number of free parameters K
         double k = 1;
+        likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
+        likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
+        likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
+        likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
         double l = likelihood.loglikelihoodsum(clusters);
         // AIC score

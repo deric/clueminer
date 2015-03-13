@@ -47,8 +47,8 @@ public class CIndexTest {
         DistanceMeasure dist = new EuclideanDistance();
 
         ClusterEvaluation cind = new CIndex(dist);
-        ClusterEvaluation aic = new AICScore();
-        ClusterEvaluation bic = new BICScore();
+        ClusterEvaluation aic = new AIC();
+        ClusterEvaluation bic = new BIC();
         ClusterEvaluation sse = new SumOfSquaredErrors(dist);
         ClusterEvaluation gamma = new Gamma(dist);
 
@@ -126,8 +126,8 @@ public class CIndexTest {
         int j = 0;
         DistanceMeasure dm = new EuclideanDistance();
         eval[j++] = new CIndex(dm);
-        eval[j++] = new AICScore();
-        eval[j++] = new BICScore();
+        eval[j++] = new AIC();
+        eval[j++] = new BIC();
         eval[j++] = new SumOfSquaredErrors(dm);
         eval[j++] = new Gamma(dm);
         eval[j++] = new Tau(dm);

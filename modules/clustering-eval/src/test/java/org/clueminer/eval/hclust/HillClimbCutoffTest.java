@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.AIC;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class HillClimbCutoffTest {
     private Dataset<? extends Instance> dataset;
 
     public HillClimbCutoffTest() {
-        subject.setEvaluator(new AICScore());
+        subject.setEvaluator(new AIC());
     }
 
     @Before

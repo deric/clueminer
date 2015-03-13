@@ -7,11 +7,20 @@ import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ * Bayesian information criterion (also known as the Schwarz criterion)
+ *
+ * G. Schwarz. Estimating the dimension of a model. Annals of Statistics,
+ * 6:461–464, 1978
+ *
+ * @author deric
+ */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BICScore extends AbstractEvaluator {
+public class BIC extends AbstractEvaluator {
 
     private static final String NAME = "BIC";
     private static final long serialVersionUID = -8771446315217152042L;
+    private static final LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
 
     @Override
     public String getName() {
@@ -23,12 +32,12 @@ public class BICScore extends AbstractEvaluator {
         // number of free parameters K
         double k = 1;
         // sampelsize N
-        double datasize = 0;
+        double datasize = clusters.instancesCount();
 
-        for (int i = 0; i < clusters.size(); i++) {
-            datasize += clusters.get(i).size();
-        }
-        LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
+        likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
+        likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
+        likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
+        likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
         double l = likelihood.loglikelihoodsum(clusters);
         // BIC score

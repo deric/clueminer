@@ -21,7 +21,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.eval.BICScore;
+import org.clueminer.eval.BIC;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.external.JaccardIndex;
@@ -119,7 +119,7 @@ public class AttrEvolutionTest {
     public void testRun() {
         test = new AttrEvolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
-        test.setEvaluator(new BICScore());
+        test.setEvaluator(new BIC());
         ExternalEvaluator ext = new JaccardIndex();
         test.setExternal(ext);
         //collect data from evolution

@@ -45,7 +45,7 @@ import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
@@ -100,7 +100,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         scale = new StdScale();
         this.fitToSpace = false;
         this.preserveAlpha = true;
-        compInternal = new ClusteringComparator(new AICScore());
+        compInternal = new ClusteringComparator(new AIC());
         compExternal = new ClusteringComparator(new NMI());
         //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
