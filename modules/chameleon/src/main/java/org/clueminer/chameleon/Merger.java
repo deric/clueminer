@@ -198,7 +198,7 @@ public abstract class Merger {
         double nc1 = clusters.get(i).graph.getNodeCount();
         double nc2 = clusters.get(j).graph.getNodeCount();
         double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).ICL + (nc2 / (nc1 + nc2)) * clusters.get(j).ICL);
-        return RCL + RIC;
+        return RCL * RIC;
     }
 
     protected Matrix createMatrix() {
