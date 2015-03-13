@@ -4,7 +4,6 @@ import com.google.common.collect.Table;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
@@ -95,12 +94,10 @@ public class AdjustedRand extends AbstractExternalEval {
      * @param n
      * @return
      */
-    private long combinationOfTwo(int n) {
-        if (n > 1) {
-            //for n < k doesn't make sense
-            return CombinatoricsUtils.binomialCoefficient(n, 2);
-        }
-        return 0;
+    protected long combinationOfTwo(int n) {
+        // a micooptimization, instead of computing factorial, in case of k=2
+        // this is much faster
+        return n * (n - 1) >>> 1; //equal to division by 2
     }
 
     /**

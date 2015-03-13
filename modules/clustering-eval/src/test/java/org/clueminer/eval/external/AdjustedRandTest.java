@@ -173,4 +173,14 @@ public class AdjustedRandTest extends ExternalTest {
         double score = subject.score(clust);
         assertEquals(0.3125734430082256, score, delta);
     }
+
+    @Test
+    public void testCombinationOfTwo() {
+        int n = 5;
+        AdjustedRand ari = (AdjustedRand) subject;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+        n = 15;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+    }
+
 }
