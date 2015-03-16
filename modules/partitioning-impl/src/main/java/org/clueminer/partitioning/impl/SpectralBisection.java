@@ -59,8 +59,7 @@ public class SpectralBisection implements Bisection {
         ArrayList<LinkedList<Node>> clusters = new ArrayList<>();
         clusters.add(new LinkedList<Node>());
         clusters.add(new LinkedList<Node>());
-        findMinMax(eigenVectors);
-        double mid = (min + max) / 2;
+        double mid = findMedian(eigenVectors);
         for (int i = 0; i < g.getNodeCount(); i++) {
             if (eigenVectors.get(i, 1) < mid) {
                 clusters.get(0).add(nodes[i]);
@@ -84,6 +83,16 @@ public class SpectralBisection implements Bisection {
                 min = eigenVectors.get(i, 1);
             }
         }
+    }
+
+    private double findMedian(Matrix eigenVectors) {
+        Matrix n = eigenVectors.getMatrix(0, eigenVectors.getRowDimension() - 1, 1, 1);
+        double fiedlerVector[] = n.getColumnPackedCopy();
+        Arrays.sort(fiedlerVector);
+        System.out.println(eigenVectors.getRowDimension() + " " + fiedlerVector.length);
+        min = fiedlerVector[0];
+        max = fiedlerVector[eigenVectors.getRowDimension() - 1];
+        return fiedlerVector[eigenVectors.getRowDimension() / 2];
     }
 
     @Override
