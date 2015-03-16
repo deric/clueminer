@@ -131,17 +131,36 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             }
         }
 
-        KNN knn = new KNN(k);
+        int datasetK = findK(dataset);
+        int datasetMaxPSize = findMaxPartitionSize(dataset);
+
+        KNN knn = new KNN(datasetK);
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
         RecursiveBisection rb = new RecursiveBisection();
-        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
 
         PairMerger m = new PairMerger(g, new SpectralBisection());
 
         return m.getHierarchy(partitioningResult, dataset);
+    }
+
+    private int findK(Dataset<? extends Instance> dataset) {
+        if (k == -1) {
+            return (int) (Math.log(dataset.size()) / Math.log(2));
+        } else {
+            return k;
+        }
+    }
+
+    private int findMaxPartitionSize(Dataset<? extends Instance> dataset) {
+        if (maxPartitionSize == -1) {
+            return 10;
+        } else {
+            return maxPartitionSize;
+        }
     }
 
     @Override
