@@ -60,6 +60,22 @@ public class SpectralBisection implements Bisection {
         clusters.add(new LinkedList<Node>());
         clusters.add(new LinkedList<Node>());
         double mid = findMedian(eigenVectors);
+        //If all components of the Fiedler vector are the same, randomly split the graph into two equal groups
+        if (min == max) {
+            for (int i = 0; i < g.getNodeCount() / 2; i++) {
+                clusters.get(0).add(nodes[i]);
+                nodeToCluster[i] = 0;
+            }
+            for (int i = g.getNodeCount() / 2; i < g.getNodeCount(); i++) {
+                clusters.get(1).add(nodes[i]);
+                nodeToCluster[i] = 1;
+            }
+            return clusters;
+        }
+        //If min == mid, all nodes would end up in the second group, therefore change the mid value to average of minimal and maximal value
+        if (min == mid) {
+            mid = (min + max) / 2;
+        }
         for (int i = 0; i < g.getNodeCount(); i++) {
             if (eigenVectors.get(i, 1) < mid) {
                 clusters.get(0).add(nodes[i]);
