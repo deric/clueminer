@@ -2,6 +2,7 @@ package org.clueminer.graph.adjacencyList;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -17,6 +18,26 @@ public class AdjListGraph implements Graph {
 
 	HashMap<Long, AdjListNode> nodes;
 	HashMap<Long, AdjListEdge> edges;
+
+	public AdjListGraph() {
+		nodes = new HashMap<>();
+		edges = new HashMap<>();
+	}
+
+	public void print() {
+		System.out.println("Edges:");
+		for(Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
+			AdjListEdge edge = entrySet.getValue();
+			System.out.println(edge);
+		}
+		System.out.println("---------------------");
+		System.out.println("Nodes:");
+		for(Map.Entry<Long, AdjListNode> entrySet : nodes.entrySet()) {
+			AdjListNode node = entrySet.getValue();
+			System.out.println(node);
+		}
+		System.out.println("---------------------");
+	}
 
 	@Override
 	public boolean addEdge(Edge edge) {
@@ -60,12 +81,26 @@ public class AdjListGraph implements Graph {
 
 	@Override
 	public boolean removeEdge(Edge edge) {
-		return edges.remove(edge.getId()) != null;
+		if(edges.remove(edge.getId()) == null)
+			return false;
+		((AdjListEdge)edge).getSource().removeEdge(edge);
+		((AdjListEdge)edge).getTarget().removeEdge(edge);
+		return true;
 	}
 
 	@Override
 	public boolean removeNode(Node node) {
-		return nodes.remove(node.getId()) != null;
+		if(nodes.remove(node.getId()) == null)
+			return false;
+		for(Edge it : ((AdjListNode)node).getEdges()) {
+			AdjListEdge edge = (AdjListEdge) it;
+			if(edge.getSource() == node)
+				edge.getTarget().removeEdge(it);
+			  else
+				edge.getSource().removeEdge(it);
+			edges.remove(it.getId());
+		}
+		return true;
 	}
 
 	@Override
@@ -256,5 +291,5 @@ public class AdjListGraph implements Graph {
 	public int getIndex(Node node) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-	
+
 }
