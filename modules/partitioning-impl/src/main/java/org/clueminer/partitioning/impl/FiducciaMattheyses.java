@@ -206,11 +206,18 @@ public class FiducciaMattheyses implements Bisection {
         return maxDifferenceIndex;
     }
 
-    private void swapUpToBestIndex() {
+    /**
+     * Make the best possible sequence of swaps and return index of the last
+     * vertex swapped. If index is -1, no vertexes were swapped.
+     *
+     * @return Index of last swapped vertex
+     */
+    private int swapUpToBestIndex() {
         int index = findBestSwaps();
         for (int i = 0; i <= index; i++) {
             swapHistory[i].cluster = swapHistory[i].cluster == 0 ? 1 : 0;
         }
+        return index;
     }
 
     /**
@@ -244,6 +251,30 @@ public class FiducciaMattheyses implements Bisection {
     public ArrayList<LinkedList<Node>> bisect(Graph g) {
         initialize(g);
         createIntitalPartition();
+        int counter = 0;
+        int indexCounter = 0;
+        int lastIndex = -1;
+        //Repeat until no better swap can be done or until same number of nodes is swapped at least three times. Overall maximum is 20 executions.
+        while (counter < 20) {
+            counter++;
+            int index = minimizeCosts();
+            if (index == -1) {
+                break;
+            }
+            if (index == lastIndex) {
+                indexCounter++;
+                if (indexCounter >= 3) {
+                    break;
+                }
+            } else {
+                lastIndex = index;
+                indexCounter = 1;
+            }
+        }
+        return createNodeClusters();
+    }
+
+    private int minimizeCosts() {
         computeDifferences();
         for (int i = 0; i < nodeCount; i++) {
             Vertex bestVertex = findBestVertex(i % 2);
@@ -251,8 +282,7 @@ public class FiducciaMattheyses implements Bisection {
             updateDifferences(bestVertex);
             removeFromBucket(bestVertex);
         }
-        swapUpToBestIndex();
-        return createNodeClusters();
+        return swapUpToBestIndex();
     }
 
     public void printBuckets() {
