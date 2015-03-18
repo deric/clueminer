@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.InvalidClustering;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -51,7 +52,7 @@ public class CountingPairs {
      * @return table with counts of items for each pair cluster, class
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
-        // a lookup table for storing correctly / incorrectly classified items
+        // tp lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -90,7 +91,7 @@ public class CountingPairs {
      * @return
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        // a lookup table for storing same / differently classified items
+        // tp lookup table for storing same / differently classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -156,7 +157,7 @@ public class CountingPairs {
                 throw new RuntimeException("this should not happen");
             }
         }
-        //some cluster hasn't been assigned to a class
+        //some cluster hasn't been assigned to tp class
         // matching.size() < sortedClusters.size()
         if (notAssigned.size() > 0) {
             for (String cluster : notAssigned) {
@@ -171,7 +172,7 @@ public class CountingPairs {
 
         //number of matching classes is lower than actual
         if (matching.size() < table.columnKeySet().size()) {
-            //check if all classes has been assigned to a cluster
+            //check if all classes has been assigned to tp cluster
             for (String klass : table.columnKeySet()) {
                 if (!matching.containsKey(klass)) {
                     System.out.println("class '" + klass + "' is not assigned");
@@ -327,5 +328,103 @@ public class CountingPairs {
             sb.append("\n");
         }
         System.out.println(sb.toString());
+    }
+
+    /**
+     * Match instances in two clusterings of the same dataset. From resulting
+     * table we can tell how close it the {@code curr} clustering to the
+     * reference one.
+     *
+     * @param curr second clustering
+     * @param ref reference clustering,
+     *
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> curr, Clustering<? extends Cluster> ref) {
+        PairMatch pm = new PairMatch();
+
+        Instance x, y;
+        Cluster cx1, cx2, cy1, cy2;
+        for (int i = 0; i < ref.instancesCount() - 1; i++) {
+            x = ref.instance(i);
+            cx1 = ref.assignedCluster(x);
+            cx2 = curr.assignedCluster(x);
+            for (int j = i + 1; j < ref.instancesCount(); j++) {
+
+                y = ref.instance(j);
+                cy1 = ref.assignedCluster(y);
+                cy2 = curr.assignedCluster(y);
+                //in C1 both are in the same cluster
+                if (cx1.getClusterId() == cy1.getClusterId()) {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
+                    } else {
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
+                    }
+                }
+            }
+        }
+        return pm;
+    }
+
+    /**
+     * Match clustering against class labels
+     *
+     * @param clust
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> clust) {
+        PairMatch pm = new PairMatch();
+
+        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing reference dataset");
+        }
+
+        Instance x, y;
+        Cluster cx2, cy2;
+        //class labels
+        Object cx1, cy1;
+        for (int i = 0; i < dataset.size() - 1; i++) {
+            x = dataset.get(i);
+            cx2 = clust.assignedCluster(x);
+            if (cx2 == null) {
+                throw new InvalidClustering("instance " + x.getIndex()
+                        + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+            }
+            cx1 = x.classValue();
+            for (int j = i + 1; j < dataset.size(); j++) {
+                y = dataset.get(j);
+                cy1 = y.classValue();
+                cy2 = clust.assignedCluster(y);
+                if (cy2 == null) {
+                    System.out.println("params: " + clust.getParams().toString());
+                    throw new InvalidClustering("instance " + y.getIndex()
+                            + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+                }
+                //in both instances have the same label
+                if (cx1.equals(cy1)) {
+                    //both instances are assigned to the same cluster
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
+                    } else {
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
+                    }
+                }
+            }
+        }
+        return pm;
     }
 }

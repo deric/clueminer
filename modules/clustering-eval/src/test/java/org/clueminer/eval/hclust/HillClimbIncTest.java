@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.AIC;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import org.junit.Before;
@@ -24,7 +24,7 @@ public class HillClimbIncTest {
     private final HACLW alg;
 
     public HillClimbIncTest() {
-        subject.setEvaluator(new AICScore());
+        subject.setEvaluator(new AIC());
         dataset = FakeDatasets.schoolData();
         alg = new HACLW();
     }
@@ -43,7 +43,7 @@ public class HillClimbIncTest {
 
         result.getTreeData().print();
 
-        double cut = subject.findCutoff(result);
+        double cut = subject.findCutoff(result, pref);
         assertEquals(true, cut > 0);
         System.out.println("cutoff = " + cut);
         int numClusters = result.getClustering().size();

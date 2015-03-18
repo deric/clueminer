@@ -347,14 +347,14 @@ public class HClustResult implements HierarchicalResult {
         if (cutoffStrategy == null) {
             return Double.NaN;
         }
-        double cut = cutoffStrategy.findCutoff(this);
+        double cut = cutoffStrategy.findCutoff(this, getParams());
         updateCutoff(cut);
         return cut;
     }
 
     @Override
     public double findCutoff(CutoffStrategy strategy) {
-        double cut = strategy.findCutoff(this);
+        double cut = strategy.findCutoff(this, getParams());
         this.clustering = updateCutoff(cut);
         return cut;
     }

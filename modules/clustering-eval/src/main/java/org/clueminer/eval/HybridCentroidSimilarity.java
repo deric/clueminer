@@ -1,12 +1,12 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,18 +33,13 @@ public class HybridCentroidSimilarity extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         ClusterEvaluation ceTop = new SumOfCentroidSimilarities();// I_2
-        double sum = ceTop.score(clusters, dataset);
+        double sum = ceTop.score(clusters, params);
         ClusterEvaluation ce = new TraceScatterMatrix();// E_1
-        sum /= ce.score(clusters, dataset);
+        sum /= ce.score(clusters, params);
 
         return sum;
-    }
-
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

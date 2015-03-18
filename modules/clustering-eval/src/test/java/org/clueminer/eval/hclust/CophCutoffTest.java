@@ -38,7 +38,7 @@ public class CophCutoffTest {
 
         result.getTreeData().print();
 
-        double cut = subject.findCutoff(result);
+        double cut = subject.findCutoff(result, pref);
         assertEquals(true, cut > 0);
         System.out.println("cutoff = " + cut);
         System.out.println("clustering size " + result.getClustering().size());

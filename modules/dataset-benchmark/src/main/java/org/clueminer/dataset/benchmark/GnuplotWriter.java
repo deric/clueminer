@@ -65,7 +65,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         double sumExt = 0.0;
         for (int i = 0; i < getTop(); i++) {
             sum += ind[i].getFitness();
-            sumExt += evolution.getExternal().score(ind[i].getClustering(), dataset);
+            sumExt += evolution.getExternal().score(ind[i].getClustering());
         }
         double topNfit = sum / (double) getTop();
         double topNext = sumExt / (double) getTop();

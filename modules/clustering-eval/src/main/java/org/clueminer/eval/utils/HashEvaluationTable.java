@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -61,6 +62,29 @@ public class HashEvaluationTable implements EvaluationTable {
         return getAll();
     }
 
+    @Override
+    public double getScore(ClusterEvaluation evaluator, Props params) {
+        String key = evaluator.getName();
+        if (scores.containsKey(key)) {
+            return scores.get(key);
+        } else {
+            double score = evaluator.score(clustering, params);
+            scores.put(key, score);
+            return score;
+        }
+    }
+
+    @Override
+    public double getScore(String evaluator, Props params) {
+        if (internalMap.containsKey(evaluator)) {
+            return getScore(internalMap.get(evaluator), params);
+        } else if (externalMap.containsKey(evaluator)) {
+            return getScore(externalMap.get(evaluator), params);
+        } else {
+            throw new RuntimeException("unknown evaluator");
+        }
+    }
+
     /**
      * Computes evaluator score and caches the result
      *
@@ -69,25 +93,12 @@ public class HashEvaluationTable implements EvaluationTable {
      */
     @Override
     public double getScore(ClusterEvaluation evaluator) {
-        String key = evaluator.getName();
-        if (scores.containsKey(key)) {
-            return scores.get(key);
-        } else {
-            double score = evaluator.score(clustering, dataset);
-            scores.put(key, score);
-            return score;
-        }
+        return getScore(evaluator, new Props());
     }
 
     @Override
     public double getScore(String evaluator) {
-        if (internalMap.containsKey(evaluator)) {
-            return getScore(internalMap.get(evaluator));
-        } else if (externalMap.containsKey(evaluator)) {
-            return getScore(externalMap.get(evaluator));
-        } else {
-            throw new RuntimeException("unknown evaluator");
-        }
+        return getScore(evaluator, new Props());
     }
 
     private Map<String, Double> evalToScoreMap(Object2ObjectMap<String, ClusterEvaluation> map) {

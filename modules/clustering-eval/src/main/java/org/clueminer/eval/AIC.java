@@ -1,10 +1,10 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -15,7 +15,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class AICScore extends AbstractEvaluator {
+public class AIC extends AbstractEvaluator {
 
     private static final String NAME = "AIC";
     private static final long serialVersionUID = -8805325971847590600L;
@@ -27,27 +27,18 @@ public class AICScore extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         // number of free parameters K
         double k = 1;
+        likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
+        likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
+        likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
+        likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
         double l = likelihood.loglikelihoodsum(clusters);
         // AIC score
         double aic = 2 * k - 2 * l;
         return aic;
-    }
-
-    /**
-     * Proximity matrix doesn't help here
-     *
-     * @param clusters
-     * @param dataset
-     * @param proximity
-     * @return
-     */
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        return score(clusters, dataset);
     }
 
     /**

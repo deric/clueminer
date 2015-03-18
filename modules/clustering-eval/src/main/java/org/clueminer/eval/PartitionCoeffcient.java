@@ -3,9 +3,8 @@ package org.clueminer.eval;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  * Coefficient for fuzzy clusterings counts with *mu* which is degree of
@@ -24,7 +23,7 @@ public class PartitionCoeffcient extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         //TODO fix this for fuzzy case
         double mu;
         double pc = 0.0;
@@ -37,11 +36,6 @@ public class PartitionCoeffcient extends AbstractEvaluator {
             pc = sum / (double) c.size();
         }
         return (pc / (double) clusters.size());
-    }
-
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

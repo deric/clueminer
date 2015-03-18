@@ -17,7 +17,6 @@
 package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -41,8 +40,8 @@ public class PointBiserialTest {
 
     @Test
     public void testIris() {
-        double scoreBetter = subject.score(FakeClustering.iris(), FakeDatasets.irisDataset());
-        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong(), FakeDatasets.irisDataset());
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         System.out.println("better: " + scoreBetter);
         System.out.println("worser: " + scoreWorser);

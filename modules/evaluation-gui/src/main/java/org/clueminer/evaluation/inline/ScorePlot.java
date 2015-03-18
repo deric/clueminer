@@ -41,11 +41,11 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
@@ -100,7 +100,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         scale = new StdScale();
         this.fitToSpace = false;
         this.preserveAlpha = true;
-        compInternal = new ClusteringComparator(new AICScore());
+        compInternal = new ClusteringComparator(new AIC());
         compExternal = new ClusteringComparator(new NMI());
         //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
@@ -202,8 +202,8 @@ public class ScorePlot extends BPanel implements TaskListener {
             Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
             if (dataset != null) {
                 SortedSet set = dataset.getClasses();
-                golden = new ClusterList(set.size());
-                //golden.lookupAdd(dataset);
+                golden = Clusterings.newList();
+                golden.lookupAdd(dataset);
                 EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
                 golden.lookupAdd(evalTable);
                 HashMap<Object, Integer> map = new HashMap<>(set.size());

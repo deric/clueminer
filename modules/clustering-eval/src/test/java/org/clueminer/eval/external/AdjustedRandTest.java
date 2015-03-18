@@ -1,11 +1,12 @@
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Dump;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,12 +33,12 @@ public class AdjustedRandTest extends ExternalTest {
     /**
      * Test of score method, of class AdjustedRand.
      */
-    //@Test
+    @Test
     public void testScore_Clustering_Clustering() {
         double score;
 
-        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.13473684210526315);
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.21052631578947367);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     /**
@@ -82,9 +83,7 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testScoreDataset() {
-        Clustering<Cluster> clustering = FakeClustering.irisWrong4();
-        double score = subject.score(clustering, FakeDatasets.irisDataset());
-        System.out.println("clust(4) = " + score);
+        measure(FakeClustering.irisWrong4(), 0.873083475298126);
     }
 
     @Test
@@ -141,8 +140,47 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testAri() {
         AdjustedRand ari = (AdjustedRand) subject;
-        double score = ari.countAri(FakeClustering.iris(), FakeClustering.iris());
+        double score = ari.score(FakeClustering.iris());
         assertEquals(1.0, score, delta);
 
+        //score = ari.score(FakeClustering.irisWrong());
+        //assertEquals(1.0, score, delta);
     }
+
+    @Test
+    public void testTwoClusterings() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        PairMatch pm = CountingPairs.matchPairs(FakeClustering.irisWrong(), FakeClustering.iris());
+
+        pm.dump();
+        //number of pairs we can draw from 150 instances (150 \over 2)
+        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum());
+        System.out.println("ARI: " + ari.score(pm));
+    }
+
+    /**
+     * Based on Details of the Adjusted Rand index and Clustering algorithms
+     * Supplement to the paper “An empirical study on Principal
+     * Component Analysis for clustering gene expression data” (to
+     * appear in Bioinformatics)
+     *
+     * Ka Yee Yeung, Walter L. Ruzzo, 2001
+     *
+     */
+    @Test
+    public void testPcaData() {
+        Clustering<? extends Cluster> clust = pcaData();
+        double score = subject.score(clust);
+        assertEquals(0.3125734430082256, score, delta);
+    }
+
+    @Test
+    public void testCombinationOfTwo() {
+        int n = 5;
+        AdjustedRand ari = (AdjustedRand) subject;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+        n = 15;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+    }
+
 }

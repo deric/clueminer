@@ -47,8 +47,8 @@ public class CIndexTest {
         DistanceMeasure dist = new EuclideanDistance();
 
         ClusterEvaluation cind = new CIndex(dist);
-        ClusterEvaluation aic = new AICScore();
-        ClusterEvaluation bic = new BICScore();
+        ClusterEvaluation aic = new AIC();
+        ClusterEvaluation bic = new BIC();
         ClusterEvaluation sse = new SumOfSquaredErrors(dist);
         ClusterEvaluation gamma = new Gamma(dist);
 
@@ -57,11 +57,11 @@ public class CIndexTest {
             PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
             Clustering clusters = km.partition(data);
 
-            double cindScore = cind.score(clusters, data);
-            double aicScore = aic.score(clusters, data);
-            double bicScore = bic.score(clusters, data);
-            double sseScore = sse.score(clusters, data);
-            double gScore = gamma.score(clusters, data);
+            double cindScore = cind.score(clusters);
+            double aicScore = aic.score(clusters);
+            double bicScore = bic.score(clusters);
+            double sseScore = sse.score(clusters);
+            double gScore = gamma.score(clusters);
             System.out.println("\t " + cindScore + " \t " + aicScore + " \t " + bicScore + " \t " + sseScore + " \t " + gScore);
         }
 
@@ -126,8 +126,8 @@ public class CIndexTest {
         int j = 0;
         DistanceMeasure dm = new EuclideanDistance();
         eval[j++] = new CIndex(dm);
-        eval[j++] = new AICScore();
-        eval[j++] = new BICScore();
+        eval[j++] = new AIC();
+        eval[j++] = new BIC();
         eval[j++] = new SumOfSquaredErrors(dm);
         eval[j++] = new Gamma(dm);
         eval[j++] = new Tau(dm);
@@ -142,7 +142,7 @@ public class CIndexTest {
 
             double score;
             for (j = 0; j < evalNum; j++) {
-                score = eval[j].score(clusters, data);
+                score = eval[j].score(clusters);
                 System.out.print(score + " \t ");
             }
             System.out.println();

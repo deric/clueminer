@@ -145,7 +145,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
         Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
         ArrayList<Individual> selected = new ArrayList<>(populationSize);
-
+        double fitness;
         for (int g = 0; g < generations && !isFinished; g++) {
 
             // clear collection for new individuals
@@ -158,14 +158,16 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
                 if (this.isValid(current) && current.isValid()) {
                     if (!isItTabu(current.toString())) {
                         // put mutated individual to the list of new individuals
-                        children.add(current);
-                        current.countFitness();
-                        //update meta-database
-                        fireIndividualCreated(current);
+                        fitness = current.countFitness();
+                        if (!Double.isNaN(fitness)) {
+                            children.add(current);
+                            //update meta-database
+                            fireIndividualCreated(current);
+                        }
                     }
                 }
             }
-            double fitness;
+
             logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
             selected.clear();
             // merge new and old individuals

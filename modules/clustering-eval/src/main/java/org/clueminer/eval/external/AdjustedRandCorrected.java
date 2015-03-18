@@ -1,31 +1,47 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
-import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Based on Adjusted Rand coefficient: Hubert, L. and Arabie, P. (1985)
- * Comparing partitions. Journal of Classification, 193– 218
  *
- * @see RandIndex
- * @author Tomas Barton
+ * @author deric
  */
-@ServiceProvider(service = ExternalEvaluator.class)
-public class AdjustedRand extends AbstractExternalEval {
+public class AdjustedRandCorrected extends AbstractExternalEval {
 
-    private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Adjusted Rand";
+    private static final long serialVersionUID = 8408696944704938977L;
+    private static final String name = "Adjusted Rand (corr)";
+    private static final String unknownLabel = "unknown";
 
     @Override
     public String getName() {
@@ -60,20 +76,123 @@ public class AdjustedRand extends AbstractExternalEval {
     }
 
     /**
-     * Computation inspired by approach in:
      *
-     * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
-     * Rand Index as tp Metric for Evaluating Supervised Classification
+     * @param c1 - clustering displayed in rows
+     * @param c2 - clustering displayed in columns
+     * @return matrix with numbers of instances in same clusters
+     */
+    public int[][] countMutual(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
+        int[][] conf = new int[c1.size() + 1][c2.size() + 1];
+        Cluster<Instance> curr;
+        int s1 = c1.size();
+        int s2 = c2.size();
+
+        for (int i = 0; i < s1; i++) {
+            curr = c1.get(i);
+            for (Instance inst : curr) {
+                for (int j = 0; j < s2; j++) {
+                    if (c2.get(j).contains(inst.getIndex())) {
+                        conf[i][j]++;
+                    }
+                }
+            }
+            conf[i][s2] = curr.size();
+        }
+
+        //update sum of columns
+        for (int j = 0; j < s2; j++) {
+            conf[s1][j] = c2.get(j).size();
+        }
+
+        //Dump.matrix(conf, "conf mat", 0);
+        return conf;
+    }
+
+    /**
+     * Count number of classes in each cluster when we don't know how many
+     * classes we have.
      *
-     * @param pm
+     *
+     * @param clust
      * @return
      */
-    public double score(PairMatch pm) {
-        double ari, np = pm.sum();
-        double tmp = (pm.tp + pm.fp) * (pm.tp + pm.fn) + (pm.fn + pm.tn) * (pm.fp + pm.tn);
-        ari = np * (pm.tp + pm.tn) - tmp;
-        ari /= np * np - tmp;
-        return ari;
+    public int[][] countMutual(Clustering<? extends Cluster> clust) {
+        //SortedSet klasses = dataset.getClasses();
+        //Table<String, String, Integer> table = counting.contingencyTable(clust);
+        Table<String, String, Integer> table = contingencyTable(clust);
+        //String[] klassLabels = (String[]) klasses.toArray(new String[klasses.size()]);
+        Set<String> rows = table.rowKeySet();
+        String[] rowLabels = rows.toArray(new String[rows.size()]);
+        int[][] conf = new int[rowLabels.length + 1][clust.size() + 1];
+
+        int k = 0;
+        //Dump.array(rowLabels, "classes");
+        for (Cluster c : clust) {
+            Map<String, Integer> col = table.column(c.getName());
+            for (int i = 0; i < rowLabels.length; i++) {
+                if (col.containsKey(rowLabels[i])) {
+                    conf[i][k] = col.get(rowLabels[i]);
+                    conf[i][clust.size()] += conf[i][k];
+                }
+                conf[rows.size()][k] += conf[i][k];
+            }
+            k++;
+        }
+        //Dump.matrix(conf, "conf mat", 0);
+        return conf;
+    }
+
+    public Table<String, String, Integer> newTable() {
+        return Tables.newCustomTable(
+                Maps.<String, Map<String, Integer>>newHashMap(),
+                new Supplier<Map<String, Integer>>() {
+                    @Override
+                    public Map<String, Integer> get() {
+                        return Maps.newHashMap();
+                    }
+                });
+    }
+
+    /**
+     * Should count number of item with same assignment to <Cluster A, Class X>
+     * Instances must have included information about class assignment. This
+     * table is sometimes called contingency table
+     *
+     * Classes are in rows, Clusters are in columns
+     *
+     * @param clustering
+     * @return table with counts of items for each pair cluster, class
+     */
+    public Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
+        // a lookup table for storing correctly / incorrectly classified items
+        Table<String, String, Integer> table = newTable();
+
+        //Cluster current;
+        Instance inst;
+        String cluster, label;
+        int cnt;
+        for (Cluster<Instance> current : clustering) {
+            for (int i = 0; i < current.size(); i++) {
+                inst = current.instance(i);
+                cluster = current.getName();
+                Object klass = inst.classValue();
+                if (klass != null) {
+                    label = klass.toString();
+                } else {
+                    label = unknownLabel;
+                }
+
+                if (table.contains(label, cluster)) {
+                    cnt = table.get(label, cluster);
+                } else {
+                    cnt = 0;
+                }
+
+                cnt++;
+                table.put(label, cluster, cnt);
+            }
+        }
+        return table;
     }
 
     /**
@@ -94,10 +213,12 @@ public class AdjustedRand extends AbstractExternalEval {
      * @param n
      * @return
      */
-    protected long combinationOfTwo(int n) {
-        // a micooptimization, instead of computing factorial, in case of k=2
-        // this is much faster
-        return n * (n - 1) >>> 1; //equal to division by 2
+    private long combinationOfTwo(int n) {
+        if (n > 1) {
+            //for n < k doesn't make sense
+            return CombinatoricsUtils.binomialCoefficient(n, 2);
+        }
+        return 0;
     }
 
     /**
@@ -198,8 +319,8 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        PairMatch pm = CountingPairs.matchPairs(clusters);
-        return score(pm);
+        int[][] conf = countMutual(clusters);
+        return countScore(conf);
     }
 
     @Override
@@ -214,8 +335,8 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
-        PairMatch pm = CountingPairs.matchPairs(c1, c2);
-        return score(pm);
+        int[][] conf = countMutual(c1, c2);
+        return countScore(conf);
     }
 
     @Override
@@ -225,7 +346,7 @@ public class AdjustedRand extends AbstractExternalEval {
 
     @Override
     public double getMin() {
-        return 0;
+        return -1;
     }
 
     @Override

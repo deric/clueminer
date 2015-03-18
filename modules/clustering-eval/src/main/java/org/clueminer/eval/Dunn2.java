@@ -1,34 +1,40 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.LinkageFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Dunn's index should be maximized
  *
- * @author Tomas Barton
+ * @author deric
  */
-@ServiceProvider(service = InternalEvaluator.class)
-public class DunnIndex extends AbstractEvaluator {
+public class Dunn2 extends DunnIndex {
 
-    private static final long serialVersionUID = -6973489229802690101L;
-    private static final String name = "Dunn index";
+    private static final String name = "Dunn2";
+    private static final long serialVersionUID = 8016326307215384730L;
 
-    public DunnIndex() {
+    public Dunn2() {
         dm = EuclideanDistance.getInstance();
-    }
-
-    public DunnIndex(DistanceMeasure dist) {
-        this.dm = dist;
     }
 
     @Override
@@ -74,47 +80,4 @@ public class DunnIndex extends AbstractEvaluator {
         return minClusterDistance / maxIntraClusterdist;
     }
 
-    public double maxIntraClusterDistance(Dataset<? extends Instance> cluster) {
-        double max = Double.MIN_VALUE;
-        Instance x, y;
-        double dist;
-        for (int i = 0; i < cluster.size(); i++) {
-            x = cluster.instance(i);
-            for (int j = i + 1; j < cluster.size(); j++) {
-                y = cluster.instance(j);
-                dist = dm.measure(x, y);
-                if (dist > max) {
-                    max = dist;
-                }
-            }
-        }
-        return max;
-    }
-
-    /**
-     * Should be maximized
-     *
-     * @param score1
-     * @param score2
-     * @return
-     */
-    @Override
-    public boolean isBetter(double score1, double score2) {
-        return (score1 > score2);
-    }
-
-    @Override
-    public boolean isMaximized() {
-        return true;
-    }
-
-    @Override
-    public double getMin() {
-        return 0;
-    }
-
-    @Override
-    public double getMax() {
-        return Double.POSITIVE_INFINITY;
-    }
 }

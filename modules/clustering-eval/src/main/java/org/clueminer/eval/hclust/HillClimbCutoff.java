@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -30,7 +31,7 @@ public class HillClimbCutoff implements CutoffStrategy {
     }
 
     @Override
-    public double findCutoff(HierarchicalResult hclust) {
+    public double findCutoff(HierarchicalResult hclust, Props params) {
         check();
         double cutoff;
         Clustering clust, prevClust = null;
@@ -48,7 +49,7 @@ public class HillClimbCutoff implements CutoffStrategy {
             if (hclust.isScoreCached(evalName, clustNum)) {
                 score = hclust.getScore(evalName, clustNum);
             } else {
-                score = evaluator.score(clust, hclust.getDataset());
+                score = evaluator.score(clust, params);
             }
             //System.out.println("score = " + score + " prev= " + prev);
             hclust.setScores(evaluator.getName(), clust.size(), score);

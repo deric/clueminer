@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2015 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,18 @@ package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class ConnectivityTest {
+public class BICTest {
 
-    private final Connectivity subject;
+    private final BIC subject;
 
-    public ConnectivityTest() {
-        subject = new Connectivity();
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @Test
-    public void testGetName() {
-        assertNotNull(subject.getName());
+    public BICTest() {
+        subject = new BIC();
     }
 
     @Test
@@ -48,24 +37,23 @@ public class ConnectivityTest {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
-        System.out.println("better: " + scoreBetter);
-        System.out.println("worser: " + scoreWorser);
-
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
     @Test
-    public void testScore_Clustering_Dataset() {
-
-    }
-
-    @Test
-    public void testScore_3args() {
-    }
-
-    @Test
     public void testIsBetter() {
+        assertEquals(true, subject.isBetter(-237.847, -201.928));
+        assertEquals(false, subject.isBetter(-201.928, -237.847));
+    }
+
+    /**
+     * @link http://stats.stackexchange.com/questions/84076/negative-values-for-aic-in-general-mixed-model
+     */
+    @Test
+    public void testCompare() {
+        assertEquals(-1, subject.compare(-237.847, -201.928));
+        assertEquals(1, subject.compare(-201.928, -237.847));
     }
 
     @Test

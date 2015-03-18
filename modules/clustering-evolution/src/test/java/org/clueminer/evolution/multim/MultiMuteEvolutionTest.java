@@ -2,7 +2,7 @@ package org.clueminer.evolution.multim;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.AICScore;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
@@ -41,7 +41,7 @@ public class MultiMuteEvolutionTest {
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
         //subject.setAlgorithm(new ));
-        subject.setEvaluator(new AICScore());
+        subject.setEvaluator(new AIC());
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 

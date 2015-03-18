@@ -13,9 +13,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.DatasetTools;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.junit.Test;
  */
 public class DunnIndexTest {
 
-    private static final DunnIndex test = new DunnIndex(new EuclideanDistance());
+    private static final DunnIndex subject = new DunnIndex(new EuclideanDistance());
     private static Cluster<? extends Instance> cluster;
     private static final CommonFixture tf = new CommonFixture();
 
@@ -42,23 +42,12 @@ public class DunnIndexTest {
         assertTrue(arff.load(tf.simpleCluster(), cluster, 2));
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     /**
      * Test of getName method, of class DunnIndex.
      */
     @Test
     public void testGetName() {
-        assertNotNull(test.getName());
-    }
-
-    /**
-     * Test of setDistanceMeasure method, of class DunnIndex.
-     */
-    @Test
-    public void testSetDistanceMeasure() {
+        assertNotNull(subject.getName());
     }
 
     /**
@@ -74,7 +63,7 @@ public class DunnIndexTest {
         Dataset<Instance> iris = new SampleDataset();
         arff.load(tf.irisArff(), iris, 4);
         Clustering clusters = km.partition(iris);
-        System.out.println("dunn=" + test.score(clusters, iris));
+        System.out.println("dunn=" + subject.score(clusters));
 
     }
 
@@ -83,7 +72,7 @@ public class DunnIndexTest {
      */
     @Test
     public void testMaxIntraClusterDistance() {
-        double dist = test.maxIntraClusterDistance(cluster);
+        double dist = subject.maxIntraClusterDistance(cluster);
         System.out.println("clus" + cluster.toString());
         /*
          * max distance in dataset is between points [-3,-3] and [2, 2] which is
@@ -97,10 +86,8 @@ public class DunnIndexTest {
          * the same
          */
         Dataset<? extends Instance> x = DatasetTools.shuffle(cluster);
-        dist = test.maxIntraClusterDistance(x);
-        System.out.println("shuffeled: " + x.toString());
-
-//        assertEquals(Math.sqrt(50), dist, 0.0001);
+        dist = subject.maxIntraClusterDistance(x);
+        assertEquals(Math.sqrt(50), dist, 0.0001);
     }
 
     /**
@@ -108,5 +95,10 @@ public class DunnIndexTest {
      */
     @Test
     public void testCompareScore() {
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 }
