@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
-import Jama.*;
+import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
 
 /**
  *
@@ -26,7 +28,7 @@ public class SpectralBisection implements Bisection {
     public ArrayList<LinkedList<Node>> bisect(Graph g) {
         this.g = g;
         Matrix laplacianMatrix = buildLaplacianMatrix();
-        // laplacianMatrix.eig().getV().print(5, 2);
+        //laplacianMatrix.eig().getV().print(5, 2);
         return createClusters(laplacianMatrix.eig().getV());
     }
 
@@ -46,7 +48,7 @@ public class SpectralBisection implements Bisection {
                 }
             }
         }
-        return new Matrix(matrixArray);
+        return new JMatrix(matrixArray);
     }
 
     @Override
@@ -102,13 +104,12 @@ public class SpectralBisection implements Bisection {
     }
 
     private double findMedian(Matrix eigenVectors) {
-        Matrix n = eigenVectors.getMatrix(0, eigenVectors.getRowDimension() - 1, 1, 1);
+        Matrix n = eigenVectors.getMatrix(0, eigenVectors.rowsCount() - 1, 1, 1);
         double fiedlerVector[] = n.getColumnPackedCopy();
         Arrays.sort(fiedlerVector);
-        System.out.println(eigenVectors.getRowDimension() + " " + fiedlerVector.length);
         min = fiedlerVector[0];
-        max = fiedlerVector[eigenVectors.getRowDimension() - 1];
-        return fiedlerVector[eigenVectors.getRowDimension() / 2];
+        max = fiedlerVector[eigenVectors.rowsCount() - 1];
+        return fiedlerVector[eigenVectors.rowsCount() / 2];
     }
 
     @Override
