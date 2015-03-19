@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class NMI extends AbstractExternalEval implements ClusterEvaluation {
+public class NMIbase extends AbstractExternalEval implements ClusterEvaluation {
 
     private static final long serialVersionUID = -480979241137671097L;
     private static final String name = "NMI";

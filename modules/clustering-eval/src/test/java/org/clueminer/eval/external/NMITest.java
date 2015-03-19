@@ -26,7 +26,7 @@ public class NMITest extends ExternalTest {
     public NMITest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-        subject = new NMI();
+        subject = new NMIbase();
     }
 
     /**
