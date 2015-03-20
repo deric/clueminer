@@ -8,28 +8,19 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Normalized Mutual Information
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ExternalEvaluator.class)
-public class NMIbase extends AbstractExternalEval implements ClusterEvaluation {
+public abstract class NMIbase extends AbstractExternalEval implements ClusterEvaluation {
 
     private static final long serialVersionUID = -480979241137671097L;
-    private static final String name = "NMI";
-
-    @Override
-    public String getName() {
-        return name;
-    }
 
     /**
      *
@@ -115,6 +106,9 @@ public class NMIbase extends AbstractExternalEval implements ClusterEvaluation {
 
         return nmi;
     }
+
+    public abstract double countNMI(double mi, double ent1, double ent2);
+
 
     @Override
     public double score(Clustering clusters, Matrix proximity, Props params) {

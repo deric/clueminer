@@ -18,15 +18,15 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class NMITest extends ExternalTest {
+public class NMIsqrtTest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
 
-    public NMITest() throws FileNotFoundException, IOException {
+    public NMIsqrtTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-        subject = new NMIbase();
+        subject = new NMIsqrt();
     }
 
     /**

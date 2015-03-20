@@ -16,24 +16,27 @@
  */
 package org.clueminer.eval.external;
 
-import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-public class NMIsum extends NMIbase implements ClusterEvaluation {
+@ServiceProvider(service = ExternalEvaluator.class)
+public class NMIsqrt extends NMIbase {
 
-    private static final String name = "NMIsum";
+    private static final String name = "NMI";
 
     @Override
     public String getName() {
         return name;
     }
 
+
     @Override
     public double countNMI(double mutualInformation, double ent1, double ent2) {
-        return 2 * mutualInformation / (ent1 + ent2);
+        return mutualInformation / ((ent1 + ent2) / 2);
     }
 
 }
