@@ -11,67 +11,50 @@ import org.junit.Test;
  */
 public class AdjListGraphTest {
 
+	AdjListFactory factory = AdjListFactory.getInstance();
+	static AdjListGraph graph = new AdjListGraph();
+	static ArrayList<Node> nodes = new ArrayList<>();
+	static ArrayList<Edge> edges = new ArrayList<>();
+	static boolean initialized = false;
+
+	public AdjListGraphTest() {
+		if(initialized)
+			return;
+		initialized = true;
+		nodes.add(factory.newNode());
+		nodes.add(factory.newNode());
+		nodes.add(factory.newNode());
+
+		edges.add(factory.newEdge(nodes.get(0), nodes.get(1)));
+		edges.add(factory.newEdge(nodes.get(1), nodes.get(2)));
+	}
+
+	private void reset() {
+		graph.clear();
+		graph.addAllNodes(nodes);
+		graph.addAllEdges(edges);
+	}
+
 	@Test
 	public void removeNodeTest() {
 		System.out.println("Remove Node Test");
-		AdjListFactory factory = AdjListFactory.getInstance();
-		AdjListGraph graph = new AdjListGraph();
-
-		ArrayList<Node> nodes = new ArrayList<>();
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		graph.addAllNodes(nodes);
-
-		ArrayList<Edge> edges = new ArrayList<>();
-		edges.add(factory.newEdge(nodes.get(0), nodes.get(1)));
-		edges.add(factory.newEdge(nodes.get(1), nodes.get(2)));
-		graph.addAllEdges(edges);
-
+		reset();
 		graph.removeNode(nodes.get(0));
-
 		graph.print();
 	}
 
 	@Test
 	public void removeEdgeTest() {
 		System.out.println("Remove Edge Test");
-		AdjListFactory factory = AdjListFactory.getInstance();
-		AdjListGraph graph = new AdjListGraph();
-
-		ArrayList<Node> nodes = new ArrayList<>();
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		graph.addAllNodes(nodes);
-
-		ArrayList<Edge> edges = new ArrayList<>();
-		edges.add(factory.newEdge(nodes.get(0), nodes.get(1)));
-		edges.add(factory.newEdge(nodes.get(1), nodes.get(2)));
-		graph.addAllEdges(edges);
-
+		reset();
 		graph.removeEdge(edges.get(0));
-
 		graph.print();
 	}
 
 	@Test
 	public void buildGraphTest() {
 		System.out.println("Build Graph Test");
-		AdjListFactory factory = AdjListFactory.getInstance();
-		AdjListGraph graph = new AdjListGraph();
-
-		ArrayList<Node> nodes = new ArrayList<>();
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		nodes.add(factory.newNode());
-		graph.addAllNodes(nodes);
-
-		ArrayList<Edge> edges = new ArrayList<>();
-		edges.add(factory.newEdge(nodes.get(0), nodes.get(1)));
-		edges.add(factory.newEdge(nodes.get(1), nodes.get(2)));
-		graph.addAllEdges(edges);
-
+		reset();
 		graph.print();
 	}
 }
