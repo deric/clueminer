@@ -239,9 +239,8 @@ public class FiducciaMattheyses implements Bisection {
         return clusters;
     }
 
+    //Prepares algorithm for the next iteration
     private void reset() {
-        swapHistory = new Vertex[nodeCount];
-        swapHistoryCost = new int[nodeCount];
         for (Vertex vertex : vertexes) {
             vertex.used = false;
         }
@@ -252,23 +251,13 @@ public class FiducciaMattheyses implements Bisection {
         initialize(g);
         createIntitalPartition();
         int counter = 0;
-        int indexCounter = 0;
-        int lastIndex = -1;
-        //Repeat until no better swap can be done or until same number of nodes is swapped at least three times. Overall maximum is 20 executions.
+        //Repeat until no better swap can be done
         while (counter < 20) {
             counter++;
             int index = minimizeCosts();
+            reset();
             if (index == -1) {
                 break;
-            }
-            if (index == lastIndex) {
-                indexCounter++;
-                if (indexCounter >= 3) {
-                    break;
-                }
-            } else {
-                lastIndex = index;
-                indexCounter = 1;
             }
         }
         return createNodeClusters();
