@@ -15,8 +15,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
-import org.clueminer.partitioning.impl.SpectralBisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -27,50 +27,68 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class Chameleon extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
+    public static class Builder {
+
+        private int k = -1;
+        private int maxPartitionSize = -1;
+        private MergingStrategy mergeStrategy = MergingStrategy.PAIR;
+        private DistanceMeasure distanceMeasure = new EuclideanDistance();
+
+        public Chameleon build() {
+            Chameleon ch = new Chameleon();
+            ch.k = k;
+            ch.maxPartitionSize = maxPartitionSize;
+            ch.mergeStrategy = mergeStrategy;
+            ch.distanceMeasure = distanceMeasure;
+            return ch;
+        }
+
+        public Builder k(int value) {
+            if (value < 1) {
+                throw new IllegalArgumentException("k has to be greater than 0 in order to assign at least one neighbor.");
+            }
+            k = value;
+            return this;
+        }
+
+        public Builder maxPartitionSize(int value) {
+            if (value < 1) {
+                throw new IllegalArgumentException("Partition size has to be greater than 0.");
+            }
+            maxPartitionSize = value;
+            return this;
+        }
+
+        public Builder mergeStrategy(MergingStrategy value) {
+            mergeStrategy = value;
+            return this;
+        }
+
+        public Builder distanceMeasure(DistanceMeasure value) {
+            distanceMeasure = value;
+            return this;
+        }
+    }
+
     /**
      * Number of neighbors for each node in k-NN algorithm
      */
-    int k;
+    private int k;
 
     /**
      * Whether the partitioning algorithm should consider edge weights
      */
-    boolean weightedPartitioning;
+    private boolean weightedPartitioning;
 
     /**
      * Maximum number of nodes in each partition after the execution of the
      * partitioning algorithm
      */
-    int maxPartitionSize;
+    private int maxPartitionSize;
 
-    DistanceMeasure distanceMeasure;
+    private DistanceMeasure distanceMeasure;
 
-    MergingStrategy mergeStrategy;
-
-    public Chameleon() {
-        this(-1, -1, true, MergingStrategy.PAIR);
-    }
-
-    public Chameleon(int k) {
-        this(k, -1, true, MergingStrategy.PAIR);
-    }
-
-    public Chameleon(int k, int maxPartitionSize) {
-        this(k, maxPartitionSize, true, MergingStrategy.PAIR);
-    }
-
-    public Chameleon(int k, int maxPartitionSize, boolean weightedPartitioning) {
-        this(k, maxPartitionSize, weightedPartitioning, MergingStrategy.PAIR);
-    }
-
-    public Chameleon(int k, int maxPartitionSize, boolean weightedPartitioning, MergingStrategy mergeStrategy) {
-        //checks??
-        this.k = k;
-        this.maxPartitionSize = maxPartitionSize;
-        this.weightedPartitioning = weightedPartitioning;
-        this.mergeStrategy = mergeStrategy;
-        distanceMeasure = new EuclideanDistance();
-    }
+    private MergingStrategy mergeStrategy;
 
     @Override
     public DistanceMeasure getDistanceFunction() {
