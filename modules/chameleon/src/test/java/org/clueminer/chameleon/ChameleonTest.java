@@ -18,7 +18,7 @@ public class ChameleonTest {
 
     @Test
     public void treeTest() {
-        Chameleon ch = new Chameleon(40, 10, true, MergingStrategy.PAIR);
+        Chameleon ch = new Chameleon.Builder().k(5).maxPartitionSize(5).build();
         ch.hierarchy(FakeDatasets.irisDataset(), null);
     }
 

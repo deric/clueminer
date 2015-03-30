@@ -31,14 +31,12 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
         private int k = -1;
         private int maxPartitionSize = -1;
-        private MergingStrategy mergeStrategy = MergingStrategy.PAIR;
         private DistanceMeasure distanceMeasure = new EuclideanDistance();
 
         public Chameleon build() {
             Chameleon ch = new Chameleon();
             ch.k = k;
             ch.maxPartitionSize = maxPartitionSize;
-            ch.mergeStrategy = mergeStrategy;
             ch.distanceMeasure = distanceMeasure;
             return ch;
         }
@@ -59,11 +57,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             return this;
         }
 
-        public Builder mergeStrategy(MergingStrategy value) {
-            mergeStrategy = value;
-            return this;
-        }
-
         public Builder distanceMeasure(DistanceMeasure value) {
             distanceMeasure = value;
             return this;
@@ -76,19 +69,12 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     private int k;
 
     /**
-     * Whether the partitioning algorithm should consider edge weights
-     */
-    private boolean weightedPartitioning;
-
-    /**
      * Maximum number of nodes in each partition after the execution of the
      * partitioning algorithm
      */
     private int maxPartitionSize;
 
     private DistanceMeasure distanceMeasure;
-
-    private MergingStrategy mergeStrategy;
 
     @Override
     public DistanceMeasure getDistanceFunction() {
@@ -120,18 +106,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         RecursiveBisection rb = new RecursiveBisection();
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
-        Merger m;
-
-        switch (mergeStrategy) {
-            case MULTIPLE:
-                m = new MultipleMerger(g);
-                break;
-            case PAIR:
-                m = new PairMerger(g);
-                break;
-            default:
-                m = new MultipleMerger(g);
-        }
+        Merger m = new PairMerger(g);
 
         //Number of merges will be decided from hierarchical result
         m.merge(partitioningResult, 10);

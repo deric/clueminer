@@ -20,22 +20,14 @@ public class RecursiveBisection implements Partitioning {
     ArrayList<LinkedList<Node>> clusters;
     Bisection bisection;
 
-    /**
-     * whether the algorithm uses edge weights
-     */
-    boolean weightedEdges;
-
     public RecursiveBisection() {
-        this(new SpectralBisection());
+        this(new FiducciaMattheyses());
     }
 
     public RecursiveBisection(Bisection bisection) {
         this.bisection = bisection;
     }
 
-//    public RecursiveBisection(boolean weightedEdges) {
-//        this.weightedEdges = weightedEdges;
-//    }
     @Override
     public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
         maxNodesInCluster = max;
