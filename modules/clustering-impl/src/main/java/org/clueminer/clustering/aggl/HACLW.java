@@ -66,8 +66,6 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
-        //System.out.println("assiga: " + assignments.entrySet().toString());
-        //print(mergedId + 1, similarityMatrix, cache);
     }
 
     /**

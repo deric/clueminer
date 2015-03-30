@@ -1,7 +1,7 @@
 package org.clueminer.explorer;
 
-import org.clueminer.eval.external.NMI;
 import org.clueminer.eval.Silhouette;
+import org.clueminer.eval.external.NMIsum;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.openide.nodes.Node;
  */
 public class ClustComparatorTest {
 
-    private final ClustComparator subject = new ClustComparator(new NMI());
+    private final ClustComparator subject = new ClustComparator(new NMIsum());
 
     @Test
     public void testCompare() {
