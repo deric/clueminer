@@ -15,6 +15,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
@@ -32,12 +33,14 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         private int k = -1;
         private int maxPartitionSize = -1;
         private DistanceMeasure distanceMeasure = new EuclideanDistance();
+        private Bisection bisection = new FiducciaMattheyses();
 
         public Chameleon build() {
             Chameleon ch = new Chameleon();
             ch.k = k;
             ch.maxPartitionSize = maxPartitionSize;
             ch.distanceMeasure = distanceMeasure;
+            ch.bisection = bisection;
             return ch;
         }
 
@@ -61,6 +64,11 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             distanceMeasure = value;
             return this;
         }
+
+        public Builder bisection(Bisection value) {
+            bisection = value;
+            return this;
+        }
     }
 
     /**
@@ -73,6 +81,11 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
      * partitioning algorithm
      */
     private int maxPartitionSize;
+
+    /**
+     * Bisection algorithm used in partitioning and merging
+     */
+    private Bisection bisection;
 
     private DistanceMeasure distanceMeasure;
 
@@ -103,10 +116,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-        RecursiveBisection rb = new RecursiveBisection();
+        RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
-        Merger m = new PairMerger(g);
+        Merger m = new PairMerger(g, bisection);
 
         //Number of merges will be decided from hierarchical result
         m.merge(partitioningResult, 10);
@@ -132,10 +145,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
 
-        RecursiveBisection rb = new RecursiveBisection();
+        RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
 
-        PairMerger m = new PairMerger(g, new SpectralBisection());
+        PairMerger m = new PairMerger(g, bisection);
 
         return m.getHierarchy(partitioningResult, dataset);
     }
