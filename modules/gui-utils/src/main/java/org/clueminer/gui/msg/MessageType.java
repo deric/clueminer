@@ -26,7 +26,7 @@ public enum MessageType {
         if (resourceName == null) {
             icon = new ImageIcon();
         } else {
-            icon = ImageUtilities.loadImageIcon(resourceName, false);
+            icon = ImageUtilities.loadImageIcon("org/clueminer/gui/utils/msg/" + resourceName, false);
         }
     }
 
