@@ -34,6 +34,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         private int maxPartitionSize = -1;
         private DistanceMeasure distanceMeasure = new EuclideanDistance();
         private Bisection bisection = new FiducciaMattheyses();
+        private double closenessPriority = 1;
 
         public Chameleon build() {
             Chameleon ch = new Chameleon();
@@ -41,51 +42,89 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             ch.maxPartitionSize = maxPartitionSize;
             ch.distanceMeasure = distanceMeasure;
             ch.bisection = bisection;
+            ch.closenessPriority = closenessPriority;
             return ch;
         }
 
-        public Builder k(int value) {
-            if (value < 1) {
+        /**
+         *
+         * @param k Number of neighbors to create in k-NN graph representing the
+         * input data.
+         * @return
+         */
+        public Builder k(int k) {
+            if (k < 1) {
                 throw new IllegalArgumentException("k has to be greater than 0 in order to assign at least one neighbor.");
             }
-            k = value;
+            this.k = k;
             return this;
         }
 
-        public Builder maxPartitionSize(int value) {
-            if (value < 1) {
+        /**
+         *
+         * @param maxPartitionSize Maximum number of nodes in each partition
+         * after the execution of the partitioning algorithm.
+         * @return
+         */
+        public Builder maxPartitionSize(int maxPartitionSize) {
+            if (maxPartitionSize < 1) {
                 throw new IllegalArgumentException("Partition size has to be greater than 0.");
             }
-            maxPartitionSize = value;
+            this.maxPartitionSize = maxPartitionSize;
             return this;
         }
 
-        public Builder distanceMeasure(DistanceMeasure value) {
-            distanceMeasure = value;
+        /**
+         *
+         * @param bisection Bisection algorithm used in partitioning and
+         * merging.
+         * @return
+         */
+        public Builder bisection(Bisection bisection) {
+            this.bisection = bisection;
             return this;
         }
 
-        public Builder bisection(Bisection value) {
-            bisection = value;
+        /**
+         *
+         * @param closenessPriority If bigger than 1, algorithm gives a higher
+         * importance to the relative closeness of clusters during merging,
+         * otherwise, if lesser than 1, to interconnectivity.
+         * @return
+         */
+        public Builder closenessPriority(double closenessPriority) {
+            this.closenessPriority = closenessPriority;
+            return this;
+        }
+
+        public Builder distanceMeasure(DistanceMeasure dm) {
+            distanceMeasure = dm;
             return this;
         }
     }
 
     /**
-     * Number of neighbors for each node in k-NN algorithm
+     * Number of neighbors for each node in k-NN algorithm.
      */
     private int k;
 
     /**
      * Maximum number of nodes in each partition after the execution of the
-     * partitioning algorithm
+     * partitioning algorithm.
      */
     private int maxPartitionSize;
 
     /**
-     * Bisection algorithm used in partitioning and merging
+     * Bisection algorithm used in partitioning and merging.
      */
     private Bisection bisection;
+
+    /**
+     * If bigger than 1, algorithm gives a higher importance to the relative
+     * closeness of clusters during merging, otherwise, if lesser than 1, to
+     * interconnectivity.
+     */
+    private double closenessPriority;
 
     private DistanceMeasure distanceMeasure;
 
@@ -119,7 +158,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
-        Merger m = new PairMerger(g, bisection);
+        Merger m = new PairMerger(g, bisection, closenessPriority);
 
         //Number of merges will be decided from hierarchical result
         m.merge(partitioningResult, 10);
@@ -148,7 +187,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
 
-        PairMerger m = new PairMerger(g, bisection);
+        PairMerger m = new PairMerger(g, bisection, closenessPriority);
 
         return m.getHierarchy(partitioningResult, dataset);
     }

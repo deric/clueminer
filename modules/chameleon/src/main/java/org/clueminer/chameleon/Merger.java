@@ -35,6 +35,12 @@ public abstract class Merger {
     int clusterCount;
 
     /**
+     * If bigger than 1, algorithm gives a higher importance to the relative
+     * closeness, otherwise, if lesser than 1, to interconnectivity.
+     */
+    double closenessPriority;
+
+    /**
      * Clusters to merge.
      */
     ArrayList<Cluster> clusters;
@@ -49,8 +55,13 @@ public abstract class Merger {
     }
 
     public Merger(Graph g, Bisection bisection) {
+        this(g, bisection, 1);
+    }
+
+    public Merger(Graph g, Bisection bisection, double closenessPriority) {
         this.graph = g;
         this.bisection = bisection;
+        this.closenessPriority = closenessPriority;
     }
 
     /**
@@ -198,7 +209,7 @@ public abstract class Merger {
         double nc1 = clusters.get(i).graph.getNodeCount();
         double nc2 = clusters.get(j).graph.getNodeCount();
         double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).ICL + (nc2 / (nc1 + nc2)) * clusters.get(j).ICL);
-        return RCL * RIC;
+        return RIC * Math.pow(RCL, closenessPriority);
     }
 
     protected Matrix createMatrix() {

@@ -41,6 +41,10 @@ public class PairMerger extends Merger {
         super(g, bisection);
     }
 
+    public PairMerger(Graph g, Bisection bisection, double closenessPriority) {
+        super(g, bisection, closenessPriority);
+    }
+
     @Override
     ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
         createClusters(clusterList, bisection);

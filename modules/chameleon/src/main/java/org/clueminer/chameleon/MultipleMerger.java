@@ -22,6 +22,10 @@ public class MultipleMerger extends Merger {
         super(g, bisection);
     }
 
+    public MultipleMerger(Graph g, Bisection bisection, double closenessPriority) {
+        super(g, bisection, closenessPriority);
+    }
+
     @Override
     public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
         ArrayList<LinkedList<Node>> result = clusterList;
