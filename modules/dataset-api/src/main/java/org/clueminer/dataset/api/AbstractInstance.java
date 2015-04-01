@@ -74,9 +74,9 @@ public abstract class AbstractInstance<E extends Number> implements Instance<E>,
 
     @Override
     public final void setClassValue(Object obj) {
-        if (parent != null) {
+        if (getParent() != null) {
             //notify parent
-            parent.changedClass(classValue, obj, this);
+            getParent().changedClass(classValue, obj, this);
         }
         this.classValue = obj;
     }
