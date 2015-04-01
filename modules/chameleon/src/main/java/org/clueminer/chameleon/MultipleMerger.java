@@ -14,16 +14,8 @@ import org.clueminer.partitioning.api.Bisection;
  */
 public class MultipleMerger extends Merger {
 
-    public MultipleMerger(Graph g) {
-        super(g);
-    }
-
-    public MultipleMerger(Graph g, Bisection bisection) {
-        super(g, bisection);
-    }
-
-    public MultipleMerger(Graph g, Bisection bisection, double closenessPriority) {
-        super(g, bisection, closenessPriority);
+    public MultipleMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
+        super(g, bisection, closenessPriority, similarityMeasure);
     }
 
     @Override

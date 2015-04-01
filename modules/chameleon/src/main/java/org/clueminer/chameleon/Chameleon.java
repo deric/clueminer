@@ -35,6 +35,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         private DistanceMeasure distanceMeasure = new EuclideanDistance();
         private Bisection bisection = new FiducciaMattheyses();
         private double closenessPriority = 1;
+        private SimilarityMeasure similarityMeasure = SimilarityMeasure.IMPROVED;
 
         public Chameleon build() {
             Chameleon ch = new Chameleon();
@@ -43,6 +44,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             ch.distanceMeasure = distanceMeasure;
             ch.bisection = bisection;
             ch.closenessPriority = closenessPriority;
+            ch.similarityMeasure = similarityMeasure;
             return ch;
         }
 
@@ -97,6 +99,17 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             return this;
         }
 
+        /**
+         *
+         * @param similarityMeasure Similarity function used to compute
+         * similarity between two clusters during merging.
+         * @return
+         */
+        public Builder similarityMeasure(SimilarityMeasure similarityMeasure) {
+            this.similarityMeasure = similarityMeasure;
+            return this;
+        }
+
         public Builder distanceMeasure(DistanceMeasure dm) {
             distanceMeasure = dm;
             return this;
@@ -125,6 +138,12 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
      * interconnectivity.
      */
     private double closenessPriority;
+
+    /**
+     * Similarity function used to compute similarity between two clusters
+     * during merging.
+     */
+    private SimilarityMeasure similarityMeasure;
 
     private DistanceMeasure distanceMeasure;
 
@@ -158,7 +177,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
 
-        Merger m = new PairMerger(g, bisection, closenessPriority);
+        Merger m = new PairMerger(g, bisection, closenessPriority, similarityMeasure);
 
         //Number of merges will be decided from hierarchical result
         m.merge(partitioningResult, 10);
@@ -187,7 +206,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
 
-        PairMerger m = new PairMerger(g, bisection, closenessPriority);
+        PairMerger m = new PairMerger(g, bisection, closenessPriority, similarityMeasure);
 
         return m.getHierarchy(partitioningResult, dataset);
     }

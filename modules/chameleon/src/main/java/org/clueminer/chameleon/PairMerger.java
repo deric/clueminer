@@ -33,16 +33,8 @@ public class PairMerger extends Merger {
 
     double height;
 
-    public PairMerger(Graph g) {
-        super(g);
-    }
-
-    public PairMerger(Graph g, Bisection bisection) {
-        super(g, bisection);
-    }
-
-    public PairMerger(Graph g, Bisection bisection, double closenessPriority) {
-        super(g, bisection, closenessPriority);
+    public PairMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
+        super(g, bisection, closenessPriority, similarityMeasure);
     }
 
     @Override
@@ -147,8 +139,7 @@ public class PairMerger extends Merger {
         mergedNodes.addAll(nodes1);
         mergedNodes.addAll(nodes2);
         addIntoTree(clusterIndex1, clusterIndex2);
-        clusters.set(clusterIndex1, new Cluster(mergedNodes, graph, idCounter++));
-        clusters.get(clusterIndex1).computeProperties(bisection);
+        clusters.set(clusterIndex1, new Cluster(mergedNodes, graph, idCounter++, bisection));
         clusters.remove(clusterIndex2);
     }
 

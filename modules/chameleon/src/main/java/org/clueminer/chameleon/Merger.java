@@ -9,7 +9,6 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.partitioning.api.Bisection;
-import org.clueminer.partitioning.impl.SpectralBisection;
 
 /**
  *
@@ -45,23 +44,18 @@ public abstract class Merger {
      */
     ArrayList<Cluster> clusters;
 
+    SimilarityMeasure similarityMeasure;
+
     /**
      * Matrix containing external properties of every 2 clusters.
      */
     ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
-    public Merger(Graph g) {
-        this(g, new SpectralBisection());
-    }
-
-    public Merger(Graph g, Bisection bisection) {
-        this(g, bisection, 1);
-    }
-
-    public Merger(Graph g, Bisection bisection, double closenessPriority) {
+    public Merger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
         this.graph = g;
         this.bisection = bisection;
         this.closenessPriority = closenessPriority;
+        this.similarityMeasure = similarityMeasure;
     }
 
     /**
@@ -73,8 +67,7 @@ public abstract class Merger {
         clusters = new ArrayList<>();
         int i = 0;
         for (LinkedList<Node> cluster : clusterList) {
-            clusters.add(new Cluster(cluster, graph, i));
-            clusters.get(i).computeProperties(bisection);
+            clusters.add(new Cluster(cluster, graph, i, bisection));
             i++;
         }
         assignNodesToClusters(clusterList);
@@ -193,7 +186,8 @@ public abstract class Merger {
     abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount);
 
     /**
-     * Computes relative interconnectivity and closeness and returns their sum
+     * Computes relative interconnectivity and closeness and returns their
+     * product
      *
      * @param i index of the first cluster
      * @param j index of the second cluster
@@ -205,10 +199,43 @@ public abstract class Merger {
             i = j;
             j = temp;
         }
-        double RIC = clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).IIC + clusters.get(j).IIC) / 2);
+        if (similarityMeasure == SimilarityMeasure.IMPROVED) {
+            return improvedSimilarity(i, j);
+        } else if (similarityMeasure == SimilarityMeasure.STANDARD) {
+            return chameleonSimilarity(i, j);
+        } else {
+            throw new RuntimeException("Unknown similarity measure");
+        }
+    }
+
+    //Improved similarity scheme which handles noise much better and usually provides better results
+    protected double improvedSimilarity(int i, int j) {
+
+        double ec1 = clusters.get(i).graph.getEdgeCount();
+        double ec2 = clusters.get(j).graph.getEdgeCount();
+
+        if (ec1 == 0 || ec2 == 0) {
+            return clusterMatrix.get(i).get(j).ECL * 40;
+        }
+
+        double val = (clusterMatrix.get(i).get(j).counter / (min(ec1, ec2)))
+                * Math.pow((clusterMatrix.get(i).get(j).ECL / ((clusters.get(i).getACL() * ec1) / (ec1 + ec2) + (clusters.get(j).getACL() * ec2) / (ec1 + ec2))), closenessPriority)
+                * Math.pow((min(clusters.get(i).getACL(), clusters.get(j).getACL()) / max(clusters.get(i).getACL(), clusters.get(j).getACL())), 1);
+
+        return val;
+    }
+
+    //Standard way to compute cluster similarity via relative interconnectivity and closeness
+    protected double chameleonSimilarity(int i, int j) {
+        double RIC = clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).getIIC() + clusters.get(j).getIIC()) / 2);
         double nc1 = clusters.get(i).graph.getNodeCount();
         double nc2 = clusters.get(j).graph.getNodeCount();
-        double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).ICL + (nc2 / (nc1 + nc2)) * clusters.get(j).ICL);
+        double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
+
+        if (nc1 == 1 || nc2 == 1) {
+            return RCL * RIC * 40;
+        }
+
         return RIC * Math.pow(RCL, closenessPriority);
     }
 
@@ -224,5 +251,19 @@ public abstract class Merger {
         }
 
         return m;
+    }
+
+    private double min(double a, double b) {
+        if (a < b) {
+            return a;
+        }
+        return b;
+    }
+
+    private double max(double a, double b) {
+        if (a > b) {
+            return a;
+        }
+        return b;
     }
 }

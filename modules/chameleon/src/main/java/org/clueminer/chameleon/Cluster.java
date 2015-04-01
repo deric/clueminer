@@ -3,6 +3,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -21,12 +22,19 @@ public class Cluster {
     /**
      * Internal interconnectivity of the cluster (sum of cut edges)
      */
-    double IIC;
+    private double IIC = -1;
 
     /**
      * Internal closeness of the cluster (average of cut edges)
      */
-    double ICL;
+    private double ICL = -1;
+
+    /**
+     * Average closeness of the cluster (average of all edges)
+     */
+    private double ACL = -1;
+
+    private Bisection bisection;
 
     /**
      * Bisected halves of the cluster
@@ -39,14 +47,16 @@ public class Cluster {
 
     public int id;
 
-    public Cluster(LinkedList<Node> n, Graph g, int index) {
+    public Cluster(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
         buildGraphFromCluster(n, g);
         this.id = index;
+        this.bisection = bisection;
     }
 
-    public Cluster(Graph g, int index) {
+    public Cluster(Graph g, int index, Bisection bisection) {
         graph = g;
         this.id = index;
+        this.bisection = bisection;
     }
 
     /**
@@ -54,7 +64,7 @@ public class Cluster {
      *
      * @param bisection Bisection algorithm
      */
-    public void computeProperties(Bisection bisection) {
+    private void computeBisectionProperties() {
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
             ICL = IIC = 1;
@@ -72,6 +82,21 @@ public class Cluster {
             }
         }
         ICL = IIC / counter;
+    }
+
+    /**
+     * Computes average weight of all edges in the graph
+     */
+    private void computeAverageCloseness() {
+        double sum = 0;
+        if (graph.getEdgeCount() == 0) {
+            ACL = 0;
+            return;
+        }
+        for (Edge e : graph.getEdges().toCollection()) {
+            sum += e.getWeight();
+        }
+        ACL = sum / graph.getEdgeCount();
     }
 
     /**
@@ -97,12 +122,37 @@ public class Cluster {
         return graph;
     }
 
+    /**
+     *
+     * @return Internal interconnectivity computed by bisection
+     */
     public double getIIC() {
+        if (IIC == -1) {
+            computeBisectionProperties();
+        }
         return IIC;
     }
 
+    /**
+     *
+     * @return Internal closeness computed by bisection
+     */
     public double getICL() {
+        if (ICL == -1) {
+            computeBisectionProperties();
+        }
         return ICL;
+    }
+
+    /**
+     *
+     * @return Average internal closeness
+     */
+    public double getACL() {
+        if (ACL == -1) {
+            computeAverageCloseness();
+        }
+        return ACL;
     }
 
 }
