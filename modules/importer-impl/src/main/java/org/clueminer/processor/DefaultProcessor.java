@@ -24,6 +24,7 @@ import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.types.TimePoint;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -175,6 +176,13 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             i++;
         }
         logger.log(Level.INFO, "loaded {0} instances", i);
+        if (dataset.getName() == null) {
+            FileObject f = container.getFile();
+            if (f != null && f.getName() != null) {
+                dataset.setName(f.getName());
+            }
+
+        }
         container.setDataset(dataset);
         //import finished - clean preloaded data
         container.reset();

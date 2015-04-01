@@ -8,15 +8,14 @@ import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.importer.impl.ArffImporter;
 import org.clueminer.importer.impl.ImportContainerImpl;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,14 +28,6 @@ public class DefaultProcessorTest {
     private static final CommonFixture fixtures = new CommonFixture();
 
     public DefaultProcessorTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -94,6 +85,36 @@ public class DefaultProcessorTest {
         Dataset<? extends Instance> dataset = loader.getDataset();
         assertEquals(18, dataset.attributeCount());
         assertEquals(846, dataset.size());
+        //there are 4 classes in the dataset
+        assertNotNull(loader.getDataset());
+        //assertEquals(4, loader.getDataset().getClasses().size());
+    }
+
+    @Test
+    public void testTimeSeries() throws IOException {
+        TimeseriesFixture tf = new TimeseriesFixture();
+        File tsFile = tf.ap01();
+        Container container = new ImportContainerImpl();
+        arff.execute(container, tsFile);
+        BufferedInputStream stream = new BufferedInputStream(new FileInputStream(tsFile.getAbsolutePath()));
+        Reader reader = ImportUtils.getTextReader(stream);
+        //run import
+        arff.execute(container, reader);
+        ContainerLoader loader = container.getLoader();
+        DefaultProcessor subject = new DefaultProcessor();
+
+        subject.setContainer(loader);
+        //convert preloaded data to a real dataset
+        subject.run();
+
+        //name of relation from ARFF
+        Dataset<? extends Instance> dataset = loader.getDataset();
+        //assertEquals("AP01", dataset.getName());
+        /**
+         * TODO: fix creating attributes
+         */
+        //assertEquals(16, dataset.attributeCount());
+        //assertEquals(48, dataset.size());
         //there are 4 classes in the dataset
         assertNotNull(loader.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
