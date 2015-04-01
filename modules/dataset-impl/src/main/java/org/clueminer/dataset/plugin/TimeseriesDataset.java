@@ -200,13 +200,14 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         int i = 0;
         for (TimePointAttribute timep : tps) {
             i++;
-            timep.setDataset(this);
             if (timep == null) {
-                for (TimePointAttribute tdp : tps) {
-                    System.out.println("time point:" + tdp);
+                //debuging output
+                for (int j = 0; j < tps.length; j++) {
+                    System.out.println("time point[" + j + "]: " + tps[j]);
                 }
                 throw new RuntimeException(i + "th is null!!!");
             }
+            timep.setDataset(this);
         }
     }
 
