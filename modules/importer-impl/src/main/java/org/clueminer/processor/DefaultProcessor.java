@@ -2,16 +2,13 @@ package org.clueminer.processor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
-import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.Attribute;
-import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
@@ -22,11 +19,9 @@ import org.clueminer.importer.impl.DatasetType;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
-import org.clueminer.project.api.ProjectController;
 import org.clueminer.types.TimePoint;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,25 +40,12 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         return NbBundle.getMessage(DefaultProcessor.class, "DefaultProcessor.displayName");
     }
 
-    @Override
-    public void process() {
-        logger.log(Level.INFO, "importing dataset");
-        //Workspace
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (workspace == null) {
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
-        }
-        if (container.getSource() != null) {
-            pc.setSource(workspace, container.getSource());
-        }
-        run();
-    }
-
     /**
      * Method which can be run during tests without workspace
      */
+    @Override
     protected void run() {
+        logger.log(Level.INFO, "importing dataset");
         //basic numeric dataset
 
         DatasetType dataType = DatasetType.valueOf(container.getDataType().toUpperCase());
@@ -112,7 +94,8 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             for (int i = 0; i < tp.length; i++) {
                 attrd = inputAttr.get(i);
                 try {
-                    double pos = Double.valueOf(attrd.getName());
+                    String name = attrd.getName();
+                    double pos = Double.valueOf(name);
                     tp[i] = new TimePointAttribute(i, (long) pos, pos);
                     inputMap.put(attrd.getIndex(), i);
                 } catch (NumberFormatException e) {
@@ -187,36 +170,6 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         //import finished - clean preloaded data
         container.reset();
         container.resetAttributes();
-    }
-
-    private AttributeType getType(Object klass) {
-        BasicAttrType type = BasicAttrType.NUMERIC;
-        if (klass instanceof String) {
-            type = BasicAttrType.STRING;
-        }
-        return type;
-    }
-
-    /**
-     * Sort attributes by index (number of column)
-     */
-    private class AttributeComparator implements Comparator<AttributeDraft> {
-
-        @Override
-        public int compare(AttributeDraft attr1, AttributeDraft attr2) {
-
-            int id1 = attr1.getIndex();
-            int id2 = attr2.getIndex();
-
-            if (id1 > id2) {
-                return 1;
-            } else if (id1 < id2) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-
     }
 
 }
