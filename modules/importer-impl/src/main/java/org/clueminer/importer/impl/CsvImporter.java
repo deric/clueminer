@@ -246,7 +246,7 @@ public class CsvImporter extends AbstractImporter implements FileImporter, LongT
             }
             return true;
         }
-        logger.log(Level.WARNING, "column ''{0}'' can''t be parsed as a Java type", column);
+        logger.log(Level.INFO, "column ''{0}'' doesn't look like a type information", column);
         return false;
     }
 
