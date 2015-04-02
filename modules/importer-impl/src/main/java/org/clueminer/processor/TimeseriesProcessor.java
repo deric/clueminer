@@ -34,11 +34,14 @@ import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.types.TimePoint;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Time series data importer
  *
  * @author deric
  */
+@ServiceProvider(service = Processor.class)
 public class TimeseriesProcessor extends AbstractProcessor implements Processor {
 
     private static final Logger logger = Logger.getLogger(TimeseriesProcessor.class.getName());

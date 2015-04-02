@@ -10,7 +10,6 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.importer.impl.DatasetType;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -81,7 +80,6 @@ public abstract class AbstractProcessor implements Processor {
         logger.log(Level.INFO, "importing dataset");
         //basic numeric dataset
 
-        DatasetType dataType = DatasetType.valueOf(container.getDataType().toUpperCase());
         ArrayList<AttributeDraft> inputAttr = new ArrayList<>(container.getAttributeCount());
         //scan attributes
         int metaCnt = 0;

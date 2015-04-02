@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import org.clueminer.io.importer.api.Container;
 
 /**
- * * Define processor settings user interface. <p> Declared in the system as
+ * Define processor settings user interface. <p> Declared in the system as
  * services (i.e. singleton), the role of UI classes is to provide user
  * interface to configure processors and remember last used settings if needed.
  * User interface for processors are shown when the import report is closed and
