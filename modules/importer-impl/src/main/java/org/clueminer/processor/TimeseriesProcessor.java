@@ -19,7 +19,11 @@ package org.clueminer.processor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -39,6 +43,10 @@ public class TimeseriesProcessor extends AbstractProcessor implements Processor 
 
     private static final Logger logger = Logger.getLogger(TimeseriesProcessor.class.getName());
 
+    private static final Pattern number = Pattern.compile("^\\d+(\\.\\d+)?");
+    private static final Pattern numberWithPrefix = Pattern.compile("([a-z_ ]+)(\\d+(\\.\\d+)?)(\\w+)?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern numberSuffix = Pattern.compile("\\d+(\\.\\d+)?(\\w+)");
+
     @Override
     public String getDisplayName() {
         return NbBundle.getMessage(TimeseriesProcessor.class, "TimeseriesProcessor.displayName");
@@ -56,17 +64,45 @@ public class TimeseriesProcessor extends AbstractProcessor implements Processor 
 
         TimePoint tp[] = new TimePointAttribute[inputAttr.size()];
         AttributeDraft attrd;
+        Matcher nmatch;
+        int parsed = 0;
         for (int i = 0; i < tp.length; i++) {
             attrd = inputAttr.get(i);
-            try {
-                String name = attrd.getName();
-                double pos = Double.valueOf(name);
-                tp[i] = new TimePointAttribute(i, (long) pos, pos);
-                inputMap.put(attrd.getIndex(), i);
-            } catch (NumberFormatException e) {
-                NotifyUtil.warn("time attribute error", "failed to parse '" + attrd.getName() + "' as a number", true);
+            String name = attrd.getName();
+            String input = null;
+            if (number.matcher(name).matches()) {
+                //just number in the attribute name
+                input = name;
+            } else if ((nmatch = numberWithPrefix.matcher(name)).matches()) {
+                //attibute like time1, time2
+                input = nmatch.group(2);
+            } else if ((nmatch = numberSuffix.matcher(name)).matches()) {
+                input = nmatch.group(1);
+            } else {
+                //try to be smart, probably not a timeseries attribute
+                attrd.setMeta(true);
+                attrd.setRole(BasicAttrRole.META);
+                NotifyUtil.warn("time attribute error", "failed to parse '" + name + "' as a number", true);
+            }
+            if (input != null) {
+                try {
+                    double pos = Double.valueOf(input);
+                    tp[i] = new TimePointAttribute(i, (long) pos, pos);
+                    inputMap.put(attrd.getIndex(), i);
+                    parsed++;
+                } catch (NumberFormatException e) {
+                    logger.log(Level.WARNING, "failed to parse ''{0}'' as a number", name);
+                    NotifyUtil.warn("time attribute error", "failed to parse '"
+                            + name + "' as a number", true);
+                }
             }
         }
+        if (parsed < tp.length) {
+            TimePoint copy[] = new TimePointAttribute[parsed];
+            System.arraycopy(tp, 0, copy, 0, parsed);
+            tp = copy;
+        }
+
         ((Timeseries) dataset).setTimePoints(tp);
 
         return inputMap;

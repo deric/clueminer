@@ -24,11 +24,12 @@ import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.TimeseriesFixture;
-import org.clueminer.importer.impl.ArffImporter;
+import org.clueminer.importer.impl.CsvImporter;
 import org.clueminer.importer.impl.ImportContainerImpl;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ import org.junit.Test;
  */
 public class TimeseriesProcessorTest {
 
-    private final ArffImporter arff = new ArffImporter();
+    private final CsvImporter csv = new CsvImporter();
     private final TimeseriesProcessor subject;
 
     public TimeseriesProcessorTest() {
@@ -50,13 +51,12 @@ public class TimeseriesProcessorTest {
         TimeseriesFixture tf = new TimeseriesFixture();
         File tsFile = tf.ap01();
         Container container = new ImportContainerImpl();
-        arff.execute(container, tsFile);
+        csv.execute(container, tsFile);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(tsFile.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
-        arff.execute(container, reader);
+        csv.execute(container, reader);
         ContainerLoader loader = container.getLoader();
-
 
         subject.setContainer(loader);
         //convert preloaded data to a real dataset
@@ -68,8 +68,8 @@ public class TimeseriesProcessorTest {
         /**
          * TODO: fix creating attributes
          */
-        //assertEquals(16, dataset.attributeCount());
-        //assertEquals(48, dataset.size());
+        assertEquals(15, dataset.attributeCount());
+        assertEquals(1536, dataset.size());
         //there are 4 classes in the dataset
         assertNotNull(loader.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
