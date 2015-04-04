@@ -179,8 +179,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
         Merger m = new PairMerger(g, bisection, closenessPriority, similarityMeasure);
 
-        //Number of merges will be decided from hierarchical result
-        m.merge(partitioningResult, 10);
+        m.merge(partitioningResult);
 
         return null;
 

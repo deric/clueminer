@@ -37,7 +37,6 @@ public class PairMerger extends Merger {
         super(g, bisection, closenessPriority, similarityMeasure);
     }
 
-    @Override
     ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
@@ -45,6 +44,11 @@ public class PairMerger extends Merger {
             singleMerge(clusterList);
         }
         return getResult();
+    }
+
+    @Override
+    ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
+        return null;
     }
 
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset) {

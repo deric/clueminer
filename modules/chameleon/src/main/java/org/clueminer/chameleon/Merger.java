@@ -179,11 +179,10 @@ public abstract class Merger {
      * Merges clusters.
      *
      * @param clusterList List of clusters to merge
-     * @param mergeCount Number of merges to be done
      *
      * @return Lists of nodes in each cluster
      */
-    abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount);
+    abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList);
 
     /**
      * Computes relative interconnectivity and closeness and returns their
