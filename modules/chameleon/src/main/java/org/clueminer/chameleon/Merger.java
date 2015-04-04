@@ -226,16 +226,34 @@ public abstract class Merger {
 
     //Standard way to compute cluster similarity via relative interconnectivity and closeness
     protected double chameleonSimilarity(int i, int j) {
-        double RIC = clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).getIIC() + clusters.get(j).getIIC()) / 2);
-        double nc1 = clusters.get(i).graph.getNodeCount();
-        double nc2 = clusters.get(j).graph.getNodeCount();
-        double RCL = clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
-
-        if (nc1 == 1 || nc2 == 1) {
-            return RCL * RIC * 40;
+        double RIC = getRIC(i, j);
+        double RCL = getRCL(i, j);
+        //give higher similarity to pair of clusters where one cluster is formed by single item
+        if (clusters.get(i).graph.getNodeCount() == 1 || clusters.get(j).graph.getNodeCount() == 1) {
+            return RIC * Math.pow(RCL, closenessPriority) * 40;
         }
 
         return RIC * Math.pow(RCL, closenessPriority);
+    }
+
+    protected double getRIC(int i, int j) {
+        if (j > i) {
+            int temp = i;
+            i = j;
+            j = temp;
+        }
+        return clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).getIIC() + clusters.get(j).getIIC()) / 2);
+    }
+
+    protected double getRCL(int i, int j) {
+        if (j > i) {
+            int temp = i;
+            i = j;
+            j = temp;
+        }
+        double nc1 = clusters.get(i).graph.getNodeCount();
+        double nc2 = clusters.get(j).graph.getNodeCount();
+        return clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
     }
 
     protected Matrix createMatrix() {

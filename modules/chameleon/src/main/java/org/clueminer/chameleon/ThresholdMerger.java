@@ -7,21 +7,31 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
- * This class merges multiple clusters in one merge. Every cluster is merged
- * with the most similar one at each step.
+ * This class merges pairs of clusters exceeding given thresholds for relative
+ * interconnectivity and closeness. Merging stops when there is no pair of
+ * clusters exceeding the thresholds.
+ *
  *
  * @author Tomas Bruna
  */
-public class MultipleMerger extends Merger {
+public class ThresholdMerger extends Merger {
 
-    public MultipleMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
+    private final double RICThreshold;
+    private final double RCLThreshold;
+    private boolean merged;
+
+    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure, double RICThreshold, double RCLThreshold) {
         super(g, bisection, closenessPriority, similarityMeasure);
+        this.RICThreshold = RICThreshold;
+        this.RCLThreshold = RCLThreshold;
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
+    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
         ArrayList<LinkedList<Node>> result = clusterList;
-        for (int i = 0; i < mergeCount; i++) {
+        merged = true;
+        while (merged) {
+            merged = false;
             result = singleMerge(result);
         }
         return result;
@@ -33,19 +43,23 @@ public class MultipleMerger extends Merger {
         initiateClustersForMerging();
 
         for (int i = 0; i < clusterCount; i++) {
-            double max = Double.NEGATIVE_INFINITY;
-            int index = 0;
+            double maxRIC = Double.NEGATIVE_INFINITY;
+            int index = -1;
             for (int j = 0; j < clusterCount; j++) {
                 if (i == j) {
                     continue;
                 }
-                double value = computeSimilarity(i, j);
-                if (value > max) {
-                    max = value;
+                double RIC = getRIC(i, j);
+                double RCL = getRCL(i, j);
+                if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
+                    maxRIC = RIC;
                     index = j;
                 }
             }
-            mergeTwoClusters(clusters.get(i), clusters.get(index));
+            if (index != -1) {
+                merged = true;
+                mergeTwoClusters(clusters.get(i), clusters.get(index));
+            }
         }
         return getNewClusters();
     }
