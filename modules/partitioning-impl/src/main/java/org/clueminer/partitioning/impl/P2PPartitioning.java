@@ -33,7 +33,6 @@ public class P2PPartitioning implements Partitioning {
 
     }
 
-
     @Override
     public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
         initialize(k, g);
@@ -171,6 +170,26 @@ public class P2PPartitioning implements Partitioning {
             result += ("Node " + nodes[i].index + ": " + nodes[i].degree + "\n");
         }
         return result;
+    }
+
+    public class Vertex implements Comparable<Vertex> {
+
+        public int degree;
+        public int index;
+        public boolean used;
+        public int cluster;
+
+        public Vertex(int index, int degree) {
+            this.degree = degree;
+            this.index = index;
+            used = false;
+        }
+
+        @Override
+        public int compareTo(Vertex compareVertex) {
+            int compareDegree = compareVertex.degree;
+            return compareDegree - this.degree;
+        }
     }
 
 }
