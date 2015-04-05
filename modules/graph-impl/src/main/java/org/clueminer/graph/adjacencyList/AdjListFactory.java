@@ -1,6 +1,7 @@
 package org.clueminer.graph.adjacencyList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
@@ -19,7 +20,7 @@ public class AdjListFactory implements GraphFactory {
 	private static long edgeIdCounter;
 
 	public static AdjListFactory getInstance() {
-		if (instance == null) {
+		if(instance == null) {
 			instance = new AdjListFactory();
 		}
 		return instance;
@@ -67,7 +68,13 @@ public class AdjListFactory implements GraphFactory {
 
 	@Override
 	public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		ArrayList<Node> nodes = new ArrayList<>(input.size());
+		for(Instance inputInstance : input) {
+			AdjListNode node = (AdjListNode) this.newNode();
+			node.setInstance(inputInstance);
+			nodes.add(node);
+		}
+		return nodes;
 	}
 
 }

@@ -3,6 +3,7 @@ package org.clueminer.graph.adjacencyList;
 import java.util.ArrayList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -29,7 +30,8 @@ public class AdjListGraphTest {
 		edges.add(factory.newEdge(nodes.get(1), nodes.get(2)));
 	}
 
-	private void reset() {
+	@Before
+	public void reset() {
 		graph.clear();
 		graph.addAllNodes(nodes);
 		graph.addAllEdges(edges);
@@ -38,7 +40,6 @@ public class AdjListGraphTest {
 	@Test
 	public void removeNodeTest() {
 		System.out.println("Remove Node Test");
-		reset();
 		graph.removeNode(nodes.get(0));
 		graph.print();
 	}
@@ -46,7 +47,6 @@ public class AdjListGraphTest {
 	@Test
 	public void removeEdgeTest() {
 		System.out.println("Remove Edge Test");
-		reset();
 		graph.removeEdge(edges.get(0));
 		graph.print();
 	}
@@ -54,7 +54,6 @@ public class AdjListGraphTest {
 	@Test
 	public void buildGraphTest() {
 		System.out.println("Build Graph Test");
-		reset();
 		graph.print();
 	}
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Node;
@@ -16,8 +17,9 @@ import org.clueminer.graph.api.NodeIterable;
 public class AdjListNode implements Node {
 
 	private final long id;
-	Object label;
-	HashMap<Long, AdjListEdge> edges;
+	private Object label;
+	private HashMap<Long, AdjListEdge> edges;
+	private Instance instance;
 
 	public AdjListNode(long id) {
 		this.id = id;
@@ -45,7 +47,9 @@ public class AdjListNode implements Node {
 		StringBuilder builder = new StringBuilder();
 		builder.append("n");
 		builder.append(id);
-		builder.append(":\n");
+		builder.append(": [");
+		builder.append(this.getInstance().classValue());
+		builder.append("]\n");
 		for(Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
 			AdjListEdge edge = entrySet.getValue();
 			builder.append("\te").append(edge.getId()).append(" --> ");
@@ -105,6 +109,14 @@ public class AdjListNode implements Node {
 
 	void removeEdge(Edge edge) {
 		edges.remove(edge.getId());
+	}
+
+	public void setInstance(Instance instance) {
+		this.instance = instance;
+	}
+
+	public Instance getInstance() {
+		return instance;
 	}
 
 }
