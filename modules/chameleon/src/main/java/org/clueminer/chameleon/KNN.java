@@ -25,6 +25,11 @@ public class KNN {
      */
     int[][] nearests;
 
+    /**
+     * Triangular distance matrix
+     */
+    double distance[][];
+
     Dataset<? extends Instance> input;
 
     private DistanceMeasure dm;
@@ -53,6 +58,7 @@ public class KNN {
         if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
+        buildDistanceMatrix();
         nearests = new int[input.size()][k];
         for (int i = 0; i < input.size(); i++) {
             //put first k neighbours into array and sort them
@@ -68,7 +74,6 @@ public class KNN {
                 insert(index, i);
                 index++;
             }
-            double maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
             //neighbour array full, find closer neighbours from the rest of the dataset
             for (int j = firsts; j < input.size(); j++) {
                 //skip self as neighbour
@@ -76,10 +81,9 @@ public class KNN {
                     continue;
                 }
                 //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
-                if (dm.measure(input.instance(i), input.instance(j)) < maxMinimalDistance) {
+                if (distance(i, j) < distance(i, nearests[i][k - 1])) {
                     nearests[i][k - 1] = j;
                     insert(k - 1, i);
-                    maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
                 }
             }
         }
@@ -93,13 +97,30 @@ public class KNN {
      * @param i Number of central cluster to which neighbours are assigned
      */
     private void insert(int pos, int i) {
-        while (pos > 0 && dm.measure(input.instance(i), input.instance(nearests[i][pos]))
-                < dm.measure(input.instance(i), input.instance(nearests[i][pos - 1]))) {
+        while (pos > 0 && distance(i, nearests[i][pos]) < distance(i, nearests[i][pos - 1])) {
             int temp = nearests[i][pos];
             nearests[i][pos] = nearests[i][pos - 1];
             nearests[i][pos - 1] = temp;
             pos--;
         }
+    }
+
+    private void buildDistanceMatrix() {
+        distance = new double[input.size()][input.size()];
+        for (int i = 0; i < input.size(); i++) {
+            for (int j = i + 1; j < input.size(); j++) {
+                distance[i][j] = dm.measure(input.instance(i), input.instance(j));
+            }
+        }
+    }
+
+    private double distance(int i, int j) {
+        if (i > j) {
+            int temp = i;
+            i = j;
+            j = temp;
+        }
+        return distance[i][j];
     }
 
     public int[][] getNeighborArray(Dataset<? extends Instance> dataset) {
