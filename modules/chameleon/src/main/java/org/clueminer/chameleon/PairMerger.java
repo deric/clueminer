@@ -154,7 +154,15 @@ public class PairMerger extends Merger {
         DTreeNode newNode = new DTreeNode(idCounter);
         newNode.setLeft(left);
         newNode.setRight(right);
-        newNode.setHeight(height++);
+        double sim = computeSimilarity(clusterIndex1, clusterIndex2);
+        if (sim > 10) {
+            sim = 10;
+        }
+        if (sim < 0.01) {
+            sim = 0.01;
+        }
+        height += 1 / sim;
+        newNode.setHeight(height);
         nodes[idCounter] = newNode;
     }
 
