@@ -9,10 +9,11 @@ import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.types.TimePoint;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -217,6 +218,22 @@ public class TimeseriesDatasetTest {
      */
     @Test
     public void testGetClasses() {
+        TimePoint tp[] = new TimePointAttribute[3];
+        for (int i = 0; i < tp.length; i++) {
+            tp[i] = new TimePointAttribute(i, i + 100, Math.pow(i, 2));
+        }
+        Dataset<? extends Instance> test = new TimeseriesDataset<>(3, (TimePointAttribute[]) tp);
+        test.builder().build(new double[]{1, 2, 3}, "a");
+        test.builder().build(new double[]{4, 5, 6}, "b");
+        test.builder().build(new double[]{7, 8, 9}, "c");
+
+        assertEquals(test.size(), 3);
+
+        assertEquals(test.getClasses().size(), 3);
+
+        assertEquals(test.classValue(0), "a");
+        assertEquals(test.classValue(1), "b");
+        assertEquals(test.classValue(2), "c");
     }
 
     /**

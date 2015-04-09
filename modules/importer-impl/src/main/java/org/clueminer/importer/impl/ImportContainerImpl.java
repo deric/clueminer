@@ -242,7 +242,9 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     @Override
     public void setFile(FileObject file) {
         this.file = file;
-        setSource(file.getPath());
+        if (file != null) {
+            setSource(file.getPath());
+        }
     }
 
     /**
