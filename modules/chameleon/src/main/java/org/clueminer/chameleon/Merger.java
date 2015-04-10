@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
@@ -134,19 +132,6 @@ public abstract class Merger {
         }
     }
 
-    public void printExternalProperties() {
-        for (int i = 0; i < clusterMatrix.size(); i++) {
-            for (int j = 0; j < i + 1; j++) {
-                System.out.print("    ");
-            }
-            for (int j = 0; j < i; j++) {
-                //System.out.print(" EIC: " + clusterMatrix.get(i).get(j).EIC + " ECL: " + clusterMatrix.get(i).get(j).ECL);
-                System.out.print("R: " + computeSimilarity(i, j));
-            }
-            System.out.println("");
-        }
-    }
-
     public double getEIC(int firstClusterID, int secondClusterID) {
         if (secondClusterID > firstClusterID) {
             int temp = firstClusterID;
@@ -184,58 +169,6 @@ public abstract class Merger {
      */
     abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList);
 
-    /**
-     * Computes relative interconnectivity and closeness and returns their
-     * product
-     *
-     * @param i index of the first cluster
-     * @param j index of the second cluster
-     * @return sum of relative interconnectivity and closeness
-     */
-    protected double computeSimilarity(int i, int j) {
-        if (j > i) {
-            int temp = i;
-            i = j;
-            j = temp;
-        }
-        if (similarityMeasure == SimilarityMeasure.IMPROVED) {
-            return improvedSimilarity(i, j);
-        } else if (similarityMeasure == SimilarityMeasure.STANDARD) {
-            return chameleonSimilarity(i, j);
-        } else {
-            throw new RuntimeException("Unknown similarity measure");
-        }
-    }
-
-    //Improved similarity scheme which handles noise much better and usually provides better results
-    protected double improvedSimilarity(int i, int j) {
-
-        double ec1 = clusters.get(i).graph.getEdgeCount();
-        double ec2 = clusters.get(j).graph.getEdgeCount();
-
-        if (ec1 == 0 || ec2 == 0) {
-            return clusterMatrix.get(i).get(j).ECL * 40;
-        }
-
-        double val = (clusterMatrix.get(i).get(j).counter / (min(ec1, ec2)))
-                * Math.pow((clusterMatrix.get(i).get(j).ECL / ((clusters.get(i).getACL() * ec1) / (ec1 + ec2) + (clusters.get(j).getACL() * ec2) / (ec1 + ec2))), closenessPriority)
-                * Math.pow((min(clusters.get(i).getACL(), clusters.get(j).getACL()) / max(clusters.get(i).getACL(), clusters.get(j).getACL())), 1);
-
-        return val;
-    }
-
-    //Standard way to compute cluster similarity via relative interconnectivity and closeness
-    protected double chameleonSimilarity(int i, int j) {
-        double RIC = getRIC(i, j);
-        double RCL = getRCL(i, j);
-        //give higher similarity to pair of clusters where one cluster is formed by single item
-        if (clusters.get(i).graph.getNodeCount() == 1 || clusters.get(j).graph.getNodeCount() == 1) {
-            return RIC * Math.pow(RCL, closenessPriority) * 40;
-        }
-
-        return RIC * Math.pow(RCL, closenessPriority);
-    }
-
     protected double getRIC(int i, int j) {
         if (j > i) {
             int temp = i;
@@ -256,28 +189,14 @@ public abstract class Merger {
         return clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
     }
 
-    protected Matrix createMatrix() {
-
-        Matrix m = new SymmetricMatrix(clusterMatrix.size(), clusterMatrix.size());
-
-        for (int i = 0; i < clusterMatrix.size(); i++) {
-            for (int j = 0; j < i; j++) {
-                double similarity = computeSimilarity(i, j);
-                m.set(j, i, similarity);
-            }
-        }
-
-        return m;
-    }
-
-    private double min(double a, double b) {
+    protected double min(double a, double b) {
         if (a < b) {
             return a;
         }
         return b;
     }
 
-    private double max(double a, double b) {
+    protected double max(double a, double b) {
         if (a > b) {
             return a;
         }

@@ -3,6 +3,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -25,11 +26,13 @@ import org.clueminer.partitioning.api.Bisection;
  *
  * @author Tomas Bruna
  */
-public class PairMerger extends Merger {
+public abstract class PairMerger extends Merger {
 
     DendroNode[] nodes;
 
     int idCounter;
+
+    PriorityQueue<Element> pq;
 
     double height;
 
@@ -40,10 +43,21 @@ public class PairMerger extends Merger {
     ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
+        buildQueue();
+        //GraphPrinter gp = new GraphPrinter(true);
         for (int i = 0; i < mergeCount; i++) {
             singleMerge(clusterList);
+//            if (i > mergeCount - 15) {
+//                try {
+//                    gp.printClusters(graph, 0.3, getResult(), "/home/tomas/Desktop/outputs", Integer.toString(i));
+//                } catch (IOException | InterruptedException ex) {
+//
+//                }
+//            }
         }
-        return getResult();
+
+        //    return getResult();
+        return null;
     }
 
     @Override
@@ -56,13 +70,17 @@ public class PairMerger extends Merger {
         computeExternalProperties();
         initiateTree(clusterList);
         HierarchicalResult result = new HClustResult(dataset);
-
+        //GraphPrinter gp = new GraphPrinter(true);
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
-            //GraphPrinter gp = new GraphPrinter(true);
-            // gp.printClusters(graph, 5, getResult(), FileUtils.LocalFolder(), Integer.toString(i));
+//            if (i > clusterList.size() - 20) {
+//                try {
+//                    gp.printClusters(graph, 2, getResult(), "/home/tomas/Desktop/outputs", Integer.toString(i));
+//                } catch (IOException | InterruptedException ex) {
+//
+//                }
+//            }
         }
-
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
         // treeData.printWithHeight();
         treeData.createMapping(dataset.size(), treeData.getRoot());
@@ -114,7 +132,7 @@ public class PairMerger extends Merger {
         }
 
         //Swap the clusters if the bigger is second because the second one is merged into the first
-        if (clusters.get(clusterIndex1).graph.getNodeCount() < clusters.get(clusterIndex2).graph.getNodeCount()) {
+        if (clusters.get(clusterIndex1).getEdgeCount() < clusters.get(clusterIndex2).getEdgeCount()) {
             int tempIndex = clusterIndex1;
             clusterIndex1 = clusterIndex2;
             clusterIndex2 = tempIndex;
@@ -133,19 +151,22 @@ public class PairMerger extends Merger {
 
     }
 
-    //Creates new cluster from the two input clusters and deletes the old ones
-    private void createNewCluster(int clusterIndex1, int clusterIndex2) {
-        Cluster cluster1 = clusters.get(clusterIndex1);
-        Cluster cluster2 = clusters.get(clusterIndex2);
-        ArrayList<Node> nodes1 = (ArrayList<Node>) cluster1.graph.getNodes().toCollection();
-        ArrayList<Node> nodes2 = (ArrayList<Node>) cluster2.graph.getNodes().toCollection();
-        LinkedList<Node> mergedNodes = new LinkedList<>();
-        mergedNodes.addAll(nodes1);
-        mergedNodes.addAll(nodes2);
-        addIntoTree(clusterIndex1, clusterIndex2);
-        clusters.set(clusterIndex1, new Cluster(mergedNodes, graph, idCounter++, bisection));
-        clusters.remove(clusterIndex2);
-    }
+    /**
+     * Creates new cluster from the two input clusters and deletes the old ones.
+     *
+     * @param clusterIndex1
+     * @param clusterIndex2
+     */
+    protected abstract void createNewCluster(int clusterIndex1, int clusterIndex2);
+
+    /**
+     * Computes similarity between two clusters
+     *
+     * @param i index of the first cluster
+     * @param j index of the second cluster
+     * @return similarity degree
+     */
+    protected abstract double computeSimilarity(int i, int j);
 
     //Adds node representing new cluster (the one created by merging) to dendroTree
     private void addIntoTree(int clusterIndex1, int clusterIndex2) {
@@ -209,10 +230,7 @@ public class PairMerger extends Merger {
     private ArrayList<LinkedList<Node>> getResult() {
         ArrayList<LinkedList<Node>> result = new ArrayList<>();
         for (Cluster cluster : clusters) {
-            ArrayList<Node> nodesArr = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-            LinkedList<Node> graphNodes = new LinkedList<>();
-            graphNodes.addAll(nodesArr);
-            result.add(graphNodes);
+            result.add(cluster.getNodes());
         }
         return result;
     }
@@ -232,13 +250,14 @@ public class PairMerger extends Merger {
     }
 
     private int max(int n1, int n2) {
+    protected int max(int n1, int n2) {
         if (n1 > n2) {
             return n1;
         }
         return n2;
     }
 
-    private int min(int n1, int n2) {
+    protected int min(int n1, int n2) {
         if (n1 < n2) {
             return n1;
         }

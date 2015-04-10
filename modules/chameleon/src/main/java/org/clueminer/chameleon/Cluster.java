@@ -45,17 +45,32 @@ public class Cluster {
 
     public LinkedList<Cluster> offsprings;
 
+    private int edgeCount;
+
+    /**
+     * Nodes belonging to the cluster
+     */
+    LinkedList<Node> graphNodes;
+
+    Graph parentGraph;
+
     public int id;
 
     public Cluster(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
-        buildGraphFromCluster(n, g);
+        //do not construct the graph until it is needed to compute internal characteristics (sometimes, the graph does not have to be constructed at all)
+        graph = null;
+        parentGraph = g;
+        graphNodes = n;
+        edgeCount = -1;
         this.id = index;
         this.bisection = bisection;
     }
 
     public Cluster(Graph g, int index, Bisection bisection) {
         graph = g;
+        graphNodes = null;
         this.id = index;
+        edgeCount = -1;
         this.bisection = bisection;
     }
 
@@ -65,6 +80,9 @@ public class Cluster {
      * @param bisection Bisection algorithm
      */
     private void computeBisectionProperties() {
+        if (graph == null) {
+            buildGraphFromCluster(graphNodes, parentGraph);
+        }
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
             ICL = IIC = 1;
@@ -88,15 +106,18 @@ public class Cluster {
      * Computes average weight of all edges in the graph
      */
     private void computeAverageCloseness() {
+        if (graph == null) {
+            buildGraphFromCluster(graphNodes, parentGraph);
+        }
         double sum = 0;
-        if (graph.getEdgeCount() == 0) {
+        if (edgeCount == 0) {
             ACL = 0;
             return;
         }
         for (Edge e : graph.getEdges().toCollection()) {
             sum += e.getWeight();
         }
-        ACL = sum / graph.getEdgeCount();
+        ACL = sum / edgeCount;
     }
 
     /**
@@ -119,6 +140,7 @@ public class Cluster {
                 }
             }
         }
+        edgeCount = graph.getEdgeCount();
         return graph;
     }
 
@@ -153,6 +175,35 @@ public class Cluster {
             computeAverageCloseness();
         }
         return ACL;
+    }
+
+    public void setACL(double ACL) {
+        this.ACL = ACL;
+    }
+
+    /**
+     * Number of edges in the cluster
+     *
+     * @return
+     */
+    public int getEdgeCount() {
+        if (edgeCount == -1) {
+            if (graph == null) {
+                buildGraphFromCluster(graphNodes, parentGraph);
+            }
+        }
+        return edgeCount;
+    }
+
+    public void setEdgeCount(int count) {
+        edgeCount = count;
+    }
+
+    public LinkedList<Node> getNodes() {
+        if (graphNodes != null) {
+            return graphNodes;
+        }
+        return (LinkedList<Node>) graph.getNodes().toCollection();
     }
 
 }
