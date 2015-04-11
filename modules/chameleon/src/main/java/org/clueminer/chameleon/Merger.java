@@ -49,11 +49,10 @@ public abstract class Merger {
      */
     ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
-    public Merger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
+    public Merger(Graph g, Bisection bisection, double closenessPriority) {
         this.graph = g;
         this.bisection = bisection;
         this.closenessPriority = closenessPriority;
-        this.similarityMeasure = similarityMeasure;
     }
 
     /**

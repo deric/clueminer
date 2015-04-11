@@ -36,8 +36,8 @@ public abstract class PairMerger extends Merger {
 
     double height;
 
-    public PairMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
-        super(g, bisection, closenessPriority, similarityMeasure);
+    public PairMerger(Graph g, Bisection bisection, double closenessPriority) {
+        super(g, bisection, closenessPriority);
     }
 
     ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {

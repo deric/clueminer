@@ -204,9 +204,14 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
         RecursiveBisection rb = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
-
-        PairMerger m = new PairMerger(g, bisection, closenessPriority, similarityMeasure);
-
+        PairMerger m;
+        if (similarityMeasure == SimilarityMeasure.IMPROVED) {
+            m = new ImprovedSimilarity(g, bisection, closenessPriority);
+        } else if (similarityMeasure == SimilarityMeasure.STANDARD) {
+            m = new StandardSimilarity(g, bisection, closenessPriority);
+        } else {
+            throw new IllegalArgumentException("Unknown similarity measure.");
+        }
         return m.getHierarchy(partitioningResult, dataset);
     }
 

@@ -20,8 +20,8 @@ public class ThresholdMerger extends Merger {
     private final double RCLThreshold;
     private boolean merged;
 
-    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure, double RICThreshold, double RCLThreshold) {
-        super(g, bisection, closenessPriority, similarityMeasure);
+    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, double RICThreshold, double RCLThreshold) {
+        super(g, bisection, closenessPriority);
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
     }

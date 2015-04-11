@@ -11,8 +11,8 @@ import org.clueminer.partitioning.api.Bisection;
  */
 public class StandardSimilarity extends PairMerger {
 
-    public StandardSimilarity(Graph g, Bisection bisection, double closenessPriority, SimilarityMeasure similarityMeasure) {
-        super(g, bisection, closenessPriority, similarityMeasure);
+    public StandardSimilarity(Graph g, Bisection bisection, double closenessPriority) {
+        super(g, bisection, closenessPriority);
     }
 
     @Override
