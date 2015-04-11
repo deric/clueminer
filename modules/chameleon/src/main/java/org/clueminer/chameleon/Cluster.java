@@ -15,11 +15,6 @@ import org.clueminer.partitioning.api.Bisection;
 public class Cluster {
 
     /**
-     * Graph representing this cluster
-     */
-    Graph graph;
-
-    /**
      * Internal interconnectivity of the cluster (sum of cut edges)
      */
     private double IIC = -1;
@@ -57,20 +52,10 @@ public class Cluster {
     public int id;
 
     public Cluster(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
-        //do not construct the graph until it is needed to compute internal characteristics (sometimes, the graph does not have to be constructed at all)
-        graph = null;
         parentGraph = g;
         graphNodes = n;
         edgeCount = -1;
         this.id = index;
-        this.bisection = bisection;
-    }
-
-    public Cluster(Graph g, int index, Bisection bisection) {
-        graph = g;
-        graphNodes = null;
-        this.id = index;
-        edgeCount = -1;
         this.bisection = bisection;
     }
 
@@ -80,9 +65,7 @@ public class Cluster {
      * @param bisection Bisection algorithm
      */
     private void computeBisectionProperties() {
-        if (graph == null) {
-            buildGraphFromCluster(graphNodes, parentGraph);
-        }
+        Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
             ICL = IIC = 1;
@@ -106,9 +89,8 @@ public class Cluster {
      * Computes average weight of all edges in the graph
      */
     private void computeAverageCloseness() {
-        if (graph == null) {
-            buildGraphFromCluster(graphNodes, parentGraph);
-        }
+        Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
+
         double sum = 0;
         if (edgeCount == 0) {
             ACL = 0;
@@ -129,7 +111,7 @@ public class Cluster {
      */
     private Graph buildGraphFromCluster(LinkedList<Node> n, Graph g) {
         ArrayList<Node> nodes = new ArrayList<>(n);
-        graph = new AdjMatrixGraph(nodes.size());
+        Graph graph = new AdjMatrixGraph(nodes.size());
         for (Node node : nodes) {
             graph.addNode(node);
         }
@@ -188,9 +170,10 @@ public class Cluster {
      */
     public int getEdgeCount() {
         if (edgeCount == -1) {
-            if (graph == null) {
-                buildGraphFromCluster(graphNodes, parentGraph);
-            }
+            /*Edgecount is usually needed together with ACL. In order to build graph
+             only once, we compute the ACL value (during witch graph is built
+             and edge count determined) here*/
+            computeAverageCloseness();
         }
         return edgeCount;
     }
@@ -200,10 +183,11 @@ public class Cluster {
     }
 
     public LinkedList<Node> getNodes() {
-        if (graphNodes != null) {
-            return graphNodes;
-        }
-        return (LinkedList<Node>) graph.getNodes().toCollection();
+        return graphNodes;
+    }
+
+    public int getNodeCount() {
+        return graphNodes.size();
     }
 
 }

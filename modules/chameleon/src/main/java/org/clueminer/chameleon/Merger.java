@@ -102,7 +102,7 @@ public abstract class Merger {
 
     /**
      * Computes external interconnectivity and closeness between every two
-     * clusters. Computed values are store in the cluster matrix.
+     * clusters. Computed values are stored in a triangular matrix.
      *
      * Goes through all edges and if the edge connects different clusters, the
      * external values are updated
@@ -116,7 +116,7 @@ public abstract class Merger {
             int firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
             int secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
             if (firstClusterID != secondClusterID) {
-                //Swap values if the first is bigger. Matrix is symmetric so only half is filled
+                //Swap values if the first is bigger. Matrix is symmetric so only a half has to be filled.
                 if (secondClusterID > firstClusterID) {
                     int temp = firstClusterID;
                     firstClusterID = secondClusterID;
@@ -183,8 +183,8 @@ public abstract class Merger {
             i = j;
             j = temp;
         }
-        double nc1 = clusters.get(i).graph.getNodeCount();
-        double nc2 = clusters.get(j).graph.getNodeCount();
+        double nc1 = clusters.get(i).getNodeCount();
+        double nc2 = clusters.get(j).getNodeCount();
         return clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
     }
 

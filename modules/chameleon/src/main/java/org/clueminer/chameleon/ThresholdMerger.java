@@ -103,8 +103,7 @@ public class ThresholdMerger extends Merger {
             if (clusters.get(i).offsprings != null) {
                 LinkedList<Node> list = new LinkedList<>();
                 for (Cluster cluster : clusters.get(i).offsprings) {
-                    ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-                    for (Node node : nodes) {
+                    for (Node node : cluster.getNodes()) {
                         list.add(node);
                     }
                 }
