@@ -26,12 +26,25 @@ public class FiducciaMattheyses implements Bisection {
     int swapHistoryCost[];
 
     /**
+     * Maximum number of iterations
+     */
+    int iterationLimit;
+
+    /**
      * Array containing lists of nodes of the same difference (difference is
      * gain achieved by their switching). Nodes with -maxDegree difference are
      * at 0. position while list with nodes of maxDegree is at 2 * maxDegree.
      * position.
      */
     Vertex[] differenceBuckets;
+
+    public FiducciaMattheyses() {
+        this(20);
+    }
+
+    public FiducciaMattheyses(int iterationLimit) {
+        this.iterationLimit = iterationLimit;
+    }
 
     /**
      *
@@ -56,7 +69,7 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     /**
-     * Randomly assign nodes to clusters at the beginning.
+     * Randomly assigns nodes to clusters at the beginning.
      */
     private void createIntitalPartition() {
         for (int i = 0; i < nodeCount / 2; i++) {
@@ -68,7 +81,7 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     /**
-     * Compute differences of all nodes.
+     * Computes differences of all nodes.
      */
     private void computeDifferences() {
         prepareDifferenceBuckets();
@@ -203,6 +216,7 @@ public class FiducciaMattheyses implements Bisection {
                 maxDifferenceIndex = i;
             }
         }
+        //  System.out.println("maxDifferenceSum - " + maxDifference);
         return maxDifferenceIndex;
     }
 
@@ -250,10 +264,10 @@ public class FiducciaMattheyses implements Bisection {
     public ArrayList<LinkedList<Node>> bisect(Graph g) {
         initialize(g);
         createIntitalPartition();
-        int counter = 0;
+        int iterationCounter = 0;
         //Repeat until no better swap can be done
-        while (counter < 20) {
-            counter++;
+        while (iterationCounter < iterationLimit) {
+            iterationCounter++;
             int index = minimizeCosts();
             reset();
             if (index == -1) {
