@@ -78,6 +78,7 @@
                         <publicPackage>org.clueminer.chart.graphics</publicPackage>
                         <publicPackage>org.clueminer.chart.legends</publicPackage>
                         <publicPackage>org.clueminer.chart.points</publicPackage>
+                        <publicPackage>org.clueminer.chart.theme</publicPackage>
                         <publicPackage>org.clueminer.chart.util</publicPackage>
                     </publicPackages>
                 </configuration>
