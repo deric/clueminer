@@ -27,6 +27,7 @@ import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
@@ -173,6 +174,11 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
+    public void setClustering(Clustering clustering) {
+        this.clustering = clustering;
+    }
+
+    @Override
     public Clustering getClustering(Dataset<? extends Instance> parent) {
         setDataset(parent);
 
@@ -210,6 +216,11 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
+    public void setCutoff(double cutoff) {
+        this.cutoff = cutoff;
+    }
+
+    @Override
     public Clustering updateCutoff(double cutoff) {
         this.cutoff = cutoff;
         int[] assign = new int[dataset.size()];
@@ -222,6 +233,8 @@ public class HClustResult implements HierarchicalResult {
             checkCutoff(root, cutoff, clusters, assign);
             if (clusters.size() > 0) {
                 mapping = assign;
+            } else {
+                logger.log(Level.SEVERE, "failed to cutoff dendrogram, cut = {0}", cutoff);
             }
         }
         //add input dataset to clustering lookup
@@ -232,6 +245,14 @@ public class HClustResult implements HierarchicalResult {
 
     private void checkCutoff(DendroNode node, double cutoff, Clustering clusters, int[] assign) {
         if (node.isLeaf()) {
+            if (treeData.containsClusters()) {
+                DClusterLeaf leaf = (DClusterLeaf) node;
+                Cluster clust = makeCluster(clusters);
+                for (Instance instance : leaf.getInstances()) {
+                    clust.add(instance);
+                    assign[instance.getIndex()] = clust.getClusterId();
+                }
+            }
             return;
         }
         if (node.getHeight() == cutoff) {
@@ -272,8 +293,16 @@ public class HClustResult implements HierarchicalResult {
 
     private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
         if (node.isLeaf()) {
-            c.add(((DendroLeaf) node).getData());
-            assign[node.getId()] = c.getClusterId();
+            if (treeData.containsClusters()) {
+                DClusterLeaf leaf = (DClusterLeaf) node;
+                for (Instance instance : leaf.getInstances()) {
+                    c.add(instance);
+                    assign[instance.getIndex()] = c.getClusterId();
+                }
+            } else {
+                c.add(((DendroLeaf) node).getData());
+                assign[node.getId()] = c.getClusterId();
+            }
         } else {
             subtreeToCluster(node.getLeft(), c, assign);
             subtreeToCluster(node.getRight(), c, assign);
@@ -289,7 +318,7 @@ public class HClustResult implements HierarchicalResult {
     public double cutTreeByLevel(int level) {
         DendroNode node = treeData.getRoot();
         double cut = findLevel(node, level);
-        updateCutoff(cut);
+        this.clustering = updateCutoff(cut);
         return cut;
     }
 
@@ -318,14 +347,14 @@ public class HClustResult implements HierarchicalResult {
         if (cutoffStrategy == null) {
             return Double.NaN;
         }
-        double cut = cutoffStrategy.findCutoff(this);
+        double cut = cutoffStrategy.findCutoff(this, getParams());
         updateCutoff(cut);
         return cut;
     }
 
     @Override
     public double findCutoff(CutoffStrategy strategy) {
-        double cut = strategy.findCutoff(this);
+        double cut = strategy.findCutoff(this, getParams());
         this.clustering = updateCutoff(cut);
         return cut;
     }

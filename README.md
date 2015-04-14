@@ -19,7 +19,16 @@ Prerequisites:
             cd clueminer
             git submodule init
             git submodule update
-            mvn install
+            mvn clean install
+
+   * Once build you can run Clueminer via Maven
+
+    cd modules/application
+    mvn nbm:cluster-app nbm:run-platform
+
+   * or use generated bin file
+
+    bash modules/application/target/clueminer/bin/clueminer
 
 ### From NetBeans
 
@@ -67,7 +76,7 @@ In order to run benchmarks build an asssembly with Maven:
 
 ```
 $ cd modules/clustering-benchmark
-$ mvn mvn assembly:assembly
+$ mvn assembly:assembly
 ```
 
 and run benchmarks (might be computationally expensive):

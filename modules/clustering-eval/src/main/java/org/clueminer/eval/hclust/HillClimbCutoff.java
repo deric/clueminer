@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -30,38 +31,38 @@ public class HillClimbCutoff implements CutoffStrategy {
     }
 
     @Override
-    public double findCutoff(HierarchicalResult hclust) {
+    public double findCutoff(HierarchicalResult hclust, Props params) {
+        check();
         double cutoff;
-        Clustering clust;
+        Clustering clust, prevClust = null;
         double score, prev = Double.NaN, oldcut = 0;
         int level = hclust.treeLevels() - 1;
         boolean isClimbing = true;
         String evalName;
         int clustNum;
         do {
-            hclust.cutTreeByLevel(level);
+            cutoff = hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
-            System.out.println("clust = " + clust);
-            cutoff = hclust.getCutoff();
+            //System.out.println("level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
             evalName = evaluator.getName();
             clustNum = clust.size();
-            System.out.println("we have " + clust.size() + " clusters");
             if (hclust.isScoreCached(evalName, clustNum)) {
-                System.out.println("score cached");
                 score = hclust.getScore(evalName, clustNum);
             } else {
-                score = evaluator.score(clust, hclust.getDataset());
+                score = evaluator.score(clust, params);
             }
-            System.out.println("score = " + score + " prev= " + prev);
+            //System.out.println("score = " + score + " prev= " + prev);
+            hclust.setScores(evaluator.getName(), clust.size(), score);
             if (!Double.isNaN(prev)) {
                 if (!evaluator.isBetter(score, prev)) {
-                    isClimbing = false;
-                    System.out.println("function is not climbing anymore");
-                    hclust.updateCutoff(oldcut);
+                    //System.out.println("function is not climbing anymore, reverting");
+                    hclust.setCutoff(oldcut);
+                    hclust.setClustering(prevClust);
+                    return oldcut;
                 }
             }
-            hclust.setScores(evaluator.getName(), clust.size(), score);
             prev = score;
+            prevClust = clust;
             oldcut = cutoff;
             level--;
 
@@ -73,7 +74,14 @@ public class HillClimbCutoff implements CutoffStrategy {
         return evaluator;
     }
 
+    @Override
     public void setEvaluator(InternalEvaluator evaluator) {
         this.evaluator = evaluator;
+    }
+
+    protected void check() {
+        if (evaluator == null) {
+            throw new RuntimeException("evaluator method must be set!");
+        }
     }
 }

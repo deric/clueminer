@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 /**
  * maybe use strictfp class
+ *
  * @author tomas barton
  */
 public strictfp class Range implements Serializable {
+
     private static final long serialVersionUID = -1561860287543781488L;
 
     private double lower;
@@ -30,9 +32,13 @@ public strictfp class Range implements Serializable {
     }
 
     public double getLength() {
-        if (lower >= 0 && upper >= 0) return upper - lower;
-        else if (lower < 0 && upper >= 0) return upper + Math.abs(lower);
-        else return Math.abs(lower) - Math.abs(upper);
+        if (lower >= 0 && upper >= 0) {
+            return upper - lower;
+        } else if (lower < 0 && upper >= 0) {
+            return upper + Math.abs(lower);
+        } else {
+            return Math.abs(lower) - Math.abs(upper);
+        }
     }
 
     public boolean contains(double value) {
@@ -148,10 +154,7 @@ public strictfp class Range implements Serializable {
         if (!(this.lower == range.lower)) {
             return false;
         }
-        if (!(this.upper == range.upper)) {
-            return false;
-        }
-        return true;
+        return this.upper == range.upper;
     }
 
     @Override

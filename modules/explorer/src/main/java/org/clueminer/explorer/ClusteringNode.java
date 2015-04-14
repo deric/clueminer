@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -107,7 +108,11 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     private String generateName() {
         Clustering<? extends Cluster> clustering = getClustering();
         if (clustering != null) {
-            return clustering.getName();
+            String name = clustering.getName();
+            if (name.length() > 10) {
+                return name.substring(0, 7) + "...|" + clustering.size() + "|";
+            }
+            return name;
         }
         return "(missing)";
     }
@@ -175,16 +180,21 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         return sheet;
     }
 
+    private Dataset<? extends Instance> getDataset(Clustering<? extends Cluster> clustering) {
+        Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            logger.warning("no dataset in lookup");
+        }
+        return dataset;
+    }
+
     protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+        EvaluationTable evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-            if (dataset == null) {
-                logger.warning("no dataset in lookup");
-            }
+            Dataset<? extends Instance> dataset = getDataset(clustering);
             evalTable = new HashEvaluationTable(clustering, dataset);
-            clustering.lookupAdd(evalTable);
+            clustering.setEvaluationTable(evalTable);
         }
         return evalTable;
     }
@@ -202,17 +212,26 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     private void externalSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
-        Sheet.Set set = new Sheet.Set();
-        EvaluationTable evalTable = evaluationTable(clustering);
-        set.setName("External Evaluation");
-        set.setDisplayName("External Evaluation");
-        for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {
-            Property evalProp = new EvaluatorProperty(score.getKey(), score.getValue());
-            evalProp.setDisplayName(score.getKey());
-            set.put(evalProp);
-        }
+        Dataset<? extends Instance> dataset = getDataset(clustering);
+        //we need dataset for external evaluation
+        if (dataset != null) {
+            if (dataset.getClasses().size() > 0) {
+                Sheet.Set set = new Sheet.Set();
+                EvaluationTable evalTable = evaluationTable(clustering);
+                set.setName("External Evaluation");
+                set.setDisplayName("External Evaluation");
+                for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {
+                    Property evalProp = new EvaluatorProperty(score.getKey(), score.getValue());
+                    evalProp.setDisplayName(score.getKey());
+                    set.put(evalProp);
+                }
 
-        sheet.put(set);
+                sheet.put(set);
+            } else {
+                logger.log(Level.WARNING, "dataset {0} seem to have {1} classes",
+                        new Object[]{dataset.getName(), dataset.getClasses().size()});
+            }
+        }
     }
 
     private void algorithmSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {

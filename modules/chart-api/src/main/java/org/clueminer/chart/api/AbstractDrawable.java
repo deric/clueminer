@@ -46,6 +46,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * @return horizontal position of the upper-left corner of the bounding
      *         rectangle.
      */
+    @Override
     public double getX() {
         return bounds.getX();
     }
@@ -56,6 +57,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * @return vertical position of the upper-left corner of the bounding
      *         rectangle.
      */
+    @Override
     public double getY() {
         return bounds.getY();
     }
@@ -65,6 +67,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      *
      * @return horizontal extent.
      */
+    @Override
     public double getWidth() {
         return bounds.getWidth();
     }
@@ -74,6 +77,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      *
      * @return vertical extent.
      */
+    @Override
     public double getHeight() {
         return bounds.getHeight();
     }
@@ -83,6 +87,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      *
      * @param bounds rectangle containing the component.
      */
+    @Override
     public void setBounds(Rectangle2D bounds) {
         setBounds(bounds.getX(), bounds.getY(),
                   bounds.getWidth(), bounds.getHeight());
@@ -97,6 +102,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * @param width  horizontal extent
      * @param height vertical extent
      */
+    @Override
     public void setBounds(double x, double y, double width, double height) {
         bounds.setFrame(x, y, width, height);
     }
@@ -106,6 +112,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      *
      * @return horizontal and vertical extent that wants to be reached
      */
+    @Override
     public Dimension2D getPreferredSize() {
         return new org.clueminer.chart.util.Dimension2D.Double();
     }

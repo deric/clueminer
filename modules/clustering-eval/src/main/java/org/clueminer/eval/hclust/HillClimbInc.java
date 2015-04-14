@@ -3,9 +3,12 @@ package org.clueminer.eval.hclust;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Incremental strategy starts from tree root (should be faster when we expect
+ * much smaller number of clusters than instances in data)
  *
  * @author Tomas Barton
  */
@@ -20,8 +23,9 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
     }
 
     @Override
-    public double findCutoff(HierarchicalResult hclust) {
-        Clustering clust;
+    public double findCutoff(HierarchicalResult hclust, Props params) {
+        check();
+        Clustering clust, prevClust = null;
         double cutoff;
         double score, prev = Double.NaN, oldcut = 0;
         int level = 1;
@@ -29,30 +33,33 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
         String evalName;
         int clustNum;
         do {
-            hclust.cutTreeByLevel(level);
+            cutoff = hclust.cutTreeByLevel(level);
             clust = hclust.getClustering();
-            System.out.println("clust = " + clust);
-            cutoff = hclust.getCutoff();
+            //System.out.println("# level: " + level + ", clust = " + clust + ", cut = " + String.format("%.2f", cutoff));
             evalName = evaluator.getName();
             clustNum = clust.size();
-            System.out.println("we have " + clust.size() + " clusters");
             if (hclust.isScoreCached(evalName, clustNum)) {
-                System.out.println("score cached");
                 score = hclust.getScore(evalName, clustNum);
             } else {
-                score = evaluator.score(clust, hclust.getDataset());
+                score = evaluator.score(clust, params);
             }
-            System.out.println("score = " + score + " prev= " + prev);
+            if (cutoff < 0) {
+                //System.out.println("negative cutoff " + cutoff + " stopping cutoff");
+                isClimbing = false;
+            }
+            //System.out.println("score = " + score + " prev= " + prev);
+            hclust.setScores(evaluator.getName(), clust.size(), score);
             if (!Double.isNaN(prev)) {
                 if (!evaluator.isBetter(score, prev)) {
-                    isClimbing = false;
-                    System.out.println("function is not climbing anymore");
-                    hclust.updateCutoff(oldcut);
+                    //System.out.println("function is not climbing anymore, reverting");
+                    hclust.setCutoff(oldcut);
+                    hclust.setClustering(prevClust);
+                    return oldcut;
                 }
             }
-            hclust.setScores(evaluator.getName(), clust.size(), score);
             prev = score;
             oldcut = cutoff;
+            prevClust = clust;
             level++;
 
         } while (level < (hclust.treeLevels() - 1) && isClimbing && !Double.isNaN(score));

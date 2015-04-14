@@ -1,12 +1,13 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +34,7 @@ public class Tau extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double maxIntraDist[] = new double[clusters.size()];
         double sPlus = 0, sMin = 0;
         double fw = 0, fb = 0;
@@ -88,11 +89,6 @@ public class Tau extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public boolean isBetter(double score1, double score2) {
         // should be maximized
         return score1 > score2;
@@ -101,6 +97,16 @@ public class Tau extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
     }
 
 }

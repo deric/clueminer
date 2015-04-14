@@ -50,7 +50,6 @@ public class RowSimThread2 implements Runnable {
         for (int i = threadId; i < m.rowsCount(); i += threads) {
             for (int j = i + 1; j < m.rowsCount(); ++j) {
                 dist = dm.measure(m.getRowVector(i), m.getRowVector(j));
-                //System.out.println("{" + threadId + "} [" + i + ", " + j + "] -> " + dist);
                 similarityMatrix.set(i, j, dist);
                 // when printing lower part of matrix this indexes should match
                 if (queue != null) {
@@ -88,9 +87,7 @@ public class RowSimThread2 implements Runnable {
         }
 
         try {
-            //System.out.println("thread " + threadId + " at barrier");
             barrier.await();
-            //System.out.println("thread " + threadId + " after barrier");
         } catch (InterruptedException | BrokenBarrierException ex) {
             Exceptions.printStackTrace(ex);
         }

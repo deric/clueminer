@@ -6,19 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -29,39 +29,59 @@ import org.openide.util.Exceptions;
 public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
 
     private final Evolution evolution;
-    private Dataset<? extends Instance> dataset;
-    private String benchmarkFolder;
-    private String outputDir;
-    private String dataDir;
+    private final Dataset<? extends Instance> dataset;
+    private final String outputDir;
+    private final String dataDir;
     private final LinkedList<String> results;
     //each 10 generations plot data
     private int plotDumpMod = 10;
+    private boolean plotIndividuals = false;
     private final LinkedList<String> plots;
+    private int top = 5;
 
     public GnuplotWriter(Evolution evolution, String benchmarkDir, String subDirectory) {
         this.results = new LinkedList<>();
         this.plots = new LinkedList<>();
         this.evolution = evolution;
         this.dataset = evolution.getDataset();
-        this.outputDir = subDirectory;
-        benchmarkFolder = benchmarkDir;
-        dataDir = getDataDir(subDirectory);
+        this.outputDir = benchmarkDir + File.separatorChar + subDirectory;
+        this.dataDir = getDataDir(outputDir);
         mkdir(dataDir);
     }
 
+    public boolean isPlotIndividuals() {
+        return plotIndividuals;
+    }
+
+    public void setPlotIndividuals(boolean plotIndividuals) {
+        this.plotIndividuals = plotIndividuals;
+    }
+
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         //plotIndividual(generationNum, 1, 2, getDataDir(outputDir), best.getClustering());
+        Individual[] ind = population.getIndividuals();
+        double sum = 0.0;
+        double sumExt = 0.0;
+        for (int i = 0; i < getTop(); i++) {
+            sum += ind[i].getFitness();
+            sumExt += evolution.getExternal().score(ind[i].getClustering());
+        }
+        double topNfit = sum / (double) getTop();
+        double topNext = sumExt / (double) getTop();
+
         StringBuilder sb = new StringBuilder();
         sb.append(String.valueOf(generationNum)).append(separator);
-        sb.append(String.valueOf(best.getFitness())).append(separator);
-        sb.append(avgFitness).append(separator);
-        sb.append(external);
+        sb.append(String.valueOf(population.getBestFitness())).append(separator);
+        sb.append(population.getAvgFitness()).append(separator);
+        sb.append(external).append(separator);
+        sb.append(topNfit).append(separator);
+        sb.append(topNext);
         results.add(sb.toString());
 
-        if (generationNum % plotDumpMod == 0) {
-            String dataFile = writeData(generationNum, dataDir, best.getClustering());
-            plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, best, external));
+        if (plotIndividuals && generationNum % plotDumpMod == 0) {
+            String dataFile = writeData(generationNum, dataDir, population.getBestIndividual().getClustering());
+            plots.add(plotIndividual(generationNum, 1, 2, dataDir, dataFile, population.getBestIndividual(), external));
             //plots.add(plotIndividual(generationNum, 3, 4, getDataDir(outputDir), dataFile, best, external));
         }
     }
@@ -69,11 +89,17 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     @Override
     public void finalResult(Evolution evol, int g, Individual best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness, double external) {
-        plotFitness(getDataDir(outputDir), results, evolution.getEvaluator());
+
+        if (evolution instanceof EvolutionSO) {
+            EvolutionSO evoso = (EvolutionSO) evolution;
+            plotFitness(dataDir, results, evoso.getEvaluator());
+        } else {
+            throw new RuntimeException("MO evolution is not supported yet");
+        }
 
         try {
-            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
-            bashPlotScript(plots.toArray(new String[plots.size()]), dataDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
@@ -109,9 +135,9 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         String strn = String.format("%02d", n);
         //filename without extension
         String scriptFile = "plot-" + strn + String.format("-x%02d", x) + String.format("-y%02d", y);
-
+        String filename = dataDir + scriptFile + gnuplotExtension;
         try {
-            template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
+            template = new PrintWriter(filename, "UTF-8");
             template.write(plotTemplate(n, x, y, best, dataFile, external));
             template.close();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
@@ -120,21 +146,21 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return scriptFile;
     }
 
-    private void plotFitness(String dataDir, LinkedList<String> table, ClusterEvaluation validator) {
-        PrintWriter template = null;
-        PrintWriter template2 = null;
-
+    private void plotFitness(String dir, LinkedList<String> table, ClusterEvaluation validator) {
         String dataFile = "data-fitness.csv";
         String scriptFile = "fitness-" + safeName(validator.getName());
+        String scriptTopFile = "fitness-top-" + safeName(validator.getName());
         String scriptExtern = "external-" + safeName(evolution.getExternal().getName());
 
-        try (PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(dir + File.separatorChar + dataFile, "UTF-8")) {
             CSVWriter csv = new CSVWriter(writer, ',');
-            String[] header = new String[4];
+            String[] header = new String[6];
             header[0] = "generation";
             header[1] = "best";
             header[2] = "avg";
             header[3] = "external";
+            header[4] = "top" + top + "-fit";
+            header[5] = "top" + top + "-ext";
             csv.writeNext(header);
             for (String row : table) {
                 csv.writeLine(row);
@@ -144,30 +170,53 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
             Exceptions.printStackTrace(ex);
         }
 
-        try {
-            template = new PrintWriter(dataDir + scriptFile + gnuplotExtension, "UTF-8");
-            template.write(gnuplotFitness(dataFile, validator, evolution.getExternal()));
-            plots.add(scriptFile);
+        writeGnuplot(dir, scriptFile, gnuplotFitness(dataFile, validator, evolution.getExternal()));
+        plots.add(scriptFile);
+        writeGnuplot(dir, scriptExtern, gnuplotExternal(dataFile, evolution.getExternal()));
+        plots.add(scriptExtern);
+        writeGnuplot(dir, scriptTopFile, gnuplotTop(dataFile, validator, evolution.getExternal()));
+        plots.add(scriptTopFile);
+    }
 
-            template2 = new PrintWriter(dataDir + scriptExtern + gnuplotExtension, "UTF-8");
-            template2.write(gnuplotExternal(dataFile, evolution.getExternal()));
-            plots.add(scriptExtern);
+    private String getTitle(ClusterEvaluation validator) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(evolution.getName()).append("[p=")
+                .append(evolution.getPopulationSize())
+                .append(", g=").append(evolution.getGenerations())
+                .append("] fitness = ").append(validator.getName())
+                .append(" ").append(customTitle);
 
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
-        } finally {
-            if (template != null) {
-                template.close();
-            }
-            if (template2 != null) {
-                template2.close();
-            }
-        }
-
+        return sb.toString();
     }
 
     private String gnuplotFitness(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
-        String res = "set title 'Fitness = " + validator.getName() + "'\n"
+        String res = "set title '" + getTitle(validator) + "'\n"
+                + "set grid \n"
+                + "set size 1.0, 1.0\n"
+                + "set key outside bottom horizontal box\n"
+                + "set datafile separator \",\"\n"
+                + "set datafile missing \"NaN\"\n"
+                + "set ylabel '" + validator.getName() + "'\n"
+                + "set xlabel 'generation'\n"
+                + "set y2label \"" + external.getName() + "\"\n"
+                + "set y2tics\n"
+                + "set y2range [0:1]\n" //@TODO this might differ for other external measures
+                + "plot '" + dataFile + "' u 1:2 title 'best' with linespoints linewidth 2 pointtype 7 pointsize 0.3,\\\n"
+                + "'' u 1:5 title 'top" + top + " avg' with linespoints linewidth 2 pointtype 9 pointsize 0.3,\\\n"
+                + "'' u 1:6 title 'top" + top + "external (" + external.getName() + ")' axes x1y2 with linespoints lt 1 lw 3 pt 3 pointsize 0.3 linecolor rgbcolor \"blue\"";
+        return res;
+    }
+
+    /**
+     * Plots average of top individuals in a generation
+     *
+     * @param dataFile
+     * @param validator
+     * @param external
+     * @return
+     */
+    private String gnuplotTop(String dataFile, ClusterEvaluation validator, ClusterEvaluation external) {
+        String res = "set title '" + getTitle(validator) + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -185,7 +234,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private String gnuplotExternal(String dataFile, ClusterEvaluation validator) {
-        String res = "set title '" + validator.getName() + "'\n"
+        String res = "set title '" + getTitle(validator) + "'\n"
                 + "set grid \n"
                 + "set size 1.0, 1.0\n"
                 + "set key outside bottom horizontal box\n"
@@ -198,25 +247,28 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return res;
     }
 
+    private int attrCount() {
+        return dataset.attributeCount();
+    }
+
     private String plotTemplate(int k, int x, int y, Individual best, String dataFile, double external) {
         Clustering<Cluster> clustering = best.getClustering();
-        Cluster<Instance> first = clustering.get(0);
         double fitness = best.getFitness();
-        int attrCnt = first.attributeCount();
-        int labelPos = attrCnt + 1;
+        int attrCnt = attrCount();
+        int clusterLabelPos = attrCnt + 1;
         //attributes are numbered from zero, gnuplot columns from 1
-        double max = first.getAttribute(x - 1).statistics(AttrNumStats.MAX);
-        double min = first.getAttribute(x - 1).statistics(AttrNumStats.MIN);
-        String xrange = "[" + min + ":" + max + "]";
-        max = first.getAttribute(y - 1).statistics(AttrNumStats.MAX);
-        min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
-        String yrange = "[" + min + ":" + max + "]";
+      /*  double max = dataset.getAttribute(x - 1).statistics(AttrNumStats.MAX);
+         double min = dataset.getAttribute(x - 1).statistics(AttrNumStats.MIN);
+         String xrange = "[" + min + ":" + max + "]";
+         max = dataset.getAttribute(y - 1).statistics(AttrNumStats.MAX);
+         min = dataset.getAttribute(y - 1).statistics(AttrNumStats.MIN);
+         String yrange = "[" + min + ":" + max + "]";*/
 
         String res = "set datafile separator \",\"\n"
                 + "set key outside bottom horizontal box\n"
                 + "set title \"generation = " + k + ", fitness = " + fitness + ", jacc = " + external + "\"\n"
-                + "set xlabel \"" + first.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
-                + "set ylabel \"" + first.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
+                + "set xlabel \"" + dataset.getAttribute(x - 1).getName() + "\" font \"Times,7\"\n"
+                + "set ylabel \"" + dataset.getAttribute(y - 1).getName() + "\" font \"Times,7\"\n"
                 //   + "set xtics 0,0.5 nomirror\n"
                 //   + "set ytics 0,0.5 nomirror\n"
                 + "set mytics 2\n"
@@ -232,7 +284,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
             if (i == 0) {
                 res += "plot ";
             }
-            res += "\"< awk -F\\\",\\\" '{if($" + labelPos + " == \\\"" + clust.getName() + "\\\") print}' " + dataFile + "\" u " + x + ":" + y + " t \"" + clust.getName() + "\" w p pt " + pti.next();
+            res += "\"< awk -F\\\",\\\" '{if($" + clusterLabelPos + " == \\\"" + clust.getName() + "\\\") print}' " + dataFile + "\" u " + x + ":" + y + " t \"" + clust.getName() + "\" w p pt " + pti.next();
             if (i != last) {
                 res += ", \\\n";
             } else {
@@ -242,10 +294,6 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
             i++;
         }
         return res;
-    }
-
-    private String getDataDir(String dir) {
-        return mkdir(dir) + "data" + File.separatorChar;
     }
 
     public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
@@ -288,8 +336,26 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         this.plotDumpMod = plotDumpMod;
     }
 
-    @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
-
+    public int getTop() {
+        return top;
     }
+
+    /**
+     * How many individuals are taken as best representatives
+     *
+     * @param n
+     */
+    public void setTop(int n) {
+        this.top = n;
+    }
+
+    @Override
+    public void started(Evolution evolution) {
+    }
+
+    @Override
+    public void resultUpdate(Individual[] result) {
+        //not much to do
+    }
+
 }

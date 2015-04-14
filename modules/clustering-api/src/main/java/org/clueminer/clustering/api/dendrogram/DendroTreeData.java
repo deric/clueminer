@@ -61,6 +61,13 @@ public interface DendroTreeData {
     void print();
 
     /**
+     * Print tree to stdout, nodes are printed in levels according to their
+     * heights. Heights should be integers otherwise levels are not printed
+     * correctly.
+     */
+    void printWithHeight();
+
+    /**
      * Print tree with given root
      *
      * @param treeRoot
@@ -118,5 +125,12 @@ public interface DendroTreeData {
      * @return
      */
     double updatePositions(DendroNode node);
+
+    /**
+     * Whether the tree leaves contain clusters.
+     *
+     * @return
+     */
+    public boolean containsClusters();
 
 }

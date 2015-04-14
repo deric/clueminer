@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,7 +37,7 @@ public class Silhouette extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double score = 0;
         Cluster clust;
         //for each cluster
@@ -70,7 +70,7 @@ public class Silhouette extends AbstractEvaluator {
      *
      * @param clust
      * @param clusters
-     * @param i        index of cluster
+     * @param i index of cluster
      * @param x
      * @return
      */
@@ -107,7 +107,7 @@ public class Silhouette extends AbstractEvaluator {
      *
      * @param x
      * @param clusters
-     * @param i        i-th cluster
+     * @param i i-th cluster
      * @return
      */
     private double minDistance(Instance x, Clustering clusters, int i) {
@@ -131,11 +131,6 @@ public class Silhouette extends AbstractEvaluator {
         return minDist;
     }
 
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     /**
      * Should be maximized
      *
@@ -151,5 +146,15 @@ public class Silhouette extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return -1;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
     }
 }

@@ -4,11 +4,10 @@ import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -47,14 +46,14 @@ public class CalinskiHarabasz extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         if (clusters.size() > 1) {
             double w = 0.0, b = 0.0;
             //centroid of all data
             Instance centroid = clusters.getCentroid();
             double d;
             for (int i = 0; i < clusters.size(); i++) {
-                Cluster<Instance> x = clusters.get(i);
+                Cluster<? extends Instance> x = clusters.get(i);
                 w += getSumOfSquaredError(x);
                 d = dm.measure(centroid, x.getCentroid());
                 b += (x.size()) * FastMath.pow(d, 2);
@@ -73,7 +72,7 @@ public class CalinskiHarabasz extends AbstractEvaluator {
         }
     }
 
-    public double getSumOfSquaredError(Cluster<Instance> x) {
+    public double getSumOfSquaredError(Cluster<? extends Instance> x) {
         double squaredErrorSum = 0, dist;
         for (Instance inst : x) {
             dist = dm.measure(inst, x.getCentroid());
@@ -81,11 +80,6 @@ public class CalinskiHarabasz extends AbstractEvaluator {
         }
 
         return squaredErrorSum;
-    }
-
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**
@@ -104,4 +98,15 @@ public class CalinskiHarabasz extends AbstractEvaluator {
     public boolean isMaximized() {
         return true;
     }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
+    }
+
 }

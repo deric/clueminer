@@ -18,11 +18,11 @@ import org.openide.util.Exceptions;
  */
 public class DatasetFixture {
 
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
 
-    public static Map<Dataset<Instance>, Integer> allDatasets() {
+    public static Map<Dataset<? extends Instance>, Integer> allDatasets() {
         //dataset, num_true_classes
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
+        Map<Dataset<? extends Instance>, Integer> datasets = new HashMap<>();
         datasets.put(DatasetFixture.dermatology(), 6);
         datasets.put(DatasetFixture.glass(), 7);
         datasets.put(DatasetFixture.insect(), 3);
@@ -32,6 +32,7 @@ public class DatasetFixture {
         datasets.put(DatasetFixture.wine(), 3);
         datasets.put(DatasetFixture.vehicle(), 4);
         datasets.put(DatasetFixture.yeast(), 10);
+        datasets.put(DatasetFixture.zoo(), 6);
         return datasets;
     }
 
@@ -146,11 +147,24 @@ public class DatasetFixture {
     }
 
     public static Dataset<Instance> dermatology() {
-        Dataset<Instance> data = new ArrayDataset<>(366, 34);
+        Dataset<Instance> data = new ArrayDataset<>(366, 33);
         try {
             String datasetName = "dermatology";
             ARFFHandler arff = new ARFFHandler();
-            arff.load(tf.dermatologyArff(), data, 34);
+            arff.load(tf.dermatologyArff(), data, 33);
+            data.setName(datasetName);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
+
+    public static Dataset<Instance> zoo() {
+        Dataset<Instance> data = new ArrayDataset<>(101, 16);
+        try {
+            String datasetName = "zoo";
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.zoo2Arff(), data, 18);
             data.setName(datasetName);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);

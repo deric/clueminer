@@ -22,7 +22,7 @@ public class AnnotationFactory extends ServiceFactory<Annotation> {
     }
 
     private AnnotationFactory() {
-        providers = new LinkedHashMap<String, Annotation>();
+        providers = new LinkedHashMap<>();
         Collection<? extends Annotation> list = Lookup.getDefault().lookupAll(Annotation.class);
         for (Annotation a : list) {
             providers.put(a.getName(), a);

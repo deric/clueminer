@@ -4,10 +4,10 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -93,7 +93,7 @@ public class DatasetFixtureTest {
     @Test
     public void testDermatology() {
         Dataset<Instance> dataset = DatasetFixture.dermatology();
-        assertEquals(34, dataset.attributeCount());
+        assertEquals(33, dataset.attributeCount());
         assertEquals(366, dataset.size());
     }
 
@@ -102,5 +102,12 @@ public class DatasetFixtureTest {
         Dataset<Instance> dataset = DatasetFixture.yeast();
         assertEquals(8, dataset.attributeCount());
         assertEquals(1484, dataset.size());
+    }
+
+    @Test
+    public void testZoo() {
+        Dataset<Instance> dataset = DatasetFixture.zoo();
+        assertEquals(16, dataset.attributeCount());
+        assertEquals(101, dataset.size());
     }
 }

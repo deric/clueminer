@@ -19,6 +19,8 @@ import org.clueminer.utils.Props;
  */
 public class ClusterAlgPanel extends JPanel {
 
+    private static final long serialVersionUID = 3764607764760405449L;
+
     private JComboBox<String> cbType;
     private JPanel optPanel;
     private String selected = null;

@@ -6,23 +6,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
  * @param <E>
  */
+@ServiceProvider(service = Clustering.class)
 public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
 
     private static final long serialVersionUID = 5866077228917808995L;
     private Cluster<E>[] data;
     private Props params;
     private final HashMap<String, Integer> name2id;
+    private EvaluationTable table;
     /**
      * (n - 1) is index of last inserted item, n itself represents current
      * number of instances in this dataset
@@ -33,7 +37,21 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private final transient AbstractLookup lookup;
     private String name;
 
+    public ClusterList() {
+        //some default capacity, to avoid problems with zero array size
+        int capacity = 3;
+        data = new Cluster[capacity];
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        params = new Props();
+        name2id = new HashMap<>(capacity);
+    }
+
     public ClusterList(int capacity) {
+        if (capacity < 1) {
+            //some default capacity, to avoid problems with zero array size
+            capacity = 3;
+        }
         data = new Cluster[capacity];
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
@@ -49,7 +67,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String getName() {
         if (name == null) {
-            name = "|" + size() + "|";
+            name = fingerprint();
         }
         return name;
     }
@@ -173,6 +191,28 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     }
 
     /**
+     * Instances are numbered from 0 to {@code instancesCount() - 1}. This
+     * method allows access to instances no matter to which cluster are assigned
+     *
+     * @param i
+     * @return i-th instance in the clustering
+     */
+    @Override
+    public Instance instance(int i) {
+        int offset = 0;
+        int idx;
+        for (Cluster c : data) {
+            idx = i - offset;
+            if (idx < c.size()) {
+                return c.get(idx);
+            }
+            offset += c.size();
+        }
+
+        return null;
+    }
+
+    /**
      * Centroid of all clusters is used by some evaluation criterion
      *
      * e.g. {@link org.clueminer.eval.CalinskiHarabasz}
@@ -236,6 +276,22 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             }
         }
         return -1;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param inst
+     * @return
+     */
+    @Override
+    public Cluster<? extends Instance> assignedCluster(Instance inst) {
+        for (Cluster<E> cluster : this) {
+            if (cluster.contains(inst.getIndex())) {
+                return cluster;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -380,6 +436,10 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
+        for (Cluster<E> e : this) {
+            sb.append(e.toString());
+        }
+
         return sb.append(getName()).toString();
     }
 
@@ -440,9 +500,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
      */
     @Override
     public void mergeParams(Props other) {
-        for (String key : other.keySet()) {
-            params.put(key, other.get(key));
-        }
+        params.merge(other);
     }
 
     @Override
@@ -451,6 +509,64 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             return get(name2id.get(label));
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public EvaluationTable getEvaluationTable() {
+        return table;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param table
+     */
+    @Override
+    public void setEvaluationTable(EvaluationTable table) {
+        this.table = table;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return human readable fingerprint
+     */
+    @Override
+    public String fingerprint() {
+        int[] sizes = clusterSizes();
+        Arrays.sort(sizes);
+        return printArray(sizes);
+    }
+
+    /**
+     * Print element separated by comma, without any space
+     *
+     * @param a
+     * @return
+     */
+    private String printArray(int[] a) {
+        if (a == null) {
+            return "null";
+        }
+        int iMax = a.length - 1;
+        if (iMax == -1) {
+            return "[]";
+        }
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0;; i++) {
+            b.append(a[i]);
+            if (i == iMax) {
+                return b.append(']').toString();
+            }
+            b.append(',');
+        }
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

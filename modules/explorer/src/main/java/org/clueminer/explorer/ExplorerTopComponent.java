@@ -14,13 +14,15 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
-import org.clueminer.eval.external.NMI;
+import org.clueminer.eval.external.Precision;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
+import org.clueminer.evolution.api.UpdateFeed;
+import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -140,7 +142,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     public void componentOpened() {
         result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
 
-        comparator = new ClustComparator(new NMI());
+        comparator = new ClustComparator(new Precision());
         children = new ClustSorted();
         children.setComparator(comparator);
 
@@ -222,18 +224,19 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     }
 
     @Override
-    public void startEvolution(ActionEvent evt, final String evolution) {
+    public void startEvolution(ActionEvent evt, final Evolution alg) {
         if (dataset != null) {
             //start evolution
-            EvolutionFactory ef = EvolutionFactory.getInstance();
-            alg = ef.getProvider(evolution);
             if (alg != null) {
                 toolbar.evolutionStarted();
                 alg.setDataset(dataset);
-                alg.setGenerations(toolbar.getGenerations());
-
-                InternalEvaluatorFactory fact = InternalEvaluatorFactory.getInstance();
-                alg.setEvaluator(fact.getDefault());
+                if (alg instanceof EvolutionSO) {
+                    EvolutionSO evoSo = (EvolutionSO) alg;
+                    if (evoSo.getEvaluator() == null) {
+                        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+                        evoSo.setEvaluator(ief.getDefault());
+                    }
+                }
 
                 final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
 
@@ -244,6 +247,12 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 });
                 alg.setProgressHandle(ph);
                 alg.addEvolutionListener(children);
+                UpdateFeedFactory uf = UpdateFeedFactory.getInstance();
+                //TODO: we could optionally disable storing data in meta-database
+                UpdateFeed feed = uf.getDefault();
+                if (feed != null) {
+                    alg.addUpdateListener(feed);
+                }
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);
                 logger.log(Level.INFO, "starting evolution...");
@@ -303,6 +312,11 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public Evolution currentEvolution() {
         return alg;
+    }
+
+    @Override
+    public void clearAll() {
+        children.clearAll();
     }
 
 }

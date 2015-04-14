@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.gui.GraphicsEnv;
 
 /**
  *
@@ -41,7 +42,7 @@ public final class ColorSchemeImpl implements ColorScheme {
      */
     @Override
     public BufferedImage createGradientImage(Color color1, Color color2) {
-        BufferedImage image = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(256, 1);
+        BufferedImage image = GraphicsEnv.compatibleImage(256, 1);
         Graphics2D graphics = image.createGraphics();
         GradientPaint gp = new GradientPaint(0, 0, color1, 255, 0, color2);
         graphics.setPaint(gp);
@@ -87,7 +88,7 @@ public final class ColorSchemeImpl implements ColorScheme {
             }
             colorIndex = colorIndex > 255 ? 255 : colorIndex;
             rgb = value < mid ? negColorImage.getRGB(255 - colorIndex, 0)
-                    : posColorImage.getRGB(colorIndex, 0);
+                  : posColorImage.getRGB(colorIndex, 0);
         } else {
             double span = max - min;
             if (value <= min) {

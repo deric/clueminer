@@ -114,6 +114,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     Instance getCentroid();
 
     /**
+     * Instances are numbered from 0 to {@code instancesCount()-1}
+     *
+     * @param i
+     * @return i-th instance in the clustering
+     */
+    Instance instance(int i);
+
+    /**
      *
      * @return sizes of all clusters
      */
@@ -126,6 +134,13 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return
      */
     int assignedCluster(int instanceId);
+
+    /**
+     *
+     * @param inst
+     * @return cluster to which is {@code inst} assigned
+     */
+    Cluster<? extends Instance> assignedCluster(Instance inst);
 
     /**
      * Create new cluster on given index
@@ -146,7 +161,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity     cluster capacity
+     * @param capacity cluster capacity
      * @return newly created cluster
      */
     Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
@@ -156,7 +171,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * result
      *
      * @return lookup instance for accessing related objects (Dataset,
-     *         hierarchical clustering etc.)
+     * hierarchical clustering etc.)
      */
     Lookup getLookup();
 
@@ -189,4 +204,26 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
     void setParams(Props params);
 
     void mergeParams(Props params);
+
+    /**
+     * By default evaluation table is null
+     *
+     * @return structure for storing evaluation results
+     */
+    EvaluationTable getEvaluationTable();
+
+    /**
+     * Set structure (hash-map) for storing results
+     *
+     * @param table
+     */
+    void setEvaluationTable(EvaluationTable table);
+
+    /**
+     * Structure fingerprint, clustering with the same fingerprint does not have
+     * to be the same but should be very similar
+     *
+     * @return description of cluster's structure
+     */
+    String fingerprint();
 }

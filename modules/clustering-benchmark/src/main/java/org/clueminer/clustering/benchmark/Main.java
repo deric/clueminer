@@ -1,8 +1,15 @@
 package org.clueminer.clustering.benchmark;
 
+import org.clueminer.clustering.benchmark.exp.Data;
+import org.clueminer.clustering.benchmark.exp.HclusPar;
+import org.clueminer.clustering.benchmark.exp.HclusPar2;
+import org.clueminer.clustering.benchmark.exp.Hclust;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.clueminer.clustering.benchmark.exp.EvolveScores;
+import org.clueminer.clustering.benchmark.gen.NsgaGen;
+import org.clueminer.clustering.benchmark.nsga.NsgaScore;
 
 /**
  *
@@ -18,6 +25,9 @@ public class Main {
         map.put("data", new Data());
         map.put("hclust-par", new HclusPar());
         map.put("hclust-par2", new HclusPar2());
+        map.put("evolve-sc", new EvolveScores());
+        map.put("nsga", new NsgaScore());
+        map.put("nsga-gen", new NsgaGen());
     }
 
     /**

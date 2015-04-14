@@ -6,7 +6,6 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
@@ -62,7 +61,8 @@ public class FakeDatasets {
     public static Dataset<? extends Instance> irisDataset() {
         if (irisData == null) {
             CommonFixture tf = new CommonFixture();
-            irisData = new SampleDataset();
+            irisData = new ArrayDataset(150, 4);
+            irisData.setName("iris");
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(tf.irisArff(), irisData, 4);

@@ -32,6 +32,13 @@ public class Installer extends ModuleInstall {
             MemoryStarvationManager memoryStarvationManager = new MemoryStarvationManager();
             memoryStarvationManager.startup();
         }
+
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            @Override
+            public void run() {
+                WindowManager.getDefault().getMainWindow().setTitle(NbBundle.getMessage(Installer.class, "CTL_AppTitle"));
+            }
+        });
     }
 
     @Override

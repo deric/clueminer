@@ -6,18 +6,19 @@ import java.util.Random;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.Individual;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evolution.AbstractIndividual;
+import org.clueminer.evolution.BaseIndividual;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionSO;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author Tomas Barton
  */
-public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> implements Individual<WeightsIndividual> {
+public class WeightsIndividual extends BaseIndividual<WeightsIndividual> implements Individual<WeightsIndividual> {
 
     private double fitness = 0;
     private static Random rand = new Random();
@@ -25,7 +26,7 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     private Clustering<? extends Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
-        this.evolution = evolution;
+        this.evolution = (EvolutionSO) evolution;
         this.algorithm = evolution.getAlgorithm();
         init();
     }
@@ -57,9 +58,10 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     }
 
     @Override
-    public void countFitness() {
+    public double countFitness() {
         clustering = updateCustering();
         fitness = evaluationTable(clustering).getScore(evolution.getEvaluator());
+        return fitness;
     }
 
     /**
@@ -69,7 +71,8 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
      *
      * @return clustering according to current parameters
      */
-    private Clustering<? extends Cluster> updateCustering() {
+    @Override
+    public Clustering<? extends Cluster> updateCustering() {
         Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
         Instance copy;
         Dataset<? extends Instance> orig = evolution.getDataset();
@@ -164,5 +167,10 @@ public class WeightsIndividual extends AbstractIndividual<WeightsIndividual> imp
     @Override
     public boolean isValid() {
         return true;
+    }
+
+    @Override
+    public Props getProps() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -48,7 +48,7 @@ public class DGramVis {
              AgglomerativeClustering algorithm = new HAC();
 
              Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-             params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+             params.put(AgglParams.CLUSTER_ROWS, false);
              HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
              mapping.setColsResult(colsResult);
              mapping.setDataset(dataset);

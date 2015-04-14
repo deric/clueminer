@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 
 /**
@@ -48,7 +49,7 @@ public class HacLwMsPar2 extends HACLWMS {
         HierarchicalResult result = new HClustResult(dataset, pref);
         AgglParams params = new AgglParams(pref);
         Matrix similarityMatrix;
-        distanceMeasure = params.getDistanceMeasure();
+        distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = dataset.size();
         } else {
@@ -62,16 +63,16 @@ public class HacLwMsPar2 extends HACLWMS {
 
         Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
-            if (distanceMeasure.isSymmetric()) {
-                similarityMatrix = AgglClustering.rowSimilarityMatrixParSymLock(input, distanceMeasure, pq, threads);
+            if (distanceFunction.isSymmetric()) {
+                similarityMatrix = AgglClustering.rowSimilarityMatrixParSymLock(input, distanceFunction, pq, threads);
             } else {
-                similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceMeasure, pq);
+                similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
             }
         } else {
-            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceMeasure, pq);
+            similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 

@@ -1,12 +1,7 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
-import java.util.Map;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.utils.PairMatch;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,35 +27,15 @@ public class RandIndex extends AbstractCountingPairs {
      * Should be maximized, lies in interval <0.0 ; 1.0> where 1.0 is the best
      * value
      *
-     * @param table
-     * @param ref
-     * @param matching
+     * In literature usually referred with letters
+     * tp = a, fp = b, fn = c, tn = d
+     *
+     * @param pm
      * @return
      */
     @Override
-    public double countScore(Table<String, String, Integer> table,
-            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
-        Map<String, Integer> res;
-
-        int tp, fp, fn, tn;
-        double index = 0.0;
-        double rand;
-        Cluster c;
-        //for each cluster we have score of quality
-        for (String cluster : matching.values()) {
-            c = ref.get(cluster);
-            if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-                tp = res.get("tp");
-                fp = res.get("fp");
-                fn = res.get("fn");
-                tn = res.get("tn");
-                rand = (tp + tn) / (double) (tp + fp + fn + tn);
-                index += rand;
-            }
-        }
-
-        //average value - divided by number of "real" classes
-        return index / table.columnKeySet().size();
+    public double countScore(PairMatch pm) {
+        return (pm.tp + pm.tn) / (double) (pm.tp + pm.fp + pm.fn + pm.tn);
     }
+
 }

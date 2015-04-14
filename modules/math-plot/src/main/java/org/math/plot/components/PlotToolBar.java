@@ -1,12 +1,20 @@
 package org.math.plot.components;
 
-import java.awt.event.*;
-import java.io.*;
-import java.security.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.security.AccessControlException;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
-import org.math.plot.*;
-import org.math.plot.canvas.*;
+import org.math.plot.PlotPanel;
+import org.math.plot.canvas.Plot3DCanvas;
+import org.math.plot.canvas.PlotCanvas;
 import org.openide.util.ImageUtilities;
 
 /**
@@ -57,7 +65,7 @@ public class PlotToolBar extends JToolBar {
 
         buttonGroup = new ButtonGroup();
 
-        
+
         buttonCenter = new JToggleButton(ImageUtilities.loadImageIcon("org/math/plot/icons/center.png", false));
         buttonCenter.setToolTipText("Center axes");
         buttonCenter.setSelected(plotCanvas.ActionMode == PlotCanvas.TRANSLATION);
@@ -163,7 +171,7 @@ public class PlotToolBar extends JToolBar {
         // allow mixed (2D/3D) plots managed by one toolbar
         if (plotCanvas instanceof Plot3DCanvas) {
             if (buttonRotate == null) {
-                buttonRotate = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("org/math/plot/icons/rotation.png")));
+                buttonRotate = new JToggleButton(ImageUtilities.loadImageIcon("org/math/plot/icons/rotation.png", false));
                 buttonRotate.setToolTipText("Rotate axes");
 
                 buttonRotate.addActionListener(new ActionListener() {

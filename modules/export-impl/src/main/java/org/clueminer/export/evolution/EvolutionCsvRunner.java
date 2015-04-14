@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
-import org.clueminer.clustering.api.evolution.Evolution;
+import org.clueminer.evolution.api.Evolution;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

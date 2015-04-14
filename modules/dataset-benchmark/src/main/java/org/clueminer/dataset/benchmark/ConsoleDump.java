@@ -1,12 +1,12 @@
 package org.clueminer.dataset.benchmark;
 
-import java.util.Collection;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.evolution.Evolution;
-import org.clueminer.clustering.api.evolution.EvolutionListener;
-import org.clueminer.clustering.api.evolution.Individual;
-import org.clueminer.clustering.api.evolution.Pair;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 
 /**
  *
@@ -15,11 +15,13 @@ import org.clueminer.clustering.api.evolution.Pair;
 public class ConsoleDump implements EvolutionListener {
 
     @Override
-    public void bestInGeneration(int generationNum, Individual best, double avgFitness, double external) {
-        Clustering<Cluster> clusters = best.getClustering();
-        System.out.println("============== " + generationNum);
+    public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
+        Clustering<Cluster> clusters = population.getBestIndividual().getClustering();
+        System.out.println("============== generation: " + generationNum);
         System.out.println("external = " + external);
-
+        System.out.println("avgFit = " + population.getAvgFitness());
+        System.out.println("clustering: " + clusters.toString());
+        System.out.println("==============");
     }
 
     @Override
@@ -34,7 +36,11 @@ public class ConsoleDump implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Collection<Clustering<? extends Cluster>> result) {
+    public void started(Evolution evolution) {
+    }
+
+    @Override
+    public void resultUpdate(Individual[] result) {
         //not much to do
     }
 }

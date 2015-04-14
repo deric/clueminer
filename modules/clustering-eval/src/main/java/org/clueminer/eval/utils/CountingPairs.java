@@ -1,20 +1,25 @@
 package org.clueminer.eval.utils;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.InvalidClustering;
+import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -47,7 +52,7 @@ public class CountingPairs {
      * @return table with counts of items for each pair cluster, class
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
-        // a lookup table for storing correctly / incorrectly classified items
+        // tp lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -86,7 +91,7 @@ public class CountingPairs {
      * @return
      */
     public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        // a lookup table for storing same / differently classified items
+        // tp lookup table for storing same / differently classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
@@ -116,8 +121,9 @@ public class CountingPairs {
      * @param table contingency table
      * @return
      */
-    public static BiMap<String, String> findMatching(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = HashBiMap.create(table.size());
+    public static Matching findMatching(Table<String, String, Integer> table) {
+        //     class, cluster
+        Matching matching = new Matching();
 
         //sort clusters by number of diverse classes inside, clusters containing
         //only one class will have priority
@@ -151,7 +157,7 @@ public class CountingPairs {
                 throw new RuntimeException("this should not happen");
             }
         }
-        //some cluster hasn't been assigned to a class
+        //some cluster hasn't been assigned to tp class
         // matching.size() < sortedClusters.size()
         if (notAssigned.size() > 0) {
             for (String cluster : notAssigned) {
@@ -163,24 +169,53 @@ public class CountingPairs {
                 }
             }
         }
+
+        //number of matching classes is lower than actual
+        if (matching.size() < table.columnKeySet().size()) {
+            //check if all classes has been assigned to tp cluster
+            for (String klass : table.columnKeySet()) {
+                if (!matching.containsKey(klass)) {
+                    System.out.println("class '" + klass + "' is not assigned");
+                    System.out.println("match: " + matching.toString());
+                    int max = 0, value;
+                    String maxKey = null;
+                    for (String cluster : sortedClusters.keySet()) {
+                        Map<String, Integer> assign = table.row(cluster);
+                        if (assign.containsKey(klass)) {
+                            value = assign.get(klass);
+                            if (value > max) {
+                                max = value;
+                                maxKey = cluster;
+                            }
+                        }
+                    }
+                    if (maxKey != null) {
+                        matching.put(klass, maxKey);
+                    } else {
+                        System.out.println("failed to assign class to any cluster: " + klass);
+                    }
+
+                    //break;
+                }
+            }
+        }
+
         return matching;
     }
 
     /**
      * - TP (true positive) - as the number of points that are present in the
-     * same cluster in both C1 and C2.
-     * - FP (false positive) - as the number of points that are present in the
-     * same cluster in C1 but not in C2.
-     * - FN (false negative) - as the number of points that are present in the
-     * same cluster in C2 but not in C1.
-     * - TN (true negative) - as the number of points that are in different
-     * clusters in both C1 and C2.
+     * same cluster in both C1 and C2. - FP (false positive) - as the number of
+     * points that are present in the same cluster in C1 but not in C2. - FN
+     * (false negative) - as the number of points that are present in the same
+     * cluster in C2 but not in C1. - TN (true negative) - as the number of
+     * points that are in different clusters in both C1 and C2.
      *
      * @param table
      * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     *         supervised learning)
+     * supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
@@ -227,5 +262,169 @@ public class CountingPairs {
                 .build();
 
         return res;
+    }
+
+    public static Clustering<? extends Cluster> clusteringFromClasses(Clustering clust) {
+        Clustering<? extends Cluster> golden = null;
+
+        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        if (dataset != null) {
+            SortedSet set = dataset.getClasses();
+            golden = Clusterings.newList();
+            //golden.lookupAdd(dataset);
+            EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
+            golden.lookupAdd(evalTable);
+            HashMap<Object, Integer> map = new HashMap<>(set.size());
+            Object obj;
+            Iterator it = set.iterator();
+            int i = 0;
+            Cluster c;
+            while (it.hasNext()) {
+                obj = it.next();
+                c = golden.createCluster(i);
+                c.setAttributes(dataset.getAttributes());
+                map.put(obj, i++);
+            }
+            int assign;
+
+            for (Instance inst : dataset) {
+                if (inst.classValue() == null) {
+                    throw new RuntimeException("missing class value");
+                } else {
+                    if (map.containsKey(inst.classValue())) {
+                        assign = map.get(inst.classValue());
+                        c = golden.get(assign);
+                    } else {
+                        c = golden.createCluster(i);
+                        c.setAttributes(dataset.getAttributes());
+                        map.put(inst.classValue(), i++);
+                    }
+                    c.add(inst);
+                }
+            }
+        }
+        return golden;
+    }
+
+    public static void dumpTable(Table<String, String, Integer> table) {
+        StringBuilder sb = new StringBuilder();
+        Set<String> rows = table.columnKeySet();
+        Set<String> cols = table.rowKeySet();
+        String separator = "   ";
+        //print header
+        sb.append(separator);
+        for (String col : cols) {
+            sb.append(col);
+            sb.append(separator);
+        }
+        sb.append("\n");
+        for (String row : rows) {
+            sb.append(row);
+            sb.append(separator);
+            for (String col : cols) {
+                sb.append(table.get(col, row));
+                sb.append(separator);
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb.toString());
+    }
+
+    /**
+     * Match instances in two clusterings of the same dataset. From resulting
+     * table we can tell how close it the {@code curr} clustering to the
+     * reference one.
+     *
+     * @param curr second clustering
+     * @param ref reference clustering,
+     *
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> curr, Clustering<? extends Cluster> ref) {
+        PairMatch pm = new PairMatch();
+
+        Instance x, y;
+        Cluster cx1, cx2, cy1, cy2;
+        for (int i = 0; i < ref.instancesCount() - 1; i++) {
+            x = ref.instance(i);
+            cx1 = ref.assignedCluster(x);
+            cx2 = curr.assignedCluster(x);
+            for (int j = i + 1; j < ref.instancesCount(); j++) {
+
+                y = ref.instance(j);
+                cy1 = ref.assignedCluster(y);
+                cy2 = curr.assignedCluster(y);
+                //in C1 both are in the same cluster
+                if (cx1.getClusterId() == cy1.getClusterId()) {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
+                    } else {
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
+                    }
+                }
+            }
+        }
+        return pm;
+    }
+
+    /**
+     * Match clustering against class labels
+     *
+     * @param clust
+     * @return
+     */
+    public static PairMatch matchPairs(Clustering<? extends Cluster> clust) {
+        PairMatch pm = new PairMatch();
+
+        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing reference dataset");
+        }
+
+        Instance x, y;
+        Cluster cx2, cy2;
+        //class labels
+        Object cx1, cy1;
+        for (int i = 0; i < dataset.size() - 1; i++) {
+            x = dataset.get(i);
+            cx2 = clust.assignedCluster(x);
+            if (cx2 == null) {
+                throw new InvalidClustering("instance " + x.getIndex()
+                        + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+            }
+            cx1 = x.classValue();
+            for (int j = i + 1; j < dataset.size(); j++) {
+                y = dataset.get(j);
+                cy1 = y.classValue();
+                cy2 = clust.assignedCluster(y);
+                if (cy2 == null) {
+                    System.out.println("params: " + clust.getParams().toString());
+                    throw new InvalidClustering("instance " + y.getIndex()
+                            + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+                }
+                //in both instances have the same label
+                if (cx1.equals(cy1)) {
+                    //both instances are assigned to the same cluster
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.tp++;
+                    } else {
+                        pm.fp++;
+                    }
+                } else {
+                    if (cx2.getClusterId() == cy2.getClusterId()) {
+                        pm.fn++;
+                    } else {
+                        pm.tn++;
+                    }
+                }
+            }
+        }
+        return pm;
     }
 }

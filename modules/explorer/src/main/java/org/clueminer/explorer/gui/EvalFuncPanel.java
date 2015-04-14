@@ -12,6 +12,8 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
  */
 public class EvalFuncPanel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = -3509452685974315163L;
+
     /**
      * Creates new form EvalFuncPanel
      */
@@ -122,7 +124,6 @@ public class EvalFuncPanel extends javax.swing.JPanel {
                 .addContainerGap(36, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;

@@ -27,8 +27,6 @@ public class ClustComparator implements Comparator<Node> {
      * Compare two clustering nodes. We use descending order, therefore better
      * score gets -1 instead of 1.
      *
-     * @TODO consider parameter for inverting the ordering
-     *
      * @param o1
      * @param o2
      * @return
@@ -41,7 +39,7 @@ public class ClustComparator implements Comparator<Node> {
         EvaluationTable t1 = c1.evaluationTable(c1.getClustering());
         EvaluationTable t2 = c2.evaluationTable(c2.getClustering());
 
-        int ret = eval.compareTo(t1.getScore(eval), t2.getScore(eval));
+        int ret = eval.compare(t1.getScore(eval), t2.getScore(eval));
         if (ret == 0) {
             return ret;
         }

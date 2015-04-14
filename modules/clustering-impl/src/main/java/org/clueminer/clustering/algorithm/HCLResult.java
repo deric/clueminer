@@ -26,6 +26,7 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * use {@link HClustResult} instead
  */
 @Deprecated
 public class HCLResult implements HierarchicalResult {
@@ -140,7 +141,7 @@ public class HCLResult implements HierarchicalResult {
             //if clustering wasn't computed yet, cluster number == -1
             if (num >= 0) {
                 if (!result.hasAt(num)) {
-                    clust = new BaseCluster<Instance>(perCluster);
+                    clust = new BaseCluster<>(perCluster);
                     clust.setColor(cg.next());
                     clust.setName("cluster " + (num + 1));
                     clust.setClusterId(num);
@@ -190,7 +191,7 @@ public class HCLResult implements HierarchicalResult {
         if (this.scores.containsKey(evaluator)) {
             this.scores.get(evaluator).put(clustNum, sc);
         } else {
-            Map<Integer, Double> hm = new HashMap<Integer, Double>();
+            Map<Integer, Double> hm = new HashMap<>();
             hm.put(clustNum, sc);
             this.scores.put(evaluator, hm);
         }
@@ -222,7 +223,7 @@ public class HCLResult implements HierarchicalResult {
 
     @Override
     public double findCutoff() {
-        double cut = cutoffStrategy.findCutoff(this);
+        double cut = cutoffStrategy.findCutoff(this, getParams());
         updateCutoff(cut);
         System.out.println(treeData.toString());
         return cut;
@@ -230,7 +231,7 @@ public class HCLResult implements HierarchicalResult {
 
     @Override
     public double findCutoff(CutoffStrategy strategy) {
-        double cut = strategy.findCutoff(this);
+        double cut = strategy.findCutoff(this, getParams());
         updateCutoff(cut);
         return cut;
     }
@@ -392,6 +393,16 @@ public class HCLResult implements HierarchicalResult {
             res = c.getLookup().lookup(DendrogramMapping.class);
         }
         return res;
+    }
+
+    @Override
+    public void setCutoff(double cutoff) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setClustering(Clustering clustering) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

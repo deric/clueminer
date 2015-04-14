@@ -56,22 +56,16 @@ public class HACLW extends HAC implements AgglomerativeClustering {
             HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
         Element current;
         double distance;
-        //System.out.println("merge [" + leftId + ", " + rightId + "] -> " + leftId);
-        //System.out.println("assign: " + assignments.entrySet().toString());
-        //System.out.println("merged cluster: " + mergedCluster.toString());
-        //System.out.println("merging: [" + leftId + ", " + rightId + "] -> " + mergedId);
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             //update distance only to cluster keys (items contained in cluster
             //were already merged and we can't remerge them again)
             distance = updateProximity(mergedId, cluster.getKey(), leftId, rightId,
-                                       similarityMatrix, linkage, cache, ma, mb, cluster.getValue().size());
+                    similarityMatrix, linkage, cache, ma, mb, cluster.getValue().size());
             current = new Element(distance, mergedId, cluster.getKey());
             pq.add(current);
         }
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
-        //System.out.println("assiga: " + assignments.entrySet().toString());
-        //print(mergedId + 1, similarityMatrix, cache);
     }
 
     /**
@@ -81,11 +75,11 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r       cluster R is created after merging A and B
-     * @param q       existing cluster
-     * @param a       a cluster that is being merged
-     * @param b       a cluster that is being merged
-     * @param sim     similarity matrix
+     * @param r cluster R is created after merging A and B
+     * @param q existing cluster
+     * @param a a cluster that is being merged
+     * @param b a cluster that is being merged
+     * @param sim similarity matrix
      * @param linkage cluster linkage method
      * @param cache
      * @param ma
@@ -98,21 +92,13 @@ public class HACLW extends HAC implements AgglomerativeClustering {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
 
-        //System.out.println("ma = " + ma + ", mb = " + mb + ", mq = " + mq);
         double dist = linkage.alphaA(ma, mb, mq) * aq + linkage.alphaB(ma, mb, mq) * bq;
-        //System.out.println("alpha_A + alpha_B = " + String.format("%.2f", dist));
         if (linkage.beta(ma, mb, mq) != 0) {
-            //System.out.println("[" + a + ", " + b + "] -> " + map(a, b));
             dist += linkage.beta(ma, mb, mq) * fetchDist(a, b, sim, cache);
         }
-        //System.out.println("alpha + beta = " + String.format("%.2f", dist));
         if (linkage.gamma() != 0) {
             dist += linkage.gamma() * Math.abs(aq - bq);
         }
-        //System.out.println("p(" + r + ", " + q + ") = 0.5 * p(" + a + ", " + q + ") + 0.5*p(" + b + ", " + q + ") - 0.5*| p(" + a + ", " + q + ") - p(" + b + ", " + q + ")| = " + String.format("%.2f", dist));
-        //System.out.println("[" + a + ", " + q + "] -> " + map(a, q));
-        //System.out.println("[" + b + ", " + q + "] -> " + map(b, q));
-        //System.out.println("        = " + String.format("%.2f", dist) + " => " + map(r, q));
         cache.put(map(r, q), dist);
         return dist;
     }

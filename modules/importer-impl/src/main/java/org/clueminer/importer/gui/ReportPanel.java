@@ -8,20 +8,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
@@ -36,6 +32,7 @@ import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
+import org.clueminer.processor.spi.ProcessorFactory;
 import org.clueminer.processor.spi.ProcessorUI;
 import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
@@ -104,7 +101,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                     initIcons();
                     initPreview();
                     initImporters();
-                    initProcessors();
                     initProcessorsUI();
                 }
             });
@@ -169,6 +165,10 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     public String[] getImporterProviders() {
         return FileImporterFactory.getInstance().getProvidersArray();
+    }
+
+    public String[] initProcessorProviders() {
+        return ProcessorFactory.getInstance().getProvidersArray();
     }
 
     private void initImporters() {
@@ -297,29 +297,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         });
     }
 
-    private static final Object PROCESSOR_KEY = new Object();
-
-    private void initProcessors() {
-        int i = 0;
-        for (Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
-            JRadioButton radio = new JRadioButton(processor.getDisplayName());
-            radio.setSelected(i == 0);
-            radio.putClientProperty(PROCESSOR_KEY, processor);
-            processorGroup.add(radio);
-            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-            processorPanel.add(radio, constraints);
-        }
-    }
-
     private void initProcessorsUI() {
-        for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
-            AbstractButton radioButton = enumeration.nextElement();
-            Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
-            //Enabled
-            ProcessorUI pui = getProcessorUI(p);
-            if (pui != null) {
-                radioButton.setEnabled(pui.isValid(container));
-            }
+        Processor p = getProcessor();
+        //Enabled
+        ProcessorUI pui = getProcessorUI(p);
+        if (pui != null) {
+            processorPanel.add(pui.getPanel());
         }
     }
 
@@ -333,11 +316,10 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     }
 
     public Processor getProcessor() {
-        for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
-            AbstractButton radioButton = enumeration.nextElement();
-            if (radioButton.isSelected()) {
-                return (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
-            }
+        ProcessorFactory pf = ProcessorFactory.getInstance();
+        Object selected = cbDataType.getSelectedItem();
+        if (selected != null) {
+            return pf.getProvider((String) selected);
         }
         return null;
     }
@@ -381,7 +363,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         jScrollPane1 = new javax.swing.JScrollPane();
         columnsPreview = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        cbDataType = new javax.swing.JComboBox();
+        cbDataType = new JComboBox(initProcessorProviders());
         importerPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         dataTable = new javax.swing.JTable();
@@ -464,7 +446,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.jLabel1.text")); // NOI18N
 
-        cbDataType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "discrete", "continuous" }));
         cbDataType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDataTypeActionPerformed(evt);
@@ -482,7 +463,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             .addGap(0, 84, Short.MAX_VALUE)
         );
 
-        dataTable.setModel(new DataTableModel());
+        dataTable.setModel(new org.clueminer.importer.gui.DataTableModel());
         jScrollPane2.setViewportView(dataTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -534,15 +515,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(importerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)))
+                    .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(importerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -552,7 +530,8 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     private void cbDataTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDataTypeActionPerformed
         ContainerLoader loader = container.getLoader();
         if (loader != null) {
-            loader.setDataType((String) cbDataType.getSelectedItem());
+            //loader.setDataType((String) cbDataType.getSelectedItem());
+            initProcessorsUI();
         }
 
     }//GEN-LAST:event_cbDataTypeActionPerformed

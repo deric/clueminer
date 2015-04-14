@@ -1,13 +1,15 @@
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
-import java.util.Set;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
-import static org.junit.Assert.*;
+import org.clueminer.utils.Dump;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -35,8 +37,8 @@ public class AdjustedRandTest extends ExternalTest {
     public void testScore_Clustering_Clustering() {
         double score;
 
-        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.13473684210526315);
-        measure(FakeClustering.wineClustering(), FakeClustering.wine(), score);
+        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.21052631578947367);
+        measure(FakeClustering.wineClustering(), score);
     }
 
     /**
@@ -81,44 +83,104 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testScoreDataset() {
-        Clustering<Cluster> clustering = FakeClustering.irisWrong4();
-        double score = subject.score(clustering, FakeDatasets.irisDataset());
-        System.out.println("clust(4) = " + score);
+        measure(FakeClustering.irisWrong4(), 0.873083475298126);
     }
 
     @Test
     public void testIris() {
         Clustering<Cluster> clustering = FakeClustering.irisWrong5();
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
-        dumpTable(table);
+        CountingPairs.dumpTable(table);
         AdjustedRand rand = (AdjustedRand) subject;
         double score = rand.countScore(table);
         //value based on experiments (not verified yet) - just to verify that we didnt break the functionality
-        assertEquals(0.14754877843024122, score, delta);
+        //assertEquals(0.14754877843024122, score, delta);
+        assertEquals(0.15018942476428662, score, delta);
         System.out.println("clust(5) = " + score);
     }
 
-    public void dumpTable(Table<String, String, Integer> table) {
-        StringBuilder sb = new StringBuilder();
-        Set<String> rows = table.columnKeySet();
-        Set<String> cols = table.rowKeySet();
-        String separator = "   ";
-        //print header
-        sb.append(separator);
-        for (String col : cols) {
-            sb.append(col);
-            sb.append(separator);
-        }
-        sb.append("\n");
-        for (String row : rows) {
-            sb.append(row);
-            sb.append(separator);
-            for (String col : cols) {
-                sb.append(table.get(col, row));
-                sb.append(separator);
-            }
-            sb.append("\n");
-        }
-        System.out.println(sb.toString());
+    //@Test
+    public void testIris2() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        System.out.println("==== computing better");
+        double scoreBetter;
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
+        int[][] extc = ari.extendedContingency(table);
+        Dump.matrix(extc, "better extc", 2);
+        scoreBetter = ari.countScore(extc);
+        assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
+        System.out.println("better table ");
+        CountingPairs.dumpTable(table);
+        System.out.println("better = " + scoreBetter);
+        System.out.println("==== computing worser");
+        double scoreWorser;
+        table = CountingPairs.contingencyTable(FakeClustering.irisMostlyWrong());
+        extc = ari.extendedContingency(table);
+        Dump.matrix(extc, "worser extc", 2);
+        scoreWorser = ari.countScore(extc);
+        //last cell in table should sum all counts in the table
+        assertEquals(150, extc[extc.length - 1][extc[0].length - 1]);
+        System.out.println("worser table ");
+        CountingPairs.dumpTable(table);
+        System.out.println("worser = " + scoreWorser);
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
+
+    @Test
+    public void testContingency() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(FakeClustering.iris());
+        int[][] extCont = ari.extendedContingency(table);
+        //should be eq to number of items in the dataset
+        assertEquals(150, extCont[extCont.length - 1][extCont[0].length - 1]);
+    }
+
+    @Test
+    public void testAri() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        double score = ari.score(FakeClustering.iris());
+        assertEquals(1.0, score, delta);
+
+        //score = ari.score(FakeClustering.irisWrong());
+        //assertEquals(1.0, score, delta);
+    }
+
+    @Test
+    public void testTwoClusterings() {
+        AdjustedRand ari = (AdjustedRand) subject;
+        PairMatch pm = CountingPairs.matchPairs(FakeClustering.irisWrong(), FakeClustering.iris());
+
+        pm.dump();
+        //number of pairs we can draw from 150 instances (150 \over 2)
+        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum());
+        System.out.println("ARI: " + ari.score(pm));
+    }
+
+    /**
+     * Based on Details of the Adjusted Rand index and Clustering algorithms
+     * Supplement to the paper “An empirical study on Principal
+     * Component Analysis for clustering gene expression data” (to
+     * appear in Bioinformatics)
+     *
+     * Ka Yee Yeung, Walter L. Ruzzo, 2001
+     *
+     */
+    @Test
+    public void testPcaData() {
+        Clustering<? extends Cluster> clust = pcaData();
+        double score = subject.score(clust);
+        assertEquals(0.3125734430082256, score, delta);
+    }
+
+    @Test
+    public void testCombinationOfTwo() {
+        int n = 5;
+        AdjustedRand ari = (AdjustedRand) subject;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+        n = 15;
+        assertEquals(CombinatoricsUtils.binomialCoefficient(n, 2), ari.combinationOfTwo(n));
+    }
+
 }

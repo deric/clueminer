@@ -1,12 +1,7 @@
 package org.clueminer.eval.external;
 
-import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
-import java.util.Map;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
+import org.clueminer.eval.utils.PairMatch;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,28 +26,8 @@ public class FowlkesMallows extends AbstractCountingPairs {
     }
 
     @Override
-    public double countScore(Table<String, String, Integer> table,
-            Clustering<? extends Cluster> ref, BiMap<String, String> matching) {
-        Map<String, Integer> res;
-
-        int tp, fp, fn;
-        double index = 0.0;
-        double fowles;
-        Cluster c;
-        //for each cluster we have score of quality
-        for (String cluster : matching.values()) {
-            c = ref.get(cluster);
-            if (c.size() > 1) {
-                res = CountingPairs.countAssignments(table, matching.inverse().get(cluster), cluster);
-                tp = res.get("tp");
-                fp = res.get("fp");
-                fn = res.get("fn");
-                fowles = tp / Math.sqrt((tp + fp) * (tp + fn));
-                index += fowles;
-            }
-        }
-        //average value
-        return index / table.columnKeySet().size();
+    public double countScore(PairMatch pm) {
+        return pm.tp / Math.sqrt((pm.tp + pm.fp) * (pm.tp + pm.fn));
     }
 
 }

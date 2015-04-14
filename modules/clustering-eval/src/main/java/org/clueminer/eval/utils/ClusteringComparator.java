@@ -31,7 +31,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
 
         double s1 = t1.getScore(evaluator);
         double s2 = t2.getScore(evaluator);
-        return evaluator.compareTo(s1, s2);
+        return evaluator.compare(s1, s2);
     }
 
     public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
@@ -46,6 +46,17 @@ public class ClusteringComparator implements Comparator<Clustering> {
             clustering.lookupAdd(evalTable);
         }
         return evalTable;
+    }
+
+    /**
+     * Searches for cached score, if missing computes score and stores it into
+     * the cache
+     *
+     * @param clustering
+     * @return score of given clustering with current evaluator
+     */
+    public double getScore(Clustering<? extends Cluster> clustering) {
+        return evaluationTable(clustering).getScore(evaluator);
     }
 
     public ClusterEvaluation getEvaluator() {

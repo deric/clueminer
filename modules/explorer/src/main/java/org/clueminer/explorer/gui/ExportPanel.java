@@ -7,8 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import org.clueminer.clustering.api.factory.EvolutionExportFactory;
-import org.clueminer.clustering.gui.EvolutionExport;
+import org.clueminer.evolution.gui.EvolutionExportFactory;
+import org.clueminer.evolution.gui.EvolutionExport;
 
 /**
  *

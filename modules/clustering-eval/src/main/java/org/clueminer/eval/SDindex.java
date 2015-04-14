@@ -1,5 +1,6 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Attribute;
@@ -7,9 +8,9 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.DatasetTools;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,7 +38,11 @@ public class SDindex extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing dataset");
+        }
         //compute intra dataset variance of whole dataset
         double datasetVar = 0.0, dev;
         double scattering = 0.0;
@@ -103,11 +108,6 @@ public class SDindex extends AbstractEvaluator {
         return Math.sqrt(totalVar); //a norm
     }
 
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     /**
      * Should be minimized
      *
@@ -123,5 +123,15 @@ public class SDindex extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
     }
 }

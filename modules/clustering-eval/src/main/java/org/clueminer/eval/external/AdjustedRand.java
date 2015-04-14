@@ -1,17 +1,17 @@
 package org.clueminer.eval.external;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.Matching;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,9 +46,9 @@ public class AdjustedRand extends AbstractExternalEval {
         for (int i = 0; i < squareSize; i++) {
             //diagonal item
             a += combinationOfTwo(contingency[i][i]);
-            //last column (sum over a row)
+            //last column (sum over tp row)
             b1 += combinationOfTwo(contingency[i][diamCol]);
-            //last row (sum over a column)
+            //last row (sum over tp column)
             b2 += combinationOfTwo(contingency[diamRow][i]);
         }
 
@@ -57,14 +57,30 @@ public class AdjustedRand extends AbstractExternalEval {
         score = (a - (bProd) / all) / ((b1 + b2) / 2.0 - (bProd) / all);
 
         return score;
+    }
 
+    /**
+     * Computation inspired by approach in:
+     *
+     * Santos, Jorge M. and Embrechts, Mark (2009): On the Use of the Adjusted
+     * Rand Index as tp Metric for Evaluating Supervised Classification
+     *
+     * @param pm
+     * @return
+     */
+    public double score(PairMatch pm) {
+        double ari, np = pm.sum();
+        double tmp = (pm.tp + pm.fp) * (pm.tp + pm.fn) + (pm.fn + pm.tn) * (pm.fp + pm.tn);
+        ari = np * (pm.tp + pm.tn) - tmp;
+        ari /= np * np - tmp;
+        return ari;
     }
 
     /**
      * Count Adjusted Rand index
      *
      * @param table contingency table where last column/row sums values in the
-     *              column/row
+     * column/row
      * @return
      */
     public double countScore(Table<String, String, Integer> table) {
@@ -78,12 +94,10 @@ public class AdjustedRand extends AbstractExternalEval {
      * @param n
      * @return
      */
-    private long combinationOfTwo(int n) {
-        if (n > 1) {
-            //for n < k doesn't make sense
-            return CombinatoricsUtils.binomialCoefficient(n, 2);
-        }
-        return 0;
+    protected long combinationOfTwo(int n) {
+        // a micooptimization, instead of computing factorial, in case of k=2
+        // this is much faster
+        return n * (n - 1) >>> 1; //equal to division by 2
     }
 
     /**
@@ -95,14 +109,16 @@ public class AdjustedRand extends AbstractExternalEval {
      * @param table
      * @return
      */
-    private int[][] extendedContingency(Table<String, String, Integer> table) {
-        BiMap<String, String> matching = CountingPairs.findMatching(table);
+    protected int[][] extendedContingency(Table<String, String, Integer> table) {
+        Matching matching = CountingPairs.findMatching(table);
         Set<String> rows = table.rowKeySet();    //clusters
         Set<String> cols = table.columnKeySet(); //classes
 
         String[] rk = new String[rows.size()];
         String[] ck = new String[cols.size()];
         int k = 0;
+
+        System.out.println("bimap: " + matching);
         //we have to order items in set, so that on diagonal will be highest
         //numbers - for corresponding clusters
         for (String c : cols) {
@@ -118,13 +134,15 @@ public class AdjustedRand extends AbstractExternalEval {
             //more clusters than classes
             if (rows.size() > cols.size()) {
                 //CollectionUtils.disjunction();
-                Set<String> unmatchedClusters = Sets.symmetricDifference(matching.values(), rows);
+                Set<String> unmatchedClusters = diff(matching.values(), rows);
+                System.out.println("unmatched rc: " + unmatchedClusters);
                 for (String str : unmatchedClusters) {
                     rk[k++] = str;
                 }
             } else {
                 //more classes than actual clusters
-                Set<String> unmatchedClasses = Sets.symmetricDifference(matching.keySet(), rows);
+                Set<String> unmatchedClasses = diff(matching.keySet(), cols);
+                System.out.println("unmatched cc: " + unmatchedClasses);
                 k = rows.size();
                 for (String str : unmatchedClasses) {
                     if (k < ck.length) {
@@ -132,7 +150,6 @@ public class AdjustedRand extends AbstractExternalEval {
                     }
                 }
             }
-
         }
 
         //last row (column) will be sum of row's (column's) values
@@ -162,25 +179,57 @@ public class AdjustedRand extends AbstractExternalEval {
         return contingency;
     }
 
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table);
+    /**
+     * Perform tp-fp operation with sets
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    private Set<String> diff(Collection<String> a, Set<String> b) {
+        Set<String> res = new HashSet<>();
+        for (String s : a) {
+            if (!b.contains(s)) {
+                res.add(s);
+            }
+        }
+        return res;
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        return score(clusters, dataset);
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        PairMatch pm = CountingPairs.matchPairs(clusters);
+        return score(pm);
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        return countScore(table);
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
+    }
+
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
+    }
+
+    @Override
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        return score(pm);
     }
 
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
     }
 }

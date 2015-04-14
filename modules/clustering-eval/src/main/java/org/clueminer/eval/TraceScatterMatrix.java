@@ -1,5 +1,6 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -7,8 +8,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.CosineDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.DatasetTools;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +40,11 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing dataset");
+        }
         Instance[] clusterCentroid = new Instance[clusters.size()];
         Instance overAllCentroid;
         int[] clusterSizes = new int[clusters.size()];
@@ -70,11 +75,6 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public boolean isBetter(double score1, double score2) {
         // should be minimalized
         return Math.abs(score1) < Math.abs(score2);
@@ -88,5 +88,15 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return Double.NEGATIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.POSITIVE_INFINITY;
     }
 }

@@ -43,8 +43,10 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     @Override
     public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
         StdStorage store = getStorage(dataset);
+        logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        logger.log(Level.FINER, "clustering {0}", params.toString());
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
         //TODO: tree ordering might break assigning items to clusters
         //treeOrder.optimize(rowsResult, true);
@@ -98,11 +100,11 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         return clustering;
     }
 
-    public void findCutoff(HierarchicalResult rowsResult, Props params) {
+    public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
-        double cut = rowsResult.findCutoff(strategy);
-        logger.log(Level.INFO, "found cutoff {0} with strategy {1}", new Object[]{cut, strategy.getName()});
-        params.putDouble(AgglParams.CUTOFF, cut);
+        logger.log(Level.FINER, "cutting dendrogram with {0}", strategy.getName());
+        double cut = result.findCutoff(strategy);
+        logger.log(Level.FINER, "found cutoff {0}, resulting clusters {1}", new Object[]{cut, result.getClustering().size()});
     }
 
     /**

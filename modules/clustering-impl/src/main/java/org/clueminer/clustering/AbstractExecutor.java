@@ -29,16 +29,17 @@ public abstract class AbstractExecutor implements Executor {
 
     protected CutoffStrategy getCutoffStrategy(Props params) {
         CutoffStrategy strategy;
-        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "-- naive --");
+        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
 
-        if (!cutoffAlg.equals("-- naive --")) {
-            String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC score");
-            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+        if (cutoffAlg.equals("-- naive --")) {
             strategy = CutoffStrategyFactory.getInstance().getDefault();
-            strategy.setEvaluator(eval);
         } else {
-            strategy = CutoffStrategyFactory.getInstance().getProvider("hill-climb cutoff");
+            strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
+        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
+        InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+        strategy.setEvaluator(eval);
+
         return strategy;
     }
 

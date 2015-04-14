@@ -148,6 +148,9 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
 
     public boolean execute(Container container, File file) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(new BufferedReader(new FileReader(file)));
+        if (file != null) {
+            container.setFile(FileUtil.toFileObject(file));
+        }
         return execute(container, lineReader);
     }
 

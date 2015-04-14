@@ -21,7 +21,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.eval.BICScore;
+import org.clueminer.eval.BIC;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.external.JaccardIndex;
@@ -42,7 +42,7 @@ public class AttrEvolutionTest {
     private static Dataset<Instance> irisDataset;
     private AttrEvolution test;
     //table for keeping results from experiments
-    private Table<String, String, Double> table;
+    private final Table<String, String, Double> table;
     private static ResultsCollector rc;
     private static String benchmarkFolder;
     private static String csvOutput;
@@ -51,16 +51,16 @@ public class AttrEvolutionTest {
         table = Tables.newCustomTable(
                 Maps.<String, Map<String, Double>>newHashMap(),
                 new Supplier<Map<String, Double>>() {
-            @Override
-            public Map<String, Double> get() {
-                return Maps.newHashMap();
-            }
-        });
+                    @Override
+                    public Map<String, Double> get() {
+                        return Maps.newHashMap();
+                    }
+                });
 
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
-                FileUtils.class,
-                "FOLDER_Home");
+                        FileUtils.class,
+                        "FOLDER_Home");
         createFolder(home);
         benchmarkFolder = home + File.separatorChar + "benchmark";
         createFolder(benchmarkFolder);
@@ -119,7 +119,7 @@ public class AttrEvolutionTest {
     public void testRun() {
         test = new AttrEvolution(irisDataset, 50);
         test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
-        test.setEvaluator(new BICScore());
+        test.setEvaluator(new BIC());
         ExternalEvaluator ext = new JaccardIndex();
         test.setExternal(ext);
         //collect data from evolution
@@ -150,7 +150,7 @@ public class AttrEvolutionTest {
     public void testVariousMeasuresAndDatasets() {
         InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
-        Map<Dataset<Instance>, Integer> datasets = new HashMap<Dataset<Instance>, Integer>();
+        Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
         //just to make the test fast
         datasets.put(DatasetFixture.insect(), 3);
 

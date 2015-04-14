@@ -1,13 +1,11 @@
 package org.clueminer.eval.external;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
+import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -15,42 +13,43 @@ import org.clueminer.math.Matrix;
  */
 public abstract class AbstractCountingPairs extends AbstractExternalEval {
 
-    public abstract double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref, BiMap<String, String> matching);
+    private static final long serialVersionUID = -8708340302697665494L;
+
+    public abstract double countScore(PairMatch pm);
+
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
+    }
+
+    @Override
+    public double score(Clustering clusters) {
+        return score(clusters, new Props());
+    }
 
     /**
      * Once matching classes <-> clusters are found result will be stored in
      * clustering lookup
      *
-     * @param table
-     * @param ref
+     * @param clusters
+     * @param params
      * @return
      */
-    public double countScore(Table<String, String, Integer> table, Clustering<? extends Cluster> ref) {
-        BiMap<String, String> matching = ref.getLookup().lookup(BiMap.class);
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        PairMatch pm = clusters.getLookup().lookup(PairMatch.class);
         //we don't expect mapping to original to change, so we can store the result
-        if (matching == null) {
-            matching = CountingPairs.findMatching(table);
-            ref.lookupAdd(matching);
+        if (pm == null) {
+            pm = CountingPairs.matchPairs(clusters);
+            clusters.lookupAdd(pm);
         }
-        return countScore(table, ref, matching);
+        return countScore(pm);
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
-        //don't store mapping when comparing list of clusterings (too many posibilities)
-        return countScore(table, c1, CountingPairs.findMatching(table));
-    }
-
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset) {
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        return countScore(table, clusters);
-    }
-
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset, Matrix proximity) {
-        return score(clusters, dataset);
+    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        return countScore(pm);
     }
 
     /**
@@ -61,5 +60,15 @@ public abstract class AbstractCountingPairs extends AbstractExternalEval {
     @Override
     public boolean isMaximized() {
         return true;
+    }
+
+    @Override
+    public double getMin() {
+        return 0;
+    }
+
+    @Override
+    public double getMax() {
+        return 1;
     }
 }

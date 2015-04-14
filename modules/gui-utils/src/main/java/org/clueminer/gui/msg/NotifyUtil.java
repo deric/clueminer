@@ -17,6 +17,7 @@ public class NotifyUtil {
 
     /**
      * Show message with the specified type and action listener
+     *
      * @param title
      * @param message
      * @param type
@@ -33,6 +34,7 @@ public class NotifyUtil {
     /**
      * Show message with the specified type and a default action which displays
      * the message using {@link MessageUtil} with the same message type
+     *
      * @param title
      * @param message
      * @param type

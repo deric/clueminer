@@ -24,21 +24,33 @@ public class KernighanLin implements Bisection {
     private double maxCost;
     private int usedNodes;
     private Graph graph;
+    /**
+     * whether the algorithm uses edge weights
+     */
+    private boolean weightedEdges;
 
     public KernighanLin() {
-
+        this(true);
     }
-    
+
+    public KernighanLin(boolean weightedEdges) {
+        this.weightedEdges = weightedEdges;
+    }
+
     public KernighanLin(Graph g) {
-        graph = g;
+        this(g, true);
     }
 
+    public KernighanLin(Graph g, boolean weightedEdges) {
+        graph = g;
+        this.weightedEdges = weightedEdges;
+    }
 
     @Override
     public ArrayList<LinkedList<Node>> bisect() {
         return bisect(graph);
     }
-    
+
     @Override
     public ArrayList<LinkedList<Node>> bisect(Graph g) {
         initialize(g);
@@ -54,10 +66,8 @@ public class KernighanLin implements Bisection {
         swapUpToBestIndex();
         return createNodeClusters();
     }
-    
-    
 
-     /**
+    /**
      * Initialize all variables before bisection
      *
      * @param g graph to bisect
@@ -73,7 +83,7 @@ public class KernighanLin implements Bisection {
         swapHistoryCost = new LinkedList<>();
     }
 
-     /**
+    /**
      * Create clusters of nodes form vertex array
      *
      * @return lists of nodes according to clusters
@@ -84,15 +94,15 @@ public class KernighanLin implements Bisection {
         clusters.add(new LinkedList<Node>());
         for (Vertex vertex : vertexes) {
             if (vertex.cluster == 0) {
-                clusters.get(0).add(nodes[vertex.index]);
+                clusters.get(0).add(vertex.node);
             } else {
-                clusters.get(1).add(nodes[vertex.index]);
+                clusters.get(1).add(vertex.node);
             }
         }
         return clusters;
     }
 
-     /**
+    /**
      * Swap nodes form 0 up to maxDifferenceIndex.
      */
     private void swapUpToBestIndex() {
@@ -104,8 +114,8 @@ public class KernighanLin implements Bisection {
         }
 
     }
-    
-     /**
+
+    /**
      * Find how many swaps should be done to achieve best difference sum.
      */
     private int findBestSwaps() {
@@ -122,10 +132,9 @@ public class KernighanLin implements Bisection {
         return maxDifferenceIndex;
     }
 
-     /**
-     * Simulate swapping of two nodes. 
-     * Real swapping is not done, nodes will be swapped at the end according to 
-     * best difference sum
+    /**
+     * Simulate swapping of two nodes. Real swapping is not done, nodes will be
+     * swapped at the end according to best difference sum
      */
     private void swapPair() {
         swapPair[0].used = true;
@@ -138,34 +147,35 @@ public class KernighanLin implements Bisection {
         swapHistory.add(a);
     }
 
-     
-     /**
-     * Update differences of all nodes according to swapped pair. 
+    /**
+     * Update differences of all nodes according to swapped pair.
      */
     private void updateCosts() {
         for (int i = 0; i <= 1; i++) {
-            ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(nodes[swapPair[i].index]).toCollection();
+            ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(swapPair[i].node).toCollection();
             for (Node neighbor : neighbors) {
+                double weight = weightedEdges ? graph.getEdge(swapPair[i].node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(neighbor)].cluster == swapPair[i].cluster) {
-                    vertexes[graph.getIndex(neighbor)].difference += 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
+                    vertexes[graph.getIndex(neighbor)].difference += 2 * weight;
                 } else {
-                    vertexes[graph.getIndex(neighbor)].difference -= 2 * graph.getEdge(nodes[swapPair[i].index], neighbor).getWeight();
+                    vertexes[graph.getIndex(neighbor)].difference -= 2 * weight;
                 }
             }
         }
     }
 
-     /**
+    /**
      * Compute differences of all nodes.
      */
     private void computeCosts() {
         for (Node node : nodes) {
             ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(node).toCollection();
             for (Node neighbor : neighbors) {
+                double weight = weightedEdges ? graph.getEdge(node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(node)].cluster == vertexes[graph.getIndex(neighbor)].cluster) {
-                    vertexes[graph.getIndex(node)].internalCost += graph.getEdge(node, neighbor).getWeight();
+                    vertexes[graph.getIndex(node)].internalCost += weight;
                 } else {
-                    vertexes[graph.getIndex(node)].externalCost += graph.getEdge(node, neighbor).getWeight();
+                    vertexes[graph.getIndex(node)].externalCost += weight;
                 }
 
             }
@@ -173,7 +183,7 @@ public class KernighanLin implements Bisection {
         }
     }
 
-     /**
+    /**
      * Find pair of nodes which has the highest sum of differences.
      */
     private void findBestPair() {
@@ -186,7 +196,7 @@ public class KernighanLin implements Bisection {
                 }
                 double edgeWeight;
                 if (graph.getEdge(nodes[i], nodes[j]) != null) {
-                    edgeWeight = graph.getEdge(nodes[i], nodes[j]).getWeight();
+                    edgeWeight = weightedEdges ? graph.getEdge(nodes[i], nodes[j]).getWeight() : 1;
                 } else {
                     edgeWeight = 0;
                 }
@@ -200,19 +210,19 @@ public class KernighanLin implements Bisection {
         }
     }
 
-     /**
+    /**
      * Create vertexes from nodes in graph.
      */
     private void createVertexes() {
         vertexes = new Vertex[nodeCount];
         for (int i = 0; i < nodeCount; i++) {
             vertexes[i] = new Vertex();
-            vertexes[i].index = graph.getIndex(nodes[i]);
+            vertexes[i].node = nodes[i];
         }
 
     }
 
-     /**
+    /**
      * Randomly assign nodes to clusters at the beginning.
      */
     private void createIntitalPartition() {
@@ -261,12 +271,11 @@ public class KernighanLin implements Bisection {
             internalCost = externalCost = 0;
             used = false;
         }
-        //reference to node not to have node array and vertex array
-        int index;
         int cluster;
         boolean used;
         double internalCost;
         double externalCost;
         double difference;
+        Node node;
     }
 }

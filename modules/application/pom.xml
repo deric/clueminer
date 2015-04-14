@@ -39,22 +39,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>sonatypenexus</id>
-            <name>CDK</name>
-            <url>https://maven.ch.cam.ac.uk/content/groups/ucc/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>plovdiv</id>
-            <name>CDK</name>
-            <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/groups/public/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>oss</id>
             <name>oss nexus</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
@@ -259,6 +243,31 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>partitioning-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-preview</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>meta-h2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>evolution-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>meta-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>meta-view</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -197,9 +197,8 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
                 cluster_leads[clusterid] = succ;
                 cluster_dist[clusterid] = dist;
             }
-
         }
-
+        System.out.println(cluster_dbids.toString());
         Dump.array(cluster_dist, "cluster_dist");
         Dump.array(cluster_map, "cluster_map");
         Dump.array(cluster_leads, "cluster_leads");

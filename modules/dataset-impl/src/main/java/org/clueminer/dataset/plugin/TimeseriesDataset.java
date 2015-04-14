@@ -1,7 +1,12 @@
 package org.clueminer.dataset.plugin;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.clueminer.algorithm.BinarySearch;
@@ -196,11 +201,13 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         for (TimePointAttribute timep : tps) {
             i++;
             if (timep == null) {
-                for (TimePointAttribute tdp : tps) {
-                    System.out.println("time point:" + tdp);
+                //debuging output
+                for (int j = 0; j < tps.length; j++) {
+                    System.out.println("time point[" + j + "]: " + tps[j]);
                 }
                 throw new RuntimeException(i + "th is null!!!");
             }
+            timep.setDataset(this);
         }
     }
 
@@ -363,7 +370,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public SortedSet<Object> getClasses() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return classes;
     }
 
     @Override

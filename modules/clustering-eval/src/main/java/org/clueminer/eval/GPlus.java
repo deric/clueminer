@@ -1,12 +1,12 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,13 +33,13 @@ public class GPlus extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         double maxIntraDist = Double.MIN_VALUE;
         double sMin = 0;
         double fw = 0, fb = 0;
         double nd;
 
-        Dataset clust;
+        Cluster clust;
         Instance x, y;
         // calculate max intra cluster distance
         for (int i = 0; i < clusters.size(); i++) {
@@ -59,7 +59,7 @@ public class GPlus extends AbstractEvaluator {
 
         // calculate inter cluster distances
         // count sMin
-        Dataset a, b;
+        Cluster a, b;
         for (int i = 0; i < clusters.size(); i++) {
             a = clusters.get(i);
             for (int j = 0; j < a.size(); j++) {
@@ -82,11 +82,6 @@ public class GPlus extends AbstractEvaluator {
         return gPlus;
     }
 
-    @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     /**
      * Should be minimized
      *
@@ -103,5 +98,15 @@ public class GPlus extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return 0;
     }
 }

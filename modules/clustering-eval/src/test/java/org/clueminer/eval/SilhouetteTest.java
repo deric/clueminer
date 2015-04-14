@@ -80,7 +80,7 @@ public class SilhouetteTest {
     public void testScore_Clustering() {
         double score;
         long start = System.currentTimeMillis();
-        score = test.score(clustering, dataset);
+        score = test.score(clustering);
         System.out.println("Silhouette= " + score);
         long end = System.currentTimeMillis();
         assertTrue(score != Double.NaN);
@@ -94,7 +94,7 @@ public class SilhouetteTest {
     public void testScore_ClusteringMatlab() {
         double score;
         long start = System.currentTimeMillis();
-        score = test.score(clusters, dataset);
+        score = test.score(clusters);
         System.out.println("Silhouette= " + score);
         double matlab = 0.6567;
         long end = System.currentTimeMillis();

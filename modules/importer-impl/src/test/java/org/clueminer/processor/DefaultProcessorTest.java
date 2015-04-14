@@ -13,10 +13,8 @@ import org.clueminer.importer.impl.ImportContainerImpl;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -31,20 +29,8 @@ public class DefaultProcessorTest {
     public DefaultProcessorTest() {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testGetDisplayName() {
-    }
-
-    @Test
-    public void testProcess() {
     }
 
     @Test

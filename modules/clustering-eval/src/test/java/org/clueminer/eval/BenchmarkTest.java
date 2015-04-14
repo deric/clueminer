@@ -48,7 +48,7 @@ public class BenchmarkTest {
     private static Collection<? extends InternalEvaluator> evaluators;
     private static String benchmarkFolder;
     private static CommonFixture tf;
-    private Map<String, String> classColors = new HashMap<String, String>();
+    private final Map<String, String> classColors = new HashMap<>();
     private int colorNum = 0;
 
     @BeforeClass
@@ -269,7 +269,7 @@ public class BenchmarkTest {
             double score;
             int j = 0;
             for (InternalEvaluator c : evaluators) {
-                score = c.score(clusters, data);
+                score = c.score(clusters);
                 results[j++][n - kmin] = score;
             }
             System.out.println("===========");
@@ -327,7 +327,7 @@ public class BenchmarkTest {
         runExperiment(datasetName, data, kmin, kmax, kreal);
     }
 
-    //  @Test
+    //@Test
     public void testWine() throws IOException, Exception {
         String datasetName = "wine";
         // 1st attribute is class identifier (1-3)

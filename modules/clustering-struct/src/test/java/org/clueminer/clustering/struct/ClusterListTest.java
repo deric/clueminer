@@ -12,7 +12,10 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
-import static org.junit.Assert.*;
+import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +28,7 @@ public class ClusterListTest {
     private static ClusterList subject;
     private static final CommonFixture tf = new CommonFixture();
     private static final double delta = 1e-9;
+    private static Dataset<? extends Instance> irisCache;
 
     public ClusterListTest() {
     }
@@ -34,6 +38,10 @@ public class ClusterListTest {
         subject = new ClusterList(5);
         subject.createCluster();
         subject.createCluster();
+    }
+
+    @After
+    public void tearDown() throws Exception {
     }
 
     @Test
@@ -209,6 +217,32 @@ public class ClusterListTest {
 
     @Test
     public void testAssignedCluster() {
+        Clustering<Cluster> clusters = new ClusterList(3);
+        instanceIter(clusters);
+        Cluster c1 = clusters.createCluster();
+        c1.attributeBuilder().create("x", "NUMERIC");
+        c1.attributeBuilder().create("y", "NUMERIC");
+        Instance i1 = new DoubleArrayDataRow(new double[]{1.0, 0.0});
+        i1.setIndex(0);
+        c1.add(i1);
+        Cluster c2 = clusters.createCluster();
+        c2.setAttributes(c1.getAttributes());
+        Instance i2 = new DoubleArrayDataRow(new double[]{5.0, 1.0});
+        i2.setIndex(1);
+        c2.add(i2);
+        Cluster c3 = clusters.createCluster();
+        c3.setAttributes(c1.getAttributes());
+        Instance i3 = new DoubleArrayDataRow(new double[]{1.0, 2.0});
+        i3.setIndex(2);
+        c3.add(i3);
+
+        assertEquals(c1, clusters.assignedCluster(i1));
+        assertEquals(c1.getClusterId(), clusters.assignedCluster(i1.getIndex()));
+        assertEquals(c2, clusters.assignedCluster(i2));
+        assertEquals(c2.getClusterId(), clusters.assignedCluster(i2.getIndex()));
+        assertEquals(c3, clusters.assignedCluster(i3));
+        assertEquals(c3.getClusterId(), clusters.assignedCluster(i3.getIndex()));
+
     }
 
     @Test
@@ -353,10 +387,46 @@ public class ClusterListTest {
     }
 
     private Dataset<? extends Instance> loadIris() throws FileNotFoundException, IOException {
-        Dataset<? extends Instance> iris = new ArrayDataset(150, 4);
-        ARFFHandler arff = new ARFFHandler();
-        arff.load(tf.irisArff(), iris, 4);
-        return iris;
+        if (irisCache == null) {
+            irisCache = new ArrayDataset(150, 4);
+            ARFFHandler arff = new ARFFHandler();
+            arff.load(tf.irisArff(), irisCache, 4);
+        }
+        return irisCache;
+    }
+
+    private Clustering irisWrong() throws IOException {
+        Dataset<? extends Instance> irisData = loadIris();
+        Clustering<Cluster> irisWrong = new ClusterList(3);
+        Cluster a = new BaseCluster(4);
+        a.setName("cluster 1");
+        a.setAttributes(irisData.getAttributes());
+        //add few instances to first cluster
+        a.add(irisData.instance(0));
+        a.add(irisData.instance(1));
+        a.add(irisData.instance(149));
+
+        Cluster b = new BaseCluster(50);
+        b.setName("cluster 2");
+        b.setAttributes(irisData.getAttributes());
+        b.add(irisData.instance(3));
+        b.add(irisData.instance(4));
+        b.add(irisData.instance(5));
+        b.add(irisData.instance(6));
+        b.add(irisData.instance(2));
+        Cluster c = new BaseCluster(50);
+        c.setName("cluster 3");
+        c.setAttributes(irisData.getAttributes());
+        //rest goes to the last cluster
+        for (int i = 7; i < 149; i++) {
+            c.add(irisData.instance(i));
+        }
+
+        irisWrong.add(c);
+        irisWrong.add(a);
+        irisWrong.add(b);
+
+        return irisWrong;
     }
 
     @Test
@@ -401,7 +471,13 @@ public class ClusterListTest {
     }
 
     @Test
-    public void testPut_Cluster() {
+    public void testFingerprint() throws IOException {
+        Clustering<Cluster> clusters = createClustersOrdered();
+        assertEquals("[3]", clusters.fingerprint());
+
+        clusters = irisWrong();
+        assertEquals("[3,5,142]", clusters.fingerprint());
+        assertEquals(150, clusters.instancesCount());
     }
 
     @Test
@@ -438,5 +514,89 @@ public class ClusterListTest {
         assertEquals(2, subject.getParams().size());
         assertEquals("bar", subject.getParams().get("bar"));
         assertEquals("foo", subject.getParams().get("foo"));
+    }
+
+    @Test
+    public void testAddingToZeroSize() {
+        //clustering with 0 capacity
+        Clustering<Cluster> clusters = new ClusterList(0);
+        clusters.createCluster(0);
+        assertEquals(1, clusters.size());
+    }
+
+    @Test
+    public void testSetName() {
+    }
+
+    @Test
+    public void testPut_Cluster() {
+    }
+
+    /**
+     * Creates fake clustering of iris data with k clusters. Instances are
+     * assigned according to ordering in original dataset.
+     *
+     * @param k
+     * @return
+     * @throws IOException
+     */
+    public Clustering irisClustering(int k) throws IOException {
+        Dataset<? extends Instance> iris = loadIris();
+        Clustering clust = new ClusterList(k);
+        Cluster c = null;
+        int perCluster = iris.size() / k;
+        int j = 0;
+        for (int i = 0; i < iris.size(); i++) {
+            if (i % perCluster == 0) {
+                c = clust.createCluster(j++);
+            }
+            c.add(iris.get(i));
+        }
+        return clust;
+    }
+
+    /**
+     * Test access to instances in all clusters
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testInstance() throws IOException {
+        // iris clustering with 10 clusters
+        Clustering iris10 = irisClustering(10);
+        assertEquals(10, iris10.size());
+        assertEquals(150, iris10.instancesCount());
+
+        Dataset<? extends Instance> iris = loadIris();
+
+        for (int i = 0; i < iris.size(); i++) {
+            //i-th object in dataset should equal i-th object in clustering
+            //(no matter how many clusters do we have)
+            assertEquals(iris.get(i), iris10.instance(i));
+        }
+    }
+
+    @Test
+    public void testAssignedCluster_int() {
+    }
+
+    @Test
+    public void testAssignedCluster_Instance() {
+    }
+
+    @Test
+    public void testGet_int() {
+    }
+
+    @Test
+    public void testGet_String() {
+    }
+
+    @Test
+    public void testGetEvaluationTable() {
+    }
+
+    @Test
+    public void testSetEvaluationTable() {
     }
 }

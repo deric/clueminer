@@ -22,7 +22,7 @@ public class ChartFactory extends ServiceFactory<Chart> {
     }
 
     private ChartFactory() {
-        providers = new LinkedHashMap<String, Chart>();
+        providers = new LinkedHashMap<>();
         Collection<? extends Chart> list = Lookup.getDefault().lookupAll(Chart.class);
         for (Chart c : list) {
             providers.put(c.getName(), c);

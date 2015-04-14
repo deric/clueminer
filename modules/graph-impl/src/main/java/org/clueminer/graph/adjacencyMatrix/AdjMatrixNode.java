@@ -5,6 +5,7 @@
  */
 package org.clueminer.graph.adjacencyMatrix;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
 
 /**
@@ -17,6 +18,7 @@ public class AdjMatrixNode implements Node {
     Object label;
     private int index;
     private double[] coordinates;
+    private Instance instance;
 
     public AdjMatrixNode(long id) {
         this.id = id;
@@ -27,27 +29,23 @@ public class AdjMatrixNode implements Node {
         this.id = id;
     }
 
-    public AdjMatrixNode(long id, int dimension) {
-        coordinates = new double[dimension];
+    public AdjMatrixNode(long id, Instance i) {
+        instance = i;
         this.id = id;
     }
-
-    public AdjMatrixNode(long id, double[] coordinates) {
-        this.coordinates = coordinates;
-        this.id = id;
-    }
-
-    public void setCoordinate(int i, double value) {
-        coordinates[i] = value;
-    }
-
-    public double getCoordinate(int i) {
-        return coordinates[i];
-    }
-
 
     @Override
-   public long getId() {
+    public void setInstance(Instance i) {
+        instance = i;
+    }
+
+    @Override
+    public Instance getInstance() {
+        return instance;
+    }
+
+    @Override
+    public long getId() {
         return id;
     }
 

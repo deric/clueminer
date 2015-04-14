@@ -1,11 +1,13 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = InternalEvaluator.class)
@@ -28,8 +30,7 @@ public class MinMaxCut extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset) {
-
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
         Dataset a, b;
         double sum = 0;
         for (int i = 0; i < clusters.size(); i++) {
@@ -58,8 +59,8 @@ public class MinMaxCut extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering clusters, Dataset dataset, Matrix proximity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public double score(Clustering clusters, Matrix proximity, Props params) {
+        return score(clusters, params);
     }
 
     @Override
@@ -71,5 +72,15 @@ public class MinMaxCut extends AbstractEvaluator {
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public double getMin() {
+        return Double.POSITIVE_INFINITY;
+    }
+
+    @Override
+    public double getMax() {
+        return Double.NEGATIVE_INFINITY;
     }
 }

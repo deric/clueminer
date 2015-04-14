@@ -38,6 +38,8 @@ public interface HierarchicalResult extends Serializable {
 
     Clustering getClustering(Dataset<? extends Instance> dataset);
 
+    void setClustering(Clustering clustering);
+
     /**
      * Array of integers with cluster assignments
      *
@@ -62,6 +64,13 @@ public interface HierarchicalResult extends Serializable {
      * @return cutoff
      */
     double getCutoff();
+
+    /**
+     * Sets cutoff to certain value without generating corresponding clustering
+     *
+     * @param cutoff
+     */
+    void setCutoff(double cutoff);
 
     /**
      * Cuts tree at given level

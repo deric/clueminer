@@ -2,12 +2,15 @@ package org.clueminer.importer.impl;
 
 import java.io.File;
 import java.io.IOException;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.types.FileType;
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.filesystems.FileObject;
@@ -111,10 +114,31 @@ public class ArffImporterTest {
         assertEquals(true, subject.isClassDefinition("@attribute class {1,2,3,4,5,6,7,8,9,10}"));
         assertEquals(true, subject.isClassDefinition("@attribute class {not_recom,recommend,very_recom,priority,spec_prior}"));
         assertEquals(true, subject.isClassDefinition("@attribute 'Class' {opel,saab,bus,van}"));
+        assertEquals(true, subject.isClassDefinition("@ATTRIBUTE	class	{b,g}"));
     }
 
     @Test
-    public void testCancel() {
+    public void testIonosphere() throws IOException {
+        File iono = fixtures.ionosphereArff2();
+        Container container = new ImportContainerImpl();
+        subject.execute(container, iono);
+        ContainerLoader loader = container.getLoader();
+        //name of relation from ARFF
+        assertEquals("ionosphere", loader.getName());
+        //two attributes and class
+        assertEquals(35, loader.getAttributeCount());
+        assertEquals(351, loader.getInstanceCount());
+
+        AttributeDraft attrd;
+        for (int i = 0; i < loader.getAttributeCount(); i++) {
+            attrd = loader.getAttribute(i);
+            if (i < 34) {
+                System.out.println("attr " + i + ": " + attrd.getRole().toString());
+                assertEquals(BasicAttrRole.INPUT, attrd.getRole());
+            } else {
+                assertEquals(BasicAttrRole.CLASS, attrd.getRole());
+            }
+        }
     }
 
 }
