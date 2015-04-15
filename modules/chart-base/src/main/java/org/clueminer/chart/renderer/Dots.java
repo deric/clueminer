@@ -3,7 +3,7 @@ package org.clueminer.chart.renderer;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
@@ -11,12 +11,12 @@ import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simple rendering of a Chart
+ * Simple rendering of a ChartRenderer
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = Chart.class)
-public class Dots extends Chart {
+@ServiceProvider(service = ChartRenderer.class)
+public class Dots implements ChartRenderer {
 
     private static final long serialVersionUID = 1369577225005657430L;
 
@@ -56,4 +56,5 @@ public class Dots extends Chart {
         long end = System.currentTimeMillis();
         System.out.println("chart rendered in " + (end - start) + "ms");
     }
+
 }

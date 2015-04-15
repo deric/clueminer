@@ -40,6 +40,8 @@ import org.clueminer.chart.util.Insets2D;
  */
 public class DrawableContainer extends AbstractDrawable implements Container {
 
+    private static final long serialVersionUID = -6188651327101854299L;
+
     /**
      * Empty margins that should be preserved around the contents of this
      * container.
@@ -112,7 +114,7 @@ public class DrawableContainer extends AbstractDrawable implements Container {
     /**
      * Adds a new component to this container.
      *
-     * @param drawable    Component
+     * @param drawable Component
      * @param constraints Additional information (e.g. for layout)
      */
     @Override
@@ -192,8 +194,6 @@ public class DrawableContainer extends AbstractDrawable implements Container {
      */
     @Override
     public Insets2D getInsets() {
-        Insets2D insets = new Insets2D.Double();
-        insets.setInsets(this.insets);
         return insets;
     }
 
@@ -237,7 +237,6 @@ public class DrawableContainer extends AbstractDrawable implements Container {
      */
     @Override
     public void layout() {
-        Layout layout = getLayout();
         if (layout != null) {
             layout.layout(this);
         }
@@ -277,7 +276,6 @@ public class DrawableContainer extends AbstractDrawable implements Container {
 
     @Override
     public Dimension2D getPreferredSize() {
-        Layout layout = getLayout();
         if (layout != null) {
             return layout.getPreferredSize(this);
         }

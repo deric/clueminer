@@ -14,23 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chart.api;
+package org.clueminer.chart.plots;
 
-import java.awt.Graphics2D;
-import java.io.Serializable;
+import org.clueminer.chart.ui.SwingWrapper;
 
 /**
  *
  * @author deric
  */
-public interface Chart extends Serializable {
+public class ScatterTest2 {
 
-    void paint(Graphics2D g);
-
-    void paint(Graphics2D g, int width, int height);
-
-    int getWidth();
-
-    int getHeight();
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
+        ScatterPlot scatter = new ScatterPlot(800, 600);
+        long create = (System.currentTimeMillis() - start);
+        System.out.println("xchart create = " + create + " ms");
+        new SwingWrapper(scatter).displayChart();
+        long end = (System.currentTimeMillis() - start);
+        System.out.println("xchart show = " + end + " ms");
+    }
 
 }

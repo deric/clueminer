@@ -2,7 +2,7 @@ package org.clueminer.chart.renderer;
 
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartProperties;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
 import java.awt.Color;
@@ -17,12 +17,12 @@ import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simple rendering of a Chart - line that connects all points
+ * Simple rendering of a ChartRenderer - line that connects all points
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = Chart.class)
-public class DottedLine extends Chart {
+@ServiceProvider(service = ChartRenderer.class)
+public class DottedLine implements ChartRenderer {
 
     private static final long serialVersionUID = -3348374944439589526L;
     private BufferedImage bufferedImage;

@@ -2,7 +2,7 @@ package org.clueminer.chart;
 
 import org.clueminer.chart.api.ChartListener;
 import org.clueminer.chart.api.ChartData;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.Overlay;
 import org.clueminer.chart.api.Range;
 import org.clueminer.chart.api.ChartConfig;
@@ -42,7 +42,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     public static final int MAX_ITEMS = 1000;
     public static Insets axisOffset = new Insets(5, 5, 5, 5);
     public static Insets dataOffset = new Insets(2, 20, 60, 55);
-    private Chart chart = null;
+    private ChartRenderer chart = null;
     private TimeseriesDataset<? super ContinuousInstance> visible = new TimeseriesDataset<ContinuousInstance>(100);
     private Range visibleRange = null;
     private List<Overlay> savedOverlays = new ArrayList<Overlay>();
@@ -332,12 +332,12 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     @Override
-    public Chart getChart() {
+    public ChartRenderer getChart() {
         return chart;
     }
 
     @Override
-    public void setChart(Chart chart) {
+    public void setChart(ChartRenderer chart) {
         this.chart = chart;
     }
 
@@ -804,7 +804,7 @@ public class ChartDataImpl implements Serializable, ChartListener, ChartData {
     }
 
     @Override
-    public void chartChanged(Chart newChart) {
+    public void chartChanged(ChartRenderer newChart) {
         setChart(newChart);
     }
 

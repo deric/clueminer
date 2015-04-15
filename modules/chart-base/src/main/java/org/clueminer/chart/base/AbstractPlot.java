@@ -16,16 +16,16 @@ package org.clueminer.chart.base;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
-import org.clueminer.chart.theme.BaseTheme;
+import org.clueminer.chart.factory.ThemeFactory;
 import org.clueminer.chart.theme.Theme;
 import org.clueminer.chart.util.GraphicsUtils;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -33,10 +33,22 @@ import org.clueminer.chart.util.GraphicsUtils;
  */
 public class AbstractPlot extends DrawableContainer implements Drawable {
 
-    private Theme theme;
+    private static final long serialVersionUID = -6475620400218498764L;
 
-    public AbstractPlot() {
-        this.theme = new BaseTheme();
+    private Theme theme;
+    protected Dataset<? extends Instance> dataset;
+
+    public AbstractPlot(int width, int height) {
+        theme = ThemeFactory.getInstance().getDefault();
+        setBounds(0, 0, width, height);
+    }
+
+    public void setTheme(Theme t) {
+        this.theme = t;
+    }
+
+    public Theme getTheme() {
+        return theme;
     }
 
     @Override
@@ -56,6 +68,14 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
         }
 
         drawComponents(context);
+    }
+
+    public void setDataset(Dataset<? extends Instance> data) {
+        this.dataset = data;
+    }
+
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
     }
 
 }

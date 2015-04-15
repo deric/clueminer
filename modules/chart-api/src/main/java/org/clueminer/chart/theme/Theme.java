@@ -27,6 +27,13 @@ import java.awt.Stroke;
  */
 public interface Theme {
 
+    /**
+     * Theme unique identification
+     *
+     * @return
+     */
+    String getName();
+
     Font getFont();
 
     Paint getBorderColor();

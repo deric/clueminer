@@ -1,7 +1,7 @@
 package org.clueminer.chart.renderer;
 
 import org.clueminer.chart.api.ChartConfig;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
 import java.awt.Graphics2D;
@@ -12,12 +12,12 @@ import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simple rendering of a Chart - line that connects all points
+ * Simple rendering of a ChartRenderer - line that connects all points
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = Chart.class)
-public class LineRenderer extends Chart {
+@ServiceProvider(service = ChartRenderer.class)
+public class LineRenderer implements ChartRenderer {
 
     private static final long serialVersionUID = -3078916604543993282L;
 

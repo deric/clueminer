@@ -9,7 +9,7 @@ import java.util.EventListener;
  */
 public interface ChartListener extends EventListener
 {
-	public void chartChanged(Chart newChart);
+	public void chartChanged(ChartRenderer newChart);
 	public void overlayAdded(Overlay overlay);
 	public void overlayRemoved(Overlay overlay);
 	public double zoomIn(Rectangle rect);

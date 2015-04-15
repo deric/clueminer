@@ -1,8 +1,6 @@
 package org.clueminer.chart.plots;
 
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 
 /**
  *
@@ -10,11 +8,13 @@ import org.clueminer.dataset.api.Instance;
  */
 public class ScatterPlot extends AbstractPlot {
 
-    protected Dataset<? extends Instance> dataset;
+    private static final long serialVersionUID = 1450179727270901601L;
 
-
-    void setDataset(Dataset<? extends Instance> data) {
-        this.dataset = data;
+    public ScatterPlot(int width, int height) {
+        super(width, height);
     }
 
+    public ScatterPlot(ChartBuilder builder) {
+        super(builder.width, builder.height);
+    }
 }
