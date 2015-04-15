@@ -1,11 +1,11 @@
 package org.clueminer.chart.plots;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.clueminer.chart.ui.InteractivePanel;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -17,14 +17,14 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
  */
 public class ScatterTest extends JFrame {
 
-    private ScatterPlot frame;
+    private ScatterPlot scatter;
 
     public ScatterTest() {
         setLayout(new GridBagLayout());
         initComponents();
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
-        frame.setDataset(data);
+        scatter.setDataset(data);
 
     }
 
@@ -52,7 +52,7 @@ public class ScatterTest extends JFrame {
     }
 
     private void initComponents() {
-        frame = new ScatterPlot();
+        scatter = new ScatterPlot();
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -63,7 +63,8 @@ public class ScatterTest extends JFrame {
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.insets = new Insets(0, 0, 0, 0);
-        add((Component) frame, c);
+        InteractivePanel panel = new InteractivePanel(scatter);
+        add(panel, c);
 
     }
 
