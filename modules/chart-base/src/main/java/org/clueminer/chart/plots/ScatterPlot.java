@@ -11,10 +11,12 @@ import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.Plot;
 import org.clueminer.chart.api.PlotArea;
 import org.clueminer.chart.base.AbstractPlot;
+import org.clueminer.chart.base.BaseAxis;
 import org.clueminer.chart.base.Grid;
 import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
+import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.util.Location;
 
 /**
@@ -24,9 +26,18 @@ import org.clueminer.chart.util.Location;
 public class ScatterPlot extends AbstractPlot implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
+    private Axis[] axes;
+    private AxisRenderer[] axesRenderer;
 
     public ScatterPlot(int width, int height) {
         super(width, height);
+
+        axes = new Axis[2];
+        axes[AxisPosition.X.getId()] = new BaseAxis();
+        axes[AxisPosition.Y.getId()] = new BaseAxis();
+        axesRenderer = new AxisRenderer[2];
+        axesRenderer[AxisPosition.X.getId()] = new LinearRenderer2D();
+        axesRenderer[AxisPosition.Y.getId()] = new LinearRenderer2D();
 
         add(new Grid(this));
     }
@@ -36,18 +47,18 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     }
 
     @Override
-    public Axis getAxis(AxisPosition name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Axis getAxis(AxisPosition pos) {
+        return axes[pos.getId()];
     }
 
     @Override
-    public void setAxis(AxisPosition name, Axis axis) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setAxis(AxisPosition pos, Axis axis) {
+        axes[pos.getId()] = axis;
     }
 
     @Override
-    public void removeAxis(AxisPosition name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removeAxis(AxisPosition pos) {
+        axes[pos.getId()] = null;
     }
 
     @Override
@@ -57,17 +68,17 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public void autoscaleAxis(AxisPosition axisName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        axes[axisName.getId()].setAutoscaled(true);
     }
 
     @Override
     public AxisRenderer getAxisRenderer(AxisPosition axisName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return axesRenderer[axisName.getId()];
     }
 
     @Override
     public void setAxisRenderer(AxisPosition axisName, AxisRenderer renderer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        axesRenderer[axisName.getId()] = renderer;
     }
 
     @Override

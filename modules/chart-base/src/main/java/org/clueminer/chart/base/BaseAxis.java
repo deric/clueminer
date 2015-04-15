@@ -33,7 +33,7 @@ import org.clueminer.chart.util.MathUtils;
  * <li>Administration of {@link AxisListener AxisListeners}</li>
  * </ul>
  */
-public abstract class AbstractAxis implements Axis, Serializable {
+public class BaseAxis implements Axis, Serializable {
 
     /**
      * Version id for serialization.
@@ -64,7 +64,7 @@ public abstract class AbstractAxis implements Axis, Serializable {
      *
      * @param autoscaled {@code true} to turn automatic scaling on
      */
-    private AbstractAxis(boolean autoscaled) {
+    private BaseAxis(boolean autoscaled) {
         axisListeners = new LinkedList<>();
         this.autoscaled = autoscaled;
     }
@@ -72,7 +72,7 @@ public abstract class AbstractAxis implements Axis, Serializable {
     /**
      * Initializes a new instance without minimum and maximum values.
      */
-    public AbstractAxis() {
+    public BaseAxis() {
         this(true);
     }
 
@@ -82,7 +82,7 @@ public abstract class AbstractAxis implements Axis, Serializable {
      * @param min minimum value
      * @param max maximum value
      */
-    public AbstractAxis(Number min, Number max) {
+    public BaseAxis(Number min, Number max) {
         this(false);
         this.min = min;
         this.max = max;

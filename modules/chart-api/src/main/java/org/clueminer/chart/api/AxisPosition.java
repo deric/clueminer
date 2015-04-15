@@ -22,7 +22,17 @@ package org.clueminer.chart.api;
  */
 public enum AxisPosition {
 
-    X,
-    Y,
-    Z
+    X(0),
+    Y(1),
+    Z(2);
+
+    private final int id;
+
+    private AxisPosition(int value) {
+        this.id = value;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

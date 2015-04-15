@@ -45,11 +45,11 @@ public class Grid extends AbstractDrawable implements Drawable {
     /**
      * Decides whether the horizontal grid lines at major ticks are drawn.
      */
-    private boolean majorGridX;
+    private boolean majorGridX = true;
     /**
      * Decides whether the vertical grid lines at major ticks are drawn.
      */
-    private boolean majorGridY;
+    private boolean majorGridY = true;
     /**
      * Paint to fill the grid lines at major ticks.
      */
