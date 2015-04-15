@@ -71,7 +71,7 @@ public interface Container extends Iterable<Drawable> {
     /**
      * Adds a new component to this container.
      *
-     * @param drawable    Component
+     * @param drawable Component
      * @param constraints Additional information (e.g. for layout)
      */
     void add(Drawable drawable, Object constraints);
@@ -81,7 +81,7 @@ public interface Container extends Iterable<Drawable> {
      *
      * @param drawable Element to be checked.
      * @return {@code true} if the element is stored in the {@code Container},
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      */
     boolean contains(Drawable drawable);
 
@@ -93,7 +93,7 @@ public interface Container extends Iterable<Drawable> {
      *
      * @param point Two-dimensional point.
      * @return Components at the specified point, with the deepest nested
-     *         component first.
+     * component first.
      */
     List<Drawable> getDrawablesAt(Point2D point);
 
@@ -102,7 +102,7 @@ public interface Container extends Iterable<Drawable> {
      *
      * @return Contained drawables.
      */
-    List<Drawable> getDrawables();
+    Drawable[] getDrawables();
 
     /**
      * Return additional information on component

@@ -9,25 +9,6 @@ import org.clueminer.chart.util.PointND;
 public class Tick extends DataPoint {
 
     /**
-     * Type of tick mark.
-     */
-    public static enum TickType {
-
-        /**
-         * Major tick mark.
-         */
-        MAJOR,
-        /**
-         * Minor tick mark.
-         */
-        MINOR,
-        /**
-         * User-defined tick mark.
-         */
-        CUSTOM
-    }
-
-    /**
      * The type of tick mark (major/minor/custom).
      */
     public final TickType type;
@@ -44,12 +25,12 @@ public class Tick extends DataPoint {
      * Creates a new instance with the specified position, normal,
      * {@code Drawable}, point and label.
      *
-     * @param type     Type of the tick mark.
+     * @param type Type of the tick mark.
      * @param position Coordinates.
-     * @param normal   Normal.
+     * @param normal Normal.
      * @param drawable Representation.
-     * @param point    Point.
-     * @param label    Description.
+     * @param point Point.
+     * @param label Description.
      */
     public Tick(TickType type, PointND<Double> position, PointND<Double> normal,
             Drawable drawable, Shape point, String label) {

@@ -1,12 +1,5 @@
 package org.clueminer.chart.api;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import org.clueminer.chart.util.MathUtils;
-
 /**
  * <p>
  * Class that represents an arbitrary axis.</p>
@@ -17,60 +10,7 @@ import org.clueminer.chart.util.MathUtils;
  * <li>Administration of {@link AxisListener AxisListeners}</li>
  * </ul>
  */
-public abstract class Axis implements Serializable {
-
-    /**
-     * Version id for serialization.
-     */
-    private static final long serialVersionUID = 5355772833362614591L;
-
-    /**
-     * Objects that will be notified when axis settings are changing.
-     */
-    private transient Set<AxisListener> axisListeners;
-
-    /**
-     * Minimal value on axis.
-     */
-    private Number min;
-    /**
-     * Maximal value on axis.
-     */
-    private Number max;
-    /**
-     * Has the axis a valid range. Used for auto-scaling.
-     */
-    private boolean autoscaled;
-
-    /**
-     * Initializes a new instance with a specified automatic scaling mode, but
-     * without minimum and maximum values.
-     *
-     * @param autoscaled {@code true} to turn automatic scaling on
-     */
-    private Axis(boolean autoscaled) {
-        axisListeners = new HashSet<>();
-        this.autoscaled = autoscaled;
-    }
-
-    /**
-     * Initializes a new instance without minimum and maximum values.
-     */
-    public Axis() {
-        this(true);
-    }
-
-    /**
-     * Initializes a new instance with the specified minimum and maximum values.
-     *
-     * @param min minimum value
-     * @param max maximum value
-     */
-    public Axis(Number min, Number max) {
-        this(false);
-        this.min = min;
-        this.max = max;
-    }
+public interface Axis {
 
     /**
      * Adds the specified {@code AxisListener} to this Axis.
@@ -80,9 +20,7 @@ public abstract class Axis implements Serializable {
      * @param listener Listener to be added
      * @see AxisListener
      */
-    public void addAxisListener(AxisListener listener) {
-        axisListeners.add(listener);
-    }
+    void addAxisListener(AxisListener listener);
 
     /**
      * Removes the specified {@code AxisListener} from this Axis.
@@ -90,9 +28,7 @@ public abstract class Axis implements Serializable {
      * @param listener Listener to be removed
      * @see AxisListener
      */
-    public void removeAxisListener(AxisListener listener) {
-        axisListeners.remove(listener);
-    }
+    void removeAxisListener(AxisListener listener);
 
     /**
      * Notifies all registered {@code AxisListener}s that the value
@@ -101,56 +37,42 @@ public abstract class Axis implements Serializable {
      * @param min new minimum value
      * @param max new maximum value
      */
-    private void fireRangeChanged(Number min, Number max) {
-        for (AxisListener listener : axisListeners) {
-            listener.rangeChanged(this, min, max);
-        }
-    }
+    void fireRangeChanged(Number min, Number max);
 
     /**
      * Returns the minimum value to be displayed.
      *
      * @return Minimum value.
      */
-    public Number getMin() {
-        return min;
-    }
+    Number getMin();
 
     /**
      * Sets the minimum value to be displayed.
      *
      * @param min Minimum value.
      */
-    public void setMin(Number min) {
-        setRange(min, getMax());
-    }
+    void setMin(Number min);
 
     /**
      * Returns the maximum value to be displayed.
      *
      * @return Maximum value.
      */
-    public Number getMax() {
-        return max;
-    }
+    Number getMax();
 
     /**
      * Sets the maximum value to be displayed.
      *
      * @param max Maximum value.
      */
-    public void setMax(Number max) {
-        setRange(getMin(), max);
-    }
+    void setMax(Number max);
 
     /**
      * Returns the range of values to be displayed.
      *
      * @return Distance between maximum and minimum value.
      */
-    public double getRange() {
-        return getMax().doubleValue() - getMin().doubleValue();
-    }
+    double getRange();
 
     /**
      * Sets the range of values to be displayed.
@@ -158,15 +80,7 @@ public abstract class Axis implements Serializable {
      * @param min Minimum value.
      * @param max Maximum value.
      */
-    public void setRange(Number min, Number max) {
-        if ((getMin() != null) && getMin().equals(min)
-                && (getMax() != null) && getMax().equals(max)) {
-            return;
-        }
-        this.min = min;
-        this.max = max;
-        fireRangeChanged(min, max);
-    }
+    void setRange(Number min, Number max);
 
     /**
      * Returns whether the axis range should be determined automatically rather
@@ -174,9 +88,7 @@ public abstract class Axis implements Serializable {
      *
      * @return whether the axis is scaled automatically to fit the current data
      */
-    public boolean isAutoscaled() {
-        return autoscaled;
-    }
+    boolean isAutoscaled();
 
     /**
      * Sets whether the axis range should be determined automatically rather
@@ -185,11 +97,7 @@ public abstract class Axis implements Serializable {
      * @param autoscaled Defines whether the axis should be automatically
      * scaled to fit the current data.
      */
-    public void setAutoscaled(boolean autoscaled) {
-        if (this.autoscaled != autoscaled) {
-            this.autoscaled = autoscaled;
-        }
-    }
+    void setAutoscaled(boolean autoscaled);
 
     /**
      * Returns whether the currently set minimum and maximum values are valid.
@@ -197,26 +105,6 @@ public abstract class Axis implements Serializable {
      * @return {@code true} when minimum and maximum values are correct,
      * otherwise {@code false}
      */
-    public boolean isValid() {
-        return MathUtils.isCalculatable(min) && MathUtils.isCalculatable(max);
-    }
+    boolean isValid();
 
-    /**
-     * Custom deserialization method.
-     *
-     * @param in Input stream.
-     * @throws ClassNotFoundException if a serialized class doesn't exist
-     *                                anymore.
-     * @throws IOException            if there is an error while reading data
-     *                                from the
-     *                                input stream.
-     */
-    private void readObject(ObjectInputStream in)
-            throws ClassNotFoundException, IOException {
-        // Normal deserialization
-        in.defaultReadObject();
-
-        // Handle transient fields
-        axisListeners = new HashSet<>();
-    }
 }

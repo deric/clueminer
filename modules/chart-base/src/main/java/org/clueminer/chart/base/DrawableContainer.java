@@ -19,14 +19,12 @@ package org.clueminer.chart.base;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.clueminer.chart.api.AbstractDrawable;
 import org.clueminer.chart.api.Container;
 import org.clueminer.chart.api.Drawable;
@@ -75,7 +73,7 @@ public class DrawableContainer extends AbstractDrawable implements Container {
      */
     public DrawableContainer(Layout layout) {
         insets = new Insets2D.Double();
-        components = new ConcurrentLinkedQueue<>();
+        components = new LinkedList<>();
         constraints = new HashMap<>();
         this.layout = layout;
     }
@@ -139,14 +137,8 @@ public class DrawableContainer extends AbstractDrawable implements Container {
     }
 
     @Override
-    public List<Drawable> getDrawables() {
-        /*
-         * TODO: Size of ArrayList can be different from the number of added components
-         * in concurrent environments.
-         */
-        List<Drawable> drawableList = new ArrayList<>(components.size());
-        drawableList.addAll(components);
-        return drawableList;
+    public Drawable[] getDrawables() {
+        return components.toArray(new Drawable[0]);
     }
 
     private static List<Drawable> getDrawablesAt(Container container, Point2D point, LinkedList<Drawable> previousResults) {
