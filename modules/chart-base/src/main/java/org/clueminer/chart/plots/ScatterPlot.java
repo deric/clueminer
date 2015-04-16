@@ -2,14 +2,19 @@ package org.clueminer.chart.plots;
 
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.AxisPosition;
 import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.Plot;
-import org.clueminer.chart.api.PlotArea;
 import org.clueminer.chart.base.AbstractPlot;
 import org.clueminer.chart.base.BaseAxis;
 import org.clueminer.chart.base.Grid;
@@ -18,6 +23,7 @@ import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
 import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.util.Location;
+import org.clueminer.chart.util.Orientation;
 
 /**
  *
@@ -26,20 +32,58 @@ import org.clueminer.chart.util.Location;
 public class ScatterPlot extends AbstractPlot implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
-    private Axis[] axes;
-    private AxisRenderer[] axesRenderer;
+    private Map<AxisPosition, Axis> axes;
 
     public ScatterPlot(int width, int height) {
         super(width, height);
 
-        axes = new Axis[2];
-        axes[AxisPosition.X.getId()] = new BaseAxis();
-        axes[AxisPosition.Y.getId()] = new BaseAxis();
-        axesRenderer = new AxisRenderer[2];
-        axesRenderer[AxisPosition.X.getId()] = new LinearRenderer2D();
-        axesRenderer[AxisPosition.Y.getId()] = new LinearRenderer2D();
+        axes = new HashMap<>(2);
+        axes.put(AxisPosition.X, createAxis(false, Orientation.HORIZONTAL));
+        axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
 
         add(new Grid(this));
+    }
+
+    private Axis createAxis(boolean isLogscale, Orientation orient) {
+        if (isLogscale) {
+            throw new UnsupportedOperationException("not supported yet");
+        } else {
+            return new BaseAxis(new LinearRenderer2D(), orient);
+        }
+    }
+
+    @Override
+    public void layout() {
+        if (axes != null) {
+            for (Axis ax : axes.values()) {
+                layoutAxisShape(ax, Orientation.HORIZONTAL);
+            }
+        }
+    }
+
+    private void layoutAxisShape(Axis comp, Orientation orientation) {
+        Rectangle2D plotBounds = getPlotArea();
+
+        if (comp == null) {
+            return;
+        }
+        AxisRenderer renderer = comp.getRenderer();
+
+        Dimension2D size = comp.getPreferredSize();
+
+        Shape shape;
+        if (orientation == Orientation.HORIZONTAL) {
+            shape = new Line2D.Double(
+                    0.0, 0.0,
+                    plotBounds.getWidth(), 0.0
+            );
+        } else {
+            shape = new Line2D.Double(
+                    size.getWidth(), plotBounds.getHeight(),
+                    size.getWidth(), 0.0
+            );
+        }
+        renderer.setShape(shape);
     }
 
     public ScatterPlot(ChartBuilder builder) {
@@ -48,17 +92,17 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public Axis getAxis(AxisPosition pos) {
-        return axes[pos.getId()];
+        return axes.get(pos);
     }
 
     @Override
     public void setAxis(AxisPosition pos, Axis axis) {
-        axes[pos.getId()] = axis;
+        axes.put(pos, axis);
     }
 
     @Override
     public void removeAxis(AxisPosition pos) {
-        axes[pos.getId()] = null;
+        axes.remove(pos);
     }
 
     @Override
@@ -67,23 +111,18 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     }
 
     @Override
-    public void autoscaleAxis(AxisPosition axisName) {
-        axes[axisName.getId()].setAutoscaled(true);
+    public void autoscaleAxis(AxisPosition pos) {
+        axes.get(pos).setAutoscaled(true);
     }
 
     @Override
     public AxisRenderer getAxisRenderer(AxisPosition axisName) {
-        return axesRenderer[axisName.getId()];
+        return axes.get(axisName).getRenderer();
     }
 
     @Override
     public void setAxisRenderer(AxisPosition axisName, AxisRenderer renderer) {
-        axesRenderer[axisName.getId()] = renderer;
-    }
-
-    @Override
-    public PlotArea getPlotArea() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        axes.get(axisName).setRenderer(renderer);
     }
 
     @Override

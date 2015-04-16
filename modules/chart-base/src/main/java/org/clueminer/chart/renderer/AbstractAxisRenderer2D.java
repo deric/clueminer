@@ -19,15 +19,11 @@ package org.clueminer.chart.renderer;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -41,16 +37,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.clueminer.chart.api.AbstractDrawable;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.AxisRenderer;
-import org.clueminer.chart.api.Drawable;
-import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.api.Tick;
 import org.clueminer.chart.api.TickType;
-import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.util.GeometryUtils;
-import org.clueminer.chart.util.GraphicsUtils;
 import org.clueminer.chart.util.MathUtils;
 import org.clueminer.chart.util.PointND;
 import org.clueminer.chart.util.SerializationUtils;
@@ -264,219 +255,6 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
     }
 
     /**
-     * Returns a component that displays the specified axis.
-     *
-     * @param axis axis to be displayed
-     * @return component displaying the axis
-     * @see Axis
-     */
-    public Drawable getRendererComponent(final Axis axis) {
-        final Drawable component = new AbstractDrawable() {
-            /**
-             * Version id for serialization.
-             */
-            private static final long serialVersionUID = 3605211198378801694L;
-
-            /**
-             * Draws the {@code Drawable} with the specified drawing context.
-             *
-             * @param context Environment used for drawing
-             */
-            public void draw(DrawingContext context) {
-                if (shapeLines == null || shapeLines.length == 0) {
-                    return;
-                }
-
-                AbstractAxisRenderer2D renderer = AbstractAxisRenderer2D.this;
-                Graphics2D graphics = context.getGraphics();
-
-                // Remember old state of Graphics2D instance
-                AffineTransform txOrig = graphics.getTransform();
-                graphics.translate(getX(), getY());
-                Stroke strokeOld = graphics.getStroke();
-                Paint paintOld = graphics.getPaint();
-
-                // Draw axis shape
-                Paint axisPaint = renderer.getShapeColor();
-                Stroke axisStroke = renderer.getShapeStroke();
-                boolean isShapeVisible = renderer.isShapeVisible();
-                if (isShapeVisible) {
-                    Shape shape = renderer.getShape();
-                    GraphicsUtils.drawPaintedShape(
-                            graphics, shape, axisPaint, null, axisStroke);
-                }
-
-                double fontSize
-                        = renderer.getTickFont().getSize2D();
-
-                // Draw ticks
-                boolean drawTicksMajor = renderer.isTicksVisible();
-                boolean drawTicksMinor = renderer.isMinorTicksVisible();
-                if (drawTicksMajor || (drawTicksMajor && drawTicksMinor)) {
-                    // Calculate tick positions (in pixel coordinates)
-                    List<Tick> ticks = getTicks(axis);
-
-                    boolean isTickLabelVisible
-                            = renderer.isTickLabelsVisible();
-                    boolean isTickLabelOutside = renderer.isTickLabelsOutside();
-                    double tickLabelRotation = renderer.getTickLabelRotation();
-                    double tickLabelDist = renderer.getTickLabelDistanceAbsolute();
-                    Line2D tickShape = new Line2D.Double();
-
-                    for (Tick tick : ticks) {
-                        // Draw tick
-                        if ((tick.position == null)
-                                || (tick.normal == null)) {
-                            continue;
-                        }
-                        Point2D tickPoint = tick.position.getPoint2D();
-                        Point2D tickNormal = tick.normal.getPoint2D();
-
-                        double tickLength;
-                        double tickAlignment;
-                        Paint tickPaint;
-                        Stroke tickStroke;
-                        if (TickType.MINOR.equals(tick.type)) {
-                            tickLength = renderer.getTickMinorLengthAbsolute();
-                            tickAlignment = renderer.getMinorTickAlignment();
-                            tickPaint = renderer.getMinorTickColor();
-                            tickStroke = renderer.getMinorTickStroke();
-                        } else {
-                            tickLength = getTickLengthAbsolute();
-                            tickAlignment = renderer.getTickAlignment();
-                            tickPaint
-                                    = renderer.getTickColor();
-                            tickStroke = renderer.getTickStroke();
-                        }
-
-                        double tickLengthInner = tickLength * tickAlignment;
-                        double tickLengthOuter = tickLength * (1.0 - tickAlignment);
-
-                        if ((drawTicksMajor && (tick.type == TickType.MAJOR)
-                                || tick.type == TickType.CUSTOM) || (drawTicksMinor
-                                && tick.type == TickType.MINOR)) {
-                            tickShape.setLine(
-                                    tickPoint.getX() - tickNormal.getX() * tickLengthInner,
-                                    tickPoint.getY() - tickNormal.getY() * tickLengthInner,
-                                    tickPoint.getX() + tickNormal.getX() * tickLengthOuter,
-                                    tickPoint.getY() + tickNormal.getY() * tickLengthOuter
-                            );
-                            GraphicsUtils.drawPaintedShape(
-                                    graphics, tickShape, tickPaint, null, tickStroke);
-                        }
-
-                        // Draw label
-                        if (isTickLabelVisible && (tick.type == TickType.MAJOR
-                                || tick.type == TickType.CUSTOM)) {
-                            String tickLabelText = tick.label;
-                            if (tickLabelText != null && !tickLabelText.trim().isEmpty()) {
-                                Label tickLabel = new Label(tickLabelText);
-                                tickLabel.setFont(renderer.getTickFont());
-                                // TODO Allow separate colors for ticks and tick labels?
-                                tickLabel.setColor(tickPaint);
-                                double labelDist = tickLengthOuter + tickLabelDist;
-                                layoutLabel(tickLabel, tickPoint, tickNormal,
-                                        labelDist, isTickLabelOutside, tickLabelRotation);
-                                tickLabel.draw(context);
-                            }
-                        }
-                    }
-                }
-
-                // Draw axis label
-                String labelText = renderer.getLabel();
-                if (labelText != null && !labelText.trim().isEmpty()) {
-                    Label axisLabel = new Label(labelText);
-                    axisLabel.setFont(renderer.getLabelFont());
-                    axisLabel.setColor(renderer.getLabelColor());
-
-                    double tickLength = getTickLengthAbsolute();
-                    double tickAlignment = renderer.getTickAlignment();
-                    double tickLengthOuter = tickLength * (1.0 - tickAlignment);
-                    double tickLabelDistance = renderer.getTickLabelDistanceAbsolute();
-
-                    double labelDistance = renderer.getLabelDistance() * fontSize;
-                    double labelDist
-                            = tickLengthOuter + tickLabelDistance + fontSize + labelDistance;
-                    double labelRotation = renderer.getLabelRotation();
-                    double axisLabelPos
-                            = (axis.getMin().doubleValue() + axis.getMax().doubleValue()) * 0.5;
-                    boolean isTickLabelOutside = renderer.isTickLabelsOutside();
-
-                    PointND<Double> labelPos = getPosition(axis, axisLabelPos, false, true);
-                    PointND<Double> labelNormal = getNormal(axis, axisLabelPos, false, true);
-
-                    if (labelPos != null && labelNormal != null) {
-                        layoutLabel(axisLabel, labelPos.getPoint2D(),
-                                labelNormal.getPoint2D(), labelDist,
-                                isTickLabelOutside, labelRotation);
-                        axisLabel.draw(context);
-                    }
-                }
-
-                graphics.setPaint(paintOld);
-                graphics.setStroke(strokeOld);
-                graphics.setTransform(txOrig);
-            }
-
-            private void layoutLabel(Label label, Point2D labelPos, Point2D labelNormal,
-                    double labelDist, boolean isLabelOutside, double rotation) {
-                Rectangle2D labelSize = label.getTextRectangle();
-                Shape marginShape = new Rectangle2D.Double(
-                        0, 0,
-                        labelSize.getWidth() + 2.0 * labelDist, labelSize.getHeight() + 2.0 * labelDist
-                );
-                Rectangle2D marginBounds = marginShape.getBounds2D();
-                label.setRotation(rotation);
-                if ((rotation % 360.0) != 0.0) {
-                    marginShape = AffineTransform.getRotateInstance(
-                            Math.toRadians(-rotation),
-                            marginBounds.getCenterX(),
-                            marginBounds.getCenterY()
-                    ).createTransformedShape(marginShape);
-                }
-                marginBounds = marginShape.getBounds2D();
-
-                double intersRayLength = marginBounds.getHeight() * marginBounds.getHeight()
-                        + marginBounds.getWidth() * marginBounds.getWidth();
-                double intersRayDir = (isLabelOutside ? -1.0 : 1.0) * intersRayLength;
-                List<Point2D> descriptionBoundsIntersections = GeometryUtils.intersection(
-                        marginBounds,
-                        new Line2D.Double(
-                                marginBounds.getCenterX(),
-                                marginBounds.getCenterY(),
-                                marginBounds.getCenterX() + intersRayDir * labelNormal.getX(),
-                                marginBounds.getCenterY() + intersRayDir * labelNormal.getY()
-                        )
-                );
-                if (!descriptionBoundsIntersections.isEmpty()) {
-                    Point2D inters = descriptionBoundsIntersections.get(0);
-                    double intersX = inters.getX() - marginBounds.getCenterX();
-                    double intersY = inters.getY() - marginBounds.getCenterY();
-                    double posX = labelPos.getX() - intersX - labelSize.getWidth() / 2.0;
-                    double posY = labelPos.getY() - intersY - labelSize.getHeight() / 2.0;
-
-                    label.setBounds(posX, posY, labelSize.getWidth(), labelSize.getHeight());
-                }
-            }
-
-            @Override
-            public Dimension2D getPreferredSize() {
-                AbstractAxisRenderer2D renderer = AbstractAxisRenderer2D.this;
-                double fontSize = renderer.getTickFont().getSize2D();
-                double tickLength = getTickLengthAbsolute();
-                double tickAlignment = renderer.getTickAlignment();
-                double tickLengthOuter = tickLength * (1.0 - tickAlignment);
-                double labelDistance = renderer.getTickLabelDistanceAbsolute() + tickLengthOuter;
-                double minSize = fontSize + labelDistance + tickLengthOuter;
-                return new org.clueminer.chart.util.Dimension2D.Double(minSize, minSize);
-            }
-        };
-
-        return component;
-    }
-
-    /**
      * Returns a list of all tick element on the axis.
      *
      * @param axis Axis
@@ -521,7 +299,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      *
      * @return Major tick length in pixels.
      */
-    protected double getTickLengthAbsolute() {
+    public double getTickLengthAbsolute() {
         double fontSize = getTickFont().getSize2D();
         return getTickLength() * fontSize;
     }
@@ -531,7 +309,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      *
      * @return Minor tick length in pixels.
      */
-    protected double getTickMinorLengthAbsolute() {
+    public double getTickMinorLengthAbsolute() {
         double fontSize = getTickFont().getSize2D();
         return getMinorTickLength() * fontSize;
     }
@@ -541,7 +319,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      *
      * @return Distance in pixels.
      */
-    protected double getTickLabelDistanceAbsolute() {
+    public double getTickLabelDistanceAbsolute() {
         double fontSize = getTickFont().getSize2D();
         return getTickLabelDistance() * fontSize;
     }
@@ -556,7 +334,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      * @param tickPositions Set of tick positions
      * @param isAutoSpacing Use automatic scaling
      */
-    protected abstract void createTicks(List<Tick> ticks, Axis axis,
+    public abstract void createTicks(List<Tick> ticks, Axis axis,
             double min, double max, Set<Double> tickPositions,
             boolean isAutoSpacing);
 

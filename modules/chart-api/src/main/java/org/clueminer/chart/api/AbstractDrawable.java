@@ -114,7 +114,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public Dimension2D getPreferredSize() {
-        return new org.clueminer.chart.util.Dimension2D.Double();
+        return new org.clueminer.chart.util.Dim.Double();
     }
 
     @Override

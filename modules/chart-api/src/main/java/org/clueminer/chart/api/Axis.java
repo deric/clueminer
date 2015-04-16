@@ -1,5 +1,7 @@
 package org.clueminer.chart.api;
 
+import org.clueminer.chart.util.Orientation;
+
 /**
  * <p>
  * Class that represents an arbitrary axis.</p>
@@ -10,12 +12,12 @@ package org.clueminer.chart.api;
  * <li>Administration of {@link AxisListener AxisListeners}</li>
  * </ul>
  */
-public interface Axis {
+public interface Axis extends Drawable {
 
     /**
-     * Adds the specified {@code AxisListener} to this Axis.
-     * The Listeners will be notified if changes to the Axis occur,
-     * for Example if the minimum or maximum value changes.
+     * Adds the specified {@code AxisListener} to this Axis. The Listeners will
+     * be notified if changes to the Axis occur, for Example if the minimum or
+     * maximum value changes.
      *
      * @param listener Listener to be added
      * @see AxisListener
@@ -31,8 +33,8 @@ public interface Axis {
     void removeAxisListener(AxisListener listener);
 
     /**
-     * Notifies all registered {@code AxisListener}s that the value
-     * range has changed.
+     * Notifies all registered {@code AxisListener}s that the value range has
+     * changed.
      *
      * @param min new minimum value
      * @param max new maximum value
@@ -94,8 +96,8 @@ public interface Axis {
      * Sets whether the axis range should be determined automatically rather
      * than using the axis's minimum and a maximum values.
      *
-     * @param autoscaled Defines whether the axis should be automatically
-     * scaled to fit the current data.
+     * @param autoscaled Defines whether the axis should be automatically scaled
+     *                   to fit the current data.
      */
     void setAutoscaled(boolean autoscaled);
 
@@ -103,8 +105,21 @@ public interface Axis {
      * Returns whether the currently set minimum and maximum values are valid.
      *
      * @return {@code true} when minimum and maximum values are correct,
-     * otherwise {@code false}
+     *         otherwise {@code false}
      */
     boolean isValid();
+
+    AxisRenderer getRenderer();
+
+    /**
+     * Set axis renderer
+     *
+     * @param renderer
+     */
+    void setRenderer(AxisRenderer renderer);
+
+    Orientation getOrientation();
+
+    void setOrientation(Orientation orientation);
 
 }

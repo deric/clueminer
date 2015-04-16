@@ -28,10 +28,10 @@ public class ScatterTest2 {
         long start = System.currentTimeMillis();
         ScatterPlot scatter = new ScatterPlot(800, 600);
         long create = (System.currentTimeMillis() - start);
-        System.out.println("xchart create = " + create + " ms");
+        System.out.println("ff-chart create = " + create + " ms");
         new SwingWrapper(scatter).displayChart();
         long end = (System.currentTimeMillis() - start);
-        System.out.println("xchart show = " + end + " ms");
+        System.out.println("ff-chart show = " + end + " ms");
     }
 
 }

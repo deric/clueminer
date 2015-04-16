@@ -19,6 +19,7 @@ package org.clueminer.chart.renderer;
 import java.util.List;
 import java.util.Set;
 import org.clueminer.chart.api.Axis;
+import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.Tick;
 import org.clueminer.chart.api.TickType;
 import org.clueminer.chart.util.MathUtils;
@@ -27,7 +28,7 @@ import org.clueminer.chart.util.MathUtils;
  *
  * @author deric
  */
-public class LinearRenderer2D extends AbstractAxisRenderer2D {
+public class LinearRenderer2D extends AbstractAxisRenderer2D implements AxisRenderer {
 
     private static final long serialVersionUID = -8738555725384893517L;
 
@@ -89,7 +90,7 @@ public class LinearRenderer2D extends AbstractAxisRenderer2D {
     }
 
     @Override
-    protected void createTicks(List<Tick> ticks, Axis axis, double min,
+    public void createTicks(List<Tick> ticks, Axis axis, double min,
             double max, Set<Double> tickPositions, boolean isAutoSpacing) {
         double tickSpacing = 1.0;
         int ticksMinorCount = 3;

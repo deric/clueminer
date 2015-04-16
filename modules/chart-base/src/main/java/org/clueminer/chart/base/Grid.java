@@ -83,6 +83,7 @@ public class Grid extends AbstractDrawable implements Drawable {
         graphics.translate(getX(), getY());
         AffineTransform txOffset = graphics.getTransform();
         Rectangle2D bounds = getBounds();
+        System.out.println("bounds: " + bounds);
 
         // Draw gridX
         if (isMajorGridX() || isMinorGridX()) {
@@ -157,7 +158,6 @@ public class Grid extends AbstractDrawable implements Drawable {
         }
 
         graphics.setTransform(txOrig);
-
     }
 
     public boolean isMajorGridX() {

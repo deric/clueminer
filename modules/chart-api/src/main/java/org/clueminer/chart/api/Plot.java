@@ -3,6 +3,7 @@ package org.clueminer.chart.api;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.chart.data.DataSource;
@@ -85,7 +86,7 @@ public interface Plot extends Drawable, Container {
      *
      * @return {@code PlotArea2D}.
      */
-    PlotArea getPlotArea();
+    Rectangle2D getPlotArea();
 
     /**
      * Returns the title component of this plot.

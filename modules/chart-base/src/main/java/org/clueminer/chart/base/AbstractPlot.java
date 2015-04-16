@@ -19,6 +19,7 @@ package org.clueminer.chart.base;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.factory.ThemeFactory;
@@ -76,6 +77,10 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
 
     public Dataset<? extends Instance> getDataset() {
         return dataset;
+    }
+
+    public Rectangle2D getPlotArea() {
+        return getBounds();
     }
 
 }
