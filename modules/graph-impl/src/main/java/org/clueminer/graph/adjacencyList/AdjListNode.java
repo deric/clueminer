@@ -48,7 +48,7 @@ public class AdjListNode implements Node {
 		builder.append("n");
 		builder.append(id);
 		builder.append(": [");
-//		builder.append(this.getInstance().classValue());
+		builder.append(this.getInstance() != null ? this.getInstance().classValue() : "?");
 		builder.append("]\n");
 		for(Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
 			AdjListEdge edge = entrySet.getValue();
