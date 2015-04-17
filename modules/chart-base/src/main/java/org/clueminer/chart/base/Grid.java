@@ -82,8 +82,7 @@ public class Grid extends AbstractDrawable implements Drawable {
         AffineTransform txOrig = graphics.getTransform();
         graphics.translate(getX(), getY());
         AffineTransform txOffset = graphics.getTransform();
-        Rectangle2D bounds = getBounds();
-        System.out.println("bounds: " + bounds);
+        Rectangle2D bounds = plot.getBounds();
 
         // Draw gridX
         if (isMajorGridX() || isMinorGridX()) {

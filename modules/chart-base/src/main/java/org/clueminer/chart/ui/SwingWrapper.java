@@ -16,7 +16,10 @@
  */
 package org.clueminer.chart.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -64,7 +67,7 @@ public class SwingWrapper {
      * Constructor
      *
      * @param charts
-     * @param numRows - the number of rows
+     * @param numRows    - the number of rows
      * @param numColumns - the number of columns
      */
     public SwingWrapper(List<Drawable> charts, int numRows, int numColumns) {
@@ -102,7 +105,19 @@ public class SwingWrapper {
 
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 JPanel chartPanel = new ClmChartPanel(charts.get(0));
-                frame.add(chartPanel);
+                frame.setLayout(new GridBagLayout());
+
+                GridBagConstraints c = new GridBagConstraints();
+                c.anchor = GridBagConstraints.NORTHWEST;
+                c.fill = GridBagConstraints.BOTH;
+                c.gridx = 0;
+                c.gridy = 0;
+                c.gridwidth = 1;
+                c.gridheight = 1;
+                c.weightx = 1.0;
+                c.weighty = 1.0;
+                c.insets = new Insets(0, 0, 0, 0);
+                frame.add(chartPanel, c);
 
                 // Display the window.
                 frame.pack();

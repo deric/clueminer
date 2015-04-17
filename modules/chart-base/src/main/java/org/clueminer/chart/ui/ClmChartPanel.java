@@ -19,6 +19,7 @@ package org.clueminer.chart.ui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -67,6 +68,7 @@ public class ClmChartPanel extends JPanel {
         this.chart = chart;
         preferredSize = new Dimension();
         preferredSize.setSize(chart.getWidth(), chart.getHeight());
+        chart.setBounds(0, 0, preferredSize.width, preferredSize.height);
 
         // Right-click listener for saving chart
         this.addMouseListener(new PopUpMenuClickListener());
@@ -93,6 +95,12 @@ public class ClmChartPanel extends JPanel {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g.create();
+
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
         chart.draw(new DrawingContext(g2d));
         g2d.dispose();
     }
@@ -183,7 +191,7 @@ public class ClmChartPanel extends JPanel {
 
         /**
          * @param suffix This file filter accepts all files that end with
-         * .suffix or the capitalized suffix.
+         *               .suffix or the capitalized suffix.
          */
         public SuffixSaveFilter(String suffix) {
 
@@ -277,8 +285,8 @@ public class ClmChartPanel extends JPanel {
 
     /**
      * update a series by only updating the Y-Axis data. The X-Axis data will be
-     * automatically generated as a list of increasing Integers starting from
-     * 1 and ending at the size of the new Y-Axis data list.
+     * automatically generated as a list of increasing Integers starting from 1
+     * and ending at the size of the new Y-Axis data list.
      *
      * @param seriesName
      * @param newYData

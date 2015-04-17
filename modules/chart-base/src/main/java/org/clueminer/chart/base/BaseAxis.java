@@ -116,6 +116,8 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
         this(true);
         this.renderer = renderer;
         this.orientation = orient;
+        this.min = 0;
+        this.max = 1;
     }
 
     /**
@@ -283,11 +285,10 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
         this.orientation = orientation;
     }
 
-
     @Override
     public void draw(DrawingContext context) {
         /* if (shapeLines == null || shapeLines.length == 0) {            return;
-        }*/
+         }*/
 
         Graphics2D graphics = context.getGraphics();
 
@@ -385,8 +386,8 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
         }
 
         // Draw axis label
-        Label axisLabel = new Label(renderer.getLabel());
-        if (!axisLabel.getText().trim().isEmpty()) {
+        if (renderer.getLabel() != null) {
+            Label axisLabel = new Label(renderer.getLabel());
             double tickLength = renderer.getTickLengthAbsolute();
             double tickAlignment = renderer.getTickAlignment();
             double tickLengthOuter = tickLength * (1.0 - tickAlignment);

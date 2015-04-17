@@ -66,6 +66,7 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
             Paint fg = theme.getBorderColor();
             GraphicsUtils.drawPaintedShape(
                     graphics, getBounds(), fg, null, stroke);
+
         }
 
         drawComponents(context);

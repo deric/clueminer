@@ -33,23 +33,28 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
     private Map<AxisPosition, Axis> axes;
+    private Grid grid;
 
     public ScatterPlot(int width, int height) {
         super(width, height);
+        grid = new Grid(this);
+        add(grid);
 
         axes = new HashMap<>(2);
         axes.put(AxisPosition.X, createAxis(false, Orientation.HORIZONTAL));
         axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
 
-        add(new Grid(this));
     }
 
     private Axis createAxis(boolean isLogscale, Orientation orient) {
+        Axis ax;
         if (isLogscale) {
             throw new UnsupportedOperationException("not supported yet");
         } else {
-            return new BaseAxis(new LinearRenderer2D(), orient);
+            ax = new BaseAxis(new LinearRenderer2D(), orient);
         }
+        add(ax);
+        return ax;
     }
 
     @Override

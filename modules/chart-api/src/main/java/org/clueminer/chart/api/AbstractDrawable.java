@@ -3,6 +3,7 @@ package org.clueminer.chart.api;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import org.clueminer.chart.util.Dim;
 
 /**
  * Abstract implementation of the {@link Drawable} interface.
@@ -21,6 +22,8 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     private final Rectangle2D bounds;
 
+    private Dim preferredSize;
+
     /**
      * Creates an AbstractDrawable.
      */
@@ -35,9 +38,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public Rectangle2D getBounds() {
-        Rectangle2D b = new Rectangle2D.Double();
-        b.setFrame(bounds);
-        return b;
+        return bounds;
     }
 
     /**
@@ -104,6 +105,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public void setBounds(double x, double y, double width, double height) {
+        System.out.println("setting bounds " + x + ", " + y + " w= " + width + ", h= " + height);
         bounds.setFrame(x, y, width, height);
     }
 
@@ -114,7 +116,10 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public Dimension2D getPreferredSize() {
-        return new org.clueminer.chart.util.Dim.Double();
+        if (preferredSize == null) {
+            preferredSize = new Dim.Double(bounds.getWidth(), bounds.getHeight());
+        }
+        return preferredSize;
     }
 
     @Override
