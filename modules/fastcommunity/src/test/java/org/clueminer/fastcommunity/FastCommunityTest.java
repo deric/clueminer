@@ -12,6 +12,6 @@ public class FastCommunityTest {
 	@Test
 	public void testGetName() {
 		FastCommunity fc = new FastCommunity();
-		assertEquals("Chinese Whispers", fc.getName());
+		assertEquals("Fast Community", fc.getName());
 	}
 }
