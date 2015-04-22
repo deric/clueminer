@@ -45,7 +45,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * Returns the x-position of the bounds.
      *
      * @return horizontal position of the upper-left corner of the bounding
-     *         rectangle.
+     * rectangle.
      */
     @Override
     public double getX() {
@@ -56,7 +56,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * Returns the y-position of the bounds.
      *
      * @return vertical position of the upper-left corner of the bounding
-     *         rectangle.
+     * rectangle.
      */
     @Override
     public double getY() {
@@ -91,21 +91,20 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
     @Override
     public void setBounds(Rectangle2D bounds) {
         setBounds(bounds.getX(), bounds.getY(),
-                  bounds.getWidth(), bounds.getHeight());
+                bounds.getWidth(), bounds.getHeight());
     }
 
     /**
      * Sets the bounds to the specified coordinates, width and height.
      * This method should be used when overriding functionality.
      *
-     * @param x      horizontal position of the upper-left corner
-     * @param y      vertical position of the upper-left corner
-     * @param width  horizontal extent
+     * @param x horizontal position of the upper-left corner
+     * @param y vertical position of the upper-left corner
+     * @param width horizontal extent
      * @param height vertical extent
      */
     @Override
     public void setBounds(double x, double y, double width, double height) {
-        System.out.println("setting bounds " + x + ", " + y + " w= " + width + ", h= " + height);
         bounds.setFrame(x, y, width, height);
     }
 
@@ -117,8 +116,9 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
     @Override
     public Dimension2D getPreferredSize() {
         if (preferredSize == null) {
-            preferredSize = new Dim.Double(bounds.getWidth(), bounds.getHeight());
+            preferredSize = new Dim.Double(bounds.getWidth() - bounds.getX(), bounds.getHeight() - bounds.getY());
         }
+        preferredSize.setSize(bounds.getWidth() - bounds.getX(), bounds.getHeight() - bounds.getY());
         return preferredSize;
     }
 

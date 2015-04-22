@@ -22,6 +22,7 @@ import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
 import org.clueminer.chart.renderer.LinearRenderer2D;
+import org.clueminer.chart.util.Insets2D;
 import org.clueminer.chart.util.Location;
 import org.clueminer.chart.util.Orientation;
 
@@ -34,6 +35,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     private static final long serialVersionUID = 1450179727270901601L;
     private Map<AxisPosition, Axis> axes;
     private Grid grid;
+    private Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
 
     public ScatterPlot(int width, int height) {
         super(width, height);
@@ -43,7 +45,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         axes = new HashMap<>(2);
         axes.put(AxisPosition.X, createAxis(false, Orientation.HORIZONTAL));
         axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
-
+        setInsets(insets);
     }
 
     private Axis createAxis(boolean isLogscale, Orientation orient) {
@@ -59,6 +61,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public void layout() {
+        grid.setBounds(getPlotArea());
         if (axes != null) {
             for (Axis ax : axes.values()) {
                 layoutAxisShape(ax, Orientation.HORIZONTAL);
@@ -79,8 +82,8 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         Shape shape;
         if (orientation == Orientation.HORIZONTAL) {
             shape = new Line2D.Double(
-                    0.0, 0.0,
-                    plotBounds.getWidth(), 0.0
+                    plotBounds.getX(), plotBounds.getY(),
+                    plotBounds.getWidth(), plotBounds.getY()
             );
         } else {
             shape = new Line2D.Double(
@@ -108,6 +111,16 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     @Override
     public void removeAxis(AxisPosition pos) {
         axes.remove(pos);
+    }
+
+    @Override
+    public Rectangle2D getPlotArea() {
+        Rectangle2D b = getBounds();
+        /*Rectangle2D rect = new Rectangle2D.Double(insets.left, insets.top,
+         b.getWidth() - insets.right - insets.left,
+         b.getHeight() - insets.bottom - insets.top);*/
+
+        return b;
     }
 
     @Override
