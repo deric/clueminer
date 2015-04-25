@@ -34,10 +34,6 @@ public class KNN {
 
     private DistanceMeasure dm;
 
-    public KNN() {
-        this(3);
-    }
-
     public KNN(int k) {
         this(k, new EuclideanDistance());
     }
