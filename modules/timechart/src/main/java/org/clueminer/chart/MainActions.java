@@ -5,10 +5,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import org.clueminer.chart.api.Annotation;
 
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.factory.AnnotationFactory;
-import org.clueminer.chart.factory.ChartFactory;
+import org.clueminer.chart.factory.ChartRendererFactory;
 import org.clueminer.dialogs.AnnotationProperties;
 import org.clueminer.dialogs.Overlays;
 import org.clueminer.dialogs.SettingsPanel;
@@ -216,7 +216,7 @@ public final class MainActions {
             JPopupMenu popupMenu = new JPopupMenu();
 
             JMenuItem item;
-            for (String chart : ChartFactory.getInstance().getProviders()) {
+            for (String chart : ChartRendererFactory.getInstance().getProviders()) {
                 popupMenu.add(item = new JMenuItem(
                         MainActions.changeChart(chartFrame, chart, chart.equals(current))));
                 item.setMargin(new Insets(0, 0, 0, 0));
@@ -246,7 +246,7 @@ public final class MainActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Chart chart = ChartFactory.getInstance().getProvider(chartName);
+            ChartRenderer chart = ChartRendererFactory.getInstance().getProvider(chartName);
             chartFrame.getChartData().setChart(chart);
             chartFrame.validate();
             chartFrame.repaint();
@@ -557,7 +557,7 @@ public final class MainActions {
         ChartData chartData = chartFrame.getChartData();
         String current = chartData.getChart().getName();
 
-        for (String chart : ChartFactory.getInstance().getProviders()) {
+        for (String chart : ChartRendererFactory.getInstance().getProviders()) {
             menu.add(menuItem = new JMenuItem(MainActions.changeChart(chartFrame, chart, current.equals(chart))));
             menuItem.setMargin(new Insets(0, 0, 0, 0));
         }

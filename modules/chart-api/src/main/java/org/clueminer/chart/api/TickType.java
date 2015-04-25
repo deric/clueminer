@@ -16,21 +16,22 @@
  */
 package org.clueminer.chart.api;
 
-import java.awt.Graphics2D;
-import java.io.Serializable;
-
 /**
  *
  * @author deric
  */
-public interface Chart extends Serializable {
+public enum TickType {
 
-    void paint(Graphics2D g);
-
-    void paint(Graphics2D g, int width, int height);
-
-    int getWidth();
-
-    int getHeight();
-
+    /**
+     * Major tick mark.
+     */
+    MAJOR,
+    /**
+     * Minor tick mark.
+     */
+    MINOR,
+    /**
+     * User-defined tick mark.
+     */
+    CUSTOM
 }

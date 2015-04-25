@@ -16,21 +16,11 @@
  */
 package org.clueminer.chart.api;
 
-import java.awt.Graphics2D;
-import java.io.Serializable;
-
 /**
  *
  * @author deric
  */
-public interface Chart extends Serializable {
+public enum AxisType {
 
-    void paint(Graphics2D g);
-
-    void paint(Graphics2D g, int width, int height);
-
-    int getWidth();
-
-    int getHeight();
-
+    Number, Date, String;
 }

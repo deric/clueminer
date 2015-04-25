@@ -10,7 +10,7 @@ import java.util.Locale;
  * This implementation adds support of double values to
  * {@code java.awt.geom.Dimension2D}.</p>
  */
-public abstract class Dimension2D extends java.awt.geom.Dimension2D
+public abstract class Dim extends java.awt.geom.Dimension2D
         implements Serializable {
 
     /**
@@ -21,13 +21,13 @@ public abstract class Dimension2D extends java.awt.geom.Dimension2D
     /**
      * Creates a new Dimension2D object.
      */
-    public Dimension2D() {
+    public Dim() {
     }
 
     /**
      * Class that stores double values.
      */
-    public static class Double extends Dimension2D {
+    public static class Double extends Dim {
 
         /**
          * Version id for serialization.

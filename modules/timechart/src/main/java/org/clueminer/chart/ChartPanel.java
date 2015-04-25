@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.border.Border;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.Overlay;
 import org.clueminer.gui.ColorGenerator;
@@ -87,7 +87,7 @@ public class ChartPanel extends JLayeredPane implements Serializable {
         });
         ChartFrameAdapter frameAdapter = new ChartFrameAdapter() {
             @Override
-            public void chartChanged(Chart newChart) {
+            public void chartChanged(ChartRenderer newChart) {
                 repaint();
             }
 

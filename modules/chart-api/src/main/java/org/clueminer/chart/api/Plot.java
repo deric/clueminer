@@ -3,6 +3,7 @@ package org.clueminer.chart.api;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.chart.data.DataSource;
@@ -30,7 +31,7 @@ public interface Plot extends Drawable, Container {
      * @param name Name of the axis.
      * @return Axis.
      */
-    Axis getAxis(String name);
+    Axis getAxis(AxisPosition name);
 
     /**
      * Sets the axis with the specified name and the associated
@@ -39,21 +40,21 @@ public interface Plot extends Drawable, Container {
      * @param name Name of the axis.
      * @param axis Axis.
      */
-    void setAxis(String name, Axis axis);
+    void setAxis(AxisPosition name, Axis axis);
 
     /**
      * Removes the axis with the specified name.
      *
      * @param name Name of the axis to be removed.
      */
-    void removeAxis(String name);
+    void removeAxis(AxisPosition name);
 
     /**
      * Returns a collection of all names of the axes stored in this plot.
      *
      * @return The names of all axes stored in this plot.
      */
-    Collection<String> getAxesNames();
+    Collection<AxisPosition> getAxesNames();
 
     /**
      * Tries to automatically set the ranges of the axes specified by the name
@@ -62,7 +63,7 @@ public interface Plot extends Drawable, Container {
      * @param axisName Name of the axis that should be scaled.
      * @see Axis#setAutoscaled(boolean)
      */
-    void autoscaleAxis(String axisName);
+    void autoscaleAxis(AxisPosition axisName);
 
     /**
      * Returns the renderer for the axis with the specified name.
@@ -70,7 +71,7 @@ public interface Plot extends Drawable, Container {
      * @param axisName Axis name.
      * @return Instance that renders the axis.
      */
-    AxisRenderer getAxisRenderer(String axisName);
+    AxisRenderer getAxisRenderer(AxisPosition axisName);
 
     /**
      * Sets the renderer for the axis with the specified name.
@@ -78,14 +79,14 @@ public interface Plot extends Drawable, Container {
      * @param axisName Name of the axis to be rendered.
      * @param renderer Instance to render the axis.
      */
-    void setAxisRenderer(String axisName, AxisRenderer renderer);
+    void setAxisRenderer(AxisPosition axisName, AxisRenderer renderer);
 
     /**
      * Returns the drawing area of this plot.
      *
      * @return {@code PlotArea2D}.
      */
-    PlotArea getPlotArea();
+    Rectangle2D getPlotArea();
 
     /**
      * Returns the title component of this plot.
@@ -111,19 +112,19 @@ public interface Plot extends Drawable, Container {
     /**
      * Adds a new data series to the plot.
      *
-     * @param source  Data series.
+     * @param source Data series.
      * @param visible {@code true} if the series should be displayed,
-     *                {@code false} otherwise.
+     * {@code false} otherwise.
      */
     void add(DataSource source, boolean visible);
 
     /**
      * Inserts the specified data series to the plot at a specified position.
      *
-     * @param index   Position.
-     * @param source  Data series.
+     * @param index Position.
+     * @param source Data series.
      * @param visible {@code true} if the series should be displayed,
-     *                {@code false} otherwise.
+     * {@code false} otherwise.
      */
     void add(int index, DataSource source, boolean visible);
 
@@ -132,7 +133,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data series.
      * @return {@code true} if the specified element is stored in the
-     *         plot, otherwise {@code false}
+     * plot, otherwise {@code false}
      */
     boolean contains(DataSource source);
 
@@ -149,7 +150,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data series.
      * @return {@code true} if the series existed,
-     *         otherwise {@code false}.
+     * otherwise {@code false}.
      */
     boolean remove(DataSource source);
 
@@ -166,7 +167,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data source.
      * @return Array containing axis names in the order of the columns,
-     *         or {@code null} if no mapping exists for the column.
+     * or {@code null} if no mapping exists for the column.
      */
     String[] getMapping(DataSource source);
 
@@ -176,7 +177,7 @@ public interface Plot extends Drawable, Container {
      * {@code source} will be mapped to first element of {@code axisNames}.
      * Axis names with value {@code null} will be ignored.
      *
-     * @param source    Data source.
+     * @param source Data source.
      * @param axisNames Sequence of axis names in the order of the columns.
      */
     void setMapping(DataSource source, String... axisNames);
@@ -206,9 +207,9 @@ public interface Plot extends Drawable, Container {
     /**
      * Changes the visibility of the specified data series.
      *
-     * @param source  Data series.
+     * @param source Data series.
      * @param visible {@code true} if the series should be visible,
-     *                {@code false} otherwise.
+     * {@code false} otherwise.
      */
     void setVisible(DataSource source, boolean visible);
 
@@ -223,7 +224,7 @@ public interface Plot extends Drawable, Container {
      * Sets the paint which will be used to fill the background of the plot.
      *
      * @param background Paint which will be used to fill the background of the
-     *                   plot.
+     * plot.
      */
     void setBackground(Paint background);
 
@@ -273,7 +274,7 @@ public interface Plot extends Drawable, Container {
      * Returns whether the legend is shown.
      *
      * @return {@code true} if the legend is shown,
-     *         {@code false} if the legend is hidden.
+     * {@code false} if the legend is hidden.
      */
     boolean isLegendVisible();
 
@@ -281,7 +282,7 @@ public interface Plot extends Drawable, Container {
      * Sets whether the legend will be shown.
      *
      * @param legendVisible {@code true} if the legend should be shown,
-     *                      {@code false} if the legend should be hidden.
+     * {@code false} if the legend should be hidden.
      */
     void setLegendVisible(boolean legendVisible);
 
@@ -303,7 +304,7 @@ public interface Plot extends Drawable, Container {
      * Returns the spacing between the plot area and the legend.
      *
      * @return Spacing between the plot area and the legend relative to font
-     *         height.
+     * height.
      */
     double getLegendDistance();
 
@@ -312,8 +313,8 @@ public interface Plot extends Drawable, Container {
      * The distance is defined in font height.
      *
      * @param distance Spacing between the plot area and the legend relative to
-     *                 font
-     *                 height.
+     * font
+     * height.
      */
     void setLegendDistance(double distance);
 }

@@ -6,7 +6,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartData;
 import org.clueminer.chart.api.Range;
@@ -14,12 +14,12 @@ import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simple rendering of a Chart
+ * Simple rendering of a ChartRenderer
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = Chart.class)
-public class DotsBuffered extends Chart {
+@ServiceProvider(service = ChartRenderer.class)
+public class DotsBuffered implements ChartRenderer {
 
     private static final long serialVersionUID = -7117225235898660411L;
     private BufferedImage bufferedImage;

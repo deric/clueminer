@@ -8,7 +8,7 @@ import org.clueminer.chart.ChartFrame;
 import org.clueminer.chart.Template;
 import org.clueminer.utils.FileUtils;
 import org.clueminer.chart.api.Overlay;
-import org.clueminer.chart.factory.ChartFactory;
+import org.clueminer.chart.factory.ChartRendererFactory;
 import org.clueminer.chart.factory.OverlayFactory;
 import org.clueminer.xml.XMLUtil;
 import org.openide.filesystems.FileUtil;
@@ -97,7 +97,7 @@ public class TemplateFactory {
             Template template = new Template(XMLUtil.getNameAttr(element));
 
             Element chart = XMLUtil.getChartNode(element);
-            template.setChart(ChartFactory.getInstance().getProvider(XMLUtil.getNameAttr(chart)));
+            template.setChart(ChartRendererFactory.getInstance().getProvider(XMLUtil.getNameAttr(chart)));
             Element chartProperties = XMLUtil.getPropertiesNode(chart);
             template.getChartProperties().loadFromTemplate(chartProperties);
 

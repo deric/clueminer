@@ -58,7 +58,8 @@ public abstract class GraphicsUtils {
 
     /**
      * sRGB to CIE XYZ conversion matrix. See
-     * http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications *
+     * http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+     * *
      */
     private static final double[] MATRIX_SRGB2XYZ_D50 = {
         0.436052025, 0.385081593, 0.143087414,
@@ -68,7 +69,8 @@ public abstract class GraphicsUtils {
 
     /**
      * CIE XYZ to sRGB conversion matrix. See
-     * http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications *
+     * http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+     * *
      */
     private static final double[] MATRIX_XYZ2SRGB_D50 = {
         3.1338561, -1.6168667, -0.4906146,
@@ -87,10 +89,10 @@ public abstract class GraphicsUtils {
      * Returns the outline for the specified text using the specified font and
      * line width. The text may also contain line breaks ({@literal '\n'}).
      *
-     * @param text          Text to be displayed.
-     * @param font          Font of the Text.
+     * @param text Text to be displayed.
+     * @param font Font of the Text.
      * @param wrappingWidth Maximum width of lines
-     * @param alignment     Alignment of the text when it spans multiple lines.
+     * @param alignment Alignment of the text when it spans multiple lines.
      * @return Shape of the text outline in the specified font.
      */
     public static Shape getOutline(String text, Font font, float wrappingWidth,
@@ -106,7 +108,7 @@ public abstract class GraphicsUtils {
         AttributedCharacterIterator iterator = string.getIterator();
         LineBreakMeasurer measurer = new LineBreakMeasurer(iterator, frc);
 
-        List<TextLayout> lines = new LinkedList<TextLayout>();
+        List<TextLayout> lines = new LinkedList<>();
         while (measurer.getPosition() < text.length()) {
             // Find out which character will be wrapped next
             int nextBreakPos = measurer.nextOffset(wrappingWidth);
@@ -156,9 +158,9 @@ public abstract class GraphicsUtils {
     /**
      * Fills a Shape with the specified Paint object.
      *
-     * @param graphics    Graphics to be painted into.
-     * @param shape       Shape to be filled.
-     * @param paint       Paint to be used.
+     * @param graphics Graphics to be painted into.
+     * @param shape Shape to be filled.
+     * @param paint Paint to be used.
      * @param paintBounds Optional bounds describing the painted area.
      */
     public static void fillPaintedShape(Graphics2D graphics, Shape shape,
@@ -190,11 +192,11 @@ public abstract class GraphicsUtils {
     /**
      * Draws a filled Shape with the specified Paint object.
      *
-     * @param graphics    Graphics to be painted into.
-     * @param shape       Shape to be filled.
-     * @param paint       Paint to be used.
+     * @param graphics Graphics to be painted into.
+     * @param shape Shape to be filled.
+     * @param paint Paint to be used.
      * @param paintBounds Optional bounds describing the painted area.
-     * @param stroke      Stroke to be used for outlines.
+     * @param stroke Stroke to be used for outlines.
      */
     public static void drawPaintedShape(Graphics2D graphics, Shape shape,
             Paint paint, Rectangle2D paintBounds, Stroke stroke) {
@@ -218,7 +220,7 @@ public abstract class GraphicsUtils {
      *
      * @param rgb Color components in the sRGB color space.
      * @param xyz Optional array to store color components in the CIE XYZ color
-     *            space.
+     * space.
      * @return Color components in the CIE XYZ color space.
      */
     public static double[] rgb2xyz(double[] rgb, double[] xyz) {
@@ -255,7 +257,7 @@ public abstract class GraphicsUtils {
      *
      * @param luv Color components in the CIE L*u*v* color space
      * @param xyz Optional array to store color components in the CIE XYZ color
-     *            space.
+     * space.
      * @return Color components in the CIE XYZ color space.
      */
     public static double[] luv2xyz(double[] luv, double[] xyz) {
@@ -271,13 +273,13 @@ public abstract class GraphicsUtils {
         }
 
         double a = (luv[0] != 0.0 || luv[1] != 0.0)
-                ? ((52.0 * luv[0]) / (luv[1] + 13.0 * luv[0] * XYZ_R_D50_U0) - 1.0) / 3.0
-                : 0.0;
+                   ? ((52.0 * luv[0]) / (luv[1] + 13.0 * luv[0] * XYZ_R_D50_U0) - 1.0) / 3.0
+                   : 0.0;
         double b = -5 * xyz[1];
         double c = -1.0 / 3.0;
         double d = (luv[0] != 0.0 || luv[2] != 0.0)
-                ? xyz[1] * ((39.0 * luv[0]) / (luv[2] + 13.0 * luv[0] * XYZ_R_D50_V0) - 5.0)
-                : 0.0;
+                   ? xyz[1] * ((39.0 * luv[0]) / (luv[2] + 13.0 * luv[0] * XYZ_R_D50_V0) - 5.0)
+                   : 0.0;
 
         xyz[0] = !MathUtils.almostEqual(a, c, 1e-15) ? (d - b) / (a - c) : 0.0;
         xyz[2] = xyz[0] * a + b;
@@ -295,7 +297,7 @@ public abstract class GraphicsUtils {
      *
      * @param xyz Color components in the CIE XYZ color space.
      * @param rgb Optional array for storing color components in the sRGB color
-     *            space.
+     * space.
      * @return Color components in the sRGB color space.
      */
     public static double[] xyz2rgb(double[] xyz, double[] rgb) {
@@ -331,7 +333,7 @@ public abstract class GraphicsUtils {
      *
      * @param xyz Color components in the CIE XYZ color space.
      * @param luv Optional array for storing color components in the CIE L*u*v*
-     *            color space.
+     * color space.
      * @return Color components in the CIE L*u*v* color space.
      */
     public static double[] xyz2luv(double[] xyz, double[] luv) {
@@ -370,7 +372,7 @@ public abstract class GraphicsUtils {
      *
      * @param rgb Color components in the sRGB color space.
      * @param luv Optional array for storing color components in the CIE L*u*v*
-     *            color space.
+     * color space.
      * @return Color components in the CIE L*u*v* color space.
      */
     public static double[] rgb2luv(double[] rgb, double[] luv) {
@@ -386,7 +388,7 @@ public abstract class GraphicsUtils {
      *
      * @param luv Color components in the CIE L*u*v* color space.
      * @param rgb Optional array for storing color components in the sRGB color
-     *            space.
+     * space.
      * @return Color components in sRGB color space.
      */
     public static double[] luv2rgb(double[] luv, double[] rgb) {
@@ -400,7 +402,7 @@ public abstract class GraphicsUtils {
      * @param color1 First color.
      * @param color2 Second color.
      * @param weight Weighting factor in the range 0 to 1 (0 means color1, 1
-     *               means second color)
+     * means second color)
      * @return New blended color
      */
     public static Color blend(Color color1, Color color2, double weight) {

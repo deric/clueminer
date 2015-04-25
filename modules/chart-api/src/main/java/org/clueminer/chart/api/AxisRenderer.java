@@ -14,14 +14,6 @@ import org.clueminer.chart.util.PointND;
  */
 public interface AxisRenderer {
 
-    /**
-     * Returns a component that displays the specified axis.
-     *
-     * @param axis axis to be displayed
-     * @return component displaying the axis
-     * @see Axis
-     */
-    public abstract Drawable getRendererComponent(Axis axis);
 
     /**
      * Converts a world (axis) coordinate value to a view (screen) coordinate
@@ -33,8 +25,7 @@ public interface AxisRenderer {
      *                    on the axis
      * @return Screen coordinate value
      */
-    public abstract double worldToView(Axis axis, Number value,
-            boolean extrapolate);
+    double worldToView(Axis axis, Number value, boolean extrapolate);
 
     /**
      * Converts a view (screen) coordinate value to a world (axis) coordinate
@@ -46,8 +37,7 @@ public interface AxisRenderer {
      *                    on the axis
      * @return World coordinate value
      */
-    public abstract Number viewToWorld(Axis axis, double value,
-            boolean extrapolate);
+    Number viewToWorld(Axis axis, double value, boolean extrapolate);
 
     /**
      * Returns a list of all tick element on the axis.
@@ -55,7 +45,7 @@ public interface AxisRenderer {
      * @param axis Axis
      * @return A list of {@code Tick} instances
      */
-    public abstract List<Tick> getTicks(Axis axis);
+    List<Tick> getTicks(Axis axis);
 
     /**
      * Returns the position of the specified value on the axis.
@@ -558,4 +548,10 @@ public interface AxisRenderer {
      * @param color Paint for axis label drawing.
      */
     void setLabelColor(Paint color);
+
+    double getTickLabelDistanceAbsolute();
+
+    double getTickMinorLengthAbsolute();
+
+    double getTickLengthAbsolute();
 }

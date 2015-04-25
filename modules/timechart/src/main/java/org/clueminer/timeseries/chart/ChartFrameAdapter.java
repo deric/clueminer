@@ -1,7 +1,7 @@
 package org.clueminer.timeseries.chart;
 
 import java.awt.Rectangle;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartListener;
 import org.clueminer.chart.api.Overlay;
 
@@ -12,7 +12,7 @@ import org.clueminer.chart.api.Overlay;
 public abstract class ChartFrameAdapter implements ChartListener {
 
     @Override
-    public void chartChanged(Chart newChart) {
+    public void chartChanged(ChartRenderer newChart) {
     }
 
     @Override

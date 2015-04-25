@@ -16,21 +16,23 @@
  */
 package org.clueminer.chart.api;
 
-import java.awt.Graphics2D;
-import java.io.Serializable;
-
 /**
  *
  * @author deric
  */
-public interface Chart extends Serializable {
+public enum AxisPosition {
 
-    void paint(Graphics2D g);
+    X(0),
+    Y(1),
+    Z(2);
 
-    void paint(Graphics2D g, int width, int height);
+    private final int id;
 
-    int getWidth();
+    private AxisPosition(int value) {
+        this.id = value;
+    }
 
-    int getHeight();
-
+    public int getId() {
+        return id;
+    }
 }

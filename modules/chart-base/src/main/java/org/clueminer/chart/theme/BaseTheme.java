@@ -20,11 +20,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Stroke;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = Theme.class)
 public class BaseTheme implements Theme {
 
     private final ChartTheme chart;
@@ -35,10 +37,16 @@ public class BaseTheme implements Theme {
     private transient Stroke borderStroke;
 
     private final Paint borderColor;
+    private static final String name = "base theme";
 
     public BaseTheme() {
         this.borderColor = Color.BLACK;
         this.chart = new BaseChartTheme();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
