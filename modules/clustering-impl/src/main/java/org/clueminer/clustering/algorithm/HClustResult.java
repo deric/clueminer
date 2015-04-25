@@ -273,7 +273,7 @@ public class HClustResult implements HierarchicalResult {
             } else if (node.getLeft().getHeight() < cutoff) {
                 clust = makeCluster(clusters);
                 subtreeToCluster(node.getLeft(), clust, assign);
-                checkCutoff(node.getLeft(), cutoff, clusters, assign);
+                checkCutoff(node.getRight(), cutoff, clusters, assign);
             }
         } else {
             checkCutoff(node.getLeft(), cutoff, clusters, assign);
