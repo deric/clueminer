@@ -62,9 +62,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>org.clueminer</groupId>
             <artifactId>clustering-dist</artifactId>
-            <version>${project.version}</version>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.clueminer</groupId>
+            <artifactId>math-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>
