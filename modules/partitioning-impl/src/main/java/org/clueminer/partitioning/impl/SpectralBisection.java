@@ -9,11 +9,13 @@ import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Bisection.class)
 public class SpectralBisection implements Bisection {
 
     Graph g;
@@ -23,6 +25,11 @@ public class SpectralBisection implements Bisection {
     double min, max;
 
     int nodeToCluster[];
+
+    @Override
+    public String getName() {
+        return "Spectral bisection";
+    }
 
     @Override
     public ArrayList<LinkedList<Node>> bisect(Graph g) {

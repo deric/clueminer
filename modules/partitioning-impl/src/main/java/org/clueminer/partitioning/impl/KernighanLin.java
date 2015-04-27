@@ -6,11 +6,13 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Bisection.class)
 public class KernighanLin implements Bisection {
 
     private ArrayList<LinkedList<Vertex>> cluster;
@@ -44,6 +46,11 @@ public class KernighanLin implements Bisection {
     public KernighanLin(Graph g, boolean weightedEdges) {
         graph = g;
         this.weightedEdges = weightedEdges;
+    }
+
+    @Override
+    public String getName() {
+        return "Kernighan-Lin";
     }
 
     @Override

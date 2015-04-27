@@ -6,11 +6,13 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Bisection.class)
 public class FiducciaMattheyses implements Bisection {
 
     Vertex[] vertexes;
@@ -43,6 +45,15 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     public FiducciaMattheyses(int iterationLimit) {
+        this.iterationLimit = iterationLimit;
+    }
+
+    @Override
+    public String getName() {
+        return "Fiduccia-Mattheyses";
+    }
+
+    public void setIterationLimit(int iterationLimit) {
         this.iterationLimit = iterationLimit;
     }
 
