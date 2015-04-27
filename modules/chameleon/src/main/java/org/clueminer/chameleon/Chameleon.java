@@ -11,12 +11,10 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
-import org.clueminer.partitioning.impl.FiducciaMattheyses;
+import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -57,7 +55,9 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
      */
     private SimilarityMeasure similarityMeasure;
 
-    private DistanceMeasure distanceMeasure;
+    private final RecursiveBisection recursiveBisection;
+
+    private final KNN knn;
 
     public Chameleon() {
         k = -1;
@@ -65,6 +65,8 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         bisection = BisectionFactory.getInstance().getProvider("Fiduccia-Mattheyses");
         closenessPriority = 2;
         similarityMeasure = SimilarityMeasure.IMPROVED;
+        recursiveBisection = new RecursiveBisection(bisection);
+        knn = new KNN();
     }
 
     public void setK(int k) {
@@ -89,16 +91,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
     public void setBisection(Bisection bisection) {
         this.bisection = bisection;
-    }
-
-    @Override
-    public DistanceMeasure getDistanceFunction() {
-        return distanceMeasure;
-    }
-
-    @Override
-    public void setDistanceFunction(DistanceMeasure dm) {
-        this.distanceMeasure = dm;
+        recursiveBisection.setBisection(bisection);
     }
 
     @Override
@@ -107,47 +100,31 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props pref) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        KNN knn = new KNN(k);
-
-        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
-
-        RecursiveBisection rb = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(maxPartitionSize, g);
-
-        Merger m = new PairMerger(g, bisection, closenessPriority, similarityMeasure);
-
-        m.merge(partitioningResult);
-
-        return null;
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
-        if (pref != null) {
-            AgglParams params = new AgglParams(pref);
-            if (!params.clusterRows()) {
-                return null;
-            }
+        AgglParams params = new AgglParams(pref);
+        if (params.clusterColumns()) {
+            throw new RuntimeException("Chameleon cannot cluster attributes");
         }
 
-        int datasetK = findK(dataset);
-        int datasetMaxPSize = findMaxPartitionSize(dataset);
-
-        KNN knn = new KNN(datasetK);
+        knn.setDistanceMeasure(params.getDistanceMeasure());
+        int datasetK = determineK(dataset);
+        int datasetMaxPSize = determineMaxPartitionSize(dataset);
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g);
+        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, datasetK);
 
-        RecursiveBisection rb = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = rb.partition(datasetMaxPSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = recursiveBisection.partition(datasetMaxPSize, g);
+
         PairMerger m;
         if (similarityMeasure == SimilarityMeasure.IMPROVED) {
             m = new ImprovedSimilarity(g, bisection, closenessPriority);
@@ -156,20 +133,28 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         } else {
             throw new IllegalArgumentException("Unknown similarity measure.");
         }
-        return m.getHierarchy(partitioningResult, dataset);
+        return m.getHierarchy(partitioningResult, dataset, pref);
     }
 
-    private int findK(Dataset<? extends Instance> dataset) {
+    private int determineK(Dataset<? extends Instance> dataset) {
         if (k == -1) {
-            return (int) (Math.log(dataset.size()) / Math.log(2));
+            if (dataset.size() < 500) {
+                return (int) (Math.log(dataset.size()) / Math.log(2));
+            } else {
+                return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
+            }
         } else {
             return k;
         }
     }
 
-    private int findMaxPartitionSize(Dataset<? extends Instance> dataset) {
+    private int determineMaxPartitionSize(Dataset<? extends Instance> dataset) {
         if (maxPartitionSize == -1) {
-            return 10;
+            if (dataset.size() < 500) {
+                return 5;
+            } else {
+                return 10;
+            }
         } else {
             return maxPartitionSize;
         }

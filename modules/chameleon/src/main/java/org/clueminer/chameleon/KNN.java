@@ -16,11 +16,6 @@ import org.clueminer.graph.api.Node;
 public class KNN {
 
     /**
-     * Number of neighbours for each item
-     */
-    private int k;
-
-    /**
      * storage for neighbours of each node
      */
     int[][] nearests;
@@ -34,12 +29,11 @@ public class KNN {
 
     private DistanceMeasure dm;
 
-    public KNN(int k) {
-        this(k, new EuclideanDistance());
+    public KNN() {
+        dm = new EuclideanDistance();
     }
 
-    public KNN(int k, DistanceMeasure dm) {
-        this.k = k;
+    public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
 
@@ -49,7 +43,7 @@ public class KNN {
      * @param dataset input dataset
      * @return
      */
-    private int[][] findNeighbors(Dataset<? extends Instance> dataset) {
+    private int[][] findNeighbors(Dataset<? extends Instance> dataset, int k) {
         input = dataset;
         if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
@@ -119,8 +113,8 @@ public class KNN {
         return distance[i][j];
     }
 
-    public int[][] getNeighborArray(Dataset<? extends Instance> dataset) {
-        return findNeighbors(dataset);
+    public int[][] getNeighborArray(Dataset<? extends Instance> dataset, int k) {
+        return findNeighbors(dataset, k);
     }
 
     /**
@@ -130,8 +124,8 @@ public class KNN {
      * @param g graph where output is be stored
      * @return neighbor graph
      */
-    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g) {
-        findNeighbors(dataset);
+    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g, int k) {
+        findNeighbors(dataset, k);
         GraphFactory f = g.getFactory();
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
