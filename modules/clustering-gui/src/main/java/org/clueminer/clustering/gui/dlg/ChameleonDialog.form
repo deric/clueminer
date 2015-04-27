@@ -206,9 +206,6 @@
           <Connection code="new DefaultComboBoxModel(initDistance())" type="code"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboDistanceActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lbCutoff">
       <Properties>
@@ -257,7 +254,7 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfKActionPerformed"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tfKKeyReleased"/>
       </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkBoxAutoK">
@@ -321,7 +318,7 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfMaxPSizeActionPerformed"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tfMaxPSizeKeyReleased"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lbMaxPartitionSize1">
@@ -353,9 +350,6 @@
           <ResourceString bundle="org/clueminer/clustering/gui/dlg/Bundle.properties" key="ChameleonDialog.rbtnStandard.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rbtnStandardActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rbtnImproved">
       <Properties>
@@ -413,9 +407,6 @@
           <ResourceString bundle="org/clueminer/clustering/gui/dlg/Bundle.properties" key="ChameleonDialog.tfPriority.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfPriorityActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tfLimit">
       <Properties>
@@ -424,7 +415,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfLimitActionPerformed"/>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tfLimitKeyReleased"/>
       </Events>
     </Component>
   </SubComponents>

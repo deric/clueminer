@@ -70,11 +70,6 @@ public class ChameleonDialog extends ClusteringDialog {
         lbDistance.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.toolTipText")); // NOI18N
 
         comboDistance.setModel(new DefaultComboBoxModel(initDistance()));
-        comboDistance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboDistanceActionPerformed(evt);
-            }
-        });
 
         org.openide.awt.Mnemonics.setLocalizedText(lbCutoff, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbCutoff.text")); // NOI18N
         lbCutoff.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbCutoff.toolTipText")); // NOI18N
@@ -89,9 +84,9 @@ public class ChameleonDialog extends ClusteringDialog {
 
         tfK.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfK.text")); // NOI18N
         tfK.setEnabled(false);
-        tfK.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfKActionPerformed(evt);
+        tfK.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfKKeyReleased(evt);
             }
         });
 
@@ -136,9 +131,9 @@ public class ChameleonDialog extends ClusteringDialog {
 
         tfMaxPSize.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfMaxPSize.text")); // NOI18N
         tfMaxPSize.setEnabled(false);
-        tfMaxPSize.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfMaxPSizeActionPerformed(evt);
+        tfMaxPSize.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfMaxPSizeKeyReleased(evt);
             }
         });
 
@@ -150,11 +145,6 @@ public class ChameleonDialog extends ClusteringDialog {
 
         buttonGroup1.add(rbtnStandard);
         org.openide.awt.Mnemonics.setLocalizedText(rbtnStandard, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.rbtnStandard.text")); // NOI18N
-        rbtnStandard.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbtnStandardActionPerformed(evt);
-            }
-        });
 
         buttonGroup1.add(rbtnImproved);
         rbtnImproved.setSelected(true);
@@ -182,16 +172,11 @@ public class ChameleonDialog extends ClusteringDialog {
         });
 
         tfPriority.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfPriority.text")); // NOI18N
-        tfPriority.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfPriorityActionPerformed(evt);
-            }
-        });
 
         tfLimit.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfLimit.text")); // NOI18N
-        tfLimit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfLimitActionPerformed(evt);
+        tfLimit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfLimitKeyReleased(evt);
             }
         });
 
@@ -321,15 +306,6 @@ public class ChameleonDialog extends ClusteringDialog {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboDistanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboDistanceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboDistanceActionPerformed
-
-    private void tfKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfKActionPerformed
-        int val = Integer.valueOf(tfK.getText());
-        sliderK.setValue(val);
-    }//GEN-LAST:event_tfKActionPerformed
-
     private void chkBoxAutoKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkBoxAutoKActionPerformed
         if (chkBoxAutoK.isSelected()) {
             sliderK.setEnabled(false);
@@ -339,11 +315,6 @@ public class ChameleonDialog extends ClusteringDialog {
             tfK.setEnabled(true);
         }
     }//GEN-LAST:event_chkBoxAutoKActionPerformed
-
-    private void tfMaxPSizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfMaxPSizeActionPerformed
-        int val = Integer.valueOf(tfMaxPSize.getText());
-        sliderMaxPSize.setValue(val);
-    }//GEN-LAST:event_tfMaxPSizeActionPerformed
 
     private void sliderKStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderKStateChanged
         tfK.setText(String.valueOf(sliderK.getValue()));
@@ -363,10 +334,6 @@ public class ChameleonDialog extends ClusteringDialog {
         }
     }//GEN-LAST:event_chkBoxAutoMaxPSizeActionPerformed
 
-    private void rbtnStandardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnStandardActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rbtnStandardActionPerformed
-
     private void comboBisectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBisectionActionPerformed
         if ("Fiduccia-Mattheyses".equals((String) comboBisection.getSelectedItem())) {
             tfLimit.setVisible(true);
@@ -379,18 +346,36 @@ public class ChameleonDialog extends ClusteringDialog {
         }
     }//GEN-LAST:event_comboBisectionActionPerformed
 
-    private void tfPriorityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPriorityActionPerformed
-
-    }//GEN-LAST:event_tfPriorityActionPerformed
-
     private void sliderLimitStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderLimitStateChanged
         tfLimit.setText(String.valueOf(sliderLimit.getValue()));
     }//GEN-LAST:event_sliderLimitStateChanged
 
-    private void tfLimitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfLimitActionPerformed
-        int val = Integer.valueOf(tfLimit.getText());
-        sliderLimit.setValue(val);
-    }//GEN-LAST:event_tfLimitActionPerformed
+    private void tfLimitKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfLimitKeyReleased
+        try {
+            int val = Integer.valueOf(tfLimit.getText());
+            sliderLimit.setValue(val);
+        } catch (NumberFormatException e) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }//GEN-LAST:event_tfLimitKeyReleased
+
+    private void tfMaxPSizeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfMaxPSizeKeyReleased
+        try {
+            int val = Integer.valueOf(tfMaxPSize.getText());
+            sliderMaxPSize.setValue(val);
+        } catch (NumberFormatException e) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }//GEN-LAST:event_tfMaxPSizeKeyReleased
+
+    private void tfKKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfKKeyReleased
+        try {
+            int val = Integer.valueOf(tfK.getText());
+            sliderK.setValue(val);
+        } catch (NumberFormatException e) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }//GEN-LAST:event_tfKKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -485,6 +470,7 @@ public class ChameleonDialog extends ClusteringDialog {
         } else {
             ch.setMaxPartitionSize(sliderMaxPSize.getValue());
         }
+
         ch.setClosenessPriority(Double.valueOf(tfPriority.getText()));
 
         if (rbtnImproved.isSelected()) {
@@ -497,7 +483,7 @@ public class ChameleonDialog extends ClusteringDialog {
         Bisection bisection = BisectionFactory.getInstance().getProvider(name);
         if ("Fiduccia-Mattheyses".equals(name)) {
             FiducciaMattheyses fm = (FiducciaMattheyses) bisection;
-            fm.setIterationLimit(Integer.valueOf(tfLimit.getText()));
+            fm.setIterationLimit(sliderLimit.getValue());
         }
         ch.setBisection(bisection);
     }
