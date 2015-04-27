@@ -7,11 +7,13 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Partitioning.class)
 public class RecursiveBisection implements Partitioning {
 
     int maxNodesInCluster;
@@ -26,6 +28,15 @@ public class RecursiveBisection implements Partitioning {
 
     public RecursiveBisection(Bisection bisection) {
         this.bisection = bisection;
+    }
+
+    public void setBisection(Bisection bisection) {
+        this.bisection = bisection;
+    }
+
+    @Override
+    public String getName() {
+        return "Recursive bisection";
     }
 
     @Override

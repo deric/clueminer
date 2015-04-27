@@ -9,11 +9,13 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Partitioning.class)
 public class P2PPartitioning implements Partitioning {
 
     private Vertex[] nodes;
@@ -31,6 +33,11 @@ public class P2PPartitioning implements Partitioning {
 
     public P2PPartitioning() {
 
+    }
+
+    @Override
+    public String getName() {
+        return "P2P partitioning";
     }
 
     @Override
