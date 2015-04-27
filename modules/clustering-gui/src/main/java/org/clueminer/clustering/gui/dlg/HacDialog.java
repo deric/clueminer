@@ -184,7 +184,7 @@ public class HacDialog extends ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof AgglomerativeClustering;
+        return algorithm instanceof AgglomerativeClustering && !"Chameleon".equals(algorithm.getName());
     }
 
     private Object[] initLinkage() {
