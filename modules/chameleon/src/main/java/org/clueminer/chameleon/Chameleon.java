@@ -28,94 +28,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class Chameleon extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
 
-    public static class Builder {
-
-        private int k = -1;
-        private int maxPartitionSize = -1;
-        private DistanceMeasure distanceMeasure = new EuclideanDistance();
-        private Bisection bisection = new FiducciaMattheyses();
-        private double closenessPriority = 1;
-        private SimilarityMeasure similarityMeasure = SimilarityMeasure.IMPROVED;
-
-        public Chameleon build() {
-            Chameleon ch = new Chameleon();
-            ch.k = k;
-            ch.maxPartitionSize = maxPartitionSize;
-            ch.distanceMeasure = distanceMeasure;
-            ch.bisection = bisection;
-            ch.closenessPriority = closenessPriority;
-            ch.similarityMeasure = similarityMeasure;
-            return ch;
-        }
-
-        /**
-         *
-         * @param k Number of neighbors to create in k-NN graph representing the
-         * input data.
-         * @return
-         */
-        public Builder k(int k) {
-            if (k < 1) {
-                throw new IllegalArgumentException("k has to be greater than 0 in order to assign at least one neighbor.");
-            }
-            this.k = k;
-            return this;
-        }
-
-        /**
-         *
-         * @param maxPartitionSize Maximum number of nodes in each partition
-         * after the execution of the partitioning algorithm.
-         * @return
-         */
-        public Builder maxPartitionSize(int maxPartitionSize) {
-            if (maxPartitionSize < 1) {
-                throw new IllegalArgumentException("Partition size has to be greater than 0.");
-            }
-            this.maxPartitionSize = maxPartitionSize;
-            return this;
-        }
-
-        /**
-         *
-         * @param bisection Bisection algorithm used in partitioning and
-         * merging.
-         * @return
-         */
-        public Builder bisection(Bisection bisection) {
-            this.bisection = bisection;
-            return this;
-        }
-
-        /**
-         *
-         * @param closenessPriority If bigger than 1, algorithm gives a higher
-         * importance to the relative closeness of clusters during merging,
-         * otherwise, if lesser than 1, to interconnectivity.
-         * @return
-         */
-        public Builder closenessPriority(double closenessPriority) {
-            this.closenessPriority = closenessPriority;
-            return this;
-        }
-
-        /**
-         *
-         * @param similarityMeasure Similarity function used to compute
-         * similarity between two clusters during merging.
-         * @return
-         */
-        public Builder similarityMeasure(SimilarityMeasure similarityMeasure) {
-            this.similarityMeasure = similarityMeasure;
-            return this;
-        }
-
-        public Builder distanceMeasure(DistanceMeasure dm) {
-            distanceMeasure = dm;
-            return this;
-        }
-    }
-
     /**
      * Number of neighbors for each node in k-NN algorithm.
      */
@@ -146,6 +58,38 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     private SimilarityMeasure similarityMeasure;
 
     private DistanceMeasure distanceMeasure;
+
+    public Chameleon() {
+        k = -1;
+        maxPartitionSize = -1;
+        bisection = BisectionFactory.getInstance().getProvider("Fiduccia-Mattheyses");
+        closenessPriority = 2;
+        similarityMeasure = SimilarityMeasure.IMPROVED;
+    }
+
+    public void setK(int k) {
+        this.k = k;
+    }
+
+    public void setMaxPartitionSize(int size) {
+        maxPartitionSize = size;
+    }
+
+    public void setClosenessPriority(double priority) {
+        closenessPriority = priority;
+    }
+
+    public void setImprovedMeasure() {
+        similarityMeasure = SimilarityMeasure.IMPROVED;
+    }
+
+    public void setStandardMeasure() {
+        similarityMeasure = SimilarityMeasure.STANDARD;
+    }
+
+    public void setBisection(Bisection bisection) {
+        this.bisection = bisection;
+    }
 
     @Override
     public DistanceMeasure getDistanceFunction() {
