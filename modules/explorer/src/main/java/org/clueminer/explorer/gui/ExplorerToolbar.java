@@ -69,6 +69,7 @@ public class ExplorerToolbar extends JToolBar {
                 DialogDescriptor dd = new DialogDescriptor(algPanel, NbBundle.getMessage(ExplorerToolbar.class, "AlgorithmPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     ClusteringAlgorithm alg = algPanel.getAlgorithm();
+                    algPanel.updateAlgorithm();
                     if (listener != null) {
                         Props p = algPanel.getProps();
                         listener.runClustering(alg, p);

@@ -193,4 +193,9 @@ public class HacDialog extends ClusteringDialog {
     private Object[] initCutoff() {
         return InternalEvaluatorFactory.getInstance().getProvidersArray();
     }
+
+    @Override
+    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
