@@ -2,6 +2,7 @@ package org.clueminer.clustering.gui.dlg;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import org.clueminer.chameleon.Chameleon;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -183,7 +184,7 @@ public class HacDialog extends ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof AgglomerativeClustering && !"Chameleon".equals(algorithm.getName());
+        return algorithm instanceof AgglomerativeClustering && !(algorithm instanceof Chameleon);
     }
 
     private Object[] initLinkage() {
@@ -196,6 +197,6 @@ public class HacDialog extends ClusteringDialog {
 
     @Override
     public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 }

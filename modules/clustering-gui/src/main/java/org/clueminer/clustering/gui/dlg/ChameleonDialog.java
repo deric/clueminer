@@ -447,7 +447,7 @@ public class ChameleonDialog extends ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return "Chameleon".equals(algorithm.getName());
+        return algorithm instanceof Chameleon;
     }
 
     private Object[] initCutoff() {
@@ -456,7 +456,7 @@ public class ChameleonDialog extends ClusteringDialog {
 
     @Override
     public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-        if (!"Chameleon".equals(algorithm.getName())) {
+        if (!(algorithm instanceof Chameleon)) {
             throw new RuntimeException("Chameleon algorithm expected");
         }
         Chameleon ch = (Chameleon) algorithm;
