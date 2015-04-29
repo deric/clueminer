@@ -591,14 +591,15 @@ public class HClustResult implements HierarchicalResult {
         treeData.updatePositions(treeData.getRoot());
     }
 
-    /**
-     * It's a square matrix, doesn't matter which dimension we'll return
-     *
-     * @return
-     */
     @Override
     public int size() {
-        return proximity.rowsCount();
+        if (resultType == ResultType.COLUMNS_CLUSTERING) {
+            return dataset.attributeCount();
+        } else if (resultType == ResultType.ROWS_CLUSTERING) {
+            return dataset.size();
+        } else {
+            throw new RuntimeException("Unknown type of result.");
+        }
     }
 
     @Override
