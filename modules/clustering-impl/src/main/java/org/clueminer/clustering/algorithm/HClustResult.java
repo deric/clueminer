@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
+import org.clueminer.clustering.api.ResultType;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -52,6 +53,7 @@ public class HClustResult implements HierarchicalResult {
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy;
+    private ResultType resultType;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
@@ -621,6 +623,11 @@ public class HClustResult implements HierarchicalResult {
             res = c.getLookup().lookup(DendrogramMapping.class);
         }
         return res;
+    }
+
+    @Override
+    public void setResultType(ResultType type) {
+        resultType = type;
     }
 
 }
