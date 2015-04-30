@@ -17,15 +17,15 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
-    HashMap<Long, Integer> idToIndex;
-    HashMap<Long, AdjMatrixNode> idToNode;
-    AdjMatrixEdge[][] adjMatrix;
-    AdjMatrixNode[] nodes;
-    int edgeCounter;
-    int size;
-    int nodeCounter;
-    DistanceMeasure dm;
-    final double EPS = 1e-6;
+    private HashMap<Long, Integer> idToIndex;
+    private HashMap<Long, AdjMatrixNode> idToNode;
+    private AdjMatrixEdge[][] adjMatrix;
+    private AdjMatrixNode[] nodes;
+    private int edgeCounter;
+    private int size;
+    private int nodeCounter;
+    private DistanceMeasure dm;
+    private final double EPS = 1e-6;
 
     public AdjMatrixGraph(int size) {
         this(size, new EuclideanDistance());

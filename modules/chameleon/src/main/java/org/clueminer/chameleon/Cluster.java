@@ -36,7 +36,7 @@ public class Cluster {
      */
     Graph firstHalf, secondHalf;
 
-    public Cluster parent;
+    private Cluster parent;
 
     public LinkedList<Cluster> offsprings;
 
@@ -45,11 +45,11 @@ public class Cluster {
     /**
      * Nodes belonging to the cluster
      */
-    LinkedList<Node> graphNodes;
+    private LinkedList<Node> graphNodes;
 
-    Graph parentGraph;
+    private Graph parentGraph;
 
-    public int id;
+    private int id;
 
     public Cluster(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
         parentGraph = g;
@@ -188,6 +188,18 @@ public class Cluster {
 
     public int getNodeCount() {
         return graphNodes.size();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Cluster getParent() {
+        return parent;
+    }
+
+    public void setParent(Cluster parent) {
+        this.parent = parent;
     }
 
 }

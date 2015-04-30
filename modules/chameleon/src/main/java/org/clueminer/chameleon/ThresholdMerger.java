@@ -70,23 +70,23 @@ public class ThresholdMerger extends Merger {
         for (int i = 0; i < clusterCount; i++) {
             clusters.get(i).offsprings = new LinkedList<>();
             clusters.get(i).offsprings.add(clusters.get(i));
-            clusters.get(i).parent = clusters.get(i);
+            clusters.get(i).setParent(clusters.get(i));
         }
     }
 
     protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
-        if (cluster1.parent.id == cluster2.parent.id) {
+        if (cluster1.getParent().getId() == cluster2.getParent().getId()) {
             return;
         }
-        if (cluster1.parent.offsprings.size() < cluster2.parent.offsprings.size()) {
+        if (cluster1.getParent().offsprings.size() < cluster2.getParent().offsprings.size()) {
             Cluster temp = cluster1;
             cluster1 = cluster2;
             cluster2 = temp;
         }
-        cluster1.parent.offsprings.addAll(cluster2.parent.offsprings);
-        Cluster parent = cluster2.parent;
+        cluster1.getParent().offsprings.addAll(cluster2.getParent().offsprings);
+        Cluster parent = cluster2.getParent();
         for (Cluster cluster : parent.offsprings) {
-            cluster.parent = cluster1.parent;
+            cluster.setParent(cluster1.getParent());
         }
         parent.offsprings = null;
     }

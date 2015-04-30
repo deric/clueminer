@@ -15,22 +15,22 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Bisection.class)
 public class FiducciaMattheyses implements Bisection {
 
-    Vertex[] vertexes;
-    Graph g;
-    int nodeCount;
-    int maxDegree;
+    private Vertex[] vertexes;
+    private Graph g;
+    private int nodeCount;
+    private int maxDegree;
 
     /**
      * History of swapped vertexes
      */
-    Vertex[] swapHistory;
+    private Vertex[] swapHistory;
 
-    int swapHistoryCost[];
+    private int swapHistoryCost[];
 
     /**
      * Maximum number of iterations
      */
-    int iterationLimit;
+    private int iterationLimit;
 
     /**
      * Array containing lists of nodes of the same difference (difference is
@@ -38,7 +38,7 @@ public class FiducciaMattheyses implements Bisection {
      * at 0. position while list with nodes of maxDegree is at 2 * maxDegree.
      * position.
      */
-    Vertex[] differenceBuckets;
+    private Vertex[] differenceBuckets;
 
     public FiducciaMattheyses() {
         this(20);
@@ -227,7 +227,7 @@ public class FiducciaMattheyses implements Bisection {
                 maxDifferenceIndex = i;
             }
         }
-        //  System.out.println("maxDifferenceSum - " + maxDifference);
+        // System.out.println("maxDifferenceSum - " + maxDifference);
         return maxDifferenceIndex;
     }
 

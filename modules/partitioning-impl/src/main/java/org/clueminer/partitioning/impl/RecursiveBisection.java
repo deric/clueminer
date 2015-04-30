@@ -16,11 +16,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Partitioning.class)
 public class RecursiveBisection implements Partitioning {
 
-    int maxNodesInCluster;
-    Graph graph;
-    boolean marked[];
-    ArrayList<LinkedList<Node>> clusters;
-    Bisection bisection;
+    private int maxNodesInCluster;
+    private Graph graph;
+    private boolean marked[];
+    private ArrayList<LinkedList<Node>> clusters;
+    private Bisection bisection;
 
     public RecursiveBisection() {
         this(new FiducciaMattheyses());
@@ -48,7 +48,6 @@ public class RecursiveBisection implements Partitioning {
         } else {
             clusters = recursivePartition(graph);
         }
-        // return clusters;
         Graph clusteredGraph = removeUnusedEdges();
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
@@ -61,14 +60,14 @@ public class RecursiveBisection implements Partitioning {
             if (result.get(i).size() <= maxNodesInCluster) {
                 output.add(result.get(i));
             } else {
-                Graph newGraph = buildGraphFromCluster(result.get(i), g);
+                Graph newGraph = buildGraphFromCluster(result.get(i));
                 output.addAll(recursivePartition(newGraph));
             }
         }
         return output;
     }
 
-    private Graph buildGraphFromCluster(LinkedList<Node> n, Graph g) {
+    private Graph buildGraphFromCluster(LinkedList<Node> n) {
         ArrayList<Node> nodes = new ArrayList<>(n);
         Graph newGraph = new AdjMatrixGraph(nodes.size());
         for (Node node : nodes) {
@@ -76,8 +75,8 @@ public class RecursiveBisection implements Partitioning {
         }
         for (int i = 0; i < nodes.size(); i++) {
             for (int j = i + 1; j < nodes.size(); j++) {
-                if (g.isAdjacent(nodes.get(i), nodes.get(j))) {
-                    newGraph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
+                if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
+                    newGraph.addEdge(graph.getEdge(nodes.get(i), nodes.get(j)));
                 }
             }
         }

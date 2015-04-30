@@ -17,37 +17,37 @@ public abstract class Merger {
     /**
      * Original, not partitioned graph.
      */
-    Graph graph;
+    protected Graph graph;
 
-    Bisection bisection;
+    protected Bisection bisection;
 
     /**
      * Assigns each node to cluster.
      */
-    int nodeToCluster[];
+    protected int nodeToCluster[];
 
     /**
      * Number of clusters.
      */
-    int clusterCount;
+    protected int clusterCount;
 
     /**
      * If bigger than 1, algorithm gives a higher importance to the relative
      * closeness, otherwise, if lesser than 1, to interconnectivity.
      */
-    double closenessPriority;
+    protected double closenessPriority;
 
     /**
      * Clusters to merge.
      */
-    ArrayList<Cluster> clusters;
+    protected ArrayList<Cluster> clusters;
 
-    SimilarityMeasure similarityMeasure;
+    protected SimilarityMeasure similarityMeasure;
 
     /**
      * Matrix containing external properties of every 2 clusters.
      */
-    ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
+    protected ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
     public Merger(Graph g, Bisection bisection, double closenessPriority) {
         this.graph = g;
@@ -131,7 +131,7 @@ public abstract class Merger {
         }
     }
 
-    public double getEIC(int firstClusterID, int secondClusterID) {
+    protected double getEIC(int firstClusterID, int secondClusterID) {
         if (secondClusterID > firstClusterID) {
             int temp = firstClusterID;
             firstClusterID = secondClusterID;
@@ -140,7 +140,7 @@ public abstract class Merger {
         return clusterMatrix.get(firstClusterID).get(secondClusterID).EIC;
     }
 
-    public double getECL(int firstClusterID, int secondClusterID) {
+    protected double getECL(int firstClusterID, int secondClusterID) {
         if (secondClusterID > firstClusterID) {
             int temp = firstClusterID;
             firstClusterID = secondClusterID;
@@ -158,7 +158,6 @@ public abstract class Merger {
             EIC = ECL = counter = 0;
         }
     }
-
 
     protected double getRIC(int i, int j) {
         if (j > i) {

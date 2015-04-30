@@ -18,14 +18,14 @@ public class KNN {
     /**
      * storage for neighbours of each node
      */
-    int[][] nearests;
+    private int[][] nearests;
 
     /**
      * Triangular distance matrix
      */
-    double distance[][];
+    private double distance[][];
 
-    Dataset<? extends Instance> input;
+    private Dataset<? extends Instance> input;
 
     private DistanceMeasure dm;
 

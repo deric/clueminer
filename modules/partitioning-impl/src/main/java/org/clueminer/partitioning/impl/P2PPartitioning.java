@@ -23,7 +23,7 @@ public class P2PPartitioning implements Partitioning {
     private boolean[] used;
     private int usedCount;
     private int k;
-    Node[] graphNodes;
+    private Node[] graphNodes;
 
     private Graph graph;
 

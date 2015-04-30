@@ -30,18 +30,18 @@ import org.clueminer.utils.Props;
  */
 public abstract class PairMerger extends Merger {
 
-    DendroNode[] nodes;
+    protected DendroNode[] nodes;
 
-    PriorityQueue<Element> pq;
+    protected PriorityQueue<Element> pq;
 
     /**
      * Set of merged clusters which are ignored. They could also be deleted but
      * deleting them from cluster array, external properties matrix and priority
      * queue would be too expensive.
      */
-    HashSet<Integer> blacklist = new HashSet<>();
+    protected HashSet<Integer> blacklist = new HashSet<>();
 
-    double height;
+    protected double height;
 
     public PairMerger(Graph g, Bisection bisection, double closenessPriority) {
         super(g, bisection, closenessPriority);
@@ -170,8 +170,8 @@ public abstract class PairMerger extends Merger {
      */
     protected void addIntoTree(int clusterIndex1, int clusterIndex2) {
 
-        DendroNode left = nodes[clusters.get(clusterIndex1).id];
-        DendroNode right = nodes[clusters.get(clusterIndex2).id];
+        DendroNode left = nodes[clusters.get(clusterIndex1).getId()];
+        DendroNode right = nodes[clusters.get(clusterIndex2).getId()];
         DTreeNode newNode = new DTreeNode(clusterCount);
         newNode.setLeft(left);
         newNode.setRight(right);

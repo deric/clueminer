@@ -18,13 +18,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Bisection.class)
 public class SpectralBisection implements Bisection {
 
-    Graph g;
+    private Graph g;
 
-    Node[] nodes;
+    private Node[] nodes;
 
-    double min, max;
+    private double min, max;
 
-    int nodeToCluster[];
+    private int nodeToCluster[];
 
     @Override
     public String getName() {
