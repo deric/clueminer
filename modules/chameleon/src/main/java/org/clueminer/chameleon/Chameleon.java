@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -57,7 +58,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
 
     private final RecursiveBisection recursiveBisection;
 
-    private final KNN knn;
+    private final KNNGraphBuilder knn;
 
     public Chameleon() {
         k = -1;
@@ -66,7 +67,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         closenessPriority = 2;
         similarityMeasure = SimilarityMeasure.IMPROVED;
         recursiveBisection = new RecursiveBisection(bisection);
-        knn = new KNN();
+        knn = new KNNGraphBuilder();
     }
 
     public void setK(int k) {

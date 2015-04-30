@@ -1,4 +1,4 @@
-package org.clueminer.chameleon;
+package org.clueminer.graph.GraphBuilder;
 
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
@@ -12,11 +12,13 @@ import org.clueminer.graph.api.Node;
 /**
  *
  * @author Tomas Bruna
+ *
+ * TODO: create interface for graph builders
  */
-public class KNN {
+public class KNNGraphBuilder {
 
     /**
-     * storage for neighbours of each node
+     * storage for neighbors of each node
      */
     private int[][] nearests;
 
@@ -29,7 +31,7 @@ public class KNN {
 
     private DistanceMeasure dm;
 
-    public KNN() {
+    public KNNGraphBuilder() {
         dm = new EuclideanDistance();
     }
 
@@ -38,7 +40,7 @@ public class KNN {
     }
 
     /**
-     * Find k neighbours of all items in the dataset
+     * Find k neighbors of all items in the dataset
      *
      * @param dataset input dataset
      * @return
@@ -81,10 +83,10 @@ public class KNN {
     }
 
     /**
-     * Sort neighbours in ascending order by distance to central node
+     * Sort neighbors in ascending order by distance to central node
      *
-     * @param pos Position of the last element in array with neighbours
-     * @param i Number of central cluster to which neighbours are assigned
+     * @param pos Position of the last element in array with neighbors
+     * @param i Number of central cluster to which neighbors are assigned
      */
     private void insert(int pos, int i) {
         while (pos > 0 && distance(i, nearests[i][pos]) < distance(i, nearests[i][pos - 1])) {
@@ -121,7 +123,7 @@ public class KNN {
      * Create graph where connected nodes are neighbors
      *
      * @param dataset input dataset
-     * @param g graph where output is be stored
+     * @param g graph where output will be stored
      * @return neighbor graph
      */
     public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g, int k) {

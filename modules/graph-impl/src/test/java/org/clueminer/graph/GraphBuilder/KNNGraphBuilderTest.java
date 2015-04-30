@@ -1,4 +1,4 @@
-package org.clueminer.chameleon;
+package org.clueminer.graph.GraphBuilder;
 
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
@@ -17,7 +17,7 @@ import org.junit.Test;
  *
  * @author Tomas Bruna
  */
-public class KNNTest {
+public class KNNGraphBuilderTest {
 
     @Test
     public void irisDataTest() throws IOException {
@@ -31,7 +31,7 @@ public class KNNTest {
         FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
         int k = 5;
-        KNN knn = new KNN();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(data, k);
         for (int i = 0; i < data.size(); i++) {
             for (int j = 0; j < k; j++) {
@@ -59,7 +59,7 @@ public class KNNTest {
     public void simpleDataTest() {
         Dataset<? extends Instance> dataset = simpleData();
         DistanceMeasure dm = new EuclideanDistance();
-        KNN knn = new KNN();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 4);
 
         assertEquals(3, a[0][0]);
