@@ -113,7 +113,9 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         AgglParams params = new AgglParams(pref);
         if (params.clusterColumns()) {
-            throw new RuntimeException("Chameleon cannot cluster attributes");
+            // throw new RuntimeException("Chameleon cannot cluster attributes");
+            System.out.println("Chameleon cannot cluster attributes");
+            return null;
         }
 
         knn.setDistanceMeasure(params.getDistanceMeasure());
