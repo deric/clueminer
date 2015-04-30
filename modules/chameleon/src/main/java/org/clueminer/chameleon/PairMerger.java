@@ -1,6 +1,5 @@
 package org.clueminer.chameleon;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -52,22 +51,14 @@ public abstract class PairMerger extends Merger {
         computeExternalProperties();
         buildQueue();
         initiateTree(clusterList);
-        HierarchicalResult result = new HClustResult(dataset);
-        //GraphPrinter gp = new GraphPrinter(true);
+        HierarchicalResult result = new HClustResult(dataset, pref);
+
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
-//            if (i > clusterList.size() - 20) {
-//                try {
-//                    gp.printClusters(graph, 2, getResult(), "/home/tomas/Desktop/outputs", Integer.toString(i));
-//                } catch (IOException | InterruptedException ex) {
-//
-//                }
-//            }
         }
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
-        treeData.print();
-        treeData.createMapping(dataset.size(), treeData.getRoot());
 
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
     }
