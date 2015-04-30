@@ -23,7 +23,7 @@ public abstract class DendroPanel extends JPanel {
 
     private static final long serialVersionUID = -8394261467235786115L;
     protected AgglomerativeClustering algorithm;
-    protected DendroViewer viewer;
+    public DendroViewer viewer;
     //original dataset
     private Dataset<? extends Instance> dataset;
     private SettingsPanel panel;
