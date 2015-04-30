@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
@@ -15,7 +10,7 @@ import org.clueminer.graph.api.Node;
 
 /**
  *
- * @author tomas
+ * @author Tomas Bruna
  */
 public class PartitioningTest {
 
@@ -24,13 +19,47 @@ public class PartitioningTest {
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
         data.builder().create(new double[]{1, 1});
-        data.builder().create(new double[]{6, 6});
-        data.builder().create(new double[]{6, 5});
+        data.builder().create(new double[]{1, 2});
+        data.builder().create(new double[]{2, 1});
         data.builder().create(new double[]{2, 2});
         data.builder().create(new double[]{5, 5});
         data.builder().create(new double[]{5, 6});
+        data.builder().create(new double[]{6, 5});
+        data.builder().create(new double[]{6, 6});
+        return data;
+    }
+
+    protected Dataset<? extends Instance> twoDistinctNeighborsMixed() {
+        Dataset<Instance> data = new ArrayDataset<>(4, 2);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+        data.builder().create(new double[]{6, 6});
+        data.builder().create(new double[]{2, 2});
+        data.builder().create(new double[]{5, 5});
+        data.builder().create(new double[]{1, 1});
+        data.builder().create(new double[]{6, 5});
         data.builder().create(new double[]{2, 1});
-        data.builder().create(new double[]{1, 2});
+        data.builder().create(new double[]{5, 6});
+        //data.builder().create(new double[]{1, 2});
+        return data;
+    }
+
+    protected Dataset<? extends Instance> KLFail() {
+        Dataset<Instance> data = new ArrayDataset<>(4, 2);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+        data.builder().create(new double[]{0, 0});
+        data.builder().create(new double[]{2, 2});
+        data.builder().create(new double[]{2.5, 3});
+        data.builder().create(new double[]{4, 2.5});
+        data.builder().create(new double[]{4.2, 3.3});
+        data.builder().create(new double[]{2, 3.5});
+        data.builder().create(new double[]{3.5, 3.7});
+        data.builder().create(new double[]{4.9, 5});
+        data.builder().create(new double[]{5.7, 5.9});
+        data.builder().create(new double[]{6.9, 5.3});
+        data.builder().create(new double[]{7.2, 6.5});
+        //  data.builder().create(new double[]{6.5, 5.7});
         return data;
     }
 
