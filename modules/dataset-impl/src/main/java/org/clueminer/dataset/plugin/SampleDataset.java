@@ -1,6 +1,11 @@
 package org.clueminer.dataset.plugin;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.clueminer.attributes.AttributeFactoryImpl;
@@ -455,6 +460,11 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         }
         str.append("\n ]");
         return str.toString();
+    }
+
+    @Override
+    public Collection<? extends Number> attrCollection(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
