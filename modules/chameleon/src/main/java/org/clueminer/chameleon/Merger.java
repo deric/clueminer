@@ -159,14 +159,6 @@ public abstract class Merger {
         }
     }
 
-    /**
-     * Merges clusters.
-     *
-     * @param clusterList List of clusters to merge
-     *
-     * @return Lists of nodes in each cluster
-     */
-    abstract ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList);
 
     protected double getRIC(int i, int j) {
         if (j > i) {

@@ -26,7 +26,6 @@ public class ThresholdMerger extends Merger {
         this.RCLThreshold = RCLThreshold;
     }
 
-    @Override
     public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
         ArrayList<LinkedList<Node>> result = clusterList;
         merged = true;

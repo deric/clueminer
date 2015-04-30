@@ -20,6 +20,7 @@ import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 
 /**
  * This class merges two clusters in one merge. Two most similar clusters among
@@ -46,25 +47,7 @@ public abstract class PairMerger extends Merger {
         super(g, bisection, closenessPriority);
     }
 
-    ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
-        buildQueue();
-        //GraphPrinter gp = new GraphPrinter(true);
-        for (int i = 0; i < mergeCount - 1; i++) {
-            singleMerge(clusterList);
-        }
-
-        //    return getResult();
-        return null;
-    }
-
-    @Override
-    ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
-        return null;
-    }
-
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset) {
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         buildQueue();
