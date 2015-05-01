@@ -1,4 +1,4 @@
-package org.clueminer.chameleon;
+package org.clueminer.graph.GraphBuilder;
 
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
@@ -12,47 +12,45 @@ import org.clueminer.graph.api.Node;
 /**
  *
  * @author Tomas Bruna
+ *
+ * TODO: create interface for graph builders
  */
-public class KNN {
+public class KNNGraphBuilder {
 
     /**
-     * Number of neighbours for each item
+     * storage for neighbors of each node
      */
-    private int k;
+    private int[][] nearests;
 
     /**
-     * storage for neighbours of each node
+     * Triangular distance matrix
      */
-    int[][] nearests;
+    private double distance[][];
 
-    Dataset<? extends Instance> input;
+    private Dataset<? extends Instance> input;
 
     private DistanceMeasure dm;
 
-    public KNN() {
-        this(3);
+    public KNNGraphBuilder() {
+        dm = new EuclideanDistance();
     }
 
-    public KNN(int k) {
-        this(k, new EuclideanDistance());
-    }
-
-    public KNN(int k, DistanceMeasure dm) {
-        this.k = k;
+    public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
 
     /**
-     * Find k neighbours of all items in the dataset
+     * Find k neighbors of all items in the dataset
      *
      * @param dataset input dataset
      * @return
      */
-    private int[][] findNeighbors(Dataset<? extends Instance> dataset) {
+    private int[][] findNeighbors(Dataset<? extends Instance> dataset, int k) {
         input = dataset;
         if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
+        buildDistanceMatrix();
         nearests = new int[input.size()][k];
         for (int i = 0; i < input.size(); i++) {
             //put first k neighbours into array and sort them
@@ -68,7 +66,6 @@ public class KNN {
                 insert(index, i);
                 index++;
             }
-            double maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
             //neighbour array full, find closer neighbours from the rest of the dataset
             for (int j = firsts; j < input.size(); j++) {
                 //skip self as neighbour
@@ -76,10 +73,9 @@ public class KNN {
                     continue;
                 }
                 //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
-                if (dm.measure(input.instance(i), input.instance(j)) < maxMinimalDistance) {
+                if (distance(i, j) < distance(i, nearests[i][k - 1])) {
                     nearests[i][k - 1] = j;
                     insert(k - 1, i);
-                    maxMinimalDistance = dm.measure(input.instance(i), input.instance(nearests[i][k - 1]));
                 }
             }
         }
@@ -87,14 +83,13 @@ public class KNN {
     }
 
     /**
-     * Sort neighbours in ascending order by distance to central node
+     * Sort neighbors in ascending order by distance to central node
      *
-     * @param pos Position of the last element in array with neighbours
-     * @param i Number of central cluster to which neighbours are assigned
+     * @param pos Position of the last element in array with neighbors
+     * @param i Number of central cluster to which neighbors are assigned
      */
     private void insert(int pos, int i) {
-        while (pos > 0 && dm.measure(input.instance(i), input.instance(nearests[i][pos]))
-                < dm.measure(input.instance(i), input.instance(nearests[i][pos - 1]))) {
+        while (pos > 0 && distance(i, nearests[i][pos]) < distance(i, nearests[i][pos - 1])) {
             int temp = nearests[i][pos];
             nearests[i][pos] = nearests[i][pos - 1];
             nearests[i][pos - 1] = temp;
@@ -102,19 +97,37 @@ public class KNN {
         }
     }
 
-    public int[][] getNeighborArray(Dataset<? extends Instance> dataset) {
-        return findNeighbors(dataset);
+    private void buildDistanceMatrix() {
+        distance = new double[input.size()][input.size()];
+        for (int i = 0; i < input.size(); i++) {
+            for (int j = i + 1; j < input.size(); j++) {
+                distance[i][j] = dm.measure(input.instance(i), input.instance(j));
+            }
+        }
+    }
+
+    private double distance(int i, int j) {
+        if (i > j) {
+            int temp = i;
+            i = j;
+            j = temp;
+        }
+        return distance[i][j];
+    }
+
+    public int[][] getNeighborArray(Dataset<? extends Instance> dataset, int k) {
+        return findNeighbors(dataset, k);
     }
 
     /**
      * Create graph where connected nodes are neighbors
      *
      * @param dataset input dataset
-     * @param g graph where output is be stored
+     * @param g graph where output will be stored
      * @return neighbor graph
      */
-    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g) {
-        findNeighbors(dataset);
+    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g, int k) {
+        findNeighbors(dataset, k);
         GraphFactory f = g.getFactory();
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);

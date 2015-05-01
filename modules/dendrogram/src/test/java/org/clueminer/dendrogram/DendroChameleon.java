@@ -27,6 +27,7 @@ public class DendroChameleon extends JFrame {
 
         ImmutableMap<String, Dataset<? extends Instance>> map = new ImmutableMap.Builder<String, Dataset<? extends Instance>>()
                 .put("iris", FakeDatasets.irisDataset())
+                .put("US arrests", FakeDatasets.usArrestData())
                 .build();
 
         dendroPanel = new HclDendroPanel(map);
@@ -35,7 +36,7 @@ public class DendroChameleon extends JFrame {
             @Override
             public void run() {
 
-                dendroPanel.setAlgorithm(new Chameleon(40, 10));
+                dendroPanel.setAlgorithm(new Chameleon());
                 //dendroPanel.setAlgorithm(new HAC());
                 //dendroPanel.setAlgorithm(new HCL());
                 //dendroPanel.setAlgorithm(new HierarchicalAgglomerativeClustering());

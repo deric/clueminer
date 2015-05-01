@@ -473,4 +473,9 @@ public class HCLDialog extends ClusteringDialog {
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
         return false;
     }
+
+    @Override
+    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

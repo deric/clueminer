@@ -107,6 +107,8 @@ public class HclDendroPanel extends DendroPanel {
         //   progress.setTitle("Clustering by columns");
         params.putBoolean("calculate-rows", false);
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.putBoolean("calculate-columns", true);
+        params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
         HierarchicalResult columnsResult = algorithm.hierarchy(getDataset(), params);
         if (columnsResult != null) {
             Dump.array(columnsResult.getMapping(), "col mapping: ");
@@ -117,7 +119,7 @@ public class HclDendroPanel extends DendroPanel {
         long time = System.currentTimeMillis() - start;
         System.out.println(algorithm.getName() + " clustering took " + time + " ms");
 
-        double cutoff = rowsResult.findCutoff();
+        double cutoff = rowsResult.findCutoff(new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault()));
         //   double cutoff = rowsResult.findCutoff();
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
