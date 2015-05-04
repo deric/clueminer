@@ -2,7 +2,7 @@ package org.clueminer.chinesewhispers;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -43,28 +43,36 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 		this.createEdges(dataset, nodes);
 		for(Node nodeIt : nodes) {
 			AdjListNode node = (AdjListNode) nodeIt;
-			Long classValue = new Long(node.getId());
+			Long classValue = node.getId();
 			node.getInstance().setClassValue(classValue);
 		}
 
-		for(Node nodeIt : nodes) {
-			AdjListNode node = (AdjListNode) nodeIt;
-			HashMap<Long, Integer> classes = new HashMap<>(nodes.size());
-			Long maxClass = node.getId();
-			Integer maxCount = 1;
-			for(Node neighborIt : graph.getNeighbors(node)) {
-				AdjListNode neighbor = (AdjListNode) neighborIt;
-				Long classValue = (Long) neighbor.getInstance().classValue();
-				Integer count = classes.get(classValue);
-				count = count == null ? 1 : count + 1;
-				classes.put(classValue, count);
-				if(count > maxCount) {
-					maxCount = count;
-					maxClass = classValue;
+		boolean changes = true;
+		Random random = new Random();
+		while(changes) {
+			changes = false;
+			for(Node nodeIt : nodes) {
+				AdjListNode node = (AdjListNode) nodeIt;
+				HashMap<Long, Integer> classes = new HashMap<>(nodes.size());
+				Long maxClass = node.getId();
+				Integer maxCount = 1;
+				for(Node neighborIt : graph.getNeighbors(node)) {
+					AdjListNode neighbor = (AdjListNode) neighborIt;
+					Long classValue = (Long) neighbor.getInstance().classValue();
+					Integer count = classes.get(classValue);
+					count = count == null ? 1 : count + 1;
+					classes.put(classValue, count);
+					if(count > maxCount ||
+					  (count.equals(maxCount) && random.nextBoolean())) {
+						maxCount = count;
+						maxClass = classValue;
+					}
+				}
+				if(! maxClass.equals(node.getInstance().classValue())) {
+					changes = true;
+					node.getInstance().setClassValue(maxClass);
 				}
 			}
-//			if((Long) node.getInstance().classValue() != node.getId())
-			node.getInstance().setClassValue(maxClass);
 		}
 
 		graph.print();
