@@ -325,17 +325,21 @@ public class HClustResult implements HierarchicalResult {
     }
 
     private double findLevel(DendroNode node, int level) {
+        return (findLevelHeight(node, level) + findLevelHeight(node, level + 1)) / 2.0;
+    }
+
+    private double findLevelHeight(DendroNode node, int level) {
         if (node.level() == level) {
-            return (node.getParent().getHeight() + node.getHeight()) / 2.0;
+            return node.getHeight();
         } else {
             if (node.isLeaf()) {
                 return -1;
             } else {
-                double ret = findLevel(node.getLeft(), level);
+                double ret = findLevelHeight(node.getLeft(), level);
                 if (ret > -1) {
                     return ret;
                 }
-                ret = findLevel(node.getRight(), level);
+                ret = findLevelHeight(node.getRight(), level);
                 if (ret > -1) {
                     return ret;
                 }
