@@ -9,7 +9,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -23,10 +22,6 @@ public class CophCutoffTest {
     public CophCutoffTest() {
     }
 
-    @Before
-    public void setUp() {
-    }
-
     @Test
     public void testFindCutoff() {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
@@ -36,13 +31,10 @@ public class CophCutoffTest {
         pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
-        result.getTreeData().print();
-
+        //result.getTreeData().print();
         double cut = subject.findCutoff(result, pref);
         assertEquals(true, cut > 0);
-        System.out.println("cutoff = " + cut);
-        System.out.println("clustering size " + result.getClustering().size());
-        assertEquals(2, result.getClustering().size());
+        assertEquals(6, result.getClustering().size());
     }
 
 }

@@ -9,7 +9,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,11 +28,6 @@ public class HillClimbIncTest {
         alg = new HACLW();
     }
 
-    @Before
-    public void setUp() {
-
-    }
-
     @Test
     public void testFindCutoff() {
         Props pref = new Props();
@@ -44,11 +38,11 @@ public class HillClimbIncTest {
         result.getTreeData().print();
 
         double cut = subject.findCutoff(result, pref);
-        assertEquals(true, cut > 0);
         System.out.println("cutoff = " + cut);
+        assertEquals(true, cut > 0);
         int numClusters = result.getClustering().size();
         System.out.println("clustering size: " + numClusters);
-        assertEquals(true, numClusters < 4);
+        assertEquals(true, numClusters == 6);
     }
 
 }
