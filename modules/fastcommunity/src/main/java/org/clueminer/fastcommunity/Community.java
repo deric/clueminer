@@ -41,6 +41,10 @@ public class Community {
 		return edgesOutside;
 	}
 
+	public void setEdgesOutside(Integer edgesOutside) {
+		this.edgesOutside = edgesOutside;
+	}
+
 	public void addAll(Community other) {
 		this.nodes.addAll(other.getNodes());
 	}

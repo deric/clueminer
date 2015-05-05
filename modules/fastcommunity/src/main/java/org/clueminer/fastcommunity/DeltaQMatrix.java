@@ -2,6 +2,8 @@ package org.clueminer.fastcommunity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
+import org.clueminer.clustering.aggl.Element;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Node;
 
@@ -11,7 +13,12 @@ import org.clueminer.graph.api.Node;
  */
 public class DeltaQMatrix {
 
-	Map<IntPair, Double> matrix = new HashMap<>();
+	Map<IntPair, Element> matrix = new HashMap<>();
+	PriorityQueue<Element> pQ;
+
+	DeltaQMatrix(PriorityQueue<Element> pq) {
+		this.pQ = pq;
+	}
 
 	void build(AdjListGraph graph, double[] a) {
 		for(Node node : graph.getNodes()) {
@@ -20,24 +27,31 @@ public class DeltaQMatrix {
 				int j = (int) neighbor.getId();
 				double delta = 2 * (FastCommunity.INITIAL_EIJ - (a[i] * a[j]));
 				if(i < j)
-					matrix.put(new IntPair(i, j), delta);
+					matrix.put(new IntPair(i, j), new Element(delta, i, j));
 				else
-					matrix.put(new IntPair(j, i), delta);
+					matrix.put(new IntPair(j, i), new Element(delta, j, i));
 			}
 		}
 	}
 
-	Double get(Integer i, Integer j) {
-		if(i < j)
-			return matrix.get(new IntPair(i, j));
-		return matrix.get(new IntPair(j, i));
+	Element get(Integer i, Integer j) {
+		return matrix.get(IntPair.ordered(i, j));
 	}
 
-	void set(Integer i, Integer j, Double value) {
+	void add(Integer i, Integer j, Double value) {
+		Element element;
 		if(i < j)
-			matrix.put(new IntPair(i, j), value);
+			element = new Element(value, i, j);
 		else
-			matrix.put(new IntPair(j, i), value);
+			element = new Element(value, j, i);
+		matrix.put(IntPair.ordered(i, j), element);
+		pQ.add(element);
+	}
+
+	void remove(Integer i, Integer j) {
+		Element deleted = matrix.remove(IntPair.ordered(i, j));
+		if(deleted != null)
+			pQ.remove(deleted);
 	}
 
 }

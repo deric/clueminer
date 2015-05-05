@@ -44,6 +44,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 	private double[] a;
 	private double[] Q;
 	private CommunityNetwork network;
+	DeltaQMatrix dQ;
 
 	public static double INITIAL_EIJ = 0.5;
 
@@ -75,6 +76,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 		int n = dataset.size();
 		int items = triangleSize(n);
 		pq = new PriorityQueue<>(items);
+		dQ = new DeltaQMatrix(pq);
 
 		DendroTreeData treeData = computeLinkage(dataset, n);
 
@@ -91,7 +93,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 	private Map<Integer, Community> initialAssignment(int n, Dataset<? extends Instance> dataset,
 			DendroNode[] nodes) {
 		Map<Integer, Community> clusterAssignment = new HashMap<>(n);
-		network = new CommunityNetwork();
+		network = new CommunityNetwork(dQ);
 		for(int i = 0; i < n; i++) {
 			Community community = new Community(network, graph, i, graph.getNode(i));
 			clusterAssignment.put(i, community);
@@ -108,18 +110,12 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 		return clusterAssignment;
 	}
 
-	private DeltaQMatrix buildDeltaQ() {
-		DeltaQMatrix dQ = new DeltaQMatrix();
-		dQ.build(graph, a);
-		return dQ;
-	}
-
 	private DendroTreeData computeLinkage(Dataset<? extends Instance> dataset, int n) {
 		DendroNode[] nodes = new DendroNode[(2 * n - 1)];
 
 		Map<Integer, Community> assignments = initialAssignment(n, dataset, nodes);
 
-		DeltaQMatrix dQ = buildDeltaQ();
+		dQ.build(graph, a);
 
 		populatePriorityQueue(dQ);
 
@@ -201,9 +197,8 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 	private void populatePriorityQueue(DeltaQMatrix dQ) {
 		for(int i = 0; i < graph.getNodeCount(); i++) {
 			for(int j = 0; j < graph.getNodeCount(); i++) {
-				double value = dQ.get(i, j);
-				Element element = new Element(value, i, j);
-				if(!pq.contains(element))
+				Element element = dQ.get(i, j);
+				if(element != null)
 					pq.add(element);
 			}
 		}

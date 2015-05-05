@@ -23,6 +23,12 @@ public class IntPair {
 		return second;
 	}
 
+	public static IntPair ordered(Integer first, Integer second) {
+		if(first < second)
+			return new IntPair(first, second);
+		return new IntPair(second, first);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null)
