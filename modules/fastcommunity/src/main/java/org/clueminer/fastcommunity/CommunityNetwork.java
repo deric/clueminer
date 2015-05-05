@@ -1,7 +1,6 @@
 package org.clueminer.fastcommunity;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 
@@ -14,11 +13,13 @@ public class CommunityNetwork {
 	Integer maxId;
 	HashMap<IntPair, Integer> matrix;
 	HashMap<Integer, Community> communities;
+	DeltaQMatrix deltaQ;
 
-	public CommunityNetwork() {
+	public CommunityNetwork(DeltaQMatrix deltaQ) {
 		matrix = new HashMap<>();
 		communities = new HashMap<>();
 		maxId = -1;
+		this.deltaQ = deltaQ;
 	}
 
 	void add(Community community) {
@@ -33,10 +34,7 @@ public class CommunityNetwork {
 			for(Node neighbor : graph.getNeighbors(node)) {
 				int i = (int) node.getId();
 				int j = (int) neighbor.getId();
-				if(i < j)
-					matrix.put(new IntPair(i, j), 1);
-				else
-					matrix.put(new IntPair(j, i), 1);
+				matrix.put(IntPair.ordered(i, j), 1);
 			}
 		}
 	}
@@ -52,32 +50,42 @@ public class CommunityNetwork {
 		Integer edgesBetween = matrix.get(new IntPair(target, source));
 		if(edgesBetween == null)
 			edgesBetween = 0;
-		a.addInsideEdges(b.getEdgesInside() + edgesBetween);
 
-		for(int i = 0; i < maxId; i++) {
+		a.addInsideEdges(b.getEdgesInside() + edgesBetween);
+		Integer aOut = a.getEdgesOutside();
+		Integer bOut = b.getEdgesOutside();
+		a.setEdgesOutside(aOut + bOut - 2 * edgesBetween);
+
+		deltaQ.remove(target, source);
+		matrix.remove(new IntPair(target, source));
+
+		for(int i = 0; i <= maxId; i++) {
 			Integer edgesSourceToNeighbor, edgesTargetToNeighbor;
-			if(i < source)
-				edgesSourceToNeighbor = matrix.get(new IntPair(i, source));
-			  else
-				edgesSourceToNeighbor = matrix.get(new IntPair(source, i));
+			edgesSourceToNeighbor = matrix.get(IntPair.ordered(i, source));
 
 			if(edgesSourceToNeighbor != null && edgesSourceToNeighbor > 0) {
-				if(i < target)
-					edgesTargetToNeighbor = matrix.get(new IntPair(i, target));
-				  else
-					edgesTargetToNeighbor = matrix.get(new IntPair(target, i));
+				deltaQ.remove(i, source);
+
+				edgesTargetToNeighbor = matrix.get(IntPair.ordered(i, target));
 				if(edgesTargetToNeighbor == null)
 					edgesTargetToNeighbor = 0;
 
-				if(i < target)
-					matrix.put(new IntPair(i, target), edgesTargetToNeighbor + edgesSourceToNeighbor);
-				  else
-					matrix.put(new IntPair(target, i), edgesTargetToNeighbor + edgesSourceToNeighbor);
+				matrix.put(IntPair.ordered(i, target), edgesTargetToNeighbor + edgesSourceToNeighbor);
 
-				if(i < source)
-					matrix.remove(new IntPair(i, source));
-				  else
-					matrix.remove(new IntPair(source, i));
+				matrix.remove(IntPair.ordered(i, source));
+			}
+		}
+		for(int i = 0; i <= maxId; i++) {
+			Integer edgesTargetToNeighbor = matrix.get(IntPair.ordered(i, target));
+			if(edgesTargetToNeighbor != null && edgesTargetToNeighbor > 0) {
+				deltaQ.remove(target, i);
+//				dQ = 2 * (e_ij - a_i * a_j)
+//				TODO: eij is a fraction!
+				double ai = a.getEdgesOutside();
+				double aj = communities.get(i).getEdgesOutside();
+				double eij = edgesTargetToNeighbor;
+				Double value = 2 * (eij - ai * aj);
+				deltaQ.add(target, i, value);
 			}
 		}
 	}
