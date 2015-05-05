@@ -33,6 +33,8 @@ public abstract class PairMerger extends Merger {
 
     protected PriorityQueue<Element> pq;
 
+    int level;
+
     /**
      * Set of merged clusters which are ignored. They could also be deleted but
      * deleting them from cluster array, external properties matrix and priority
@@ -53,6 +55,7 @@ public abstract class PairMerger extends Merger {
         initiateTree(clusterList);
         HierarchicalResult result = new HClustResult(dataset, pref);
 
+        level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
         }
@@ -75,6 +78,7 @@ public abstract class PairMerger extends Merger {
         for (int i = 0; i < clusterList.size(); i++) {
             nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
             nodes[i].setHeight(0);
+            nodes[i].setLevel(0);
         }
     }
 
@@ -175,6 +179,7 @@ public abstract class PairMerger extends Merger {
         }
         height += 1 / sim;
         newNode.setHeight(height);
+        newNode.setLevel(level++);
         nodes[clusterCount] = newNode;
     }
 
