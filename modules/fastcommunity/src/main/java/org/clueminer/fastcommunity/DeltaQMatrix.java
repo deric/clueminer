@@ -2,7 +2,7 @@ package org.clueminer.fastcommunity;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Node;
 
 /**
@@ -13,7 +13,7 @@ public class DeltaQMatrix {
 
 	Map<IntPair, Double> matrix = new HashMap<>();
 
-	void build(AdjMatrixGraph graph, double[] a) {
+	void build(AdjListGraph graph, double[] a) {
 		for(Node node : graph.getNodes()) {
 			for(Node neighbor : graph.getNeighbors(node)) {
 				int i = (int) node.getId();
