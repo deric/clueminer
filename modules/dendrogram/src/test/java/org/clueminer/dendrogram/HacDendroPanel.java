@@ -19,6 +19,8 @@ import org.clueminer.utils.Props;
  */
 public class HacDendroPanel extends DendroPanel {
 
+    private static final long serialVersionUID = 9048811568987758622L;
+
     private boolean debug = false;
     private DataProvider dataProvider;
     private Executor exec;
@@ -86,6 +88,13 @@ public class HacDendroPanel extends DendroPanel {
     public void linkageChanged(String linkage) {
         Props params = getProperties().copy();
         params.put(AgglParams.LINKAGE, linkage);
+        execute(params);
+    }
+
+    @Override
+    public void cutoffChanged(String cutoff) {
+        Props params = getProperties().copy();
+        params.put(AgglParams.CUTOFF_STRATEGY, cutoff);
         execute(params);
     }
 

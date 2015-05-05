@@ -237,4 +237,9 @@ public class HclDendroPanel extends DendroPanel {
             execute();
         }
     }
+
+    @Override
+    public void cutoffChanged(String cutoff) {
+        //not supported
+    }
 }

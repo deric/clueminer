@@ -110,6 +110,8 @@ public abstract class DendroPanel extends JPanel {
      */
     public abstract void linkageChanged(String linkage);
 
+    public abstract void cutoffChanged(String cutoff);
+
     public abstract String[] getDatasets();
 
     public void fireTreeUpdated() {
