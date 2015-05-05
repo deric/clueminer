@@ -55,6 +55,7 @@ public abstract class PairMerger extends Merger {
         initiateTree(clusterList);
         HierarchicalResult result = new HClustResult(dataset, pref);
 
+        level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
             singleMerge(clusterList);
         }
