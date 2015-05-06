@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2011-2015 clueminer.org
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package org.clueminer.scatter.matrix;
 
 import java.awt.GridBagConstraints;
@@ -22,19 +6,18 @@ import java.awt.Insets;
 import java.io.IOException;
 import javax.swing.JFrame;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author deric
  */
-public class MatrixDemo2 extends JFrame {
+public class MatrixDemoGral extends JFrame {
 
     private static final long serialVersionUID = 861272115283587449L;
     private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
-    private ScatterMatrixPanel2 matrix;
+    private ScatterMatrixGralPanel matrix;
 
-    public MatrixDemo2() throws IOException {
+    public MatrixDemoGral() throws IOException {
         initComponents();
 
         matrix.setClustering(FakeClustering.iris());
@@ -42,7 +25,7 @@ public class MatrixDemo2 extends JFrame {
 
     // this function will be run from the EDT
     private static void createAndShowGUI() throws Exception {
-        MatrixDemo2 gui = new MatrixDemo2();
+        MatrixDemoGral gui = new MatrixDemoGral();
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setSize(500, 500);
         gui.setVisible(true);
@@ -56,7 +39,8 @@ public class MatrixDemo2 extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    Exceptions.printStackTrace(e);
+                    System.err.println(e);
+                    e.printStackTrace();
                 }
             }
         });
@@ -74,7 +58,7 @@ public class MatrixDemo2 extends JFrame {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.insets = WEST_INSETS;
 
-        matrix = new ScatterMatrixPanel2();
+        matrix = new ScatterMatrixGralPanel();
         this.getContentPane().add(matrix, c);
         this.pack();
     }

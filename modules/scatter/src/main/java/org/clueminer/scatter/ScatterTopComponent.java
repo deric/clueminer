@@ -45,14 +45,14 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
     private static final long serialVersionUID = 1752389678088215586L;
 
     private Lookup.Result<Clustering> result = null;
-    private final ScatterPlot2 frame;
+    private final ScatterPlot frame;
     private static final Logger logger = Logger.getLogger(ScatterTopComponent.class.getName());
 
     public ScatterTopComponent() {
         initComponents();
         setName(Bundle.CTL_ScatterTopComponent());
         setToolTipText(Bundle.HINT_ScatterTopComponent());
-        frame = new ScatterPlot2();
+        frame = new ScatterPlot();
         add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
