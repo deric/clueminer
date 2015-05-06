@@ -222,6 +222,7 @@
         <module>modules/meta-h2</module>
         <module>modules/evolution-api</module>
         <module>modules/meta-view</module>
+        <module>modules/scatter</module>
     </modules>
     <reporting>
         <plugins>
