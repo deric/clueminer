@@ -28,13 +28,13 @@ public class HclDendroPanel extends DendroPanel {
     private static final long serialVersionUID = -5113017275195427868L;
     private Props params;
     private boolean debug = false;
-    private DataProvider dataProvider;
+    private DataProviderMap dataProvider;
 
     public HclDendroPanel(Map<String, Dataset<? extends Instance>> data) {
-        this(new DataProvider(data));
+        this(new DataProviderMap(data));
     }
 
-    public HclDendroPanel(DataProvider provider) {
+    public HclDendroPanel(DataProviderMap provider) {
         dataProvider = provider;
         setDataset(dataProvider.first());
         options.setDatasets(dataProvider.getDatasetNames());
@@ -212,7 +212,7 @@ public class HclDendroPanel extends DendroPanel {
         return dataProvider.getDatasetNames();
     }
 
-    public void setDataProvider(DataProvider provider) {
+    public void setDataProvider(DataProviderMap provider) {
         this.dataProvider = provider;
     }
 
