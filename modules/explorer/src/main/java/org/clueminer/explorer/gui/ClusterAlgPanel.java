@@ -82,6 +82,12 @@ public class ClusterAlgPanel extends JPanel {
         return new JPanel();
     }
 
+    public void updateAlgorithm() {
+        ClusteringAlgorithm algorithm = getAlgorithm();
+        ClusteringDialog clusteringDialog = (ClusteringDialog) optPanel;
+        clusteringDialog.updateAlgorithm(algorithm);
+    }
+
     public ClusteringAlgorithm getAlgorithm() {
         String algName = (String) cbType.getSelectedItem();
         ClusteringAlgorithm algorithm = ClusteringFactory.getInstance().getProvider(algName);

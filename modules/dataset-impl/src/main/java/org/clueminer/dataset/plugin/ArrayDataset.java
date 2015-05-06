@@ -1,7 +1,13 @@
 package org.clueminer.dataset.plugin;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.swing.JComponent;
 import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.attributes.BasicAttrType;
@@ -608,6 +614,11 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         }
         str.append("\n ]");
         return str.toString();
+    }
+
+    @Override
+    public Collection<? extends Number> attrCollection(int index) {
+        return new AttributeCollection<>(this, index);
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {

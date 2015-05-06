@@ -7,6 +7,7 @@ import javax.swing.JComboBox;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringFactory;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 
 /**
@@ -20,6 +21,7 @@ public class OptionsPanel extends javax.swing.JPanel {
     private JComboBox algBox;
     private JComboBox dataBox;
     private JComboBox linkageBox;
+    private JComboBox cutoffBox;
     private ClusteringFactory cf;
 
     /**
@@ -70,6 +72,17 @@ public class OptionsPanel extends javax.swing.JPanel {
             }
         });
         add(linkageBox);
+
+        cutoffBox = new JComboBox(CutoffStrategyFactory.getInstance().getProvidersArray());
+        cutoffBox.setSelectedItem(CutoffStrategyFactory.getInstance().getDefault().getName());
+        cutoffBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.cutoffChanged((String) cutoffBox.getSelectedItem());
+            }
+        });
+        add(cutoffBox);
     }
 
     public void setDatasets(String[] datasets) {

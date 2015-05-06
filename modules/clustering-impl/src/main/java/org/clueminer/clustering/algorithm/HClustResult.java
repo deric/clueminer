@@ -16,6 +16,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
+import org.clueminer.clustering.api.ResultType;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -52,6 +53,7 @@ public class HClustResult implements HierarchicalResult {
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy;
+    private ResultType resultType;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
@@ -273,7 +275,7 @@ public class HClustResult implements HierarchicalResult {
             } else if (node.getLeft().getHeight() < cutoff) {
                 clust = makeCluster(clusters);
                 subtreeToCluster(node.getLeft(), clust, assign);
-                checkCutoff(node.getLeft(), cutoff, clusters, assign);
+                checkCutoff(node.getRight(), cutoff, clusters, assign);
             }
         } else {
             checkCutoff(node.getLeft(), cutoff, clusters, assign);
@@ -323,17 +325,21 @@ public class HClustResult implements HierarchicalResult {
     }
 
     private double findLevel(DendroNode node, int level) {
+        return (findLevelHeight(node, level) + findLevelHeight(node, level + 1)) / 2.0;
+    }
+
+    private double findLevelHeight(DendroNode node, int level) {
         if (node.level() == level) {
-            return (node.getParent().getHeight() + node.getHeight()) / 2.0;
+            return node.getHeight();
         } else {
             if (node.isLeaf()) {
                 return -1;
             } else {
-                double ret = findLevel(node.getLeft(), level);
+                double ret = findLevelHeight(node.getLeft(), level);
                 if (ret > -1) {
                     return ret;
                 }
-                ret = findLevel(node.getRight(), level);
+                ret = findLevelHeight(node.getRight(), level);
                 if (ret > -1) {
                     return ret;
                 }
@@ -589,14 +595,15 @@ public class HClustResult implements HierarchicalResult {
         treeData.updatePositions(treeData.getRoot());
     }
 
-    /**
-     * It's a square matrix, doesn't matter which dimension we'll return
-     *
-     * @return
-     */
     @Override
     public int size() {
-        return proximity.rowsCount();
+        if (resultType == ResultType.COLUMNS_CLUSTERING) {
+            return dataset.attributeCount();
+        } else if (resultType == ResultType.ROWS_CLUSTERING) {
+            return dataset.size();
+        } else {
+            throw new RuntimeException("Unknown type of result.");
+        }
     }
 
     @Override
@@ -621,6 +628,11 @@ public class HClustResult implements HierarchicalResult {
             res = c.getLookup().lookup(DendrogramMapping.class);
         }
         return res;
+    }
+
+    @Override
+    public void setResultType(ResultType type) {
+        resultType = type;
     }
 
 }

@@ -17,6 +17,8 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
  */
 public class ScatterTest extends JFrame {
 
+    private static final long serialVersionUID = 2454805549250048515L;
+
     private ScatterPlot scatter;
 
     public ScatterTest() {
@@ -32,7 +34,7 @@ public class ScatterTest extends JFrame {
     private static void createAndShowGUI() throws Exception {
         ScatterTest hmf = new ScatterTest();
         hmf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        hmf.setSize(500, 500);
+        hmf.setSize(800, 600);
         hmf.setVisible(true);
     }
 
@@ -42,7 +44,10 @@ public class ScatterTest extends JFrame {
             @Override
             public void run() {
                 try {
+                    long start = System.currentTimeMillis();
                     createAndShowGUI();
+                    long end = (System.currentTimeMillis() - start);
+                    System.out.println("clm-chart show = " + end + " ms");
                 } catch (Exception e) {
                     System.err.println(e);
                     e.printStackTrace();
@@ -52,7 +57,9 @@ public class ScatterTest extends JFrame {
     }
 
     private void initComponents() {
-        scatter = new ScatterPlot();
+        long start = System.currentTimeMillis();
+        scatter = new ScatterPlot(800, 600);
+
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -64,6 +71,8 @@ public class ScatterTest extends JFrame {
         c.weighty = 1.0;
         c.insets = new Insets(0, 0, 0, 0);
         InteractivePanel panel = new InteractivePanel(scatter);
+        long create = (System.currentTimeMillis() - start);
+        System.out.println("clm-chart create = " + create + " ms");
         add(panel, c);
 
     }

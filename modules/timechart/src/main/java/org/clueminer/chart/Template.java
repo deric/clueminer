@@ -1,7 +1,7 @@
 package org.clueminer.chart;
 
 import java.util.ArrayList;
-import org.clueminer.chart.api.Chart;
+import org.clueminer.chart.api.ChartRenderer;
 import org.clueminer.chart.api.ChartProperties;
 import org.clueminer.chart.api.Overlay;
 import org.clueminer.chart.base.ChartPropertiesImpl;
@@ -13,7 +13,7 @@ import org.clueminer.chart.base.ChartPropertiesImpl;
 public class Template {
 
     private final String name;
-    private Chart chart;
+    private ChartRenderer chart;
     private ChartProperties chartProperties;
     private ArrayList<Overlay> overlays;
 
@@ -27,14 +27,14 @@ public class Template {
         return name;
     }
 
-    public void setChart(Chart chart) {
+    public void setChart(ChartRenderer chart) {
         if (chart == null) {
             return;
         }
         this.chart = chart;
     }
 
-    public Chart getChart() {
+    public ChartRenderer getChart() {
         return chart;
     }
 

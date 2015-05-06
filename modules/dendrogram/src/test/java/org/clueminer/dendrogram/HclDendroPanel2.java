@@ -14,10 +14,10 @@ public class HclDendroPanel2 extends HclDendroPanel {
     private static final long serialVersionUID = 1839749571569545084L;
 
     public HclDendroPanel2(Map<String, Dataset<? extends Instance>> data) {
-        super(new DataProvider(data));
+        super(new DataProviderMap(data));
     }
 
-    public HclDendroPanel2(DataProvider provider) {
+    public HclDendroPanel2(DataProviderMap provider) {
         super(provider);
     }
 

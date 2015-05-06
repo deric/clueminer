@@ -28,13 +28,13 @@ public class HclDendroPanel extends DendroPanel {
     private static final long serialVersionUID = -5113017275195427868L;
     private Props params;
     private boolean debug = false;
-    private DataProvider dataProvider;
+    private DataProviderMap dataProvider;
 
     public HclDendroPanel(Map<String, Dataset<? extends Instance>> data) {
-        this(new DataProvider(data));
+        this(new DataProviderMap(data));
     }
 
-    public HclDendroPanel(DataProvider provider) {
+    public HclDendroPanel(DataProviderMap provider) {
         dataProvider = provider;
         setDataset(dataProvider.first());
         options.setDatasets(dataProvider.getDatasetNames());
@@ -107,6 +107,8 @@ public class HclDendroPanel extends DendroPanel {
         //   progress.setTitle("Clustering by columns");
         params.putBoolean("calculate-rows", false);
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.putBoolean("calculate-columns", true);
+        params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
         HierarchicalResult columnsResult = algorithm.hierarchy(getDataset(), params);
         if (columnsResult != null) {
             Dump.array(columnsResult.getMapping(), "col mapping: ");
@@ -117,7 +119,7 @@ public class HclDendroPanel extends DendroPanel {
         long time = System.currentTimeMillis() - start;
         System.out.println(algorithm.getName() + " clustering took " + time + " ms");
 
-        double cutoff = rowsResult.findCutoff();
+        double cutoff = rowsResult.findCutoff(new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault()));
         //   double cutoff = rowsResult.findCutoff();
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
@@ -210,7 +212,7 @@ public class HclDendroPanel extends DendroPanel {
         return dataProvider.getDatasetNames();
     }
 
-    public void setDataProvider(DataProvider provider) {
+    public void setDataProvider(DataProviderMap provider) {
         this.dataProvider = provider;
     }
 
@@ -234,5 +236,10 @@ public class HclDendroPanel extends DendroPanel {
         if (algorithm != null) {
             execute();
         }
+    }
+
+    @Override
+    public void cutoffChanged(String cutoff) {
+        //not supported
     }
 }

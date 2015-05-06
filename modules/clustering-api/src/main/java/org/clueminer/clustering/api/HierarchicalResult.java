@@ -251,6 +251,8 @@ public interface HierarchicalResult extends Serializable {
      */
     void setDataset(Dataset<? extends Instance> dataset);
 
+    void setResultType(ResultType type);
+
     /**
      * Size of input data (dimension of similarity/proximity matrix) which
      * depends whether it is row/columns clustering

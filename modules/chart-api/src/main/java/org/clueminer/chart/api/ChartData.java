@@ -41,9 +41,9 @@ public interface ChartData {
      *
      * @return
      */
-    public Chart getChart();
+    public ChartRenderer getChart();
 
-    public void setChart(Chart chart);
+    public void setChart(ChartRenderer chart);
 
     public boolean isChartNull();
 

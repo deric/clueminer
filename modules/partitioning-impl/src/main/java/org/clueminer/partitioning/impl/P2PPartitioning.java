@@ -9,11 +9,13 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
+@ServiceProvider(service = Partitioning.class)
 public class P2PPartitioning implements Partitioning {
 
     private Vertex[] nodes;
@@ -21,7 +23,7 @@ public class P2PPartitioning implements Partitioning {
     private boolean[] used;
     private int usedCount;
     private int k;
-    Node[] graphNodes;
+    private Node[] graphNodes;
 
     private Graph graph;
 
@@ -33,6 +35,10 @@ public class P2PPartitioning implements Partitioning {
 
     }
 
+    @Override
+    public String getName() {
+        return "P2P partitioning";
+    }
 
     @Override
     public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
@@ -171,6 +177,26 @@ public class P2PPartitioning implements Partitioning {
             result += ("Node " + nodes[i].index + ": " + nodes[i].degree + "\n");
         }
         return result;
+    }
+
+    public class Vertex implements Comparable<Vertex> {
+
+        public int degree;
+        public int index;
+        public boolean used;
+        public int cluster;
+
+        public Vertex(int index, int degree) {
+            this.degree = degree;
+            this.index = index;
+            used = false;
+        }
+
+        @Override
+        public int compareTo(Vertex compareVertex) {
+            int compareDegree = compareVertex.degree;
+            return compareDegree - this.degree;
+        }
     }
 
 }

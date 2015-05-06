@@ -17,14 +17,15 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
-    HashMap<Long, Integer> idToIndex;
-    HashMap<Long, AdjMatrixNode> idToNode;
-    AdjMatrixEdge[][] adjMatrix;
-    AdjMatrixNode[] nodes;
-    int size;
-    int nodeCounter;
-    DistanceMeasure dm;
-    final double EPS = 1e-6;
+    private HashMap<Long, Integer> idToIndex;
+    private HashMap<Long, AdjMatrixNode> idToNode;
+    private AdjMatrixEdge[][] adjMatrix;
+    private AdjMatrixNode[] nodes;
+    private int edgeCounter;
+    private int size;
+    private int nodeCounter;
+    private DistanceMeasure dm;
+    private final double EPS = 1e-6;
 
     public AdjMatrixGraph(int size) {
         this(size, new EuclideanDistance());
@@ -34,6 +35,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         this.size = size;
         this.nodes = new AdjMatrixNode[size];
         nodeCounter = 0;
+        edgeCounter = 0;
         adjMatrix = new AdjMatrixEdge[size][size];
         idToIndex = new HashMap<>();
         idToNode = new HashMap<>();
@@ -50,6 +52,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         }
         adjMatrix[source][target] = e;
         adjMatrix[target][source] = e;
+        edgeCounter++;
         return true;
     }
 
@@ -89,6 +92,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         int source = idToIndex.get(edge.getSource().getId());
         int target = idToIndex.get(edge.getTarget().getId());
         adjMatrix[source][target] = adjMatrix[target][source] = null;
+        edgeCounter--;
         return true;
     }
 
@@ -215,7 +219,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public int getEdgeCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeCounter;
     }
 
     @Override

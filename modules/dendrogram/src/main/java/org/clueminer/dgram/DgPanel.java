@@ -1,6 +1,5 @@
 package org.clueminer.dgram;
 
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -17,16 +16,17 @@ import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
-import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ClassAssignment;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
-import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
 import org.clueminer.dendrogram.gui.ColumnStatistics;
 import org.clueminer.dendrogram.gui.CutoffLine;
@@ -143,7 +143,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
-        logger.log(Level.INFO, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
+        logger.log(Level.FINER, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
 
         if (fitToPanel) {
             //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);

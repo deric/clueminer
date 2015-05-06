@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.ResultType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.clustering.order.MOLO;
@@ -48,6 +49,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         logger.log(Level.FINER, "clustering {0}", params.toString());
         HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
+        rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
         //TODO: tree ordering might break assigning items to clusters
         //treeOrder.optimize(rowsResult, true);
         return rowsResult;
@@ -59,6 +61,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
+        columnsResult.setResultType(ResultType.COLUMNS_CLUSTERING);
         //treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);

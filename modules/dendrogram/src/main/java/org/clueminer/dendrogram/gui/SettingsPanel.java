@@ -30,6 +30,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         chckShowHorizontal.setSelected(viewer.isHorizontalTreeVisible());
         chckShowVertical.setSelected(viewer.isVerticalTreeVisible());
         chckShowLegend.setSelected(viewer.isLegendVisible());
+        chckShowEval.setSelected(viewer.isEvaluationVisible());
     }
 
     /**

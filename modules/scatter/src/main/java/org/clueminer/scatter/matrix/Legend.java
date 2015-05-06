@@ -1,5 +1,23 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.scatter.matrix;
 
+import com.google.common.collect.Table;
+import com.xeiam.xchart.internal.markers.Marker;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,18 +36,16 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.util.Map;
-import java.util.Map.Entry;
 import javax.swing.JPanel;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
 public class Legend extends JPanel {
 
     private static final long serialVersionUID = 7661870086510737247L;
-    private Map<Integer, Entry<String, Color>> labels;
+    private Table<Integer, String, LegendEntry> labels;
     protected int fontSize = 10;
     protected Font defaultFont;
     protected BufferedImage bufferedImage;
@@ -97,7 +113,7 @@ public class Legend extends JPanel {
             maxWidth = 0;
             for (int row = 0; row < labels.size(); row++) {
                 g.setColor(Color.black);
-                str = labels.get(row).getKey();
+                str = labels.row(row).keySet().iterator().next();
                 if (str == null) {
                     str = unknownLabel;
                 }
@@ -108,7 +124,8 @@ public class Legend extends JPanel {
                 checkMax(width);
                 g.drawString(str, x, (y + lineHeight / 2f + (fm.getAscent() - fm.getDescent()) / 4f));
 
-                color = labels.get(row).getValue();
+                LegendEntry entry = labels.get(row, str);
+                color = entry.getColor();
                 g.setColor(color);
                 //for debugging
                 //g.drawRect(x, y, width, fm.getHeight());
@@ -116,7 +133,7 @@ public class Legend extends JPanel {
 
                 Rectangle bounds = shape.getBounds();
 
-                symb = drawSymbol(color, (int) (bounds.width * scale), (int) (bounds.height * scale));
+                symb = drawSymbol(color, (int) (bounds.width * scale), (int) (bounds.height * scale), entry.getMarker());
                 //System.out.println("shape pos" + );
                 trans.translate(insets.left - shape.getBounds().width / 2.0, y + lineHeight / 2.0 - bounds.height / 2.0);
                 g.drawImage(symb, trans, null);
@@ -128,24 +145,17 @@ public class Legend extends JPanel {
         }
     }
 
-    private BufferedImage drawSymbol(Color color, int width, int height) {
+    private BufferedImage drawSymbol(Color color, int width, int height, Marker m) {
         BufferedImage bi = new BufferedImage(width + 2, height + 2, BufferedImage.TYPE_INT_ARGB);
         Graphics2D buff = bi.createGraphics();
         buff.setPaint(color);
-        buff.draw(shape);
-        buff.fill(shape);
+        m.paint(buff, width / 2.0, height / 2.0, width);
+        //buff.draw(shape);
+        //buff.fill(shape);
         return bi;
     }
 
     private void recalculate() {
-        //System.out.println("prefered size: " + getPreferredSize());
-        //System.out.println("size: " + getSize());
-        //System.out.println("min size: " + getMinimumSize());
-        //System.out.println("======");
-        //size.width = (int) Math.ceil(getSize().width * 0.9);
-        //size.height = (int) Math.ceil(getSize().height * 0.9);
-        //System.out.println("matrix component " + dim.width + ", " + dim.height);
-
         if (sizeUpdated()) {
             createBufferedGraphics();
         }
@@ -186,7 +196,7 @@ public class Legend extends JPanel {
         }
     }
 
-    public void setLabels(Map<Integer, Entry<String, Color>> labels) {
+    public void setLabels(Table<Integer, String, LegendEntry> labels) {
         this.labels = labels;
     }
 

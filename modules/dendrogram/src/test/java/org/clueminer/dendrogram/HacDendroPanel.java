@@ -19,15 +19,17 @@ import org.clueminer.utils.Props;
  */
 public class HacDendroPanel extends DendroPanel {
 
+    private static final long serialVersionUID = 9048811568987758622L;
+
     private boolean debug = false;
-    private DataProvider dataProvider;
+    private DataProviderMap dataProvider;
     private Executor exec;
 
     public HacDendroPanel(Map<String, Dataset<? extends Instance>> data) {
-        this(new DataProvider(data));
+        this(new DataProviderMap(data));
     }
 
-    public HacDendroPanel(DataProvider provider) {
+    public HacDendroPanel(DataProviderMap provider) {
         dataProvider = provider;
         setDataset(dataProvider.first());
         options.setDatasets(dataProvider.getDatasetNames());
@@ -86,6 +88,13 @@ public class HacDendroPanel extends DendroPanel {
     public void linkageChanged(String linkage) {
         Props params = getProperties().copy();
         params.put(AgglParams.LINKAGE, linkage);
+        execute(params);
+    }
+
+    @Override
+    public void cutoffChanged(String cutoff) {
+        Props params = getProperties().copy();
+        params.put(AgglParams.CUTOFF_STRATEGY, cutoff);
         execute(params);
     }
 

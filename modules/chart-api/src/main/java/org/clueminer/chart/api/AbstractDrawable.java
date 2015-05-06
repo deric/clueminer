@@ -3,6 +3,7 @@ package org.clueminer.chart.api;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import org.clueminer.chart.util.Dim;
 
 /**
  * Abstract implementation of the {@link Drawable} interface.
@@ -21,6 +22,8 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     private final Rectangle2D bounds;
 
+    private Dim preferredSize;
+
     /**
      * Creates an AbstractDrawable.
      */
@@ -35,16 +38,14 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public Rectangle2D getBounds() {
-        Rectangle2D b = new Rectangle2D.Double();
-        b.setFrame(bounds);
-        return b;
+        return bounds;
     }
 
     /**
      * Returns the x-position of the bounds.
      *
      * @return horizontal position of the upper-left corner of the bounding
-     *         rectangle.
+     * rectangle.
      */
     @Override
     public double getX() {
@@ -55,7 +56,7 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      * Returns the y-position of the bounds.
      *
      * @return vertical position of the upper-left corner of the bounding
-     *         rectangle.
+     * rectangle.
      */
     @Override
     public double getY() {
@@ -90,16 +91,16 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
     @Override
     public void setBounds(Rectangle2D bounds) {
         setBounds(bounds.getX(), bounds.getY(),
-                  bounds.getWidth(), bounds.getHeight());
+                bounds.getWidth(), bounds.getHeight());
     }
 
     /**
      * Sets the bounds to the specified coordinates, width and height.
      * This method should be used when overriding functionality.
      *
-     * @param x      horizontal position of the upper-left corner
-     * @param y      vertical position of the upper-left corner
-     * @param width  horizontal extent
+     * @param x horizontal position of the upper-left corner
+     * @param y vertical position of the upper-left corner
+     * @param width horizontal extent
      * @param height vertical extent
      */
     @Override
@@ -114,7 +115,11 @@ public abstract class AbstractDrawable implements Drawable, Serializable {
      */
     @Override
     public Dimension2D getPreferredSize() {
-        return new org.clueminer.chart.util.Dimension2D.Double();
+        if (preferredSize == null) {
+            preferredSize = new Dim.Double(bounds.getWidth() - bounds.getX(), bounds.getHeight() - bounds.getY());
+        }
+        preferredSize.setSize(bounds.getWidth() - bounds.getX(), bounds.getHeight() - bounds.getY());
+        return preferredSize;
     }
 
     @Override

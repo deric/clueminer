@@ -1,11 +1,15 @@
-package org.clueminer.chameleon;
+package org.clueminer.graph.GraphBuilder;
 
+import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.io.FileHandler;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -13,34 +17,32 @@ import org.junit.Test;
  *
  * @author Tomas Bruna
  */
-public class KNNTest {
+public class KNNGraphBuilderTest {
 
-//    @Test
-//    public void irisDataTest() throws IOException {
-//        CommonFixture tf = new CommonFixture();
-//        Dataset data = new SampleDataset();
-//        DistanceMeasure distanceMeasure = new EuclideanDistance();
-//        data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
-//        data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
-//        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
-//        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
-//        FileHandler.loadDataset(tf.irisData(), data, 4, ",");
-//
-//        int k = 5;
-//        KNN knn = new KNN(k);
-//        int[][] a = knn.getNeighborArray(data);
-//        for (int i = 0; i < data.size(); i++) {
-//            //  System.out.print("Row " + i + ": ");
-//            for (int j = 0; j < k; j++) {
-//                //    System.out.print(", " + distanceMeasure.measure(data.instance(i), data.instance(a[i][j])));
-//                if (j > 0) {
-//                    assertEquals(true, distanceMeasure.measure(data.instance(i), data.instance(a[i][j])) >= distanceMeasure.measure(data.instance(i), data.instance(a[i][j - 1])));
-//                }
-//
-//            }
-//            // System.out.println();
-//        }
-//    }
+    @Test
+    public void irisDataTest() throws IOException {
+        CommonFixture tf = new CommonFixture();
+        Dataset data = new SampleDataset();
+        DistanceMeasure distanceMeasure = new EuclideanDistance();
+        data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
+        data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
+        FileHandler.loadDataset(tf.irisData(), data, 4, ",");
+
+        int k = 5;
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int[][] a = knn.getNeighborArray(data, k);
+        for (int i = 0; i < data.size(); i++) {
+            for (int j = 0; j < k; j++) {
+                if (j > 0) {
+                    assertEquals(true, distanceMeasure.measure(data.instance(i), data.instance(a[i][j])) >= distanceMeasure.measure(data.instance(i), data.instance(a[i][j - 1])));
+                }
+
+            }
+        }
+    }
+
     private Dataset<? extends Instance> simpleData() {
         Dataset<Instance> data = new ArrayDataset<>(4, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
@@ -57,8 +59,8 @@ public class KNNTest {
     public void simpleDataTest() {
         Dataset<? extends Instance> dataset = simpleData();
         DistanceMeasure dm = new EuclideanDistance();
-        KNN knn = new KNN(4);
-        int[][] a = knn.getNeighborArray(dataset);
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int[][] a = knn.getNeighborArray(dataset, 4);
 
         assertEquals(3, a[0][0]);
         assertEquals(2, a[0][1]);

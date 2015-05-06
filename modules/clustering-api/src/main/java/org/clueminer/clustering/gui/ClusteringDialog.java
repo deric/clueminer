@@ -20,6 +20,8 @@ public abstract class ClusteringDialog extends JPanel {
 
     public abstract void setParent(ClusterAnalysis clust);
 
+    public abstract void updateAlgorithm(ClusteringAlgorithm algorithm);
+
     public abstract ClusteringAlgorithm getAlgorithm();
 
     public abstract JPanel getPanel();

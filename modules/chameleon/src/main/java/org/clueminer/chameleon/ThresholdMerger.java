@@ -7,25 +7,30 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
- * This class merges multiple clusters in one merge. Every cluster is merged
- * with the most similar one at each step.
+ * This class merges pairs of clusters exceeding given thresholds for relative
+ * interconnectivity and closeness. Merging stops when there is no pair of
+ * clusters exceeding the thresholds.
+ *
  *
  * @author Tomas Bruna
  */
-public class MultipleMerger extends Merger {
+public class ThresholdMerger extends Merger {
 
-    public MultipleMerger(Graph g) {
-        super(g);
+    private final double RICThreshold;
+    private final double RCLThreshold;
+    private boolean merged;
+
+    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, double RICThreshold, double RCLThreshold) {
+        super(g, bisection, closenessPriority);
+        this.RICThreshold = RICThreshold;
+        this.RCLThreshold = RCLThreshold;
     }
 
-    public MultipleMerger(Graph g, Bisection bisection) {
-        super(g, bisection);
-    }
-
-    @Override
-    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList, int mergeCount) {
+    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
         ArrayList<LinkedList<Node>> result = clusterList;
-        for (int i = 0; i < mergeCount; i++) {
+        merged = true;
+        while (merged) {
+            merged = false;
             result = singleMerge(result);
         }
         return result;
@@ -37,19 +42,23 @@ public class MultipleMerger extends Merger {
         initiateClustersForMerging();
 
         for (int i = 0; i < clusterCount; i++) {
-            double max = Double.NEGATIVE_INFINITY;
-            int index = 0;
+            double maxRIC = Double.NEGATIVE_INFINITY;
+            int index = -1;
             for (int j = 0; j < clusterCount; j++) {
                 if (i == j) {
                     continue;
                 }
-                double value = computeSimilarity(i, j);
-                if (value > max) {
-                    max = value;
+                double RIC = getRIC(i, j);
+                double RCL = getRCL(i, j);
+                if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
+                    maxRIC = RIC;
                     index = j;
                 }
             }
-            mergeTwoClusters(clusters.get(i), clusters.get(index));
+            if (index != -1) {
+                merged = true;
+                mergeTwoClusters(clusters.get(i), clusters.get(index));
+            }
         }
         return getNewClusters();
     }
@@ -61,23 +70,23 @@ public class MultipleMerger extends Merger {
         for (int i = 0; i < clusterCount; i++) {
             clusters.get(i).offsprings = new LinkedList<>();
             clusters.get(i).offsprings.add(clusters.get(i));
-            clusters.get(i).parent = clusters.get(i);
+            clusters.get(i).setParent(clusters.get(i));
         }
     }
 
     protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
-        if (cluster1.parent.id == cluster2.parent.id) {
+        if (cluster1.getParent().getId() == cluster2.getParent().getId()) {
             return;
         }
-        if (cluster1.parent.offsprings.size() < cluster2.parent.offsprings.size()) {
+        if (cluster1.getParent().offsprings.size() < cluster2.getParent().offsprings.size()) {
             Cluster temp = cluster1;
             cluster1 = cluster2;
             cluster2 = temp;
         }
-        cluster1.parent.offsprings.addAll(cluster2.parent.offsprings);
-        Cluster parent = cluster2.parent;
+        cluster1.getParent().offsprings.addAll(cluster2.getParent().offsprings);
+        Cluster parent = cluster2.getParent();
         for (Cluster cluster : parent.offsprings) {
-            cluster.parent = cluster1.parent;
+            cluster.setParent(cluster1.getParent());
         }
         parent.offsprings = null;
     }
@@ -93,8 +102,7 @@ public class MultipleMerger extends Merger {
             if (clusters.get(i).offsprings != null) {
                 LinkedList<Node> list = new LinkedList<>();
                 for (Cluster cluster : clusters.get(i).offsprings) {
-                    ArrayList<Node> nodes = (ArrayList<Node>) cluster.graph.getNodes().toCollection();
-                    for (Node node : nodes) {
+                    for (Node node : cluster.getNodes()) {
                         list.add(node);
                     }
                 }

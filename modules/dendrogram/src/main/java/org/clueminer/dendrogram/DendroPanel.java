@@ -23,7 +23,7 @@ public abstract class DendroPanel extends JPanel {
 
     private static final long serialVersionUID = -8394261467235786115L;
     protected AgglomerativeClustering algorithm;
-    protected DendroViewer viewer;
+    public DendroViewer viewer;
     //original dataset
     private Dataset<? extends Instance> dataset;
     private SettingsPanel panel;
@@ -109,6 +109,8 @@ public abstract class DendroPanel extends JPanel {
      * @param linkage name of chosen linkage algorithm
      */
     public abstract void linkageChanged(String linkage);
+
+    public abstract void cutoffChanged(String cutoff);
 
     public abstract String[] getDatasets();
 

@@ -12,9 +12,9 @@ import org.clueminer.graph.api.Node;
  */
 public class FloodFill {
 
-    Graph graph;
-    boolean marked[];
-    ArrayList<LinkedList<Node>> result;
+    private Graph graph;
+    private boolean marked[];
+    private ArrayList<LinkedList<Node>> result;
 
     /**
      * Finds disconnected subgraphs in the given graph

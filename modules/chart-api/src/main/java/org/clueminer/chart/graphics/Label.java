@@ -100,6 +100,7 @@ public class Label extends AbstractDrawable {
      *
      * @param context Environment used for drawing
      */
+    @Override
     public void draw(DrawingContext context) {
         boolean wordWrap = isWordWrapEnabled();
         Shape labelShape = getCachedOutline(wordWrap);
@@ -111,11 +112,11 @@ public class Label extends AbstractDrawable {
         Rectangle2D textBounds = labelShape.getBounds2D();
 
         // Rotate label text around its center point
-        double rotation = getRotation();
-        if (MathUtils.isCalculatable(rotation) && rotation != 0.0) {
+        double rot = getRotation();
+        if (MathUtils.isCalculatable(rot) && rot != 0.0) {
             AffineTransform txLabelText
                     = AffineTransform.getRotateInstance(
-                            Math.toRadians(-rotation),
+                            Math.toRadians(-rot),
                             textBounds.getCenterX(),
                             textBounds.getCenterY()
                     );
@@ -128,9 +129,9 @@ public class Label extends AbstractDrawable {
         AffineTransform txOld = graphics.getTransform();
 
         // Draw background
-        Paint background = getBackground();
-        if (background != null) {
-            GraphicsUtils.fillPaintedShape(graphics, getBounds(), background, null);
+        Paint bg = getBackground();
+        if (bg != null) {
+            GraphicsUtils.fillPaintedShape(graphics, getBounds(), bg, null);
         }
 
         // Calculate absolute text position:
@@ -160,11 +161,11 @@ public class Label extends AbstractDrawable {
         if (getCachedOutline(false) != null) {
             Shape shape = getTextRectangle();
             Rectangle2D bounds = shape.getBounds2D();
-            double rotation = getRotation();
-            if (MathUtils.isCalculatable(rotation) && rotation != 0.0) {
+            double rot = getRotation();
+            if (MathUtils.isCalculatable(rot) && rot != 0.0) {
                 AffineTransform txLabelText
                         = AffineTransform.getRotateInstance(
-                                Math.toRadians(-rotation),
+                                Math.toRadians(-rot),
                                 bounds.getCenterX(),
                                 bounds.getCenterY()
                         );
@@ -257,7 +258,7 @@ public class Label extends AbstractDrawable {
      * Returns whether the cached values in this label are valid.
      *
      * @return {@code true} if all cached values are valid,
-     *         otherwise {@code false}.
+     * otherwise {@code false}.
      */
     protected boolean isValid() {
         boolean wordWrap = isWordWrapEnabled();
@@ -402,7 +403,7 @@ public class Label extends AbstractDrawable {
      * the label.
      *
      * @return {@code true} if the text should be wrapped, {@code false}
-     *         otherwise.
+     * otherwise.
      */
     public boolean isWordWrapEnabled() {
         return wordWrapEnabled;
@@ -413,7 +414,7 @@ public class Label extends AbstractDrawable {
      * label.
      *
      * @param wordWrapEnabled {@code true} if the text should be wrapped,
-     *                        {@code false} otherwise.
+     * {@code false} otherwise.
      */
     public void setWordWrapEnabled(boolean wordWrapEnabled) {
         this.wordWrapEnabled = wordWrapEnabled;

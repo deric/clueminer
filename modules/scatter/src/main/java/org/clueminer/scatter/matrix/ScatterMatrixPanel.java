@@ -1,23 +1,35 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.scatter.matrix;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
-import de.erichseifert.gral.data.DataSeries;
-import de.erichseifert.gral.data.DataTable;
-import de.erichseifert.gral.plots.XYPlot;
-import de.erichseifert.gral.plots.axes.AxisRenderer;
-import de.erichseifert.gral.plots.points.PointRenderer;
-import de.erichseifert.gral.ui.DrawablePanel;
-import de.erichseifert.gral.ui.InteractivePanel;
-import de.erichseifert.gral.util.Insets2D;
-import java.awt.Color;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import com.xeiam.xchart.Chart;
+import com.xeiam.xchart.Series;
+import com.xeiam.xchart.StyleManager;
+import com.xeiam.xchart.XChartPanel;
+import com.xeiam.xchart.internal.markers.Marker;
+import com.xeiam.xchart.internal.style.SeriesColorMarkerLineStyleCycler;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -28,13 +40,12 @@ import org.clueminer.dataset.api.Instance;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
 public class ScatterMatrixPanel extends JPanel {
 
     private static final long serialVersionUID = 4957672836007726620L;
 
-    private final Shape shape = new Ellipse2D.Double(-3, -3, 6, 6);
     private static final Logger logger = Logger.getLogger(ScatterMatrixPanel.class.getName());
     private Legend legend;
 
@@ -48,6 +59,17 @@ public class ScatterMatrixPanel extends JPanel {
         setSize(new Dimension(800, 600));
     }
 
+    public static Table<Integer, String, LegendEntry> newTable() {
+        return Tables.newCustomTable(
+                Maps.<Integer, Map<String, LegendEntry>>newHashMap(),
+                new Supplier<Map<String, LegendEntry>>() {
+                    @Override
+                    public Map<String, LegendEntry> get() {
+                        return Maps.newHashMap();
+                    }
+                });
+    }
+
     public void setClustering(final Clustering<Cluster> clustering) {
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -56,7 +78,7 @@ public class ScatterMatrixPanel extends JPanel {
             public void run() {
                 removeAll();
 
-                DrawablePanel chart;
+                JPanel chart;
                 GridBagConstraints c = new GridBagConstraints();
                 c.fill = GridBagConstraints.BOTH;
                 c.anchor = GridBagConstraints.CENTER;
@@ -80,14 +102,15 @@ public class ScatterMatrixPanel extends JPanel {
                         c.gridx = attrCnt - 2;
                         c.gridy = 0;
                         c.fill = GridBagConstraints.BOTH;
-                        ImmutableMap.Builder<Integer, Entry<String, Color>> mapBuilder
-                                = new ImmutableMap.Builder<Integer, Entry<String, Color>>();
                         int i = 0;
+                        Table<Integer, String, LegendEntry> labels = newTable();
+                        SeriesColorMarkerLineStyleCycler generator = new SeriesColorMarkerLineStyleCycler();
                         for (Cluster<Instance> clust : clustering) {
-                            mapBuilder.put(i, Maps.immutableEntry(clust.getName(), clust.getColor()));
+                            Marker m = generator.getNextSeriesColorMarkerLineStyle().getMarker();
+                            labels.put(i, clust.getName(), new LegendEntry(clust.getName(), clust.getColor(), m));
                             i++;
                         }
-                        legend.setLabels(mapBuilder.build());
+                        legend.setLabels(labels);
                         add(legend, c);
 
                     } else {
@@ -103,41 +126,21 @@ public class ScatterMatrixPanel extends JPanel {
 
     }
 
-    private DrawablePanel clusteringPlot(final Clustering<Cluster> clustering, int attrX, int attrY) {
-        // Create a new xy-plot
-        XYPlot plot = new XYPlot();
-        Color orig, trans;
+    private JPanel clusteringPlot(final Clustering<Cluster> clustering, int attrX, int attrY) {
+        Chart chart = new Chart(getWidth(), getHeight());
+        chart.getStyleManager().setChartType(StyleManager.ChartType.Scatter);
+
+        // Customize Chart
+        chart.getStyleManager().setChartTitleVisible(false);
+        chart.getStyleManager().setLegendVisible(false);
+        chart.getStyleManager().setMarkerSize(10);
 
         for (Cluster<Instance> clust : clustering) {
-            DataTable data = new DataTable(Double.class, Double.class);
-            for (Instance inst : clust) {
-                data.add(inst.value(attrX), inst.value(attrY));
-            }
-
-            DataSeries ds = new DataSeries(clust.getName(), data);
-            plot.add(ds);
-
-            PointRenderer pointRenderer = plot.getPointRenderer(ds);
-            orig = clust.getColor();
-            //last param is transparency
-            trans = new Color(orig.getRed(), orig.getGreen(), orig.getBlue(), 200);
-            pointRenderer.setColor(trans);
-            pointRenderer.setShape(shape);
+            Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+            s.setMarkerColor(clust.getColor());
         }
 
-        // Format plot
-        plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-        plot.setLegendVisible(false);
-
-        if (clustering.size() > 0) {
-            Cluster c = clustering.get(0);
-            // Format axes
-            AxisRenderer axisRendererX = plot.getAxisRenderer(XYPlot.AXIS_X);
-            axisRendererX.setLabel(c.getAttribute(attrX).getName());
-            AxisRenderer axisRendererY = plot.getAxisRenderer(XYPlot.AXIS_Y);
-            axisRendererY.setLabel(c.getAttribute(attrY).getName());
-        }
-        return new InteractivePanel(plot);
+        return new XChartPanel(chart);
     }
 
 }

@@ -5,30 +5,38 @@ import java.util.LinkedList;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
-public class KernighanLinRecursive implements Partitioning {
+@ServiceProvider(service = Partitioning.class)
+public class RecursiveBisection implements Partitioning {
 
-    int maxNodesInCluster;
-    Graph graph;
-    boolean marked[];
-    ArrayList<LinkedList<Node>> clusters;
+    private int maxNodesInCluster;
+    private Graph graph;
+    private boolean marked[];
+    private ArrayList<LinkedList<Node>> clusters;
+    private Bisection bisection;
 
-    /**
-     * whether the algorithm uses edge weights
-     */
-    boolean weightedEdges;
-
-    public KernighanLinRecursive() {
-        this(true);
+    public RecursiveBisection() {
+        this(new FiducciaMattheyses());
     }
 
-    public KernighanLinRecursive(boolean weightedEdges) {
-        this.weightedEdges = weightedEdges;
+    public RecursiveBisection(Bisection bisection) {
+        this.bisection = bisection;
+    }
+
+    public void setBisection(Bisection bisection) {
+        this.bisection = bisection;
+    }
+
+    @Override
+    public String getName() {
+        return "Recursive bisection";
     }
 
     @Override
@@ -46,21 +54,20 @@ public class KernighanLinRecursive implements Partitioning {
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        KernighanLin kl = new KernighanLin(g, weightedEdges);
-        ArrayList<LinkedList<Node>> result = kl.bisect(g);
+        ArrayList<LinkedList<Node>> result = bisection.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
         for (int i = 0; i <= 1; i++) {
             if (result.get(i).size() <= maxNodesInCluster) {
                 output.add(result.get(i));
             } else {
-                Graph newGraph = buildGraphFromCluster(result.get(i), g);
+                Graph newGraph = buildGraphFromCluster(result.get(i));
                 output.addAll(recursivePartition(newGraph));
             }
         }
         return output;
     }
 
-    private Graph buildGraphFromCluster(LinkedList<Node> n, Graph g) {
+    private Graph buildGraphFromCluster(LinkedList<Node> n) {
         ArrayList<Node> nodes = new ArrayList<>(n);
         Graph newGraph = new AdjMatrixGraph(nodes.size());
         for (Node node : nodes) {
@@ -68,8 +75,8 @@ public class KernighanLinRecursive implements Partitioning {
         }
         for (int i = 0; i < nodes.size(); i++) {
             for (int j = i + 1; j < nodes.size(); j++) {
-                if (g.isAdjacent(nodes.get(i), nodes.get(j))) {
-                    newGraph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
+                if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
+                    newGraph.addEdge(graph.getEdge(nodes.get(i), nodes.get(j)));
                 }
             }
         }

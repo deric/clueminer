@@ -381,4 +381,12 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      */
     void resetStats();
 
+    /**
+     * Collection of values by attribute
+     *
+     * @param index of the attribute
+     * @return
+     */
+    Collection<? extends Number> attrCollection(int index);
+
 }
