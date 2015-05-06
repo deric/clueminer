@@ -36,6 +36,8 @@ import org.clueminer.dataset.api.Instance;
  */
 public class ScatterPlot extends JPanel {
 
+    private int markerSize = 10;
+
     public ScatterPlot() {
         initComponents();
     }
@@ -80,7 +82,7 @@ public class ScatterPlot extends JPanel {
         // Customize Chart
         chart.getStyleManager().setChartTitleVisible(false);
         chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.InsideSW);
-        chart.getStyleManager().setMarkerSize(16);
+        chart.getStyleManager().setMarkerSize(markerSize);
 
         for (Cluster<Instance> clust : clustering) {
             Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
@@ -111,6 +113,17 @@ public class ScatterPlot extends JPanel {
                 repaint();
             }
         });
+    }
+
+    public int getMarkerSize() {
+        return markerSize;
+    }
+
+    public void setMarkerSize(int markerSize) {
+        this.markerSize = markerSize;
+        revalidate();
+        validate();
+        repaint();
     }
 
 }
