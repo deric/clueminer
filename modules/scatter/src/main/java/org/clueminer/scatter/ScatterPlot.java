@@ -81,7 +81,7 @@ public class ScatterPlot extends JPanel {
 
         // Customize Chart
         chart.getStyleManager().setChartTitleVisible(false);
-        chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.InsideSW);
+        chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.OutsideE);
         chart.getStyleManager().setMarkerSize(markerSize);
 
         for (Cluster<Instance> clust : clustering) {
