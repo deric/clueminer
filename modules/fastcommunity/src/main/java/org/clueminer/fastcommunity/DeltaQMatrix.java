@@ -13,43 +13,47 @@ import org.clueminer.graph.api.Node;
  */
 public class DeltaQMatrix {
 
-	Map<IntPair, Element> matrix = new HashMap<>();
-	PriorityQueue<Element> pQ;
+	Map<IntPair, ReverseElement> matrix = new HashMap<>();
+	PriorityQueue<ReverseElement> pQ;
 
-	DeltaQMatrix(PriorityQueue<Element> pq) {
+	DeltaQMatrix(PriorityQueue<ReverseElement> pq) {
 		this.pQ = pq;
 	}
 
-	void build(AdjListGraph graph, double[] a) {
+	void build(AdjListGraph graph) {
+		int edgesCount = graph.getEdgeCount();
 		for(Node node : graph.getNodes()) {
+			int i = (int) node.getId();
+			int iDegree = graph.getDegree(graph.getNode(i));
 			for(Node neighbor : graph.getNeighbors(node)) {
-				int i = (int) node.getId();
 				int j = (int) neighbor.getId();
-				double delta = 2 * (FastCommunity.INITIAL_EIJ - (a[i] * a[j]));
+				int jDegree = graph.getDegree(graph.getNode(j));
+				double eij = 0.5 / edgesCount;
+				double delta = 2 * (eij - ((iDegree / edgesCount) * (jDegree / edgesCount)));
 				if(i < j)
-					matrix.put(new IntPair(i, j), new Element(delta, i, j));
+					matrix.put(new IntPair(i, j), new ReverseElement(delta, i, j));
 				else
-					matrix.put(new IntPair(j, i), new Element(delta, j, i));
+					matrix.put(new IntPair(j, i), new ReverseElement(delta, j, i));
 			}
 		}
 	}
 
-	Element get(Integer i, Integer j) {
+	ReverseElement get(Integer i, Integer j) {
 		return matrix.get(IntPair.ordered(i, j));
 	}
 
 	void add(Integer i, Integer j, Double value) {
-		Element element;
+		ReverseElement element;
 		if(i < j)
-			element = new Element(value, i, j);
+			element = new ReverseElement(value, i, j);
 		else
-			element = new Element(value, j, i);
+			element = new ReverseElement(value, j, i);
 		matrix.put(IntPair.ordered(i, j), element);
 		pQ.add(element);
 	}
 
 	void remove(Integer i, Integer j) {
-		Element deleted = matrix.remove(IntPair.ordered(i, j));
+		ReverseElement deleted = matrix.remove(IntPair.ordered(i, j));
 		if(deleted != null)
 			pQ.remove(deleted);
 	}

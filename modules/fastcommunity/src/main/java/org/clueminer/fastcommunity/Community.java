@@ -52,4 +52,14 @@ public class Community {
 	void addInsideEdges(int i) {
 		edgesInside += i;
 	}
+
+	@Override
+	public String toString() {
+		String res = "c" + id + "\n";
+		for(Node node : nodes) {
+			res += "\t" + node.getId() + "\n";
+		}
+		return res;
+	}
+	
 }
