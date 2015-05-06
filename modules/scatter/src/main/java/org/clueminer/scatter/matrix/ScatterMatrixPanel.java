@@ -28,6 +28,8 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @deprecated should be replaced @{link ScatterMatrixPanel2} which is faster
+ * and handles more data
  */
 public class ScatterMatrixPanel extends JPanel {
 

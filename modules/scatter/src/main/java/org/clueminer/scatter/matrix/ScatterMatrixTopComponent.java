@@ -19,9 +19,9 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays scatter matrix
@@ -51,7 +51,7 @@ public final class ScatterMatrixTopComponent extends TopComponent implements Loo
 
     private static final long serialVersionUID = -8856890744361709638L;
     private Dataset<? extends Instance> dataset;
-    private final ScatterMatrixPanel frame;
+    private final ScatterMatrixPanel2 frame;
     private static final Logger logger = Logger.getLogger(ScatterMatrixTopComponent.class.getName());
     private Lookup.Result<Clustering> result = null;
 
@@ -59,7 +59,7 @@ public final class ScatterMatrixTopComponent extends TopComponent implements Loo
         initComponents();
         setName(Bundle.CTL_ScatterMatrixTopComponent());
         setToolTipText(Bundle.HINT_ScatterMatrixTopComponent());
-        frame = new ScatterMatrixPanel();
+        frame = new ScatterMatrixPanel2();
         add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 

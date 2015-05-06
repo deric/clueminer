@@ -90,4 +90,27 @@ public class ScatterPlot2 extends JPanel {
         return new XChartPanel(chart);
     }
 
+    public void setClusterings(final Clustering<Cluster> clusteringA, final Clustering<Cluster> clusteringB) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                removeAll();
+
+                GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+                        GridBagConstraints.NORTHWEST,
+                        GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0);
+
+                // Add plot to Swing component
+                add(clusteringPlot(clusteringA), c);
+                c.gridx = 1;
+                add(clusteringPlot(clusteringB), c);
+                revalidate();
+                validate();
+                repaint();
+            }
+        });
+    }
+
 }

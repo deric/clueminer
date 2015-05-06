@@ -46,7 +46,7 @@ public class ScatterMatrixPanel2 extends JPanel {
 
     private static final long serialVersionUID = 4957672836007726620L;
 
-    private static final Logger logger = Logger.getLogger(ScatterMatrixPanel.class.getName());
+    private static final Logger logger = Logger.getLogger(ScatterMatrixPanel2.class.getName());
     private Legend2 legend;
 
     public ScatterMatrixPanel2() {

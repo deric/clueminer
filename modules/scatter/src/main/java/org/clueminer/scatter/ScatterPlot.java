@@ -21,6 +21,11 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 
+/**
+ *
+ * @author deric
+ * @deprecated will be replaced by faster @{link ScatterPlot2}
+ */
 public class ScatterPlot extends JPanel {
 
     private static final long serialVersionUID = -412699430625953887L;

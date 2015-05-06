@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 /**
  *
  * @author Tomas Barton
+ * @deprecated will be removed soon, should be replaced by @link{Legend2}
  */
 public class Legend extends JPanel {
 
