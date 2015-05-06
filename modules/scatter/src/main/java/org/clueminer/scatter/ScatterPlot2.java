@@ -18,8 +18,7 @@ package org.clueminer.scatter;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.StyleManager;
-import de.erichseifert.gral.util.Insets2D;
-import java.awt.Color;
+import com.xeiam.xchart.XChartPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -71,10 +70,8 @@ public class ScatterPlot2 extends JPanel {
     }
 
     private JPanel clusteringPlot(final Clustering<Cluster> clustering) {
-
         int attrX = 0;
         int attrY = 1;
-        Color orig, trans;
 
         Chart chart = new Chart(getWidth(), getHeight());
         chart.getStyleManager().setChartType(StyleManager.ChartType.Scatter);
@@ -84,30 +81,11 @@ public class ScatterPlot2 extends JPanel {
         chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.InsideSW);
         chart.getStyleManager().setMarkerSize(16);
 
-
         for (Cluster<Instance> clust : clustering) {
-            chart.addSeries(clust.getName(),);
-
-            for (Instance inst : clust) {
-                data.add(inst.value(attrX), inst.value(attrY));
-            }
-
+            chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
         }
 
-        // Format plot
-        plot.setInsets(new Insets2D.Double(20.0, 40.0, 40.0, 40.0));
-        plot.getTitle().setText(clustering.getName());
-        plot.setLegendVisible(true);
-
-        if (clustering.size() > 0) {
-            Cluster c = clustering.get(0);
-            // Format axes
-            AxisRenderer axisRendererX = plot.getAxisRenderer(XYPlot.AXIS_X);
-            axisRendererX.setLabel(c.getAttribute(attrX).getName());
-            AxisRenderer axisRendererY = plot.getAxisRenderer(XYPlot.AXIS_Y);
-            axisRendererY.setLabel(c.getAttribute(attrY).getName());
-        }
-        return new InteractivePanel(plot);
+        return new XChartPanel(chart);
     }
 
 }

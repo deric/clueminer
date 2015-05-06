@@ -41,7 +41,7 @@ public class ScatterTest2 extends JPanel {
 
             @Override
             public void run() {
-                new ScatterTest().showInFrame();
+                new ScatterTest2().showInFrame();
             }
         });
     }
