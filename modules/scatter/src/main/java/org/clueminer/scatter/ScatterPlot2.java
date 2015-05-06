@@ -17,6 +17,7 @@
 package org.clueminer.scatter;
 
 import com.xeiam.xchart.Chart;
+import com.xeiam.xchart.Series;
 import com.xeiam.xchart.StyleManager;
 import com.xeiam.xchart.XChartPanel;
 import java.awt.Dimension;
@@ -82,7 +83,8 @@ public class ScatterPlot2 extends JPanel {
         chart.getStyleManager().setMarkerSize(16);
 
         for (Cluster<Instance> clust : clustering) {
-            chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+            Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+            s.setMarkerColor(clust.getColor());
         }
 
         return new XChartPanel(chart);

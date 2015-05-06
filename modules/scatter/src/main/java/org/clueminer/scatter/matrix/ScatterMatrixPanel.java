@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.Map.Entry;
@@ -81,7 +80,7 @@ public class ScatterMatrixPanel extends JPanel {
                         c.gridy = 0;
                         c.fill = GridBagConstraints.BOTH;
                         ImmutableMap.Builder<Integer, Entry<String, Color>> mapBuilder
-                                = new ImmutableMap.Builder<Integer, Entry<String, Color>>();
+                                = new ImmutableMap.Builder<>();
                         int i = 0;
                         for (Cluster<Instance> clust : clustering) {
                             mapBuilder.put(i, Maps.immutableEntry(clust.getName(), clust.getColor()));
