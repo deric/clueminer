@@ -29,7 +29,7 @@ public class ChameleonDialog extends ClusteringDialog {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
         comboBisection.setSelectedItem("Fiduccia-Mattheyses");
-        comboCutoffMethod.setSelectedItem("hill-climb cutoff");
+        comboCutoffMethod.setSelectedItem("hill-climb inc");
         comboCutoff.setSelectedItem("SD index");
     }
 
