@@ -51,7 +51,7 @@ public class ScatterPlot extends JPanel {
      *
      * @param clustering
      */
-    public void setClustering(final Clustering<Cluster> clustering) {
+    public void setClustering(final Clustering<? extends Cluster> clustering) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -70,7 +70,7 @@ public class ScatterPlot extends JPanel {
         });
     }
 
-    private JPanel clusteringPlot(final Clustering<Cluster> clustering) {
+    private JPanel clusteringPlot(final Clustering<? extends Cluster> clustering) {
         int attrX = 0;
         int attrY = 1;
 
