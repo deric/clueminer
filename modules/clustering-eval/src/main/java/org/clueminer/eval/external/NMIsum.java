@@ -17,14 +17,18 @@
 package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class NMIsum extends NMIbase implements ClusterEvaluation {
 
     private static final String name = "NMIsum";
+    private static final long serialVersionUID = -8838355537225622273L;
 
     @Override
     public String getName() {
