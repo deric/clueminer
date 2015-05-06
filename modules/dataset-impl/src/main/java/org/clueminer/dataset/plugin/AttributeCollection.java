@@ -67,7 +67,7 @@ public class AttributeCollection<E extends Number> implements Collection<E> {
 
         @Override
         public boolean hasNext() {
-            return index < size();
+            return index < dataset.size() - 1;
         }
 
         @Override

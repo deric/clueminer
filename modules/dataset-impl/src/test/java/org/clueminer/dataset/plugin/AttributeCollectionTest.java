@@ -16,9 +16,11 @@
  */
 package org.clueminer.dataset.plugin;
 
+import java.util.Iterator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -54,5 +56,18 @@ public class AttributeCollectionTest {
         assertEquals(true, subject.contains(1.0));
         assertEquals(true, subject.contains(6.0));
     }
+
+    @Test
+    public void testIterator() {
+        subject = new AttributeCollection(dataset, 0);
+        int i = 0;
+        Iterator it = subject.iterator();
+        while (it.hasNext()) {
+            assertNotNull(it.next());
+            i++;
+        }
+        assertEquals(1, i);
+    }
+
 
 }

@@ -3,6 +3,7 @@ package org.clueminer.clustering.struct;
 import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -11,10 +12,12 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Exceptions;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -199,6 +202,17 @@ public class BaseClusterTest {
     @Test
     public void testEquals() {
         assertEquals(false, irisClusters.get(0).equals(irisClusters.get(1)));
+    }
+
+    @Test
+    public void testAttrAccessor() {
+        int i = 0;
+        Iterator it = irisClusters.get(0).attrCollection(0).iterator();
+        while (it.hasNext()) {
+            assertNotNull(it.next());
+            i++;
+        }
+        assertEquals(49, i);
     }
 
 }
