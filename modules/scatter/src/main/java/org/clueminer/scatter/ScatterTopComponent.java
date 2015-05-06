@@ -12,9 +12,9 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays scatterplot.
@@ -45,14 +45,14 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
     private static final long serialVersionUID = 1752389678088215586L;
 
     private Lookup.Result<Clustering> result = null;
-    private final ScatterPlot frame;
+    private final ScatterPlot2 frame;
     private static final Logger logger = Logger.getLogger(ScatterTopComponent.class.getName());
 
     public ScatterTopComponent() {
         initComponents();
         setName(Bundle.CTL_ScatterTopComponent());
         setToolTipText(Bundle.HINT_ScatterTopComponent());
-        frame = new ScatterPlot();
+        frame = new ScatterPlot2();
         add(frame, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 
