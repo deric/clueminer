@@ -6,8 +6,9 @@ import org.clueminer.chameleon.Chameleon;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.factory.LinkageFactory;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
@@ -30,6 +31,7 @@ public class HacDialog extends ClusteringDialog {
         comboDistance.setSelectedItem("Euclidean");
         comboStandardisation.setSelectedItem("Min-Max");
         comboLinkage.setSelectedItem("Complete Linkage");
+        comboCutMethod.setSelectedItem("naive cutoff");
     }
 
     /**
@@ -51,6 +53,8 @@ public class HacDialog extends ClusteringDialog {
         lbCutoff = new javax.swing.JLabel();
         comboCutoff = new javax.swing.JComboBox();
         chckColumns = new javax.swing.JCheckBox();
+        lbCutMethod = new javax.swing.JLabel();
+        comboCutMethod = new javax.swing.JComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbStandardization, org.openide.util.NbBundle.getMessage(HacDialog.class, "HacDialog.lbStandardization.text")); // NOI18N
 
@@ -73,6 +77,10 @@ public class HacDialog extends ClusteringDialog {
         chckColumns.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chckColumns, org.openide.util.NbBundle.getMessage(HacDialog.class, "HacDialog.chckColumns.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(lbCutMethod, org.openide.util.NbBundle.getMessage(HacDialog.class, "HacDialog.lbCutMethod.text")); // NOI18N
+
+        comboCutMethod.setModel(new DefaultComboBoxModel(initCutoffMethod()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,9 +91,11 @@ public class HacDialog extends ClusteringDialog {
                     .addComponent(lbLinkage)
                     .addComponent(lbStandardization)
                     .addComponent(lbCutoff)
-                    .addComponent(lbDistance))
+                    .addComponent(lbDistance)
+                    .addComponent(lbCutMethod))
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboCutMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(comboStandardisation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(65, 65, 65)
@@ -120,17 +130,23 @@ public class HacDialog extends ClusteringDialog {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(chckColumns)))
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboCutMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbCutMethod))
+                .addContainerGap(182, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chckColumns;
     private javax.swing.JCheckBox chkBoxLogScale;
+    private javax.swing.JComboBox comboCutMethod;
     private javax.swing.JComboBox comboCutoff;
     private javax.swing.JComboBox comboDistance;
     private javax.swing.JComboBox comboLinkage;
     private javax.swing.JComboBox comboStandardisation;
+    private javax.swing.JLabel lbCutMethod;
     private javax.swing.JLabel lbCutoff;
     private javax.swing.JLabel lbDistance;
     private javax.swing.JLabel lbLinkage;
@@ -157,6 +173,7 @@ public class HacDialog extends ClusteringDialog {
         params.put(AgglParams.LINKAGE, (String) comboLinkage.getSelectedItem());
         params.put(AgglParams.STD, (String) comboStandardisation.getSelectedItem());
         params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
+        params.put(AgglParams.CUTOFF_STRATEGY, (String) comboCutMethod.getSelectedItem());
         if (chkBoxLogScale.isSelected()) {
             params.putBoolean(AgglParams.LOG, true);
         }
@@ -198,5 +215,9 @@ public class HacDialog extends ClusteringDialog {
     @Override
     public void updateAlgorithm(ClusteringAlgorithm algorithm) {
 
+    }
+
+    private Object[] initCutoffMethod() {
+        return CutoffStrategyFactory.getInstance().getProvidersArray();
     }
 }
