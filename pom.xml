@@ -25,6 +25,12 @@
             <email>barton.tomas@gmail.com</email>
         </developer>
     </developers>
+    <properties>
+        <netbeans.version>RELEASE80</netbeans.version>
+        <brandingToken>clueminer</brandingToken>
+        <project.organization>clueminer.org</project.organization>
+        <maven.compiler>3.3</maven.compiler>
+    </properties>
 
     <repositories>
         <!--
@@ -76,7 +82,7 @@
                     <!-- NetBeans 6.9+ requires JDK 6 -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
+                    <version>${maven.compiler}</version>
                     <configuration>
                         <source>1.7</source>
                         <target>1.7</target>
@@ -157,7 +163,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>${maven.compiler}</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
                 </configuration>
@@ -229,7 +235,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.11</version>
+                <version>2.15</version>
                 <configuration>
                     <configLocation>config/sun_checks.xml</configLocation>
                 </configuration>
@@ -237,7 +243,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>${maven.compiler}</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -250,9 +256,4 @@
             </plugin>
         </plugins>
     </reporting>
-    <properties>
-        <netbeans.version>RELEASE80</netbeans.version>
-        <brandingToken>clueminer</brandingToken>
-        <project.organization>clueminer.org</project.organization>
-    </properties>
 </project>
