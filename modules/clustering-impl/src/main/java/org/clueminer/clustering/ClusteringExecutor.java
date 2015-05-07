@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -46,7 +47,8 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         logger.log(Level.INFO, "clustering {0}", params.toString());
-        HierarchicalResult rowsResult = algorithm.hierarchy(inData, params);
+        AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        HierarchicalResult rowsResult = aggl.hierarchy(inData, params);
         rowsResult.setInputData(input);
         CutoffStrategy strategy = getCutoffStrategy(params);
         logger.log(Level.INFO, "cutting dendrogram with {0}", strategy.getName());
@@ -63,7 +65,8 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
-        HierarchicalResult columnsResult = algorithm.hierarchy(inData, params);
+        AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        HierarchicalResult columnsResult = aggl.hierarchy(inData, params);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);
         return columnsResult;
