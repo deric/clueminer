@@ -22,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class HCLDialog extends ClusteringDialog {
+public class HCLDialog extends JPanel implements ClusteringDialog {
 
     private static final long serialVersionUID = -5755827346014535345L;
     private Props params;

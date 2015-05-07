@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class HacDialog extends ClusteringDialog {
+public class HacDialog extends JPanel implements ClusteringDialog {
 
     /**
      * Creates new form HacDialog
