@@ -72,8 +72,7 @@ public class AttributeCollection<E extends Number> implements Collection<E> {
 
         @Override
         public E next() {
-            index++;
-            return (E) (Number) dataset.get(index, attr);
+            return (E) (Number) dataset.get(index++, attr);
         }
 
         @Override
