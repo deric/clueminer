@@ -4,6 +4,7 @@ import java.util.Random;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.struct.BaseCluster;
@@ -15,6 +16,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Implements the K-means algorithms as described by Mac Queen in 1967.
@@ -29,6 +31,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  *
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class KMeans extends AbstractClusteringAlgorithm implements PartitioningClustering {
 
     /**
