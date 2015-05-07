@@ -224,7 +224,9 @@
         <module>modules/partitioning-api</module>
         <module>modules/partitioning-impl</module>
         <module>modules/clustering-preview</module>
+        <module>modules/chinesewhispers</module>
         <module>modules/evaluation-plot</module>
+        <module>modules/fastcommunity</module>
         <module>modules/meta-h2</module>
         <module>modules/evolution-api</module>
         <module>modules/meta-view</module>
