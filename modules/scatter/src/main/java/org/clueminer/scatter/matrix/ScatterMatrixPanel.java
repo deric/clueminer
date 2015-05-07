@@ -70,7 +70,7 @@ public class ScatterMatrixPanel extends JPanel {
                 });
     }
 
-    public void setClustering(final Clustering<Cluster> clustering) {
+    public void setClustering(final Clustering<? extends Cluster> clustering) {
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -126,7 +126,7 @@ public class ScatterMatrixPanel extends JPanel {
 
     }
 
-    private JPanel clusteringPlot(final Clustering<Cluster> clustering, int attrX, int attrY) {
+    private JPanel clusteringPlot(final Clustering<? extends Cluster> clustering, int attrX, int attrY) {
         Chart chart = new Chart(getWidth(), getHeight());
         chart.getStyleManager().setChartType(StyleManager.ChartType.Scatter);
 
