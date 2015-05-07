@@ -44,7 +44,9 @@ public class RecursiveBisection implements Partitioning {
         maxNodesInCluster = max;
         graph = g;
         if (graph.getNodeCount() < maxNodesInCluster) {
-            return null; //create one list with nodes
+            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
+            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            return nodes;
         } else {
             clusters = recursivePartition(graph);
         }
