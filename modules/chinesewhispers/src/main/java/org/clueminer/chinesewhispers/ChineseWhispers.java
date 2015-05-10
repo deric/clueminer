@@ -1,12 +1,15 @@
 package org.clueminer.chinesewhispers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
@@ -74,9 +77,30 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 				}
 			}
 		}
-
-		graph.print();
-		return null;
+		HashMap<Long, List<Node>> clusters = new HashMap<>();
+		for(Node node : graph.getNodes()) {
+			Long classValue = (Long) node.getInstance().classValue();
+			List<Node> thisCluster = clusters.get(classValue);
+			if(thisCluster == null) {
+				thisCluster = new ArrayList<>();
+				clusters.put(classValue, thisCluster);
+			}
+			thisCluster.add(node);
+		}
+		Clustering result = new ClusterList<>();
+		for(Map.Entry<Long, List<Node>> entrySet : clusters.entrySet()) {
+			Long clusterId = entrySet.getKey();
+			List<Node> clusterNodes = entrySet.getValue();
+			Cluster cluster = result.createCluster();
+			System.out.println("Cluster " + clusterId);
+			for(Node clusterNode : clusterNodes) {
+				System.out.println("\t" + clusterNode.getId());
+				cluster.add(clusterNode.getInstance());
+			}
+			System.out.println("");
+		}
+//		graph.print();
+		return result;
 	}
 
 	private void createEdges(Dataset<? extends Instance> dataset, List<Node> nodes) {

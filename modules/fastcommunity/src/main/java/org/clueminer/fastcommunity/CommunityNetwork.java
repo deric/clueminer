@@ -54,7 +54,7 @@ public class CommunityNetwork {
 		if(edgesBetween == null)
 			edgesBetween = 0;
 
-		totalEdgesCount -= edgesBetween;
+//		totalEdgesCount -= edgesBetween;
 		a.addInsideEdges(b.getEdgesInside() + edgesBetween);
 		Integer aOut = a.getEdgesOutside();
 		Integer bOut = b.getEdgesOutside();

@@ -163,22 +163,17 @@
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
+<<<<<<< HEAD
             <groupId>org.clueminer</groupId>
             <artifactId>fastcommunity</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.clueminer</groupId>
-            <artifactId>chinesewhispers</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <type>jar</type>
+=======
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+>>>>>>> upstream/master
         </dependency>
     </dependencies>
 
