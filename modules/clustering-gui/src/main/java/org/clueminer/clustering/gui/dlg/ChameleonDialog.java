@@ -21,13 +21,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Bruna
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class ChameleonDialog extends ClusteringDialog {
+public class ChameleonDialog extends JPanel implements ClusteringDialog {
+
+    private static final long serialVersionUID = -1158400928131465379L;
 
     public ChameleonDialog() {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
         comboBisection.setSelectedItem("Fiduccia-Mattheyses");
-        comboCutoffMethod.setSelectedItem("naive cutoff");
+        comboCutoffMethod.setSelectedItem("hill-climb inc");
+        comboCutoff.setSelectedItem("SD index");
     }
 
     /**

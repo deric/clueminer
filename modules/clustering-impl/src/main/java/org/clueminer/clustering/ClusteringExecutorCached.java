@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -48,7 +49,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, true);
         logger.log(Level.FINER, "clustering {0}", params.toString());
-        HierarchicalResult rowsResult = algorithm.hierarchy(norm, params);
+        AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        HierarchicalResult rowsResult = aggl.hierarchy(norm, params);
         rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
         //TODO: tree ordering might break assigning items to clusters
         //treeOrder.optimize(rowsResult, true);
@@ -60,7 +62,8 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
-        HierarchicalResult columnsResult = algorithm.hierarchy(norm, params);
+        AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        HierarchicalResult columnsResult = aggl.hierarchy(norm, params);
         columnsResult.setResultType(ResultType.COLUMNS_CLUSTERING);
         //treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);

@@ -36,6 +36,8 @@ import org.clueminer.dataset.api.Instance;
  */
 public class ScatterPlot extends JPanel {
 
+    private static final long serialVersionUID = 2083423601634918077L;
+
     private int markerSize = 10;
 
     public ScatterPlot() {

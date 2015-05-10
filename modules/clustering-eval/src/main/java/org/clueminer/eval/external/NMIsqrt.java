@@ -27,12 +27,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class NMIsqrt extends NMIbase {
 
     private static final String name = "NMI";
+    private static final long serialVersionUID = 5298781790787789513L;
 
     @Override
     public String getName() {
         return name;
     }
-
 
     @Override
     public double countNMI(double mutualInformation, double ent1, double ent2) {

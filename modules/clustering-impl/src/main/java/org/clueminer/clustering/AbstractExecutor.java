@@ -1,10 +1,10 @@
 package org.clueminer.clustering;
 
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.api.AgglomerativeClustering;
-import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.utils.Props;
@@ -15,15 +15,15 @@ import org.clueminer.utils.Props;
  */
 public abstract class AbstractExecutor implements Executor {
 
-    protected AgglomerativeClustering algorithm;
+    protected ClusteringAlgorithm algorithm;
 
     @Override
-    public AgglomerativeClustering getAlgorithm() {
+    public ClusteringAlgorithm getAlgorithm() {
         return algorithm;
     }
 
     @Override
-    public void setAlgorithm(AgglomerativeClustering algorithm) {
+    public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
     }
 

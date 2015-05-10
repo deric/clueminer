@@ -5,26 +5,39 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.utils.Props;
 
 /**
- * TODO: convert to an interface
+ * Each algorithm can have a GUI panel which should implement this interface
  *
  * @author Tomas Barton
  */
-public abstract class ClusteringDialog extends JPanel {
+public interface ClusteringDialog {
 
-    private static final long serialVersionUID = -7343429695502397667L;
+    /**
+     * For lookup purposes, should be unique
+     *
+     * @return
+     */
+    String getName();
 
-    @Override
-    public abstract String getName();
+    Props getParams();
 
-    public abstract Props getParams();
+    void setParent(ClusterAnalysis clust);
 
-    public abstract void setParent(ClusterAnalysis clust);
+    /**
+     * Update algorithm configuration
+     *
+     * @param algorithm
+     */
+    void updateAlgorithm(ClusteringAlgorithm algorithm);
 
-    public abstract void updateAlgorithm(ClusteringAlgorithm algorithm);
+    ClusteringAlgorithm getAlgorithm();
 
-    public abstract ClusteringAlgorithm getAlgorithm();
-
-    public abstract JPanel getPanel();
+    /**
+     * GUI which will be embedded into another dialog (should not contain any
+     * OK/Cancel buttons)
+     *
+     * @return
+     */
+    JPanel getPanel();
 
     /**
      * Return true when UI is compatible with given algorithm
@@ -32,5 +45,5 @@ public abstract class ClusteringDialog extends JPanel {
      * @param algorithm
      * @return
      */
-    public abstract boolean isUIfor(ClusteringAlgorithm algorithm);
+    boolean isUIfor(ClusteringAlgorithm algorithm);
 }

@@ -11,9 +11,9 @@ import org.clueminer.utils.Props;
  */
 public interface Executor {
 
-    AgglomerativeClustering getAlgorithm();
+    ClusteringAlgorithm getAlgorithm();
 
-    void setAlgorithm(AgglomerativeClustering algorithm);
+    void setAlgorithm(ClusteringAlgorithm algorithm);
 
     /**
      * Run hierarchical clustering of rows in the given dataset
