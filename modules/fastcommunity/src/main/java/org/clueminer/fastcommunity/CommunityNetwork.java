@@ -48,8 +48,8 @@ public class CommunityNetwork {
 			target = source;
 			source = tmp;
 		}
-		Community a = communities.get(target);
-		Community b = communities.get(source);
+		Community a = communities.remove(target);
+		Community b = communities.remove(source);
 		Integer edgesBetween = matrix.get(new IntPair(target, source));
 		if(edgesBetween == null)
 			edgesBetween = 0;
@@ -60,41 +60,54 @@ public class CommunityNetwork {
 		Integer bOut = b.getEdgesOutside();
 		a.setEdgesOutside(aOut + bOut - 2 * edgesBetween);
 
-//		System.out.println("Removing " + target + " - " + source);
+		System.out.println("Removing " + target + " - " + source);
 		deltaQ.remove(target, source);
 		matrix.remove(new IntPair(target, source));
-		communities.remove(source);
+
+		a.setNewId(++maxId);
+		Integer newCommunity = a.getId();
+		System.out.println("New community ID: " + newCommunity);
+		communities.put(newCommunity, a);
 
 		for(int i = 0; i <= maxId; i++) {
+			if(communities.get(i) == null)
+				continue;
 			Integer edgesSourceToNeighbor, edgesTargetToNeighbor;
 			edgesSourceToNeighbor = matrix.get(IntPair.ordered(i, source));
 
-//			System.out.println("Removing " + i + " - " + source);
+			System.out.println("Removing " + i + " - " + source);
+			System.out.println("Removing " + i + " - " + target);
 			deltaQ.remove(i, source);
+			deltaQ.remove(i, target);
 
-			if(edgesSourceToNeighbor != null && edgesSourceToNeighbor > 0) {
+			if(edgesSourceToNeighbor == null)
+				edgesSourceToNeighbor = 0;
 
-				edgesTargetToNeighbor = matrix.get(IntPair.ordered(i, target));
-				if(edgesTargetToNeighbor == null)
-					edgesTargetToNeighbor = 0;
+			edgesTargetToNeighbor = matrix.get(IntPair.ordered(i, target));
+			if(edgesTargetToNeighbor == null)
+				edgesTargetToNeighbor = 0;
 
-				matrix.put(IntPair.ordered(i, target), edgesTargetToNeighbor + edgesSourceToNeighbor);
+			if(edgesTargetToNeighbor + edgesSourceToNeighbor > 0)
+				matrix.put(IntPair.ordered(i, newCommunity),
+					edgesTargetToNeighbor + edgesSourceToNeighbor);
 
-				matrix.remove(IntPair.ordered(i, source));
-			}
+			matrix.remove(IntPair.ordered(i, source));
+			matrix.remove(IntPair.ordered(i, target));
 		}
 		for(int i = 0; i <= maxId; i++) {
-			Integer edgesTargetToNeighbor = matrix.get(IntPair.ordered(i, target));
-//			System.out.println("Removing " + target + " - " + i);
-			deltaQ.remove(target, i);
-			if(edgesTargetToNeighbor != null && edgesTargetToNeighbor > 0) {
+			if(communities.get(i) == null)
+				continue;
+			Integer edgesNewToNeighbor = matrix.get(IntPair.ordered(i, newCommunity));
+			System.out.println("Removing " + newCommunity + " - " + i);
+			deltaQ.remove(newCommunity, i);
+			if(edgesNewToNeighbor != null && edgesNewToNeighbor > 0) {
 //				dQ = 2 * (e_ij - a_i * a_j)
 				double ai = a.getEdgesOutside() / totalEdgesCount;
 				double aj = communities.get(i).getEdgesOutside() / totalEdgesCount;
-				double eij = edgesTargetToNeighbor / totalEdgesCount;
+				double eij = edgesNewToNeighbor / totalEdgesCount;
 				Double value = 2 * (eij - ai * aj);
-//				System.out.println("Adding " + target + " - " + i);
-				deltaQ.add(target, i, value);
+				System.out.println("Adding " + newCommunity + " - " + i);
+				deltaQ.add(newCommunity, i, value);
 			}
 		}
 	}

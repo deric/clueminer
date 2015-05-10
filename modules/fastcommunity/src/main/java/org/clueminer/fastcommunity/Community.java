@@ -10,19 +10,24 @@ import org.clueminer.graph.api.Node;
  * @author Hamster
  */
 public class Community {
-	private final Integer id;
-	private final CommunityNetwork network;
+	private Integer id;
 	private final Set<Node> nodes;
 	private Integer edgesInside;
 	private Integer edgesOutside;
 
-	public Community(CommunityNetwork network, Graph graph, int id, Node node) {
+	public Community(Graph graph, int id, Node node) {
 		this.id = id;
-		this.network = network;
 		this.nodes = new HashSet<>();
 		this.edgesInside = 0;
 		nodes.add(node);
 		this.edgesOutside = graph.getDegree(node);
+	}
+	
+	public Community(Community src) {
+		this.id = -1;
+		this.nodes = src.nodes;
+		this.edgesInside = src.edgesInside;
+		this.edgesOutside = src.edgesOutside;
 	}
 
 	public Set<Node> getNodes() {
@@ -31,6 +36,10 @@ public class Community {
 
 	public Integer getId() {
 		return id;
+	}
+
+	void setNewId(int id) {
+		this.id = id;
 	}
 
 	public Integer getEdgesInside() {

@@ -3,7 +3,6 @@ package org.clueminer.fastcommunity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
-import org.clueminer.clustering.aggl.Element;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Node;
 

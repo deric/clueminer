@@ -1,17 +1,13 @@
 package org.clueminer.fastcommunity;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Set;
-import org.clueminer.clustering.aggl.Element;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -26,7 +22,6 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -39,8 +34,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 
 	private AdjListGraph graph;
 	private PriorityQueue<ReverseElement> pq;
-//	private double[] a;
-//	private double[] Q;
 	private CommunityNetwork network;
 	DeltaQMatrix dQ;
 
@@ -64,8 +57,8 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 		graph = new AdjListGraph();
 		List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
 		graph.addAllNodes(nodes);
+		System.out.println("Node count: " + graph.getNodeCount());
 		this.createEdges(dataset, nodes);
-//		a = new double[dataset.size()];
 
 		HierarchicalResult result = new HClustResult(dataset, pref);
 //		pref.put(AgglParams.ALG, getName());
@@ -88,14 +81,25 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 
 	private Map<Integer, Community> initialAssignment(int n, Dataset<? extends Instance> dataset,
 			DendroNode[] nodes) {
+		System.out.println("init called!");
 		Map<Integer, Community> clusterAssignment = new HashMap<>(n);
 		network = new CommunityNetwork(dQ, graph.getEdgeCount());
-		for(int i = 0; i < n; i++) {
-			Community community = new Community(network, graph, i, graph.getNode(i));
+		System.out.println("n = " + n);
+		System.out.println("nodes = " + graph.getNodeCount());
+		for(Node node : graph.getNodes()) {
+			int i = (int) node.getId();
+			System.out.println("i = " + i);
+			Community community = new Community(graph, i, graph.getNode(i));
 			clusterAssignment.put(i, community);
 			nodes[i] = new DLeaf(i, dataset.get(i));
 			network.add(community);
 		}
+//		for(int i = 0; i < n; i++) {
+//			Community community = new Community(graph, i, graph.getNode(i));
+//			clusterAssignment.put(i, community);
+//			nodes[i] = new DLeaf(i, dataset.get(i));
+//			network.add(community);
+//		}
 		network.initConnections(graph);
 		System.out.println("Initialized:");
 		network.print();
@@ -119,7 +123,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 		System.out.println(pq.toString());
 
 		ReverseElement current;
-//		HashSet<Integer> blacklist = new HashSet<>();
 		DendroNode node = null;
 		Community left, right;
 		int nodeId = n;
@@ -138,16 +141,15 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 			node.setRight(nodes[j]);
 			node.setHeight(current.getValue());
 
-			left = assignments.get(i);
-			if(left == null)
-				System.out.println("Community " + i + " not found!");
+			left = assignments.remove(i);
 			right = assignments.remove(j);
 
 			left.addAll(right);
 			System.out.println("Merging " + i + " + " + j);
 			network.merge(i, j);
+			assignments.put(left.getId(), left);
 			network.print();
-			System.out.println(pq.toString());
+			System.out.println("PQ: " + pq.toString());
 			System.out.println("=============================");
 		}
 		network.print();

@@ -162,6 +162,12 @@
             <artifactId>partitioning-impl</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.clueminer</groupId>
+            <artifactId>fastcommunity</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
