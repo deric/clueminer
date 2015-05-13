@@ -12,6 +12,7 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
@@ -97,6 +98,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
 
         if (random == null) {
             random = new Random(System.currentTimeMillis());
+        }
+
+        if (distanceFunction == null) {
+            distanceFunction = EuclideanDistance.getInstance();
         }
 
         iterations = params.getInt(ITERATIONS, 100);
@@ -218,6 +223,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     @Override
     public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         return partition(dataset, props);
+    }
+
+    public void setRandom(Random rand) {
+        this.random = rand;
     }
 
 }
