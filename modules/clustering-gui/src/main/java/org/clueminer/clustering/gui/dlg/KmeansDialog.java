@@ -31,12 +31,16 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = ClusteringDialog.class)
 public class KmeansDialog extends JPanel implements ClusteringDialog {
+
+    private static final long serialVersionUID = 7041147759279431292L;
 
     private JSlider sliderK;
     private JTextField tfK;
