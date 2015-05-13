@@ -11,15 +11,16 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
 
 /**
@@ -28,7 +29,7 @@ import org.openide.util.Exceptions;
  */
 public class ClusterListTest {
 
-    private Clustering<Cluster> clusters;
+    private Clustering<? extends Cluster> clusters;
     private static Dataset<? extends Instance> data;
 
     public ClusterListTest() {
@@ -52,8 +53,10 @@ public class ClusterListTest {
 
     @Before
     public void setUp() throws IOException {
-        PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
-        clusters = km.partition(data);
+        PartitioningClustering km = new KMeans();
+        Props p = new Props();
+        p.putInt("k", 3);
+        clusters = km.partition(data, p);
     }
 
     @After

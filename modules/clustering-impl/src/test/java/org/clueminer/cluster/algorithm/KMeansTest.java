@@ -9,11 +9,13 @@ import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.FileHandler;
+import org.clueminer.utils.Props;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -57,12 +59,14 @@ public class KMeansTest {
             data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
             FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
-            PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
+            PartitioningClustering km = new KMeans();
+            Props p = new Props();
+            p.putInt("k", 3);
             /*
              * Cluster the data, it will be returned as an array of data sets,
              * with each dataset representing a cluster
              */
-            Clustering<Cluster> clusters = km.partition(data);
+            Clustering<? extends Cluster> clusters = km.partition(data, p);
             System.out.println("Cluster count: " + clusters.size());
             int i = 0;
             for (Cluster d : clusters) {
@@ -109,8 +113,11 @@ public class KMeansTest {
                 dataset.attributeBuilder().create("b", "NUMERIC");
                 dataset.add(i1);
                 dataset.add(i2);
-                KMeans cluster = new KMeans(2, 1);
-                cluster.partition(dataset);
+                KMeans cluster = new KMeans();
+                Props p = new Props();
+                p.putInt("k", 2);
+                p.putInt("iterations", 1);
+                cluster.partition(dataset, p);
             }
         });
         t.start();
@@ -118,7 +125,7 @@ public class KMeansTest {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
         /*
          * If it is still alive, it is endlessly looping

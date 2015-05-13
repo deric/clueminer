@@ -279,11 +279,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

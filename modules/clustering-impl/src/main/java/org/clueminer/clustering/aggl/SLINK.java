@@ -38,11 +38,6 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         return name;
     }
 
-    @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public PointerHierarchy run(Dataset<? extends Instance> dataset, Props pref) {
         AgglParams params = new AgglParams(pref);
         int[] processed = new int[dataset.size()];
