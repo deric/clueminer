@@ -1,9 +1,5 @@
 package org.clueminer.evolution.attr;
 
-import org.clueminer.evolution.attr.AttrEvolution;
-import org.clueminer.dataset.benchmark.ConsoleDump;
-import org.clueminer.dataset.benchmark.ResultsCollector;
-import org.clueminer.dataset.benchmark.GnuplotWriter;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
@@ -14,16 +10,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.dataset.benchmark.ConsoleDump;
+import org.clueminer.dataset.benchmark.DatasetFixture;
+import org.clueminer.dataset.benchmark.GnuplotWriter;
+import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.eval.BIC;
 import org.clueminer.eval.Silhouette;
-import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.utils.FileUtils;
 import org.junit.After;
@@ -118,7 +116,7 @@ public class AttrEvolutionTest {
     //  @Test
     public void testRun() {
         test = new AttrEvolution(irisDataset, 50);
-        test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+        test.setAlgorithm(new KMeans());
         test.setEvaluator(new BIC());
         ExternalEvaluator ext = new JaccardIndex();
         test.setExternal(ext);
@@ -135,7 +133,7 @@ public class AttrEvolutionTest {
     public void testInformed() {
         //test run with informed metric
         test = new AttrEvolution(irisDataset, 50);
-        test.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+        test.setAlgorithm(new KMeans());
         ExternalEvaluator ext = new JaccardIndex();
         test.setEvaluator(ext);
         test.setExternal(ext);
@@ -167,7 +165,8 @@ public class AttrEvolutionTest {
             for (InternalEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
                 test = new AttrEvolution(dataset, 20);
-                test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));
+                test.setAlgorithm(new KMeans());
+                test.setK(entry.getValue());
                 test.setEvaluator(eval);
                 test.setExternal(ext);
                 GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
@@ -192,7 +191,8 @@ public class AttrEvolutionTest {
         String name = dataset.getName();
         System.out.println("evaluator: " + eval.getName());
         test = new AttrEvolution(dataset, 20);
-        test.setAlgorithm(new KMeans(7, 100, new EuclideanDistance()));
+        test.setAlgorithm(new KMeans());
+        test.setK(7);
         test.setEvaluator(eval);
         test.setExternal(ext);
         GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
@@ -236,17 +236,4 @@ public class AttrEvolutionTest {
     public void testSetCrossoverProbability() {
     }
 
-    /**
-     * Test of getAlgorithm method, of class AttrEvolution.
-     */
-    @Test
-    public void testGetAlgorithm() {
-    }
-
-    /**
-     * Test of setAlgorithm method, of class AttrEvolution.
-     */
-    @Test
-    public void testSetAlgorithm() {
-    }
 }

@@ -23,6 +23,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     private double fitness = 0;
     private static Random rand = new Random();
     private double[] weights;
+    private Props props;
     private Clustering<? extends Cluster> clustering;
 
     public WeightsIndividual(Evolution evolution) {
@@ -42,6 +43,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
         this.weights = new double[parent.weights.length];
         System.arraycopy(parent.weights, 0, weights, 0, parent.weights.length);
         this.fitness = parent.fitness;
+        this.props = parent.props.clone();
     }
 
     private void init() {
@@ -49,6 +51,8 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
         for (int i = 0; i < weights.length; i++) {
             weights[i] = rand.nextDouble();
         }
+        props = new Props();
+        props.putInt("k", ((AttrEvolution) evolution).getK());
         countFitness();
     }
 
@@ -86,7 +90,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
             }
             data.add(copy);
         }
-        Clustering<? extends Cluster> result = ((PartitioningClustering) algorithm).partition(data);
+        Clustering<? extends Cluster> result = ((PartitioningClustering) algorithm).partition(data, props);
         Props p = result.getParams();
         for (int i = 0; i < weights.length; i++) {
             p.put("w(" + data.getAttribute(i).getName() + ")", String.format("%1$,.2f", weights[i]));
@@ -171,6 +175,6 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
 
     @Override
     public Props getProps() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return props;
     }
 }

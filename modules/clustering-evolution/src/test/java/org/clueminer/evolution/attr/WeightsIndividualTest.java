@@ -1,18 +1,18 @@
 package org.clueminer.evolution.attr;
 
-import org.clueminer.evolution.api.Individual;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.evolution.api.EvolutionSO;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -23,13 +23,13 @@ public class WeightsIndividualTest {
     private EvolutionSO evolution;
     private WeightsIndividual one;
     private Individual two;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public WeightsIndividualTest() {
         Dataset dataset = FakeDatasets.irisDataset();
         evolution = new AttrEvolution(dataset, 5);
         evolution.setEvaluator(new JaccardIndex());
-        evolution.setAlgorithm(new KMeans(3, 100, new EuclideanDistance()));
+        evolution.setAlgorithm(new KMeans());
         one = new WeightsIndividual(evolution);
         two = new WeightsIndividual(evolution);
     }
@@ -46,9 +46,6 @@ public class WeightsIndividualTest {
     public void setUp() {
     }
 
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of getClustering method, of class WeightsIndividual.
