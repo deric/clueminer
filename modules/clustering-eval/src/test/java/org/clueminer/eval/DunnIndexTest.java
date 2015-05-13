@@ -10,13 +10,16 @@ import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.DatasetTools;
-import static org.junit.Assert.*;
+import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -58,11 +61,13 @@ public class DunnIndexTest {
      */
     @Test
     public void testScore() throws IOException, FileNotFoundException {
-        PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
+        PartitioningClustering km = new KMeans();
         ARFFHandler arff = new ARFFHandler();
-        Dataset<Instance> iris = new SampleDataset();
+        Dataset<Instance> iris = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), iris, 4);
-        Clustering clusters = km.partition(iris);
+        Props p = new Props();
+        p.putInt("k", 3);
+        Clustering clusters = km.partition(iris, p);
         System.out.println("dunn=" + subject.score(clusters));
 
     }

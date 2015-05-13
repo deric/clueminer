@@ -25,12 +25,12 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.FileUtils;
+import org.clueminer.utils.Props;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
@@ -156,10 +156,12 @@ public class BenchmarkTest {
 
     private double[][] kMeans(Dataset data, int kmin, int kmax, String dir) throws IOException, Exception {
         double[][] results = new double[evaluators.size()][kmax - kmin];
+        Props params = new Props();
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
-            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
-            Clustering<Cluster> clusters = km.partition(data);
+            PartitioningClustering km = new KMeans();
+            params.putInt("k", n);
+            Clustering<Cluster> clusters = km.partition(data, params);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);

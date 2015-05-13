@@ -10,18 +10,19 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
-import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.eval.external.ExternalTest;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,11 +42,13 @@ public class CountingPairsTest extends ExternalTest {
         clusters = FakeClustering.iris();
 
         //now try some real clustering
-        PartitioningClustering km = new KMeans(3, 100, new EuclideanDistance());
+        PartitioningClustering km = new KMeans();
+        Props p = new Props();
+        p.putInt("k", 3);
         ARFFHandler arff = new ARFFHandler();
-        Dataset<Instance> irisDataset = new SampleDataset();
+        Dataset<Instance> irisDataset = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), irisDataset, 4);
-        iris = km.partition(irisDataset);
+        iris = km.partition(irisDataset, p);
     }
 
     @AfterClass

@@ -16,6 +16,7 @@ import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.FileHandler;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -53,9 +54,11 @@ public class CIndexTest {
         ClusterEvaluation gamma = new Gamma(dist);
 
         System.out.println("\t CIndex \t AIC \t BIC \t  SSE \t Gamma");
-        for (int n = 1; n < 10; n++) {
-            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
-            Clustering clusters = km.partition(data);
+        Props p = new Props();
+        for (int n = 2; n < 10; n++) {
+            PartitioningClustering km = new KMeans();
+            p.putInt("k", n);
+            Clustering clusters = km.partition(data, p);
 
             double cindScore = cind.score(clusters);
             double aicScore = aic.score(clusters);
@@ -136,9 +139,11 @@ public class CIndexTest {
         eval[j++] = new MinMaxCut(dm);
 
         System.out.println("CIndex \t AIC \t BIC \t  SSE \t Gamma \t Tau \t G+ \t SumOfAvgPairwise \t MinMaxCut");
-        for (int n = 1; n < 10; n++) {
-            PartitioningClustering km = new KMeans(n, 100, new EuclideanDistance());
-            Clustering clusters = km.partition(data);
+        Props p = new Props();
+        for (int n = 2; n < 10; n++) {
+            PartitioningClustering km = new KMeans();
+            p.putInt("k", n);
+            Clustering clusters = km.partition(data, p);
 
             double score;
             for (j = 0; j < evalNum; j++) {
