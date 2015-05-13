@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -58,7 +59,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 //		a = new double[dataset.size()];
 
         HierarchicalResult result = new HClustResult(dataset, pref);
-//		pref.put(AgglParams.ALG, getName());
+        pref.put(AgglParams.ALG, getName());
         int n = dataset.size();
         int items = triangleSize(n);
         pq = new PriorityQueue<>(items);

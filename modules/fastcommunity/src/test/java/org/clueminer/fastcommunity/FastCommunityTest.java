@@ -3,6 +3,7 @@ package org.clueminer.fastcommunity;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -254,7 +255,7 @@ public class FastCommunityTest {
         System.out.println("Hierarchy Test");
         FastCommunity fc = new FastCommunity();
         Dataset<? extends Instance> data = generateData();
-        fc.hierarchy(data, null);
+        fc.hierarchy(data, new Props());
     }
 
     @Test

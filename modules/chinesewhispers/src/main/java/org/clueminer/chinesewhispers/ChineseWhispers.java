@@ -33,6 +33,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        props.put("algorithm", getName());
         List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
         graph.addAllNodes(nodes);
         this.createEdges(dataset, nodes);
