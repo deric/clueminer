@@ -50,11 +50,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
         graph = new AdjListGraph();
         List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
