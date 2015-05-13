@@ -93,7 +93,7 @@ public class CountingPairsTest extends ExternalTest {
 
         //let's test stupid clustering
         // Dataset<Instance> irisData = FakeClustering.irisDataset();
-        Clustering<Cluster> irisClusters = FakeClustering.irisWrong();
+        Clustering<? extends Cluster> irisClusters = FakeClustering.irisWrong();
 
         table = CountingPairs.contingencyTable(irisClusters);
         matching = CountingPairs.findMatching(table);
@@ -110,7 +110,7 @@ public class CountingPairsTest extends ExternalTest {
     @Test
     public void testEmptyClass() {
         System.out.println("===test empty class");
-        Clustering<Cluster> irisClusters = FakeClustering.irisWrong2();
+        Clustering<? extends Cluster> irisClusters = FakeClustering.irisWrong2();
 
         Table<String, String, Integer> table = CountingPairs.contingencyTable(irisClusters);
         Matching matching = CountingPairs.findMatching(table);

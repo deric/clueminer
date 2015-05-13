@@ -58,7 +58,7 @@ public class ExternalTest {
      * @return
      */
     public Clustering<? extends Cluster> pcaData() {
-        Clustering<Cluster> clustering = new ClusterList(3);
+        Clustering clustering = new ClusterList(3);
         Random rand = new Random();
         int size = 10;
         Dataset<? extends Instance> data = new ArrayDataset<>(size, 2);

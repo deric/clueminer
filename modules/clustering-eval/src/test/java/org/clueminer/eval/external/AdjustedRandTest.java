@@ -88,7 +88,7 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testIris() {
-        Clustering<Cluster> clustering = FakeClustering.irisWrong5();
+        Clustering<? extends Cluster> clustering = FakeClustering.irisWrong5();
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
         CountingPairs.dumpTable(table);
         AdjustedRand rand = (AdjustedRand) subject;

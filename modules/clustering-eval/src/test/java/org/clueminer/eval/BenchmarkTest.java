@@ -161,7 +161,7 @@ public class BenchmarkTest {
             long start = System.currentTimeMillis();
             PartitioningClustering km = new KMeans();
             params.putInt("k", n);
-            Clustering<Cluster> clusters = km.partition(data, params);
+            Clustering<? extends Cluster> clusters = km.partition(data, params);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);
