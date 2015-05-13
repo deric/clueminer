@@ -17,19 +17,14 @@ public interface ClusteringAlgorithm {
     String getName();
 
     /**
+     * Cluster given dataset
      *
      * @param dataset
-     * @param props
+     * @param props   a set of parameter that influence clustering or
+     *                performance
      * @return
      */
-    Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
-
-    /**
-     *
-     * @param dataset
-     * @return
-     */
-    Clustering<Cluster> cluster(Dataset<? extends Instance> dataset);
+    Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
 
     DistanceMeasure getDistanceFunction();
 
