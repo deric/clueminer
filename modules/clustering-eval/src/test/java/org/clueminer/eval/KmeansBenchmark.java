@@ -1,6 +1,5 @@
 package org.clueminer.eval;
 
-import org.clueminer.dataset.benchmark.PointTypeIterator;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
 import java.io.File;
@@ -8,16 +7,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
-import org.clueminer.dataset.benchmark.DatasetFixture;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.benchmark.DatasetFixture;
+import org.clueminer.dataset.benchmark.PointTypeIterator;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
@@ -88,7 +90,7 @@ public class KmeansBenchmark {
         return color;
     }
 
-    public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<Instance> dataset) {
+    public void toCsv(DatasetWriter writer, Clustering<? extends Cluster> clusters, Dataset<Instance> dataset) {
         String[] header = new String[dataset.attributeCount() + 1];
         header[dataset.attributeCount()] = "label";
         int i = 0;
@@ -114,7 +116,7 @@ public class KmeansBenchmark {
         return res.append(',').append(klass);
     }
 
-    private String plotTemplate(int k, int x, int y, Clustering<Cluster> clustering, String dataFile) {
+    private String plotTemplate(int k, int x, int y, Clustering<? extends Cluster> clustering, String dataFile) {
         Cluster<Instance> first = clustering.get(0);
         int attrCnt = first.attributeCount();
         int labelPos = attrCnt + 1;
@@ -177,7 +179,7 @@ public class KmeansBenchmark {
             long start = System.currentTimeMillis();
             PartitioningClustering km = new KMeans();
             p.putInt("k", n);
-            Clustering<Cluster> clusters = km.partition(data, p);
+            Clustering<? extends Cluster> clusters = km.partition(data, p);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);
