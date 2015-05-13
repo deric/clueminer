@@ -1,4 +1,4 @@
-package org.clueminer.clustering.gui.dlg;
+package org.clueminer.chameleon.ui;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
