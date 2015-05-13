@@ -88,10 +88,10 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             throw new RuntimeException("The dataset should not be empty");
         }
         //some default number of clusters - TODO: throw exception if not
-        if (!params.containsKey(KMeans.K)) {
-            throw new RuntimeException("Number of clusters (\"" + KMeans.K + "\") must be specified");
-        }
-        k = params.getInt(KMeans.K);
+        //if (!params.containsKey(KMeans.K)) {
+        //    throw new RuntimeException("Number of clusters (\"" + KMeans.K + "\") must be specified");
+        //}
+        k = params.getInt(KMeans.K, 3);
         if (k <= 1) {
             throw new RuntimeException("Number of clusters should be at least 2");
         }
