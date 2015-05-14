@@ -29,21 +29,6 @@ public class FastCommunityDialog extends JPanel implements ClusteringDialog {
 	}
 
 	@Override
-	public void setParent(ClusterAnalysis clust) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-//		Nothing to do here
-	}
-
-	@Override
-	public ClusteringAlgorithm getAlgorithm() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
 	public JPanel getPanel() {
 		return this;
 	}
