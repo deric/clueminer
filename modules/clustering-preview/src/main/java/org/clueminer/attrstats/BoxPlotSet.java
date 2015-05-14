@@ -11,7 +11,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.gui.ClusterPreviewer;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -91,6 +93,11 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
         if (parent != null) {
             parent.repaint();
         }
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //nothing to do
     }
 
     @Override

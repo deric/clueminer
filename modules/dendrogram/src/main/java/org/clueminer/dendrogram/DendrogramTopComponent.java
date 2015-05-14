@@ -19,6 +19,7 @@ import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.project.api.WorkspaceListener;
+import org.clueminer.utils.Props;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -304,5 +305,10 @@ public final class DendrogramTopComponent extends CloneableTopComponent implemen
 
     @Override
     public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //
     }
 }

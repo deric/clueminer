@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -207,6 +208,11 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
         if (parent != null) {
             parent.repaint();
         }
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //nothing to do
     }
 
     @Override

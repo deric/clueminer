@@ -19,6 +19,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
+import org.clueminer.utils.Props;
 import org.imgscalr.Scalr;
 
 /**
@@ -280,6 +281,11 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         g.dispose();
 
         return image;
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //nothing to do
     }
 
 }
