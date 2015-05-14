@@ -12,7 +12,6 @@ import org.clueminer.graph.api.Node;
 public class Community {
 
     private final Integer id;
-    private final CommunityNetwork network;
     private final Set<Node> nodes;
     private Integer edgesInside;
     private Integer edgesOutside;
@@ -24,9 +23,8 @@ public class Community {
 		this.edgesOutside = src.edgesOutside;
 	}
 
-    public Community(CommunityNetwork network, Graph graph, int id, Node node) {
+    public Community(Graph graph, int id, Node node) {
         this.id = id;
-        this.network = network;
         this.nodes = new HashSet<>();
         this.edgesInside = 0;
         nodes.add(node);
