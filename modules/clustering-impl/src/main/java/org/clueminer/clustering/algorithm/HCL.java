@@ -40,11 +40,6 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
         System.out.println(map.toString());
         TreeDataImpl treeData = new TreeDataImpl(distanceFunction);

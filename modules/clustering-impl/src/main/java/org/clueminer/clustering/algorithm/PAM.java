@@ -97,21 +97,11 @@ public class PAM extends KClustererBase implements PartitioningClustering {
     }
 
     @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, Props params) {
         Assignment assignments = new HardAssignment(dataset.size());
         int[] medioids = selectMedioids(dataset);
 
         return null;
-    }
-
-    @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private int[] selectMedioids(Dataset<? extends Instance> dataset) {

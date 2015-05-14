@@ -18,8 +18,12 @@ package org.clueminer.clustering.gui.dlg;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -28,18 +32,26 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = ClusteringDialog.class)
 public class KmeansDialog extends JPanel implements ClusteringDialog {
+
+    private static final long serialVersionUID = 7041147759279431292L;
 
     private JSlider sliderK;
     private JTextField tfK;
+    private JTextField tfIterations;
+    private JSlider sliderIter;
+    private JTextField tfRandom;
+    private JButton btnRandom;
+    private Random rand;
 
     public KmeansDialog() {
         initComponents();
@@ -62,7 +74,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 0.1;
         c.weighty = 1.0;
-        c.insets = new java.awt.Insets(5, 0, 5, 0);
+        c.insets = new java.awt.Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
         add(new JLabel("k:"), c);
@@ -71,27 +83,82 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         add(sliderK, c);
         c.gridx = 2;
         add(tfK, c);
-
         tfK.addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                updateSlider();
+                updateKSlider();
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                updateSlider();
+                updateKSlider();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                updateSlider();
+                updateKSlider();
             }
         });
+
+        //iterations
+        c.gridx = 0;
+        c.gridy = 1;
+        add(new JLabel("Iterations:"), c);
+        sliderIter = new JSlider(10, 2000);
+        sliderIter.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tfIterations.setText(String.valueOf(sliderIter.getValue()));
+            }
+        });
+        c.gridx = 1;
+        add(sliderIter, c);
+
+        c.gridx = 2;
+        tfIterations = new JTextField("100", 4);
+        add(tfIterations, c);
+        tfIterations.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                updateIterSlider();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                updateIterSlider();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                updateIterSlider();
+            }
+        });
+        sliderIter.setValue(100);
+
+        //random
+        tfRandom = new JTextField("-1", 8);
+        c.gridy = 2;
+        c.gridx = 0;
+        add(new JLabel("Random seed:"), c);
+        c.gridx = 1;
+        add(tfRandom, c);
+        btnRandom = new JButton("Randomize");
+        rand = new Random();
+        btnRandom.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tfRandom.setText(String.valueOf(rand.nextInt()));
+            }
+        });
+        c.gridx = 2;
+        add(btnRandom, c);
     }
 
-    private void updateSlider() {
+    private void updateKSlider() {
         try {
             int val = Integer.valueOf(tfK.getText());
             sliderK.setValue(val);
@@ -100,31 +167,23 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         }
     }
 
+    private void updateIterSlider() {
+        try {
+            int val = Integer.valueOf(tfIterations.getText());
+            sliderIter.setValue(val);
+        } catch (NumberFormatException ex) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }
+
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putInt("k", sliderK.getValue());
+        params.putInt(KMeans.K, sliderK.getValue());
+        params.putInt(KMeans.ITERATIONS, sliderIter.getValue());
+        params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
 
         return params;
-    }
-
-    @Override
-    public void setParent(ClusterAnalysis clust) {
-        //
-    }
-
-    @Override
-    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-        if (!(algorithm instanceof KMeans)) {
-            throw new RuntimeException("expected k-means instance");
-        }
-        KMeans km = (KMeans) algorithm;
-        //TODO. remove this method?
-    }
-
-    @Override
-    public ClusteringAlgorithm getAlgorithm() {
-        return null;
     }
 
     @Override

@@ -15,11 +15,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.ConsoleDump;
 import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.benchmark.Bench;
 import org.clueminer.eval.external.JaccardIndex;
-import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.attr.AttrEvolution;
 import org.clueminer.utils.FileUtils;
 import org.openide.util.NbBundle;
@@ -30,7 +28,7 @@ import org.openide.util.NbBundle;
  */
 public class Data extends Bench {
 
-    private EvolutionSO test;
+    private AttrEvolution test;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
     private static ResultsCollector rc;
@@ -155,7 +153,8 @@ public class Data extends Bench {
             for (InternalEvaluator eval : factory.getAll()) {
                 System.out.println("evaluator: " + eval.getName());
                 test = new AttrEvolution(dataset, 20);
-                test.setAlgorithm(new KMeans(entry.getValue(), 100, new EuclideanDistance()));
+                test.setAlgorithm(new KMeans());
+                test.setK(entry.getValue());
                 test.setEvaluator(eval);
                 test.setExternal(ext);
                 GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));

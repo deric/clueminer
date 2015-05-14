@@ -15,6 +15,10 @@ import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Instead of using this implementation directly it is better to create new
+ * clusterings via:  <code>
+ *   Clusterings.newList();
+ * </code>
  *
  * @author Tomas Barton
  * @param <E>

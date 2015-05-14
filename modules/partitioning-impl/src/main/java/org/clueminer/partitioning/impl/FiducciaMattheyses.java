@@ -31,6 +31,10 @@ public class FiducciaMattheyses implements Bisection {
      * Maximum number of iterations
      */
     private int iterationLimit;
+    /**
+     * Props constant for setting iterationLimit
+     */
+    public static final String ITERATIONS = "fm-iterations";
 
     /**
      * Array containing lists of nodes of the same difference (difference is

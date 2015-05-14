@@ -11,13 +11,13 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.evolution.api.Evolution;
-import org.clueminer.evolution.api.Individual;
-import org.clueminer.evolution.api.Pair;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.AbstractIndividual;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -45,6 +45,8 @@ public class AttrEvolution extends BaseEvolution implements Runnable, Evolution,
      */
     private Pair<Long, Long> time;
 
+    private int k = 3;
+
     private static String name = "Attributes' evolution";
     private static final Logger logger = Logger.getLogger(AttrEvolution.class.getName());
 
@@ -56,7 +58,7 @@ public class AttrEvolution extends BaseEvolution implements Runnable, Evolution,
         this.dataset = dataset;
         this.generations = generations;
         //@TODO fetch number of clusters
-        algorithm = new KMeans(3, 100);
+        algorithm = new KMeans();
         initEvolution();
     }
 
@@ -192,6 +194,14 @@ public class AttrEvolution extends BaseEvolution implements Runnable, Evolution,
     @Override
     public Individual createIndividual() {
         return new WeightsIndividual(this);
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public void setK(int k) {
+        this.k = k;
     }
 
 }

@@ -12,20 +12,23 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.project.api.ProjectController;
+import org.clueminer.utils.Props;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.Lookups;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays dendrograms
@@ -166,5 +169,10 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
             content.set(Collections.singleton(c), null);
         }
 
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //nothing to do
     }
 }

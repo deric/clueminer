@@ -1,6 +1,11 @@
 package org.clueminer.dendrogram.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.font.FontRenderContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +17,10 @@ import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.gui.BPanel;
+import org.clueminer.utils.Props;
 
 /**
  * Color stripe for showing assignments to clusters
@@ -154,6 +162,11 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
     public void clusteringChanged(Clustering clust) {
         flatClust = clust;
         resetCache();
+    }
+
+    @Override
+    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+        //nothing to do
     }
 
     @Override

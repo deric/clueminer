@@ -16,16 +16,10 @@ public interface PartitioningClustering extends ClusteringAlgorithm {
      * set is a cluster
      *
      * @param dataset
+     * @param params  a set of parameters (some might be required, depends on
+     *                specific algorithm)
      * @return
      */
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset);
-
-    /**
-     *
-     * @param dataset
-     * @param params
-     * @return
-     */
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, Props params);
+    public Clustering<? extends Cluster> partition(Dataset<? extends Instance> dataset, Props params);
 
 }

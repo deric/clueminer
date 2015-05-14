@@ -43,7 +43,7 @@ public class KmeansDialogTest {
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new KMeans(2)));
+        assertEquals(true, subject.isUIfor(new KMeans()));
     }
 
     public String getTitle() {

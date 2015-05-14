@@ -18,18 +18,12 @@ public interface ClusteringDialog {
      */
     String getName();
 
-    Props getParams();
-
-    void setParent(ClusterAnalysis clust);
-
     /**
-     * Update algorithm configuration
+     * Parameters configured by user (or default ones)
      *
-     * @param algorithm
+     * @return
      */
-    void updateAlgorithm(ClusteringAlgorithm algorithm);
-
-    ClusteringAlgorithm getAlgorithm();
+    Props getParams();
 
     /**
      * GUI which will be embedded into another dialog (should not contain any

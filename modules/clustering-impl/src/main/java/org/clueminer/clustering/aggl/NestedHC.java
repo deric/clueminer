@@ -5,6 +5,7 @@ import java.util.concurrent.CyclicBarrier;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
@@ -35,12 +36,13 @@ public class NestedHC {
      */
     public Clustering<? extends Cluster> compute(Clustering<? extends Cluster> clustering) {
         CyclicBarrier barrier = new CyclicBarrier(clustering.size());
+        Props p = new Props();
         try {
             // Merger.merge(x, y, z);
 
             for (Cluster c : clustering) {
                 //clustering clusters
-                mapper.cluster(c);
+                mapper.cluster(c, p);
                 //TODO: implement
             }
             //force the thread to wait on the barrier.

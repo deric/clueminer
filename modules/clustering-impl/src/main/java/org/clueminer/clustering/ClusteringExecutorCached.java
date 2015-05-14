@@ -95,14 +95,20 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
 
     @Override
     public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
-        HierarchicalResult rowsResult = hclustRows(dataset, params);
+        Clustering clustering;
+        if (algorithm instanceof AgglomerativeClustering) {
+            HierarchicalResult rowsResult = hclustRows(dataset, params);
 
-        findCutoff(rowsResult, params);
-        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
+            findCutoff(rowsResult, params);
+            DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
 
-        Clustering clustering = rowsResult.getClustering();
-        clustering.mergeParams(params);
-        clustering.lookupAdd(mapping);
+            clustering = rowsResult.getClustering();
+            clustering.mergeParams(params);
+            clustering.lookupAdd(mapping);
+        } else {
+            //non-hierarchical method
+            clustering = algorithm.cluster(dataset, params);
+        }
         return clustering;
     }
 

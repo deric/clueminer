@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
  * <bibtex> J. B. MacQueen (1967): "Some Methods for classification and Analysis
  * of Multivariate Observations, Proceedings of 5-th Berkeley Symposium on
  * Mathematical Statistics and Probability", Berkeley, University of California
- * Press, 1:281-297 </bibtex>
+ * Press, 1:281-297</bibtex>
  *
  *
  * @author Thomas Abeel
@@ -34,23 +34,25 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class KMeans extends AbstractClusteringAlgorithm implements PartitioningClustering {
 
-    /**
-     * The number of clusters.
-     */
-    private int numberOfClusters = -1;
+    public static final String K = "k";
+
+    public static final String ITERATIONS = "iterations";
+
+    public static final String SEED = "seed";
     /**
      * The number of iterations the algorithm should make. If this value is
      * Integer.INFINITY, then the algorithm runs until the centroids no longer
      * change.
      *
      */
-    private int numberOfIterations = -1;
+    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false)
+    private int iterations = -1;
     /**
      * Random generator for this clusterer.
      */
-    private Random rg;
+    private Random random;
 
-    @Param(name = "k", description = "expected number of clusters", required = true)
+    @Param(name = KMeans.K, description = "expected number of clusters", required = true)
     private int k;
 
     /**
@@ -58,53 +60,8 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      */
     private Instance[] centroids;
 
-    /**
-     * Constuct a default K-means clusterer with 100 iterations, 4 clusters, a
-     * default random generator and using the Euclidean distance.
-     */
     public KMeans() {
-        this(4);
-    }
 
-    /**
-     * Constuct a default K-means clusterer with the specified number of
-     * clusters, 100 iterations, a default random generator and using the
-     * Euclidean distance.
-     *
-     * @param k the number of clusters to create
-     */
-    public KMeans(int k) {
-        this(k, 100);
-    }
-
-    /**
-     * Create a new Simple K-means clusterer with the given number of clusters
-     * and iterations. The internal random generator is a new one based upon the
-     * current system time. For the distance we use the Euclidean n-space
-     * distance.
-     *
-     * @param clusters   - the number of clusters
-     * @param iterations - the number of iterations
-     */
-    public KMeans(int clusters, int iterations) {
-        this(clusters, iterations, new EuclideanDistance());
-    }
-
-    /**
-     * Create a new K-means clusterer with the given number of clusters and
-     * iterations. Also the Random Generator for the clusterer is given as
-     * parameter.
-     *
-     * @param clusters   - the number of clusters
-     * @param iterations - the number of iterations
-     *
-     * @param dm         - the distance measure to use
-     */
-    public KMeans(int clusters, int iterations, DistanceMeasure dm) {
-        this.numberOfClusters = clusters;
-        this.numberOfIterations = iterations;
-        this.distanceFunction = dm;
-        rg = new Random(System.currentTimeMillis());
     }
 
     @Override
@@ -122,53 +79,56 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
         this.distanceFunction = dm;
     }
 
-    @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset) {
-        return partition(dataset);
-    }
-
-    @Override
-    public Clustering partition(Dataset<? extends Instance> dataset, Props params) {
-        //@TODO parse algorithm parameters
-        return partition(dataset);
-    }
-
     /**
      * Execute the KMeans clustering algorithm on the data set that is provided.
      *
      * @param data data set to cluster
      */
     @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> data) {
+    public Clustering<? extends Cluster> partition(Dataset<? extends Instance> data, Props params) {
         if (data.isEmpty()) {
             throw new RuntimeException("The dataset should not be empty");
         }
-        if (numberOfClusters == 0) {
-            throw new RuntimeException("There should be at least one cluster");
+        //number of clusters is required
+        if (!params.containsKey(KMeans.K)) {
+            throw new RuntimeException("Number of clusters (\"" + KMeans.K + "\") must be specified");
         }
+        k = params.getInt(KMeans.K);
+        if (k <= 1) {
+            throw new RuntimeException("Number of clusters should be at least 2");
+        }
+
+        int seed = params.getInt(SEED, -1);
+        if (seed != -1) {
+            random = new Random(seed);
+        } else {
+            if (random == null) {
+                random = new Random(System.currentTimeMillis());
+            }
+        }
+
+        if (distanceFunction == null) {
+            distanceFunction = EuclideanDistance.getInstance();
+        }
+
+        iterations = params.getInt(ITERATIONS, 100);
+
         // Place K points into the space represented by the objects that are
         // being clustered. These points represent the initial group of
         // centroids.
-        // DatasetTools.
         Instance min = DatasetTools.minAttributes(data);
         Instance max = DatasetTools.maxAttributes(data);
-        this.centroids = new Instance[numberOfClusters];
+        this.centroids = new Instance[k];
         int instanceLength = data.attributeCount();
-        for (int j = 0; j < numberOfClusters; j++) {
-//            double[] randomInstance = new double[instanceLength];
-//            for (int i = 0; i < instanceLength; i++) {
-//                double dist = Math.abs(max.value(i) - min.value(i));
-//                randomInstance[i] = (float) (min.value(i) + rg.nextDouble() * dist);
-//
-//            }
-            double[] randomInstance = DatasetTools.getRandomInstance(data, rg);
+        for (int j = 0; j < k; j++) {
+            double[] randomInstance = DatasetTools.getRandomInstance(data, random);
             this.centroids[j] = new DoubleArrayDataRow(randomInstance);
         }
 
         int iterationCount = 0;
         boolean centroidsChanged = true;
         boolean randomCentroids = true;
-        while (randomCentroids || (iterationCount < this.numberOfIterations && centroidsChanged)) {
+        while (randomCentroids || (iterationCount < this.iterations && centroidsChanged)) {
             iterationCount++;
             // Assign each object to the group that has the closest centroid.
             int[] assignment = new int[data.size()];
@@ -189,8 +149,8 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             // the K centroids and start over.
             // The new position of the centroid is the weighted center of the
             // current cluster.
-            double[][] sumPosition = new double[this.numberOfClusters][instanceLength];
-            int[] countPosition = new int[this.numberOfClusters];
+            double[][] sumPosition = new double[this.k][instanceLength];
+            int[] countPosition = new int[this.k];
             for (int i = 0; i < data.size(); i++) {
                 Instance in = data.instance(i);
                 for (int j = 0; j < instanceLength; j++) {
@@ -202,7 +162,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             }
             centroidsChanged = false;
             randomCentroids = false;
-            for (int i = 0; i < this.numberOfClusters; i++) {
+            for (int i = 0; i < this.k; i++) {
                 if (countPosition[i] > 0) {
                     double[] tmp = new double[instanceLength];
                     for (int j = 0; j < instanceLength; j++) {
@@ -217,7 +177,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
                     double[] randomInstance = new double[instanceLength];
                     for (int j = 0; j < instanceLength; j++) {
                         double dist = Math.abs(max.value(j) - min.value(j));
-                        randomInstance[j] = (float) (min.value(j) + rg.nextDouble() * dist);
+                        randomInstance[j] = (float) (min.value(j) + random.nextDouble() * dist);
 
                     }
                     randomCentroids = true;
@@ -230,8 +190,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
         Clustering output = new ClusterList(centroids.length);
         Props p = output.getParams();
         p.put("algorithm", getName());
-        p.putInt("k", numberOfClusters);
-        p.putInt("iterations", numberOfIterations);
+        p.putInt(ITERATIONS, iterations);
         BaseCluster cluster;
         if (colorGenerator != null) {
             colorGenerator.reset();
@@ -269,8 +228,12 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        return partition(dataset, props);
+    }
+
+    public void setRandom(Random rand) {
+        this.random = rand;
     }
 
 }
