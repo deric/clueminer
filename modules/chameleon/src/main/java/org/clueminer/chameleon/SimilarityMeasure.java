@@ -4,7 +4,9 @@ package org.clueminer.chameleon;
  *
  * @author Tomas Bruna
  */
-public enum SimilarityMeasure {
+public interface SimilarityMeasure {
 
-    STANDARD, IMPROVED;
+    String STANDARD = "STANDARD";
+    String IMPROVED = "IMPROVED";
+
 }

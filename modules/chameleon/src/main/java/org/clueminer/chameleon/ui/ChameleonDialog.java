@@ -3,13 +3,13 @@ package org.clueminer.chameleon.ui;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.SimilarityMeasure;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.utils.Props;
@@ -447,6 +447,26 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
         params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
         params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+
+        if (!chkBoxAutoK.isSelected()) {
+            params.putInt(Chameleon.K, sliderK.getValue());
+        }
+        if (!chkBoxAutoMaxPSize.isSelected()) {
+            params.putInt(Chameleon.MAX_PARTITION, sliderMaxPSize.getValue());
+        }
+        params.putDouble(Chameleon.CLOSENESS_PRIORITY, Double.valueOf(tfPriority.getText()));
+
+        if (rbtnImproved.isSelected()) {
+            params.put(Chameleon.SIM_MEASURE, SimilarityMeasure.IMPROVED);
+        } else {
+            params.put(Chameleon.SIM_MEASURE, SimilarityMeasure.STANDARD);
+        }
+
+        String name = (String) comboBisection.getSelectedItem();
+        params.put(Chameleon.BISECTION, name);
+        if ("Fiduccia-Mattheyses".equals(name)) {
+            params.putInt(FiducciaMattheyses.ITERATIONS, sliderLimit.getValue());
+        }
         return params;
     }
 
@@ -462,40 +482,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
     private Object[] initCutoff() {
         return InternalEvaluatorFactory.getInstance().getProvidersArray();
-    }
-
-    @Override
-    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-        if (!(algorithm instanceof Chameleon)) {
-            throw new RuntimeException("Chameleon algorithm expected");
-        }
-        Chameleon ch = (Chameleon) algorithm;
-        if (chkBoxAutoK.isSelected()) {
-            ch.setK(-1);
-        } else {
-            ch.setK(sliderK.getValue());
-        }
-        if (chkBoxAutoMaxPSize.isSelected()) {
-            ch.setMaxPartitionSize(-1);
-        } else {
-            ch.setMaxPartitionSize(sliderMaxPSize.getValue());
-        }
-
-        ch.setClosenessPriority(Double.valueOf(tfPriority.getText()));
-
-        if (rbtnImproved.isSelected()) {
-            ch.setImprovedMeasure();
-        } else {
-            ch.setStandardMeasure();
-        }
-
-        String name = (String) comboBisection.getSelectedItem();
-        Bisection bisection = BisectionFactory.getInstance().getProvider(name);
-        if ("Fiduccia-Mattheyses".equals(name)) {
-            FiducciaMattheyses fm = (FiducciaMattheyses) bisection;
-            fm.setIterationLimit(sliderLimit.getValue());
-        }
-        ch.setBisection(bisection);
     }
 
     private Object[] initCutoffMethod() {
