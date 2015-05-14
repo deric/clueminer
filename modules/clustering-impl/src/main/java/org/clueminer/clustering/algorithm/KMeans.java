@@ -37,6 +37,8 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     public static final String K = "k";
 
     public static final String ITERATIONS = "iterations";
+
+    public static final String SEED = "seed";
     /**
      * The number of iterations the algorithm should make. If this value is
      * Integer.INFINITY, then the algorithm runs until the centroids no longer
@@ -96,8 +98,13 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             throw new RuntimeException("Number of clusters should be at least 2");
         }
 
-        if (random == null) {
-            random = new Random(System.currentTimeMillis());
+        int seed = params.getInt(SEED, -1);
+        if (seed != -1) {
+            random = new Random(seed);
+        } else {
+            if (random == null) {
+                random = new Random(System.currentTimeMillis());
+            }
         }
 
         if (distanceFunction == null) {

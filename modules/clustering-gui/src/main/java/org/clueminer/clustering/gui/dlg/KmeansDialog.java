@@ -18,8 +18,12 @@ package org.clueminer.clustering.gui.dlg;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -46,6 +50,9 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
     private JTextField tfK;
     private JTextField tfIterations;
     private JSlider sliderIter;
+    private JTextField tfRandom;
+    private JButton btnRandom;
+    private Random rand;
 
     public KmeansDialog() {
         initComponents();
@@ -68,7 +75,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 0.1;
         c.weighty = 1.0;
-        c.insets = new java.awt.Insets(5, 0, 5, 0);
+        c.insets = new java.awt.Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
         add(new JLabel("k:"), c);
@@ -132,6 +139,24 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         });
         sliderIter.setValue(100);
 
+        //random
+        tfRandom = new JTextField("-1", 8);
+        c.gridy = 2;
+        c.gridx = 0;
+        add(new JLabel("Random seed:"), c);
+        c.gridx = 1;
+        add(tfRandom, c);
+        btnRandom = new JButton("Randomize");
+        rand = new Random();
+        btnRandom.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tfRandom.setText(String.valueOf(rand.nextInt()));
+            }
+        });
+        c.gridx = 2;
+        add(btnRandom, c);
     }
 
     private void updateKSlider() {
@@ -157,6 +182,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         Props params = new Props();
         params.putInt(KMeans.K, sliderK.getValue());
         params.putInt(KMeans.ITERATIONS, sliderIter.getValue());
+        params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
 
         return params;
     }
