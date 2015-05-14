@@ -32,7 +32,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -185,25 +184,6 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
 
         return params;
-    }
-
-    @Override
-    public void setParent(ClusterAnalysis clust) {
-        //
-    }
-
-    @Override
-    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-        if (!(algorithm instanceof KMeans)) {
-            throw new RuntimeException("expected k-means instance");
-        }
-        KMeans km = (KMeans) algorithm;
-        //TODO. remove this method?
-    }
-
-    @Override
-    public ClusteringAlgorithm getAlgorithm() {
-        return null;
     }
 
     @Override

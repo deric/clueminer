@@ -9,7 +9,6 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
-import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.math.StandardisationFactory;
@@ -185,16 +184,6 @@ public class HacDialog extends JPanel implements ClusteringDialog {
     }
 
     @Override
-    public void setParent(ClusterAnalysis clust) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ClusteringAlgorithm getAlgorithm() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public JPanel getPanel() {
         return this;
     }
@@ -210,11 +199,6 @@ public class HacDialog extends JPanel implements ClusteringDialog {
 
     private Object[] initCutoff() {
         return InternalEvaluatorFactory.getInstance().getProvidersArray();
-    }
-
-    @Override
-    public void updateAlgorithm(ClusteringAlgorithm algorithm) {
-
     }
 
     private Object[] initCutoffMethod() {

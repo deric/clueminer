@@ -7,7 +7,6 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.clustering.gui.ClusterAnalysis;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.partitioning.api.Bisection;
@@ -449,16 +448,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
         params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
         return params;
-    }
-
-    @Override
-    public void setParent(ClusterAnalysis clust) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public ClusteringAlgorithm getAlgorithm() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
