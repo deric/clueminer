@@ -3,6 +3,8 @@ package org.clueminer.graph.adjacencyList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -20,19 +22,23 @@ public class AdjListGraph implements Graph {
 
     private static final String name = "Adj List Graph";
 
-    HashMap<Long, AdjListNode> nodes;
-    HashMap<Long, AdjListEdge> edges;
+    private final HashMap<Long, AdjListNode> nodes;
+    private final HashMap<Long, AdjListEdge> edges;
+    private final HashMap<Long, Integer> idToIndex;
+    private final double EPS = 1e-6;
+    private DistanceMeasure dm;
 
     public AdjListGraph() {
         nodes = new HashMap<>();
         edges = new HashMap<>();
+        dm = EuclideanDistance.getInstance();
+        idToIndex = new HashMap<>();
     }
 
     @Override
     public String getName() {
         return name;
     }
-
 
     public void print() {
         System.out.println("Edges:");
@@ -70,6 +76,7 @@ public class AdjListGraph implements Graph {
         if (nodes.containsKey(node.getId())) {
             return false;
         }
+        idToIndex.put(node.getId(), getNodeCount());
         nodes.put(node.getId(), (AdjListNode) node);
         return true;
     }
@@ -307,13 +314,26 @@ public class AdjListGraph implements Graph {
     }
 
     @Override
-    public boolean addEdgesFromNeigborArray(int[][] nearests, int k) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
+        if (k > getNodeCount()) {
+            return false;
+        }
+        GraphFactory f = AdjListFactory.getInstance();
+        for (int i = 0; i < getNodeCount(); i++) {
+            for (int j = 0; j < k; j++) {
+                double distance = dm.measure(getNode(i).getInstance(), getNode(neighbors[i][j]).getInstance());
+                if (distance < EPS) {
+                    distance = EPS;
+                }
+                addEdge(f.newEdge(getNode(i), getNode(neighbors[i][j]), 1, 1 / distance, false)); //max val
+            }
+        }
+        return true;
     }
 
     @Override
     public int getIndex(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return idToIndex.get(node.getId());
     }
 
     @Override

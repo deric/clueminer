@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.api.NodeIterable;
 import org.clueminer.partitioning.api.Bisection;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -76,9 +77,8 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     private void createVertexes() {
-        ArrayList<Node> nodes = (ArrayList<Node>) g.getNodes().toCollection();
         vertexes = new Vertex[g.getNodeCount()];
-        for (Node node : nodes) {
+        for (Node node : g.getNodes()) {
             vertexes[g.getIndex(node)] = new Vertex(node);
         }
     }
@@ -350,15 +350,12 @@ public class FiducciaMattheyses implements Bisection {
         }
 
         public Vertex[] getNeighbors() {
-            ArrayList<Node> neighbors = (ArrayList<Node>) g.getNeighbors(node).toCollection();
-            if (neighbors == null) {
-                return null;
+            NodeIterable neighbors = g.getNeighbors(node);
+            LinkedList<Vertex> result = new LinkedList<>();
+            for (Node current : neighbors) {
+                result.add(vertexes[g.getIndex(current)]);
             }
-            Vertex result[] = new Vertex[neighbors.size()];
-            for (int i = 0; i < neighbors.size(); i++) {
-                result[i] = vertexes[g.getIndex(neighbors.get(i))];
-            }
-            return result;
+            return result.toArray(new Vertex[0]);
         }
     }
 

@@ -51,8 +51,7 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        Edge edge = new AdjMatrixEdge(edgeIdCounter++, source, target, weight);
-        return edge;
+        return new AdjMatrixEdge(edgeIdCounter++, source, target, weight);
     }
 
     @Override
@@ -62,20 +61,17 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Node newNode() {
-        Node node = new AdjMatrixNode(nodeIdCounter++);
-        return node;
+        return new AdjMatrixNode(nodeIdCounter++);
     }
 
     @Override
     public Node newNode(Object label) {
-        Node node = new AdjMatrixNode(nodeIdCounter++, label);
-        return node;
+        return new AdjMatrixNode(nodeIdCounter++, label);
     }
 
     @Override
     public Node newNode(Instance i) {
-        Node node = new AdjMatrixNode(nodeIdCounter++, i);
-        return node;
+        return new AdjMatrixNode(nodeIdCounter++, i);
     }
 
     @Override

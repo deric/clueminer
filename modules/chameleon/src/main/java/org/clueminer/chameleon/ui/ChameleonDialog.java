@@ -31,6 +31,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboBisection.setSelectedItem("Fiduccia-Mattheyses");
         comboCutoffMethod.setSelectedItem("hill-climb inc");
         comboCutoff.setSelectedItem("SD index");
+        comboGraphStorage.setSelectedItem("Adj Graph Matrix");
     }
 
     /**
