@@ -123,6 +123,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             fm.setIterationLimit(pref.getInt(FiducciaMattheyses.ITERATIONS, 20));
         }
         recursiveBisection = new RecursiveBisection(bisectionAlg);
+        recursiveBisection.setGraphStore(graphStorage);
         ArrayList<LinkedList<Node>> partitioningResult = recursiveBisection.partition(maxPartitionSize, g);
 
         PairMerger m;

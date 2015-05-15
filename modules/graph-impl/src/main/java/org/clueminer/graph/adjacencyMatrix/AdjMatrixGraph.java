@@ -79,7 +79,7 @@ public class AdjMatrixGraph implements Graph {
 
     @Override
     public boolean addNode(Node node) {
-        if (nodeCounter >= size) {
+        if (nodeCounter > size) {
             return false;
         }
         idToNode.put(node.getId(), (AdjMatrixNode) node);
@@ -334,7 +334,7 @@ public class AdjMatrixGraph implements Graph {
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
-     * @param k         number of neighbors for each node
+     * @param k number of neighbors for each node
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {

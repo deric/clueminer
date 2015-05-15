@@ -179,6 +179,11 @@ public class P2PPartitioning implements Partitioning {
         return result;
     }
 
+    @Override
+    public void setGraphStore(String provider) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public class Vertex implements Comparable<Vertex> {
 
         public int degree;

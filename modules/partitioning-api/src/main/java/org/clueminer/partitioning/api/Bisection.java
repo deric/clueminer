@@ -11,7 +11,7 @@ import org.clueminer.graph.api.Node;
  */
 public interface Bisection {
 
-    public String getName();
+    String getName();
 
     /**
      * Bisect the graph
@@ -19,19 +19,19 @@ public interface Bisection {
      * @param g graph to partition
      * @return list of nodes for each cluster
      */
-    public ArrayList<LinkedList<Node>> bisect(Graph g);
+    ArrayList<LinkedList<Node>> bisect(Graph g);
 
     /**
      * Bisect the graph
      *
      * @return list of nodes for each cluster
      */
-    public ArrayList<LinkedList<Node>> bisect();
+    ArrayList<LinkedList<Node>> bisect();
 
     /**
      * Remove edges between clusters which were created by bisection
      *
      * @return bisected graph
      */
-    public Graph removeUnusedEdges();
+    Graph removeUnusedEdges();
 }

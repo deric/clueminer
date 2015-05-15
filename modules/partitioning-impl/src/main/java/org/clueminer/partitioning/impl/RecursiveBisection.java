@@ -2,8 +2,8 @@ package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
@@ -21,6 +21,7 @@ public class RecursiveBisection implements Partitioning {
     private boolean marked[];
     private ArrayList<LinkedList<Node>> clusters;
     private Bisection bisection;
+    private String graphStore = "Adj Graph Matrix";
 
     public RecursiveBisection() {
         this(new FiducciaMattheyses());
@@ -71,7 +72,10 @@ public class RecursiveBisection implements Partitioning {
 
     private Graph buildGraphFromCluster(LinkedList<Node> n) {
         ArrayList<Node> nodes = new ArrayList<>(n);
-        Graph newGraph = new AdjMatrixGraph(nodes.size());
+        //Graph newGraph = new AdjMatrixGraph(nodes.size());
+        Graph newGraph = GraphStorageFactory.getInstance().getProvider(graphStore);
+        newGraph.ensureCapacity(nodes.size());
+
         for (Node node : nodes) {
             newGraph.addNode(node);
         }
@@ -87,11 +91,11 @@ public class RecursiveBisection implements Partitioning {
 
     @Override
     public Graph removeUnusedEdges() {
-        Graph g = new AdjMatrixGraph(graph.getNodeCount());
+        //Graph g = new AdjMatrixGraph(graph.getNodeCount());
+        Graph g = GraphStorageFactory.getInstance().getProvider(graphStore);
+        g.ensureCapacity(graph.getNodeCount());
 
-        ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
-
-        for (Node node : nodes) {
+        for (Node node : graph.getNodes()) {
             g.addNode(node);
         }
 
@@ -105,6 +109,11 @@ public class RecursiveBisection implements Partitioning {
             }
         }
         return g;
+    }
+
+    @Override
+    public void setGraphStore(String provider) {
+        this.graphStore = provider;
     }
 
 }
