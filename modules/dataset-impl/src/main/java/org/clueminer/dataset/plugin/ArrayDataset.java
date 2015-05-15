@@ -632,8 +632,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
         @Override
         public Instance next() {
-            index++;
-            return instance(index - 1);
+            return instance(index++);
         }
 
         @Override

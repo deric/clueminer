@@ -31,7 +31,7 @@ public class AttributeCollectionTest {
 
     private AttributeCollection subject;
     private final double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
-    private Dataset<? extends Instance> dataset;
+    private final Dataset<? extends Instance> dataset;
 
     public AttributeCollectionTest() {
         dataset = new ArrayDataset<>(data2x5);
@@ -66,8 +66,7 @@ public class AttributeCollectionTest {
             assertNotNull(it.next());
             i++;
         }
-        assertEquals(1, i);
+        assertEquals(2, i);
     }
-
 
 }
