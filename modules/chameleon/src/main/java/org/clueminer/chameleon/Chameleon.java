@@ -13,8 +13,8 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
@@ -54,7 +54,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     @Param(name = Chameleon.BISECTION, description = "Bisection algorithm")
     private String bisection;
 
-
     /**
      * If bigger than 1, algorithm gives a higher importance to the relative
      * closeness of clusters during merging, otherwise, if lesser than 1, to
@@ -77,6 +76,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     private RecursiveBisection recursiveBisection;
 
     private final KNNGraphBuilder knn;
+
+    public static final String GRAPH_STORAGE = "graph_storage";
+    @Param(name = Chameleon.GRAPH_STORAGE, description = "Structure for storing graphs")
+    private String graphStorage;
 
     public Chameleon() {
         knn = new KNNGraphBuilder();
@@ -108,7 +111,8 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
-        Graph g = new AdjMatrixGraph();
+        graphStorage = pref.get(GRAPH_STORAGE, "Adj Graph Matrix");
+        Graph g = GraphStorageFactory.getInstance().getProvider(graphStorage);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, datasetK);
 
@@ -125,7 +129,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
 
         similarityMeasure = pref.get(SIM_MEASURE, SimilarityMeasure.IMPROVED);
-
 
         switch (similarityMeasure) {
             case SimilarityMeasure.IMPROVED:
