@@ -79,7 +79,7 @@ public class AdjMatrixGraph implements Graph {
 
     @Override
     public boolean addNode(Node node) {
-        if (nodeCounter > size) {
+        if (nodeCounter >= size) {
             return false;
         }
         idToNode.put(node.getId(), (AdjMatrixNode) node);
@@ -176,7 +176,7 @@ public class AdjMatrixGraph implements Graph {
 
     @Override
     public NodeIterable getNodes() {
-        return new AdjMatrixNodeIterable(nodes);
+        return new AdjMatrixNodeIterable(nodes, nodeCounter);
     }
 
     @Override

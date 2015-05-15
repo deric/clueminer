@@ -99,11 +99,11 @@ public class RecursiveBisection implements Partitioning {
             g.addNode(node);
         }
 
-        for (LinkedList<Node> cluster : clusters) {
-            for (int i = 0; i < cluster.size(); i++) {
-                for (int j = i + 1; j < cluster.size(); j++) {
-                    if (graph.isAdjacent(cluster.get(i), cluster.get(j))) {
-                        g.addEdge(graph.getEdge(cluster.get(i), cluster.get(j)));
+        for (int k = 0; k < clusters.size(); k++) {
+            for (int i = 0; i < clusters.get(k).size(); i++) {
+                for (int j = i + 1; j < clusters.get(k).size(); j++) {
+                    if (graph.isAdjacent(clusters.get(k).get(i), clusters.get(k).get(j))) {
+                        g.addEdge(graph.getEdge(clusters.get(k).get(i), clusters.get(k).get(j)));
                     }
                 }
             }

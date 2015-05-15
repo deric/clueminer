@@ -13,6 +13,7 @@ import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.junit.Test;
 
@@ -28,11 +29,10 @@ public class FiducciaMattheysesTest extends PartitioningTest {
     public void basicTest() throws IOException, UnsupportedEncodingException, FileNotFoundException, InterruptedException {
 
         Dataset<? extends Instance> dataset = KLFail();
-        DistanceMeasure dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
 
-        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 4);
+        Graph g = new AdjMatrixGraph(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, 4);
 
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
