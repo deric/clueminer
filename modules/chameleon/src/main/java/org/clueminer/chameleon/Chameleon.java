@@ -14,6 +14,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
@@ -107,8 +108,9 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
-        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, datasetK);
+        Graph g = new AdjMatrixGraph();
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, datasetK);
 
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");
         Bisection bisectionAlg = BisectionFactory.getInstance().getProvider(bisection);

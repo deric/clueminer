@@ -9,12 +9,16 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Hamster
  */
+@ServiceProvider(service = Graph.class)
 public class AdjListGraph implements Graph {
+
+    private static final String name = "Adj List Graph";
 
     HashMap<Long, AdjListNode> nodes;
     HashMap<Long, AdjListEdge> edges;
@@ -23,6 +27,12 @@ public class AdjListGraph implements Graph {
         nodes = new HashMap<>();
         edges = new HashMap<>();
     }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
 
     public void print() {
         System.out.println("Edges:");
@@ -304,6 +314,11 @@ public class AdjListGraph implements Graph {
     @Override
     public int getIndex(Node node) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void ensureCapacity(int size) {
+        //nothing to do
     }
 
 }
