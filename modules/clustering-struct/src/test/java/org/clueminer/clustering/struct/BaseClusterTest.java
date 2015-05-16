@@ -212,7 +212,7 @@ public class BaseClusterTest {
             assertNotNull(it.next());
             i++;
         }
-        assertEquals(49, i);
+        assertEquals(50, i);
     }
 
 }
