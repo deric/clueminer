@@ -237,6 +237,11 @@ public class AdjMatrixGraph implements Graph {
                 public Node next() {
                     return neighbours.get(currentIndex++);
                 }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
             };
         }
 
