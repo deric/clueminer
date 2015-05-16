@@ -54,6 +54,9 @@ public class AdjMatrixGraph implements Graph {
 
     @Override
     public final void ensureCapacity(int size) {
+        if (size <= 0) {
+            throw new RuntimeException("graph can't be initialized with " + size + " size!");
+        }
         this.size = size;
         this.nodes = new AdjMatrixNode[size];
         nodeCounter = 0;

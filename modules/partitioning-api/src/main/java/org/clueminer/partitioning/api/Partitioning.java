@@ -29,11 +29,4 @@ public interface Partitioning {
      */
     Graph removeUnusedEdges();
 
-    /**
-     * Set class that will be used for storing graph structure
-     *
-     * @param provider
-     */
-    void setGraphStore(String provider);
-
 }

@@ -19,7 +19,7 @@ import org.clueminer.graph.api.NodeIterable;
 public class AdjMatrixNodeIterable implements NodeIterable {
 
     private final Node[] nodes;
-    private int nodeCnt;
+    private final int nodeCnt;
 
     public AdjMatrixNodeIterable(Node[] nodes, int totalCnt) {
         this.nodes = nodes;
@@ -57,7 +57,7 @@ public class AdjMatrixNodeIterable implements NodeIterable {
     }
 
     public int size() {
-        return nodes.length;
+        return nodeCnt;
     }
 
     @Override

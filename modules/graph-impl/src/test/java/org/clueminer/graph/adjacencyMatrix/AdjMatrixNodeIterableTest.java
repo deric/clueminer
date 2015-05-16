@@ -73,4 +73,17 @@ public class AdjMatrixNodeIterableTest {
         assertEquals(3, col.size());
     }
 
+    /**
+     * Iterator is given bigger array than is its actual non-empty length
+     */
+    @Test
+    public void testEmptyArray() {
+        Node[] nodes = new AdjMatrixNode[5];
+        nodes[0] = new AdjMatrixNode(0, "a");
+        AdjMatrixNodeIterable test = new AdjMatrixNodeIterable(nodes, 1);
+        for (Node n : test) {
+            assertNotNull(n);
+        }
+    }
+
 }

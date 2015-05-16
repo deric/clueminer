@@ -14,13 +14,13 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -111,9 +111,18 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
-        graphStorage = pref.get(GRAPH_STORAGE, "Adj Graph Matrix");
-        Graph g = GraphStorageFactory.getInstance().getProvider(graphStorage);
-        g.ensureCapacity(dataset.size());
+        graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
+        Graph g = null;
+        try {
+            Class c = Class.forName(graphStorage);
+            g = (Graph) c.newInstance();
+            g.ensureCapacity(dataset.size());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        if (g == null) {
+            throw new RuntimeException("failed to initialize graph: " + graphStorage);
+        }
         g = knn.getNeighborGraph(dataset, g, datasetK);
 
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");
@@ -123,7 +132,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             fm.setIterationLimit(pref.getInt(FiducciaMattheyses.ITERATIONS, 20));
         }
         recursiveBisection = new RecursiveBisection(bisectionAlg);
-        recursiveBisection.setGraphStore(graphStorage);
         ArrayList<LinkedList<Node>> partitioningResult = recursiveBisection.partition(maxPartitionSize, g);
 
         PairMerger m;

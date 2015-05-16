@@ -1,5 +1,6 @@
 package org.clueminer.chameleon.ui;
 
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
@@ -10,6 +11,7 @@ import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -508,6 +510,12 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     }
 
     private Object[] initGraphStorage() {
-        return GraphStorageFactory.getInstance().getProvidersArray();
+        List<Graph> g = GraphStorageFactory.getInstance().getAll();
+        String[] list = new String[g.size()];
+        int i = 0;
+        for (Graph gr : g) {
+            list[i++] = gr.getClass().getCanonicalName();
+        }
+        return list;
     }
 }
