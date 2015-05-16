@@ -5,7 +5,6 @@
  */
 package org.clueminer.graph.adjacencyMatrix;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,12 +23,6 @@ public class AdjMatrixNodeIterable implements NodeIterable {
     public AdjMatrixNodeIterable(Node[] nodes, int totalCnt) {
         this.nodes = nodes;
         this.nodeCnt = totalCnt;
-    }
-
-    public AdjMatrixNodeIterable(ArrayList<Node> nodes) {
-        //TODO: move to a list iterator, so we don't copy data
-        this.nodes = nodes.toArray(new Node[0]);
-        this.nodeCnt = nodes.size();
     }
 
     @Override

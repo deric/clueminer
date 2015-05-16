@@ -3,6 +3,7 @@ package org.clueminer.graph.adjacencyMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
@@ -210,7 +211,50 @@ public class AdjMatrixGraph implements Graph {
                 neighbours.add(nodes[i]);
             }
         }
-        return new AdjMatrixNodeIterable(neighbours);
+        return new NodeCollectionIterable(neighbours);
+    }
+
+    private class NodeCollectionIterable implements NodeIterable {
+
+        private final ArrayList<Node> neighbours;
+
+        public NodeCollectionIterable(ArrayList<Node> neighbours) {
+            this.neighbours = neighbours;
+        }
+
+        @Override
+        public Iterator<Node> iterator() {
+            return new Iterator<Node>() {
+
+                private int currentIndex = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return currentIndex < neighbours.size();
+                }
+
+                @Override
+                public Node next() {
+                    return neighbours.get(currentIndex++);
+                }
+            };
+        }
+
+        @Override
+        public Node[] toArray() {
+            return neighbours.toArray(new Node[0]);
+        }
+
+        @Override
+        public Collection<Node> toCollection() {
+            return neighbours;
+        }
+
+        @Override
+        public void doBreak() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
     }
 
     @Override
