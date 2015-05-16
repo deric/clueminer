@@ -13,13 +13,14 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,7 +54,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     @Param(name = Chameleon.BISECTION, description = "Bisection algorithm")
     private String bisection;
 
-
     /**
      * If bigger than 1, algorithm gives a higher importance to the relative
      * closeness of clusters during merging, otherwise, if lesser than 1, to
@@ -76,6 +76,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     private RecursiveBisection recursiveBisection;
 
     private final KNNGraphBuilder knn;
+
+    public static final String GRAPH_STORAGE = "graph_storage";
+    @Param(name = Chameleon.GRAPH_STORAGE, description = "Structure for storing graphs")
+    private String graphStorage;
 
     public Chameleon() {
         knn = new KNNGraphBuilder();
@@ -107,8 +111,19 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
-        AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
-        g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, datasetK);
+        graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
+        Graph g = null;
+        try {
+            Class c = Class.forName(graphStorage);
+            g = (Graph) c.newInstance();
+            g.ensureCapacity(dataset.size());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        if (g == null) {
+            throw new RuntimeException("failed to initialize graph: " + graphStorage);
+        }
+        g = knn.getNeighborGraph(dataset, g, datasetK);
 
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");
         Bisection bisectionAlg = BisectionFactory.getInstance().getProvider(bisection);
@@ -123,7 +138,6 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
 
         similarityMeasure = pref.get(SIM_MEASURE, SimilarityMeasure.IMPROVED);
-
 
         switch (similarityMeasure) {
             case SimilarityMeasure.IMPROVED:

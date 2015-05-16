@@ -14,57 +14,57 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjListNodeIterable implements NodeIterable {
 
-	private final List<AdjListNode> nodes;
+    private final List<AdjListNode> nodes;
 
-	public AdjListNodeIterable(Map<Long, AdjListNode> nodes) {
-		this.nodes = new LinkedList<>(nodes.values());
-	}
-	
-	public AdjListNodeIterable(List<AdjListNode> nodes) {
-		this.nodes = new LinkedList<>(nodes);
-	}
-	
-	@Override
-	public Iterator<Node> iterator() {
-		Iterator<Node> iterator = new Iterator<Node>() {
+    public AdjListNodeIterable(Map<Long, AdjListNode> nodes) {
+        this.nodes = new LinkedList<>(nodes.values());
+    }
 
-			private final Iterator<AdjListNode> it = nodes.iterator();
+    public AdjListNodeIterable(List<AdjListNode> nodes) {
+        this.nodes = new LinkedList<>(nodes);
+    }
 
-			@Override
-			public boolean hasNext() {
-				return it.hasNext();
-			}
+    @Override
+    public Iterator<Node> iterator() {
+        Iterator<Node> iterator = new Iterator<Node>() {
 
-			@Override
-			public Node next() {
-				return it.next();
-			}
+            private final Iterator<AdjListNode> it = nodes.iterator();
 
-			@Override
-			public void remove() {
-				it.remove();
-			}
-		};
-		return iterator;
-	}
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
 
-	@Override
-	public Node[] toArray() {
-		Node[] array = new Node[nodes.size()];
-		for(int i = 0; i < nodes.size(); i++) {
-			array[i] = nodes.get(i);
-		}
-		return array;
-	}
+            @Override
+            public Node next() {
+                return it.next();
+            }
 
-	@Override
-	public Collection<Node> toCollection() {
-		return new LinkedList<Node>(nodes);
-	}
+            @Override
+            public void remove() {
+                it.remove();
+            }
+        };
+        return iterator;
+    }
 
-	@Override
-	public void doBreak() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-	
+    @Override
+    public Node[] toArray() {
+        Node[] array = new Node[nodes.size()];
+        for (int i = 0; i < nodes.size(); i++) {
+            array[i] = nodes.get(i);
+        }
+        return array;
+    }
+
+    @Override
+    public Collection<Node> toCollection() {
+        return new LinkedList<Node>(nodes);
+    }
+
+    @Override
+    public void doBreak() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

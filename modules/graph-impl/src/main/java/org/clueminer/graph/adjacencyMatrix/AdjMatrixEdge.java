@@ -14,19 +14,19 @@ import org.clueminer.graph.api.Node;
  */
 public class AdjMatrixEdge implements Edge {
 
-    private long id;
+    private final long id;
     private final AdjMatrixNode source;
     private final AdjMatrixNode target;
     private boolean directed;
     private final double weight;
-    
+
     AdjMatrixEdge(long id,Node source, Node target, double weight) {
         this.id = id;
         this.source = (AdjMatrixNode) source;
         this.target = (AdjMatrixNode) target;
         this.weight = weight;
     }
-    
+
     @Override
     public boolean isDirected() {
         return directed;
@@ -46,7 +46,7 @@ public class AdjMatrixEdge implements Edge {
     public long getId() {
         return id;
     }
-    
+
     @Override
     public double getWeight() {
         return weight;

@@ -2,11 +2,11 @@ package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -70,40 +70,54 @@ public class RecursiveBisection implements Partitioning {
     }
 
     private Graph buildGraphFromCluster(LinkedList<Node> n) {
-        ArrayList<Node> nodes = new ArrayList<>(n);
-        Graph newGraph = new AdjMatrixGraph(nodes.size());
-        for (Node node : nodes) {
-            newGraph.addNode(node);
-        }
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = i + 1; j < nodes.size(); j++) {
-                if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
-                    newGraph.addEdge(graph.getEdge(nodes.get(i), nodes.get(j)));
+        Graph newGraph = null;
+        try {
+            ArrayList<Node> nodes = new ArrayList<>(n);
+            newGraph = graph.getClass().newInstance();
+            newGraph.ensureCapacity(nodes.size());
+
+            for (Node node : nodes) {
+                newGraph.addNode(node);
+            }
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = i + 1; j < nodes.size(); j++) {
+                    if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
+                        newGraph.addEdge(graph.getEdge(nodes.get(i), nodes.get(j)));
+                    }
                 }
             }
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
         }
         return newGraph;
     }
 
     @Override
     public Graph removeUnusedEdges() {
-        Graph g = new AdjMatrixGraph(graph.getNodeCount());
+        Graph g = null;
+        try {
+            //create instance of same graph storage implementation
+            g = graph.getClass().newInstance();
+            g.ensureCapacity(graph.getNodeCount());
 
-        ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
+            for (Node node : graph.getNodes()) {
+                g.addNode(node);
+            }
 
-        for (Node node : nodes) {
-            g.addNode(node);
-        }
-
-        for (int k = 0; k < clusters.size(); k++) {
-            for (int i = 0; i < clusters.get(k).size(); i++) {
-                for (int j = i + 1; j < clusters.get(k).size(); j++) {
-                    if (graph.isAdjacent(clusters.get(k).get(i), clusters.get(k).get(j))) {
-                        g.addEdge(graph.getEdge(clusters.get(k).get(i), clusters.get(k).get(j)));
+            for (LinkedList<Node> cluster : clusters) {
+                for (int i = 0; i < cluster.size(); i++) {
+                    for (int j = i + 1; j < cluster.size(); j++) {
+                        if (graph.isAdjacent(cluster.get(i), cluster.get(j))) {
+                            g.addEdge(graph.getEdge(cluster.get(i), cluster.get(j)));
+                        }
                     }
                 }
             }
+
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
         }
+
         return g;
     }
 

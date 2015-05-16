@@ -5,7 +5,6 @@
  */
 package org.clueminer.graph.adjacencyMatrix;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -18,15 +17,12 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjMatrixNodeIterable implements NodeIterable {
 
-    private final ArrayList<Node> nodes;
+    private final Node[] nodes;
+    private final int nodeCnt;
 
-
-    public AdjMatrixNodeIterable(Node[] nodes) {
-        this.nodes = new ArrayList<>(Arrays.asList(nodes));
-    }
-
-    public AdjMatrixNodeIterable(ArrayList<Node> nodes) {
+    public AdjMatrixNodeIterable(Node[] nodes, int totalCnt) {
         this.nodes = nodes;
+        this.nodeCnt = totalCnt;
     }
 
     @Override
@@ -37,12 +33,12 @@ public class AdjMatrixNodeIterable implements NodeIterable {
 
             @Override
             public boolean hasNext() {
-                return currentIndex < nodes.size();
+                return currentIndex < nodeCnt;
             }
 
             @Override
             public Node next() {
-                return nodes.get(currentIndex++);
+                return nodes[currentIndex++];
             }
 
             @Override
@@ -53,18 +49,18 @@ public class AdjMatrixNodeIterable implements NodeIterable {
         return it;
     }
 
+    public int size() {
+        return nodeCnt;
+    }
+
     @Override
     public Node[] toArray() {
-        Node[] array = new Node[nodes.size()];
-        for (int i = 0;i<nodes.size();i++) {
-            array[i] = nodes.get(i);
-        }
-        return array;
+        return nodes;
     }
 
     @Override
     public Collection<Node> toCollection() {
-        return nodes;
+        return Arrays.asList(nodes);
     }
 
     @Override

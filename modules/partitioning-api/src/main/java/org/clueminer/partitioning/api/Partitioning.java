@@ -11,7 +11,7 @@ import org.clueminer.graph.api.Node;
  */
 public interface Partitioning {
 
-    public String getName();
+    String getName();
 
     /**
      * Partition the graph
@@ -20,13 +20,13 @@ public interface Partitioning {
      * @param g graph to partition
      * @return list of nodes for each cluster
      */
-    public ArrayList<LinkedList<Node>> partition(int k, Graph g);
+    ArrayList<LinkedList<Node>> partition(int k, Graph g);
 
     /**
      * Remove edges between clusters which were created by partitioning
      *
      * @return partitioned graph
      */
-    public Graph removeUnusedEdges();
+    Graph removeUnusedEdges();
 
 }

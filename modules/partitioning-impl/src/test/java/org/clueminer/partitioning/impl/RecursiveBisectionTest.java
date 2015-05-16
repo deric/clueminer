@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import junit.framework.Assert;
+import static junit.framework.Assert.assertEquals;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
@@ -30,7 +30,7 @@ public class RecursiveBisectionTest extends PartitioningTest {
         RecursiveBisection rb = new RecursiveBisection(new FiducciaMattheyses());
 
         ArrayList<LinkedList<Node>> result = rb.partition(5, g);
-        Assert.assertEquals(result.size(), 36);
+        assertEquals(36, result.size());
     }
 
 }

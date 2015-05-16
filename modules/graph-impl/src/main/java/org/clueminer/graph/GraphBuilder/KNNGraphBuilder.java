@@ -124,6 +124,7 @@ public class KNNGraphBuilder {
      *
      * @param dataset input dataset
      * @param g graph where output will be stored
+     * @param k
      * @return neighbor graph
      */
     public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g, int k) {

@@ -3,19 +3,23 @@ package org.clueminer.graph.adjacencyMatrix;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Bruna
  */
-public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
+@ServiceProvider(service = Graph.class)
+public class AdjMatrixGraph implements Graph {
 
     private HashMap<Long, Integer> idToIndex;
     private HashMap<Long, AdjMatrixNode> idToNode;
@@ -26,12 +30,34 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
     private int nodeCounter;
     private DistanceMeasure dm;
     private final double EPS = 1e-6;
+    private static final String name = "Adj Graph Matrix";
+
+    /**
+     * ensureCapacity(n) must be called before using this class!
+     */
+    public AdjMatrixGraph() {
+        this.dm = EuclideanDistance.getInstance();
+    }
 
     public AdjMatrixGraph(int size) {
-        this(size, new EuclideanDistance());
+        this(size, EuclideanDistance.getInstance());
     }
 
     public AdjMatrixGraph(int size, DistanceMeasure dm) {
+        this.dm = dm;
+        ensureCapacity(size);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public final void ensureCapacity(int size) {
+        if (size <= 0) {
+            throw new RuntimeException("graph can't be initialized with " + size + " size!");
+        }
         this.size = size;
         this.nodes = new AdjMatrixNode[size];
         nodeCounter = 0;
@@ -39,7 +65,6 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         adjMatrix = new AdjMatrixEdge[size][size];
         idToIndex = new HashMap<>();
         idToNode = new HashMap<>();
-        this.dm = dm;
     }
 
     @Override
@@ -155,7 +180,7 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
 
     @Override
     public NodeIterable getNodes() {
-        return new AdjMatrixNodeIterable(nodes);
+        return new AdjMatrixNodeIterable(nodes, nodeCounter);
     }
 
     @Override
@@ -186,7 +211,55 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
                 neighbours.add(nodes[i]);
             }
         }
-        return new AdjMatrixNodeIterable(neighbours);
+        return new NodeCollectionIterable(neighbours);
+    }
+
+    private class NodeCollectionIterable implements NodeIterable {
+
+        private final ArrayList<Node> neighbours;
+
+        public NodeCollectionIterable(ArrayList<Node> neighbours) {
+            this.neighbours = neighbours;
+        }
+
+        @Override
+        public Iterator<Node> iterator() {
+            return new Iterator<Node>() {
+
+                private int currentIndex = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return currentIndex < neighbours.size();
+                }
+
+                @Override
+                public Node next() {
+                    return neighbours.get(currentIndex++);
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+            };
+        }
+
+        @Override
+        public Node[] toArray() {
+            return neighbours.toArray(new Node[0]);
+        }
+
+        @Override
+        public Collection<Node> toCollection() {
+            return neighbours;
+        }
+
+        @Override
+        public void doBreak() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
     }
 
     @Override
@@ -320,14 +393,14 @@ public class AdjMatrixGraph implements org.clueminer.graph.api.Graph {
         if (k > nodeCounter) {
             return false;
         }
-        AdjMatrixFactory f = AdjMatrixFactory.getInstance();
+        GraphFactory f = getFactory();
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = 0; j < k; j++) {
                 double distance = dm.measure(nodes[i].getInstance(), nodes[neighbors[i][j]].getInstance());
                 if (distance < EPS) {
                     distance = EPS;
                 }
-                addEdge((AdjMatrixEdge) f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1 / distance, false)); //max val
+                addEdge(f.newEdge(nodes[i], nodes[neighbors[i][j]], 1, 1 / distance, false)); //max val
             }
         }
         return true;
