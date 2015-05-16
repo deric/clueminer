@@ -79,7 +79,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         Map<Integer, Community> clusterAssignment = new HashMap<>(n);
         network = new CommunityNetwork(dQ, graph.getEdgeCount());
         for (int i = 0; i < n; i++) {
-            Community community = new Community(network, graph, i, graph.getNode(i));
+            Community community = new Community(graph, i, graph.getNode(i));
             clusterAssignment.put(i, community);
             nodes[i] = new DLeaf(i, dataset.get(i));
             network.add(community);
