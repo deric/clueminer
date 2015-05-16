@@ -3,7 +3,9 @@ package org.clueminer.graph.adjacencyList;
 import java.util.ArrayList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -12,12 +14,13 @@ import org.junit.Test;
  */
 public class AdjListGraphTest {
 
-    AdjListFactory factory = AdjListFactory.getInstance();
-    static AdjListGraph graph = new AdjListGraph();
-    static ArrayList<Node> nodes = new ArrayList<>();
-    static ArrayList<Edge> edges = new ArrayList<>();
+    private static final AdjListFactory factory = AdjListFactory.getInstance();
+    private static final AdjListGraph graph = new AdjListGraph();
+    private static final ArrayList<Node> nodes = new ArrayList<>();
+    private static final ArrayList<Edge> edges = new ArrayList<>();
 
-    public AdjListGraphTest() {
+    @BeforeClass
+    public static void setUpClass() {
         nodes.add(factory.newNode());
         nodes.add(factory.newNode());
         nodes.add(factory.newNode());
@@ -31,6 +34,11 @@ public class AdjListGraphTest {
         graph.clear();
         graph.addAllNodes(nodes);
         graph.addAllEdges(edges);
+    }
+
+    @Test
+    public void nodeTest() {
+        assertEquals(3, nodes.size());
     }
 
     @Test
