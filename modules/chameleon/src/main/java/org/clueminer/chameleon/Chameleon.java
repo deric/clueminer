@@ -24,6 +24,10 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Chameleon is a hierarchical graph clustering algorithm.
+ *
+ * Karypis, George, Eui-Hong Han, and Vipin Kumar. "Chameleon:
+ * Hierarchical clustering using dynamic modeling." Computer 32.8 (1999): 68-75.
  *
  * @author Tomas Bruna
  */
@@ -112,6 +116,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
         graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
+        //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
         Graph g = null;
         try {
             Class c = Class.forName(graphStorage);
