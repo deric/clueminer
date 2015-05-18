@@ -21,31 +21,12 @@ public class AdjListNodeIterable implements NodeIterable {
     }
 
     public AdjListNodeIterable(List<Node> nodes) {
-        this.nodes = new LinkedList<>(nodes);
+        this.nodes = nodes;
     }
 
     @Override
     public Iterator<Node> iterator() {
-        Iterator<Node> iterator = new Iterator<Node>() {
-
-            private final Iterator<Node> it = nodes.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            public Node next() {
-                return it.next();
-            }
-
-            @Override
-            public void remove() {
-                it.remove();
-            }
-        };
-        return iterator;
+        return nodes.iterator();
     }
 
     @Override
@@ -55,7 +36,7 @@ public class AdjListNodeIterable implements NodeIterable {
 
     @Override
     public Collection<Node> toCollection() {
-        return new LinkedList<>(nodes);
+        return nodes;
     }
 
     @Override

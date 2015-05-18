@@ -21,7 +21,7 @@ public class AdjListEdgeIterable implements EdgeIterable {
     }
 
     public AdjListEdgeIterable(List<Edge> edges) {
-        this.edges = new LinkedList<>(edges);
+        this.edges = edges;
     }
 
     @Override
@@ -31,16 +31,12 @@ public class AdjListEdgeIterable implements EdgeIterable {
 
     @Override
     public Edge[] toArray() {
-        Edge[] array = new Edge[edges.size()];
-        for (int i = 0; i < edges.size(); i++) {
-            array[i] = edges.get(i);
-        }
-        return array;
+        return edges.toArray(new Edge[0]);
     }
 
     @Override
     public Collection<Edge> toCollection() {
-        return new LinkedList<>(edges);
+        return edges;
     }
 
     @Override
