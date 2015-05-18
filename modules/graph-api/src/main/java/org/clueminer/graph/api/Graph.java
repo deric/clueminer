@@ -334,7 +334,7 @@ public interface Graph {
     /**
      * Create edges between neighbors according to neighbor array
      *
-     * @param nearests array with nearests neighbors
+     * @param nearests array with nearest neighbors
      * @param k        number of neighbors for each node
      * @return true if all nodes were added, false otherwise
      */

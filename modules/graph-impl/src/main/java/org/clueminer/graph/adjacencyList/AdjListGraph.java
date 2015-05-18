@@ -3,6 +3,9 @@ package org.clueminer.graph.adjacencyList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
@@ -24,6 +27,7 @@ public class AdjListGraph implements Graph {
 
     private final HashMap<Long, Node> nodes;
     private final HashMap<Long, Edge> edges;
+    //mapping to Dataset's Instance index
     private final HashMap<Long, Integer> idToIndex;
     private final double EPS = 1e-6;
     private DistanceMeasure dm;
@@ -76,7 +80,7 @@ public class AdjListGraph implements Graph {
         if (nodes.containsKey(node.getId())) {
             return false;
         }
-        idToIndex.put(node.getId(), getNodeCount());
+        idToIndex.put(node.getId(), nodes.size());
         nodes.put(node.getId(), (AdjListNode) node);
         return true;
     }
@@ -126,6 +130,7 @@ public class AdjListGraph implements Graph {
                 ((AdjListNode) edge.getSource()).removeEdge(it);
             }
             edges.remove(it.getId());
+            idToIndex.remove(it.getId());
         }
         return true;
     }
@@ -319,16 +324,45 @@ public class AdjListGraph implements Graph {
             return false;
         }
         GraphFactory f = AdjListFactory.getInstance();
-        for (int i = 0; i < getNodeCount(); i++) {
+        //go though all nodes in the graph (dataset)
+        Instance curr;
+        Node other;
+        for (Node node : getNodes()) {
+            //for each Instance(Node) find its k-neighbours
+            curr = node.getInstance();
             for (int j = 0; j < k; j++) {
-                double distance = dm.measure(getNode(i).getInstance(), getNode(neighbors[i][j]).getInstance());
+                other = getNode(indexToId(neighbors[getIndex(node)][j]));
+                double distance = dm.measure(curr, other.getInstance());
                 if (distance < EPS) {
                     distance = EPS;
                 }
-                addEdge(f.newEdge(getNode(i), getNode(neighbors[i][j]), 1, 1 / distance, false)); //max val
+                addEdge(f.newEdge(node, other, 1, 1 / distance, false)); //max val
             }
         }
         return true;
+    }
+
+    /**
+     * TODO: this is really ugly and inefficient (use Guava or some other
+     * collection)
+     *
+     * @param <T>
+     * @param <E>
+     * @param map
+     * @param value
+     * @return
+     */
+    public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (Objects.equals(value, entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public long indexToId(int index) {
+        return getKeyByValue(idToIndex, index);
     }
 
     @Override

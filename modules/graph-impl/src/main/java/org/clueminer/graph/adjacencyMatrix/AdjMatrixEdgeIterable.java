@@ -43,6 +43,11 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public int size() {
+        return edges.size();
+    }
+
     private class AdjMatrixEdgeIterator implements Iterator<Edge> {
 
         private int currentIndex = 0;
@@ -57,6 +62,7 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
             return edges.get(currentIndex++);
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("Not supported yet.");
         }

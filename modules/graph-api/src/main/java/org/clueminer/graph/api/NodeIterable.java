@@ -26,7 +26,7 @@ public interface NodeIterable extends ElementIterable<Node> {
      * @return node iterator
      */
     @Override
-    public Iterator<Node> iterator();
+    Iterator<Node> iterator();
 
     /**
      * Returns the iterator content as an array.
@@ -34,7 +34,7 @@ public interface NodeIterable extends ElementIterable<Node> {
      * @return node array
      */
     @Override
-    public Node[] toArray();
+    Node[] toArray();
 
     /**
      * Returns the iterator content as a collection.
@@ -42,7 +42,7 @@ public interface NodeIterable extends ElementIterable<Node> {
      * @return node collection
      */
     @Override
-    public Collection<Node> toCollection();
+    Collection<Node> toCollection();
 
     static final class NodeIterableEmpty implements Iterator<Node>, NodeIterable {
 
@@ -78,6 +78,11 @@ public interface NodeIterable extends ElementIterable<Node> {
 
         @Override
         public void doBreak() {
+        }
+
+        @Override
+        public int size() {
+            return 0;
         }
     }
 }

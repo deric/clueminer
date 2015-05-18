@@ -68,7 +68,6 @@ public class AdjListNode implements Node {
     }
 
     public Edge getEdge(Node neighbor) {
-        System.out.println("gettting: " + neighbor.toString());
         for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
             Edge edge = entrySet.getValue();
             if (edge.getSource() == neighbor || edge.getTarget() == neighbor) {
@@ -80,8 +79,7 @@ public class AdjListNode implements Node {
 
     public NodeIterable getNeighbors() {
         List<Node> neighbors = new LinkedList();
-        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
-            Edge edge = entrySet.getValue();
+        for (Edge edge : edges.values()) {
             if (edge.getSource() != this) {
                 neighbors.add(edge.getSource());
             }

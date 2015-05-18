@@ -21,7 +21,7 @@ public interface EdgeIterable extends ElementIterable<Edge> {
      * @return edge iterator
      */
     @Override
-    public Iterator<Edge> iterator();
+    Iterator<Edge> iterator();
 
     /**
      * Returns the iterator content as an array.
@@ -29,7 +29,7 @@ public interface EdgeIterable extends ElementIterable<Edge> {
      * @return edge array
      */
     @Override
-    public Edge[] toArray();
+    Edge[] toArray();
 
     /**
      * Returns the iterator content as a collection.
@@ -73,6 +73,11 @@ public interface EdgeIterable extends ElementIterable<Edge> {
 
         @Override
         public void doBreak() {
+        }
+
+        @Override
+        public int size() {
+            return 0;
         }
     }
 }

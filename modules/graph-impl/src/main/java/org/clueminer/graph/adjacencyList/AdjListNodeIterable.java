@@ -50,11 +50,7 @@ public class AdjListNodeIterable implements NodeIterable {
 
     @Override
     public Node[] toArray() {
-        Node[] array = new Node[nodes.size()];
-        for (int i = 0; i < nodes.size(); i++) {
-            array[i] = nodes.get(i);
-        }
-        return array;
+        return nodes.toArray(new Node[0]);
     }
 
     @Override
@@ -65,6 +61,11 @@ public class AdjListNodeIterable implements NodeIterable {
     @Override
     public void doBreak() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int size() {
+        return 0;
     }
 
 }

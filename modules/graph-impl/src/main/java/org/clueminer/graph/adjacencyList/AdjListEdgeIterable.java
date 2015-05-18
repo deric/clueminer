@@ -48,4 +48,9 @@ public class AdjListEdgeIterable implements EdgeIterable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public int size() {
+        return edges.size();
+    }
+
 }

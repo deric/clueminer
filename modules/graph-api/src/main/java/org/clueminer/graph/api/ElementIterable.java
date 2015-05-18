@@ -23,26 +23,33 @@ public interface ElementIterable<T extends Element> extends Iterable<T> {
      * @return the iterator.
      */
     @Override
-    public Iterator<T> iterator();
+    Iterator<T> iterator();
 
     /**
      * Returns the iterator content as an array.
      *
      * @return edge array
      */
-    public T[] toArray();
+    T[] toArray();
 
     /**
      * Returns the iterator content as a collection.
      *
      * @return edge array
      */
-    public Collection<T> toCollection();
+    Collection<T> toCollection();
+
+    /**
+     * Iterator size, if available
+     *
+     * @return
+     */
+    int size();
 
     /**
      * Break the iterator and release read lock (if any).
      */
-    public void doBreak();
+    void doBreak();
 
     static final class ElementIterableEmpty implements Iterator<Element>, ElementIterable {
 
@@ -78,6 +85,11 @@ public interface ElementIterable<T extends Element> extends Iterable<T> {
 
         @Override
         public void doBreak() {
+        }
+
+        @Override
+        public int size() {
+            return 0;
         }
     }
 }
