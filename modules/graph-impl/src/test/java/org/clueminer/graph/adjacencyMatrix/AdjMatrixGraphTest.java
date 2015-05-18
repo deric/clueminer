@@ -13,11 +13,11 @@ import org.junit.Test;
 public class AdjMatrixGraphTest {
 
     AdjMatrixFactory f;
-    AdjMatrixNode n1;
-    AdjMatrixNode n2;
-    AdjMatrixNode n3;
-    AdjMatrixEdge e1;
-    AdjMatrixEdge e2;
+    Node n1;
+    Node n2;
+    Node n3;
+    Edge e1;
+    Edge e2;
     AdjMatrixGraph g;
 
     @Test
@@ -52,11 +52,11 @@ public class AdjMatrixGraphTest {
     private void buildSimpleGraph() {
         f = AdjMatrixFactory.getInstance();
         double[] coordinates = {2, 1};
-        n1 = (AdjMatrixNode) f.newNode(coordinates);
-        n2 = (AdjMatrixNode) f.newNode(2);
-        n3 = (AdjMatrixNode) f.newNode(2);
-        e1 = (AdjMatrixEdge) f.newEdge(n1, n2, 1, 2, false);
-        e2 = (AdjMatrixEdge) f.newEdge(n3, n2, 1, 3, false);
+        n1 = f.newNode(coordinates);
+        n2 = f.newNode(2);
+        n3 = f.newNode(2);
+        e1 = f.newEdge(n1, n2, 1, 2, false);
+        e2 = f.newEdge(n3, n2, 1, 3, false);
         g = new AdjMatrixGraph(3);
         g.addNode(n1);
         g.addNode(n2);
@@ -69,12 +69,12 @@ public class AdjMatrixGraphTest {
     public void buildGraphTest() {
         f = AdjMatrixFactory.getInstance();
         double[] coordinates = {2, 1};
-        n1 = (AdjMatrixNode) f.newNode(coordinates);
-        n2 = (AdjMatrixNode) f.newNode(2);
-        n3 = (AdjMatrixNode) f.newNode(2);
-        Node n4 = (AdjMatrixNode) f.newNode();
-        e1 = (AdjMatrixEdge) f.newEdge(n1, n2, 1, 2, false);
-        e2 = (AdjMatrixEdge) f.newEdge(n3, n2, 1, 3, false);
+        n1 = f.newNode(coordinates);
+        n2 = f.newNode(2);
+        n3 = f.newNode(2);
+        Node n4 = f.newNode();
+        e1 = f.newEdge(n1, n2, 1, 2, false);
+        e2 = f.newEdge(n3, n2, 1, 3, false);
         g = new AdjMatrixGraph(3);
         g.addNode(n1);
         g.addNode(n2);
@@ -93,9 +93,4 @@ public class AdjMatrixGraphTest {
         assertEquals(2, g.getDegree(n2));
     }
 
-    /*  @Test
-     public void printGraph() {
-     buildSimpleGraph();
-     System.out.println(g.graphVizExport());
-     }*/
 }

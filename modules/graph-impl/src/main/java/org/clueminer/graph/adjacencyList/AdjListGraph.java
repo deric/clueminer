@@ -22,8 +22,8 @@ public class AdjListGraph implements Graph {
 
     private static final String name = "Adj List Graph";
 
-    private final HashMap<Long, AdjListNode> nodes;
-    private final HashMap<Long, AdjListEdge> edges;
+    private final HashMap<Long, Node> nodes;
+    private final HashMap<Long, Edge> edges;
     private final HashMap<Long, Integer> idToIndex;
     private final double EPS = 1e-6;
     private DistanceMeasure dm;
@@ -42,14 +42,14 @@ public class AdjListGraph implements Graph {
 
     public void print() {
         System.out.println("Edges:");
-        for (Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
-            AdjListEdge edge = entrySet.getValue();
+        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
+            Edge edge = entrySet.getValue();
             System.out.println(edge);
         }
         System.out.println("---------------------");
         System.out.println("Nodes:");
-        for (Map.Entry<Long, AdjListNode> entrySet : nodes.entrySet()) {
-            AdjListNode node = entrySet.getValue();
+        for (Map.Entry<Long, Node> entrySet : nodes.entrySet()) {
+            Node node = entrySet.getValue();
             System.out.println(node);
         }
         System.out.println("---------------------");
@@ -108,8 +108,8 @@ public class AdjListGraph implements Graph {
         if (edges.remove(edge.getId()) == null) {
             return false;
         }
-        ((AdjListEdge) edge).getSource().removeEdge(edge);
-        ((AdjListEdge) edge).getTarget().removeEdge(edge);
+        ((AdjListNode) edge.getSource()).removeEdge(edge);
+        ((AdjListNode) edge.getTarget()).removeEdge(edge);
         return true;
     }
 
@@ -121,9 +121,9 @@ public class AdjListGraph implements Graph {
         for (Edge it : ((AdjListNode) node).getEdges()) {
             AdjListEdge edge = (AdjListEdge) it;
             if (edge.getSource() == node) {
-                edge.getTarget().removeEdge(it);
+                ((AdjListNode) edge.getTarget()).removeEdge(it);
             } else {
-                edge.getSource().removeEdge(it);
+                ((AdjListNode) edge.getSource()).removeEdge(it);
             }
             edges.remove(it.getId());
         }

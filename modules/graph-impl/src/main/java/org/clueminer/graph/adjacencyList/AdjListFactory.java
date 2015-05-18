@@ -42,12 +42,12 @@ public class AdjListFactory implements GraphFactory {
 
     @Override
     public Edge newEdge(Node source, Node target, int type, boolean directed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AdjListEdge(edgeIdCounter++, source, target, directed);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        return new AdjListEdge(edgeIdCounter++, source, target);
+        return new AdjListEdge(edgeIdCounter++, source, target, directed, weight);
     }
 
     @Override

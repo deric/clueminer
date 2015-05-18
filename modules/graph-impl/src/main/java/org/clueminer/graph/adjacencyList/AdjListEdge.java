@@ -10,31 +10,31 @@ import org.clueminer.graph.api.Node;
 public class AdjListEdge implements Edge {
 
     private final long id;
-    private final AdjListNode source;
-    private final AdjListNode target;
+    private final Node source;
+    private final Node target;
     private final double weight;
     private final boolean directed;
 
     AdjListEdge(long id, Node source, Node target) {
         this.id = id;
-        this.source = (AdjListNode) source;
-        this.target = (AdjListNode) target;
-        this.weight = 1;
+        this.source = source;
+        this.target = target;
+        this.weight = 1.0;
         this.directed = false;
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed) {
         this.id = id;
-        this.source = (AdjListNode) source;
-        this.target = (AdjListNode) target;
-        this.weight = 1;
+        this.source = source;
+        this.target = target;
+        this.weight = 1.0;
         this.directed = directed;
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed, double weight) {
         this.id = id;
-        this.source = (AdjListNode) source;
-        this.target = (AdjListNode) target;
+        this.source = source;
+        this.target = target;
         this.weight = weight;
         this.directed = directed;
     }
@@ -45,12 +45,12 @@ public class AdjListEdge implements Edge {
     }
 
     @Override
-    public AdjListNode getSource() {
+    public Node getSource() {
         return source;
     }
 
     @Override
-    public AdjListNode getTarget() {
+    public Node getTarget() {
         return target;
     }
 
@@ -71,6 +71,6 @@ public class AdjListEdge implements Edge {
 
     @Override
     public String toString() {
-        return "e" + id + ": n" + source.getId() + " --> n" + target.getId();
+        return "e" + id + ": n" + source.getId() + " -(" + weight + ")-> n" + target.getId();
     }
 }

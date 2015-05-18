@@ -14,57 +14,38 @@ import org.clueminer.graph.api.EdgeIterable;
  */
 public class AdjListEdgeIterable implements EdgeIterable {
 
-	private final List<AdjListEdge> edges;
+    private final List<Edge> edges;
 
-	public AdjListEdgeIterable(Map<Long, AdjListEdge> edges) {
-		this.edges = new LinkedList<>(edges.values());
-	}
+    public AdjListEdgeIterable(Map<Long, Edge> edges) {
+        this.edges = new LinkedList<>(edges.values());
+    }
 
-	public AdjListEdgeIterable(List<AdjListEdge> edges) {
-		this.edges = new LinkedList<>(edges);
-	}
+    public AdjListEdgeIterable(List<Edge> edges) {
+        this.edges = new LinkedList<>(edges);
+    }
 
-	@Override
-	public Iterator<Edge> iterator() {
-		Iterator<Edge> iterator = new Iterator<Edge>() {
+    @Override
+    public Iterator<Edge> iterator() {
+        return edges.iterator();
+    }
 
-			private final Iterator<AdjListEdge> it = edges.iterator();
+    @Override
+    public Edge[] toArray() {
+        Edge[] array = new Edge[edges.size()];
+        for (int i = 0; i < edges.size(); i++) {
+            array[i] = edges.get(i);
+        }
+        return array;
+    }
 
-			@Override
-			public boolean hasNext() {
-				return it.hasNext();
-			}
+    @Override
+    public Collection<Edge> toCollection() {
+        return new LinkedList<>(edges);
+    }
 
-			@Override
-			public Edge next() {
-				return it.next();
-			}
-
-			@Override
-			public void remove() {
-				it.remove();
-			}
-		};
-		return iterator;
-	}
-
-	@Override
-	public Edge[] toArray() {
-		Edge[] array = new Edge[edges.size()];
-		for(int i = 0; i < edges.size(); i++) {
-			array[i] = edges.get(i);
-		}
-		return array;
-	}
-
-	@Override
-	public Collection<Edge> toCollection() {
-		return new LinkedList<Edge>(edges);
-	}
-
-	@Override
-	public void doBreak() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+    @Override
+    public void doBreak() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

@@ -18,7 +18,7 @@ public class AdjListNode implements Node {
 
     private final long id;
     private Object label;
-    private final HashMap<Long, AdjListEdge> edges;
+    private final HashMap<Long, Edge> edges;
     private Instance instance;
 
     public AdjListNode(long id) {
@@ -50,8 +50,8 @@ public class AdjListNode implements Node {
         builder.append(": [");
         builder.append(this.getInstance() != null ? this.getInstance().classValue() : "?");
         builder.append("]\n");
-        for (Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
-            AdjListEdge edge = entrySet.getValue();
+        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
+            Edge edge = entrySet.getValue();
             builder.append("\te").append(edge.getId()).append(" --> ");
             if (edge.getSource() == this) {
                 builder.append("n").append(edge.getTarget().getId());
@@ -68,7 +68,8 @@ public class AdjListNode implements Node {
     }
 
     public Edge getEdge(Node neighbor) {
-        for (Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
+        System.out.println("gettting: " + neighbor.toString());
+        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
             Edge edge = entrySet.getValue();
             if (edge.getSource() == neighbor || edge.getTarget() == neighbor) {
                 return edge;
@@ -77,10 +78,10 @@ public class AdjListNode implements Node {
         return null;
     }
 
-    NodeIterable getNeighbors() {
-        List<AdjListNode> neighbors = new LinkedList();
-        for (Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
-            AdjListEdge edge = entrySet.getValue();
+    public NodeIterable getNeighbors() {
+        List<Node> neighbors = new LinkedList();
+        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
+            Edge edge = entrySet.getValue();
             if (edge.getSource() != this) {
                 neighbors.add(edge.getSource());
             }
@@ -91,17 +92,17 @@ public class AdjListNode implements Node {
         return new AdjListNodeIterable(neighbors);
     }
 
-    EdgeIterable getEdges() {
+    public EdgeIterable getEdges() {
         return new AdjListEdgeIterable(edges);
     }
 
-    int getDegree() {
+    public int getDegree() {
         return edges.size();
     }
 
-    boolean isAdjacent(Node node) {
-        for (Map.Entry<Long, AdjListEdge> entrySet : edges.entrySet()) {
-            AdjListEdge edge = entrySet.getValue();
+    public boolean isAdjacent(Node node) {
+        for (Map.Entry<Long, Edge> entrySet : edges.entrySet()) {
+            Edge edge = entrySet.getValue();
             if (edge.getSource() == node || edge.getTarget() == node) {
                 return true;
             }
@@ -109,7 +110,7 @@ public class AdjListNode implements Node {
         return false;
     }
 
-    void removeEdge(Edge edge) {
+    public void removeEdge(Edge edge) {
         edges.remove(edge.getId());
     }
 

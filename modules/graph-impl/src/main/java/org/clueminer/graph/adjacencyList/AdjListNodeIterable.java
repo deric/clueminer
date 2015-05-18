@@ -14,13 +14,13 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class AdjListNodeIterable implements NodeIterable {
 
-    private final List<AdjListNode> nodes;
+    private final List<Node> nodes;
 
-    public AdjListNodeIterable(Map<Long, AdjListNode> nodes) {
+    public AdjListNodeIterable(Map<Long, Node> nodes) {
         this.nodes = new LinkedList<>(nodes.values());
     }
 
-    public AdjListNodeIterable(List<AdjListNode> nodes) {
+    public AdjListNodeIterable(List<Node> nodes) {
         this.nodes = new LinkedList<>(nodes);
     }
 
@@ -28,7 +28,7 @@ public class AdjListNodeIterable implements NodeIterable {
     public Iterator<Node> iterator() {
         Iterator<Node> iterator = new Iterator<Node>() {
 
-            private final Iterator<AdjListNode> it = nodes.iterator();
+            private final Iterator<Node> it = nodes.iterator();
 
             @Override
             public boolean hasNext() {
@@ -59,7 +59,7 @@ public class AdjListNodeIterable implements NodeIterable {
 
     @Override
     public Collection<Node> toCollection() {
-        return new LinkedList<Node>(nodes);
+        return new LinkedList<>(nodes);
     }
 
     @Override

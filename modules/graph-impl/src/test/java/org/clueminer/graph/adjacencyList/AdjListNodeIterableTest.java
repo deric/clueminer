@@ -34,7 +34,7 @@ public class AdjListNodeIterableTest {
     private static AdjListNodeIterable subject;
 
     public AdjListNodeIterableTest() {
-        List<AdjListNode> nodes = new LinkedList<>();
+        List<Node> nodes = new LinkedList<>();
         nodes.add(new AdjListNode(0, "a"));
         nodes.add(new AdjListNode(1, "b"));
         nodes.add(new AdjListNode(2, "c"));
@@ -57,7 +57,7 @@ public class AdjListNodeIterableTest {
 
     @Test
     public void testEmptyIterator() {
-        List<AdjListNode> nodes = new LinkedList<>();
+        List<Node> nodes = new LinkedList<>();
         AdjListNodeIterable test = new AdjListNodeIterable(nodes);
         Iterator<Node> it = test.iterator();
         assertEquals(false, it.hasNext());
