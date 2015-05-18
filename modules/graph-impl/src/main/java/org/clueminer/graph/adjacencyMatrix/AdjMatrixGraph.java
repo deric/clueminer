@@ -1,10 +1,10 @@
 package org.clueminer.graph.adjacencyMatrix;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
@@ -241,7 +241,7 @@ public class AdjMatrixGraph implements Graph {
     @Override
     public NodeIterable getNeighbors(Node node) {
         int index = idToIndex.get(node.getId());
-        ArrayList<Node> neighbours = new ArrayList<>();
+        LinkedList<Node> neighbours = new LinkedList<>();
         for (int i = 0; i < nodeCounter; i++) {
             if (i != index && adjMatrix[i][index] != null) {
                 neighbours.add(nodes[i]);
@@ -252,9 +252,9 @@ public class AdjMatrixGraph implements Graph {
 
     private class NodeCollectionIterable implements NodeIterable {
 
-        private final ArrayList<Node> neighbours;
+        private final List<Node> neighbours;
 
-        public NodeCollectionIterable(ArrayList<Node> neighbours) {
+        public NodeCollectionIterable(List<Node> neighbours) {
             this.neighbours = neighbours;
         }
 

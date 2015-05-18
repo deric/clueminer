@@ -78,7 +78,7 @@ public class AdjMatrixFactory implements GraphFactory {
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
         ArrayList<Node> nodes = new ArrayList<>(input.size());
         for (Instance ins : input) {
-            nodes.add((AdjMatrixNode) newNode(ins));
+            nodes.add(newNode(ins));
         }
         return nodes;
     }

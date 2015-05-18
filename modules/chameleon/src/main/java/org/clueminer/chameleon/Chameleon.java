@@ -115,8 +115,8 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
 
-        //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
-        graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
+        graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
+        //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
         Graph g = null;
         try {
             Class c = Class.forName(graphStorage);
