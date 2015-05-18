@@ -130,6 +130,7 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         }
         g = knn.getNeighborGraph(dataset, g, datasetK);
 
+        //bisection = pref.get(BISECTION, "Kernighan-Lin");
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");
         Bisection bisectionAlg = BisectionFactory.getInstance().getProvider(bisection);
         if (bisectionAlg instanceof FiducciaMattheyses) {

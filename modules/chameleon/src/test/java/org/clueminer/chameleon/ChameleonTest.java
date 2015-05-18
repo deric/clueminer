@@ -4,9 +4,11 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -76,6 +78,20 @@ public class ChameleonTest {
         tree.print();
         DendroNode root = tree.getRoot();
         assertEquals(166.38835528693502, root.getHeight(), delta);
+    }
+
+    @Test
+    public void testSchoolKernighan() {
+        Props pref = new Props();
+        pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        Chameleon ch = new Chameleon();
+        pref.put(Chameleon.BISECTION, "Kernighan-Lin");
+        HierarchicalResult result = ch.hierarchy(FakeDatasets.schoolData(), pref);
+        DendroTreeData tree = result.getTreeData();
+        DendroNode root = tree.getRoot();
+        result.findCutoff(CutoffStrategyFactory.getInstance().getProvider("naive cutoff"));
+        assertNotNull(root);
+        assertEquals(2, result.getClustering().size());
     }
 
 }

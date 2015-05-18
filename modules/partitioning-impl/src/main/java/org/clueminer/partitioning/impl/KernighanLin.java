@@ -159,8 +159,7 @@ public class KernighanLin implements Bisection {
      */
     private void updateCosts() {
         for (int i = 0; i <= 1; i++) {
-            ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(swapPair[i].node).toCollection();
-            for (Node neighbor : neighbors) {
+            for (Node neighbor : graph.getNeighbors(swapPair[i].node)) {
                 double weight = weightedEdges ? graph.getEdge(swapPair[i].node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(neighbor)].cluster == swapPair[i].cluster) {
                     vertexes[graph.getIndex(neighbor)].difference += 2 * weight;
@@ -176,8 +175,7 @@ public class KernighanLin implements Bisection {
      */
     private void computeCosts() {
         for (Node node : nodes) {
-            ArrayList<Node> neighbors = (ArrayList<Node>) graph.getNeighbors(node).toCollection();
-            for (Node neighbor : neighbors) {
+            for (Node neighbor : graph.getNeighbors(node)) {
                 double weight = weightedEdges ? graph.getEdge(node, neighbor).getWeight() : 1;
                 if (vertexes[graph.getIndex(node)].cluster == vertexes[graph.getIndex(neighbor)].cluster) {
                     vertexes[graph.getIndex(node)].internalCost += weight;
