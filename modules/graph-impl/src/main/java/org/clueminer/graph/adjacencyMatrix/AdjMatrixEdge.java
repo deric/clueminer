@@ -15,15 +15,16 @@ import org.clueminer.graph.api.Node;
 public class AdjMatrixEdge implements Edge {
 
     private final long id;
-    private final AdjMatrixNode source;
-    private final AdjMatrixNode target;
+    private final Node source;
+    private final Node target;
     private boolean directed;
     private final double weight;
+    private Object label;
 
     AdjMatrixEdge(long id,Node source, Node target, double weight) {
         this.id = id;
-        this.source = (AdjMatrixNode) source;
-        this.target = (AdjMatrixNode) target;
+        this.source = source;
+        this.target = target;
         this.weight = weight;
     }
 
@@ -33,12 +34,12 @@ public class AdjMatrixEdge implements Edge {
     }
 
     @Override
-    public AdjMatrixNode getSource() {
+    public Node getSource() {
         return source;
     }
 
     @Override
-    public AdjMatrixNode getTarget() {
+    public Node getTarget() {
         return target;
     }
 
@@ -54,6 +55,10 @@ public class AdjMatrixEdge implements Edge {
 
     @Override
     public Object getLabel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.label;
+    }
+
+    public void setLabel(Object label) {
+        this.label = label;
     }
 }

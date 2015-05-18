@@ -1,6 +1,5 @@
 package org.clueminer.graph.adjacencyMatrix;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,13 +12,9 @@ import org.clueminer.graph.api.EdgeIterable;
  */
 public class AdjMatrixEdgeIterable implements EdgeIterable {
 
-    private final ArrayList<Edge> edges;
+    private final Edge[] edges;
 
     public AdjMatrixEdgeIterable(Edge[] edges) {
-        this.edges = new ArrayList<>(Arrays.asList(edges));
-    }
-
-    public AdjMatrixEdgeIterable(ArrayList<Edge> edges) {
         this.edges = edges;
     }
 
@@ -35,7 +30,7 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
 
     @Override
     public Collection<Edge> toCollection() {
-        return edges;
+        return Arrays.asList(edges);
     }
 
     @Override
@@ -45,7 +40,7 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
 
     @Override
     public int size() {
-        return edges.size();
+        return edges.length;
     }
 
     private class AdjMatrixEdgeIterator implements Iterator<Edge> {
@@ -54,12 +49,12 @@ public class AdjMatrixEdgeIterable implements EdgeIterable {
 
         @Override
         public boolean hasNext() {
-            return currentIndex < edges.size();
+            return currentIndex < edges.length;
         }
 
         @Override
         public Edge next() {
-            return edges.get(currentIndex++);
+            return edges[currentIndex++];
         }
 
         @Override

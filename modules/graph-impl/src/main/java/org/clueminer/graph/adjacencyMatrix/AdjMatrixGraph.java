@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.graph.api.Edge;
@@ -186,7 +187,7 @@ public class AdjMatrixGraph implements Graph {
     @Override
     public EdgeIterable getEdges() {
         //for undirected edges only
-        ArrayList<Edge> edges = new ArrayList<>();
+        LinkedList<Edge> edges = new LinkedList<>();
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = i; j < nodeCounter; j++) {
                 if (adjMatrix[i][j] != null) {
@@ -194,7 +195,42 @@ public class AdjMatrixGraph implements Graph {
                 }
             }
         }
-        return new AdjMatrixEdgeIterable(edges);
+        return new EdgeCollectionIterator(edges);
+    }
+
+    private class EdgeCollectionIterator implements EdgeIterable {
+
+        private final LinkedList<Edge> edges;
+
+        public EdgeCollectionIterator(LinkedList<Edge> edges) {
+            this.edges = edges;
+        }
+
+        @Override
+        public Iterator<Edge> iterator() {
+            return edges.iterator();
+        }
+
+        @Override
+        public Edge[] toArray() {
+            return edges.toArray(new Edge[0]);
+        }
+
+        @Override
+        public Collection<Edge> toCollection() {
+            return edges;
+        }
+
+        @Override
+        public int size() {
+            return edges.size();
+        }
+
+        @Override
+        public void doBreak() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
     }
 
     @Override
@@ -224,25 +260,7 @@ public class AdjMatrixGraph implements Graph {
 
         @Override
         public Iterator<Node> iterator() {
-            return new Iterator<Node>() {
-
-                private int currentIndex = 0;
-
-                @Override
-                public boolean hasNext() {
-                    return currentIndex < neighbours.size();
-                }
-
-                @Override
-                public Node next() {
-                    return neighbours.get(currentIndex++);
-                }
-
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
-            };
+            return neighbours.iterator();
         }
 
         @Override
@@ -276,13 +294,13 @@ public class AdjMatrixGraph implements Graph {
     public EdgeIterable getEdges(Node node) {
         //for undirected edges only
         int index = idToIndex.get(node.getId());
-        ArrayList<Edge> edges = new ArrayList<>();
+        LinkedList<Edge> edges = new LinkedList<>();
         for (int i = 0; i < nodeCounter; i++) {
             if (adjMatrix[i][index] != null) {
                 edges.add(adjMatrix[i][index]);
             }
         }
-        return new AdjMatrixEdgeIterable(edges);
+        return new EdgeCollectionIterator(edges);
     }
 
     @Override
