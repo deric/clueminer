@@ -23,5 +23,4 @@ public class ReverseElement extends Element {
         }
         return 0;
     }
-
 }

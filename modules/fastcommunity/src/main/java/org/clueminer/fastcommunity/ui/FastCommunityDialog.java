@@ -15,26 +15,26 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class FastCommunityDialog extends JPanel implements ClusteringDialog {
 
-	@Override
-	public String getName() {
-		return "Fast Community dialog";
-	}
+    @Override
+    public String getName() {
+        return "Fast Community dialog";
+    }
 
-	@Override
-	public Props getParams() {
-		Props params = new Props();
-		params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
-		return params;
-	}
+    @Override
+    public Props getParams() {
+        Props params = new Props();
+        params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        return params;
+    }
 
-	@Override
-	public JPanel getPanel() {
-		return this;
-	}
+    @Override
+    public JPanel getPanel() {
+        return this;
+    }
 
-	@Override
-	public boolean isUIfor(ClusteringAlgorithm algorithm) {
+    @Override
+    public boolean isUIfor(ClusteringAlgorithm algorithm) {
         return algorithm instanceof FastCommunity;
-	}
-	
+    }
+
 }

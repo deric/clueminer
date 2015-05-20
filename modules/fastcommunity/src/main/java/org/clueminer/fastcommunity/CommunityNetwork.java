@@ -62,7 +62,7 @@ public class CommunityNetwork {
         Integer bOut = b.getEdgesOutside();
         a.setEdgesOutside(aOut + bOut - 2 * edgesBetween);
 
-		System.out.println("Removing " + target + " - " + source);
+        System.out.println("Removing " + target + " - " + source);
         deltaQ.remove(target, source);
         matrix.remove(new IntPair(target, source));
         communities.remove(source);
@@ -71,10 +71,10 @@ public class CommunityNetwork {
             Integer edgesSourceToNeighbor, edgesTargetToNeighbor;
             edgesSourceToNeighbor = matrix.get(IntPair.ordered(i, source));
 
-			System.out.println("Removing " + i + " - " + source);
-			System.out.println("Removing " + i + " - " + target);
+            System.out.println("Removing " + i + " - " + source);
+            System.out.println("Removing " + i + " - " + target);
             deltaQ.remove(i, source);
-			deltaQ.remove(i, target);
+            deltaQ.remove(i, target);
 
             if (edgesSourceToNeighbor != null && edgesSourceToNeighbor > 0) {
 
