@@ -2,9 +2,8 @@ package org.clueminer.clustering.gui.dlg;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
-import org.clueminer.chameleon.Chameleon;
+import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -190,7 +189,7 @@ public class HacDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof AgglomerativeClustering && !(algorithm instanceof Chameleon);
+        return algorithm instanceof HAC;
     }
 
     private Object[] initLinkage() {
