@@ -35,8 +35,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 
     private AdjListGraph graph;
     private PriorityQueue<ReverseElement> pq;
-//	private double[] a;
-//	private double[] Q;
     private CommunityNetwork network;
     DeltaQMatrix dQ;
 
@@ -56,7 +54,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
         graph.addAllNodes(nodes);
         this.createEdges(dataset, nodes);
-//		a = new double[dataset.size()];
 
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
@@ -82,7 +79,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         Map<Integer, Community> clusterAssignment = new HashMap<>(n);
         network = new CommunityNetwork(dQ, graph.getEdgeCount());
         for (int i = 0; i < n; i++) {
-            Community community = new Community(network, graph, i, graph.getNode(i));
+            Community community = new Community(graph, i, graph.getNode(i));
             clusterAssignment.put(i, community);
             nodes[i] = new DLeaf(i, dataset.get(i));
             network.add(community);
@@ -110,7 +107,6 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         System.out.println(pq.toString());
 
         ReverseElement current;
-//		HashSet<Integer> blacklist = new HashSet<>();
         DendroNode node = null;
         Community left, right;
         int nodeId = n;

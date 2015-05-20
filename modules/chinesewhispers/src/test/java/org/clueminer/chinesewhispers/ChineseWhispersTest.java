@@ -1,5 +1,10 @@
 package org.clueminer.chinesewhispers;
 
+import java.util.Iterator;
+import java.util.Set;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
