@@ -74,18 +74,18 @@ public class ThresholdMerger extends Merger {
         }
     }
 
-    protected void mergeTwoClusters(Cluster cluster1, Cluster cluster2) {
+    protected void mergeTwoClusters(Partition cluster1, Partition cluster2) {
         if (cluster1.getParent().getId() == cluster2.getParent().getId()) {
             return;
         }
         if (cluster1.getParent().offsprings.size() < cluster2.getParent().offsprings.size()) {
-            Cluster temp = cluster1;
+            Partition temp = cluster1;
             cluster1 = cluster2;
             cluster2 = temp;
         }
         cluster1.getParent().offsprings.addAll(cluster2.getParent().offsprings);
-        Cluster parent = cluster2.getParent();
-        for (Cluster cluster : parent.offsprings) {
+        Partition parent = cluster2.getParent();
+        for (Partition cluster : parent.offsprings) {
             cluster.setParent(cluster1.getParent());
         }
         parent.offsprings = null;
@@ -101,7 +101,7 @@ public class ThresholdMerger extends Merger {
         for (int i = 0; i < clusterCount; i++) {
             if (clusters.get(i).offsprings != null) {
                 LinkedList<Node> list = new LinkedList<>();
-                for (Cluster cluster : clusters.get(i).offsprings) {
+                for (Partition cluster : clusters.get(i).offsprings) {
                     for (Node node : cluster.getNodes()) {
                         list.add(node);
                     }

@@ -12,7 +12,7 @@ import org.clueminer.partitioning.api.Bisection;
  *
  * @author Tomas Bruna
  */
-public class Cluster {
+public class Partition {
 
     /**
      * Internal interconnectivity of the cluster (sum of cut edges)
@@ -36,9 +36,9 @@ public class Cluster {
      */
     Graph firstHalf, secondHalf;
 
-    private Cluster parent;
+    private Partition parent;
 
-    public LinkedList<Cluster> offsprings;
+    public LinkedList<Partition> offsprings;
 
     private int edgeCount;
 
@@ -51,7 +51,7 @@ public class Cluster {
 
     private int id;
 
-    public Cluster(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
+    public Partition(LinkedList<Node> n, Graph g, int index, Bisection bisection) {
         parentGraph = g;
         graphNodes = n;
         edgeCount = -1;
@@ -194,11 +194,11 @@ public class Cluster {
         return id;
     }
 
-    public Cluster getParent() {
+    public Partition getParent() {
         return parent;
     }
 
-    public void setParent(Cluster parent) {
+    public void setParent(Partition parent) {
         this.parent = parent;
     }
 

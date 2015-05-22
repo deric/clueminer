@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.struct.BaseCluster;
-import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
@@ -164,7 +164,6 @@ public abstract class PairMerger extends Merger {
      * @param clusterIndex2
      */
     protected void addIntoTree(int clusterIndex1, int clusterIndex2) {
-
         DendroNode left = nodes[clusters.get(clusterIndex1).getId()];
         DendroNode right = nodes[clusters.get(clusterIndex2).getId()];
         DTreeNode newNode = new DTreeNode(clusterCount);
@@ -237,11 +236,12 @@ public abstract class PairMerger extends Merger {
         return result;
     }
 
-    private Clustering<org.clueminer.clustering.api.Cluster> getClusterResult() {
-        Clustering output = new ClusterList(clusters.size());
-        for (Cluster c : clusters) {
-            BaseCluster cluster = new BaseCluster(c.getNodeCount());
-            for (Node node : c.getNodes()) {
+    private Clustering<Cluster> getClusterResult() {
+        Clustering output = Clusterings.newList(clusters.size());
+        int i = 0;
+        for (Partition g : clusters) {
+            Cluster cluster = output.createCluster(i++, g.getNodeCount());
+            for (Node node : g.getNodes()) {
                 cluster.add(node.getInstance());
             }
             output.add(cluster);

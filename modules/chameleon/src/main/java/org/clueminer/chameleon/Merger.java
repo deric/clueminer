@@ -40,7 +40,7 @@ public abstract class Merger {
     /**
      * Clusters to merge.
      */
-    protected ArrayList<Cluster> clusters;
+    protected ArrayList<Partition> clusters;
 
     protected SimilarityMeasure similarityMeasure;
 
@@ -58,13 +58,15 @@ public abstract class Merger {
     /**
      * Creates clusters from lists of nodes
      *
+     * @param clusterList
+     * @param bisection
      */
     protected void createClusters(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
         clusters = new ArrayList<>();
         int i = 0;
         for (LinkedList<Node> cluster : clusterList) {
-            clusters.add(new Cluster(cluster, graph, i, bisection));
+            clusters.add(new Partition(cluster, graph, i, bisection));
             i++;
         }
         assignNodesToClusters(clusterList);
@@ -88,6 +90,7 @@ public abstract class Merger {
      * Assigns clusters to nodes according to list of clusters in each node.
      * Having clusters assigned to nodes can be advantageous in some cases
      *
+     * @param clusterList
      */
     protected void assignNodesToClusters(ArrayList<LinkedList<Node>> clusterList) {
         nodeToCluster = new int[graph.getNodeCount()];
