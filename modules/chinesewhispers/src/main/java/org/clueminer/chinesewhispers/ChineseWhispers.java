@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -29,6 +30,11 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 
     AdjListGraph graph = new AdjListGraph();
 
+    public static final String MAX_ITERATIONS = "max_iterations";
+
+    @Param(name = ChineseWhispers.MAX_ITERATIONS, description = "Maximum number of iterations")
+    private int maxIterations;
+
     @Override
     public String getName() {
         return "Chinese Whispers";
@@ -37,6 +43,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         props.put("algorithm", getName());
+        maxIterations = props.getInt(MAX_ITERATIONS, 100);
         List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
         graph.addAllNodes(nodes);
         this.createEdges(dataset, nodes);
@@ -48,7 +55,8 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 
         boolean changes = true;
         Random random = new Random();
-        while (changes) {
+        int i = 0;
+        while (changes && i < maxIterations) {
             changes = false;
             for (Node nodeIt : nodes) {
                 AdjListNode node = (AdjListNode) nodeIt;
@@ -72,6 +80,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
                     node.getInstance().setClassValue(maxClass);
                 }
             }
+            i++;
         }
 
         //graph.print();
