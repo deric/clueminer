@@ -11,6 +11,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.colors.ColorBrewer;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
@@ -95,10 +97,12 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
             thisCluster.add(node);
         }
         Clustering result = Clusterings.newList();
+        ColorGenerator generator = new ColorBrewer();
         for (Map.Entry<Long, List<Node>> entrySet : clusters.entrySet()) {
             //Long clusterId = entrySet.getKey();
             List<Node> clusterNodes = entrySet.getValue();
             Cluster cluster = result.createCluster();
+            cluster.setColor(generator.next());
             //System.out.println("Cluster " + clusterId);
             for (Node clusterNode : clusterNodes) {
                 //System.out.println("\t" + clusterNode.getId());
