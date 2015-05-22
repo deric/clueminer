@@ -40,7 +40,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
 
-    private JTextField tfK;
     private JTextField tfIterations;
     private JSlider sliderIter;
 

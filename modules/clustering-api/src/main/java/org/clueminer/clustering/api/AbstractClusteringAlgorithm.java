@@ -39,7 +39,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     protected ColorGenerator colorGenerator;
     protected ProgressHandle ph;
 
-    public static final String DISTANCE = "distanceMeasure";
+    public static final String DISTANCE = "distance";
 
     @Override
     public DistanceMeasure getDistanceFunction() {

@@ -13,6 +13,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
@@ -107,6 +108,15 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             }
         }
 
+        // by default use Euclidean distance
+        if (!params.containsKey(DISTANCE)) {
+            distanceFunction = EuclideanDistance.getInstance();
+        } else {
+            String dist = params.get(DISTANCE);
+            distanceFunction = DistanceFactory.getInstance().getProvider(dist);
+        }
+
+        //fallback
         if (distanceFunction == null) {
             distanceFunction = EuclideanDistance.getInstance();
         }
