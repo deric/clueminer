@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
 
 /**
@@ -66,6 +67,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         Iterator<Instance> it = first.instancesIterator();
         Cluster<? extends Instance> cluster;
         int[][] mapping = findMapping(clusts, k, alg.getDistanceFunction());
+        Dump.matrix(mapping, "mapping", 3);
         while (it.hasNext()) {
             curr = it.next();
             int[] assign = new int[k];
