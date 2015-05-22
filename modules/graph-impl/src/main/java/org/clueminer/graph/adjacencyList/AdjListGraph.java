@@ -14,13 +14,15 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * This implementation is problematic for algorithms which create multiple
+ * copies of the same graph, but doesn't want to copy edges. Currently list of
+ * edges is kept in {@link AdjListNode}.
  *
  * @author Hamster
  */
-@ServiceProvider(service = Graph.class)
+//@ServiceProvider(service = Graph.class)
 public class AdjListGraph implements Graph {
 
     private static final String name = "Adj List Graph";
