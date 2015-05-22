@@ -1,15 +1,13 @@
 package org.clueminer.chinesewhispers;
 
-import java.util.Iterator;
-import java.util.Set;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -17,6 +15,12 @@ import org.junit.Test;
  * @author Hamster
  */
 public class ChineseWhispersTest {
+
+    private final ChineseWhispers subject;
+
+    public ChineseWhispersTest() {
+        subject = new ChineseWhispers();
+    }
 
     private Dataset<? extends Instance> generateData() {
         double[][] data = new double[][]{
@@ -69,17 +73,35 @@ public class ChineseWhispersTest {
 
     @Test
     public void getNameTest() {
-        System.out.println("Get Name Test");
-        ChineseWhispers cw = new ChineseWhispers();
-        assertEquals("Chinese Whispers", cw.getName());
+        assertEquals("Chinese Whispers", subject.getName());
     }
 
     @Test
     public void clusterTest() {
-        System.out.println("Read Data Test");
-        ChineseWhispers cw = new ChineseWhispers();
         Dataset<? extends Instance> data = generateData();
         Props p = new Props();
-        cw.cluster(data, p);
+        Clustering res = subject.cluster(data, p);
+        assertNotNull(res);
     }
+
+    @Test
+    public void testSchool() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        Props p = new Props();
+        Clustering res = subject.cluster(data, p);
+        assertNotNull(res);
+        assertEquals(true, res.size() > 0);
+        System.out.println("CW school:" + res.size());
+    }
+
+    @Test
+    public void testIris() {
+        Dataset<? extends Instance> data = FakeDatasets.irisDataset();
+        Props p = new Props();
+        Clustering res = subject.cluster(data, p);
+        assertNotNull(res);
+        assertEquals(true, res.size() > 0);
+        System.out.println("CW iris:" + res.size());
+    }
+
 }
