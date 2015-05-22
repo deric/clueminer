@@ -85,7 +85,7 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     @Override
-    public void createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+    public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

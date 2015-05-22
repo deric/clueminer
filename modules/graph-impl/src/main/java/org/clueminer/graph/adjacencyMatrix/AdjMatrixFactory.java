@@ -102,10 +102,15 @@ public class AdjMatrixFactory implements GraphFactory {
      * @param graph
      */
     @Override
-    public void createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
-        for (Instance ins : input) {
-            graph.addNode(newNode(ins));
+    public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+        Long[] mapping = new Long[input.size()];
+        Node curr;
+        for (Instance inst : input) {
+            curr = newNode(inst);
+            graph.addNode(curr);
+            mapping[inst.getIndex()] = curr.getId();
         }
+        return mapping;
     }
 
 }

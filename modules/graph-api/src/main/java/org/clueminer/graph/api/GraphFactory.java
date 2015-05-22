@@ -105,7 +105,8 @@ public interface GraphFactory {
      *
      * @param input source data
      * @param graph target graph
+     * @return mapping from Dataset index -> Node ID
      */
-    void createNodesFromInput(Dataset<? extends Instance> input, Graph graph);
+    Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph);
 
 }

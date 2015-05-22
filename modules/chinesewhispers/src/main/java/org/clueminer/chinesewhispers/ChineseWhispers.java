@@ -17,7 +17,8 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyList.AdjListNode;
-import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.GraphConvertor;
+import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,6 +41,12 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
     @Param(name = ChineseWhispers.EDGE_THRESHOLD, description = "Minimum distance for edge initialization")
     private double edgeThreshold;
 
+    public static final String GRAPH_CONV = "graph_conv";
+    @Param(name = ChineseWhispers.GRAPH_CONV,
+           factory = "org.clueminer.graph.api.GraphConvertorFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING)
+    private GraphConvertor graphCon;
+
     @Override
     public String getName() {
         return "Chinese Whispers";
@@ -52,11 +59,14 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
         props.put("algorithm", getName());
         maxIterations = props.getInt(MAX_ITERATIONS, 100);
-        edgeThreshold = props.getDouble(EDGE_THRESHOLD, 1.0);
-        List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
-        graph.addAllNodes(nodes);
-        this.createEdges(dataset, nodes);
-        for (Node nodeIt : nodes) {
+
+        Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
+        String initializer = props.get(GRAPH_CONV, "distance threshold");
+        graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
+        graphCon.setDistanceMeasure(distanceFunction);
+        graphCon.createEdges(graph, dataset, mapping, props);
+
+        for (Node nodeIt : graph.getNodes()) {
             AdjListNode node = (AdjListNode) nodeIt;
             Long classValue = node.getId();
             node.getInstance().setClassValue(classValue);
@@ -67,9 +77,9 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
         int i = 0;
         while (changes && i < maxIterations) {
             changes = false;
-            for (Node nodeIt : nodes) {
+            for (Node nodeIt : graph.getNodes()) {
                 AdjListNode node = (AdjListNode) nodeIt;
-                HashMap<Long, Integer> classes = new HashMap<>(nodes.size());
+                HashMap<Long, Integer> classes = new HashMap<>(graph.getNodeCount());
                 Long maxClass = node.getId();
                 Integer maxCount = 1;
                 for (Node neighborIt : graph.getNeighbors(node)) {
@@ -119,30 +129,5 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
             //System.out.println("");
         }
         return result;
-    }
-
-    /**
-     * Convert input data to a graph
-     *
-     * @param dataset
-     * @param nodes
-     */
-    private void createEdges(Dataset<? extends Instance> dataset, List<Node> nodes) {
-        double dist;
-        for (int i = 0; i < dataset.size(); i++) {
-            AdjListNode source = (AdjListNode) nodes.get(i);
-            Instance curr = dataset.get(i);
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    dist = distanceFunction.measure(curr, dataset.get(j));
-                    if (distanceFunction.compare(dist, edgeThreshold)) {
-                        //if (dist < edgeThreshold) {
-                        AdjListNode target = (AdjListNode) nodes.get(j);
-                        Edge edge = graph.getFactory().newEdge(source, target);
-                        graph.addEdge(edge);
-                    }
-                }
-            }
-        }
     }
 }

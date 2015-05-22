@@ -18,6 +18,8 @@ package org.clueminer.graph.api;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.utils.Props;
 
 /**
  * Interface for converting basic spreadsheet data to a graph structure
@@ -27,10 +29,26 @@ import org.clueminer.dataset.api.Instance;
 public interface GraphConvertor {
 
     /**
+     * Unique identifier
+     *
+     * @return name of the method
+     */
+    String getName();
+
+    /**
      * Add egdes to the graph based on dataset similarity
      *
      * @param graph
      * @param dataset
+     * @param mapping
+     * @param params
      */
-    void createEdges(Graph graph, Dataset<? extends Instance> dataset);
+    void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params);
+
+    /**
+     * Function for measuring distance between data points
+     *
+     * @param dm
+     */
+    void setDistanceMeasure(DistanceMeasure dm);
 }

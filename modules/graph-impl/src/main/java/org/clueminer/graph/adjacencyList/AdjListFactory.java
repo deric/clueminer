@@ -93,12 +93,15 @@ public class AdjListFactory implements GraphFactory {
     }
 
     @Override
-    public void createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
-        for (Instance instance : input) {
+    public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+        Long[] mapping = new Long[input.size()];
+        for (Instance inst : input) {
             Node node = this.newNode();
-            node.setInstance(instance);
+            mapping[inst.getIndex()] = node.getId();
+            node.setInstance(inst);
             graph.addNode(node);
         }
+        return mapping;
     }
 
 }
