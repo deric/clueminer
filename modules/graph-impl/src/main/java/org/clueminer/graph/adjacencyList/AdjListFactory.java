@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 
@@ -89,6 +90,15 @@ public class AdjListFactory implements GraphFactory {
 
     protected static long getEdgeCount() {
         return edgeIdCounter;
+    }
+
+    @Override
+    public void createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+        for (Instance instance : input) {
+            Node node = this.newNode();
+            node.setInstance(instance);
+            graph.addNode(node);
+        }
     }
 
 }

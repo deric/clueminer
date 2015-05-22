@@ -21,60 +21,60 @@ public interface GraphFactory {
      * @param target the target node
      * @return the new edge
      */
-    public Edge newEdge(Node source, Node target);
+    Edge newEdge(Node source, Node target);
 
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source the source node
-     * @param target the target node
+     * @param source   the source node
+     * @param target   the target node
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
-    public Edge newEdge(Node source, Node target, boolean directed);
+    Edge newEdge(Node source, Node target, boolean directed);
 
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source the source node
-     * @param target the target node
-     * @param type the edge type
+     * @param source   the source node
+     * @param target   the target node
+     * @param type     the edge type
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
-    public Edge newEdge(Node source, Node target, int type, boolean directed);
+    Edge newEdge(Node source, Node target, int type, boolean directed);
 
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param source the source node
-     * @param target the target node
-     * @param type the edge type
-     * @param weight the edge weight
+     * @param source   the source node
+     * @param target   the target node
+     * @param type     the edge type
+     * @param weight   the edge weight
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
-    public Edge newEdge(Node source, Node target, int type, double weight, boolean directed);
+    Edge newEdge(Node source, Node target, int type, double weight, boolean directed);
 
     /**
      * Creates and returns an edge between source and target.
      *
-     * @param id the edge id
-     * @param source the source node
-     * @param target the target node
-     * @param type the edge type
-     * @param weight the edge weight
+     * @param id       the edge id
+     * @param source   the source node
+     * @param target   the target node
+     * @param type     the edge type
+     * @param weight   the edge weight
      * @param directed true if directed, false if undirected
      * @return the new edge
      */
-    public Edge newEdge(Object id, Node source, Node target, int type, double weight, boolean directed);
+    Edge newEdge(Object id, Node source, Node target, int type, double weight, boolean directed);
 
     /**
      * Creates and returns a node.
      *
      * @return the new node
      */
-    public Node newNode();
+    Node newNode();
 
     /**
      * Creates and returns a node.
@@ -82,7 +82,7 @@ public interface GraphFactory {
      * @param label the node label
      * @return the new node
      */
-    public Node newNode(Object label);
+    Node newNode(Object label);
 
     /**
      * Creates and returns a node.
@@ -90,7 +90,7 @@ public interface GraphFactory {
      * @param i instance which the node represents
      * @return the new node
      */
-    public Node newNode(Instance i);
+    Node newNode(Instance i);
 
     /**
      * Creates nodes from the dataset
@@ -98,6 +98,14 @@ public interface GraphFactory {
      * @param input input dataset
      * @return list of nodes
      */
-    public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input);
+    ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input);
+
+    /**
+     * Create nodes from dataset's instances and add them to the graph
+     *
+     * @param input source data
+     * @param graph target graph
+     */
+    void createNodesFromInput(Dataset<? extends Instance> input, Graph graph);
 
 }

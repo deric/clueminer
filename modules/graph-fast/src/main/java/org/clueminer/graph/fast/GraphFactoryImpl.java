@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 
@@ -80,6 +81,11 @@ public class GraphFactoryImpl implements GraphFactory {
 
     @Override
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
