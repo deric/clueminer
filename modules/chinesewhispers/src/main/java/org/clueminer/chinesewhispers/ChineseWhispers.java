@@ -11,8 +11,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
-import org.clueminer.colors.ColorBrewer;
-import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
@@ -30,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class ChineseWhispers extends AbstractClusteringAlgorithm {
 
-    AdjListGraph graph = new AdjListGraph();
+    private AdjListGraph graph;
 
     public static final String MAX_ITERATIONS = "max_iterations";
 
@@ -44,6 +42,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
 
     @Override
     public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        graph = new AdjListGraph();
         props.put("algorithm", getName());
         maxIterations = props.getInt(MAX_ITERATIONS, 100);
         List<Node> nodes = AdjListFactory.getInstance().createNodesFromInput(dataset);
@@ -97,12 +96,13 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
             thisCluster.add(node);
         }
         Clustering result = Clusterings.newList();
-        ColorGenerator generator = new ColorBrewer();
         for (Map.Entry<Long, List<Node>> entrySet : clusters.entrySet()) {
             //Long clusterId = entrySet.getKey();
             List<Node> clusterNodes = entrySet.getValue();
             Cluster cluster = result.createCluster();
-            cluster.setColor(generator.next());
+            if (colorGenerator != null) {
+                cluster.setColor(colorGenerator.next());
+            }
             //System.out.println("Cluster " + clusterId);
             for (Node clusterNode : clusterNodes) {
                 //System.out.println("\t" + clusterNode.getId());
