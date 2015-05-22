@@ -16,6 +16,8 @@
  */
 package org.clueminer.clustering.api.factory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.openide.util.Exceptions;
@@ -47,4 +49,24 @@ public class Clusterings {
         }
         return res;
     }
+
+    /**
+     * Create new instance of clustering structure (if any implementation
+     * available)
+     *
+     * @param size expected size of clusterings
+     * @return
+     */
+    public static Clustering<? extends Cluster> newList(int size) {
+        Class c = Lookup.getDefault().lookup(Clustering.class).getClass();
+        Clustering<? extends Cluster> res = null;
+        try {
+            Constructor<?> ctor = c.getConstructor(Integer.class);
+            res = (Clustering<? extends Cluster>) ctor.newInstance(new Object[]{size});
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return res;
+    }
+
 }
