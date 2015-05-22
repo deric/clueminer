@@ -18,6 +18,7 @@ package org.clueminer.clustering.api.factory;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -36,6 +37,14 @@ public class Clusterings {
      * @return
      */
     public static Clustering<? extends Cluster> newList() {
-        return Lookup.getDefault().lookup(Clustering.class);
+        //simple lookup would return an existing instance on any clustering
+        Class c = Lookup.getDefault().lookup(Clustering.class).getClass();
+        Clustering<? extends Cluster> res = null;
+        try {
+            res = (Clustering<? extends Cluster>) c.newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return res;
     }
 }
