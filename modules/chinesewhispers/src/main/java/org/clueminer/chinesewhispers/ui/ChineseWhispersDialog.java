@@ -16,7 +16,16 @@
  */
 package org.clueminer.chinesewhispers.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.clueminer.chinesewhispers.ChineseWhispers;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -31,6 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
 
+    private JTextField tfK;
+    private JTextField tfIterations;
+    private JSlider sliderIter;
+
+    public ChineseWhispersDialog() {
+        initComponents();
+    }
+
     @Override
     public String getName() {
         return "Chinese Whispers dialog";
@@ -40,6 +57,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
         return params;
     }
 
@@ -51,6 +69,63 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
         return algorithm instanceof ChineseWhispers;
+    }
+
+    private void initComponents() {
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.NONE;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.weightx = 0.1;
+        c.weighty = 1.0;
+        c.insets = new java.awt.Insets(5, 5, 5, 5);
+
+        //iterations
+        c.gridx = 0;
+        c.gridy = 1;
+        add(new JLabel("Iterations:"), c);
+        sliderIter = new JSlider(10, 2000);
+        sliderIter.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tfIterations.setText(String.valueOf(sliderIter.getValue()));
+            }
+        });
+        c.gridx = 1;
+        add(sliderIter, c);
+
+        c.gridx = 2;
+        tfIterations = new JTextField("100", 4);
+        add(tfIterations, c);
+        tfIterations.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                updateIterSlider();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                updateIterSlider();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                updateIterSlider();
+            }
+        });
+        sliderIter.setValue(100);
+    }
+
+    private void updateIterSlider() {
+        try {
+            int val = Integer.valueOf(tfIterations.getText());
+            sliderIter.setValue(val);
+        } catch (NumberFormatException ex) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
     }
 
 }
