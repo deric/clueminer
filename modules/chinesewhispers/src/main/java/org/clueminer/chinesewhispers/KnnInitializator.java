@@ -16,15 +16,16 @@
  */
 package org.clueminer.chinesewhispers;
 
-import static org.clueminer.chinesewhispers.ChineseWhispers.EDGE_THRESHOLD;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.KNN;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,10 +33,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class ThresholdInitializator implements GraphConvertor {
+public class KnnInitializator implements GraphConvertor {
 
     private DistanceMeasure dm;
-    private static final String name = "distance threshold";
+    private static final String name = "k-NN";
 
     @Override
     public String getName() {
@@ -43,29 +44,31 @@ public class ThresholdInitializator implements GraphConvertor {
     }
 
     /**
-     * Convert input data to a graph
+     * Find k-nearest neighbors and add an edge between nodes
      *
      * @param graph
      * @param dataset
+     * @param mapping
+     * @param params
      */
     @Override
     public void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params) {
-        double dist;
-        double edgeThreshold = params.getDouble(EDGE_THRESHOLD, 1.0);
-        Node source, target;
+        KNN knn = Lookup.getDefault().lookup(KNN.class);
+        if (knn == null) {
+            throw new RuntimeException("did not find any provider for k-NN");
+        }
+        int k = params.getInt("k", 5);
+        int[] nn;
+        long nodeId;
+        Node target;
         Edge edge;
-        for (int i = 0; i < dataset.size(); i++) {
-            source = graph.getNode(mapping[i]);
-            Instance curr = dataset.get(i);
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    dist = dm.measure(curr, dataset.get(j));
-                    if (dm.compare(dist, edgeThreshold)) {
-                        target = graph.getNode(mapping[j]);
-                        edge = graph.getFactory().newEdge(source, target);
-                        graph.addEdge(edge);
-                    }
-                }
+        for (Node node : graph.getNodes()) {
+            nn = knn.nnIds(node.getInstance().getIndex(), k, dataset, params);
+            for (int i = 0; i < nn.length; i++) {
+                nodeId = mapping[nn[i]];
+                target = graph.getNode(nodeId);
+                edge = graph.getFactory().newEdge(node, target);
+                graph.addEdge(edge);
             }
         }
     }
@@ -74,4 +77,5 @@ public class ThresholdInitializator implements GraphConvertor {
     public void setDistanceMeasure(DistanceMeasure dm) {
         this.dm = dm;
     }
+
 }

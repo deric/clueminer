@@ -16,7 +16,7 @@
  */
 package org.clueminer.knn;
 
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
@@ -65,7 +65,7 @@ public class CachingKNN implements KNN {
     }
 
     private Instance[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache, Props params) {
-        String dmProvider = params.get(AgglParams.DIST, AgglParams.DEFAULT_DISTANCE_FUNCTION);
+        String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
         DistanceMeasure dm = DistanceFactory.getInstance().getProvider(dmProvider);
         Instance[] res = computeNN(dataset, idx, k, dm);
         cache.put(dataset, idx, res);

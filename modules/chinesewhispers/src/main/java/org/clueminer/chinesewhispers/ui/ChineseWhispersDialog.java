@@ -20,6 +20,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -30,6 +31,8 @@ import org.clueminer.chinesewhispers.ChineseWhispers;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,9 +45,12 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
 
     private JTextField tfIterations;
     private JSlider sliderIter;
+    private JComboBox comboDistance;
+    private JComboBox comboGraphConv;
 
     public ChineseWhispersDialog() {
         initComponents();
+        comboDistance.setSelectedItem("Euclidean");
     }
 
     @Override
@@ -57,6 +63,8 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         Props params = new Props();
         params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
         params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
+        params.put(ChineseWhispers.DISTANCE, (String) comboDistance.getSelectedItem());
+        params.put(ChineseWhispers.GRAPH_CONV, (String) comboGraphConv.getSelectedItem());
         return params;
     }
 
@@ -116,6 +124,22 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
             }
         });
         sliderIter.setValue(100);
+        //distance measure
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Distance:"), c);
+        c.gridx = 1;
+        comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
+        add(comboDistance, c);
+
+        //distance measure
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Graph initialization:"), c);
+        c.gridx = 1;
+        comboGraphConv = new JComboBox(GraphConvertorFactory.getInstance().getProvidersArray());
+        add(comboGraphConv, c);
+
     }
 
     private void updateIterSlider() {
