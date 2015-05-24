@@ -573,6 +573,30 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         }
     }
 
+    @Override
+    public void compact() {
+        int nonEmpty = 0;
+        for (Cluster<E> clust : data) {
+            if (clust != null) {
+                nonEmpty++;
+            }
+        }
+        Cluster<E>[] newData = new Cluster[nonEmpty];
+        name2id.clear();
+        nonEmpty = 0;
+        int id;
+        for (Cluster<E> clust : data) {
+            if (clust != null) {
+                id = nonEmpty++;
+                newData[id] = clust;
+                clust.setClusterId(id);
+                clust.setName("cluster " + (id + 1));
+                name2id.put(clust.getName(), id);
+            }
+        }
+        data = newData;
+    }
+
     class ClusterIterator implements Iterator<Cluster<E>> {
 
         private int index = 0;

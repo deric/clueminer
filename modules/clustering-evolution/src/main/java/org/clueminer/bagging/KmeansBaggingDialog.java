@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.gui.dlg;
+package org.clueminer.bagging;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,21 +43,23 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class KmeansDialog extends JPanel implements ClusteringDialog {
+public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
 
-    private static final long serialVersionUID = 7041147759279431292L;
+    private static final long serialVersionUID = -2318143730430154971L;
 
     private JSlider sliderK;
     private JTextField tfK;
     private JTextField tfIterations;
     private JSlider sliderIter;
+    private JSlider sliderBagging;
+    private JTextField tfBagging;
     private JTextField tfRandom;
     private JButton btnRandom;
     private Random rand;
     private JComboBox comboDistance;
-    private static final String name = "k-means";
+    private static final String name = "k-means bagging";
 
-    public KmeansDialog() {
+    public KmeansBaggingDialog() {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
     }
@@ -174,6 +176,43 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
         add(comboDistance, c);
+
+        //bagging
+        c.gridx = 0;
+        c.gridy++;
+        add(new JLabel("Bagging:"), c);
+        sliderBagging = new JSlider(2, 100);
+        sliderBagging.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tfBagging.setText(String.valueOf(sliderBagging.getValue()));
+            }
+        });
+        c.gridx = 1;
+        add(sliderBagging, c);
+
+        c.gridx = 2;
+        tfBagging = new JTextField("5", 4);
+        add(tfBagging, c);
+        tfBagging.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                updateBaggingSlider();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                updateBaggingSlider();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                updateBaggingSlider();
+            }
+        });
+        sliderBagging.setValue(5);
     }
 
     private void updateKSlider() {
@@ -194,6 +233,15 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         }
     }
 
+    private void updateBaggingSlider() {
+        try {
+            int val = Integer.valueOf(tfBagging.getText());
+            sliderBagging.setValue(val);
+        } catch (NumberFormatException ex) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }
+
     @Override
     public Props getParams() {
         Props params = new Props();
@@ -201,6 +249,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeans.ITERATIONS, sliderIter.getValue());
         params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
         params.put(KMeans.DISTANCE, (String) comboDistance.getSelectedItem());
+        params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
 
         return params;
     }
@@ -212,7 +261,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof KMeans;
+        return algorithm instanceof KMeansBagging;
     }
 
 }

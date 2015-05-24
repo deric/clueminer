@@ -226,4 +226,9 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @return description of cluster's structure
      */
     String fingerprint();
+
+    /**
+     * Remove empty clusters, might relabel existing clusters
+     */
+    void compact();
 }

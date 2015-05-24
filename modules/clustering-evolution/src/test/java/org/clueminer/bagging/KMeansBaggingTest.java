@@ -51,6 +51,7 @@ public class KMeansBaggingTest {
         Dataset<? extends Instance> data = FakeDatasets.schoolData();
         Props params = new Props();
         params.putInt("k", 5);
+        params.putInt(KMeansBagging.BAGGING, 5);
         Clustering c = subject.cluster(data, params);
 
     }

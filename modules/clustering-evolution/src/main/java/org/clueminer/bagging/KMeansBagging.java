@@ -21,18 +21,21 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class KMeansBagging extends AbstractClusteringAlgorithm implements PartitioningClustering {
 
     private static final String name = "K-Means bagging";
@@ -49,7 +52,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     @Override
     public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
-        bagging = props.getInt(BAGGING, 3);
+        bagging = props.getInt(BAGGING, 5);
         int k = props.getInt(KMeans.K);
         KMeans alg = new KMeans();
 
@@ -61,25 +64,58 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
         //reducer - find consensus
         //vote about final result
-        Clustering<? extends Cluster> first = clusts[0];
-
         Instance curr;
-        Iterator<Instance> it = first.instancesIterator();
+        Iterator<Instance> it = clusts[0].instancesIterator();
         Cluster<? extends Instance> cluster;
         int[][] mapping = findMapping(clusts, k, alg.getDistanceFunction());
-        Dump.matrix(mapping, "mapping", 3);
+
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
+
+        Clustering<? extends Cluster> res = new ClusterList(k);
+        int idx;
         while (it.hasNext()) {
             curr = it.next();
             int[] assign = new int[k];
             for (int i = 0; i < clusts.length; i++) {
                 cluster = clusts[i].assignedCluster(curr);
-                assign[cluster.getClusterId()]++;
-
+                if (i > 0) {
+                    assign[map(mapping, i, cluster.getClusterId())]++;
+                } else {
+                    assign[cluster.getClusterId()]++;
+                }
             }
-
+            idx = findMax(assign);
+            //check if cluster already exists
+            if (!res.hasAt(idx)) {
+                res.createCluster(idx);
+                if (colorGenerator != null) {
+                    res.get(idx).setColor(colorGenerator.next());
+                }
+            }
+            //final cluster assignment
+            res.get(idx).add(curr);
         }
+        res.compact();
 
-        return null;
+        return res;
+    }
+
+    /**
+     * Find maximum integer in an array
+     *
+     * @param assign
+     * @return
+     */
+    private int findMax(int[] assign) {
+        int max = -1;
+        for (int i = 0; i < assign.length; i++) {
+            if (assign[i] > max) {
+                max = assign[i];
+            }
+        }
+        return max;
     }
 
     /**
