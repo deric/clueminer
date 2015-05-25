@@ -17,6 +17,8 @@
 package org.clueminer.bagging;
 
 import java.util.Iterator;
+import java.util.List;
+import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -28,8 +30,12 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.eval.AIC;
+import org.clueminer.eval.SDindex;
+import org.clueminer.evolution.mo.MoSolution;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.uma.jmetal.solution.Solution;
 
 /**
  *
@@ -62,6 +68,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         bagging = props.getInt(BAGGING, 5);
         String initSet = props.get("init_set", "RANDOM");
+        //String initSet = props.get("init_set", "MO");
         int k = props.getInt(KMeans.K);
         KMeans alg = new KMeans();
 
@@ -71,6 +78,18 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
             case "RANDOM":
                 clusts = randClusters(alg, dataset, props);
                 break;
+            case "MO":
+                KmEvolution km = new KmEvolution(new ClusteringExecutorCached(alg));
+                km.setDataset(dataset);
+                km.addObjective(new AIC());
+                km.addObjective(new SDindex());
+                km.run();
+                List<Solution> sol = km.getSolution();
+                clusts = new Clustering[sol.size()];
+                for (int i = 0; i < sol.size(); i++) {
+                    clusts[i] = ((MoSolution) sol.get(i)).getClustering();
+                }
+
             default:
                 throw new RuntimeException("unknown method " + initSet);
         }

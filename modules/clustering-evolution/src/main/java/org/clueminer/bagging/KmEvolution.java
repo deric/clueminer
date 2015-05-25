@@ -45,6 +45,7 @@ public class KmEvolution extends MoEvolution {
 
     private static final Logger logger = Logger.getLogger(KmEvolution.class.getName());
     private int numSolutions = 5;
+    private List<Solution> moPop;
 
     public KmEvolution(Executor exec) {
         super(exec);
@@ -59,7 +60,7 @@ public class KmEvolution extends MoEvolution {
         MutationOperator mutation;
         SelectionOperator selection;
         if (getNumObjectives() < 2) {
-            throw new RuntimeException("provide at least 2 objectives. currently we have just" + getNumObjectives());
+            throw new RuntimeException("provide at least 2 objectives. currently we have just " + getNumObjectives());
         }
         logger.log(Level.INFO, "starting evolution {0}", getName());
         logger.log(Level.INFO, "variables: {0}", problem.getNumberOfVariables());
@@ -100,7 +101,7 @@ public class KmEvolution extends MoEvolution {
             logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
             Exceptions.printStackTrace(e);
         }
-        List<Solution> moPop = ((NSGAII) moAlg).getResult();
+        moPop = ((NSGAII) moAlg).getResult();
         logger.log(Level.INFO, "result size: {0}", moPop.size());
         fireFinalResult(moPop);
         int i = 0;
@@ -135,5 +136,10 @@ public class KmEvolution extends MoEvolution {
 
          fireResultUpdate(pop);*/
     }
+
+    public List<Solution> getSolution() {
+        return moPop;
+    }
+
 
 }

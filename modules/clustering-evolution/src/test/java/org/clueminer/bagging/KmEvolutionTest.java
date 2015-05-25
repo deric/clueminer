@@ -45,11 +45,10 @@ public class KmEvolutionTest {
 
     @Before
     public void setUp() {
-        Executor exec = new ClusteringExecutorCached();
-        exec.setAlgorithm(new KMeans());
+        Executor exec = new ClusteringExecutorCached(new KMeans());
         subject = new KmEvolution(exec);
-        //report = new ConsoleReporter();
-        //subject.addEvolutionListener(report);
+        report = new ConsoleReporter();
+        subject.addEvolutionListener(report);
         mem = new MemInfo();
     }
 

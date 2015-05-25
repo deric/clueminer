@@ -46,7 +46,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * change.
      *
      */
-    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 500)
+    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 150)
     private int iterations = -1;
     /**
      * Random generator for this clusterer.
@@ -87,7 +87,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      */
     @Override
     public Clustering<? extends Cluster> partition(Dataset<? extends Instance> data, Props params) {
-        if (data.isEmpty()) {
+        if (data == null || data.isEmpty()) {
             throw new RuntimeException("The dataset should not be empty");
         }
         //number of clusters is required
