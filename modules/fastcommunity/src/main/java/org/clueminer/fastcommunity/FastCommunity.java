@@ -104,7 +104,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         dQ.build(graph);
 
         populatePriorityQueue(dQ);
-        System.out.println(pq.toString());
+        //System.out.println(pq.toString());
 
         ReverseElement current;
         DendroNode node = null;
