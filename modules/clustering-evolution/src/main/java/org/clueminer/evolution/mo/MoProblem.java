@@ -2,34 +2,29 @@ package org.clueminer.evolution.mo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.config.Parameter;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
 import org.uma.jmetal.problem.IntegerProblem;
-import org.uma.jmetal.problem.impl.AbstractGenericProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 
 /**
  *
  * @author Tomas Barton
  */
-public class MoProblem extends AbstractGenericProblem<IntegerSolution> implements IntegerProblem {
+public class MoProblem extends BaseIntProblem implements IntegerProblem {
 
     private static final long serialVersionUID = 5458227476117018712L;
 
     protected final MoEvolution evolution;
-    protected Int2ObjectOpenHashMap<String> mapping;
-    protected int[] lowerLimit;
-    protected int[] upperLimit;
-    protected Parameter[] params;
     private static final Logger logger = Logger.getLogger(MoProblem.class.getName());
-    protected Executor exec;
 
     public MoProblem(MoEvolution evolution) {
         this.evolution = evolution;
@@ -75,7 +70,7 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
                         logger.log(Level.INFO, "possible values: {0}", 2);
                         break;
                     default:
-                        throw new RuntimeException(p.getType() + " is not supported yet");
+                        throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
                 }
 
                 i++;
@@ -88,41 +83,25 @@ public class MoProblem extends AbstractGenericProblem<IntegerSolution> implement
     }
 
     @Override
-    public Integer getUpperBound(int index) {
-        return upperLimit[index];
+    public ClusteringAlgorithm getAlgorithm() {
+        return evolution.getAlgorithm();
     }
 
     @Override
-    public Integer getLowerBound(int index) {
-        return lowerLimit[index];
+    public ClusterEvaluation getObjective(int idx) {
+        return evolution.getObjective(idx);
     }
 
-    /**
-     * Variable mapped to given index
-     *
-     * @param index
-     * @return
-     */
-    public String getVar(int index) {
-        return mapping.get(index);
+    public Dataset<? extends Instance> getDataset() {
+        return evolution.getDataset();
     }
 
-    /**
-     * Get instance of service factory if available for given parameter
-     *
-     * @param param
-     * @return
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     */
-    public static ServiceFactory getFactory(Parameter param) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> clazz = Class.forName(param.getFactory());
-        Method meth = clazz.getMethod("getInstance");
-        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
-        return f;
+    public ClusterEvaluation getExternal() {
+        return evolution.getExternal();
     }
 
+    @Override
+    public boolean iskLimited() {
+        return evolution.iskLimited();
+    }
 }

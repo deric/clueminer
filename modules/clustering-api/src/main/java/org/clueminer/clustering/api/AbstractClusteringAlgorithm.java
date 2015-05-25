@@ -106,7 +106,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
                                     type = ParamType.STRING;
                                     break;
                                 default:
-                                    type = ParamType.DOUBLE;
+                                    throw new RuntimeException("unknown type " + field.getType().getName());
                             }
                         }
                         Parameter out = new AlgParam(paramName, type, p.description(), p.factory());

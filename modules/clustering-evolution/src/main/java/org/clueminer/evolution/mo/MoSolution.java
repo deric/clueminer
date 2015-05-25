@@ -39,7 +39,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     protected Clustering<? extends Cluster> clustering;
     protected ClusteringAlgorithm algorithm;
     protected Props genom;
-    private final MoProblem problem;
+    private final BaseIntProblem problem;
     private final double[] objectives;
     private final int[] variables;
     private double overallConstraintViolationDegree = 0;
@@ -49,12 +49,12 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     private static final Logger logger = Logger.getLogger(MoSolution.class.getName());
     private static int counter = 0;
 
-    public MoSolution(MoProblem problem) {
+    public MoSolution(BaseIntProblem problem) {
         randomGenerator = JMetalRandom.getInstance();
         this.problem = problem;
         this.variables = new int[problem.getNumberOfVariables()];
         attributes = new HashMap<>();
-        algorithm = problem.evolution.getAlgorithm();
+        algorithm = problem.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
         genom = new Props();
 
@@ -75,12 +75,12 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
      * @param problem
      * @param other
      */
-    public MoSolution(MoProblem problem, MoSolution other) {
+    public MoSolution(BaseIntProblem problem, MoSolution other) {
         randomGenerator = other.randomGenerator;
         this.problem = problem;
         this.variables = new int[problem.getNumberOfVariables()];
         attributes = new HashMap<>();
-        algorithm = problem.evolution.getAlgorithm();
+        algorithm = problem.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
         genom = other.genom.clone();
 
@@ -95,7 +95,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         updateCustering();
         ClusterEvaluation eval;
         for (int i = 0; i < objectives.length; i++) {
-            eval = problem.evolution.getObjective(i);
+            eval = problem.getObjective(i);
             if (eval.isMaximized()) {
                 objectives[i] = -countFitness(eval);
             } else {
@@ -327,14 +327,14 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             return false;
         }
 
-        Dataset<? extends Instance> dataset = problem.evolution.getDataset();
+        Dataset<? extends Instance> dataset = problem.getDataset();
         //strange clustering with missing items
         if (clustering.instancesCount() != dataset.size()) {
             return false;
         }
 
         //limit maximum size of clusters allowed
-        if (problem.evolution.iskLimited()) {
+        if (problem.iskLimited()) {
             if (clustering.size() > Math.sqrt(dataset.size())) {
                 return false;
             }
@@ -375,14 +375,14 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         logger.log(Level.FINE, "starting clustering {0}", genom.toString());
         //count number of clustering algorithm executions
         counter++;
-        clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+        clustering = problem.exec.clusterRows(problem.getDataset(), genom);
         while (!isValid(clustering)) {
             randomMutation();
             counter++;
-            clustering = problem.exec.clusterRows(problem.evolution.getDataset(), genom);
+            clustering = problem.exec.clusterRows(problem.getDataset(), genom);
         }
 
-        ClusterEvaluation eval = problem.evolution.getExternal();
+        ClusterEvaluation eval = problem.getExternal();
         if (eval != null) {
             logger.log(Level.FINE, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
         }

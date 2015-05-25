@@ -50,16 +50,29 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         return name;
     }
 
+    private Clustering[] randClusters(AbstractClusteringAlgorithm alg, Dataset<? extends Instance> dataset, Props props) {
+        Clustering[] clusts = new Clustering[bagging];
+        for (int i = 0; i < bagging; i++) {
+            clusts[i] = alg.cluster(dataset, props);
+        }
+        return clusts;
+    }
+
     @Override
     public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         bagging = props.getInt(BAGGING, 5);
+        String initSet = props.get("init_set", "RANDOM");
         int k = props.getInt(KMeans.K);
         KMeans alg = new KMeans();
 
         //mapper
-        Clustering[] clusts = new Clustering[bagging];
-        for (int i = 0; i < bagging; i++) {
-            clusts[i] = alg.cluster(dataset, props);
+        Clustering[] clusts;
+        switch (initSet) {
+            case "RANDOM":
+                clusts = randClusters(alg, dataset, props);
+                break;
+            default:
+                throw new RuntimeException("unknown method " + initSet);
         }
 
         //reducer - find consensus
@@ -74,6 +87,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         }
 
         Clustering<? extends Cluster> res = new ClusterList(k);
+        //Clustering<? extends Cluster> res = Clusterings.newList(k);
         int idx;
         while (it.hasNext()) {
             curr = it.next();
