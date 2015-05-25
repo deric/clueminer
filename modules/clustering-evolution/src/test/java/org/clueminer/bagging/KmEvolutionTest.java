@@ -61,7 +61,7 @@ public class KmEvolutionTest {
     /**
      * TODO: implement all operators
      */
-    //@Test
+    @Test
     public void testRun() {
         subject.setDataset(FakeDatasets.irisDataset());
         subject.setGenerations(1);

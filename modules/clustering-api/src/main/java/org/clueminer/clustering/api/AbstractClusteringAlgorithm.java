@@ -110,6 +110,13 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
                             }
                         }
                         Parameter out = new AlgParam(paramName, type, p.description(), p.factory());
+                        switch (type) {
+                            case DOUBLE:
+                            case INTEGER:
+                                out.setMin(p.min());
+                                out.setMax(p.max());
+                                break;
+                        }
                         res.add(out);
                     }
                 }

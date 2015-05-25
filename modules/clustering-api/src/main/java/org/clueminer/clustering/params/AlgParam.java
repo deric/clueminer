@@ -13,6 +13,8 @@ public class AlgParam<T> implements Parameter<T> {
     private String description;
     private final ParamType type;
     private String factory;
+    private double min;
+    private double max;
 
     public AlgParam(String name, ParamType type) {
         this.name = name;
@@ -58,6 +60,26 @@ public class AlgParam<T> implements Parameter<T> {
     @Override
     public String getFactory() {
         return factory;
+    }
+
+    @Override
+    public double getMin() {
+        return min;
+    }
+
+    @Override
+    public double getMax() {
+        return max;
+    }
+
+    @Override
+    public void setMin(double min) {
+        this.min = min;
+    }
+
+    @Override
+    public void setMax(double max) {
+        this.max = max;
     }
 
 }

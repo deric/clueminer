@@ -197,7 +197,10 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
                     logger.log(Level.FINE, "mutated {0} to !{1}", new Object[]{param.getName(), value});
                     genom.putBoolean(param.getName(), (value != 0));
                     break;
-
+                case INTEGER:
+                    logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), value});
+                    genom.putInt(param.getName(), value);
+                    break;
                 default:
                     throw new RuntimeException(param.getType() + " is not supported yet");
             }

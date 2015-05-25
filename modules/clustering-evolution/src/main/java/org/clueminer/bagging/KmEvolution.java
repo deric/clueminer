@@ -53,7 +53,7 @@ public class KmEvolution extends MoEvolution {
     @Override
     public void run() {
         setAlgorithm(new KMeans());
-        Problem problem = new KmProblem(this);
+        Problem problem = new KmProblem(this, getAlgorithm());
         Algorithm moAlg;
         CrossoverOperator crossover;
         MutationOperator mutation;

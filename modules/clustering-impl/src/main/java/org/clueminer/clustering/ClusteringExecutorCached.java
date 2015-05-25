@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -40,6 +41,10 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
 
     public ClusteringExecutorCached() {
         algorithm = new HACLW();
+    }
+
+    public ClusteringExecutorCached(ClusteringAlgorithm alg) {
+        algorithm = alg;
     }
 
     @Override

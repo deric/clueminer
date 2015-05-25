@@ -46,9 +46,36 @@ public interface Parameter<T> {
     ParamType getType();
 
     /**
-     * Factory for getting possible values
+     * case BOOLEAN: upperLimit[i] = 1; combinations *= 2;
+     * logger.log(Level.INFO, "possible values: {0}", 2); break;     * Factory for getting possible values
      *
      * @return String
      */
     String getFactory();
+
+    /**
+     * Min posible value (in case of ordinary variables)
+     *
+     * @return
+     */
+    double getMin();
+
+    /**
+     * Maximum values (if defined and make sense)
+     *
+     * @return
+     */
+    double getMax();
+
+    /**
+     *
+     * @param min
+     */
+    void setMin(double min);
+
+    /**
+     *
+     * @param max
+     */
+    void setMax(double max);
 }

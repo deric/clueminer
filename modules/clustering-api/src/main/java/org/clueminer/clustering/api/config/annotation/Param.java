@@ -49,4 +49,8 @@ public @interface Param {
      * @return
      */
     ParamType type() default ParamType.NULL;
+
+    double min() default Double.NaN;
+
+    double max() default Double.NaN;
 }

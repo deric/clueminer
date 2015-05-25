@@ -258,6 +258,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
     @Override
     public void setAlgorithm(ClusteringAlgorithm algorithm) {
         this.algorithm = algorithm;
+        exec.setAlgorithm(algorithm);
     }
 
     @Override
