@@ -10,6 +10,6 @@ public enum ParamType {
     DOUBLE,
     STRING,
     BOOLEAN,
-    INTEGER
-
+    INTEGER,
+    NULL, //unspecified type (will be detected according to java types)
 }

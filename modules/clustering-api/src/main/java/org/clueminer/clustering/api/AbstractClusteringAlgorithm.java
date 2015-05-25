@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.params.AlgParam;
+import org.clueminer.clustering.params.ParamType;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -89,7 +90,26 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
                         if (paramName.isEmpty()) {
                             paramName = field.getName();
                         }
-                        Parameter out = new AlgParam(paramName, p.type(), p.description(), p.factory());
+                        ParamType type;
+                        if (p.type() != ParamType.NULL) {
+                            type = p.type();
+                        } else {
+                            //auto-detection
+                            switch (field.getType().getName()) {
+                                case "double":
+                                    type = ParamType.DOUBLE;
+                                    break;
+                                case "int":
+                                    type = ParamType.INTEGER;
+                                    break;
+                                case "String":
+                                    type = ParamType.STRING;
+                                    break;
+                                default:
+                                    type = ParamType.DOUBLE;
+                            }
+                        }
+                        Parameter out = new AlgParam(paramName, type, p.description(), p.factory());
                         res.add(out);
                     }
                 }

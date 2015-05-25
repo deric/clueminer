@@ -1,10 +1,10 @@
 package org.clueminer.clustering.api.config.annotation;
 
-import org.clueminer.clustering.params.ParamType;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import org.clueminer.clustering.params.ParamType;
 
 /**
  *
@@ -48,5 +48,5 @@ public @interface Param {
      *
      * @return
      */
-    ParamType type() default ParamType.DOUBLE;
+    ParamType type() default ParamType.NULL;
 }
