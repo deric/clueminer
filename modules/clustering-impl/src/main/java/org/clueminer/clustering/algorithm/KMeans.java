@@ -46,14 +46,14 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      * change.
      *
      */
-    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 150)
+    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 105)
     private int iterations = -1;
     /**
      * Random generator for this clusterer.
      */
     private Random random;
 
-    @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 20)
+    @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 10)
     private int k;
 
     /**
