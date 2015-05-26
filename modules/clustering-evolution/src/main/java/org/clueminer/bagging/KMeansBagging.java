@@ -73,6 +73,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         Clustering[] clusts;
 
         //result store
+        ClusteringReduce reducer;
         Clustering<? extends Cluster> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {
@@ -80,7 +81,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 //map
                 clusts = randClusters(alg, dataset, props);
                 //reduce
-                ClusteringReduce reducer = new NaiveReduce();
+                reducer = new NaiveReduce();
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;
             case "MO":
@@ -94,6 +95,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 for (int i = 0; i < sol.size(); i++) {
                     clusts[i] = ((MoSolution) sol.get(i)).getClustering();
                 }
+                reducer = new CoAssociationReduce();
+                res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;
             default:
                 throw new RuntimeException("unknown method " + initSet);

@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class KMeansBaggingTest {
 
-    private KMeansBagging subject;
+    private final KMeansBagging subject;
 
     public KMeansBaggingTest() {
         subject = new KMeansBagging();
@@ -58,6 +58,12 @@ public class KMeansBaggingTest {
 
     @Test
     public void testPartition() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        Props params = new Props();
+        params.putInt("k", 3);
+        params.put("init_set", "MO");
+        params.putInt(KMeansBagging.BAGGING, 3);
+        Clustering c = subject.cluster(data, params);
     }
 
 }
