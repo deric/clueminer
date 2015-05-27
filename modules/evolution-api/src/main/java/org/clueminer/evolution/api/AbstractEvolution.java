@@ -152,10 +152,12 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
         return ind.getProps().get(key);
     }
 
+    @Override
     public void setDefaultProps(Props prop) {
         this.defaultProp = prop;
     }
 
+    @Override
     public Props getDefaultProps() {
         if (defaultProp == null) {
             return new Props();
