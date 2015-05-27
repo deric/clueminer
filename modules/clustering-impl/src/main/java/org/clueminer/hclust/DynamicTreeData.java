@@ -2,6 +2,7 @@ package org.clueminer.hclust;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Stack;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -27,7 +28,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param root
      * @param hintSize estimated number number of nodes (doesn't have to be
-     * accurate)
+     *                 accurate)
      */
     public DynamicTreeData(DendroNode root, int hintSize) {
         this.root = root;
@@ -55,9 +56,63 @@ public class DynamicTreeData implements DendroTreeData {
     @Override
     public int treeLevels() {
         if (root != null) {
-            return root.level();
+            return treeLevels(1e-9);
         }
         return 0;
+    }
+
+    /**
+     * Count distinct node heights within a tree with given tolerance for Double
+     * value difference
+     *
+     * @param tolerance
+     * @return
+     */
+    @Override
+    public int treeLevels(double tolerance) {
+        if (root != null) {
+            double[] heights = new double[numNodes() - numLeaves()];
+            collectHeights(heights, root, 0);
+            Arrays.sort(heights);
+            int cnt = 0;
+            //count number of distinct values
+            double prev = Double.MAX_VALUE;
+            for (int i = 0; i < heights.length; i++) {
+                double height = heights[i];
+                if (Math.abs(height - prev) > tolerance) {
+                    cnt++;
+                }
+                prev = height;
+            }
+            return cnt;
+        }
+        return 0;
+    }
+
+    /**
+     * Collect node heights into an array (without leaves)
+     *
+     * @param heights
+     * @param node
+     * @param idx
+     * @return
+     */
+    private int collectHeights(double[] heights, DendroNode node, int idx) {
+        if (node.isLeaf()) {
+            //nothing to do
+            return idx;
+        }
+        int nextId;
+        heights[idx++] = node.getHeight();
+        nextId = idx;
+        if (node.hasLeft()) {
+            nextId = collectHeights(heights, node.getLeft(), nextId);
+        }
+        if (node.hasRight()) {
+            nextId = collectHeights(heights, node.getRight(), nextId);
+        }
+
+        return nextId;
     }
 
     @Override
@@ -71,8 +126,9 @@ public class DynamicTreeData implements DendroTreeData {
     }
 
     @Override
-    public void setRoot(DendroNode root) {
-        this.root = root;
+    public DendroNode setRoot(DendroNode node) {
+        this.root = node;
+        return this.root;
     }
 
     @Override
@@ -144,6 +200,7 @@ public class DynamicTreeData implements DendroTreeData {
         }
     }
 
+    @Override
     public void print(DendroNode treeRoot) {
         try {
             OutputStreamWriter out = new OutputStreamWriter(System.out);
@@ -275,7 +332,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param capacity
      */
-    protected void ensureCapacity(int capacity) {
+    protected final void ensureCapacity(int capacity) {
         if (mapping == null) {
             mapping = new int[capacity];
             leaves = new DendroNode[capacity];

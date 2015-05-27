@@ -27,7 +27,13 @@ public interface DendroNode {
      */
     DendroNode getLeft();
 
-    void setLeft(DendroNode left);
+    /**
+     * Set given node on left branch of current node
+     *
+     * @param left
+     * @return the left node (fluent interface)
+     */
+    DendroNode setLeft(DendroNode left);
 
     /**
      *
@@ -41,7 +47,13 @@ public interface DendroNode {
      */
     DendroNode getRight();
 
-    void setRight(DendroNode right);
+    /**
+     * Set given node on right branch of current node
+     *
+     * @param right
+     * @return the right node (fluent interface)
+     */
+    DendroNode setRight(DendroNode right);
 
     /**
      *
@@ -80,7 +92,12 @@ public interface DendroNode {
 
     double getHeight();
 
-    void setHeight(double height);
+    /**
+     *
+     * @param height
+     * @return this node (fluent interface)
+     */
+    DendroNode setHeight(double height);
 
     /**
      * Position of last node is also width of the tree
@@ -89,14 +106,20 @@ public interface DendroNode {
      */
     double getPosition();
 
-    void setPosition(double value);
+    /**
+     *
+     * @param value
+     * @return this node (fluent interface)
+     */
+    DendroNode setPosition(double value);
 
     /**
      * set id in mapping (usually from left to right, 0 to n-1)
      *
      * @param id
+     * @return this node
      */
-    void setId(int id);
+    DendroNode setId(int id);
 
     /**
      * id in mapping array

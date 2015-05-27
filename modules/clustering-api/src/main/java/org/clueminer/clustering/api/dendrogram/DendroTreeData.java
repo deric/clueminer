@@ -28,16 +28,27 @@ public interface DendroTreeData {
     int treeLevels();
 
     /**
+     * Number of distinct node heights within a tree
+     *
+     * @param tolerance threshold in height difference for considering height as
+     *                  the same
+     * @return
+     */
+    int treeLevels(double tolerance);
+
+    /**
      *
      * @return tree node
      */
     DendroNode getRoot();
 
     /**
+     * Set node as tree root
      *
      * @param root
+     * @return itself
      */
-    void setRoot(DendroNode root);
+    DendroNode setRoot(DendroNode root);
 
     /**
      * Left-most leaf

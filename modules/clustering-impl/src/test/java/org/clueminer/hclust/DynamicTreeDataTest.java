@@ -12,7 +12,7 @@ import org.openide.util.Exceptions;
  */
 public class DynamicTreeDataTest {
 
-    private DynamicTreeData subject;
+    private final DynamicTreeData subject;
 
     public DynamicTreeDataTest() {
         subject = new DynamicTreeData();
@@ -30,6 +30,28 @@ public class DynamicTreeDataTest {
     @Test
     public void testTreeLevels() {
         assertEquals(1, subject.treeLevels());
+
+        //3 different node heights
+        DynamicTreeData t = new DynamicTreeData();
+        t.setRoot(new DTreeNode(true)).setHeight(15);
+        t.getRoot().setLeft(new DTreeNode(1)).setHeight(12)
+                .setLeft(new DTreeNode(2));
+        t.getRoot().setRight(new DTreeNode(3)).setHeight(13)
+                .setLeft(new DTreeNode(4));
+
+        t.print();
+        assertEquals(3, t.treeLevels());
+
+        //3 different node heights
+        DynamicTreeData t2 = new DynamicTreeData();
+        t2.setRoot(new DTreeNode(true)).setHeight(15);
+        t2.getRoot().setLeft(new DTreeNode(1)).setHeight(12)
+                .setLeft(new DTreeNode(2));
+        t2.getRoot().setRight(new DTreeNode(3)).setHeight(12)
+                .setLeft(new DTreeNode(4));
+
+        t2.print();
+        assertEquals(2, t2.treeLevels());
     }
 
     @Test

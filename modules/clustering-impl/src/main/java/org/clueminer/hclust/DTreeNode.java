@@ -72,19 +72,21 @@ public class DTreeNode implements DendroNode {
     }
 
     @Override
-    public void setLeft(DendroNode left) {
+    public DendroNode setLeft(DendroNode left) {
         this.left = left;
         if (left != null) {
             left.setParent(this);
         }
+        return this.left;
     }
 
     @Override
-    public void setRight(DendroNode right) {
+    public DendroNode setRight(DendroNode right) {
         this.right = right;
         if (right != null) {
             right.setParent(this);
         }
+        return this.right;
     }
 
     @Override
@@ -137,8 +139,9 @@ public class DTreeNode implements DendroNode {
     }
 
     @Override
-    public void setHeight(double height) {
+    public DendroNode setHeight(double height) {
         this.height = height;
+        return this;
     }
 
     @Override
@@ -147,13 +150,15 @@ public class DTreeNode implements DendroNode {
     }
 
     @Override
-    public void setPosition(double position) {
+    public DendroNode setPosition(double position) {
         this.position = position;
+        return this;
     }
 
     @Override
-    public void setId(int id) {
+    public DendroNode setId(int id) {
         this.id = id;
+        return this;
     }
 
     @Override

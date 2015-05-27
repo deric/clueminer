@@ -165,6 +165,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
         return order.length - 1;
     }
 
+    @Override
+    public int treeLevels(double tolerance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /**
      * Number of terminal nodes
      *
@@ -543,7 +548,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
     }
 
     @Override
-    public void setRoot(DendroNode root) {
+    public DendroNode setRoot(DendroNode root) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -620,4 +625,5 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
     public boolean containsClusters() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }
