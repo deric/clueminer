@@ -110,23 +110,8 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         logger.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
-        PriorityQueue<Element> pq;
+        AbstractQueue<Element> pq = initQueue(items, pref);
         Matrix similarityMatrix;
-        //by default most similar items have smallest distance
-        boolean smallestFirst = pref.getBoolean(AgglParams.SMALLEST_FIRST, true);
-        if (smallestFirst) {
-            pq = new PriorityQueue<>(items);
-        } else {
-            //inverse sorting - biggest values first
-            Comparator<Element> comp = new Comparator<Element>() {
-
-                @Override
-                public int compare(Element o1, Element o2) {
-                    return o2.compareTo(o1);
-                }
-            };
-            pq = new PriorityQueue<>(items, comp);
-        }
 
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
@@ -143,6 +128,33 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         treeData.createMapping(n, treeData.getRoot());
         result.setTreeData(treeData);
         return result;
+    }
+
+    /**
+     * Initialize processing queue
+     *
+     * @param items expected number of items in the queue
+     * @param pref
+     * @return
+     */
+    protected AbstractQueue<Element> initQueue(int items, Props pref) {
+        AbstractQueue<Element> pq;
+        //by default most similar items have smallest distance
+        boolean smallestFirst = pref.getBoolean(AgglParams.SMALLEST_FIRST, true);
+        if (smallestFirst) {
+            pq = new PriorityQueue<>(items);
+        } else {
+            //inverse sorting - biggest values first
+            Comparator<Element> comp = new Comparator<Element>() {
+
+                @Override
+                public int compare(Element o1, Element o2) {
+                    return o2.compareTo(o1);
+                }
+            };
+            pq = new PriorityQueue<>(items, comp);
+        }
+        return pq;
     }
 
     public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {

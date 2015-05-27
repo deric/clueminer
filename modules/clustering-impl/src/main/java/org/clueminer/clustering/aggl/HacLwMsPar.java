@@ -1,7 +1,6 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
-import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -60,7 +59,7 @@ public class HacLwMsPar extends HACLWMS {
 
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
-        AbstractQueue<Element> pq = new PriorityQueue<>(items);
+        AbstractQueue<Element> pq = initQueue(items, pref);
 
         Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
