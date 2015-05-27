@@ -57,6 +57,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private JButton btnRandom;
     private Random rand;
     private JComboBox comboDistance;
+    private JComboBox comboMethod;
     private static final String name = "k-means bagging";
 
     public KmeansBaggingDialog() {
@@ -213,6 +214,14 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
             }
         });
         sliderBagging.setValue(5);
+
+        //initialization method
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Method:"), c);
+        c.gridx = 1;
+        comboMethod = new JComboBox(new String[]{"RANDOM", "MO"});
+        add(comboMethod, c);
     }
 
     private void updateKSlider() {
@@ -250,6 +259,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
         params.put(KMeans.DISTANCE, (String) comboDistance.getSelectedItem());
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
+        params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
 
         return params;
     }

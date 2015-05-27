@@ -16,10 +16,12 @@
  */
 package org.clueminer.bagging;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.mo.MoEvolution;
 import org.clueminer.evolution.mo.MoSolution;
@@ -33,7 +35,6 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.NaryTournamentSelection;
-import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 
@@ -54,7 +55,11 @@ public class KmEvolution extends MoEvolution {
     @Override
     public void run() {
         setAlgorithm(new KMeans());
-        Problem problem = new KmProblem(this, getAlgorithm());
+        HashSet<String> skipParams = new HashSet<>();
+        skipParams.add(AgglParams.LOG);
+        skipParams.add(AgglParams.STD);
+        KmProblem problem = new KmProblem(this, getAlgorithm(), skipParams);
+
         Algorithm moAlg;
         CrossoverOperator crossover;
         MutationOperator mutation;
@@ -76,12 +81,12 @@ public class KmEvolution extends MoEvolution {
         double crossoverDistributionIndex = problem.getNumberOfVariables();
         crossover = new IntegerSBXCrossover(getCrossoverProbability(), crossoverDistributionIndex);
 
-        double mutationProbability = 1.0 / problem.getNumberOfVariables();
+        double mutationProb = 1.0 / problem.getNumberOfVariables();
         double mutationDistributionIndex = problem.getNumberOfVariables();
-        mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
+        mutation = new IntegerPolynomialMutation(mutationProb, mutationDistributionIndex);
 
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
-        System.out.println("mutation: " + mutationProbability);
+        System.out.println("mutation: " + mutationProb);
         System.out.println("crossover: " + getCrossoverProbability());
         moAlg = new NSGAIIBuilder(problem)
                 .setCrossoverOperator(crossover)
@@ -140,6 +145,5 @@ public class KmEvolution extends MoEvolution {
     public List<Solution> getSolution() {
         return moPop;
     }
-
 
 }

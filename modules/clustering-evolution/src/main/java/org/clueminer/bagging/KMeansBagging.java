@@ -46,6 +46,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     public static final String BAGGING = "bagging";
 
+    public static final String INIT_METHOD = "init_set";
+
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
     private int bagging;
 
@@ -65,7 +67,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     @Override
     public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
         bagging = props.getInt(BAGGING, 5);
-        String initSet = props.get("init_set", "RANDOM");
+        String initSet = props.get(INIT_METHOD, "RANDOM");
         //String initSet = props.get("init_set", "MO");
         KMeans alg = new KMeans();
 
@@ -86,6 +88,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 break;
             case "MO":
                 KmEvolution km = new KmEvolution(new ClusteringExecutorCached(alg));
+                km.setGenerations(5);
                 km.setDataset(dataset);
                 km.addObjective(new AIC());
                 km.addObjective(new SDindex());

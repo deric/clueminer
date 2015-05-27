@@ -17,6 +17,7 @@
 package org.clueminer.bagging;
 
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HacLwMsPar;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
@@ -31,6 +32,7 @@ import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.utils.Props;
 
 /**
+ * Inspired by Jain's evidence accumulation
  *
  * @author deric
  */
@@ -46,7 +48,9 @@ public class CoAssociationReduce implements ClusteringReduce {
         //cluster membership
         int ca, cb;
         double value;
+        int x = 0;
         for (Clustering clust : clusts) {
+            System.out.println("reducing " + (x++));
             for (int i = 1; i < n; i++) {
                 a = clust.instance(i);
                 ca = clust.assignedCluster(a.getIndex());
@@ -61,8 +65,8 @@ public class CoAssociationReduce implements ClusteringReduce {
                 }
             }
         }
-        coassoc.printLower(2, 3);
-        HACLW hac = new HACLW();
+        //coassoc.printLower(2, 3);
+        HACLW hac = new HacLwMsPar(4);
         //largest values should be merged first
         props.put(AgglParams.SMALLEST_FIRST, false);
         HierarchicalResult res = hac.hierarchy(coassoc, c.getLookup().lookup(Dataset.class), props);
