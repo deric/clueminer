@@ -196,11 +196,23 @@ public class PropsTest {
     }
 
     @Test
-    public void testGetBoolean_3args() {
-    }
-
-    @Test
     public void testCopy() {
+        Props p = new Props();
+        String key = "keep-matrix";
+        p.put(PropType.PERFORMANCE, key, true);
+        String strKey = "str";
+        p.put(strKey, "foo");
+
+        Props copy = p.copy();
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key));
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key, false));
+        assertEquals("foo", copy.get(strKey));
+        //change original value
+        p.put(PropType.PERFORMANCE, key, false);
+        p.put(strKey, "bar");
+        //copy should be unchanged
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key));
+        assertEquals("foo", copy.get(strKey));
     }
 
     @Test

@@ -221,6 +221,9 @@ public class Props implements Map<String, Object> {
         if (val instanceof Boolean) {
             return (boolean) val;
         }
+        if (val == null) {
+            return false;
+        }
         return Boolean.valueOf(val.toString());
     }
 
@@ -291,9 +294,16 @@ public class Props implements Map<String, Object> {
         return properties;
     }
 
+    /**
+     * Deep copy of the props map
+     *
+     * @return copy all values from original Props object
+     */
     public Props copy() {
         Props c = new Props();
-        c.putAll((Map<String, Object>) this.clone());
+        for (Table.Cell<PropType, String, Object> e : store.cellSet()) {
+            c.put(e.getRowKey(), e.getColumnKey(), e.getValue());
+        }
         return c;
     }
 
