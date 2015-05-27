@@ -62,6 +62,9 @@ public class PropsTest {
 
     @Test
     public void testGetLong_String() {
+        String key = "long key";
+        subject.putLong(key, 42L);
+        assertEquals(42L, subject.getLong(key));
     }
 
     @Test
@@ -111,6 +114,7 @@ public class PropsTest {
 
     @Test
     public void testGetString() {
+        assertEquals(null, subject.get("really strange missing key"));
     }
 
     @Test

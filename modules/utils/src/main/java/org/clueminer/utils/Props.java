@@ -59,6 +59,10 @@ public class Props implements Map<String, Object> {
         return store.put(PropType.MAIN, key, value);
     }
 
+    public Object put(String key, long value) {
+        return store.put(PropType.MAIN, key, value);
+    }
+
     /**
      * Store property into given {pt} category
      *
@@ -105,10 +109,14 @@ public class Props implements Map<String, Object> {
      * thus for getting boolean use getBoolean() etc.
      *
      * @param key
-     * @return
+     * @return String value for given key if present, otherwise null
      */
     public String get(String key) {
-        return get(PropType.MAIN, key).toString();
+        Object ret = get(PropType.MAIN, key);
+        if (ret == null) {
+            return null;
+        }
+        return ret.toString();
     }
 
     /**
@@ -245,8 +253,10 @@ public class Props implements Map<String, Object> {
 
     public long getLong(String key) {
         Object val = get(key);
-        long ret = Long.parseLong(val.toString());
-        return ret;
+        if (val instanceof Long) {
+            return (long) val;
+        }
+        return Long.parseLong(val.toString());
     }
 
     public long getLong(String key, long def) {
@@ -256,7 +266,11 @@ public class Props implements Map<String, Object> {
     }
 
     public void putDouble(String key, double d) {
-        put(key, String.valueOf(d));
+        put(key, d);
+    }
+
+    public void putLong(String key, long d) {
+        put(key, d);
     }
 
     public double getDouble(String key) {
