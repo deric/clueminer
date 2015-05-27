@@ -1,12 +1,14 @@
 package org.clueminer.evolution.singlem;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
+import org.clueminer.utils.Props;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,6 +40,9 @@ public class SingleMuteEvolutionTest {
         subject.setPopulationSize(5);
         //subject.setAlgorithm(new ));
         subject.setEvaluator(new CalinskiHarabasz());
+        Props params = new Props();
+        params.put(AgglParams.KEEP_PROXIMITY, true);
+        subject.setDefaultProps(params);
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 

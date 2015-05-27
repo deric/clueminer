@@ -102,7 +102,7 @@ public abstract class BaseIntProblem extends AbstractGenericProblem<IntegerSolut
         if (defaultProp == null) {
             return new Props();
         }
-        return this.defaultProp;
+        return this.defaultProp.copy();
     }
 
 }

@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.InstanceContent;
@@ -25,6 +26,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     protected Dataset<? extends Instance> dataset;
     protected ClusterEvaluation evaluator;
     protected int populationSize = 10;
+    protected Props defaultProp;
     /**
      * parameter for clustering counting same solutions
      */
@@ -148,5 +150,16 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     public String getDefaultParam(String key) {
         T ind = createIndividual();
         return ind.getProps().get(key);
+    }
+
+    public void setDefaultProps(Props prop) {
+        this.defaultProp = prop;
+    }
+
+    public Props getDefaultProps() {
+        if (defaultProp == null) {
+            return new Props();
+        }
+        return this.defaultProp.copy();
     }
 }

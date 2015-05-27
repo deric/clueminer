@@ -1,6 +1,7 @@
 package org.clueminer.evolution.api;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.utils.Props;
 
 /**
  * Single objective evolution
@@ -18,5 +19,14 @@ public interface EvolutionSO<T extends Individual> extends Evolution<T> {
      * @param evaluator
      */
     void setEvaluator(ClusterEvaluation evaluator);
+
+    void setDefaultProps(Props prop);
+
+    /**
+     * Properties for newly created individual
+     *
+     * @return
+     */
+    Props getDefaultProps();
 
 }

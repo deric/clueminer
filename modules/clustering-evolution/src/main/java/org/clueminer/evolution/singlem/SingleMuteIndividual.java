@@ -21,7 +21,7 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
     public SingleMuteIndividual(EvolutionSO evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
-        this.genom = new Props();
+        this.genom = evolution.getDefaultProps();
     }
 
     public SingleMuteIndividual(EvolutionSO evolution, Props params) {
@@ -76,8 +76,8 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
                     System.out.println("==== mutated " + p.getName() + " from: " + prev + " to: " + list[idx]);
 
                 } catch (ClassNotFoundException | NoSuchMethodException |
-                        SecurityException | IllegalAccessException |
-                        IllegalArgumentException | InvocationTargetException ex) {
+                         SecurityException | IllegalAccessException |
+                         IllegalArgumentException | InvocationTargetException ex) {
                     throw new RuntimeException("factory '" + p.getName() + "' was not found");
                 }
                 break;

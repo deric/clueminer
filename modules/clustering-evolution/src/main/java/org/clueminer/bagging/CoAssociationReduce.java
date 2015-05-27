@@ -16,14 +16,23 @@
  */
 package org.clueminer.bagging;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.aggl.HacLwMsPar;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringReduce;
+import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ResultType;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.struct.DendrogramData2;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -37,6 +46,8 @@ import org.clueminer.utils.Props;
  * @author deric
  */
 public class CoAssociationReduce implements ClusteringReduce {
+
+    private static final Logger logger = Logger.getLogger(CoAssociationReduce.class.getName());
 
     @Override
     public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
@@ -66,11 +77,50 @@ public class CoAssociationReduce implements ClusteringReduce {
             }
         }
         //coassoc.printLower(2, 3);
-        HACLW hac = new HacLwMsPar(4);
+        HACLW hac = new HACLW();
         //largest values should be merged first
         props.put(AgglParams.SMALLEST_FIRST, false);
-        HierarchicalResult res = hac.hierarchy(coassoc, c.getLookup().lookup(Dataset.class), props);
-        return res.getClustering();
+        props.put(AgglParams.CLUSTER_ROWS, true);
+        props.put(AgglParams.CUTOFF_STRATEGY, "naive cutoff");
+        props.put(AgglParams.LINKAGE, CompleteLinkage.name);
+        hac.setColorGenerator(cg);
+        Dataset<? extends Instance> dataset = c.getLookup().lookup(Dataset.class);
+
+        HierarchicalResult rowsResult = hac.hierarchy(coassoc, dataset, props);
+        rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
+        rowsResult.getTreeData().print();
+
+        findCutoff(rowsResult, props);
+        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
+
+        Clustering clustering = rowsResult.getClustering();
+        clustering.mergeParams(props);
+        clustering.lookupAdd(mapping);
+
+        return clustering;
+    }
+
+    public void findCutoff(HierarchicalResult result, Props params) {
+        CutoffStrategy strategy = getCutoffStrategy(params);
+        logger.log(Level.FINER, "cutting dendrogram with {0}", strategy.getName());
+        double cut = result.findCutoff(strategy);
+        logger.log(Level.FINER, "found cutoff {0}, resulting clusters {1}", new Object[]{cut, result.getClustering().size()});
+    }
+
+    protected CutoffStrategy getCutoffStrategy(Props params) {
+        CutoffStrategy strategy;
+        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
+
+        if (cutoffAlg.equals("-- naive --")) {
+            strategy = CutoffStrategyFactory.getInstance().getDefault();
+        } else {
+            strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
+        }
+        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
+        InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+        strategy.setEvaluator(eval);
+
+        return strategy;
     }
 
 }

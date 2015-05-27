@@ -38,7 +38,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     public MultiMuteIndividual(EvolutionSO evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
-        this.genom = new Props();
+        this.genom = evolution.getDefaultProps();
         init();
     }
 
