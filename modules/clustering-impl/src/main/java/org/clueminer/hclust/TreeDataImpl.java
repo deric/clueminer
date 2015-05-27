@@ -166,7 +166,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
     }
 
     @Override
-    public int treeLevels(double tolerance) {
+    public int distinctHeights(double tolerance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -623,6 +623,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
 
     @Override
     public boolean containsClusters() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int distinctHeights() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

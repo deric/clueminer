@@ -56,7 +56,15 @@ public class DynamicTreeData implements DendroTreeData {
     @Override
     public int treeLevels() {
         if (root != null) {
-            return treeLevels(1e-9);
+            return root.level();
+        }
+        return 0;
+    }
+
+    @Override
+    public int distinctHeights() {
+        if (root != null) {
+            return distinctHeights(1e-9);
         }
         return 0;
     }
@@ -69,7 +77,7 @@ public class DynamicTreeData implements DendroTreeData {
      * @return
      */
     @Override
-    public int treeLevels(double tolerance) {
+    public int distinctHeights(double tolerance) {
         if (root != null) {
             double[] heights = new double[numNodes() - numLeaves()];
             collectHeights(heights, root, 0);

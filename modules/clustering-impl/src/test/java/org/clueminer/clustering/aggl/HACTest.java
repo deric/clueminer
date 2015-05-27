@@ -75,8 +75,10 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(0.21587033144922904, root.getHeight(), delta);
 
-        int levels = tree.treeLevels();
-        assertEquals(5, levels);
+        int levels = tree.distinctHeights(1e-7);
+        //TODO: in this example nodes #7 and #8 are on different level,
+        //but their height is the same. should we consider those as different
+        assertEquals(4, levels);
     }
 
     @Test
@@ -94,8 +96,9 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(32.542734980330046, root.getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
-        int levels = tree.treeLevels();
-        assertEquals(8, levels);
+
+        assertEquals(16, tree.distinctHeights());
+        assertEquals(8, tree.treeLevels());
     }
 
     @Test
@@ -113,8 +116,9 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(121.11422748793802, root.getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
-        int levels = tree.treeLevels();
-        assertEquals(6, levels);
+
+        assertEquals(16, tree.distinctHeights());
+        assertEquals(6, tree.treeLevels());
     }
 
     @Test
@@ -134,8 +138,8 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(0.10198039027185574, root.getHeight(), delta);
 
-        int levels = tree.treeLevels();
-        assertEquals(4, levels);
+        assertEquals(5, tree.distinctHeights());
+        assertEquals(4, tree.treeLevels());
     }
 
 }

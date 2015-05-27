@@ -216,7 +216,7 @@ public class HClustResultTest {
     }
 
     /**
-     * Test of treeLevels method, of class HClustResult.
+     * Test of distinctHeights method, of class HClustResult.
      */
     @Test
     public void testTreeLevels() {

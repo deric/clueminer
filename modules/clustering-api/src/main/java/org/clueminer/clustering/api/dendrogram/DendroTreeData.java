@@ -34,7 +34,14 @@ public interface DendroTreeData {
      *                  the same
      * @return
      */
-    int treeLevels(double tolerance);
+    int distinctHeights(double tolerance);
+
+    /**
+     * Distinct levels with default tolerance
+     *
+     * @return number of distinct tree levels within a tree (without leaves)
+     */
+    int distinctHeights();
 
     /**
      *

@@ -3,6 +3,7 @@ package org.clueminer.clustering.api.dendrogram;
 /**
  *
  * @author Tomas Barton
+ * @deprecated use {@link DendroTreeData} instead
  */
 public interface DendroTreeDataOld extends DendroTreeData {
 

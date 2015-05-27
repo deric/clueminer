@@ -40,7 +40,8 @@ public class DynamicTreeDataTest {
                 .setLeft(new DTreeNode(4));
 
         t.print();
-        assertEquals(3, t.treeLevels());
+        assertEquals(3, t.distinctHeights());
+        assertEquals(2, t.treeLevels());
 
         //3 different node heights
         DynamicTreeData t2 = new DynamicTreeData();
@@ -51,6 +52,7 @@ public class DynamicTreeDataTest {
                 .setLeft(new DTreeNode(4));
 
         t2.print();
+        assertEquals(2, t2.distinctHeights());
         assertEquals(2, t2.treeLevels());
     }
 

@@ -77,7 +77,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
         double height;
         double[][] cophenetic = new double[m][n];
         //System.out.println("matrix " + m + " x " + n);
-        //System.out.println("tree level " + tree.treeLevels());
+        //System.out.println("tree level " + tree.distinctHeights());
 
         for (i = 0; i < tree.treeLevels(); i++) {
             idx = tree.getOrder(i); //we're going through all tree levels
