@@ -20,10 +20,10 @@ import java.util.Set;
  * <p>
  *
  */
-public class Props implements Map<String, String> {
+public class Props implements Map<String, Object> {
 
     private static final long serialVersionUID = 2211405016738281988L;
-    private Table<PropType, String, String> store;
+    private Table<PropType, String, Object> store;
 
     public Props() {
         init();
@@ -41,17 +41,21 @@ public class Props implements Map<String, String> {
 
     private void init() {
         store = Tables.newCustomTable(
-                Maps.<PropType, Map<String, String>>newHashMap(),
-                new Supplier<Map<String, String>>() {
+                Maps.<PropType, Map<String, Object>>newHashMap(),
+                new Supplier<Map<String, Object>>() {
                     @Override
-                    public Map<String, String> get() {
+                    public Map<String, Object> get() {
                         return Maps.newTreeMap();
                     }
                 });
     }
 
     @Override
-    public String put(String key, String value) {
+    public Object put(String key, Object value) {
+        return store.put(PropType.MAIN, key, value);
+    }
+
+    public Object put(String key, double value) {
         return store.put(PropType.MAIN, key, value);
     }
 
@@ -64,25 +68,29 @@ public class Props implements Map<String, String> {
      * @return
      */
     public String put(PropType pt, String key, String value) {
+        return (String) store.put(pt, key, value);
+    }
+
+    public Object put(PropType pt, String key, Object value) {
         return store.put(pt, key, value);
     }
 
-    public String put(PropType pt, String key, boolean value) {
-        return store.put(pt, key, String.valueOf(value));
+    public Object put(PropType pt, String key, boolean value) {
+        return store.put(pt, key, value);
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends String> map) {
+    public void putAll(Map<? extends String, ? extends Object> map) {
         putAll(PropType.MAIN, map);
     }
 
-    public final void putAll(PropType pt, Map<? extends String, ? extends String> map) {
-        for (Entry<? extends String, ? extends String> e : map.entrySet()) {
+    public final void putAll(PropType pt, Map<? extends String, ? extends Object> map) {
+        for (Entry<? extends String, ? extends Object> e : map.entrySet()) {
             store.put(pt, e.getKey(), e.getValue());
         }
     }
 
-    public String get(PropType pt, String key) {
+    public Object get(PropType pt, String key) {
         // keys are in rows
         if (!store.containsRow(key)) {
             //TODO make it work for other rows
@@ -91,7 +99,7 @@ public class Props implements Map<String, String> {
         throw new IllegalArgumentException("Map key not found: " + key);
     }
 
-    public String get(String key) {
+    public Object get(String key) {
         return get(PropType.MAIN, key);
     }
 
@@ -104,7 +112,19 @@ public class Props implements Map<String, String> {
      * @return
      */
     public String get(String key, String def) {
-        String result = this.get(key);
+        Object result = this.get(key);
+        if (result == null) {
+            result = def;
+            /**
+             * store the value, so that we know which default value was used
+             */
+            put(key, result);
+        }
+        return (String) result;
+    }
+
+    public Object get(String key, Object def) {
+        Object result = this.get(key);
         if (result == null) {
             result = def;
             /**
@@ -125,7 +145,19 @@ public class Props implements Map<String, String> {
      * @return
      */
     public String get(PropType pt, String key, String def) {
-        String result = this.get(pt, key);
+        Object result = this.get(pt, key);
+        if (result == null) {
+            result = def;
+            /**
+             * store the value, so that we know which default value was used
+             */
+            put(pt, key, result);
+        }
+        return (String) result;
+    }
+
+    public Object get(PropType pt, String key, Object def) {
+        Object result = this.get(pt, key);
         if (result == null) {
             result = def;
             /**
@@ -141,8 +173,11 @@ public class Props implements Map<String, String> {
     }
 
     public int getInt(String key) {
-        String val = get(key);
-        int ret = Integer.parseInt(val);
+        Object val = get(key);
+        if (val instanceof Integer) {
+            return (int) val;
+        }
+        int ret = Integer.parseInt((String) val);
         return ret;
     }
 
@@ -164,17 +199,23 @@ public class Props implements Map<String, String> {
      * @return
      */
     public boolean getBoolean(PropType pt, String key) {
-        String val = get(pt, key);
-        return Boolean.parseBoolean(val);
+        Object val = get(pt, key);
+        if (val instanceof Boolean) {
+            return (boolean) val;
+        }
+        return Boolean.valueOf(val.toString());
     }
 
     public boolean getBoolean(PropType pt, String key, boolean def) {
-        String val = get(pt, key, String.valueOf(def));
-        return Boolean.parseBoolean(val);
+        Object val = get(pt, key, def);
+        if (val instanceof Boolean) {
+            return (boolean) val;
+        }
+        return Boolean.valueOf(val.toString());
     }
 
     public void putBoolean(String key, boolean value) {
-        put(key, String.valueOf(value));
+        put(key, value);
     }
 
     public boolean getBoolean(String key, boolean def) {
@@ -182,8 +223,8 @@ public class Props implements Map<String, String> {
     }
 
     public long getLong(String key) {
-        String val = get(key);
-        long ret = Long.parseLong(val);
+        Object val = get(key);
+        long ret = Long.parseLong(val.toString());
         return ret;
     }
 
@@ -198,15 +239,17 @@ public class Props implements Map<String, String> {
     }
 
     public double getDouble(String key) {
-        String val = get(key);
-        double ret = Double.parseDouble(val);
+        Object val = get(key);
+        double ret = Double.parseDouble(val.toString());
         return ret;
     }
 
     public double getDouble(String key, double def) {
-        String val = get(key, String.valueOf(def));
-        double ret = Double.parseDouble(val);
-        return ret;
+        Object val = get(key, def);
+        if (val instanceof Double) {
+            return (double) val;
+        }
+        return Double.parseDouble(val.toString());
     }
 
     private void fromProperties(Properties props) {
@@ -223,20 +266,20 @@ public class Props implements Map<String, String> {
     @SuppressWarnings("unchecked")
     public Properties toProperties() {
         Properties properties = new Properties();
-        properties.putAll((Map<String, String>) this.clone());
+        properties.putAll((Map<String, Object>) this.clone());
         return properties;
     }
 
     public Props copy() {
         Props c = new Props();
-        c.putAll((Map<String, String>) this.clone());
+        c.putAll((Map<String, Object>) this.clone());
         return c;
     }
 
     @Override
     public Props clone() {
         Props c = new Props();
-        for (Table.Cell<PropType, String, String> e : store.cellSet()) {
+        for (Table.Cell<PropType, String, Object> e : store.cellSet()) {
             c.put(e.getRowKey(), e.getColumnKey(), e.getValue());
         }
         return c;
@@ -246,7 +289,7 @@ public class Props implements Map<String, String> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (Entry<String, String> e : store.row(PropType.MAIN).entrySet()) {
+        for (Entry<String, Object> e : store.row(PropType.MAIN).entrySet()) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -285,16 +328,16 @@ public class Props implements Map<String, String> {
 
     @Override
     public String get(Object key) {
-        return store.get(PropType.MAIN, key);
+        return store.get(PropType.MAIN, key).toString();
     }
 
     public String get(PropType tp, Object key) {
-        return store.get(tp, key);
+        return store.get(tp, key).toString();
     }
 
     @Override
     public String remove(Object key) {
-        return store.remove(PropType.MAIN, key);
+        return store.remove(PropType.MAIN, key).toString();
     }
 
     @Override
@@ -308,12 +351,12 @@ public class Props implements Map<String, String> {
     }
 
     @Override
-    public Collection<String> values() {
+    public Collection<Object> values() {
         return store.values();
     }
 
     @Override
-    public Set<Entry<String, String>> entrySet() {
+    public Set<Entry<String, Object>> entrySet() {
         return store.row(PropType.MAIN).entrySet();
     }
 
@@ -324,7 +367,7 @@ public class Props implements Map<String, String> {
      * @param other
      */
     public void merge(Props other) {
-        for (Table.Cell<PropType, String, String> cell : other.store.cellSet()) {
+        for (Table.Cell<PropType, String, Object> cell : other.store.cellSet()) {
             put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         }
     }

@@ -12,7 +12,7 @@ import org.junit.Test;
 public class PropsTest {
 
     private Props subject;
-    private static final double delta = 1e-9;
+    private static final double delta = 1e-12;
 
     public PropsTest() {
     }
@@ -70,10 +70,14 @@ public class PropsTest {
 
     @Test
     public void testGetDouble_String() {
-    }
+        String key = "pi";
+        double pi = 3.14159265358979323846264338327950288419716939937510;
+        subject.put(key, pi);
 
-    @Test
-    public void testGetDouble_String_double() {
+        assertEquals(pi, subject.getDouble(key), delta);
+        assertEquals(pi, subject.getDouble(key, -1), delta);
+        //missing key
+        assertEquals(-1.0, subject.getDouble("piii", -1), delta);
     }
 
     @Test
@@ -181,6 +185,14 @@ public class PropsTest {
 
     @Test
     public void testGetBoolean_PropType_String() {
+        String key = "my_bool";
+        //put boolean
+        subject.put(key, true);
+        //get boolean back
+        assertEquals(true, subject.get(key));
+        assertEquals(true, subject.containsKey(key));
+
+        assertEquals(false, subject.get("misssing bool key", false));
     }
 
     @Test
@@ -223,10 +235,6 @@ public class PropsTest {
 
     @Test
     public void testContainsValue() {
-    }
-
-    @Test
-    public void testGet_Object() {
     }
 
     @Test
