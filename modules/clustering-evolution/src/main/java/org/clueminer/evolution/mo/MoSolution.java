@@ -56,7 +56,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         attributes = new HashMap<>();
         algorithm = problem.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
-        genom = new Props();
+        genom = problem.getDefaultProps();
 
         numberOfViolatedConstraints = 0;
         overallConstraintViolationDegree = 0.0;
@@ -66,7 +66,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             value = randomGenerator.nextInt(problem.getLowerBound(i), problem.getUpperBound(i));
             setVariableValue(i, value, false);
         }
-        System.out.println("created solution: " + genom.toString());
+        logger.log(Level.INFO, "created solution: {0}", genom.toString());
         updateCustering();
     }
 
@@ -85,7 +85,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
         algorithm = problem.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
         genom = other.genom.clone();
-        System.out.println("created solution " + genom.toString());
+        logger.log(Level.INFO, "created solution: {0}", genom.toString());
 
         numberOfViolatedConstraints = 0;
         overallConstraintViolationDegree = 0.0;

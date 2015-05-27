@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.events.ListenerList;
@@ -14,6 +15,8 @@ import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
+import org.clueminer.utils.PropType;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -26,7 +29,6 @@ import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.crossover.IntegerSBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.IntegerPolynomialMutation;
 import org.uma.jmetal.operator.impl.selection.NaryTournamentSelection;
-import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.comparator.DominanceComparator;
 
@@ -89,7 +91,10 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
 
     @Override
     public void run() {
-        Problem problem = new MoProblem(this);
+        MoProblem problem = new MoProblem(this);
+        Props def = new Props();
+        def.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        problem.setDefaultProps(def);
         Algorithm moAlg;
         CrossoverOperator crossover;
         MutationOperator mutation;
@@ -111,12 +116,12 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
         double crossoverDistributionIndex = problem.getNumberOfVariables();
         crossover = new IntegerSBXCrossover(getCrossoverProbability(), crossoverDistributionIndex);
 
-        double mutationProbability = 1.0 / problem.getNumberOfVariables();
+        double mutationProb = 1.0 / problem.getNumberOfVariables();
         double mutationDistributionIndex = problem.getNumberOfVariables();
-        mutation = new IntegerPolynomialMutation(mutationProbability, mutationDistributionIndex);
+        mutation = new IntegerPolynomialMutation(mutationProb, mutationDistributionIndex);
 
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
-        System.out.println("mutation: " + mutationProbability);
+        System.out.println("mutation: " + mutationProb);
         System.out.println("crossover: " + getCrossoverProbability());
         moAlg = new NSGAIIBuilder(problem)
                 .setCrossoverOperator(crossover)

@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.problem.impl.AbstractGenericProblem;
@@ -36,11 +37,14 @@ import org.uma.jmetal.solution.IntegerSolution;
  */
 public abstract class BaseIntProblem extends AbstractGenericProblem<IntegerSolution> implements IntegerProblem {
 
+    private static final long serialVersionUID = 7426909200734863348L;
+
     protected Int2ObjectOpenHashMap<String> mapping;
     protected int[] lowerLimit;
     protected int[] upperLimit;
     protected Parameter[] params;
     protected Executor exec;
+    protected Props defaultProp;
 
     @Override
     public Integer getUpperBound(int index) {
@@ -89,5 +93,16 @@ public abstract class BaseIntProblem extends AbstractGenericProblem<IntegerSolut
     public abstract ClusterEvaluation getExternal();
 
     public abstract boolean iskLimited();
+
+    public void setDefaultProps(Props prop) {
+        this.defaultProp = prop;
+    }
+
+    public Props getDefaultProps() {
+        if (defaultProp == null) {
+            return new Props();
+        }
+        return this.defaultProp;
+    }
 
 }
