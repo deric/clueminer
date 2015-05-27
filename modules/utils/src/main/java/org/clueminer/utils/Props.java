@@ -99,7 +99,25 @@ public class Props implements Map<String, Object> {
         throw new IllegalArgumentException("Map key not found: " + key);
     }
 
-    public Object get(String key) {
+    /**
+     * By default return String, we can't override methods with different return
+     * types,
+     * thus for getting boolean use getBoolean() etc.
+     *
+     * @param key
+     * @return
+     */
+    public String get(String key) {
+        return get(PropType.MAIN, key).toString();
+    }
+
+    /**
+     * Method used internally to retrieve various types
+     *
+     * @param key
+     * @return
+     */
+    public Object getObject(Object key) {
         return get(PropType.MAIN, key);
     }
 
@@ -112,7 +130,7 @@ public class Props implements Map<String, Object> {
      * @return
      */
     public String get(String key, String def) {
-        Object result = this.get(key);
+        Object result = this.getObject(key);
         if (result == null) {
             result = def;
             /**
@@ -120,11 +138,11 @@ public class Props implements Map<String, Object> {
              */
             put(key, result);
         }
-        return (String) result;
+        return result.toString();
     }
 
-    public Object get(String key, Object def) {
-        Object result = this.get(key);
+    public Object getObject(String key, Object def) {
+        Object result = store.get(PropType.MAIN, key);
         if (result == null) {
             result = def;
             /**
@@ -245,7 +263,10 @@ public class Props implements Map<String, Object> {
     }
 
     public double getDouble(String key, double def) {
-        Object val = get(key, def);
+        Object val = getObject(key, def);
+        if (val == null) {
+            return def;
+        }
         if (val instanceof Double) {
             return (double) val;
         }
@@ -332,7 +353,7 @@ public class Props implements Map<String, Object> {
     }
 
     public String get(PropType tp, Object key) {
-        return store.get(tp, key).toString();
+        return (String) store.get(tp, key);
     }
 
     @Override

@@ -189,10 +189,10 @@ public class PropsTest {
         //put boolean
         subject.put(key, true);
         //get boolean back
-        assertEquals(true, subject.get(key));
+        assertEquals(true, subject.getBoolean(key));
         assertEquals(true, subject.containsKey(key));
 
-        assertEquals(false, subject.get("misssing bool key", false));
+        assertEquals(false, subject.getBoolean("misssing bool key", false));
     }
 
     @Test
