@@ -67,6 +67,11 @@ public class AgglParams {
      */
     public static final String KEEP_PROXIMITY = "keep-proximity-matrix";
 
+    /**
+     * First merge items with lowest similarity value
+     */
+    public static final String SMALLEST_FIRST = "smallest-first";
+
     private Props pref;
 
     private DistanceMeasure distance;

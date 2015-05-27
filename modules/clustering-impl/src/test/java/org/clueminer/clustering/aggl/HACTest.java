@@ -74,6 +74,9 @@ public class HACTest {
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
         assertEquals(0.21587033144922904, root.getHeight(), delta);
+
+        int levels = tree.treeLevels();
+        assertEquals(5, levels);
     }
 
     @Test
@@ -91,6 +94,8 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(32.542734980330046, root.getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
+        int levels = tree.treeLevels();
+        assertEquals(8, levels);
     }
 
     @Test
@@ -108,6 +113,29 @@ public class HACTest {
         DendroNode root = tree.getRoot();
         assertEquals(121.11422748793802, root.getHeight(), delta);
         assertEquals(2 * dataset.size() - 1, tree.numNodes());
+        int levels = tree.treeLevels();
+        assertEquals(6, levels);
+    }
+
+    @Test
+    public void testInverseSorting() {
+        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
+        assertEquals(6, dataset.size());
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        //inverse ordering
+        pref.put(AgglParams.SMALLEST_FIRST, false);
+        HierarchicalResult result = subject.hierarchy(dataset, pref);
+        System.out.println("kumar - inverse");
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+        assertEquals(dataset.size(), tree.numLeaves());
+        DendroNode root = tree.getRoot();
+        assertEquals(0.10198039027185574, root.getHeight(), delta);
+
+        int levels = tree.treeLevels();
+        assertEquals(4, levels);
     }
 
 }
