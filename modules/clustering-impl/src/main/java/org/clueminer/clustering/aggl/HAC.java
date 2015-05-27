@@ -95,7 +95,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         pref.put(AgglParams.ALG, getName());
         checkParams(pref);
         AgglParams params = new AgglParams(pref);
-        Matrix similarityMatrix;
         distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = dataset.size();
@@ -103,10 +102,16 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             //columns clustering
             n = dataset.attributeCount();
         }
+        return hClust(dataset, dataset.asMatrix(), n, pref, params, result);
+    }
+
+    private HierarchicalResult hClust(Dataset<? extends Instance> dataset, Matrix input, int n,
+            Props pref, AgglParams params, HierarchicalResult result) {
         logger.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
         PriorityQueue<Element> pq;
+        Matrix similarityMatrix;
         //by default most similar items have smallest distance
         boolean smallestFirst = pref.getBoolean(AgglParams.SMALLEST_FIRST, true);
         if (smallestFirst) {
@@ -123,7 +128,6 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             pq = new PriorityQueue<>(items, comp);
         }
 
-        Matrix input = dataset.asMatrix();
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
         } else {
@@ -139,6 +143,22 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
         treeData.createMapping(n, treeData.getRoot());
         result.setTreeData(treeData);
         return result;
+    }
+
+    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {
+        int n;
+        HierarchicalResult result = new HClustResult(dataset, pref);
+        pref.put(AgglParams.ALG, getName());
+        checkParams(pref);
+        AgglParams params = new AgglParams(pref);
+        distanceFunction = params.getDistanceMeasure();
+        if (params.clusterRows()) {
+            n = input.rowsCount();
+        } else {
+            //columns clustering
+            n = input.columnsCount();
+        }
+        return hClust(dataset, input, n, pref, params, result);
     }
 
     /**

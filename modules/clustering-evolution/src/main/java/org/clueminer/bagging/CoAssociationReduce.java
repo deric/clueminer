@@ -16,11 +16,15 @@
  */
 package org.clueminer.bagging;
 
+import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringReduce;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
@@ -58,7 +62,11 @@ public class CoAssociationReduce implements ClusteringReduce {
             }
         }
         coassoc.printLower(2, 3);
-        return c;
+        HACLW hac = new HACLW();
+        //largest values should be merged first
+        props.put(AgglParams.SMALLEST_FIRST, false);
+        HierarchicalResult res = hac.hierarchy(coassoc, c.getLookup().lookup(Dataset.class), props);
+        return res.getClustering();
     }
 
 }

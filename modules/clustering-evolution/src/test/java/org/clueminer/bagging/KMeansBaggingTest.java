@@ -64,6 +64,7 @@ public class KMeansBaggingTest {
         params.put("init_set", "MO");
         params.putInt(KMeansBagging.BAGGING, 3);
         Clustering c = subject.cluster(data, params);
+        System.out.println("num clusters: " + c.size());
     }
 
 }
