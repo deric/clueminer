@@ -26,6 +26,7 @@ import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +69,9 @@ public class KmEvolutionTest {
         //subject.setAlgorithm(new ));
         subject.addObjective(new CalinskiHarabasz());
         subject.addObjective(new AIC());
+        Props props = new Props();
+        props.put("k", 3);
+        subject.setDefaultProps(props);
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 

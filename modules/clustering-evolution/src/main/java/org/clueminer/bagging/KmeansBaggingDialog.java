@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -61,6 +62,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private JComboBox comboDistance;
     private JComboBox comboMethod;
     private JComboBox comboLinkage;
+    private JCheckBox chckRandK;
     private static final String name = "k-means bagging";
 
     public KmeansBaggingDialog() {
@@ -233,6 +235,12 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboLinkage = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
         add(comboLinkage, c);
+
+        //rand k (only for MO)
+        c.gridy++;
+        c.gridx = 1;
+        chckRandK = new JCheckBox("fixed k");
+        add(chckRandK, c);
     }
 
     private void updateKSlider() {
@@ -272,6 +280,9 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
         params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
         params.put(AgglParams.LINKAGE, comboLinkage.getSelectedItem());
+        if (chckRandK.isSelected()) {
+            params.put(KMeansBagging.FIXED_K, true);
+        }
 
         return params;
     }

@@ -48,6 +48,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     public static final String INIT_METHOD = "init_set";
 
+    public static final String FIXED_K = "rand_k";
+
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
     private int bagging;
 
@@ -92,6 +94,12 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 km.setDataset(dataset);
                 km.addObjective(new AIC());
                 km.addObjective(new SDindex());
+                if (props.getBoolean(FIXED_K, false)) {
+                    Props p = new Props();
+                    p.put(KMeans.K, props.get(KMeans.K));
+                    km.setDefaultProps(p);
+                }
+
                 km.run();
                 List<Solution> sol = km.getSolution();
                 clusts = new Clustering[sol.size()];

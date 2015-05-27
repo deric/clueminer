@@ -58,8 +58,11 @@ public class KmEvolution extends MoEvolution {
         HashSet<String> skipParams = new HashSet<>();
         skipParams.add(AgglParams.LOG);
         skipParams.add(AgglParams.STD);
+        skipParams.add("k");
         KmProblem problem = new KmProblem(this, getAlgorithm(), skipParams);
-
+        if (defaultProp != null) {
+            problem.setDefaultProps(defaultProp);
+        }
         Algorithm moAlg;
         CrossoverOperator crossover;
         MutationOperator mutation;
