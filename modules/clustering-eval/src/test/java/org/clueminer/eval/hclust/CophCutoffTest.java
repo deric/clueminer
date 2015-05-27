@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -19,16 +20,14 @@ public class CophCutoffTest {
 
     private static final CophCutoff subject = new CophCutoff();
 
-    public CophCutoffTest() {
-    }
-
     @Test
     public void testFindCutoff() {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         HACLW alg = new HACLW();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         //result.getTreeData().print();
