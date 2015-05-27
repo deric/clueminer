@@ -32,7 +32,9 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.Props;
@@ -58,6 +60,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private Random rand;
     private JComboBox comboDistance;
     private JComboBox comboMethod;
+    private JComboBox comboLinkage;
     private static final String name = "k-means bagging";
 
     public KmeansBaggingDialog() {
@@ -222,6 +225,14 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboMethod = new JComboBox(new String[]{"RANDOM", "MO"});
         add(comboMethod, c);
+
+        //linkage (only for MO)
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Linkage:"), c);
+        c.gridx = 1;
+        comboLinkage = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
+        add(comboLinkage, c);
     }
 
     private void updateKSlider() {
@@ -260,6 +271,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.put(KMeans.DISTANCE, (String) comboDistance.getSelectedItem());
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
         params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
+        params.put(AgglParams.LINKAGE, comboLinkage.getSelectedItem());
 
         return params;
     }

@@ -24,14 +24,13 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Inverse distance measuring (bigger is better)
  *
  * @author deric
  */
-@ServiceProvider(service = ClusterLinkage.class)
+//@ServiceProvider(service = ClusterLinkage.class)
 public class CompleteLinkageInv extends AbstractLinkage implements ClusterLinkage {
 
     public static final String name = "Complete Linkage - inv dist";

@@ -24,7 +24,7 @@ public class HacLwCompleteTest {
     private final HacLwComplete subject = new HacLwComplete();
     private static final double delta = 1e-9;
 
-    @Test
+    //@Test
     public void testCompleteLinkage() {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
