@@ -102,7 +102,7 @@ public class CoAssociationReduce implements ClusteringReduce {
 
         HierarchicalResult rowsResult = hac.hierarchy(coassoc, dataset, props);
         rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
-        rowsResult.getTreeData().print();
+        // rowsResult.getTreeData().print();
         rowsResult.setProximityMatrix(coassoc);
 
         findCutoff(rowsResult, props);
