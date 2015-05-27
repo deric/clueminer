@@ -125,7 +125,7 @@ public class Props implements Map<String, String> {
      * @return
      */
     public String get(PropType pt, String key, String def) {
-        String result = this.get(key);
+        String result = this.get(pt, key);
         if (result == null) {
             result = def;
             /**

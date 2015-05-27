@@ -81,6 +81,21 @@ public class PropsTest {
     }
 
     @Test
+    public void testPutBooleanPt() {
+        String key = "bool-pt-key";
+        subject.put(PropType.PERFORMANCE, key, true);
+        assertEquals(true, subject.getBoolean(PropType.PERFORMANCE, key));
+
+        //get value, return default if missing
+        key = "bool-pt-key2";
+        subject.put(PropType.PERFORMANCE, key, true);
+        assertEquals(true, subject.getBoolean(PropType.PERFORMANCE, key, false));
+
+        key = "bool-pt-key3";
+        assertEquals(true, subject.getBoolean(PropType.PERFORMANCE, key, true));
+    }
+
+    @Test
     public void testPutBoolean() {
         String key = "boolean-key";
         subject.putBoolean(key, true);
@@ -88,7 +103,6 @@ public class PropsTest {
         //overwrite key
         subject.putBoolean(key, false);
         assertEquals(false, subject.getBoolean(key));
-
     }
 
     @Test
