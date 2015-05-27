@@ -108,6 +108,12 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
 
     @Override
     public double countFitness() {
+        if (algorithm instanceof AgglomerativeClustering) {
+            AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+            while (!isValid()) {
+                genom.put(AgglParams.LINKAGE, linkage(rand));
+            }
+        }
         clustering = updateCustering();
         if (!isValid()) {
             return Double.NaN;
@@ -228,7 +234,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
         boolean ret = true;
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
-            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
+            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE, "Complete Linkage"));
         }
         if (clustering != null) {
             if (clustering.size() < 2) {

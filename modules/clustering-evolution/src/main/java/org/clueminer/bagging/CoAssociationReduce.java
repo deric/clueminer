@@ -18,8 +18,8 @@ package org.clueminer.bagging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkageInv;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
@@ -77,12 +77,12 @@ public class CoAssociationReduce implements ClusteringReduce {
             }
         }
         //coassoc.printLower(2, 3);
-        HACLW hac = new HACLW();
+        HAC hac = new HAC();
         //largest values should be merged first
         props.put(AgglParams.SMALLEST_FIRST, false);
         props.put(AgglParams.CLUSTER_ROWS, true);
-        props.put(AgglParams.CUTOFF_STRATEGY, "naive cutoff");
-        props.put(AgglParams.LINKAGE, CompleteLinkage.name);
+        props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
+        props.put(AgglParams.LINKAGE, CompleteLinkageInv.name);
         hac.setColorGenerator(cg);
         Dataset<? extends Instance> dataset = c.getLookup().lookup(Dataset.class);
 

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkageInv;
+import org.clueminer.clustering.aggl.linkage.MedianLinkage;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -75,11 +77,11 @@ public class HACLW extends HAC implements AgglomerativeClustering {
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r cluster R is created after merging A and B
-     * @param q existing cluster
-     * @param a a cluster that is being merged
-     * @param b a cluster that is being merged
-     * @param sim similarity matrix
+     * @param r       cluster R is created after merging A and B
+     * @param q       existing cluster
+     * @param a       a cluster that is being merged
+     * @param b       a cluster that is being merged
+     * @param sim     similarity matrix
      * @param linkage cluster linkage method
      * @param cache
      * @param ma
@@ -228,7 +230,8 @@ public class HACLW extends HAC implements AgglomerativeClustering {
     @Override
     public boolean isLinkageSupported(String linkage) {
         switch (linkage) {
-            case "Median Linkage":
+            case MedianLinkage.name:
+            case CompleteLinkageInv.name:
                 return false;
             default:
                 return true;
