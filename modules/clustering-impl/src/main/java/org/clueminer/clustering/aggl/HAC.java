@@ -115,7 +115,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, false)) {
             result.setProximityMatrix(similarityMatrix);
         }
 

@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -39,21 +40,8 @@ public class HClustResultTest {
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, "Single Linkage");
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, pref);
-    }
-
-    /**
-     * Test of getInputData method, of class HClustResult.
-     */
-    @Test
-    public void testGetInputData() {
-    }
-
-    /**
-     * Test of setInputData method, of class HClustResult.
-     */
-    @Test
-    public void testSetInputData() {
     }
 
     /**
@@ -65,13 +53,6 @@ public class HClustResultTest {
         assertEquals(dataset.size(), m.rowsCount());
         assertEquals(dataset.size(), m.columnsCount());
 
-    }
-
-    /**
-     * Test of setProximityMatrix method, of class HClustResult.
-     */
-    @Test
-    public void testSetProximityMatrix() {
     }
 
     /**

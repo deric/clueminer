@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -32,26 +33,13 @@ public class HACTest {
         assertNotNull(subject.getName());
     }
 
-    /**
-     * Test of cluster method, of class HC1.
-     */
-    @Test
-    public void testCluster_Matrix_Props() {
-    }
-
-    /**
-     * Test of hierarchy method, of class HC1.
-     */
-    @Test
-    public void testHierarchy_Dataset_Props() {
-    }
-
     @Test
     public void testColumnClustering() throws IOException {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        pref.put(AgglParams.CLUSTER_ROWS, false);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -59,21 +47,6 @@ public class HACTest {
         assertEquals(similarityMatrix.columnsCount(), dataset.attributeCount());
 
         result.getTreeData().print();
-
-    }
-
-    /**
-     * Test of hierarchy method, of class HC1.
-     */
-    @Test
-    public void testHierarchy_Matrix_Props() {
-    }
-
-    /**
-     * Test of cluster method, of class HC1.
-     */
-    @Test
-    public void testCluster_Dataset() {
     }
 
     @Test
@@ -88,7 +61,8 @@ public class HACTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);

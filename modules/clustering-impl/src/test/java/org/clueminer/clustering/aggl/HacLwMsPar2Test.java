@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -28,7 +29,8 @@ public class HacLwMsPar2Test {
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println(subject.getName() + " finished");
         System.out.println("school - single");

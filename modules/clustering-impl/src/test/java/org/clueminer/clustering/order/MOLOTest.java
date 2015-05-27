@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Dump;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -37,6 +38,7 @@ public class MOLOTest {
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, "Single Linkage");
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, pref);
         subject.optimize(rowsResult, false);
     }

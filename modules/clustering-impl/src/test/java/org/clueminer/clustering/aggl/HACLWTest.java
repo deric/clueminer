@@ -13,6 +13,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,7 +44,8 @@ public class HACLWTest {
         Dataset<? extends Instance> dataset = simpleData();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -60,7 +62,8 @@ public class HACLWTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -92,7 +95,8 @@ public class HACLWTest {
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - single");
         DendroTreeData tree = result.getTreeData();
@@ -110,7 +114,8 @@ public class HACLWTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -143,7 +148,8 @@ public class HACLWTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, AverageLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);

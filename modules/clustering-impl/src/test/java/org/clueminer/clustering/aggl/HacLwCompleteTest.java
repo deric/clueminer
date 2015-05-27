@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -29,7 +30,8 @@ public class HacLwCompleteTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
