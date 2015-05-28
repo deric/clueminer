@@ -20,10 +20,18 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.utils.Props;
 
 /**
+ * Reduce multiple clusterings into one resulting (consensus) clustering
  *
  * @author deric
  */
-public interface ClusteringReduce {
+public interface Consensus {
+
+    /**
+     * Unique method identification
+     *
+     * @return name of the consensus method
+     */
+    String getName();
 
     /**
      * Integrate multiple clustering solutions into one

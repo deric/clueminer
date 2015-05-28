@@ -16,7 +16,7 @@
  */
 package org.clueminer.bagging;
 
-import org.clueminer.clustering.api.ClusteringReduce;
+import org.clueminer.clustering.api.Consensus;
 import java.util.List;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
@@ -77,7 +77,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         Clustering[] clusts;
 
         //result store
-        ClusteringReduce reducer;
+        Consensus reducer;
         Clustering<? extends Cluster> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {

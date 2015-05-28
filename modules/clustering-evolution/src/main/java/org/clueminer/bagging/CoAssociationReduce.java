@@ -24,7 +24,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringReduce;
+import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -40,15 +40,26 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Inspired by Jain's evidence accumulation
  *
+ * Co-association matrix counts number of assignments of the instance to same
+ * cluster
+ *
  * @author deric
  */
-public class CoAssociationReduce implements ClusteringReduce {
+@ServiceProvider(service = Consensus.class)
+public class CoAssociationReduce implements Consensus {
 
     private static final Logger logger = Logger.getLogger(CoAssociationReduce.class.getName());
+    public static final String name = "co-association HAC";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {

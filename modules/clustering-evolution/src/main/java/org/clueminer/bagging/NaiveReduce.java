@@ -16,23 +16,32 @@
  */
 package org.clueminer.bagging;
 
-import org.clueminer.clustering.api.ClusteringReduce;
 import java.util.Iterator;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-public class NaiveReduce implements ClusteringReduce {
+@ServiceProvider(service = Consensus.class)
+public class NaiveReduce implements Consensus {
+
+    public static final String name = "assignment agreement";
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
