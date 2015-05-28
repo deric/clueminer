@@ -17,6 +17,8 @@
 package org.clueminer.bagging;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
@@ -56,6 +58,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
     private int bagging;
 
+    private static final Logger logger = Logger.getLogger(KMeansBagging.class.getName());
+
     @Override
     public String getName() {
         return name;
@@ -82,6 +86,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         //result store
         String consensus = props.get(CONSENSUS, "co-association HAC");
         Consensus reducer = ConsensusFactory.getInstance().getProvider(consensus);
+        logger.log(Level.INFO, "consensus:{0}", consensus);
         Clustering<? extends Cluster> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {
@@ -113,6 +118,11 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 break;
             default:
                 throw new RuntimeException("unknown method " + initSet);
+        }
+
+        if (res != null) {
+            //add original dataset to lookup (for external evaluation)
+            res.lookupAdd(dataset);
         }
 
         return res;
