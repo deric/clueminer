@@ -37,7 +37,6 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -51,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = Consensus.class)
-public class CoAssociationReduce implements Consensus {
+public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
 
     private static final Logger logger = Logger.getLogger(CoAssociationReduce.class.getName());
     public static final String name = "co-association HAC";
@@ -63,32 +62,9 @@ public class CoAssociationReduce implements Consensus {
 
     @Override
     public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
-        Clustering c = clusts[0];
-        //total number of items
-        int n = c.instancesCount();
-        Matrix coassoc = new SymmetricMatrix(n, n);
-        Instance a, b;
-        //cluster membership
-        int ca, cb;
-        double value;
-        int x = 0;
-        for (Clustering clust : clusts) {
-            System.out.println("reducing " + (x++));
-            for (int i = 1; i < n; i++) {
-                a = clust.instance(i);
-                ca = clust.assignedCluster(a.getIndex());
-                for (int j = 0; j < i; j++) {
-                    b = clust.instance(j);
-                    //for each pair of instances check if placed in the same cluster
-                    cb = clust.assignedCluster(b.getIndex());
-                    if (ca == cb) {
-                        value = coassoc.get(i, j) + 1.0;
-                        coassoc.set(i, j, value);
-                    }
-                }
-            }
-        }
+        Matrix coassoc = createMatrix(clusts);
 
+        //typically hierarchical clustering looks for minimal distance
         StdScale std = new StdScale();
         double val;
         for (int i = 0; i < coassoc.rowsCount(); i++) {
@@ -109,7 +85,7 @@ public class CoAssociationReduce implements Consensus {
         //props.put(AgglParams.LINKAGE, CompleteLinkage.name);
         //props.put(AgglParams.LINKAGE, MedianLinkage.name);
         hac.setColorGenerator(cg);
-        Dataset<? extends Instance> dataset = c.getLookup().lookup(Dataset.class);
+        Dataset<? extends Instance> dataset = clusts[0].getLookup().lookup(Dataset.class);
 
         HierarchicalResult rowsResult = hac.hierarchy(coassoc, dataset, props);
         rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
