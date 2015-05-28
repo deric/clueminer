@@ -35,6 +35,7 @@ import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.factory.ConsensusFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
@@ -62,6 +63,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private JComboBox comboDistance;
     private JComboBox comboMethod;
     private JComboBox comboLinkage;
+    private JComboBox comboConsensus;
     private JCheckBox chckRandK;
     private static final String name = "k-means bagging";
 
@@ -223,7 +225,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         //initialization method
         c.gridy++;
         c.gridx = 0;
-        add(new JLabel("Method:"), c);
+        add(new JLabel("Mapping method:"), c);
         c.gridx = 1;
         comboMethod = new JComboBox(new String[]{"RANDOM", "MO"});
         add(comboMethod, c);
@@ -241,6 +243,14 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         chckRandK = new JCheckBox("fixed k");
         add(chckRandK, c);
+
+        //consensus function
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Consensus:"), c);
+        c.gridx = 1;
+        comboConsensus = new JComboBox(ConsensusFactory.getInstance().getProvidersArray());
+        add(comboConsensus, c);
     }
 
     private void updateKSlider() {
@@ -283,6 +293,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         if (chckRandK.isSelected()) {
             params.put(KMeansBagging.FIXED_K, true);
         }
+        params.put(KMeansBagging.CONSENSUS, comboConsensus.getSelectedItem());
 
         return params;
     }

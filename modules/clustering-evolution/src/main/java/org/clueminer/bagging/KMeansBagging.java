@@ -16,7 +16,6 @@
  */
 package org.clueminer.bagging;
 
-import org.clueminer.clustering.api.Consensus;
 import java.util.List;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
@@ -24,8 +23,10 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.ConsensusFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
@@ -47,6 +48,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     public static final String BAGGING = "bagging";
 
     public static final String INIT_METHOD = "init_set";
+
+    public static final String CONSENSUS = "consensus";
 
     public static final String FIXED_K = "rand_k";
 
@@ -77,7 +80,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         Clustering[] clusts;
 
         //result store
-        Consensus reducer;
+        String consensus = props.get(CONSENSUS, "co-association HAC");
+        Consensus reducer = ConsensusFactory.getInstance().getProvider(consensus);
         Clustering<? extends Cluster> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {
@@ -85,7 +89,6 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 //map
                 clusts = randClusters(alg, dataset, props);
                 //reduce
-                reducer = new NaiveReduce();
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;
             case "MO":
@@ -106,7 +109,6 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 for (int i = 0; i < sol.size(); i++) {
                     clusts[i] = ((MoSolution) sol.get(i)).getClustering();
                 }
-                reducer = new CoAssociationReduce();
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;
             default:
