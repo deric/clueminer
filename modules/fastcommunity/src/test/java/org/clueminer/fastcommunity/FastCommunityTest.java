@@ -1,10 +1,14 @@
 package org.clueminer.fastcommunity;
 
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,6 +16,17 @@ import org.junit.Test;
  * @author Hamster
  */
 public class FastCommunityTest {
+
+    private final FastCommunity subject;
+
+    public FastCommunityTest() {
+        subject = new FastCommunity();
+    }
+
+    @Before
+    public void setUp() {
+
+    }
 
     private Dataset<? extends Instance> generateData() {
         double[][] data = new double[][]{
@@ -252,15 +267,24 @@ public class FastCommunityTest {
 
     @Test
     public void clusterTest() {
-        System.out.println("Hierarchy Test");
-        FastCommunity fc = new FastCommunity();
         Dataset<? extends Instance> data = generateData();
-        fc.hierarchy(data, new Props());
+        subject.hierarchy(data, new Props());
     }
 
     @Test
     public void testGetName() {
-        FastCommunity fc = new FastCommunity();
-        assertEquals("Fast Community", fc.getName());
+        assertEquals("Fast Community", subject.getName());
+    }
+
+    /**
+     * FIXME: graph initialization from a dataset is not handled properly
+     */
+    //@Test
+    public void testSchool() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        Props params = new Props();
+        HierarchicalResult res = subject.hierarchy(data, params);
+        assertNotNull(res);
+        res.getTreeData().print();
     }
 }
