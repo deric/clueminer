@@ -84,6 +84,18 @@ public class PropsTest {
     }
 
     @Test
+    public void testGet_PropType_String() {
+        String key = "some double";
+        double val = 2.7181;
+        subject.put(key, val);
+        assertEquals(true, subject.containsKey(key));
+
+        assertEquals(val, subject.get(PropType.MAIN, key));
+        Object obj = key;
+        assertEquals("2.7181", subject.get(PropType.MAIN, obj));
+    }
+
+    @Test
     public void testToProperties() {
     }
 
@@ -169,10 +181,6 @@ public class PropsTest {
 
     @Test
     public void testPutAll_PropType_Map() {
-    }
-
-    @Test
-    public void testGet_PropType_String() {
     }
 
     @Test

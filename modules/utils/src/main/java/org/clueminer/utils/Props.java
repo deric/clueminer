@@ -126,7 +126,7 @@ public class Props implements Map<String, Object> {
      * @return
      */
     public Object getObject(Object key) {
-        return get(PropType.MAIN, key);
+        return store.get(PropType.MAIN, key);
     }
 
     /**
@@ -377,7 +377,11 @@ public class Props implements Map<String, Object> {
     }
 
     public String get(PropType tp, Object key) {
-        return (String) store.get(tp, key);
+        Object ret = store.get(tp, key);
+        if (ret == null) {
+            return "";
+        }
+        return ret.toString();
     }
 
     @Override
