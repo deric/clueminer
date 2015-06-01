@@ -282,7 +282,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void runClustering(final ClusteringAlgorithm alg, final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
-        props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }

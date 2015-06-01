@@ -243,7 +243,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         set.setName("Algorithm");
         set.setDisplayName("Algorithm");
         for (final String key : params.keySet()) {
-            Property evalProp = new PropertySupport.ReadOnly<String>(key, String.class, "", "") {
+            Property evalProp = new PropertySupport.ReadOnly<Object>(key, Object.class, "", "") {
                 @Override
                 public String getValue() throws IllegalAccessException, InvocationTargetException {
                     return params.get(key, "");
