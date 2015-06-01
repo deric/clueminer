@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -283,7 +282,6 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
     @Override
     public void runClustering(final ClusteringAlgorithm alg, final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
-        final AgglomerativeClustering aggl = (AgglomerativeClustering) alg;
         props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
@@ -292,7 +290,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
 
             @Override
             public void run() {
-                exec.setAlgorithm(aggl);
+                exec.setAlgorithm(alg);
                 Clustering<? extends Cluster> clustering;
                 if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
                     DendrogramMapping mapping = exec.clusterAll(dataset, props);
