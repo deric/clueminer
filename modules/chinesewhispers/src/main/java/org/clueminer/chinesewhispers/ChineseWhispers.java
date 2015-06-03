@@ -69,7 +69,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
         for (Node nodeIt : graph.getNodes()) {
             AdjListNode node = (AdjListNode) nodeIt;
             Long classValue = node.getId();
-            node.getInstance().setClassValue(classValue);
+            node.getInstance().setClassValue(classValue.toString());
         }
 
         boolean changes = true;
@@ -79,12 +79,12 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
             changes = false;
             for (Node nodeIt : graph.getNodes()) {
                 AdjListNode node = (AdjListNode) nodeIt;
-                HashMap<Long, Integer> classes = new HashMap<>(graph.getNodeCount());
-                Long maxClass = node.getId();
+                HashMap<String, Integer> classes = new HashMap<>(graph.getNodeCount());
+                String maxClass = (String) node.getInstance().classValue();
                 Integer maxCount = 1;
                 for (Node neighborIt : graph.getNeighbors(node)) {
                     AdjListNode neighbor = (AdjListNode) neighborIt;
-                    Long classValue = (Long) neighbor.getInstance().classValue();
+                    String classValue = (String) neighbor.getInstance().classValue();
                     Integer count = classes.get(classValue);
                     count = (count == null) ? 1 : count++;
                     classes.put(classValue, count);
@@ -103,9 +103,9 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
         }
 
         //graph.print();
-        HashMap<Long, List<Node>> clusters = new HashMap<>();
+        HashMap<String, List<Node>> clusters = new HashMap<>();
         for (Node node : graph.getNodes()) {
-            Long classValue = (Long) node.getInstance().classValue();
+            String classValue = (String) node.getInstance().classValue();
             List<Node> thisCluster = clusters.get(classValue);
             if (thisCluster == null) {
                 thisCluster = new ArrayList<>();
@@ -114,7 +114,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
             thisCluster.add(node);
         }
         Clustering result = Clusterings.newList();
-        for (Map.Entry<Long, List<Node>> entrySet : clusters.entrySet()) {
+        for (Map.Entry<String, List<Node>> entrySet : clusters.entrySet()) {
             //Long clusterId = entrySet.getKey();
             List<Node> clusterNodes = entrySet.getValue();
             Cluster cluster = result.createCluster();
