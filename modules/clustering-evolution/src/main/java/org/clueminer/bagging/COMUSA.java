@@ -57,7 +57,6 @@ public class COMUSA implements Consensus {
 
     @Override
     public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
-
         Clustering c = clusts[0];
         //total number of items
         int n = c.instancesCount();
@@ -116,20 +115,48 @@ public class COMUSA implements Consensus {
             pq.add(elem);
         }
 
+        //number of clusters is just a hint
+        int k = props.getInt(KMeans.K);
+        Clustering<? extends Cluster> result = new ClusterList(k);
         ObjectOpenHashSet<Node> blacklist = new ObjectOpenHashSet();
-        Node node;
+        Node node, other;
+        Cluster curr;
+        double maxW;
         while (!pq.isEmpty()) {
             elem = pq.poll();
             node = elem.getElem();
             if (!blacklist.contains(node)) {
                 blacklist.add(node);
-                System.out.println("w: " + elem.getValue());
+                curr = result.createCluster();
+                if (cg != null) {
+                    curr.setColor(cg.next());
+                }
+                curr.add(node.getInstance());
+
+                EdgeIterable iter = graph.getEdges(node);
+                maxW = -1;
+                for (Edge ne : iter) {
+                    if (ne.getWeight() > maxW) {
+                        maxW = ne.getWeight();
+                    }
+                }
+                //add immediate neighbours with max weight to same cluster
+                if (maxW >= 0.0) {
+                    for (Edge ne : iter) {
+                        if (ne.getWeight() >= maxW) {
+                            if (!node.equals(ne.getSource())) {
+                                other = ne.getSource();
+                            } else {
+                                other = ne.getTarget();
+                            }
+                            curr.add(other.getInstance());
+                            blacklist.add(other);
+                        }
+                    }
+                }
             }
         }
-        //number of clusters is just a hint
-        int k = props.getInt(KMeans.K);
-        Clustering<? extends Cluster> result = new ClusterList(k);
-
+        //TODO merge some clusters
 
         return result;
     }
