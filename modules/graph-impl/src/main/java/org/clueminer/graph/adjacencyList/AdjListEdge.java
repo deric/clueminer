@@ -12,7 +12,7 @@ public class AdjListEdge implements Edge {
     private final long id;
     private final Node source;
     private final Node target;
-    private final double weight;
+    private double weight;
     private final boolean directed;
 
     AdjListEdge(long id, Node source, Node target) {
@@ -72,5 +72,10 @@ public class AdjListEdge implements Edge {
     @Override
     public String toString() {
         return "e" + id + ": n" + source.getId() + " -(" + weight + ")-> n" + target.getId();
+    }
+
+    @Override
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }

@@ -11,6 +11,8 @@ import org.junit.Test;
  */
 public class AdjListEdgeTest {
 
+    private static final double delta = 1e-9;
+
     @Test
     public void completeConstructorTest() {
         long id = 5;
@@ -23,7 +25,7 @@ public class AdjListEdgeTest {
         assertSame(source, edge.getSource());
         assertSame(target, edge.getTarget());
         assertEquals(directed, edge.isDirected());
-        assertEquals(weight, edge.getWeight(), 0.001);
+        assertEquals(weight, edge.getWeight(), delta);
     }
 
     @Test
@@ -36,6 +38,18 @@ public class AdjListEdgeTest {
         assertSame(source, edge.getSource());
         assertSame(target, edge.getTarget());
         assertFalse(edge.isDirected());
-        assertEquals(1, edge.getWeight(), 0.001);
+        assertEquals(1, edge.getWeight(), delta);
+    }
+
+    @Test
+    public void testWeightSetter() {
+        long id = 5;
+        AdjListNode source = new AdjListNode(1);
+        AdjListNode target = new AdjListNode(2);
+        double weight = 10.0;
+        AdjListEdge edge = new AdjListEdge(id, source, target, false, weight);
+        assertEquals(weight, edge.getWeight(), delta);
+        edge.setWeight(-5.0);
+        assertEquals(-5.0, edge.getWeight(), delta);
     }
 }

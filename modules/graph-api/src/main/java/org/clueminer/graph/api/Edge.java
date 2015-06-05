@@ -16,6 +16,13 @@ public interface Edge extends Element {
     Node getSource();
 
     Node getTarget();
-    
+
     double getWeight();
+
+    /**
+     * Set edge's weight
+     *
+     * @param weight
+     */
+    void setWeight(double weight);
 }

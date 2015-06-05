@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.clueminer.graph.adjacencyMatrix;
 
@@ -10,7 +21,7 @@ import org.clueminer.graph.api.Node;
 
 /**
  *
- * @author tomas
+ * @author Tomas Bruna
  */
 public class AdjMatrixEdge implements Edge {
 
@@ -18,10 +29,10 @@ public class AdjMatrixEdge implements Edge {
     private final Node source;
     private final Node target;
     private boolean directed;
-    private final double weight;
+    private double weight;
     private Object label;
 
-    AdjMatrixEdge(long id,Node source, Node target, double weight) {
+    AdjMatrixEdge(long id, Node source, Node target, double weight) {
         this.id = id;
         this.source = source;
         this.target = target;
@@ -60,5 +71,10 @@ public class AdjMatrixEdge implements Edge {
 
     public void setLabel(Object label) {
         this.label = label;
+    }
+
+    @Override
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }

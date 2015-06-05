@@ -30,6 +30,14 @@ public class EdgeImpl extends ElementImpl implements Edge {
     protected double weight;
     protected boolean directed;
 
+    public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight) {
+        super(id, graphStore);
+        this.source = source;
+        this.target = target;
+        this.weight = weight;
+        this.directed = false;
+    }
+
     public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight, boolean directed) {
         super(id, graphStore);
         this.source = source;
@@ -45,22 +53,27 @@ public class EdgeImpl extends ElementImpl implements Edge {
 
     @Override
     public boolean isDirected() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return directed;
     }
 
     @Override
     public Node getSource() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return source;
     }
 
     @Override
     public Node getTarget() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return target;
     }
 
     @Override
     public double getWeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return weight;
+    }
+
+    @Override
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
 }
