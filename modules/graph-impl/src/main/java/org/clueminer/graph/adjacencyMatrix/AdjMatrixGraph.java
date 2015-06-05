@@ -169,8 +169,20 @@ public class AdjMatrixGraph implements Graph {
         return null;
     }
 
+    /**
+     *
+     * @param node1
+     * @param node2
+     * @return requested edge between given nodes, otherwise null
+     */
     @Override
     public Edge getEdge(Node node1, Node node2) {
+        if (!idToIndex.containsKey(node1.getId())) {
+            return null;
+        }
+        if (!idToIndex.containsKey(node2.getId())) {
+            return null;
+        }
         return adjMatrix[idToIndex.get(node1.getId())][idToIndex.get(node2.getId())];
     }
 
@@ -409,7 +421,7 @@ public class AdjMatrixGraph implements Graph {
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
-     * @param k number of neighbors for each node
+     * @param k         number of neighbors for each node
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
