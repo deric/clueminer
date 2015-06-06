@@ -50,13 +50,15 @@ public class COMUSA implements Consensus {
 
     public static final String name = "COMUSA";
 
+    //parameter to allow adding similar items to the same cluster
+    public static final String RELAX = "relax";
+
     @Override
     public String getName() {
         return name;
     }
 
-    @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
+    public Graph createGraph(Clustering[] clusts) {
         Clustering c = clusts[0];
         //total number of items
         int n = c.instancesCount();
@@ -95,6 +97,12 @@ public class COMUSA implements Consensus {
                 }
             }
         }
+        return graph;
+    }
+
+    @Override
+    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
+        Graph graph = createGraph(clusts);
 
         //degree of freedom
         double df;
@@ -117,6 +125,7 @@ public class COMUSA implements Consensus {
 
         //number of clusters is just a hint
         int k = props.getInt(KMeans.K);
+        double relax = props.getDouble(RELAX, 0.5);
         Clustering<? extends Cluster> result = new ClusterList(k);
         ObjectOpenHashSet<Node> blacklist = new ObjectOpenHashSet();
         Node node, other;
@@ -143,14 +152,19 @@ public class COMUSA implements Consensus {
                 //add immediate neighbours with max weight to same cluster
                 if (maxW >= 0.0) {
                     for (Edge ne : iter) {
-                        if (ne.getWeight() >= maxW) {
+                        //when relax set to 0.0, only items with maximum weight
+                        //will be added to the same cluster
+                        w = ne.getWeight() + relax * ne.getWeight();
+                        if (w >= maxW) {
                             if (!node.equals(ne.getSource())) {
                                 other = ne.getSource();
                             } else {
                                 other = ne.getTarget();
                             }
-                            curr.add(other.getInstance());
-                            blacklist.add(other);
+                            if (!blacklist.contains(other)) {
+                                curr.add(other.getInstance());
+                                blacklist.add(other);
+                            }
                         }
                     }
                 }
