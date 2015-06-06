@@ -29,10 +29,9 @@ import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.ConsensusFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AIC;
-import org.clueminer.eval.SDindex;
 import org.clueminer.evolution.mo.MoSolution;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -100,8 +99,11 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
                 KmEvolution km = new KmEvolution(new ClusteringExecutorCached(alg));
                 km.setGenerations(5);
                 km.setDataset(dataset);
-                km.addObjective(new AIC());
-                km.addObjective(new SDindex());
+                InternalEvaluatorFactory eef = InternalEvaluatorFactory.getInstance();
+
+                km.addObjective(eef.getProvider(props.get("mo_1", "AIC")));
+                km.addObjective(eef.getProvider(props.get("mo_2", "SD index")));
+
                 if (props.getBoolean(FIXED_K, false)) {
                     Props p = new Props();
                     p.put(KMeans.K, props.get(KMeans.K));

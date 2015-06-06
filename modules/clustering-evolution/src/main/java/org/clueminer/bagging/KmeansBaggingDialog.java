@@ -36,6 +36,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.ConsensusFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
@@ -66,11 +67,15 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private JComboBox comboMethod;
     private JComboBox comboLinkage;
     private JComboBox comboConsensus;
+    private JComboBox comboObjective1;
+    private JComboBox comboObjective2;
     private JCheckBox chckRandK;
     private static final String name = "k-means bagging";
 
     public KmeansBaggingDialog() {
         initComponents();
+        //disable combos, if necessary
+        methodChanged();
         comboDistance.setSelectedItem("Euclidean");
     }
 
@@ -231,16 +236,32 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboMethod = new JComboBox(new String[]{"RANDOM", "MO"});
         add(comboMethod, c);
+        comboMethod.addActionListener(new ActionListener() {
 
-        //linkage (only for MO)
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                methodChanged();
+            }
+        });
+
+        //objectives (only for MO)
         c.gridy++;
         c.gridx = 0;
-        add(new JLabel("Linkage:"), c);
+        add(new JLabel("Objective 1:"), c);
         c.gridx = 1;
-        comboLinkage = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
-        add(comboLinkage, c);
+        comboObjective1 = new JComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray());
+        add(comboObjective1, c);
+        comboObjective1.setSelectedItem("AIC");
 
-        //rand k (only for MO)
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Objective 2:"), c);
+        c.gridx = 1;
+        comboObjective2 = new JComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray());
+        add(comboObjective2, c);
+        comboObjective2.setSelectedItem("SD index");
+
+        //rand k
         c.gridy++;
         c.gridx = 1;
         chckRandK = new JCheckBox("fixed k");
@@ -253,6 +274,14 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboConsensus = new JComboBox(ConsensusFactory.getInstance().getProvidersArray());
         add(comboConsensus, c);
+
+        //linkage (only for MO)
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Linkage:"), c);
+        c.gridx = 1;
+        comboLinkage = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
+        add(comboLinkage, c);
 
         //relax function
         //TODO: only for COMUSA consensus
@@ -340,13 +369,34 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
         params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
         params.put(AgglParams.LINKAGE, comboLinkage.getSelectedItem());
-        params.putDouble(COMUSA.RELAX, sliderRelax.getValue() / 10.0);
+        if (comboConsensus.getSelectedItem().equals(COMUSA.name)) {
+            params.putDouble(COMUSA.RELAX, sliderRelax.getValue() / 10.0);
+        }
+        if (comboObjective1.isEnabled()) {
+            params.put("mo_1", comboObjective1.getSelectedItem());
+        }
+        if (comboObjective2.isEnabled()) {
+            params.put("mo_2", comboObjective2.getSelectedItem());
+        }
         if (chckRandK.isSelected()) {
             params.put(KMeansBagging.FIXED_K, true);
         }
         params.put(KMeansBagging.CONSENSUS, comboConsensus.getSelectedItem());
 
         return params;
+    }
+
+    private void methodChanged() {
+        switch (comboMethod.getSelectedItem().toString()) {
+            case "MO":
+                comboObjective1.setEnabled(true);
+                comboObjective2.setEnabled(true);
+                break;
+            default:
+                comboObjective1.setEnabled(false);
+                comboObjective2.setEnabled(false);
+                break;
+        }
     }
 
     @Override
