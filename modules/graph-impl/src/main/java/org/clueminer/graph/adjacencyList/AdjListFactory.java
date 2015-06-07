@@ -68,6 +68,8 @@ public class AdjListFactory implements GraphFactory {
 
     @Override
     public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
+        nodeIdCounter = 0;
+        edgeIdCounter = 0;	
         ArrayList<Node> nodes = new ArrayList<>(input.size());
         for (Instance inputInstance : input) {
             Node node = this.newNode();
