@@ -7,6 +7,7 @@ import org.clueminer.clustering.benchmark.exp.Hclust;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.clueminer.clustering.benchmark.consensus.ConsensusExp;
 import org.clueminer.clustering.benchmark.exp.EvolveScores;
 import org.clueminer.clustering.benchmark.gen.NsgaGen;
 import org.clueminer.clustering.benchmark.nsga.NsgaScore;
@@ -28,6 +29,7 @@ public class Main {
         map.put("evolve-sc", new EvolveScores());
         map.put("nsga", new NsgaScore());
         map.put("nsga-gen", new NsgaGen());
+        map.put("consensus", new ConsensusExp());
     }
 
     /**
