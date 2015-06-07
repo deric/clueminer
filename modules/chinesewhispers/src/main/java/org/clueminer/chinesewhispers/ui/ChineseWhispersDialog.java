@@ -43,10 +43,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
 
+    private static final long serialVersionUID = 3326362418875717835L;
+
     private JTextField tfIterations;
     private JSlider sliderIter;
     private JComboBox comboDistance;
     private JComboBox comboGraphConv;
+    private JSlider sliderK;
+    private JTextField tfK;
 
     public ChineseWhispersDialog() {
         initComponents();
@@ -65,6 +69,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
         params.put(ChineseWhispers.DISTANCE, (String) comboDistance.getSelectedItem());
         params.put(ChineseWhispers.GRAPH_CONV, (String) comboGraphConv.getSelectedItem());
+        params.putInt("k", sliderK.getValue());
         return params;
     }
 
@@ -140,12 +145,57 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         comboGraphConv = new JComboBox(GraphConvertorFactory.getInstance().getProvidersArray());
         add(comboGraphConv, c);
 
+        //change k param for k-NN (only applies for k-nn initialization)
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("k:"), c);
+        c.gridx = 1;
+        c.weightx = 0.9;
+        tfK = new JTextField("4", 4);
+        sliderK = new JSlider(2, 1000, 4);
+        sliderK.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tfK.setText(String.valueOf(sliderK.getValue()));
+            }
+        });
+        add(sliderK, c);
+        c.gridx = 2;
+        add(tfK, c);
+        tfK.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                updateKSlider();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                updateKSlider();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                updateKSlider();
+            }
+        });
+
     }
 
     private void updateIterSlider() {
         try {
             int val = Integer.valueOf(tfIterations.getText());
             sliderIter.setValue(val);
+        } catch (NumberFormatException ex) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }
+
+    private void updateKSlider() {
+        try {
+            int val = Integer.valueOf(tfK.getText());
+            sliderK.setValue(val);
         } catch (NumberFormatException ex) {
             // wrong input so we do not set the slider but also do not want to raise an exception
         }

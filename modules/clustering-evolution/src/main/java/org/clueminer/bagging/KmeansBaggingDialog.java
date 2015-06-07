@@ -56,8 +56,10 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     private JTextField tfIterations;
     private JSlider sliderIter;
     private JSlider sliderBagging;
+    private JSlider sliderRelax;
     private JTextField tfBagging;
     private JTextField tfRandom;
+    private JTextField tfRelax;
     private JButton btnRandom;
     private Random rand;
     private JComboBox comboDistance;
@@ -251,6 +253,45 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboConsensus = new JComboBox(ConsensusFactory.getInstance().getProvidersArray());
         add(comboConsensus, c);
+
+        //relax function
+        //TODO: only for COMUSA consensus
+        // can we display double values?
+        c.gridx = 0;
+        c.gridy++;
+        add(new JLabel("Relax:"), c);
+        sliderRelax = new JSlider(0, 20);
+        sliderRelax.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                tfRelax.setText(String.valueOf(sliderRelax.getValue()));
+            }
+        });
+        c.gridx = 1;
+        add(sliderRelax, c);
+
+        c.gridx = 2;
+        tfRelax = new JTextField("5", 4);
+        add(tfRelax, c);
+        tfRelax.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                updateRelaxSlider();
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                updateRelaxSlider();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                updateRelaxSlider();
+            }
+        });
+        sliderRelax.setValue(5);
     }
 
     private void updateKSlider() {
@@ -280,6 +321,15 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         }
     }
 
+    private void updateRelaxSlider() {
+        try {
+            int val = Integer.valueOf(tfRelax.getText());
+            sliderRelax.setValue(val);
+        } catch (NumberFormatException ex) {
+            // wrong input so we do not set the slider but also do not want to raise an exception
+        }
+    }
+
     @Override
     public Props getParams() {
         Props params = new Props();
@@ -290,6 +340,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
         params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
         params.put(AgglParams.LINKAGE, comboLinkage.getSelectedItem());
+        params.putDouble(COMUSA.RELAX, sliderRelax.getValue() / 10.0);
         if (chckRandK.isSelected()) {
             params.put(KMeansBagging.FIXED_K, true);
         }
