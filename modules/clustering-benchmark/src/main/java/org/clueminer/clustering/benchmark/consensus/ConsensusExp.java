@@ -20,7 +20,6 @@ import com.beust.jcommander.JCommander;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.benchmark.Bench;
 import static org.clueminer.clustering.benchmark.Bench.ensureFolder;
 import static org.clueminer.clustering.benchmark.Bench.printUsage;
@@ -62,8 +61,7 @@ public class ConsensusExp extends Bench {
         System.out.println("writing results to: " + benchmarkFolder);
 
         System.out.println("=== starting " + name);
-        InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
-        ConsensusRun exp = new ConsensusRun(params, benchmarkFolder, availableDatasets);
+        ConsensusRun exp = new ConsensusRun(params, benchmarkFolder, (Dataset<? extends Instance>) availableDatasets.get(params.dataset));
         ExecutorService execService = Executors.newFixedThreadPool(1);
         execService.submit(exp);
         execService.shutdown();

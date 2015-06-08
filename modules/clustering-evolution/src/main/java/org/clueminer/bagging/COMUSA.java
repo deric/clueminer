@@ -51,6 +51,7 @@ public class COMUSA implements Consensus {
     public static final String name = "COMUSA";
 
     //parameter to allow adding similar items to the same cluster
+    //double - usually between 0.0 and 2.0
     public static final String RELAX = "relax";
 
     @Override

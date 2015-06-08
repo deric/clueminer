@@ -21,18 +21,27 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.bagging.COMUSA;
+import org.clueminer.bagging.CoAssociationReduce;
+import org.clueminer.bagging.KMeansBagging;
+import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.aggl.linkage.AverageLinkage;
+import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringFactory;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import static org.clueminer.clustering.benchmark.Bench.safeName;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.benchmark.ConsoleDump;
-import org.clueminer.dataset.benchmark.GnuplotMO;
 import org.clueminer.dataset.benchmark.ResultsCollector;
-import org.clueminer.evolution.mo.MoEvolution;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
@@ -44,15 +53,15 @@ public class ConsensusRun implements Runnable {
     private static ResultsCollector rc;
     private ConsensusParams params;
     private String benchmarkFolder;
-    private HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> datasets;
     //table for keeping results from experiments
     private Table<String, String, Double> table;
     private static final Logger logger = Logger.getLogger(ConsensusRun.class.getName());
+    private Dataset<? extends Instance> dataset;
 
-    public ConsensusRun(ConsensusParams params, String benchmarkFolder, HashMap<String, Map.Entry<Dataset<? extends Instance>, Integer>> availableDatasets) {
+    public ConsensusRun(ConsensusParams params, String benchmarkFolder, Dataset<? extends Instance> dataset) {
         this.params = params;
         this.benchmarkFolder = benchmarkFolder;
-        this.datasets = availableDatasets;
+        this.dataset = dataset;
 
         createTable();
         rc = new ResultsCollector(table);
@@ -72,55 +81,72 @@ public class ConsensusRun implements Runnable {
     @Override
     public void run() {
         try {
-            MoEvolution evolution = new MoEvolution();
-
-            evolution.setPopulationSize(params.population);
-            evolution.setNumSolutions(params.solutions);
-            evolution.setExternal(EvaluationFactory.getInstance().getProvider("Jaccard"));
-            evolution.setMutationProbability(params.mutation);
-            evolution.setCrossoverProbability(params.crossover);
-
-            GnuplotMO gw = new GnuplotMO();
-            //gw.setCustomTitle("cutoff=" + evolution.getDefaultParam(AgglParams.CUTOFF_STRATEGY) + "(" + evolution.getDefaultParam(AgglParams.CUTOFF_SCORE) + ")");
-            //collect data from evolution
-            evolution.addEvolutionListener(new ConsoleDump());
-            evolution.addMOEvolutionListener(gw);
-            evolution.addMOEvolutionListener(rc);
-            evolution.addObjective(c1);
-            evolution.addObjective(c2);
-
-            int[] generations = new int[]{1, 10, 50, 100, 1000};
-
             String name;
             String folder;
-            logger.log(Level.INFO, "datasets size: {0}", datasets.size());
-            for (Map.Entry<String, Map.Entry<Dataset<? extends Instance>, Integer>> e : datasets.entrySet()) {
-                Dataset<? extends Instance> d = e.getValue().getKey();
-                name = safeName(d.getName());
-                folder = benchmarkFolder + File.separatorChar + name;
-                gw.mkdir(folder);
-                String csvRes = folder + File.separatorChar + "_" + name + ".csv";
-                logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, d.size(), d.attributeCount()});
-                //ensureFolder(benchmarkFolder + File.separatorChar + name);
+            EvaluationFactory ef = EvaluationFactory.getInstance();
+            LinkedList<ClusterEvaluation> evals = new LinkedList<>();
+            evals.add(ef.getProvider("NMIsum"));
+            evals.add(ef.getProvider("Adjusted Rand"));
 
-                evolution.setDataset(d);
+            ClusteringAlgorithm alg = ClusteringFactory.getInstance().getProvider(params.method);
+            Executor exec = new ClusteringExecutorCached(alg);
 
-                for (int i = 0; i < generations.length; i++) {
-                    int g = generations[i];
-                    evolution.setGenerations(g);
-                    gw.setCurrentDir(benchmarkFolder, name + "-" + g);
-                    //for (int k = 0; k < params.repeat; k++) {
-                    //   logger.log(Level.INFO, "run {0}: {1} & {2}", new Object[]{k, c1.getName(), c2.getName()});
-                    evolution.run();
-                    rc.writeToCsv(csvRes);
-                    //}
-                    evolution.fireFinishedBatch();
+            createTable();
+            name = safeName(dataset.getName());
+            folder = benchmarkFolder + File.separatorChar + name;
+
+            String csvRes = folder + File.separatorChar + "_" + name + ".csv";
+            logger.log(Level.INFO, "dataset: {0} size: {1} num attr: {2}", new Object[]{name, dataset.size(), dataset.attributeCount()});
+            //ensureFolder(benchmarkFolder + File.separatorChar + name);
+            Clustering c;
+            Props props = algorithmSetup(params.method);
+            props.putInt("k", dataset.getClasses().size());
+            double score;
+            for (int i = 0; i < params.repeat; i++) {
+                c = exec.clusterRows(dataset, props);
+                for (ClusterEvaluation eval : evals) {
+                    score = c.getEvaluationTable().getScore(eval);
+                    table.put("run " + i, eval.getName(), score);
                 }
-                createTable();
             }
+            rc.writeToCsv(csvRes);
+
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
+    }
+
+    private Props algorithmSetup(String alg) {
+        Props p = new Props();
+        p.putInt(KMeansBagging.BAGGING, 10);
+        switch (alg) {
+            case "KmB-COMUSA-RAND":
+                p.put(KMeansBagging.CONSENSUS, COMUSA.name);
+                p.put(KMeansBagging.INIT_METHOD, "RANDOM");
+                p.putDouble(COMUSA.RELAX, 1.0);
+                break;
+            case "KmB-COMUSA-MO":
+                p.put(KMeansBagging.CONSENSUS, COMUSA.name);
+                p.put(KMeansBagging.INIT_METHOD, "MO");
+                p.put("mo_1", "AIC");
+                p.put("mo_2", "SD index");
+                break;
+            case "KmB-CoAssocHAC-MO-avg":
+                p.put(KMeansBagging.CONSENSUS, CoAssociationReduce.name);
+                p.put(KMeansBagging.INIT_METHOD, "MO");
+                p.put("mo_1", "AIC");
+                p.put("mo_2", "SD index");
+                p.put(AgglParams.LINKAGE, AverageLinkage.name);
+                break;
+            case "KmB-CoAssocHAC-MO-AIC_SD":
+                p.put(KMeansBagging.CONSENSUS, CoAssociationReduce.name);
+                p.put(KMeansBagging.INIT_METHOD, "MO");
+                p.put("mo_1", "AIC");
+                p.put("mo_2", "SD index");
+                break;
+
+        }
+        return p;
     }
 
 }
