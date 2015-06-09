@@ -83,6 +83,53 @@ public class ResultsCollector implements EvolutionListener, OpListener {
                 }
                 csv.writeNext(line);
             }
+            csv.close();
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Write table to CSV with column's averages
+     *
+     * @param tab
+     * @param filename
+     */
+    public void writeAvgColsCsv(Table<String, String, Double> tab, String filename) {
+        try (PrintWriter writer = new PrintWriter(filename, "UTF-8"); CSVWriter csv = new CSVWriter(writer, ',')) {
+            String[] header = new String[tab.columnKeySet().size() + 1];
+            int i = 1;
+            header[0] = "measure";
+            for (String column : tab.columnKeySet()) {
+                header[i++] = column;
+            }
+            csv.writeNext(header);
+            int rowCount = tab.rowKeySet().size();
+            int colCount = header.length - 1;
+            double[] avg = new double[colCount];
+            double value;
+            for (String key : tab.rowKeySet()) {
+                String[] line = new String[tab.columnKeySet().size() + 1];
+                line[0] = key;
+                i = 1;
+                for (String column : tab.columnKeySet()) {
+                    value = tab.get(key, column);
+                    avg[i - 1] += value;
+                    line[i++] = String.valueOf(value);
+                }
+                csv.writeNext(line);
+            }
+            String[] res = new String[header.length];
+            res[0] = "avg";
+            for (int j = 0; j < header.length - 1; j++) {
+                res[j] = String.valueOf(avg[j] / rowCount);
+            }
+            csv.writeNext(res);
+            csv.close();
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
         } catch (UnsupportedEncodingException ex) {
