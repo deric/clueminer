@@ -1,3 +1,0 @@
-#!/bin/bash
-ARGS="evolve-sc --test --generations 20 --population 50 $@"
-`./run $ARGS`
