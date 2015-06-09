@@ -126,7 +126,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
             String[] res = new String[header.length];
             res[0] = "avg";
             for (int j = 0; j < header.length - 1; j++) {
-                res[j] = String.valueOf(avg[j] / rowCount);
+                res[j + 1] = String.valueOf(avg[j] / rowCount);
             }
             csv.writeNext(res);
             csv.close();
