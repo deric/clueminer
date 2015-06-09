@@ -45,7 +45,7 @@ import org.uma.jmetal.util.comparator.DominanceComparator;
 public class KmEvolution extends MoEvolution {
 
     private static final Logger logger = Logger.getLogger(KmEvolution.class.getName());
-    private int numSolutions = 5;
+    private int numSolutions = 10;
     private List<Solution> moPop;
 
     public KmEvolution(Executor exec) {
