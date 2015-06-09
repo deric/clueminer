@@ -20,7 +20,7 @@ package org.clueminer.dataset.api;
  *
  * @author deric
  */
-public interface DataProvider {
+public interface DataProvider extends Iterable<Dataset<? extends Instance>> {
 
     /**
      *

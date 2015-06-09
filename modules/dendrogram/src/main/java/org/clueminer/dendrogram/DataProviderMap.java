@@ -16,6 +16,7 @@
  */
 package org.clueminer.dendrogram;
 
+import java.util.Iterator;
 import java.util.Map;
 import org.clueminer.dataset.api.DataProvider;
 import org.clueminer.dataset.api.Dataset;
@@ -54,6 +55,33 @@ public class DataProviderMap implements DataProvider {
             return 0;
         }
         return data.size();
+    }
+
+    @Override
+    public Iterator<Dataset<? extends Instance>> iterator() {
+        return new DataProviderMapIterator();
+    }
+
+    private class DataProviderMapIterator implements Iterator<Dataset<? extends Instance>> {
+
+        private int index;
+        private final String[] names;
+
+        public DataProviderMapIterator() {
+            names = getDatasetNames();
+            index = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < count();
+        }
+
+        @Override
+        public Dataset<? extends Instance> next() {
+            return data.get(names[index++]);
+        }
+
     }
 
 }
