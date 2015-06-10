@@ -48,9 +48,9 @@ public class NMIsqrtTest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(FakeClustering.iris(), 0.7411519036837555);
+        measure(FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, 0.45471519415362877);
+        double score = measure(irisWrong, 0.6545182434318744);
         double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
 
         assertTrue(score2 < score);

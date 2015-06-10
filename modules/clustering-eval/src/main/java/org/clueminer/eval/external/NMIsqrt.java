@@ -41,7 +41,7 @@ public class NMIsqrt extends NMIbase {
 
     @Override
     public double countNMI(double mutualInformation, double ent1, double ent2) {
-        return mutualInformation / Math.sqrt(ent1 + ent2);
+        return mutualInformation / Math.sqrt(ent1 * ent2);
     }
 
 }
