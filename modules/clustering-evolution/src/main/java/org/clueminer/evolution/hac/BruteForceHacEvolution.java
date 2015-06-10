@@ -26,6 +26,7 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.std.Scaler;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -125,6 +126,8 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
         Clustering<? extends Cluster> clustering;
+        //for cophenetic correlation we need proximity matrix
+        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         params.put(AgglParams.ALG, exec.getAlgorithm().getName());
         params.putBoolean(AgglParams.LOG, logscale);
         params.put(AgglParams.STD, std);
