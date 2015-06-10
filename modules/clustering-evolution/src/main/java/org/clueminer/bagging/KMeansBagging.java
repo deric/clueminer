@@ -17,6 +17,7 @@
 package org.clueminer.bagging;
 
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
@@ -59,6 +60,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     private static final Logger logger = Logger.getLogger(KMeansBagging.class.getName());
 
+    private Random random = new Random();
+
     @Override
     public String getName() {
         return name;
@@ -67,6 +70,15 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     private Clustering[] randClusters(AbstractClusteringAlgorithm alg, Dataset<? extends Instance> dataset, Props props) {
         Clustering[] clusts = new Clustering[bagging];
         for (int i = 0; i < bagging; i++) {
+            if (props.getBoolean(FIXED_K, false)) {
+                //randomize k between 2 and 25
+                int k = random.nextInt(25);
+                if (k < 2) {
+                    k = 2;
+                }
+                props.put(KMeans.K, k);
+            }
+
             clusts[i] = alg.cluster(dataset, props);
         }
         return clusts;

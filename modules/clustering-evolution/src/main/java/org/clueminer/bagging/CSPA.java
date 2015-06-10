@@ -44,7 +44,8 @@ public class CSPA extends CoAssocMatrix implements Consensus {
     }
 
     @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
+    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg,
+            ColorGenerator cg, Props props) {
         Matrix coassoc = createMatrix(clusts);
 
 

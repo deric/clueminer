@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Edge;
@@ -128,6 +129,8 @@ public class COMUSA implements Consensus {
         int k = props.getInt(KMeans.K);
         double relax = props.getDouble(RELAX, 0.5);
         Clustering<? extends Cluster> result = new ClusterList(k);
+        Dataset<? extends Instance> dataset = clusts[0].getLookup().lookup(Dataset.class);
+        result.lookupAdd(dataset);
         ObjectOpenHashSet<Node> blacklist = new ObjectOpenHashSet();
         Node node, other;
         Cluster curr;

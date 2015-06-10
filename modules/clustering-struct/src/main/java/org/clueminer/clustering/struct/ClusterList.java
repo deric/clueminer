@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
@@ -392,6 +393,11 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         Cluster<? extends Instance> c = new BaseCluster(5, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
+        //some validity measures needs to access attribute properties
+        Dataset<? extends Instance> d = getLookup().lookup(Dataset.class);
+        if (d != null) {
+            c.setAttributes(d.getAttributes());
+        }
         put(clusterId, c);
         return c;
     }
@@ -406,6 +412,11 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
         int clusterId = size();
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
+        //some validity measures needs to access attribute properties
+        Dataset<? extends Instance> d = getLookup().lookup(Dataset.class);
+        if (d != null) {
+            c.setAttributes(d.getAttributes());
+        }
         put(clusterId, c);
         return c;
     }
