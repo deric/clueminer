@@ -32,6 +32,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.mo.BaseIntProblem;
 import static org.clueminer.evolution.mo.BaseIntProblem.getFactory;
 import org.clueminer.evolution.mo.MoSolution;
+import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
 import org.uma.jmetal.problem.IntegerProblem;
@@ -57,9 +58,10 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
         exec = new ClusteringExecutorCached(alg);
     }
 
-    public KmProblem(KmEvolution evolution, ClusteringAlgorithm alg, HashSet<String> blacklist) {
+    public KmProblem(KmEvolution evolution, ClusteringAlgorithm alg, HashSet<String> blacklist, Props defaultProps) {
         this.evolution = evolution;
         this.blacklist = blacklist;
+        this.defaultProp = defaultProps;
         setNumberOfObjectives(evolution.getNumObjectives());
         initializeGenomMapping(evolution.getAlgorithm());
         exec = new ClusteringExecutorCached(alg);
@@ -110,9 +112,14 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
                             if (!Double.isNaN(p.getMin())) {
                                 lower.add(i, (int) p.getMin());
                             }
-                            logger.log(Level.INFO, "max: {0}", p.getMax());
-                            if (!Double.isNaN(p.getMax())) {
-                                upper.add(i, (int) p.getMax());
+                            System.out.println("default prop: " + defaultProp);
+                            if (defaultProp != null && "k".equals(p.getName()) && defaultProp.containsKey("max_k")) {
+                                upper.add(i, defaultProp.getInt("max_k"));
+                            } else {
+                                logger.log(Level.INFO, "max: {0}", p.getMax());
+                                if (!Double.isNaN(p.getMax())) {
+                                    upper.add(i, (int) p.getMax());
+                                }
                             }
                             int pos = upper.get(i) - lower.get(i);
                             combinations *= pos;

@@ -25,7 +25,6 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.mo.MoEvolution;
 import org.clueminer.evolution.mo.MoSolution;
-import org.openide.util.Exceptions;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -61,10 +60,8 @@ public class KmEvolution extends MoEvolution {
         if (defaultProp != null && defaultProp.getBoolean(KMeansBagging.FIXED_K, false)) {
             skipParams.add("k");
         }
-        KmProblem problem = new KmProblem(this, getAlgorithm(), skipParams);
-        if (defaultProp != null) {
-            problem.setDefaultProps(defaultProp);
-        }
+        KmProblem problem = new KmProblem(this, getAlgorithm(), skipParams, defaultProp);
+
         Algorithm moAlg;
         CrossoverOperator crossover;
         MutationOperator mutation;
@@ -105,12 +102,11 @@ public class KmEvolution extends MoEvolution {
         fireEvolutionStarted(this);
         logger.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
-        try {
+        //try {
             moAlg.run();
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
-            Exceptions.printStackTrace(e);
-        }
+        /*  } catch (Exception e) {            logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
+            throw new RuntimeException("clustering failed", e);
+        }*/
         moPop = ((NSGAII) moAlg).getResult();
         logger.log(Level.INFO, "result size: {0}", moPop.size());
         fireFinalResult(moPop);

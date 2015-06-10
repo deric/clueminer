@@ -71,6 +71,7 @@ public class KmEvolutionTest {
         subject.addObjective(new AIC());
         Props props = new Props();
         props.put("k", 3);
+        props.put("max_k", 20);
         subject.setDefaultProps(props);
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);

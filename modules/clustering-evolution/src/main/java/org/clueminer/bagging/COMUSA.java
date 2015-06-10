@@ -126,7 +126,7 @@ public class COMUSA implements Consensus {
         }
 
         //number of clusters is just a hint
-        int k = props.getInt(KMeans.K);
+        int k = props.getInt(KMeans.K, 5);
         double relax = props.getDouble(RELAX, 0.5);
         Clustering<? extends Cluster> result = new ClusterList(k);
         Dataset<? extends Instance> dataset = clusts[0].getLookup().lookup(Dataset.class);

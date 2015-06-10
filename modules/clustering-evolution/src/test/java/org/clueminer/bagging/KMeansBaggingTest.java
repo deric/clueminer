@@ -60,6 +60,9 @@ public class KMeansBaggingTest {
     @Test
     public void testPartition() {
         Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        Props def = new Props();
+        def.putInt("max_k", data.size());
+        subject.setDefaultProps(def);
         Props params = new Props();
         params.putInt("k", 3);
         params.put(KMeansBagging.INIT_METHOD, "MO");

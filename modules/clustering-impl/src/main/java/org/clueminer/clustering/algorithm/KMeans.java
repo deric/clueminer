@@ -103,7 +103,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
             throw new RuntimeException("Number of clusters should be at least 2");
         }
         if (k > data.size()) {
-            throw new RuntimeException("k can't be larger than dataset size (" + data.size() + ")");
+            throw new RuntimeException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
         }
 
         seed = params.getInt(SEED, -1);

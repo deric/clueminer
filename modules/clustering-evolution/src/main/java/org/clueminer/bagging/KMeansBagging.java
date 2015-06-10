@@ -64,6 +64,8 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     private Random random;
 
+    private Props defaultProps;
+
     @Override
     public String getName() {
         return name;
@@ -130,11 +132,15 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
                 km.addObjective(eef.getProvider(props.get("mo_1", "AIC")));
                 km.addObjective(eef.getProvider(props.get("mo_2", "SD index")));
-
+                if (defaultProps != null) {
+                    km.setDefaultProps(defaultProps);
+                }
                 if (props.getBoolean(FIXED_K, false)) {
-                    Props p = new Props();
-                    p.put(KMeans.K, props.get(KMeans.K));
-                    km.setDefaultProps(p);
+                    if (defaultProps == null) {
+                        defaultProps = new Props();
+                    }
+                    defaultProps.put(KMeans.K, props.get(KMeans.K));
+                    km.setDefaultProps(defaultProps);
                 }
 
                 km.run();
@@ -160,6 +166,14 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     @Override
     public Clustering<? extends Cluster> partition(Dataset<? extends Instance> dataset, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Props getDefaultProps() {
+        return defaultProps;
+    }
+
+    public void setDefaultProps(Props defaultProps) {
+        this.defaultProps = defaultProps;
     }
 
 }
