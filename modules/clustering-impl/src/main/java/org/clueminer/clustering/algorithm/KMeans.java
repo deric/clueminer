@@ -71,7 +71,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
 
     @Override
     public String getName() {
-        return "k-means (MacQueen)";
+        return "k-means";
     }
 
     @Override
