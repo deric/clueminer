@@ -82,6 +82,11 @@ public class DataProviderMap implements DataProvider {
             return data.get(names[index++]);
         }
 
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("not supported yet.");
+        }
+
     }
 
 }
