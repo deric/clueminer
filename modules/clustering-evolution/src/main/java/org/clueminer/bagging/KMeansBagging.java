@@ -55,12 +55,14 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     public static final String FIXED_K = "rand_k";
 
+    public static final String MAX_K = "max_k";
+
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
     private int bagging;
 
     private static final Logger logger = Logger.getLogger(KMeansBagging.class.getName());
 
-    private Random random = new Random();
+    private Random random;
 
     @Override
     public String getName() {
@@ -69,19 +71,32 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
 
     private Clustering[] randClusters(AbstractClusteringAlgorithm alg, Dataset<? extends Instance> dataset, Props props) {
         Clustering[] clusts = new Clustering[bagging];
+        int maxK = (int) Math.sqrt(dataset.size());
         for (int i = 0; i < bagging; i++) {
             if (!props.getBoolean(FIXED_K, false)) {
-                //randomize k between 2 and 25
-                int k = random.nextInt(25);
-                if (k < 2) {
-                    k = 2;
-                }
-                props.put(KMeans.K, k);
+                //randomize k between 2 and sqrt(n)
+                props.put(KMeans.K, randInt(2, props.getInt(MAX_K, maxK)));
+            }
+            if (props.getInt(KMeans.K) > dataset.size()) {
+                props.put(KMeans.K, maxK);
             }
 
             clusts[i] = alg.cluster(dataset, props);
         }
         return clusts;
+    }
+
+    public int randInt(int min, int max) {
+
+        // NOTE: Usually this should be a field rather than a method
+        // variable so that it is not re-seeded every call.
+        if (random == null) {
+            random = new Random();
+        }
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        return random.nextInt((max - min) + 1) + min;
     }
 
     @Override
