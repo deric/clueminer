@@ -102,7 +102,7 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
 
         double classEntropy = entropy(clusters.instancesCount(), clusterSizes);
 
-        nmi = mutualInformation / ((c1entropy + classEntropy) / 2);
+        nmi = countNMI(mutualInformation, c1entropy, classEntropy);
 
         return nmi;
     }

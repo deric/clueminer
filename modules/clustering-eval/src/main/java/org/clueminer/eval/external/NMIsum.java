@@ -21,13 +21,17 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Normalized Mutual Information as defined by Kvalseth (1987)
+ *
+ * T. O. Kvalseth. Entropy and correlation: Some comments. Systems, Man and
+ * Cybernetics, IEEE Transactions on, 17(3):517–519, 1987.
  *
  * @author deric
  */
 @ServiceProvider(service = ExternalEvaluator.class)
 public class NMIsum extends NMIbase implements ClusterEvaluation {
 
-    private static final String name = "NMIsum";
+    private static final String name = "NMI-sum";
     private static final long serialVersionUID = -8838355537225622273L;
 
     @Override

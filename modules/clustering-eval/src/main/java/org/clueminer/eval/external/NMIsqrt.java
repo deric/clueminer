@@ -20,13 +20,18 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Normalized mutual information used by Strehl and Ghosh
+ *
+ * A. Strehl and J. Ghosh. Cluster ensembles - a knowledge reuse framework for
+ * combining multiple partitions. Journal of Machine Learning Research,
+ * 3:583–617, 2002.
  *
  * @author deric
  */
 @ServiceProvider(service = ExternalEvaluator.class)
 public class NMIsqrt extends NMIbase {
 
-    private static final String name = "NMI";
+    private static final String name = "NMI-sqrt";
     private static final long serialVersionUID = 5298781790787789513L;
 
     @Override
@@ -36,7 +41,7 @@ public class NMIsqrt extends NMIbase {
 
     @Override
     public double countNMI(double mutualInformation, double ent1, double ent2) {
-        return mutualInformation / ((ent1 + ent2) / 2);
+        return mutualInformation / Math.sqrt(ent1 + ent2);
     }
 
 }

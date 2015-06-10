@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
 import java.io.FileNotFoundException;
@@ -8,6 +24,7 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,15 +35,15 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class NMIsqrtTest extends ExternalTest {
+public class NMIsumTest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
 
-    public NMIsqrtTest() throws FileNotFoundException, IOException {
+    public NMIsumTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-        subject = new NMIsqrt();
+        subject = new NMIsum();
     }
 
     /**
@@ -48,9 +65,9 @@ public class NMIsqrtTest extends ExternalTest {
      */
     @Test
     public void testScore_Clustering_Dataset() {
-        measure(FakeClustering.iris(), 0.7411519036837555);
+        measure(FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, 0.45471519415362877);
+        double score = measure(irisWrong, 0.6496820278112178);
         double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
 
         assertTrue(score2 < score);
@@ -92,4 +109,5 @@ public class NMIsqrtTest extends ExternalTest {
         assertEquals(2, c.size());
         assertEquals(0.14039740914097984, subject.score(c), delta);
     }
+
 }
