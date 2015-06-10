@@ -53,7 +53,8 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
      */
     private Random random;
 
-    @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 10)
+    //min and max values are used as limit for evolutionary algorithms
+    @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int k;
 
     @Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
