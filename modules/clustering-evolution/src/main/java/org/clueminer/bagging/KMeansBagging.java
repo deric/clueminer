@@ -70,7 +70,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
     private Clustering[] randClusters(AbstractClusteringAlgorithm alg, Dataset<? extends Instance> dataset, Props props) {
         Clustering[] clusts = new Clustering[bagging];
         for (int i = 0; i < bagging; i++) {
-            if (props.getBoolean(FIXED_K, false)) {
+            if (!props.getBoolean(FIXED_K, false)) {
                 //randomize k between 2 and 25
                 int k = random.nextInt(25);
                 if (k < 2) {

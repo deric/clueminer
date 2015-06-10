@@ -54,6 +54,7 @@ public class COMUSATest {
         params.putInt("k", 5);
         params.putInt(KMeansBagging.BAGGING, 5);
         params.put(KMeansBagging.CONSENSUS, subject.getName());
+        System.out.println(params.toString());
         Clustering c = bagging.cluster(data, params);
         assertNotNull(c);
     }
