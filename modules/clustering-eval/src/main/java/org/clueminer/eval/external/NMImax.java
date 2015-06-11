@@ -17,6 +17,8 @@
 package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ExternalEvaluator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Normalized Mutual Information as defined by Kvalseth (1987)
@@ -26,6 +28,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
  *
  * @author deric
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class NMImax extends NMIbase implements ClusterEvaluation {
 
     private static final String name = "NMI-max";
