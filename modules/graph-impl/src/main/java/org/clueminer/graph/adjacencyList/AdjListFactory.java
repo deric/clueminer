@@ -96,7 +96,9 @@ public class AdjListFactory implements GraphFactory {
 
     @Override
     public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
-        Long[] mapping = new Long[input.size()];
+        nodeIdCounter = 0;
+        edgeIdCounter = 0;
+		Long[] mapping = new Long[input.size()];
         for (Instance inst : input) {
             Node node = this.newNode();
             mapping[inst.getIndex()] = node.getId();
