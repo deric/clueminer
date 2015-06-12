@@ -16,30 +16,13 @@
  */
 package org.clueminer.graph.fast;
 
-import org.clueminer.graph.api.Element;
-
 /**
  *
  * @author deric
  */
-public abstract class ElementImpl implements Element {
+public class FastGraphConfig {
 
-    protected final FastGraph graphStore;
-    protected Long id;
-
-    protected Object[] attributes;
-
-    public ElementImpl(Long id, FastGraph graphStore) {
-        if (id == null) {
-            throw new NullPointerException();
-        }
-        this.graphStore = graphStore;
-        this.id = id;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
+    public static final int ELEMENT_ID_INDEX = -1;
+    public static final int ELEMENT_LABEL_INDEX = 0;
 
 }
