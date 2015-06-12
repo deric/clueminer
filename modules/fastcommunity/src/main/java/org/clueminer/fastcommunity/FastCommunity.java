@@ -1,6 +1,7 @@
 package org.clueminer.fastcommunity;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -137,6 +138,30 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 			assignments.put(node.getId(), left);
             network.merge(i, j);
         }
+		while(assignments.size() > 1) {
+			Iterator<Integer> it = assignments.keySet().iterator();
+			Integer i = it.next();
+			Integer j = it.next();
+			if (i > j) {
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
+			
+			node = getOrCreate(nodeId++, nodes);
+            node.setLeft(nodes[i]);
+            node.setRight(nodes[j]);
+			// These nodes are not connected
+			// thus we want to cut the dendrogram here
+            node.setHeight(1000);
+
+            left = assignments.remove(i);
+            right = assignments.remove(j);
+
+            left.addAll(right);
+			assignments.put(node.getId(), left);
+			network.merge(i, j);
+		}
 
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
