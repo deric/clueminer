@@ -27,6 +27,7 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import sun.org.mozilla.javascript.internal.ScriptRuntime;
 
 /**
  *
@@ -153,7 +154,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
             node.setRight(nodes[j]);
 			// These nodes are not connected
 			// thus we want to cut the dendrogram here
-            node.setHeight(1000);
+            node.setHeight(Double.MAX_VALUE);
 
             left = assignments.remove(i);
             right = assignments.remove(j);
