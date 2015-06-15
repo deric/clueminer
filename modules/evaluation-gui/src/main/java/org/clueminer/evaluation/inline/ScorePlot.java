@@ -239,6 +239,14 @@ public class ScorePlot extends BPanel implements TaskListener {
         return golden;
     }
 
+    /**
+     * Find min (leftmost) value in a sorted array which is a number
+     *
+     * @param clust
+     * @param comp
+     * @param ref
+     * @return
+     */
     private double scoreMin(Clustering[] clust, ClusteringComparator comp, double ref) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
@@ -249,18 +257,16 @@ public class ScorePlot extends BPanel implements TaskListener {
             if (goldenStd != null) {
                 ClusterEvaluation eval = comp.getEvaluator();
                 if (eval.isMaximized()) {
-                    if (!eval.isBetter(ref, res)) {
+                    if (eval.isBetter(ref, res)) {
                         res = ref;
                     }
-                } /*else {
-                 if (eval.isBetter(ref, res)) {
-                 res = ref;
-                 }
-                 }   */
-
+                } else {
+                    if (eval.compare(res, ref) == 1) {
+                        res = ref;
+                    }
+                }
             }
         }
-
         return res;
     }
 
@@ -274,11 +280,11 @@ public class ScorePlot extends BPanel implements TaskListener {
             if (goldenStd != null) {
                 ClusterEvaluation eval = comp.getEvaluator();
                 if (eval.isMaximized()) {
-                    /*if (!eval.isBetter(ref, res)) {
-                     res = ref;
-                     }*/
-                } else {
                     if (!eval.isBetter(ref, res)) {
+                        res = ref;
+                    }
+                } else {
+                    if (eval.compare(res, ref) == -1) {
                         res = ref;
                     }
                 }
@@ -332,13 +338,16 @@ public class ScorePlot extends BPanel implements TaskListener {
         //draw
         Rectangle2D rect;
 
+        int i = 0;
         for (Clustering clust : external) {
             //left clustering
             score = compInternal.getScore(clust);
             xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
             score = compExternal.getScore(clust);
+
             //color according to position difference to external score placement
             hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
+            i++;
             diff = Math.abs(xVal - hypo);
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
