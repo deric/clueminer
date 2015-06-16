@@ -23,6 +23,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -44,8 +45,10 @@ public class InlinePanel extends JPanel {
 
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
+    private JComboBox comboEvaluatorZ;
     private ScorePlot plot;
     private JButton export;
+    public static String NONE = "(none)";
 
     public InlinePanel() {
         initComponents();
@@ -88,9 +91,24 @@ public class InlinePanel extends JPanel {
         c.gridx = 1;
         add(comboEvaluatorY, c);
 
+        //MO-criterion
+        comboEvaluatorZ = new JComboBox();
+        List<String> providers = EvaluationFactory.getInstance().getProviders();
+        providers.add(0, NONE);
+        comboEvaluatorZ.setModel(new EvaluatorComboBox(providers.toArray(new String[0])));
+        comboEvaluatorZ.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboEvaluatorZActionPerformed(evt);
+            }
+        });
+        c.insets = new Insets(5, 0, 5, 5);
+        c.gridx = 2;
+        add(comboEvaluatorZ, c);
+
         export = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/save16.png", false));
         export.setToolTipText("Export current results");
-        c.gridx = 2;
+        c.gridx = 3;
         add(export, c);
 
         export.addActionListener(new ActionListener() {
@@ -133,6 +151,13 @@ public class InlinePanel extends JPanel {
         String item = (String) comboEvaluatorY.getSelectedItem();
         if (item != null) {
             plot.setEvaluatorY(EvaluationFactory.getInstance().getProvider(item));
+        }
+    }
+
+    private void comboEvaluatorZActionPerformed(ActionEvent evt) {
+        String item = (String) comboEvaluatorZ.getSelectedItem();
+        if (item != null && !item.equals(NONE)) {
+            plot.setEvaluatorZ(EvaluationFactory.getInstance().getProvider(item));
         }
     }
 

@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,6 +73,9 @@ public class ScorePlot extends BPanel implements TaskListener {
     private Clustering[] external;
     private ClusteringComparator compInternal;
     private ClusteringComparator compExternal;
+    private ClusterEvaluation objective1;
+    private ClusterEvaluation objective2;
+    private MoEvaluator moEval;
     protected Font defaultFont;
     protected Font headerFont;
     protected int lineHeight = 12;
@@ -109,6 +114,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Exceptions.printStackTrace(ex);
         }
+        moEval = new MoEvaluator();
     }
 
     private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
@@ -122,6 +128,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     protected void setEvaluatorY(final ClusterEvaluation provider) {
+        objective1 = provider;
         if (internal != null && internal.length > 1) {
             final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RP.post(new Runnable() {
@@ -136,6 +143,30 @@ public class ScorePlot extends BPanel implements TaskListener {
                 }
             });
 
+        }
+    }
+
+    protected void setEvaluatorZ(final ClusterEvaluation provider) {
+        objective2 = provider;
+
+        if (internal != null && internal.length > 1 && provider != null) {
+            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            RP.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    ph.start();
+                    List<ClusterEvaluation> objectives = new LinkedList();
+                    objectives.add(objective1);
+                    objectives.add(objective2);
+                    moEval.setObjectives(objectives);
+                    NSGASort sorter = new NSGASort();
+                    internal = sorter.sort(internal, objectives);
+                    compInternal.setEvaluator(moEval);
+                    clusteringChanged();
+                    ph.finish();
+                }
+            });
         }
     }
 

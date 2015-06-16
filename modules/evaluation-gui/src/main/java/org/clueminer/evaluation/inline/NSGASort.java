@@ -35,7 +35,7 @@ public class NSGASort {
         this.comparator = new DominanceComparator();
     }
 
-    public void sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
+    public Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
 
         int n = clusterings.length;
         List<ArrayList<Clustering>> rankedSubpopulations;
@@ -117,6 +117,14 @@ public class NSGASort {
             }
         }
 
+        Clustering[] result = new Clustering[clusterings.length];
+        int k = 0;
+        for (List<Integer> fr : front) {
+            for (Integer idx : fr) {
+                result[k++] = clusterings[idx];
+            }
+        }
+        return result;
     }
 
 }

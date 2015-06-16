@@ -24,6 +24,7 @@ import org.clueminer.eval.DaviesBouldin;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,7 +69,8 @@ public class NSGASortTest {
         eval.add(new NMIsqrt());
         eval.add(new DaviesBouldin());
 
-        subject.sort(clusterings, eval);
+        Clustering[] res = subject.sort(clusterings, eval);
+        assertEquals(clusterings.length, res.length);
 
     }
 
