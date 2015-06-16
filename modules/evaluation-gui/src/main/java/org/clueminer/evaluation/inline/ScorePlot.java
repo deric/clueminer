@@ -150,16 +150,16 @@ public class ScorePlot extends BPanel implements TaskListener {
         objective2 = provider;
 
         if (internal != null && internal.length > 1 && provider != null) {
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            final List<ClusterEvaluation> objectives = new LinkedList();
+            objectives.add(objective1);
+            objectives.add(objective2);
+            moEval.setObjectives(objectives);
+            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + moEval.getName());
             RP.post(new Runnable() {
 
                 @Override
                 public void run() {
                     ph.start();
-                    List<ClusterEvaluation> objectives = new LinkedList();
-                    objectives.add(objective1);
-                    objectives.add(objective2);
-                    moEval.setObjectives(objectives);
                     NSGASort sorter = new NSGASort();
                     internal = sorter.sort(internal, objectives);
                     compInternal.setEvaluator(moEval);
