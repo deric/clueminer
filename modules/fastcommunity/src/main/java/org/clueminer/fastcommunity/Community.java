@@ -23,6 +23,21 @@ public class Community {
         this.edgesOutside = src.edgesOutside;
     }
 
+	public Community(int id, Community a, Community b, int edgesBetween) {
+		this.id = id;
+
+		this.nodes = new HashSet<>();
+		this.nodes.addAll(a.getNodes());
+		this.nodes.addAll(b.getNodes());
+
+		this.edgesInside = a.getEdgesInside()
+						 + b.getEdgesInside()
+						 + edgesBetween;
+		this.edgesOutside = a.getEdgesOutside()
+						  + b.getEdgesOutside()
+						  - (2 * edgesBetween);
+	}
+	
     public Community(Graph graph, int id, Node node) {
         this.id = id;
         this.nodes = new HashSet<>();
