@@ -36,6 +36,10 @@ public class NodeImpl extends ElementImpl implements Node {
         this.attributes = new Object[1];
     }
 
+    public NodeImpl(Object id) {
+        this((long) id, null);
+    }
+
     @Override
     public Object getLabel() {
         return attributes[FastGraphConfig.ELEMENT_LABEL_INDEX];
