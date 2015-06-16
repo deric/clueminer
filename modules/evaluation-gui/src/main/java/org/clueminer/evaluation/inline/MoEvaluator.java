@@ -24,6 +24,7 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
 /**
+ * Evaluator based on multi-objective sorting (require running {@link NSGASort})
  *
  * @author deric
  */
@@ -42,7 +43,6 @@ public class MoEvaluator implements ClusterEvaluation {
                     sb.append(" & ");
                 }
                 sb.append(objectives.get(i).getName());
-
             }
             return sb.toString();
         }
@@ -50,27 +50,33 @@ public class MoEvaluator implements ClusterEvaluation {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return clusters.getParams().getInt("mo-order", -1);
     }
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return clusters.getParams().getInt("mo-order", -1);
     }
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return clusters.getParams().getInt("mo-order", -1);
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 < score2;
     }
 
     @Override
     public int compare(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double diff = score1 - score2;
+        if (diff == 0.0) {
+            return 0;
+        } else if (diff < 0.0) {
+            return -1;
+        }
+        return 1;
     }
 
     @Override
@@ -80,17 +86,17 @@ public class MoEvaluator implements ClusterEvaluation {
 
     @Override
     public boolean isMaximized() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public double getMin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0.0;
     }
 
     @Override
     public double getMax() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Double.MAX_VALUE;
     }
 
     public List<ClusterEvaluation> getObjectives() {
