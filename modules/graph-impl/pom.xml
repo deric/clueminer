@@ -17,9 +17,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>org.clueminer.graph.GraphBuilder</publicPackage>
                         <publicPackage>org.clueminer.graph.adjacencyList</publicPackage>
                         <publicPackage>org.clueminer.graph.adjacencyMatrix</publicPackage>
-                        <publicPackage>org.clueminer.graph.GraphBuilder</publicPackage>
+                        <publicPackage>org.clueminer.graph.knn</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -99,6 +100,16 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>math-impl</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE80</version>
         </dependency>
     </dependencies>
     <properties>

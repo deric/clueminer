@@ -40,7 +40,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
     private CommunityNetwork network;
     DeltaQMatrix dQ;
 
-	public static final String GRAPH_CONV = "graph_conv";
+    public static final String GRAPH_CONV = "graph_conv";
     @Param(name = FastCommunity.GRAPH_CONV,
            factory = "org.clueminer.graph.api.GraphConvertorFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
@@ -58,7 +58,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
 
     @Override
     public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
-		graph = new AdjListGraph();
+        graph = new AdjListGraph();
         String dist = pref.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
         pref.put("algorithm", getName());
@@ -68,7 +68,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, pref);
-   
+
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
         int n = dataset.size();
@@ -100,7 +100,7 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
         }
         network.initConnections(graph);
 
-		return clusterAssignment;
+        return clusterAssignment;
     }
 
     private DendroTreeData computeLinkage(Dataset<? extends Instance> dataset, int n) {
@@ -135,33 +135,33 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
             right = assignments.remove(j);
 
             left.addAll(right);
-			assignments.put(node.getId(), left);
+            assignments.put(node.getId(), left);
             network.merge(i, j);
         }
-		while(assignments.size() > 1) {
-			Iterator<Integer> it = assignments.keySet().iterator();
-			Integer i = it.next();
-			Integer j = it.next();
-			if (i > j) {
+        while (assignments.size() > 1) {
+            Iterator<Integer> it = assignments.keySet().iterator();
+            Integer i = it.next();
+            Integer j = it.next();
+            if (i > j) {
                 int tmp = i;
                 i = j;
                 j = tmp;
             }
-			
-			node = getOrCreate(nodeId++, nodes);
+
+            node = getOrCreate(nodeId++, nodes);
             node.setLeft(nodes[i]);
             node.setRight(nodes[j]);
-			// These nodes are not connected
-			// thus we want to cut the dendrogram here
+            // These nodes are not connected
+            // thus we want to cut the dendrogram here
             node.setHeight(Double.MAX_VALUE);
 
             left = assignments.remove(i);
             right = assignments.remove(j);
 
             left.addAll(right);
-			assignments.put(node.getId(), left);
-			network.merge(i, j);
-		}
+            assignments.put(node.getId(), left);
+            network.merge(i, j);
+        }
 
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
