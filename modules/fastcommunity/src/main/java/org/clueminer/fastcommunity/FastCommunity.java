@@ -27,7 +27,6 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
-import sun.org.mozilla.javascript.internal.ScriptRuntime;
 
 /**
  *
