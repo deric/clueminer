@@ -98,7 +98,8 @@ public class ScorePlot extends BPanel implements TaskListener {
     private double goldenInt;
     private int rectWidth = 10;
     private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
-    private boolean useSupervisedMetricMax = false;
+    private boolean useActualMetricMax = true;
+    private boolean crossAtMedian = true;
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -335,17 +336,6 @@ public class ScorePlot extends BPanel implements TaskListener {
             goldenExt = compExternal.getScore(goldenStd);
             goldenInt = compInternal.getScore(goldenStd);
         }
-
-        //canvas dimensions
-        int cxMin, cxMax, cyMin, cyMax;
-        cxMin = insets.left + 20;
-        cyMin = insets.top + 15;
-        cyMax = getSize().height - insets.bottom;
-        int cyMid = (int) ((cyMax - cyMin) / 2) + cyMin;
-        cxMax = drawXLabel(g, compInternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
-        int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
-        drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
-
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
         xmin = scoreMin(internal, compInternal, goldenInt);
@@ -353,20 +343,37 @@ public class ScorePlot extends BPanel implements TaskListener {
         xmid = (xmax - xmin) / 2.0 + xmin;
         ymin = scoreMin(external, compExternal, goldenExt);
         ymax = scoreMax(external, compExternal, goldenExt);
+
+        if (crossAtMedian && external != null && external.length > 2) {
+            int pos = (external.length / 2);
+            ymid = compExternal.getEvaluator().score(external[pos]);
+        } else {
+            ymid = (ymax - ymin) / 2.0 + ymin;
+        }
+
+        //canvas dimensions
+        int cxMin, cxMax, cyMin, cyMax;
+        cxMin = insets.left + 20;
+        cyMin = insets.top + 15;
+        cyMax = getSize().height - insets.bottom;
+        int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
+        cxMax = drawXLabel(g, compInternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
+        int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
+        drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
+
         //if we have clear bounds, use them
         if (isFinite(compExternal.getEvaluator().getMin())) {
             //for purpose of visualization min and max are reversed
-            if (useSupervisedMetricMax) {
+            if (!useActualMetricMax) {
                 ymax = compExternal.getEvaluator().getMin();
             }
         }
         if (isFinite(compExternal.getEvaluator().getMax())) {
             //for purpose of visualization min and max are reversed
-            if (useSupervisedMetricMax) {
+            if (!useActualMetricMax) {
                 ymin = compExternal.getEvaluator().getMax();
             }
         }
-        ymid = (ymax - ymin) / 2.0 + ymin;
 
         //set font for rendering rows
         g.setFont(defaultFont);
@@ -604,10 +611,14 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     public boolean isUseSupervisedMetricMax() {
-        return useSupervisedMetricMax;
+        return useActualMetricMax;
     }
 
     public void setUseSupervisedMetricMax(boolean useSupervisedMetricMax) {
-        this.useSupervisedMetricMax = useSupervisedMetricMax;
+        this.useActualMetricMax = useSupervisedMetricMax;
+    }
+
+    public void setCrossAxisAtMedian(boolean crossAtMedian) {
+        this.crossAtMedian = crossAtMedian;
     }
 }

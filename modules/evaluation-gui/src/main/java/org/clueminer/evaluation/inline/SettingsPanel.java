@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 public class SettingsPanel extends JPanel {
 
     private JCheckBox chckUseMetricsMax;
+    private JCheckBox chckMedian;
 
     public SettingsPanel() {
         initComponents();
@@ -50,6 +51,9 @@ public class SettingsPanel extends JPanel {
         add(chckUseMetricsMax, c);
 
         c.gridy++;
+        chckMedian = new JCheckBox("cross axes at median Y value");
+        chckMedian.setSelected(true);
+        add(chckMedian, c);
     }
 
     /**
@@ -58,7 +62,8 @@ public class SettingsPanel extends JPanel {
      * @param plot
      */
     void updatePlot(ScorePlot plot) {
-        plot.setUseSupervisedMetricMax(!chckUseMetricsMax.isSelected());
+        plot.setUseSupervisedMetricMax(chckUseMetricsMax.isSelected());
+        plot.setCrossAxisAtMedian(chckMedian.isSelected());
     }
 
 }
