@@ -19,9 +19,8 @@ package org.clueminer.evaluation.inline;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.AIC;
-import org.clueminer.eval.external.NMIsqrt;
+import org.clueminer.eval.BIC;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,29 +29,30 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class NSGASortTest {
+public class DominanceComparatorTest {
 
+    private DominanceComparator subject;
+
+    public DominanceComparatorTest() {
+        List<ClusterEvaluation> objectives = new LinkedList<>();
+        objectives.add(new AIC());
+        objectives.add(new BIC());
+        subject = new DominanceComparator(objectives);
+    }
 
     @Test
-    public void testSort() {
-        Clustering[] clusterings = new Clustering[6];
-        int i = 0;
-        //evalPlot.setGolden(FakeClustering.iris());
-        clusterings[i++] = FakeClustering.iris();
-        clusterings[i++] = FakeClustering.irisMostlyWrong();
-        clusterings[i++] = FakeClustering.irisWrong4();
-        clusterings[i++] = FakeClustering.irisWrong();
-        clusterings[i++] = FakeClustering.irisWrong2();
-        clusterings[i++] = FakeClustering.irisWrong5();
+    public void testCompare() {
+        int res = subject.compare(FakeClustering.iris(), FakeClustering.iris());
+        //identity - must be same
+        assertEquals(0, res);
 
-        List<ClusterEvaluation> eval = new LinkedList<>();
-        eval.add(new NMIsqrt());
-        eval.add(new AIC());
+        res = subject.compare(FakeClustering.iris(), FakeClustering.irisMostlyWrong());
+        // first one is better
+        assertEquals(-1, res);
 
-        Clustering[] res = NSGASort.sort(clusterings, eval);
-        assertEquals(clusterings.length, res.length);
-        //we use supervised criterion, first solution must be "correct" clustering
-        assertEquals(FakeClustering.iris(), clusterings[0]);
+        res = subject.compare(FakeClustering.irisMostlyWrong(), FakeClustering.iris());
+        // second one is better
+        assertEquals(1, res);
     }
 
 }

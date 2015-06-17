@@ -16,44 +16,82 @@
  */
 package org.clueminer.evaluation.inline;
 
+import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 
 /**
+ * Compares two clusterings using multiple objectives
  *
  * @author deric
  */
-public class DominanceComparator {
+public class DominanceComparator implements Comparator<Clustering> {
 
-    private final double epsilon = 0.0;
+    private final double epsilon = 1e-9;
+    private final List<ClusterEvaluation> objectives;
 
-    public int compare(Clustering c1, Clustering c2, List<ClusterEvaluation> objectives) {
+    public DominanceComparator(List<ClusterEvaluation> objectives) {
+        this.objectives = objectives;
+    }
 
-        int result;
+    /**
+     * A comparator with reversed sorting logic
+     *
+     * @param c1
+     * @param c2
+     * @return
+     */
+    @Override
+    public int compare(Clustering c1, Clustering c2) {
         boolean solution1Dominates = false;
         boolean solution2Dominates = false;
 
         int flag;
         double value1, value2;
+        double diff;
         for (ClusterEvaluation objective : objectives) {
             value1 = objective.score(c1);
             value2 = objective.score(c2);
-            if (value1 / (1 + epsilon) < value2) {
-                flag = -1;
-            } else if (value1 / (1 + epsilon) > value2) {
-                flag = 1;
-            } else {
+
+            diff = value1 - value2;
+            if (Math.abs(diff) <= epsilon) {
+                //same with epsilon tolerance
                 flag = 0;
+            } else {
+                if (objective.isMaximized()) {
+                    //maximize objective
+                    if (diff > 0.0) {
+                        //solution 1 dominates
+                        flag = -1;
+                    } else {
+                        flag = 1;
+                    }
+                } else {
+                    //minimize objective
+                    if (diff > 0.0) {
+                        //solution 1 dominates
+                        flag = 1;
+                    } else {
+                        flag = -1;
+                    }
+                }
             }
+
             if (flag == -1) {
                 solution1Dominates = true;
             }
+
             if (flag == 1) {
                 solution2Dominates = true;
             }
         }
+        return dominance2int(solution1Dominates, solution2Dominates);
 
+    }
+
+    private int dominance2int(boolean solution1Dominates, boolean solution2Dominates) {
+        int result;
         if (solution1Dominates == solution2Dominates) {
             // non-dominated solutions
             result = 0;
@@ -65,7 +103,5 @@ public class DominanceComparator {
             result = 1;
         }
         return result;
-
     }
-
 }

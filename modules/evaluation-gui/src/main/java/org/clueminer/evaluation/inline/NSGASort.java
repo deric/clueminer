@@ -29,13 +29,7 @@ import org.clueminer.clustering.api.Clustering;
  */
 public class NSGASort {
 
-    private final DominanceComparator comparator;
-
-    public NSGASort() {
-        this.comparator = new DominanceComparator();
-    }
-
-    public Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
+    public static Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
 
         int n = clusterings.length;
         List<ArrayList<Clustering>> rankedSubpopulations;
@@ -62,12 +56,13 @@ public class NSGASort {
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
+        DominanceComparator comparator = new DominanceComparator(objectives);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {
             // For all q individuals , calculate if p dominates q or vice versa
             for (int q = p + 1; q < n; q++) {
-                flagDominate = comparator.compare(clusterings[p], clusterings[q], objectives);
+                flagDominate = comparator.compare(clusterings[p], clusterings[q]);
                 if (flagDominate == -1) {
                     iDominate[p].add(q);
                     dominateMe[q]++;
