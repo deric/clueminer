@@ -337,8 +337,15 @@ public class ScorePlot extends BPanel implements TaskListener {
         }
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
-        xmin = scoreMin(internal, compInternal, goldenInt);
-        xmax = scoreMax(internal, compInternal, goldenInt);
+        if (compInternal.getEvaluator() instanceof MoEvaluator) {
+            //TODO: make sure golden standard is sorted
+            xmin = -1;
+            xmax = internal.length - 1;
+        } else {
+            xmin = scoreMin(internal, compInternal, goldenInt);
+            xmax = scoreMax(internal, compInternal, goldenInt);
+        }
+
         xmid = (xmax - xmin) / 2.0 + xmin;
         ymin = scoreMin(external, compExternal, goldenExt);
         ymax = scoreMax(external, compExternal, goldenExt);
