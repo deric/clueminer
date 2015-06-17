@@ -45,7 +45,7 @@ public class SettingsPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
 
-        chckUseMetricsMax = new JCheckBox("use metrics max value (Y axis)");
+        chckUseMetricsMax = new JCheckBox("scale to current max value (on Y axis)");
         chckUseMetricsMax.setSelected(true);
         add(chckUseMetricsMax, c);
 
@@ -58,7 +58,7 @@ public class SettingsPanel extends JPanel {
      * @param plot
      */
     void updatePlot(ScorePlot plot) {
-        plot.setUseSupervisedMetricMax(chckUseMetricsMax.isSelected());
+        plot.setUseSupervisedMetricMax(!chckUseMetricsMax.isSelected());
     }
 
 }
