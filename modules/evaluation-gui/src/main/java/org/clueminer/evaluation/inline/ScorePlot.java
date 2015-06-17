@@ -603,4 +603,11 @@ public class ScorePlot extends BPanel implements TaskListener {
         return clusterings;
     }
 
+    public boolean isUseSupervisedMetricMax() {
+        return useSupervisedMetricMax;
+    }
+
+    public void setUseSupervisedMetricMax(boolean useSupervisedMetricMax) {
+        this.useSupervisedMetricMax = useSupervisedMetricMax;
+    }
 }

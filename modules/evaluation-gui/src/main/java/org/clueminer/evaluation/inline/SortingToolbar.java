@@ -28,7 +28,11 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.evaluation.gui.EvaluatorComboBox;
 import static org.clueminer.evaluation.inline.InlinePanel.NONE;
 import org.clueminer.export.sorting.SortingExporter;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -40,7 +44,9 @@ public class SortingToolbar extends JToolBar {
     private JComboBox comboEvaluatorY;
     private JComboBox comboEvaluatorZ;
     private JButton export;
+    private JButton btnSettings;
     private final ScorePlot plot;
+    private SettingsPanel settingsPanel;
 
     public SortingToolbar(ScorePlot plot) {
         super(SwingConstants.HORIZONTAL);
@@ -84,6 +90,24 @@ public class SortingToolbar extends JToolBar {
             }
         });
         add(comboEvaluatorZ);
+
+        btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/settings16.png", false));
+        btnSettings.setToolTipText("Setup evolution");
+        btnSettings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (settingsPanel == null) {
+                    settingsPanel = new SettingsPanel();
+                }
+                DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(SortingToolbar.class, "SortingToolbar.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    settingsPanel.updatePlot(plot);
+                    plot.resetCache();
+                }
+            }
+        });
+        add(btnSettings);
 
         export = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/save16.png", false));
         export.setToolTipText("Export current results");
