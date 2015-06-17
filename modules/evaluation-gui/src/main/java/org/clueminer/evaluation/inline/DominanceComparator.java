@@ -95,6 +95,9 @@ public class DominanceComparator implements Comparator<Clustering> {
     }
 
     public double score(Clustering clust, ClusterEvaluation eval) {
+        if (clust == null) {
+            return Double.NaN;
+        }
         EvaluationTable et = evaluationTable(clust);
         return et.getScore(eval);
     }
