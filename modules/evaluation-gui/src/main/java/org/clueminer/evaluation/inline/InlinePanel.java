@@ -16,24 +16,14 @@
  */
 package org.clueminer.evaluation.inline;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
-import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.factory.EvaluationFactory;
-import org.clueminer.evaluation.gui.EvaluatorComboBox;
-import org.clueminer.export.sorting.SortingExporter;
-import org.openide.util.ImageUtilities;
 
 /**
  *
@@ -43,11 +33,9 @@ public class InlinePanel extends JPanel {
 
     private static final long serialVersionUID = -4474047225035728427L;
 
-    private JComboBox comboEvaluatorX;
-    private JComboBox comboEvaluatorY;
-    private JComboBox comboEvaluatorZ;
     private ScorePlot plot;
-    private JButton export;
+    private SortingToolbar toolbar;
+
     public static String NONE = "(none)";
 
     public InlinePanel() {
@@ -56,11 +44,11 @@ public class InlinePanel extends JPanel {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
-        setBackground(Color.WHITE);
+        //setBackground(Color.WHITE);
         //setSize(new Dimension(800, 600));
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
-        c.anchor = GridBagConstraints.NORTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
         c.weightx = 1.0;
         //component in last row should be streatched to fill space at the bottom
         c.weighty = 0.1;
@@ -69,62 +57,11 @@ public class InlinePanel extends JPanel {
         c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 10);
 
-        comboEvaluatorX = new JComboBox();
-        comboEvaluatorX.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
-        comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorXActionPerformed(evt);
-            }
-        });
-        add(comboEvaluatorX, c);
-
-        comboEvaluatorY = new JComboBox();
-        comboEvaluatorY.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
-        comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorYActionPerformed(evt);
-            }
-        });
-        c.insets = new Insets(5, 0, 5, 5);
-        c.gridx = 1;
-        add(comboEvaluatorY, c);
-
-        //MO-criterion
-        comboEvaluatorZ = new JComboBox();
-        List<String> providers = EvaluationFactory.getInstance().getProviders();
-        providers.add(0, NONE);
-        comboEvaluatorZ.setModel(new EvaluatorComboBox(providers.toArray(new String[0])));
-        comboEvaluatorZ.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorZActionPerformed(evt);
-            }
-        });
-        c.insets = new Insets(5, 0, 5, 5);
-        c.gridx = 2;
-        add(comboEvaluatorZ, c);
-
-        export = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/save16.png", false));
-        export.setToolTipText("Export current results");
-        c.gridx = 3;
-        add(export, c);
-
-        export.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                SortingExporter exp = new SortingExporter();
-                exp.setDataset(plot.getDataset());
-                //  exp.setResults(plot.getResults());
-                exp.setClusterings(plot.getClusterings());
-                exp.showDialog();
-            }
-        });
-
         //left list
         plot = new ScorePlot();
+        toolbar = new SortingToolbar(plot);
+        add(toolbar, c);
+
         c.gridy = 1;
         c.gridwidth = 2;
         c.gridx = 0;
@@ -140,37 +77,6 @@ public class InlinePanel extends JPanel {
         repaint();
     }
 
-    private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {
-        String item = (String) comboEvaluatorX.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
-    private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
-        String item = (String) comboEvaluatorY.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorY(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
-    private void comboEvaluatorZActionPerformed(ActionEvent evt) {
-        String item = (String) comboEvaluatorZ.getSelectedItem();
-        if (item != null && !item.equals(NONE)) {
-            plot.setEvaluatorZ(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
-    public void setEvaluatorX(ClusterEvaluation ex) {
-        comboEvaluatorX.setSelectedItem(ex.getName());
-        plot.setEvaluatorX(ex);
-    }
-
-    public void setEvaluatorY(ClusterEvaluation ey) {
-        comboEvaluatorY.setSelectedItem(ey.getName());
-        plot.setEvaluatorY(ey);
-    }
-
     public void setClusterings(Collection<? extends Clustering> clusterings) {
         if (clusterings != null && clusterings.size() > 1) {
             plot.setClusterings((Collection<Clustering>) clusterings);
@@ -183,6 +89,14 @@ public class InlinePanel extends JPanel {
 
     public void setGolden(Clustering<? extends Cluster> clust) {
         plot.goldenStd = clust;
+    }
+
+    public void setEvaluatorX(ClusterEvaluation ex) {
+        toolbar.setEvaluatorX(ex);
+    }
+
+    public void setEvaluatorY(ClusterEvaluation ey) {
+        toolbar.setEvaluatorY(ey);
     }
 
 }

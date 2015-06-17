@@ -98,6 +98,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private double goldenInt;
     private int rectWidth = 10;
     private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
+    private boolean useSupervisedMetricMax = false;
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -121,10 +122,10 @@ public class ScorePlot extends BPanel implements TaskListener {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        fontColor = defaults.getColor("controlText");
+        fontColor = defaults.getColor("text");
         //setBackground(defaults.getColor("window"));
         //this.preserveAlpha = true;
-        setBackground(Color.white);
+        setBackground(defaults.getColor("window"));
     }
 
     protected void setEvaluatorY(final ClusterEvaluation provider) {
@@ -171,7 +172,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     }
 
     protected void setEvaluatorX(final ClusterEvaluation provider) {
-        if (external != null && external.length > 1) {
+        if (external != null && external.length > 1 && provider != null) {
             final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
             RequestProcessor.Task task = RP.post(new Runnable() {
 
@@ -355,11 +356,15 @@ public class ScorePlot extends BPanel implements TaskListener {
         //if we have clear bounds, use them
         if (isFinite(compExternal.getEvaluator().getMin())) {
             //for purpose of visualization min and max are reversed
-            ymax = compExternal.getEvaluator().getMin();
+            if (useSupervisedMetricMax) {
+                ymax = compExternal.getEvaluator().getMin();
+            }
         }
         if (isFinite(compExternal.getEvaluator().getMax())) {
             //for purpose of visualization min and max are reversed
-            ymin = compExternal.getEvaluator().getMax();
+            if (useSupervisedMetricMax) {
+                ymin = compExternal.getEvaluator().getMax();
+            }
         }
         ymid = (ymax - ymin) / 2.0 + ymin;
 
