@@ -18,8 +18,13 @@ package org.clueminer.evaluation.inline;
 
 import java.util.Comparator;
 import java.util.List;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.utils.HashEvaluationTable;
 
 /**
  * Compares two clusterings using multiple objectives
@@ -51,8 +56,8 @@ public class DominanceComparator implements Comparator<Clustering> {
         double value1, value2;
         double diff;
         for (ClusterEvaluation objective : objectives) {
-            value1 = objective.score(c1);
-            value2 = objective.score(c2);
+            value1 = score(c1, objective);
+            value2 = score(c2, objective);
 
             diff = value1 - value2;
             if (Math.abs(diff) <= epsilon) {
@@ -87,7 +92,25 @@ public class DominanceComparator implements Comparator<Clustering> {
             }
         }
         return dominance2int(solution1Dominates, solution2Dominates);
+    }
 
+    public double score(Clustering clust, ClusterEvaluation eval) {
+        EvaluationTable et = evaluationTable(clust);
+        return et.getScore(eval);
+    }
+
+    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
+        EvaluationTable evalTable = clustering.getEvaluationTable();
+        //we try to compute score just once, to eliminate delays
+        if (evalTable == null) {
+            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            if (dataset == null) {
+                throw new RuntimeException("no dataset associated with clustering");
+            }
+            evalTable = new HashEvaluationTable(clustering, dataset);
+            clustering.setEvaluationTable(evalTable);
+        }
+        return evalTable;
     }
 
     private int dominance2int(boolean solution1Dominates, boolean solution2Dominates) {

@@ -81,7 +81,7 @@ public class MoEvaluator implements ClusterEvaluation {
 
     @Override
     public boolean isExternal() {
-        return true;
+        return false;
     }
 
     @Override

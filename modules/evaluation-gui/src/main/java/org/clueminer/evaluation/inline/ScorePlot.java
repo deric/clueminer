@@ -162,8 +162,7 @@ public class ScorePlot extends BPanel implements TaskListener {
                 @Override
                 public void run() {
                     ph.start();
-                    NSGASort sorter = new NSGASort();
-                    internal = sorter.sort(internal, objectives);
+                    internal = NSGASort.sort(internal, objectives);
                     compInternal.setEvaluator(moEval);
                     clusteringChanged();
                     ph.finish();
