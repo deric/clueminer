@@ -2,8 +2,8 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;

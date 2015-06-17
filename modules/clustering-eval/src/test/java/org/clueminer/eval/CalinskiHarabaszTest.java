@@ -6,9 +6,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -59,8 +59,8 @@ public class CalinskiHarabaszTest {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
-        assertEquals(true, subject.isBetter(s1, s2));
-        assertEquals(true, subject.isBetter(s1, s3));
+        assertEquals(false, subject.isBetter(s1, s2));
+        assertEquals(false, subject.isBetter(s1, s3));
     }
 
     /**
@@ -68,6 +68,6 @@ public class CalinskiHarabaszTest {
      */
     @Test
     public void testCompareScore() {
-        assertEquals(true, subject.isBetter(15, 2));
+        assertEquals(true, subject.isBetter(2, 20));
     }
 }

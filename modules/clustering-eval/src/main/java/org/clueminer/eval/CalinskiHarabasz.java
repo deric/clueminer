@@ -2,8 +2,8 @@ package org.clueminer.eval;
 
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -91,12 +91,12 @@ public class CalinskiHarabasz extends AbstractEvaluator {
      */
     @Override
     public boolean isBetter(double score1, double score2) {
-        return score1 > score2;
+        return score1 < score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return true;
+        return false;
     }
 
     @Override
