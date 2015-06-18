@@ -123,7 +123,7 @@ public class ScorePlot extends BPanel implements TaskListener {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-        fontColor = defaults.getColor("text");
+        fontColor = defaults.getColor("infoText");
         //setBackground(defaults.getColor("window"));
         //this.preserveAlpha = true;
         setBackground(defaults.getColor("window"));
