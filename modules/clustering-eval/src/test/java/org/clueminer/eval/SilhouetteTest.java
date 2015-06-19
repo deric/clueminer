@@ -9,8 +9,9 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class SilhouetteTest {
     private static Props params;
     private static HierarchicalResult rowsResult;
     private static Matrix input;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public SilhouetteTest() {
     }
@@ -63,15 +64,12 @@ public class SilhouetteTest {
         return p;
     }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     /**
      * Test of getName method, of class Silhouette.
      */
     @Test
     public void testGetName() {
+        assertNotNull(test.getName());
     }
 
     /**
@@ -101,9 +99,6 @@ public class SilhouetteTest {
         double matlab = 0.6564679231041901;
         long end = System.currentTimeMillis();
         assertTrue(score != Double.NaN);
-        /**
-         * @TODO fix this
-         */
         assertEquals(matlab, score, delta);
         System.out.println("computing took = " + (end - start) + " ms");
     }
@@ -113,6 +108,14 @@ public class SilhouetteTest {
      */
     @Test
     public void testScore_Clustering_Matrix() {
+        //clustering containing cluster with single instance
+        double score = test.score(FakeClustering.irisMostlyWrong());
+        assertNotSame(Double.NaN, score);
+
+        //distance must be computed without SQRT!
+        double ref = 0.5181973814678924;
+        assertEquals(ref, score, delta);
+
     }
 
     /**
@@ -120,5 +123,7 @@ public class SilhouetteTest {
      */
     @Test
     public void testCompareScore() {
+        assertEquals(true, test.isBetter(0.0, -1.0));
+        assertEquals(true, test.isBetter(1.0, 0.456));
     }
 }

@@ -42,7 +42,7 @@ public class Silhouette extends AbstractEvaluator {
         //Silhouette Coefficent is only defined if number of labels
         // is 2 <= num_clusters <= num_samples - 1.
         if (clusters.size() == 1 || clusters.size() >= clusters.instancesCount()) {
-            return 0.0; //arbitrary choice, according to the original paper
+            return Double.NaN; // coeficient is not defined for such clusterings
         }
         double score = 0.0;
         //for each cluster
@@ -83,16 +83,22 @@ public class Silhouette extends AbstractEvaluator {
         double a, b, dist, denom;
         a = 0;
         int n = 0;
-        for (int k = 0; k < clust.size(); k++) {
-            y = clust.instance(k);
-            if (x.getIndex() != y.getIndex()) {
-                dist = dm.measure(x, y);
-                a += dist;
-                n++;
+        //we can't compute Silhouette for cluster with single item
+        if (clust.size() > 1) {
+            for (int k = 0; k < clust.size(); k++) {
+                y = clust.instance(k);
+                if (x.getIndex() != y.getIndex()) {
+                    dist = dm.measure(x, y);
+                    a += dist;
+                    n++;
+                }
             }
+            //average distance
+            a /= n;
+        } else {
+            //arbitrary defined value, according to the original paper
+            a = 0.0;
         }
-        //average distance
-        a /= n;
 
         //find minimal distance to other clusters
         b = minDistance(x, clusters, i);
