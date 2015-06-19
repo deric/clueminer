@@ -96,8 +96,6 @@ public class ScorePlot extends BPanel implements TaskListener {
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private int labelOffset = 13;
     public Clustering<? extends Cluster> goldenStd;
-    private double goldenExt;
-    private double goldenInt;
     private int rectWidth = 10;
     private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
@@ -290,47 +288,31 @@ public class ScorePlot extends BPanel implements TaskListener {
      * @param ref
      * @return
      */
-    private double scoreMin(Clustering[] clust, ClusteringComparator comp, double ref) {
+    private double scoreMin(Clustering[] clust, ClusteringComparator comp) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = 0;
             while (Double.isNaN(res) && i < clust.length) {
                 res = comp.getScore(clust[i++]);
             }
-            if (goldenStd != null) {
-                ClusterEvaluation eval = comp.getEvaluator();
-                if (eval.isMaximized()) {
-                    if (eval.isBetter(ref, res)) {
-                        res = ref;
-                    }
-                } else {
-                    if (eval.compare(res, ref) == 1) {
-                        res = ref;
-                    }
-                }
-            }
         }
         return res;
     }
 
-    private double scoreMax(Clustering[] clust, ClusteringComparator comp, double ref) {
+    /**
+     * Find max value in an array of clusterings which has a quality of a number
+     * (not NaN, INFINIFY, ...)
+     *
+     * @param clust
+     * @param comp
+     * @return
+     */
+    private double scoreMax(Clustering[] clust, ClusteringComparator comp) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = clust.length - 1;
             while (Double.isNaN(res) && i >= 0) {
                 res = comp.getScore(clust[i--]);
-            }
-            if (goldenStd != null) {
-                ClusterEvaluation eval = comp.getEvaluator();
-                if (eval.isMaximized()) {
-                    if (!eval.isBetter(ref, res)) {
-                        res = ref;
-                    }
-                } else {
-                    if (eval.compare(res, ref) == -1) {
-                        res = ref;
-                    }
-                }
             }
         }
 
@@ -339,24 +321,19 @@ public class ScorePlot extends BPanel implements TaskListener {
 
     @Override
     public void render(Graphics2D g) {
-        //TODO: remove golden std evaluation
-        if (goldenStd != null) {
-            goldenExt = compExternal.getScore(goldenStd);
-            goldenInt = compInternal.getScore(goldenStd);
-        }
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
         if (compInternal.getEvaluator() instanceof MoEvaluator) {
             xmin = 0;
             xmax = internal.length - 1;
         } else {
-            xmin = scoreMin(internal, compInternal, goldenInt);
-            xmax = scoreMax(internal, compInternal, goldenInt);
+            xmin = scoreMin(internal, compInternal);
+            xmax = scoreMax(internal, compInternal);
         }
 
         xmid = (xmax - xmin) / 2.0 + xmin;
-        ymin = scoreMin(external, compExternal, goldenExt);
-        ymax = scoreMax(external, compExternal, goldenExt);
+        ymin = scoreMin(external, compExternal);
+        ymax = scoreMax(external, compExternal);
 
         if (crossAtMedian && external != null && external.length > 2) {
             int pos = (external.length / 2);
