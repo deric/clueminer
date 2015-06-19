@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -53,6 +54,7 @@ import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
@@ -100,6 +102,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
     private boolean crossAtMedian = true;
+    private static final String GROUND_TRUTH = "ground-truth";
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -205,10 +208,18 @@ public class ScorePlot extends BPanel implements TaskListener {
 
             @Override
             public void run() {
-                internal = clusters.toArray(new Clustering[clusters.size()]);
+                goldenStd = goldenStandard(clusters);
+                if (goldenStd != null) {
+                    goldenStd.getParams().put(AgglParams.ALG, GROUND_TRUTH);
+                    internal = clusters.toArray(new Clustering[clusters.size() + 1]);
+                    internal[clusters.size()] = goldenStd;
+                    external = clusters.toArray(new Clustering[clusters.size() + 1]);
+                    external[clusters.size()] = goldenStd;
+                } else {
+                    internal = clusters.toArray(new Clustering[clusters.size()]);
+                    external = clusters.toArray(new Clustering[clusters.size()]);
+                }
                 Arrays.sort(internal, compInternal);
-
-                external = clusters.toArray(new Clustering[clusters.size()]);
                 Arrays.sort(external, compExternal);
                 clusterings = clusters;
             }
@@ -227,10 +238,10 @@ public class ScorePlot extends BPanel implements TaskListener {
         }
     }
 
-    private Clustering<? extends Cluster> goldenStandard() {
+    private Clustering<? extends Cluster> goldenStandard(Collection<Clustering> clusters) {
         Clustering<? extends Cluster> golden = null;
-        if (clusterings != null && !clusterings.isEmpty()) {
-            Clustering<? extends Cluster> clust = clusterings.iterator().next();
+        if (clusters != null && !clusters.isEmpty()) {
+            Clustering<? extends Cluster> clust = clusters.iterator().next();
             Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
             if (dataset != null) {
                 SortedSet set = dataset.getClasses();
@@ -328,9 +339,7 @@ public class ScorePlot extends BPanel implements TaskListener {
 
     @Override
     public void render(Graphics2D g) {
-        if (goldenStd == null) {
-            goldenStd = goldenStandard();
-        }
+        //TODO: remove golden std evaluation
         if (goldenStd != null) {
             goldenExt = compExternal.getScore(goldenStd);
             goldenInt = compInternal.getScore(goldenStd);
@@ -338,8 +347,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
         if (compInternal.getEvaluator() instanceof MoEvaluator) {
-            //TODO: make sure golden standard is sorted
-            xmin = -1;
+            xmin = 0;
             xmax = internal.length - 1;
         } else {
             xmin = scoreMin(internal, compInternal, goldenInt);
@@ -386,8 +394,7 @@ public class ScorePlot extends BPanel implements TaskListener {
         double xVal, yVal, score, hypo, diff;
         //draw
         Rectangle2D rect;
-
-        int i = 0;
+        Props p;
         for (Clustering clust : external) {
             //left clustering
             score = compInternal.getScore(clust);
@@ -396,13 +403,18 @@ public class ScorePlot extends BPanel implements TaskListener {
 
             //color according to position difference to external score placement
             hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
-            i++;
             diff = Math.abs(xVal - hypo);
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
-            g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-            //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
-            g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
+            p = clust.getParams();
+            if (p != null && p.get(AgglParams.ALG, "foo bar alg").equals(GROUND_TRUTH)) {
+                g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+                g.setColor(Color.YELLOW);
+            } else {
+                g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+                //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
+                g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
+            }
             if (yVal < cyMid) {
                 rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
             } else {
@@ -416,23 +428,6 @@ public class ScorePlot extends BPanel implements TaskListener {
             //drawNumberX(diff, (int) xVal, (int) yVal);
         }
         g.setColor(fontColor);
-
-        if (goldenStd != null) {
-            xVal = scale.scaleToRange(goldenInt, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
-            //last one is min rect. height
-            yVal = scale.scaleToRange(goldenExt, ymin, ymax, cyMin, cyMax);
-            g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-            //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
-            g.setColor(Color.YELLOW);
-            if (yVal < cyMid) {
-                rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
-            } else {
-                rect = new Rectangle2D.Double(xVal, cyMid, rectWidth, yVal - cyMid);
-            }
-            g.fill(rect);
-            g.draw(rect);
-            g.setComposite(AlphaComposite.SrcOver);
-        }
 
         drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
         drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
