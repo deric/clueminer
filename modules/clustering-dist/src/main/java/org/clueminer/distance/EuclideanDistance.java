@@ -18,6 +18,8 @@ public class EuclideanDistance extends MinkowskiDistance {
     private static int offset = 0;
     private static final long serialVersionUID = 3142545695613722167L;
     private static EuclideanDistance instance;
+    //whether compute SQRT(sum) or not
+    private boolean sqrt = true;
 
     public EuclideanDistance() {
         this.power = 2;
@@ -58,7 +60,10 @@ public class EuclideanDistance extends MinkowskiDistance {
                 sum += Math.pow((matrix.get(i, col1) - matrix.get(i, col2)), this.power);
             }
         }
-        return (Math.sqrt(sum));
+        if (sqrt) {
+            return Math.sqrt(sum);
+        }
+        return sum;
     }
 
     @Override
@@ -70,7 +75,10 @@ public class EuclideanDistance extends MinkowskiDistance {
                 sum += Math.pow((A.get(e1, i) - B.get(e2, i)), this.power);
             }
         }
-        return (Math.sqrt(sum));
+        if (sqrt) {
+            return Math.sqrt(sum);
+        }
+        return sum;
     }
 
     @Override
@@ -91,8 +99,10 @@ public class EuclideanDistance extends MinkowskiDistance {
             //should be faster
             sum += FastMath.pow(Math.abs(y.get(i) - x.get(i)), 2);
         }
-
-        return Math.sqrt(sum);
+        if (sqrt) {
+            return Math.sqrt(sum);
+        }
+        return sum;
     }
 
     @Override
@@ -103,6 +113,18 @@ public class EuclideanDistance extends MinkowskiDistance {
             sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
         }
 
-        return Math.sqrt(sum);
+        if (sqrt) {
+            return Math.sqrt(sum);
+        }
+        return sum;
     }
+
+    public boolean isSqrt() {
+        return sqrt;
+    }
+
+    public void setSqrt(boolean sqrt) {
+        this.sqrt = sqrt;
+    }
+
 }

@@ -4,10 +4,10 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -89,9 +89,6 @@ public class EuclideanDistanceTest {
         assertEquals(0.0, dist, delta);
     }
 
-    /**
-     * Test of measure method, of class EuclideanDistance.
-     */
     @Test
     public void testMeasure_Instance_Instance() {
         assertEquals(5.0, subject.measure(x, y), delta);
