@@ -10,7 +10,8 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -96,13 +97,14 @@ public class SilhouetteTest {
         long start = System.currentTimeMillis();
         score = test.score(clusters);
         System.out.println("Silhouette= " + score);
-        double matlab = 0.6567;
+        //distance must be computed without SQRT!
+        double matlab = 0.6564679231041901;
         long end = System.currentTimeMillis();
         assertTrue(score != Double.NaN);
         /**
          * @TODO fix this
          */
-        //assertEquals(matlab, score, delta);
+        assertEquals(matlab, score, delta);
         System.out.println("computing took = " + (end - start) + " ms");
     }
 

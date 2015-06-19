@@ -1,9 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -24,7 +23,9 @@ public class Silhouette extends AbstractEvaluator {
     private static String name = "Silhouette";
 
     public Silhouette() {
-        dm = EuclideanDistance.getInstance();
+        dm = new EuclideanDistance();
+        //some implementation (Matlab, sci-learn) compute silhouette without applying sqrt on distances
+        ((EuclideanDistance) dm).setSqrt(false);
     }
 
     public Silhouette(DistanceMeasure dist) {
@@ -38,12 +39,15 @@ public class Silhouette extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double score = 0;
-        Cluster clust;
+        //Silhouette Coefficent is only defined if number of labels
+        // is 2 <= num_clusters <= num_samples - 1.
+        if (clusters.size() == 1 || clusters.size() >= clusters.instancesCount()) {
+            return 0.0; //arbitrary choice, according to the original paper
+        }
+        double score = 0.0;
         //for each cluster
         for (int i = 0; i < clusters.size(); i++) {
-            clust = clusters.get(i);
-            score += clusterScore(clust, clusters, i);
+            score += clusterScore(clusters.get(i), clusters, i);
         }
         return (score / clusters.size());
     }
@@ -70,7 +74,7 @@ public class Silhouette extends AbstractEvaluator {
      *
      * @param clust
      * @param clusters
-     * @param i index of cluster
+     * @param i        index of cluster
      * @param x
      * @return
      */
@@ -78,15 +82,17 @@ public class Silhouette extends AbstractEvaluator {
         Instance y;
         double a, b, dist, denom;
         a = 0;
+        int n = 0;
         for (int k = 0; k < clust.size(); k++) {
             y = clust.instance(k);
             if (x.getIndex() != y.getIndex()) {
                 dist = dm.measure(x, y);
                 a += dist;
+                n++;
             }
         }
         //average distance
-        a /= clust.size() - 1;
+        a /= n;
 
         //find minimal distance to other clusters
         b = minDistance(x, clusters, i);
@@ -95,28 +101,24 @@ public class Silhouette extends AbstractEvaluator {
         if (denom == 0.0 || a == b) {
             return 0.0;
         }
-        if (a < b) {
-            return 1 - a / b;
-        }
-        return (b / a) - 1;
-        //return (b - a) / denom;
+        return (b - a) / denom;
     }
 
     /**
-     * Minimal average distance of Instance x to other clusters
+     * Minimal average distance of Instance x to other clusters. Cluster with
+     * minimal avg distance is called the neighbor of object i.
      *
      * @param x
      * @param clusters
-     * @param i i-th cluster
+     * @param i        i-th cluster
      * @return
      */
-    private double minDistance(Instance x, Clustering clusters, int i) {
+    private double minDistance(Instance x, Clustering<? extends Cluster> clusters, int i) {
         double minDist = Double.MAX_VALUE;
         double clusterDist;
         Instance y;
-        for (int k = 0; k < clusters.size(); k++) {
-            if (k != i) {
-                Dataset clust = clusters.get(k);
+        for (Cluster clust : clusters) {
+            if (clust.getClusterId() != i) {
                 clusterDist = 0;
                 for (int j = 0; j < clust.size(); j++) {
                     y = clust.instance(j);
