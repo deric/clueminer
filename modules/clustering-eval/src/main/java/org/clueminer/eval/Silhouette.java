@@ -82,7 +82,6 @@ public class Silhouette extends AbstractEvaluator {
         Instance y;
         double a, b, dist, denom;
         a = 0;
-        int n = 0;
         //we can't compute Silhouette for cluster with single item
         if (clust.size() > 1) {
             for (int k = 0; k < clust.size(); k++) {
@@ -90,11 +89,10 @@ public class Silhouette extends AbstractEvaluator {
                 if (x.getIndex() != y.getIndex()) {
                     dist = dm.measure(x, y);
                     a += dist;
-                    n++;
                 }
             }
             //average distance
-            a /= n;
+            a /= (clust.size() - 1);
         } else {
             //arbitrary defined value, according to the original paper
             a = 0.0;
