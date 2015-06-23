@@ -41,6 +41,7 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
     private String name;
+    private int id;
 
     public ClusterList() {
         //some default capacity, to avoid problems with zero array size
@@ -75,6 +76,26 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             name = fingerprint();
         }
         return name;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return
+     */
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param id
+     */
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**

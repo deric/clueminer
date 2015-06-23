@@ -589,6 +589,13 @@ public class ClusterListTest {
     }
 
     @Test
+    public void testGetId() {
+        assertEquals(0, subject.getId());
+        subject.setId(123);
+        assertEquals(123, subject.getId());
+    }
+
+    @Test
     public void testGet_String() {
     }
 

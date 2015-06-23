@@ -17,6 +17,21 @@ import org.openide.util.Lookup;
 public interface Clustering<T extends Cluster> extends Cloneable, Serializable, Iterable<T>, Collection<T> {
 
     /**
+     * ID is usually assigned by algorithms generating many different
+     * clusterings.
+     *
+     * @return order id
+     */
+    int getId();
+
+    /**
+     * Set order ID for given clustering
+     *
+     * @param id
+     */
+    void setId(int id);
+
+    /**
      * Human readable name of the clustering
      *
      * @return basic information about clustering
@@ -161,7 +176,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity cluster capacity
+     * @param capacity     cluster capacity
      * @return newly created cluster
      */
     Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
