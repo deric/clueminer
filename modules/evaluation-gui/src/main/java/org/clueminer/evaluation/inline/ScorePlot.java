@@ -101,6 +101,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private boolean useActualMetricMax = true;
     private boolean crossAtMedian = true;
     private static final String GROUND_TRUTH = "ground-truth";
+    private double correlation = Double.NaN;
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -233,7 +234,41 @@ public class ScorePlot extends BPanel implements TaskListener {
     protected void clusteringChanged() {
         if (hasData()) {
             resetCache();
+            correlation = updateCorrelation();
         }
+    }
+
+    /**
+     * Fast correlation computation
+     *
+     * @return
+     */
+    private double updateCorrelation() {
+        int size = internal.length;
+
+        if (size <= 1) {
+            return 1.0;
+        }
+
+        double y11 = 0.0, y22 = 0.0, y12 = 0.0, c;
+
+        //average value of a serie of int numbers (same for both external and internal)
+        //sum of a serie divided by its number of members
+        double avg = ((size * (0 + size)) >>> 1) / (size + 1);
+        double diffX, diffY;
+        for (int i = 0; i < size; i++) {
+            diffX = internal[i].getId() - avg;
+            diffY = external[i].getId() - avg;
+            y11 += Math.pow(diffX, 2);
+            y22 += Math.pow(diffY, 2);
+            y12 += diffX * diffY;
+        }
+        if (y11 * y22 == 0.0) {
+            c = 1.0;
+        } else {
+            c = y12 / Math.sqrt(Math.abs(y11 * y22));
+        }
+        return c;
     }
 
     private Clustering<? extends Cluster> goldenStandard(Collection<Clustering> clusters) {
@@ -408,6 +443,10 @@ public class ScorePlot extends BPanel implements TaskListener {
 
         drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
         drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
+
+        if (!Double.isNaN(correlation)) {
+            drawNumberX(correlation, cxMax, cyMin);
+        }
 
         //average distance per item
         g.dispose();
