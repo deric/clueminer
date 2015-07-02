@@ -65,6 +65,7 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
         lbNumType = new javax.swing.JLabel();
         cbDefaultType = new javax.swing.JComboBox();
         chckStrictQuotes = new javax.swing.JCheckBox();
+        chckMissing = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbSeparator, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.lbSeparator.text")); // NOI18N
 
@@ -101,6 +102,15 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
             }
         });
 
+        chckMissing.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(chckMissing, org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckMissing.text")); // NOI18N
+        chckMissing.setToolTipText(org.openide.util.NbBundle.getMessage(CsvImporterUI.class, "CsvImporterUI.chckMissing.toolTipText")); // NOI18N
+        chckMissing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckMissingActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,6 +118,7 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chckMissing)
                     .addComponent(chckStrictQuotes)
                     .addComponent(chckHeader)
                     .addGroup(layout.createSequentialGroup()
@@ -138,7 +149,9 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
                 .addComponent(chckQuotation)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chckStrictQuotes)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chckMissing)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -180,9 +193,17 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
         }
     }//GEN-LAST:event_chckStrictQuotesActionPerformed
 
+    private void chckMissingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckMissingActionPerformed
+        if(importer.isReplaceMissingValues() != chckMissing.isSelected()){
+            importer.setReplaceMissingValues(chckMissing.isSelected());
+            fireImporterChanged();
+        }
+    }//GEN-LAST:event_chckMissingActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbDefaultType;
     private javax.swing.JCheckBox chckHeader;
+    private javax.swing.JCheckBox chckMissing;
     private javax.swing.JCheckBox chckQuotation;
     private javax.swing.JCheckBox chckStrictQuotes;
     private javax.swing.JComboBox comboSeparator;
@@ -190,6 +211,7 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
     private javax.swing.JLabel lbSeparator;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public Importer getImporter() {
         return importer;
     }

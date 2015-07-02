@@ -56,6 +56,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     protected char separator = ',';
     protected char quotechar = '"';
     protected List<String> missing = new LinkedList<>();
+    protected boolean replaceMissingValues = true;
 
     public AbstractImporter() {
         errorHandler = new LongTaskErrorHandler() {
@@ -325,7 +326,10 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
         Object castedVal = null;
 
         //check for missing values
-        if (missing.size() > 0) {
+        if (replaceMissingValues && missing.size() > 0) {
+            if (value == null) {
+                return Double.NaN;
+            }
             for (String missingValue : missing) {
                 if (missingValue.equals(value)) {
                     //TODO: should be returned by specific parser
@@ -342,4 +346,13 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
         }
         return castedVal;
     }
+
+    public boolean isReplaceMissingValues() {
+        return replaceMissingValues;
+    }
+
+    public void setReplaceMissingValues(boolean replaceMissingValues) {
+        this.replaceMissingValues = replaceMissingValues;
+    }
+
 }
