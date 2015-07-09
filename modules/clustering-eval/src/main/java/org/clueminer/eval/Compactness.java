@@ -25,6 +25,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ *
+ * @see Caruana, Rich, et al. "Meta clustering." Data Mining, 2006. ICDM'06. Sixth
+ * International Conference on. IEEE, 2006.
  */
 public class Compactness extends AbstractEvaluator {
 
