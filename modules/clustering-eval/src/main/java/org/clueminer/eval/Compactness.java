@@ -18,17 +18,23 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Compactness should be used together with other criteria (multi-objective
+ * optimization). The criteria should be minimized as it is computed as an
+ * average of pairwise distances in each cluster.
  *
  * @author deric
  *
- * @see Caruana, Rich, et al. "Meta clustering." Data Mining, 2006. ICDM'06. Sixth
- * International Conference on. IEEE, 2006.
+ * @see Caruana, Rich, et al. "Meta clustering." Data Mining, 2006. ICDM'06.
+ * Sixth International Conference on. IEEE, 2006.
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class Compactness extends AbstractEvaluator {
 
     private static final String NAME = "Compactness";
@@ -47,22 +53,28 @@ public class Compactness extends AbstractEvaluator {
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double sum = 0;
         Cluster clust;
-        double dist, tmpSum;
+        double dist;
+        int instCnt = 0;
         Instance a, b;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
-            tmpSum = 0;
-            for (int j = 0; j < clust.size(); j++) {
-                a = clust.get(j);
-                //TODO: fully implement
-                for (int k = 0; k < j; k++) {
-                    b = clust.get(k);
-                    tmpSum += dm.measure(a, b);
+            dist = 0;
+            // we can't compute compactness for singleton clusters (DIV by ZERO)
+            if (clust.size() > 1) {
+                for (int j = 0; j < clust.size(); j++) {
+                    a = clust.get(j);
+                    for (int k = 0; k < j; k++) {
+                        if (j != k) {
+                            b = clust.get(k);
+                            dist += dm.measure(a, b);
+                        }
+                    }
                 }
+                sum += dist * clust.size() / (clust.size() * (clust.size() - 1) / 2);
+                instCnt += clust.size();
             }
-            sum += tmpSum / clust.size();
         }
-        return sum / clusters.instancesCount();
+        return sum / instCnt;
     }
 
     /**
@@ -84,7 +96,7 @@ public class Compactness extends AbstractEvaluator {
 
     @Override
     public double getMin() {
-        return Double.POSITIVE_INFINITY;
+        return 0;
     }
 
     /**
