@@ -70,7 +70,9 @@ public class Compactness extends AbstractEvaluator {
                         }
                     }
                 }
-                sum += dist * clust.size() / (clust.size() * (clust.size() - 1) / 2);
+                //n_k * sum(..) / (n_k (n_k - 1) / 2)
+                // a micro-algebraic optimization
+                sum += 2 * dist / (clust.size() - 1);
                 instCnt += clust.size();
             }
         }
