@@ -13,6 +13,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Andreas De Rijcke
  * @author Thomas Abeel
  *
+ * @see
+ * AKAIKE, H. A new look at the statistical model identification. IEEE
+ * Transactions on Automatic Control 19, 6 (December 1974), 716–723.
+ *
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class AIC extends AbstractEvaluator {
