@@ -2,9 +2,12 @@ package org.clueminer.graph.adjacencyList;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -14,31 +17,37 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This implementation is problematic for algorithms which create multiple
- * copies of the same graph, but doesn't want to copy edges. Currently list of
- * edges is kept in {@link AdjListNode}.
+ *
  *
  * @author Hamster
  */
-//@ServiceProvider(service = Graph.class)
+@ServiceProvider(service = Graph.class)
 public class AdjListGraph implements Graph {
 
-    private static final String name = "Adj List Graph";
+    private static final String name = "Adjacency list graph";
 
     private final HashMap<Long, Node> nodes;
     private final HashMap<Long, Edge> edges;
     //mapping to Dataset's Instance index
     private final HashMap<Long, Integer> idToIndex;
     private final double EPS = 1e-6;
-    private DistanceMeasure dm;
+    private final DistanceMeasure dm;
+
+    private final HashMap<Node, Set<Neighbor>> adjList;
 
     public AdjListGraph() {
         nodes = new HashMap<>();
         edges = new HashMap<>();
         dm = EuclideanDistance.getInstance();
         idToIndex = new HashMap<>();
+        adjList = new HashMap<>();
+    }
+
+    public AdjListGraph(int size) {
+        this();
     }
 
     @Override
@@ -69,11 +78,15 @@ public class AdjListGraph implements Graph {
         if (!nodes.containsKey(edge.getSource().getId()) || !nodes.containsKey(edge.getTarget().getId())) {
             throw new IllegalArgumentException("Source or target node does not exist");
         }
-        edges.put(edge.getId(), (AdjListEdge) edge);
         AdjListNode source = (AdjListNode) edge.getSource();
         AdjListNode target = (AdjListNode) edge.getTarget();
-        source.addEdge(edge);
-        target.addEdge(edge);
+        if (adjList.get(source).add(new Neighbor(edge, target))
+                && adjList.get(target).add(new Neighbor(edge, source))) {
+            edges.put(edge.getId(), (AdjListEdge) edge);
+        } else {
+            return false;
+        }
+
         return true;
     }
 
@@ -83,30 +96,31 @@ public class AdjListGraph implements Graph {
             return false;
         }
         idToIndex.put(node.getId(), nodes.size());
+        adjList.put(node, new HashSet<Neighbor>());
         nodes.put(node.getId(), (AdjListNode) node);
         return true;
     }
 
     @Override
     public boolean addAllEdges(Collection<? extends Edge> edges) {
-        boolean added = false;
+        boolean success = true;
         for (Edge edge : edges) {
-            if (addEdge(edge)) {
-                added = true;
+            if (!addEdge(edge)) {
+                success = false;
             }
         }
-        return added;
+        return success;
     }
 
     @Override
     public boolean addAllNodes(Collection<? extends Node> nodes) {
-        boolean added = false;
+        boolean success = true;
         for (Node node : nodes) {
-            if (addNode(node)) {
-                added = true;
+            if (!addNode(node)) {
+                success = false;
             }
         }
-        return added;
+        return success;
     }
 
     @Override
@@ -114,8 +128,12 @@ public class AdjListGraph implements Graph {
         if (edges.remove(edge.getId()) == null) {
             return false;
         }
-        ((AdjListNode) edge.getSource()).removeEdge(edge);
-        ((AdjListNode) edge.getTarget()).removeEdge(edge);
+        AdjListNode source = (AdjListNode) edge.getSource();
+        AdjListNode target = (AdjListNode) edge.getTarget();
+        Neighbor n = new Neighbor(edge, target);
+        adjList.get(source).remove(n);
+        n = new Neighbor(edge, source);
+        adjList.get(target).remove(n);
         return true;
     }
 
@@ -124,15 +142,10 @@ public class AdjListGraph implements Graph {
         if (nodes.remove(node.getId()) == null) {
             return false;
         }
-        for (Edge it : ((AdjListNode) node).getEdges()) {
-            AdjListEdge edge = (AdjListEdge) it;
-            if (edge.getSource() == node) {
-                ((AdjListNode) edge.getTarget()).removeEdge(it);
-            } else {
-                ((AdjListNode) edge.getSource()).removeEdge(it);
-            }
-            edges.remove(it.getId());
-            idToIndex.remove(it.getId());
+        Neighbor self = new Neighbor(null, node);
+        for (Neighbor neighbor : adjList.get(node)) {
+            edges.remove(neighbor.edge.getId());
+            adjList.get(neighbor.node).remove(self);
         }
         return true;
     }
@@ -181,7 +194,12 @@ public class AdjListGraph implements Graph {
 
     @Override
     public Edge getEdge(Node node1, Node node2) {
-        return ((AdjListNode) node1).getEdge(node2);
+        for (Neighbor n : adjList.get(node1)) {
+            if (n.node == node2) {
+                return n.edge;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -206,7 +224,11 @@ public class AdjListGraph implements Graph {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        return ((AdjListNode) node).getNeighbors();
+        LinkedList<Node> neighbors = new LinkedList<>();
+        for (Neighbor n : adjList.get(node)) {
+            neighbors.add(n.node);
+        }
+        return new AdjListNodeIterable(neighbors);
     }
 
     @Override
@@ -216,7 +238,11 @@ public class AdjListGraph implements Graph {
 
     @Override
     public EdgeIterable getEdges(Node node) {
-        return ((AdjListNode) node).getEdges();
+        LinkedList<Edge> adjEdges = new LinkedList<>();
+        for (Neighbor n : adjList.get(node)) {
+            adjEdges.add(n.edge);
+        }
+        return new AdjListEdgeIterable(adjEdges);
     }
 
     @Override
@@ -246,7 +272,7 @@ public class AdjListGraph implements Graph {
 
     @Override
     public int getDegree(Node node) {
-        return ((AdjListNode) node).getDegree();
+        return adjList.get(node).size();
     }
 
     @Override
@@ -261,7 +287,8 @@ public class AdjListGraph implements Graph {
 
     @Override
     public boolean isAdjacent(Node node1, Node node2) {
-        return ((AdjListNode) node1).isAdjacent(node2);
+        Neighbor n = new Neighbor(null, node2);
+        return adjList.get(node1).contains(n);
     }
 
     @Override
@@ -375,6 +402,39 @@ public class AdjListGraph implements Graph {
     @Override
     public void ensureCapacity(int size) {
         //nothing to do
+    }
+
+    private class Neighbor implements Comparable<Neighbor> {
+
+        Edge edge;
+        Node node;
+
+        public Neighbor(Edge e, Node n) {
+            edge = e;
+            node = n;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Neighbor)) {
+                return false;
+            }
+            Neighbor other = (Neighbor) o;
+            return node.getId() == other.node.getId();
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 47 * hash + Objects.hashCode(this.node);
+            return hash;
+        }
+
+        @Override
+        public int compareTo(Neighbor o) {
+            return (int) (node.getId() - o.node.getId());
+        }
+
     }
 
 }
