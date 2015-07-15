@@ -95,22 +95,24 @@ public class AdjMatrixGraph implements Graph {
 
     @Override
     public boolean addAllEdges(Collection<? extends Edge> edges) {
+        boolean success = true;
         for (Edge edge : edges) {
             if (!addEdge(edge)) {
-                return false;
+                success = false;
             }
         }
-        return true;
+        return success;
     }
 
     @Override
     public boolean addAllNodes(Collection<? extends Node> nodes) {
+        boolean success = true;
         for (Node node : nodes) {
             if (!addNode(node)) {
-                return false;
+                success = false;
             }
         }
-        return true;
+        return success;
     }
 
     @Override
@@ -421,7 +423,7 @@ public class AdjMatrixGraph implements Graph {
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
-     * @param k         number of neighbors for each node
+     * @param k number of neighbors for each node
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
