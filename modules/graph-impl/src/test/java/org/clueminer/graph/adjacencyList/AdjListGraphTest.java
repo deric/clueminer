@@ -25,9 +25,9 @@ public class AdjListGraphTest {
     private Node n3;
     private Edge e1;
     private Edge e2;
+    private Edge e3;
     private Graph g;
     private static final double DELTA = 1e-4;
-
 
     @BeforeClass
     public static void setUpClass() {
@@ -101,8 +101,7 @@ public class AdjListGraphTest {
     }
 
     private void buildSimpleGraph() {
-        double[] coordinates = {2, 1};
-        n1 = factory.newNode(coordinates);
+        n1 = factory.newNode(1);
         n2 = factory.newNode(2);
         n3 = factory.newNode(2);
         e1 = factory.newEdge(n1, n2, 1, 2, false);
@@ -117,19 +116,20 @@ public class AdjListGraphTest {
 
     @Test
     public void buildGraphTest2() {
-        double[] coordinates = {2, 1};
-        n1 = factory.newNode(coordinates);
+        n1 = factory.newNode(1);
         n2 = factory.newNode(2);
         n3 = factory.newNode(2);
         Node n4 = factory.newNode();
         e1 = factory.newEdge(n1, n2, 1, 2, false);
         e2 = factory.newEdge(n3, n2, 1, 3, false);
+        e3 = factory.newEdge(n2, n3, 1, 3, false);
         g = new AdjListGraph();
         g.addNode(n1);
         g.addNode(n2);
         g.addNode(n3);
         g.addEdge(e1);
         g.addEdge(e2);
+        g.addEdge(e3);
         assertEquals(0, g.getIndex(n1));
         assertEquals(1, g.getIndex(n2));
         assertEquals(2, g.getIndex(n3));
@@ -140,6 +140,52 @@ public class AdjListGraphTest {
         assertEquals(true, g.contains(e1));
         assertEquals(1, g.getDegree(n1));
         assertEquals(2, g.getDegree(n2));
+        assertEquals(2, g.getEdgeCount());
+    }
+
+    @Test
+    public void addEdgesTest() {
+        g = new AdjListGraph();
+        n1 = factory.newNode(2);
+        n2 = factory.newNode(2);
+        e1 = factory.newEdge(n1, n2, 1, 2, false);
+        e2 = factory.newEdge(n2, n1, 1, 3, false);
+        Edge e3 = factory.newEdge(n1, n2, 1, 4, false);
+
+        g.addNode(n1);
+        g.addNode(n2);
+
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e2);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e3);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+
+    }
+
+    @Test
+    public void removeEdgeTest2() {
+        g = new AdjListGraph();
+        n1 = factory.newNode(2);
+        n2 = factory.newNode(2);
+        e1 = factory.newEdge(n1, n2, 1, 2, false);
+
+        g.addNode(n1);
+        g.addNode(n2);
+
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.removeEdge(e1);
+        assertEquals(0, g.getNeighbors(n1).toCollection().size());
+        assertEquals(0, g.getNeighbors(n2).toCollection().size());
     }
 
 }
