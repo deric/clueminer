@@ -2,11 +2,11 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -111,18 +111,24 @@ public class Partition {
      */
     private Graph buildGraphFromCluster(LinkedList<Node> n, Graph g) {
         ArrayList<Node> nodes = new ArrayList<>(n);
-        Graph graph = new AdjMatrixGraph(nodes.size());
-        for (Node node : nodes) {
-            graph.addNode(node);
-        }
-        for (int i = 0; i < nodes.size(); i++) {
-            for (int j = i + 1; j < nodes.size(); j++) {
-                if (g.isAdjacent(nodes.get(i), nodes.get(j))) {
-                    graph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
+        Graph graph = null;
+        try {
+            graph = g.getClass().newInstance();
+            graph.ensureCapacity(nodes.size());
+            for (Node node : nodes) {
+                graph.addNode(node);
+            }
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = i + 1; j < nodes.size(); j++) {
+                    if (g.isAdjacent(nodes.get(i), nodes.get(j))) {
+                        graph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
+                    }
                 }
             }
+            edgeCount = graph.getEdgeCount();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
         }
-        edgeCount = graph.getEdgeCount();
         return graph;
     }
 
