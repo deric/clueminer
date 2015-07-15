@@ -58,15 +58,16 @@ public class SDindex extends AbstractEvaluator {
             throw new RuntimeException("missing dataset");
         }
         //compute intra dataset variance of whole dataset
-        double datasetVar = 0.0, dev;
+        double datasetVar = 0.0, var;
         double scattering = 0.0;
         double dissimilarity = 0.0;
         Attribute attr;
         for (int d = 0; d < dataset.attributeCount(); d++) {
             attr = dataset.getAttribute(d);
-            dev = attr.statistics(AttrNumStats.STD_DEV);
-            datasetVar += dev * dev; //norm over all attributes
+            var = attr.statistics(AttrNumStats.VARIANCE);
+            datasetVar += var * var; //norm over all attributes
         }
+        // norm of the variance vector
         datasetVar = Math.sqrt(datasetVar);
 
         Instance[] centroids = new Instance[clusters.size()];

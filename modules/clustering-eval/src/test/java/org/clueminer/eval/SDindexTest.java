@@ -45,7 +45,7 @@ public class SDindexTest {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong5());
 
-        assertEquals(3.892490830217252, scoreBetter, delta);
+        assertEquals(3.7044979905303097, scoreBetter, delta);
 
         //should recognize "better" clustering (hand made clustering based on labels)
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
