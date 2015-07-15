@@ -1,8 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -14,9 +14,23 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Lower value of SD index means better clustering
+ * Lower value of SD index means better clustering. The bases of SD validity
+ * index are the average scattering of clusters and total separation of
+ * clusters. The scattering is calculated by variance of the clusters and
+ * variance of the dataset, thus it can measure the homogeneity and compactness
+ * of the clusters.
  *
  * @author Tomas Barton
+ *
+ * @cite M. Halkidi and M. Vazirgiannis and Y. Batistakis: Quality Scheme
+ * Assessment in the Clustering Process, Proc. of the 4th European Conference on
+ * Principles of Data Mining and Knowledge Discovery, pp. 265-276, 2000
+ *
+ * SD index is based on a criterion proposed for fuzzy clustering:
+ *
+ * @cite Ramze Rezaee, B.P.F. Lelieveldt, J.H.C Reiber. "A new cluster validity
+ * index for the fuzzy c-mean", Pattern Recognition Letters, 19, pp237-246,
+ * 1998.
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class SDindex extends AbstractEvaluator {
@@ -85,14 +99,23 @@ public class SDindex extends AbstractEvaluator {
         dissimilarity *= max / min;
 
         scattering = scattering / clusters.size();
-
         /**
-         * @TODO times custom coefficient alpha
+         * The formula should have been
+         *
+         * sd(C) = alpha * Scatt(|C|) + Dis(|C|)
+         *
+         * where alpha is a weighting factor equal to Dis(c_max) where c_max is
+         * the maximum number of input clusters. In case of crisp clustering
+         * c_max is equal to k, thus Dis(c_max) == Dis(k), then we get following
+         * formula:
+         *
+         * sd(C) = Dis(|C|) * (Scatt(|C|) + 1)
+         *
          */
-        return scattering + dissimilarity;
+        return dissimilarity * (scattering + 1);
     }
 
-    private double clusterVariance(Dataset clust, Instance centroid) {
+    private double clusterVariance(Cluster<? extends Instance> clust, Instance centroid) {
         double sigma, var, totalVar = 0.0;
 
         for (int k = 0; k < clust.attributeCount(); k++) {
