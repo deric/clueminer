@@ -31,7 +31,7 @@ public class AdjMatrixGraph implements Graph {
     private int nodeCounter;
     private DistanceMeasure dm;
     private final double EPS = 1e-6;
-    private static final String name = "Adj Graph Matrix";
+    private static final String name = "Adjacency matrix graph";
 
     /**
      * ensureCapacity(n) must be called before using this class!
@@ -76,9 +76,11 @@ public class AdjMatrixGraph implements Graph {
         if (source == -1 || target == -1 || source >= nodeCounter || target >= nodeCounter) {
             return false;
         }
-        adjMatrix[source][target] = e;
-        adjMatrix[target][source] = e;
-        edgeCounter++;
+        if (adjMatrix[source][target] == null && adjMatrix[target][source] == null) {
+            edgeCounter++;
+            adjMatrix[source][target] = e;
+            adjMatrix[target][source] = e;
+        }
         return true;
     }
 
