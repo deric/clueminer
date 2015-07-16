@@ -27,10 +27,10 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class RogersTanimotoTest extends ExternalTest {
+public class SokalSneath2Test extends ExternalTest {
 
-    public RogersTanimotoTest() {
-        subject = new RogersTanimoto();
+    public SokalSneath2Test() {
+        subject = new SokalSneath2();
     }
 
     @Test
@@ -46,13 +46,13 @@ public class RogersTanimotoTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() {
-        assertEquals(0.5, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong());
-        assertEquals(0.39996778350515466, score, delta);
+        assertEquals(0.5001006643849406, score, delta);
     }
 
     /**
@@ -65,9 +65,9 @@ public class RogersTanimotoTest extends ExternalTest {
     @Test
     public void testClusterCrit() {
         /**
-         * @TODO according to clusterCrit tests it should be 0.282577193178018,
-         * however the definition doesn't seem to be correct
+         * @TODO according to clusterCrit tests it should be 0.611727799227799,
+         * however the definition doesn't seem to be correct.
          */
-        measure(ext100p2, ext100p3, 0.32790224032586557);
+        measure(ext100p2, ext100p3, 0.6773547094188377);
     }
 }
