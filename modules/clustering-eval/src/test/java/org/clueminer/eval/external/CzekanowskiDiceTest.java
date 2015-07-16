@@ -27,10 +27,10 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class HubertTest extends ExternalTest {
+public class CzekanowskiDiceTest extends ExternalTest {
 
-    public HubertTest() {
-        subject = new Hubert();
+    public CzekanowskiDiceTest() {
+        subject = new CzekanowskiDice();
     }
 
     @Test
@@ -38,14 +38,11 @@ public class HubertTest extends ExternalTest {
         assertNotNull(subject.getName());
     }
 
-    /**
-     * Test of score method, of class FowlkesMallows.
-     */
     @Test
     public void testScore_Clustering_Dataset() {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), 1.0);
-        measure(FakeClustering.irisWrong2(), 0.4729957505755127);
+        measure(FakeClustering.irisWrong2(), 0.6648648648648648);
     }
 
     @Test
@@ -55,23 +52,14 @@ public class HubertTest extends ExternalTest {
     }
 
     @Test
-    public void testScore_Clustering_Clustering() {
-        double score;
-        score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.21073236216545863);
-
-        //when using class labels result should be the same
-        measure(FakeClustering.wineClustering(), score);
-    }
-
-    @Test
     public void testOneClassPerCluster() {
-        assertEquals(Double.NaN, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
     public void testMostlyWrong() {
         double score = subject.score(FakeClustering.irisMostlyWrong());
-        assertEquals(0.0, score, delta);
+        assertEquals(0.49329977552547444, score, delta);
     }
 
     /**
@@ -83,6 +71,6 @@ public class HubertTest extends ExternalTest {
      */
     @Test
     public void testClusterCrit() {
-        measure(ext100p2, ext100p3, 0.022714141794819);
+        measure(ext100p2, ext100p3, 0.411693066358566);
     }
 }
