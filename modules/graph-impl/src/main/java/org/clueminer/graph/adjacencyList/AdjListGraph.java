@@ -404,6 +404,22 @@ public class AdjListGraph implements Graph {
         //nothing to do
     }
 
+    @Override
+    public String metisExport(boolean weighted) {
+        String metis = getNodeCount() + " " + getEdgeCount() + "\n";
+        Node[] nodesByIndex = new Node[getNodeCount()];
+        for (Node node : getNodes()) {
+            nodesByIndex[idToIndex.get(node.getId())] = node;
+        }
+        for (int i = 0; i < getNodeCount(); i++) {
+            for (Node neighbor : getNeighbors(nodesByIndex[i])) {
+                metis += ((idToIndex.get(neighbor.getId()) + 1) + " ");
+            }
+            metis += "\n";
+        }
+        return metis;
+    }
+
     private class Neighbor implements Comparable<Neighbor> {
 
         Edge edge;
