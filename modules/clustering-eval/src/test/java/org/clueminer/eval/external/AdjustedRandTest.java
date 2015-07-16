@@ -154,7 +154,7 @@ public class AdjustedRandTest extends ExternalTest {
 
         pm.dump();
         //number of pairs we can draw from 150 instances (150 \over 2)
-        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum());
+        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum(), delta);
         System.out.println("ARI: " + ari.score(pm));
     }
 

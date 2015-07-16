@@ -174,10 +174,10 @@ public class CountingPairsTest extends ExternalTest {
         assertEquals(5, clust.get(2).size());
 
         PairMatch pm = CountingPairs.matchPairs(clust);
-        assertEquals(7, pm.tp);
-        assertEquals(6, pm.fp);
-        assertEquals(7, pm.fn);
-        assertEquals(25, pm.tn);
+        assertEquals(7, pm.tp, delta);
+        assertEquals(6, pm.fp, delta);
+        assertEquals(7, pm.fn, delta);
+        assertEquals(25, pm.tn, delta);
     }
 
     /**
@@ -192,16 +192,17 @@ public class CountingPairsTest extends ExternalTest {
         assertEquals(100, c2.instancesCount());
         PairMatch pm = CountingPairs.matchPairs(c1, c2);
 
-        assertEquals(845, pm.tp);
-        assertEquals(806, pm.fp);
-        assertEquals(1609, pm.fn);
-        assertEquals(1690, pm.tn);
+        assertEquals(845, pm.tp, delta);
+        assertEquals(806, pm.fp, delta);
+        assertEquals(1609, pm.fn, delta);
+        assertEquals(1690, pm.tn, delta);
         System.out.println(pm.toString());
 
         System.out.println("sum:" + pm.sum());
 
         //number of pairs in clustering
-        assertEquals(CombinatoricsUtils.binomialCoefficient(100, 2), pm.sum());
+        assertEquals(CombinatoricsUtils.binomialCoefficient(100, 2), pm.sum(), delta);
+        assertEquals(100 * (100 - 1) / 2.0, pm.sum(), delta);
 
     }
 
