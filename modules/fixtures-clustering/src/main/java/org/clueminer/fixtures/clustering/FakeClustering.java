@@ -1,5 +1,7 @@
 package org.clueminer.fixtures.clustering;
 
+import java.io.File;
+import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -9,7 +11,11 @@ import org.clueminer.colors.RandomColorsGenerator;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.fixtures.ClustFixture;
+import org.clueminer.io.CsvLoader;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -385,6 +391,81 @@ public class FakeClustering {
         }
 
         return simpleResponse;
+    }
+
+    private static Dataset<? extends Instance> loadExtData(File fixture) {
+        Dataset<? extends Instance> data;
+        CsvLoader loader = new CsvLoader();
+        data = new ArrayDataset(100, 1);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.setName("external 100");
+        loader.setClassIndex(1);
+        loader.setSeparator(',');
+        loader.setHasHeader(false);
+
+        try {
+            loader.load(fixture, data);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
+
+    private static Clustering convertExt2Clust(File f, int k) {
+        Dataset<? extends Instance> data = loadExtData(f);
+
+        Clustering clust = new ClusterList(k);
+        for (int i = 0; i < k; i++) {
+            clust.createCluster(i);
+        }
+
+        int cls;
+        Cluster c;
+        for (Instance inst : data) {
+            cls = Integer.valueOf(inst.classValue().toString());
+            c = clust.get(cls - 1);
+            c.add(inst);
+        }
+
+        return clust;
+    }
+
+    /**
+     * Simple dataset from R package clusterCrit containing 100 numbers assigned
+     * to 2 clusters
+     *
+     * http://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * @return
+     */
+    public static Clustering ext100p2() {
+        ClustFixture fixture = new ClustFixture();
+        Clustering clust = null;
+        try {
+            clust = convertExt2Clust(fixture.ext100p2(), 2);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return clust;
+    }
+
+    /**
+     * Simple dataset from R package clusterCrit containing 100 numbers assigned
+     * to 3 clusters
+     *
+     * http://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * @return
+     */
+    public static Clustering ext100p3() {
+        ClustFixture fixture = new ClustFixture();
+        Clustering clust = null;
+        try {
+            clust = convertExt2Clust(fixture.ext100p3(), 3);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return clust;
     }
 
 }

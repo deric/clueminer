@@ -1,10 +1,8 @@
 package org.clueminer.fixtures.clustering;
 
 import org.clueminer.clustering.api.Clustering;
-import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -13,14 +11,6 @@ import static org.junit.Assert.*;
 public class FakeClusteringTest {
 
     public FakeClusteringTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -75,6 +65,22 @@ public class FakeClusteringTest {
         Clustering clust = FakeClustering.wineClustering();
         assertEquals(3, clust.size());
         assertEquals(27, clust.instancesCount());
+    }
+
+    @Test
+    public void testExt100p2() {
+        Clustering clust = FakeClustering.ext100p2();
+
+        assertEquals(2, clust.size());
+        assertEquals(100, clust.instancesCount());
+    }
+
+    @Test
+    public void testExt100p3() {
+        Clustering clust = FakeClustering.ext100p3();
+
+        assertEquals(3, clust.size());
+        assertEquals(100, clust.instancesCount());
     }
 
 }
