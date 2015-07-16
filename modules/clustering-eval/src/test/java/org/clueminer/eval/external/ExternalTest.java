@@ -23,7 +23,7 @@ public class ExternalTest {
 
     protected ExternalEvaluator subject;
     //floating operation from R is according to IEEE 754, while Java isn't
-    protected static final double delta = 1e-7;
+    protected static final double delta = 1e-6;
     protected static Clustering ext100p2;
     protected static Clustering ext100p3;
 

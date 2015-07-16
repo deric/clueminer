@@ -21,15 +21,18 @@ import org.clueminer.eval.utils.PairMatch;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The Kulczynski Index is defined as arithmetic mean of Precision and Recall
+ * Under the null hypothesis H_0 that the discordances between the clusterings
+ * are random, the index follows approximatively a normal distribution. It is an
+ * adaptation of the non-parametric test of McNemar for the comparison of
+ * frequencies between two paired samples.
  *
  * @author deric
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class KulczynskiIndex extends AbstractCountingPairs {
+public class McNemar extends AbstractCountingPairs {
 
-    private static final long serialVersionUID = 7647620533572167034L;
-    private static final String name = "Kulczynski";
+    private static final long serialVersionUID = 1647620533572167034L;
+    private static final String name = "McNemar index";
 
     @Override
     public String getName() {
@@ -38,7 +41,7 @@ public class KulczynskiIndex extends AbstractCountingPairs {
 
     @Override
     public double countScore(PairMatch pm) {
-        return 0.5 * ((pm.tp / (double) (pm.tp + pm.fp)) + (pm.tp / (double) (pm.tp + pm.fn)));
+        return (pm.tn - pm.fp) / Math.sqrt(pm.tn + pm.fp);
     }
 
 }
