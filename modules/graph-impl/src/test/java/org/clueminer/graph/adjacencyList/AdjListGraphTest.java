@@ -14,7 +14,7 @@ import org.junit.Test;
  *
  * @author Hamster
  */
-public class AdjListGraphTest {
+public class AdjListGraphTest extends commons.Commons {
 
     private static final AdjListFactory factory = AdjListFactory.getInstance();
     private static final AdjListGraph graph = new AdjListGraph();
@@ -188,4 +188,10 @@ public class AdjListGraphTest {
         assertEquals(0, g.getNeighbors(n2).toCollection().size());
     }
 
+    @Test
+    public void metisExportTest() {
+        Graph gr = new AdjListGraph();
+        gr = buildSmallGraph(gr, factory);
+        super.metisExportTest(gr, "7 11\n2 3 7 \n" + "1 6 \n" + "1 4 5 \n" + "3 5 6 7 \n" + "3 4 7 \n" + "2 4 7 \n" + "1 4 5 6 \n");
+    }
 }
