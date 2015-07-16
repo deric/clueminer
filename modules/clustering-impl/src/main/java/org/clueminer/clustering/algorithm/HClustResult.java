@@ -324,6 +324,11 @@ public class HClustResult implements HierarchicalResult {
         return cut;
     }
 
+    @Override
+    public double getHeightByLevel(int level) {
+        return findLevelHeight(treeData.getRoot(), level);
+    }
+
     private double findLevel(DendroNode node, int level) {
         return (findLevelHeight(node, level) + findLevelHeight(node, level + 1)) / 2.0;
     }

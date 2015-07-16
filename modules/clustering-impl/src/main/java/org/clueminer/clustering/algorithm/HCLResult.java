@@ -26,8 +26,7 @@ import org.clueminer.utils.Props;
 
 /**
  *
- * @author Tomas Barton
- * use {@link HClustResult} instead
+ * @author Tomas Barton use {@link HClustResult} instead
  */
 @Deprecated
 public class HCLResult implements HierarchicalResult {
@@ -408,6 +407,11 @@ public class HCLResult implements HierarchicalResult {
 
     @Override
     public void setResultType(ResultType type) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getHeightByLevel(int level) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

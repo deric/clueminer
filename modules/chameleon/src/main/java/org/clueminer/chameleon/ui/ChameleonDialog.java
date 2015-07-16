@@ -465,6 +465,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
+        params.put(AgglParams.CUTOFF_STRATEGY, (String) comboCutoffMethod.getSelectedItem());
         params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
         params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
 
