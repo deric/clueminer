@@ -215,7 +215,7 @@ public class CountingPairs {
      * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     * supervised learning)
+     *         supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
@@ -332,25 +332,24 @@ public class CountingPairs {
 
     /**
      * Match instances in two clusterings of the same dataset. From resulting
-     * table we can tell how close it the {@code curr} clustering to the
-     * reference one.
+     * table we can tell how close the {@code curr} clustering is to the
+     * reference ({@code  ref) one.
      *
+     * @param ref  reference clustering,
      * @param curr second clustering
-     * @param ref reference clustering,
      *
      * @return
      */
-    public static PairMatch matchPairs(Clustering<? extends Cluster> curr, Clustering<? extends Cluster> ref) {
+    public static PairMatch matchPairs(Clustering<? extends Cluster> ref, Clustering<? extends Cluster> curr) {
         PairMatch pm = new PairMatch();
 
         Instance x, y;
         Cluster cx1, cx2, cy1, cy2;
-        for (int i = 0; i < ref.instancesCount() - 1; i++) {
+        for (int i = 0; i < ref.instancesCount(); i++) {
             x = ref.instance(i);
             cx1 = ref.assignedCluster(x);
             cx2 = curr.assignedCluster(x);
-            for (int j = i + 1; j < ref.instancesCount(); j++) {
-
+            for (int j = 0; j < i; j++) {
                 y = ref.instance(j);
                 cy1 = ref.assignedCluster(y);
                 cy2 = curr.assignedCluster(y);
@@ -359,11 +358,11 @@ public class CountingPairs {
                     if (cx2.getClusterId() == cy2.getClusterId()) {
                         pm.tp++;
                     } else {
-                        pm.fp++;
+                        pm.fn++;
                     }
                 } else {
                     if (cx2.getClusterId() == cy2.getClusterId()) {
-                        pm.fn++;
+                        pm.fp++;
                     } else {
                         pm.tn++;
                     }

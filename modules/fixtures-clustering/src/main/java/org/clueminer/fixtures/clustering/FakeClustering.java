@@ -31,6 +31,8 @@ public class FakeClustering {
     private static Clustering<Cluster> irisWrong5;
     private static Clustering<Cluster> simpleClustering;
     private static Clustering<Cluster> simpleResponse;
+    private static Clustering<Cluster> ext100p2;
+    private static Clustering<Cluster> ext100p3;
     private static Dataset<Instance> wine;
 
     public static Clustering iris() {
@@ -439,14 +441,15 @@ public class FakeClustering {
      * @return
      */
     public static Clustering ext100p2() {
-        ClustFixture fixture = new ClustFixture();
-        Clustering clust = null;
-        try {
-            clust = convertExt2Clust(fixture.ext100p2(), 2);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        if (ext100p2 == null) {
+            ClustFixture fixture = new ClustFixture();
+            try {
+                ext100p2 = convertExt2Clust(fixture.ext100p2(), 2);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
-        return clust;
+        return ext100p2;
     }
 
     /**
@@ -458,14 +461,15 @@ public class FakeClustering {
      * @return
      */
     public static Clustering ext100p3() {
-        ClustFixture fixture = new ClustFixture();
-        Clustering clust = null;
-        try {
-            clust = convertExt2Clust(fixture.ext100p3(), 3);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        if (ext100p3 == null) {
+            ClustFixture fixture = new ClustFixture();
+            try {
+                ext100p3 = convertExt2Clust(fixture.ext100p3(), 3);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
-        return clust;
+        return ext100p3;
     }
 
 }

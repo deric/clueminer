@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 
@@ -21,14 +22,21 @@ import static org.junit.Assert.assertEquals;
 public class ExternalTest {
 
     protected ExternalEvaluator subject;
-    protected static final double delta = 1e-9;
+    //floating operation from R is according to IEEE 754, while Java isn't
+    protected static final double delta = 1e-7;
+    protected static Clustering ext100p2;
+    protected static Clustering ext100p3;
+
+    public ExternalTest() {
+        ext100p2 = FakeClustering.ext100p2();
+        ext100p3 = FakeClustering.ext100p3();
+    }
 
     protected double measure(Clustering c1, Clustering c2, double expected) {
         long start = System.currentTimeMillis();
         c1.lookupRemove(PairMatch.class);
         double score = subject.score(c1, c2, new Props());
         double end = System.currentTimeMillis();
-
         assertEquals(expected, score, delta);
         System.out.println(subject.getName() + " = " + score);
         System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");

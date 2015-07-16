@@ -33,13 +33,6 @@ public class RecallTest extends ExternalTest {
     }
 
     /**
-     * Test of isBetter method, of class Recall.
-     */
-    @Test
-    public void testCompareScore() {
-    }
-
-    /**
      * Test of score method, of class Recall.
      *
      * @see
@@ -69,5 +62,17 @@ public class RecallTest extends ExternalTest {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("recall (mw) = " + score);
         assertEquals(true, score < 0.33);
+    }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        measure(ext100p2, ext100p3, 0.3443357);
     }
 }

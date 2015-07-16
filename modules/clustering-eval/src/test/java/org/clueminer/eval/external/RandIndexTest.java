@@ -63,9 +63,9 @@ public class RandIndexTest extends ExternalTest {
 
     /**
      * Based on Details of the Adjusted Rand index and Clustering algorithms
-     * Supplement to the paper “An empirical study on Principal
-     * Component Analysis for clustering gene expression data” (to
-     * appear in Bioinformatics)
+     * Supplement to the paper “An empirical study on Principal Component
+     * Analysis for clustering gene expression data” (to appear in
+     * Bioinformatics)
      *
      * Ka Yee Yeung, Walter L. Ruzzo, 2001
      *
@@ -75,5 +75,17 @@ public class RandIndexTest extends ExternalTest {
         Clustering<? extends Cluster> clust = pcaData();
         double score = subject.score(clust);
         assertEquals(0.71111111111111, score, delta);
+    }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        measure(ext100p2, ext100p3, 0.512121200561523);
     }
 }

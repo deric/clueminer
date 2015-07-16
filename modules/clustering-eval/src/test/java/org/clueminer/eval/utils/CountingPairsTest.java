@@ -4,6 +4,7 @@ import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -16,11 +17,8 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -49,18 +47,6 @@ public class CountingPairsTest extends ExternalTest {
         Dataset<Instance> irisDataset = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), irisDataset, 4);
         iris = km.partition(irisDataset, p);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -179,26 +165,6 @@ public class CountingPairsTest extends ExternalTest {
     }
 
     @Test
-    public void testContingencyTable_Clustering() {
-    }
-
-    @Test
-    public void testContingencyTable_Clustering_Clustering() {
-    }
-
-    @Test
-    public void testClusteringFromClasses() {
-    }
-
-    @Test
-    public void testDumpTable() {
-    }
-
-    @Test
-    public void testMatchPairs_Clustering_Clustering() {
-    }
-
-    @Test
     public void testMatchPairs_Clustering() {
         Clustering<? extends Cluster> clust = pcaData();
 
@@ -213,4 +179,30 @@ public class CountingPairsTest extends ExternalTest {
         assertEquals(7, pm.fn);
         assertEquals(25, pm.tn);
     }
+
+    /**
+     * Matching 2 clusterings of 100 items which are assigned to 2, respectively
+     * 3 clusters
+     */
+    @Test
+    public void testMatchPairsExtPartitioning() {
+        Clustering c1 = FakeClustering.ext100p2();
+        assertEquals(100, c1.instancesCount());
+        Clustering c2 = FakeClustering.ext100p3();
+        assertEquals(100, c2.instancesCount());
+        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+
+        assertEquals(845, pm.tp);
+        assertEquals(806, pm.fp);
+        assertEquals(1609, pm.fn);
+        assertEquals(1690, pm.tn);
+        System.out.println(pm.toString());
+
+        System.out.println("sum:" + pm.sum());
+
+        //number of pairs in clustering
+        assertEquals(CombinatoricsUtils.binomialCoefficient(100, 2), pm.sum());
+
+    }
+
 }

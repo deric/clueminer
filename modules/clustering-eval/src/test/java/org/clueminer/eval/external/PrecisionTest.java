@@ -79,4 +79,16 @@ public class PrecisionTest extends ExternalTest {
         pm.dump();
         assertEquals(0.9866666666666667, precision.countScore(pm), delta);
     }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        measure(ext100p2, ext100p3, 0.511811017990112);
+    }
 }

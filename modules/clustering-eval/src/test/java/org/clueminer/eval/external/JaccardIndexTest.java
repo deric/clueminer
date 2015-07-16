@@ -60,4 +60,16 @@ public class JaccardIndexTest extends ExternalTest {
         System.out.println("jaccard (mw): " + score);
         assertEquals(true, score < 0.4);
     }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        measure(ext100p2, ext100p3, 0.25920245051384);
+    }
 }
