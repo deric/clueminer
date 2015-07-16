@@ -21,20 +21,15 @@ import org.clueminer.eval.utils.PairMatch;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The Czekanowski (1932), Dice (1945) -- a.k.a. the Ochai index
- *
- * The Czekanowski index is the harmonic mean of the precision and recall
- * coefficients, thus could be equal to F-measure (for beta = 1.0)
- *
- * C = 2 * (precision * recall) / (precision + recall)
+ * The Kulczynski Index is defined as arithmetic mean of Precision and Recall
  *
  * @author deric
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class CzekanowskiDice extends AbstractCountingPairs {
+public class KulczynskiIndex extends AbstractCountingPairs {
 
-    private static final long serialVersionUID = 8647620533572167034L;
-    private static final String name = "Czekanowski-Dice";
+    private static final long serialVersionUID = 7647620533572167034L;
+    private static final String name = "Kulczynski";
 
     @Override
     public String getName() {
@@ -43,7 +38,8 @@ public class CzekanowskiDice extends AbstractCountingPairs {
 
     @Override
     public double countScore(PairMatch pm) {
-        return (2 * pm.tp) / (double) (2 * pm.tp + pm.fn + pm.fp);
+        System.out.println(pm.toString());
+        return 0.5 * ((pm.tp / (double) (pm.tp + pm.fp)) + (pm.tp / (double) (pm.tp + pm.fn)));
     }
 
 }
