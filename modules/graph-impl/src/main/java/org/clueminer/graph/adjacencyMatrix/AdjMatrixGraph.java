@@ -455,4 +455,16 @@ public class AdjMatrixGraph implements Graph {
         return idToIndex.get(node.getId());
     }
 
+    @Override
+    public String metisExport(boolean weighted) {
+        String metis = getNodeCount() + " " + getEdgeCount() + "\n";
+        for (int i = 0; i < getNodeCount(); i++) {
+            for (Node neighbor : getNeighbors(nodes[i])) {
+                metis += ((idToIndex.get(neighbor.getId()) + 1) + " ");
+            }
+            metis += "\n";
+        }
+        return metis;
+    }
+
 }
