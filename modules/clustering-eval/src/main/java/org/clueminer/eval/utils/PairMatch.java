@@ -26,22 +26,22 @@ public class PairMatch {
     /**
      * pairs that are in the same cluster in both clusterings (a)
      */
-    public int tp;
+    public double tp;
 
     /**
      * pairs that are in same the cluster in C1 but not in C2 (b)
      */
-    public int fp;
+    public double fp;
 
     /**
      * pairs that are in the same cluster in C2 but not in C1 (c)
      */
-    public int fn;
+    public double fn;
 
     /**
      * pairs that are in different community in both clusterings (d)
      */
-    public int tn;
+    public double tn;
 
     public PairMatch() {
         tp = 0;
@@ -50,7 +50,7 @@ public class PairMatch {
         tn = 0;
     }
 
-    public int sum() {
+    public double sum() {
         return tp + fp + fn + tn;
     }
 
