@@ -22,6 +22,7 @@ import org.clueminer.graph.adjacencyList.AdjListFactory;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
+import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
@@ -92,11 +93,14 @@ public class FastCommunity extends AbstractClusteringAlgorithm implements Agglom
             DendroNode[] nodes) {
         Map<Integer, Community> clusterAssignment = new HashMap<>(n);
         network = new CommunityNetwork(dQ, graph.getEdgeCount());
-        for (int i = 0; i < n; i++) {
-            Community community = new Community(graph, i, graph.getNode(i));
+
+        int i = 0;
+        for (Node node : graph.getNodes()) {
+            Community community = new Community(graph, i, node);
             clusterAssignment.put(i, community);
             nodes[i] = new DLeaf(i, dataset.get(i));
             network.add(community);
+            i++;
         }
         network.initConnections(graph);
 
