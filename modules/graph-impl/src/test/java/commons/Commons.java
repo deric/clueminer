@@ -60,6 +60,7 @@ public class Commons {
 
     public void metisExportTest(Graph g, String result) {
         String metis = g.metisExport(false);
+        System.out.println(metis);
         String[] lines = metis.split("\n");
         String sortedResult = lines[0] + "\n";
         for (int i = 1; i <= g.getNodeCount(); i++) {
@@ -74,7 +75,6 @@ public class Commons {
             }
             sortedResult += "\n";
         }
-        System.out.println(sortedResult);
         assertEquals(result, sortedResult);
     }
 

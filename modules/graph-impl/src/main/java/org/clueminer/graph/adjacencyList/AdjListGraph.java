@@ -412,8 +412,10 @@ public class AdjListGraph implements Graph {
             nodesByIndex[idToIndex.get(node.getId())] = node;
         }
         for (int i = 0; i < getNodeCount(); i++) {
+            String space = "";
             for (Node neighbor : getNeighbors(nodesByIndex[i])) {
-                metis += ((idToIndex.get(neighbor.getId()) + 1) + " ");
+                metis += (space + (idToIndex.get(neighbor.getId()) + 1));
+                space = " ";
             }
             metis += "\n";
         }
