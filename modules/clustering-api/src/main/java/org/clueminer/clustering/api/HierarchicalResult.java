@@ -282,4 +282,6 @@ public interface HierarchicalResult extends Serializable {
      */
     DendrogramMapping getDendrogramMapping();
 
+    public double getHeightByLevel(int level);
+
 }

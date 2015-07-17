@@ -48,7 +48,7 @@ public class AdjMatrixFactory implements GraphFactory {
 
     @Override
     public Edge newEdge(Node source, Node target) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AdjMatrixEdge(edgeIdCounter++, source, target, 1);
     }
 
     @Override

@@ -16,8 +16,6 @@ public class AdjMatrixNode implements Node {
 
     private final long id;
     Object label;
-    private int index;
-    private double[] coordinates;
     private Instance instance;
 
     public AdjMatrixNode(long id) {

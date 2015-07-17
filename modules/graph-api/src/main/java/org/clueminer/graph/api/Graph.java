@@ -355,4 +355,12 @@ public interface Graph {
      */
     void ensureCapacity(int size);
 
+    /**
+     * Export graph in the metis form
+     *
+     * @param weighted whether the edge weights should be exported
+     * @return
+     */
+    public String metisExport(boolean weighted);
+
 }

@@ -2,6 +2,7 @@ package org.clueminer.graph.adjacencyMatrix;
 
 import java.util.Collection;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -10,7 +11,7 @@ import org.junit.Test;
  *
  * @author Tomas Bruna
  */
-public class AdjMatrixGraphTest {
+public class AdjMatrixGraphTest extends commons.Commons {
 
     AdjMatrixFactory f;
     Node n1;
@@ -91,6 +92,13 @@ public class AdjMatrixGraphTest {
         assertEquals(true, g.contains(e1));
         assertEquals(1, g.getDegree(n1));
         assertEquals(2, g.getDegree(n2));
+    }
+
+    @Test
+    public void metisExportTest() {
+        Graph gr = new AdjMatrixGraph();
+        gr = buildSmallGraph(gr, new AdjMatrixFactory());
+        super.metisExportTest(gr, "7 11\n2 3 7 \n" + "1 6 \n" + "1 4 5 \n" + "3 5 6 7 \n" + "3 4 7 \n" + "2 4 7 \n" + "1 4 5 6 \n");
     }
 
 }
