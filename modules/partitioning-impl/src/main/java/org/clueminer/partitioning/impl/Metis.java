@@ -29,7 +29,6 @@ public class Metis implements Partitioning {
     Graph graph;
     int k;
     String ptype;
-    ArrayList<LinkedList<Node>> clusters;
     String metisPath = "/home/tomas/clueminer/modules/partitioning-impl/gpmetis";
 
     public Metis() {
@@ -54,8 +53,10 @@ public class Metis implements Partitioning {
         k = g.getNodeCount() / maxPartitionSize;
         createMapping();
         runMetis();
-        clusters = importMetisResult();
-        return clusters;
+        ArrayList<LinkedList<Node>> clusters = importMetisResult();
+        Graph clusteredGraph = new EdgeRemover().removeEdges(graph, clusters);
+        FloodFill f = new FloodFill();
+        return f.findSubgraphs(clusteredGraph);
     }
 
     private void createMapping() {
@@ -109,35 +110,6 @@ public class Metis implements Partitioning {
         if (!"kway".equals(ptype) && !"rb".equals(ptype)) {
             throw new InvalidParameterException("Parameter ptype cannot have " + ptype + " value");
         }
-    }
-
-    @Override
-    public Graph removeUnusedEdges() {
-        Graph g = null;
-        try {
-            //create instance of same graph storage implementation
-            g = graph.getClass().newInstance();
-            g.ensureCapacity(graph.getNodeCount());
-
-            for (Node node : graph.getNodes()) {
-                g.addNode(node);
-            }
-
-            for (LinkedList<Node> cluster : clusters) {
-                for (int i = 0; i < cluster.size(); i++) {
-                    for (int j = i + 1; j < cluster.size(); j++) {
-                        if (graph.isAdjacent(cluster.get(i), cluster.get(j))) {
-                            g.addEdge(graph.getEdge(cluster.get(i), cluster.get(j)));
-                        }
-                    }
-                }
-            }
-
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-        return g;
     }
 
 }
