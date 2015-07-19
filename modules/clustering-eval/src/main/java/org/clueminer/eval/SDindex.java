@@ -9,7 +9,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.stats.AttrNumStats;
-import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -72,7 +71,7 @@ public class SDindex extends AbstractEvaluator {
 
         Instance[] centroids = new Instance[clusters.size()];
         for (int i = 0; i < clusters.size(); i++) {
-            centroids[i] = DatasetTools.average(clusters.get(i));
+            centroids[i] = clusters.get(i).getCentroid();
         }
 
         for (int i = 0; i < clusters.size(); i++) {

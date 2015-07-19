@@ -20,6 +20,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
 
@@ -50,7 +51,10 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double score = 0.0;
+        double std_dev = stddev(clusters);
+
+        return score;
     }
 
     @Override
@@ -71,6 +75,18 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
     @Override
     public double getMax() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private double stddev(Clustering<? extends Cluster> clusters) {
+        double sdev = 0;
+        Cluster first = clusters.get(0);
+        Instance mean = first.builder().build(first.attributeCount());
+        Instance[] centroids = new Instance[clusters.size()];
+        for (int i = 0; i < clusters.size(); i++) {
+            centroids[i] = clusters.get(i).getCentroid();
+        }
+
+        return sdev;
     }
 
 }
