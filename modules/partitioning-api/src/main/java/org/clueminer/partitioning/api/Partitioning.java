@@ -22,4 +22,5 @@ public interface Partitioning {
      */
     ArrayList<LinkedList<Node>> partition(int k, Graph g);
 
+    public void setBisection(Bisection bisection);
 }

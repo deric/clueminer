@@ -29,6 +29,7 @@ public class RecursiveBisection implements Partitioning {
         this.bisection = bisection;
     }
 
+    @Override
     public void setBisection(Bisection bisection) {
         this.bisection = bisection;
     }

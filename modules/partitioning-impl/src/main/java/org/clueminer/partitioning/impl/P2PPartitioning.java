@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -176,6 +177,11 @@ public class P2PPartitioning implements Partitioning {
             result += ("Node " + nodes[i].index + ": " + nodes[i].degree + "\n");
         }
         return result;
+    }
+
+    @Override
+    public void setBisection(Bisection bisection) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public class Vertex implements Comparable<Vertex> {

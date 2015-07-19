@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -44,7 +45,12 @@ public class Metis implements Partitioning {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Metis partitioning");
+        return "Metis";
+    }
+
+    @Override
+    public void setBisection(Bisection bisection) {
+        // cannot change in Metis
     }
 
     @Override
