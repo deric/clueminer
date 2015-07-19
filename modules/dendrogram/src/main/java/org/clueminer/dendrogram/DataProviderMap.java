@@ -62,6 +62,16 @@ public class DataProviderMap implements DataProvider {
         return new DataProviderMapIterator();
     }
 
+    @Override
+    public boolean hasDataset(String name) {
+        for (String dataset : data.keySet()) {
+            if (name.equals(dataset)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private class DataProviderMapIterator implements Iterator<Dataset<? extends Instance>> {
 
         private int index;

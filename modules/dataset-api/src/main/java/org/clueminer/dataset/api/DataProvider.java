@@ -48,4 +48,12 @@ public interface DataProvider extends Iterable<Dataset<? extends Instance>> {
      */
     int count();
 
+    /**
+     * Check if dataset with given name is contained in this collection
+     *
+     * @param name
+     * @return
+     */
+    boolean hasDataset(String name);
+
 }
