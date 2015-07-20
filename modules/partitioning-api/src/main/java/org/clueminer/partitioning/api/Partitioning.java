@@ -22,11 +22,5 @@ public interface Partitioning {
      */
     ArrayList<LinkedList<Node>> partition(int k, Graph g);
 
-    /**
-     * Remove edges between clusters which were created by partitioning
-     *
-     * @return partitioned graph
-     */
-    Graph removeUnusedEdges();
-
+    public void setBisection(Bisection bisection);
 }

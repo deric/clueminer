@@ -19,7 +19,6 @@ public class RecursiveBisection implements Partitioning {
     private int maxNodesInCluster;
     private Graph graph;
     private boolean marked[];
-    private ArrayList<LinkedList<Node>> clusters;
     private Bisection bisection;
 
     public RecursiveBisection() {
@@ -30,6 +29,7 @@ public class RecursiveBisection implements Partitioning {
         this.bisection = bisection;
     }
 
+    @Override
     public void setBisection(Bisection bisection) {
         this.bisection = bisection;
     }
@@ -43,6 +43,7 @@ public class RecursiveBisection implements Partitioning {
     public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
         maxNodesInCluster = max;
         graph = g;
+        ArrayList<LinkedList<Node>> clusters;
         if (graph.getNodeCount() < maxNodesInCluster) {
             ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
             nodes.add(new LinkedList<>(g.getNodes().toCollection()));
@@ -50,7 +51,7 @@ public class RecursiveBisection implements Partitioning {
         } else {
             clusters = recursivePartition(graph);
         }
-        Graph clusteredGraph = removeUnusedEdges();
+        Graph clusteredGraph = new EdgeRemover().removeEdges(graph, clusters);
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
     }
@@ -90,35 +91,6 @@ public class RecursiveBisection implements Partitioning {
             Exceptions.printStackTrace(ex);
         }
         return newGraph;
-    }
-
-    @Override
-    public Graph removeUnusedEdges() {
-        Graph g = null;
-        try {
-            //create instance of same graph storage implementation
-            g = graph.getClass().newInstance();
-            g.ensureCapacity(graph.getNodeCount());
-
-            for (Node node : graph.getNodes()) {
-                g.addNode(node);
-            }
-
-            for (LinkedList<Node> cluster : clusters) {
-                for (int i = 0; i < cluster.size(); i++) {
-                    for (int j = i + 1; j < cluster.size(); j++) {
-                        if (graph.isAdjacent(cluster.get(i), cluster.get(j))) {
-                            g.addEdge(graph.getEdge(cluster.get(i), cluster.get(j)));
-                        }
-                    }
-                }
-            }
-
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-        return g;
     }
 
 }

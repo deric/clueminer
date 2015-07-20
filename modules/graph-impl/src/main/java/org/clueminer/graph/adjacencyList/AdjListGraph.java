@@ -406,20 +406,21 @@ public class AdjListGraph implements Graph {
 
     @Override
     public String metisExport(boolean weighted) {
-        String metis = getNodeCount() + " " + getEdgeCount() + "\n";
-        Node[] nodesByIndex = new Node[getNodeCount()];
+        Node[] nodeMapping = new Node[getNodeCount()];
         for (Node node : getNodes()) {
-            nodesByIndex[idToIndex.get(node.getId())] = node;
+            nodeMapping[idToIndex.get(node.getId())] = node;
         }
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNodeCount()).append(" ").append(getEdgeCount()).append("\n");
         for (int i = 0; i < getNodeCount(); i++) {
             String space = "";
-            for (Node neighbor : getNeighbors(nodesByIndex[i])) {
-                metis += (space + (idToIndex.get(neighbor.getId()) + 1));
+            for (Node neighbor : getNeighbors(nodeMapping[i])) {
+                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
                 space = " ";
             }
-            metis += "\n";
+            sb.append("\n");
         }
-        return metis;
+        return sb.toString();
     }
 
     private class Neighbor implements Comparable<Neighbor> {

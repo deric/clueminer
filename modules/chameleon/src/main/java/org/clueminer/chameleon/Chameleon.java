@@ -17,6 +17,8 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
+import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
@@ -26,8 +28,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Chameleon is a hierarchical graph clustering algorithm.
  *
- * Karypis, George, Eui-Hong Han, and Vipin Kumar. "Chameleon:
- * Hierarchical clustering using dynamic modeling." Computer 32.8 (1999): 68-75.
+ * Karypis, George, Eui-Hong Han, and Vipin Kumar. "Chameleon: Hierarchical
+ * clustering using dynamic modeling." Computer 32.8 (1999): 68-75.
  *
  * @author Tomas Bruna
  */
@@ -57,6 +59,13 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     public static final String BISECTION = "bisection";
     @Param(name = Chameleon.BISECTION, description = "Bisection algorithm")
     private String bisection;
+
+    /**
+     * Partitioning algorithm.
+     */
+    public static final String PARTITIONING = "partitioning";
+    @Param(name = Chameleon.PARTITIONING, description = "Partitioning algorithm")
+    private String partitioning;
 
     /**
      * If bigger than 1, algorithm gives a higher importance to the relative
@@ -137,8 +146,11 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
             FiducciaMattheyses fm = (FiducciaMattheyses) bisectionAlg;
             fm.setIterationLimit(pref.getInt(FiducciaMattheyses.ITERATIONS, 20));
         }
-        recursiveBisection = new RecursiveBisection(bisectionAlg);
-        ArrayList<LinkedList<Node>> partitioningResult = recursiveBisection.partition(maxPartitionSize, g);
+
+        partitioning = pref.get(PARTITIONING, "Recursive bisection");
+        Partitioning partitioningAlg = PartitioningFactory.getInstance().getProvider(partitioning);
+        partitioningAlg.setBisection(bisectionAlg);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
 
         PairMerger m;
         closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
