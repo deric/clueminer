@@ -57,7 +57,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int k;
 
-    @Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
+    //@Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
     private int seed;
 
     /**
