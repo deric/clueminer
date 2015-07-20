@@ -9,6 +9,7 @@ import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
+import org.junit.Test;
 
 /**
  *
@@ -16,7 +17,7 @@ import org.clueminer.graph.api.Graph;
  */
 public class MetisTest extends PartitioningTest {
 
-    //@Test
+    @Test
     public void simpleGraphTest() {
         Dataset<? extends Instance> dataset = twoDistinctNeighbors();
         DistanceMeasure dm = new EuclideanDistance();
@@ -28,7 +29,7 @@ public class MetisTest extends PartitioningTest {
         m.partition(2, g);
     }
 
-    // @Test
+    @Test
     public void irisTest() {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         Dataset dataset = FakeDatasets.irisDataset();
