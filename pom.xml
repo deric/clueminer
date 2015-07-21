@@ -231,6 +231,7 @@
         <module>modules/meta-view</module>
         <module>modules/scatter</module>
         <module>modules/graph-fast</module>
+        <module>metis</module>
     </modules>
     <reporting>
         <plugins>
