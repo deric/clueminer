@@ -3,7 +3,6 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -19,6 +18,10 @@ import org.openide.util.lookup.ServiceProvider;
  * exhibit excellent recovery characteristics by Milligan (1981a). The minimum
  * value across the hierarchy levels was used to indicate the optimal number of
  * clusters
+ *
+ * @cite L. Hubert and J. Schultz. Quadratic assignment as a general
+ * data-analysis strategy. British Journal of Mathematical and Statistical
+ * Psychologie, 29:190–241, 1976.
  *
  * @author Tomas Barton
  */
@@ -44,32 +47,40 @@ public class CIndex extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double dw = 0;
-        double minDw = Double.MAX_VALUE, maxDw = Double.MIN_VALUE;
+        double minDw, maxDw;
+        double minSum = 0.0, maxSum = 0.0;
 
         Instance x, y;
         // calculate intra cluster distances and sum of all
         //for each cluster
-        for (int i = 0; i < clusters.size(); i++) {
-            Dataset d = clusters.get(i);
-            for (int j = 0; j < d.size(); j++) {
-                x = d.instance(j);
-                for (int k = j + 1; k < d.size(); k++) {
-                    y = d.instance(k);
-                    double distance = dm.measure(x, y);
-                    dw += distance;
-                    if (maxDw < distance) {
-                        maxDw = distance;
-                    }
-                    if (minDw > distance) {
-                        minDw = distance;
+        double distance;
+        for (Cluster clust : clusters) {
+            minDw = Double.MAX_VALUE;
+            maxDw = Double.MIN_VALUE;
+            for (int i = 0; i < clust.size(); i++) {
+                x = clust.instance(i);
+                for (int j = 0; j < i; j++) {
+                    y = clust.instance(j);
+                    distance = dm.measure(x, y);
+                    if (!Double.isNaN(distance)) {
+                        dw += distance;
+                        //max distance between any pair in the same cluster (in entire dataset)
+                        if (distance > maxDw) {
+                            maxDw = distance;
+                        }
+                        //min distance between any pair in the same cluster (in entire dataset)
+                        if (distance < minDw) {
+                            minDw = distance;
+                        }
                     }
                 }
-
             }
+            minSum += minDw;
+            maxSum += maxDw;
         }
 
         // calculate C Index
-        double cIndex = (dw - minDw) / (maxDw - minDw);
+        double cIndex = (dw - minSum) / (maxSum - minSum);
         return cIndex;
     }
 
