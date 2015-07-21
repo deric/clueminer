@@ -14,6 +14,7 @@ import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.Props;
@@ -21,13 +22,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
+
 /**
  *
  * @author Tomas Barton
  */
 public class CIndexTest {
 
+    private static CIndex subject;
+    private static final double delta = 1e-9;
+
     public CIndexTest() {
+        subject = new CIndex();
     }
 
     /**
@@ -159,5 +165,19 @@ public class CIndexTest {
      */
     @Test
     public void testCompareScore() {
+    }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    //@Test
+    public void testClusterCrit() {
+        //TODO check the C-index definition
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(7.0592193043113e-06, score, delta);
     }
 }

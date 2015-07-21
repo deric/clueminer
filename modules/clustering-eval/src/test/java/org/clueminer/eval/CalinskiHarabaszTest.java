@@ -1,11 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,8 +14,8 @@ import org.junit.Test;
 public class CalinskiHarabaszTest {
 
     private static Clustering clusters;
-    private static Dataset<? extends Instance> dataset;
     private static CalinskiHarabasz subject;
+    private static final double delta = 1e-9;
 
     public CalinskiHarabaszTest() {
     }
@@ -26,7 +23,6 @@ public class CalinskiHarabaszTest {
     @BeforeClass
     public static void setUpClass() {
         clusters = FakeClustering.iris();
-        dataset = FakeDatasets.irisDataset();
         subject = new CalinskiHarabasz(new EuclideanDistance());
     }
 
@@ -69,5 +65,18 @@ public class CalinskiHarabaszTest {
     @Test
     public void testCompareScore() {
         assertEquals(true, subject.isBetter(2, 20));
+    }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(3959.80613603063, score, delta);
     }
 }

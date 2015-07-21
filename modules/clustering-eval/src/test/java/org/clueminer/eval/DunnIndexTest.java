@@ -32,6 +32,7 @@ public class DunnIndexTest {
     private static final DunnIndex subject = new DunnIndex(new EuclideanDistance());
     private static Cluster<? extends Instance> cluster;
     private static final CommonFixture tf = new CommonFixture();
+    private static final double delta = 1e-9;
 
     public DunnIndexTest() {
     }
@@ -105,5 +106,18 @@ public class DunnIndexTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(0.835485600869118, score, delta);
     }
 }

@@ -95,6 +95,13 @@ public class FakeClusteringTest {
         assertEquals(400, clust.instancesCount());
         assertEquals(100, clust.get(0).size());
         assertEquals(100, clust.get(1).size());
+        assertEquals(2, clust.get(2).attributeCount());
+        assertEquals(2, clust.get(1).attributeCount());
+
+        assertEquals(2, clust.instance(0).size());
+        assertEquals(2, clust.instance(1).size());
+        assertEquals(2, clust.instance(2).size());
+
     }
 
 }

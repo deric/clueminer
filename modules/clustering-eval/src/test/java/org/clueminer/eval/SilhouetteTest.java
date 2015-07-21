@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class SilhouetteTest {
 
-    private static final Silhouette test = new Silhouette();
+    private static final Silhouette subject = new Silhouette();
     private static Dataset<? extends Instance> dataset;
     private static Clustering clustering;
     private static Clustering clusters;
@@ -69,7 +69,7 @@ public class SilhouetteTest {
      */
     @Test
     public void testGetName() {
-        assertNotNull(test.getName());
+        assertNotNull(subject.getName());
     }
 
     /**
@@ -79,7 +79,7 @@ public class SilhouetteTest {
     public void testScore_Clustering() {
         double score;
         long start = System.currentTimeMillis();
-        score = test.score(clustering);
+        score = subject.score(clustering);
         System.out.println("Silhouette= " + score);
         long end = System.currentTimeMillis();
         assertTrue(score != Double.NaN);
@@ -93,7 +93,7 @@ public class SilhouetteTest {
     public void testScore_ClusteringMatlab() {
         double score;
         long start = System.currentTimeMillis();
-        score = test.score(clusters);
+        score = subject.score(clusters);
         System.out.println("Silhouette= " + score);
         //distance must be computed without SQRT!
         double matlab = 0.6564679231041901;
@@ -109,7 +109,7 @@ public class SilhouetteTest {
     @Test
     public void testScore_Clustering_Matrix() {
         //clustering containing cluster with single instance
-        double score = test.score(FakeClustering.irisMostlyWrong());
+        double score = subject.score(FakeClustering.irisMostlyWrong());
         assertNotSame(Double.NaN, score);
 
         //distance must be computed without SQRT!
@@ -123,7 +123,21 @@ public class SilhouetteTest {
      */
     @Test
     public void testCompareScore() {
-        assertEquals(true, test.isBetter(0.0, -1.0));
-        assertEquals(true, test.isBetter(1.0, 0.456));
+        assertEquals(true, subject.isBetter(0.0, -1.0));
+        assertEquals(true, subject.isBetter(1.0, 0.456));
     }
+
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(0.827206253180689, score, delta);
+    }
+
 }

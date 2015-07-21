@@ -1,9 +1,9 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

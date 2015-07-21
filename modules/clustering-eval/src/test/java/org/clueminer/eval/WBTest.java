@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2015 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PointBiserialTest {
+public class WBTest {
 
-    private final PointBiserial subject;
+    private static WB subject;
     private static final double delta = 1e-9;
 
-    public PointBiserialTest() {
-        subject = new PointBiserial();
+    public WBTest() {
+        subject = new WB();
     }
 
     @Test
@@ -40,15 +40,7 @@ public class PointBiserialTest {
     }
 
     @Test
-    public void testIris() {
-        double scoreBetter = subject.score(FakeClustering.iris());
-        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
-
-        System.out.println("better: " + scoreBetter);
-        System.out.println("worser: " + scoreWorser);
-
-        //should recognize better clustering
-        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    public void testScore() {
     }
 
     @Test
@@ -57,7 +49,14 @@ public class PointBiserialTest {
 
     @Test
     public void testIsMaximized() {
-        assertEquals(true, subject.isMaximized());
+    }
+
+    @Test
+    public void testGetMin() {
+    }
+
+    @Test
+    public void testGetMax() {
     }
 
     /**
@@ -67,10 +66,11 @@ public class PointBiserialTest {
      * NOTE: There's a small problem with precision of floating point
      * operations. First 7 decimal digits seems to match.
      */
-    @Test
+    //@Test
     public void testClusterCrit() {
+        //TODO: check WB definition
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(-1.6928719863069, score, delta);
+        assertEquals(105.942129943902, score, delta);
     }
 
 }

@@ -423,9 +423,9 @@ public class FakeClustering {
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
         data.setName("internal 100");
-        ArrayList<Integer> names = new ArrayList<>();
-        names.add(0);
-        loader.setNameAttr(names);
+        ArrayList<Integer> skip = new ArrayList<>();
+        skip.add(0);
+        loader.setSkipIndex(skip);
         loader.setSeparator(',');
         loader.setHasHeader(false);
 
@@ -504,17 +504,17 @@ public class FakeClustering {
                 Dataset<? extends Instance> data = loadIntData(fixture.int400p4(), 400);
 
                 int k = 4;
-
+                Cluster c;
                 int100p4 = new ClusterList(k);
                 for (int i = 0; i < k; i++) {
-                    int100p4.createCluster(i);
+                    c = int100p4.createCluster(i);
+                    c.setAttributes(data.getAttributes());
                 }
 
                 int cls;
-                Cluster c;
+
                 //labels contain values from 1 to 4
                 Iterator<? extends Instance> it = labels.iterator();
-                int i = 0;
                 for (Instance inst : data) {
                     cls = Integer.valueOf(it.next().classValue().toString());
                     c = int100p4.get(cls - 1);
