@@ -40,6 +40,11 @@ public class DaviesBouldinTest {
 
     @Test
     public void testScore() {
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisWrong5());
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
     @Test

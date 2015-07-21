@@ -19,6 +19,10 @@ import org.openide.util.lookup.ServiceProvider;
  * outcomes (Milligan, 1981a). Maximum values were taken to represent
  * the correct hierarchy level.
  *
+ * @cite F. B. Baker and L. J. Hubert. Measuring the power of hierarchical
+ * cluster analysis. Journal of the American Statistical Association, 70:31–38,
+ * 1975
+ *
  * @author Tomas Barton
  *
  */

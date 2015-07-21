@@ -10,6 +10,10 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Based on similar concepts as Gamma index.
+ *
+ * @cite F. J. Rohlf. Methods of comparing classifications. Annual Review of
+ * Ecology and Systematics, 5:101–113, 1974.
  *
  * @author Tomas Barton
  */

@@ -15,6 +15,9 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Dunn's index should be maximized
  *
+ * @cite J. Dunn. Well separated clusters and optimal fuzzy partitions. Journal
+ * of Cybernetics, 4:95–104, 1974.
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
@@ -50,14 +53,15 @@ public class DunnIndex extends AbstractEvaluator {
         ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
         link.setDistanceMeasure(dm);
 
-        for (int i = 0; i < clusters.size(); i++) {
+        for (int i = 0; i < clusters.size();
+             i++) {
             clusterX = clusters.get(i);
             //find maximal distance in between each cluster
             temp = maxIntraClusterDistance(clusterX);
             if (temp > maxIntraClusterdist) {
                 maxIntraClusterdist = temp;
             }
-            //@todo verify implementation
+
             for (int j = i + 1; j < clusters.size(); j++) {
                 clusterY = clusters.get(j);
                 /*

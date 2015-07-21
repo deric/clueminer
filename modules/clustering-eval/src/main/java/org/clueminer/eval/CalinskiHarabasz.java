@@ -24,6 +24,9 @@ import org.openide.util.lookup.ServiceProvider;
  * another way to calculate B(k) is B = T - W where T is the sum of squared
  * error for all elements to the global average
  *
+ * @cite T. Calinski and J. Harabasz. A dendrite method for cluster analysis.
+ * Communications in Statistics, 3, no. 1:1–27, 1974.
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
