@@ -83,4 +83,18 @@ public class FakeClusteringTest {
         assertEquals(100, clust.instancesCount());
     }
 
+    @Test
+    public void testIrisMostlyWrong() {
+    }
+
+    @Test
+    public void testInt100p4() {
+        Clustering clust = FakeClustering.int100p4();
+
+        assertEquals(4, clust.size());
+        assertEquals(400, clust.instancesCount());
+        assertEquals(100, clust.get(0).size());
+        assertEquals(100, clust.get(1).size());
+    }
+
 }

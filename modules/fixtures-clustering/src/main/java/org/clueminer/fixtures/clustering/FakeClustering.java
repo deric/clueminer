@@ -2,6 +2,8 @@ package org.clueminer.fixtures.clustering;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -33,6 +35,7 @@ public class FakeClustering {
     private static Clustering<Cluster> simpleResponse;
     private static Clustering<Cluster> ext100p2;
     private static Clustering<Cluster> ext100p3;
+    private static Clustering<Cluster> int100p4;
     private static Dataset<Instance> wine;
 
     public static Clustering iris() {
@@ -413,6 +416,27 @@ public class FakeClustering {
         return data;
     }
 
+    private static Dataset<? extends Instance> loadIntData(File fixture, int size) {
+        Dataset<? extends Instance> data;
+        CsvLoader loader = new CsvLoader();
+        data = new ArrayDataset(size, 2);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+        data.setName("internal 100");
+        ArrayList<Integer> names = new ArrayList<>();
+        names.add(0);
+        loader.setNameAttr(names);
+        loader.setSeparator(',');
+        loader.setHasHeader(false);
+
+        try {
+            loader.load(fixture, data);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return data;
+    }
+
     private static Clustering convertExt2Clust(File f, int k) {
         Dataset<? extends Instance> data = loadExtData(f);
 
@@ -470,6 +494,37 @@ public class FakeClustering {
             }
         }
         return ext100p3;
+    }
+
+    public static Clustering int100p4() {
+        if (int100p4 == null) {
+            ClustFixture fixture = new ClustFixture();
+            try {
+                Dataset<? extends Instance> labels = loadExtData(fixture.int400p4assign());
+                Dataset<? extends Instance> data = loadIntData(fixture.int400p4(), 400);
+
+                int k = 4;
+
+                int100p4 = new ClusterList(k);
+                for (int i = 0; i < k; i++) {
+                    int100p4.createCluster(i);
+                }
+
+                int cls;
+                Cluster c;
+                //labels contain values from 1 to 4
+                Iterator<? extends Instance> it = labels.iterator();
+                int i = 0;
+                for (Instance inst : data) {
+                    cls = Integer.valueOf(it.next().classValue().toString());
+                    c = int100p4.get(cls - 1);
+                    c.add(inst);
+                }
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return int100p4;
     }
 
 }
