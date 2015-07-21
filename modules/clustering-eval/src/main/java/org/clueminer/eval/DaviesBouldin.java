@@ -2,8 +2,8 @@ package org.clueminer.eval;
 
 import java.util.HashMap;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -52,27 +52,23 @@ public class DaviesBouldin extends AbstractEvaluator {
             max = Double.MIN_VALUE;
 
             intraX = getClusterIntraDistance(i, x, intraDists);
-
-            for (int j = i + 1; j < clusters.size(); j++) {
-                y = clusters.get(j);
-                centroidY = y.getCentroid();
-                intraY = getClusterIntraDistance(j, y, intraDists);
-                /**
-                 * this is average linkage distance, also complete distance
-                 * could be used - TODO check reference implementation
-                 */
-                interGroup = dm.measure(centroidX, centroidY);
-                dij = (intraX + intraY) / interGroup;
-                if (dij > max) {
-                    max = dij;
+            // find c(i) and c(j) which maximizes dij
+            for (int j = 0; j < clusters.size(); j++) {
+                if (i != j) {
+                    y = clusters.get(j);
+                    centroidY = y.getCentroid();
+                    intraY = getClusterIntraDistance(j, y, intraDists);
+                    interGroup = dm.measure(centroidX, centroidY);
+                    dij = (intraX + intraY) / interGroup;
+                    if (dij > max) {
+                        max = dij;
+                    }
                 }
             }
             db += max;
-
         }
-        db /= clusters.size();
 
-        return db;
+        return db / clusters.size();
     }
 
     private double getClusterIntraDistance(int i, Cluster<Instance> x, HashMap<Integer, Double> intraDists) {
@@ -84,13 +80,19 @@ public class DaviesBouldin extends AbstractEvaluator {
         return intraDists.get(i);
     }
 
-    private double intraDistance(Cluster<Instance> x) {
+    /**
+     * Compute sum of inner cluster distances to centroid
+     *
+     * @param cluster
+     * @return
+     */
+    private double intraDistance(Cluster<Instance> cluster) {
         double intraDist = 0.0;
-        for (Instance elem : x) {
-            intraDist += dm.measure(elem, x.getCentroid());
+        Instance centroid = cluster.getCentroid();
+        for (Instance elem : cluster) {
+            intraDist += dm.measure(elem, centroid);
         }
-        intraDist /= x.size();
-        return intraDist;
+        return intraDist / cluster.size();
     }
 
     /**
