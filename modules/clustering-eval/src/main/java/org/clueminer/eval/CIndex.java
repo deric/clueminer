@@ -1,5 +1,6 @@
 package org.clueminer.eval;
 
+import java.util.Arrays;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
@@ -54,6 +55,17 @@ public class CIndex extends AbstractEvaluator {
         // calculate intra cluster distances and sum of all
         //for each cluster
         double distance;
+        int n = clusters.instancesCount();
+        int numPairs = (n * (n - 1)) / 2;
+        int numWClustPairs = 0;
+        for (Cluster clust : clusters) {
+            numWClustPairs += (clust.size() * clust.size() - n);
+        }
+
+        numWClustPairs /= 2;
+        //pessimistic size guess
+        double[] dist = new double[3 * numWClustPairs];
+        int l = 0;
         for (Cluster clust : clusters) {
             minDw = Double.MAX_VALUE;
             maxDw = Double.MIN_VALUE;
@@ -63,6 +75,7 @@ public class CIndex extends AbstractEvaluator {
                     y = clust.instance(j);
                     distance = dm.measure(x, y);
                     if (!Double.isNaN(distance)) {
+                        dist[l++] = distance;
                         dw += distance;
                         //max distance between any pair in the same cluster (in entire dataset)
                         if (distance > maxDw) {
@@ -75,8 +88,26 @@ public class CIndex extends AbstractEvaluator {
                     }
                 }
             }
-            minSum += minDw;
-            maxSum += maxDw;
+         //   minSum += minDw;
+            //   maxSum += maxDw;
+        }
+        double tmp[] = new double[l];
+        System.arraycopy(dist, 0, tmp, 0, l);
+        dist = tmp;
+
+        System.out.println("numPairs = " + numPairs);
+        System.out.println("numClustPairs = " + numWClustPairs);
+        System.out.println("assigned = " + l);
+        Arrays.sort(dist);
+        System.out.println("first: " + dist[0]);
+        System.out.println("last: " + dist[l - 1]);
+
+        for (int i = 0; i < numWClustPairs; i++) {
+            minSum += dist[i];
+        }
+
+        for (int i = numWClustPairs; i < l; i++) {
+            maxSum += dist[i];
         }
 
         // calculate C Index
