@@ -1,6 +1,5 @@
 package org.clueminer.eval;
 
-import java.util.Arrays;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
@@ -24,27 +23,19 @@ import org.openide.util.lookup.ServiceProvider;
  * data-analysis strategy. British Journal of Mathematical and Statistical
  * Psychologie, 29:190–241, 1976.
  *
- * @cite Dalrymple-Alford, E. C. The measurement of clustering in free recall.
- * Psychological Bulletin, 1970, 75, 32-34.
- *
- * @cite Hubert, L.; Levin, J. A general statistical framework for assessing
- * categorical clustering in free recall. Psychological Bulletin, volume 83, no.
- * 6, 1976: p. 1072.
- *
- *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class CIndex extends AbstractEvaluator {
+public class CIndexAlt extends AbstractEvaluator {
 
     private static final long serialVersionUID = -4725798362682980138L;
-    private static String NAME = "C-index";
+    private static String NAME = "C-index alt";
 
-    public CIndex() {
+    public CIndexAlt() {
         dm = EuclideanDistance.getInstance();
     }
 
-    public CIndex(DistanceMeasure dist) {
+    public CIndexAlt(DistanceMeasure dist) {
         this.dm = dist;
     }
 
@@ -63,17 +54,6 @@ public class CIndex extends AbstractEvaluator {
         // calculate intra cluster distances and sum of all
         //for each cluster
         double distance;
-        int n = clusters.instancesCount();
-        int numTPairs = (n * (n - 1)) / 2;
-        int numWClustPairs = 0;
-        for (Cluster clust : clusters) {
-            numWClustPairs += (clust.size() * clust.size() - n);
-        }
-
-        numWClustPairs /= 2;
-        //pessimistic size guess
-        double[] dist = new double[3 * numWClustPairs];
-        int l = 0;
         for (Cluster clust : clusters) {
             minDw = Double.MAX_VALUE;
             maxDw = Double.MIN_VALUE;
@@ -83,26 +63,20 @@ public class CIndex extends AbstractEvaluator {
                     y = clust.instance(j);
                     distance = dm.measure(x, y);
                     if (!Double.isNaN(distance)) {
-                        dist[l++] = distance;
                         dw += distance;
+                        //max distance between any pair in the same cluster (in entire dataset)
+                        if (distance > maxDw) {
+                            maxDw = distance;
+                        }
+                        //min distance between any pair in the same cluster (in entire dataset)
+                        if (distance < minDw) {
+                            minDw = distance;
+                        }
                     }
                 }
             }
-        }
-
-        System.out.println("numPairs = " + numTPairs);
-        System.out.println("numClustPairs = " + numWClustPairs);
-        System.out.println("diff = " + (numTPairs - numWClustPairs));
-        Arrays.sort(dist);
-        System.out.println("first: " + dist[0]);
-        System.out.println("last: " + dist[l - 1]);
-
-        for (int i = 0; i < numWClustPairs; i++) {
-            minSum += dist[i];
-        }
-
-        for (int i = numWClustPairs; i < l; i++) {
-            maxSum += dist[i];
+            minSum += minDw;
+            maxSum += maxDw;
         }
 
         // calculate C Index

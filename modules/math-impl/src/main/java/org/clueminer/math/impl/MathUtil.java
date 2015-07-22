@@ -16,4 +16,25 @@ public class MathUtil {
         }
         return res;
     }
+
+    /**
+     * Find the next power of 2.
+     *
+     * Classic bit operation, for signed 32-bit. Valid for positive integers
+     * only
+     * (0 otherwise).
+     *
+     * @param x original integer
+     * @return Next power of 2
+     */
+    public static int nextPow2Int(int x) {
+        --x;
+        x |= x >>> 1;
+        x |= x >>> 2;
+        x |= x >>> 4;
+        x |= x >>> 8;
+        x |= x >>> 16;
+        return ++x;
+    }
+
 }
