@@ -1,8 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -10,7 +10,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The C-index was reviewed in Hubert and Levin (1976). It is computed as
+ * Alternative implementation of C index (not robust enough)
  *
  * C_index = [d_w - min(d_w)] / [max(d_w) - min(d_w)],
  *
@@ -19,9 +19,6 @@ import org.openide.util.lookup.ServiceProvider;
  * value across the hierarchy levels was used to indicate the optimal number of
  * clusters
  *
- * @cite L. Hubert and J. Schultz. Quadratic assignment as a general
- * data-analysis strategy. British Journal of Mathematical and Statistical
- * Psychologie, 29:190–241, 1976.
  *
  * @author Tomas Barton
  */

@@ -1,9 +1,9 @@
 package org.clueminer.eval;
 
-import java.util.Arrays;
+import com.google.common.collect.MinMaxPriorityQueue;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -56,7 +56,6 @@ public class CIndex extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double dw = 0;
-        double minDw, maxDw;
         double minSum = 0.0, maxSum = 0.0;
 
         Instance x, y;
@@ -64,50 +63,92 @@ public class CIndex extends AbstractEvaluator {
         //for each cluster
         double distance;
         int n = clusters.instancesCount();
-        int numTPairs = (n * (n - 1)) / 2;
+        //int numTPairs = (n * (n - 1)) / 2;
         int numWClustPairs = 0;
+        //number of within pairs
         for (Cluster clust : clusters) {
-            numWClustPairs += (clust.size() * clust.size() - n);
+            //numWClustPairs += (clust.size() * clust.size() - n);
+            numWClustPairs += (clust.size() * (clust.size() - 1)) / 2;
         }
 
-        numWClustPairs /= 2;
-        //pessimistic size guess
-        double[] dist = new double[3 * numWClustPairs];
-        int l = 0;
+        //distances within a cluster
+        MinMaxPriorityQueue<Double> pqMax = MinMaxPriorityQueue.create();
+        MinMaxPriorityQueue<Double> pqMin = MinMaxPriorityQueue.create();
         for (Cluster clust : clusters) {
-            minDw = Double.MAX_VALUE;
-            maxDw = Double.MIN_VALUE;
             for (int i = 0; i < clust.size(); i++) {
                 x = clust.instance(i);
                 for (int j = 0; j < i; j++) {
                     y = clust.instance(j);
                     distance = dm.measure(x, y);
                     if (!Double.isNaN(distance)) {
-                        dist[l++] = distance;
                         dw += distance;
+                        //TODO: should we really include within cluster distances
+                        checkDistance(distance, numWClustPairs, pqMin, pqMax);
+                    }
+                }
+            }
+        }
+        //between distances
+        Cluster xc, yc;
+        for (int i = 0; i < clusters.size(); i++) {
+            xc = clusters.get(i);
+            for (int m = 0; m < xc.size(); m++) {
+                x = xc.instance(i);
+                for (int j = 0; j < i; j++) {
+                    yc = clusters.get(j);
+                    for (int k = 0; k < yc.size(); k++) {
+                        y = yc.instance(k);
+                        distance = dm.measure(x, y);
+                        if (!Double.isNaN(distance)) {
+                            checkDistance(distance, numWClustPairs, pqMin, pqMax);
+                        }
                     }
                 }
             }
         }
 
-        System.out.println("numPairs = " + numTPairs);
-        System.out.println("numClustPairs = " + numWClustPairs);
-        System.out.println("diff = " + (numTPairs - numWClustPairs));
-        Arrays.sort(dist);
-        System.out.println("first: " + dist[0]);
-        System.out.println("last: " + dist[l - 1]);
-
-        for (int i = 0; i < numWClustPairs; i++) {
-            minSum += dist[i];
+        //sum of smallest {numWClustPairs} distances
+        for (Double d : pqMin) {
+            minSum += d;
         }
 
-        for (int i = numWClustPairs; i < l; i++) {
-            maxSum += dist[i];
+        //sum of largest {numWClustPairs} distances
+        for (Double d : pqMax) {
+            maxSum += d;
         }
+
 
         // calculate C Index
         double cIndex = (dw - minSum) / (maxSum - minSum);
         return cIndex;
+    }
+
+    /**
+     * Check whether distance is either smallest or largest distance in the
+     * dataset
+     *
+     * @param distance
+     * @param numWClustPairs
+     * @param pqMin
+     * @param pqMax
+     */
+    private void checkDistance(double distance, int numWClustPairs, MinMaxPriorityQueue<Double> pqMin, MinMaxPriorityQueue<Double> pqMax) {
+        if (pqMax.size() >= numWClustPairs) {
+            if (distance > pqMax.peekFirst()) {
+                //remove smallest number
+                pqMax.removeFirst();
+                pqMax.add(distance);
+            }
+        } else {
+            pqMax.add(distance);
+        }
+        if (pqMin.size() >= numWClustPairs) {
+            if (distance < pqMax.peekLast()) {
+                pqMin.add(distance);
+            }
+        } else {
+            pqMin.add(distance);
+        }
     }
 
     @Override

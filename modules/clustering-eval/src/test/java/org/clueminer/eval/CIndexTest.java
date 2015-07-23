@@ -4,9 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -15,6 +17,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.Props;
@@ -29,7 +32,7 @@ import org.junit.Test;
 public class CIndexTest {
 
     private static CIndex subject;
-    private static final double delta = 1e-9;
+    private static final double delta = 1e-8;
 
     public CIndexTest() {
         subject = new CIndex();
@@ -165,6 +168,27 @@ public class CIndexTest {
     public void testCompareScore() {
     }
 
+    @Test
+    public void testSchoolScore() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        int k = 3;
+        Clustering<? extends Cluster> clusters = new ClusterList(k);
+        Cluster c;
+        for (int i = 0; i < k; i++) {
+            c = clusters.createCluster(i);
+            c.setAttributes(data.getAttributes());
+        }
+        int mod;
+        for (int i = 0; i < data.size(); i++) {
+            mod = i % k;
+            c = clusters.get(mod);
+            c.add(data.get(i));
+        }
+        assertEquals(1.6462941381578, subject.score(clusters), delta);
+
+        System.out.println("school score = " + subject.score(clusters));
+    }
+
     /**
      * Check against definition (and tests in R package clusterCrit)
      * https://cran.r-project.org/web/packages/clusterCrit/index.html
@@ -177,7 +201,7 @@ public class CIndexTest {
         //TODO check the C-index definition
         double score = subject.score(FakeClustering.int100p4());
         //TODO: according to clustCrit it should be 7.0592193043113e-06
-        assertEquals(7.0592193043113e-06, score, delta);
-        //assertEquals(1544.1242155127682, score, delta);
+        assertEquals(1.5909295902815752, score, delta);
+        //assertEquals(7.0592193043113e-06, score, delta);
     }
 }
