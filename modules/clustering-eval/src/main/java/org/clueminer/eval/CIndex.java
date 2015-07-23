@@ -62,7 +62,7 @@ public class CIndex extends AbstractEvaluator {
         // calculate intra cluster distances and sum of all
         //for each cluster
         double distance;
-        int n = clusters.instancesCount();
+        //int n = clusters.instancesCount();
         //int numTPairs = (n * (n - 1)) / 2;
         int numWClustPairs = 0;
         //number of within pairs
