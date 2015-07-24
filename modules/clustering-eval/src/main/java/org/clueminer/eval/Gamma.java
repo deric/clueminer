@@ -30,6 +30,8 @@ public class Gamma extends AbstractEvaluator {
 
     private static final String NAME = "Gamma";
     private static final long serialVersionUID = 4782242459481724512L;
+    public static final String S_PLUS = "s+";
+    public static final String S_MINUS = "s-";
 
     public Gamma() {
         dm = EuclideanDistance.getInstance();
@@ -46,35 +48,44 @@ public class Gamma extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        int numWClustPairs = 0;
-        //number of within pairs
-        for (Cluster clust : clusters) {
-            numWClustPairs += clust.size() * clust.size();
-        }
-        numWClustPairs = (numWClustPairs - clusters.instancesCount()) / 2; // - N
+        Sres s = computeSTable(clusters);
+        // calculate gamma
+        return (s.plus - s.minus) / (double) (s.plus + s.minus);
+    }
 
+    public Sres computeSTable(Clustering<? extends Cluster> clusters) {
         Instance x, y;
-        Cluster a, b;
+        Cluster c;
         double distance;
         Sres s = new Sres();
 
-        double[] iw = new double[numWClustPairs];
-        int l = 0;
-        // calculate max intra cluster distance
-        for (int i = 0; i < clusters.size(); i++) {
-            a = clusters.get(i);
-            for (int j = 0; j < a.size() - 1; j++) {
-                x = a.instance(j);
-                for (int k = j + 1; k < a.size(); k++) {
-                    y = a.instance(k);
-                    distance = dm.measure(x, y);
-                    iw[l++] = distance;
+        if (clusters.hasValidation(S_PLUS) && clusters.hasValidation(S_MINUS)) {
+            s.plus = (int) clusters.getValidation(S_PLUS);
+            s.minus = (int) clusters.getValidation(S_MINUS);
+        } else {
+            int numWClustPairs = 0;
+            //number of within pairs
+            for (Cluster clust : clusters) {
+                numWClustPairs += clust.size() * clust.size();
+            }
+            numWClustPairs = (numWClustPairs - clusters.instancesCount()) / 2; // - N
+            double[] iw = new double[numWClustPairs];
+            int l = 0;
+            // calculate max intra cluster distance
+            for (int i = 0; i < clusters.size(); i++) {
+                c = clusters.get(i);
+                for (int j = 0; j < c.size() - 1; j++) {
+                    x = c.instance(j);
+                    for (int k = j + 1; k < c.size(); k++) {
+                        y = c.instance(k);
+                        distance = dm.measure(x, y);
+                        iw[l++] = distance;
+                    }
                 }
             }
+            betweenDistance(clusters, iw, s);
         }
-        betweenDistance(clusters, iw, s);
-        // calculate gamma
-        return (s.plus - s.minus) / (double) (s.plus + s.minus);
+        return s;
     }
 
     protected void betweenDistance(Clustering<? extends Cluster> clusters, double[] withinDist, Sres s) {
