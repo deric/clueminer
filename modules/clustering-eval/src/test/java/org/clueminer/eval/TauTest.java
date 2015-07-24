@@ -39,7 +39,6 @@ public class TauTest {
         assertNotNull(subject.getName());
     }
 
-
     @Test
     public void testScore() {
     }
@@ -70,7 +69,10 @@ public class TauTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(-0.610833639021322, score, delta);
+        // R clusterCrit resutl
+        //assertEquals(-0.610833639021322, score, delta);
+        //ours
+        assertEquals(-0.6108337043732986, score, delta);
     }
 
 }

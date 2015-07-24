@@ -64,4 +64,30 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         return sum;
     }
 
+    /**
+     * Number of within-cluster pairs
+     *
+     * @param clusters
+     * @return
+     */
+    public int numW(Clustering<? extends Cluster> clusters) {
+        int numWPairs = 0;
+        //number of within pairs
+        for (Cluster clust : clusters) {
+            numWPairs += clust.size() * clust.size();
+        }
+        return (numWPairs - clusters.instancesCount()) >>> 1; // (numWpairs - N) / 2
+    }
+
+    /**
+     * Number of cluster pairs in the whole dataset
+     *
+     * @param clusters
+     * @return
+     */
+    public int numT(Clustering<? extends Cluster> clusters) {
+        int n = clusters.instancesCount();
+        return (n * (n - 1)) >>> 1; // (numWpairs - N) / 2
+    }
+
 }

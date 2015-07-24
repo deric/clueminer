@@ -63,12 +63,7 @@ public class Gamma extends AbstractEvaluator {
             s.plus = (int) clusters.getValidation(S_PLUS);
             s.minus = (int) clusters.getValidation(S_MINUS);
         } else {
-            int numWClustPairs = 0;
-            //number of within pairs
-            for (Cluster clust : clusters) {
-                numWClustPairs += clust.size() * clust.size();
-            }
-            numWClustPairs = (numWClustPairs - clusters.instancesCount()) / 2; // - N
+            int numWClustPairs = numW(clusters);
             double[] iw = new double[numWClustPairs];
             int l = 0;
             // calculate max intra cluster distance
