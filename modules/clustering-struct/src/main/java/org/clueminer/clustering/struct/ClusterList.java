@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -627,6 +628,21 @@ public class ClusterList<E extends Instance> implements Clustering<Cluster<E>> {
             }
         }
         data = newData;
+    }
+
+    @Override
+    public double getValidation(String metric) {
+        return params.getDouble(PropType.VALIDATION, metric, Double.NaN);
+    }
+
+    @Override
+    public boolean hasValidation(String metric) {
+        return params.containsKey(metric);
+    }
+
+    @Override
+    public void setValidation(String metric, double value) {
+        params.put(PropType.VALIDATION, metric, value);
     }
 
     class ClusterIterator implements Iterator<Cluster<E>> {

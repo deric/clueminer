@@ -246,4 +246,30 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * Remove empty clusters, might relabel existing clusters
      */
     void compact();
+
+    /**
+     * Return value of a metric if it was already pre-computed, otherwise
+     * Double.NaN
+     *
+     * @param metric
+     * @return
+     */
+    double getValidation(String metric);
+
+    /**
+     * Check for presence of a validation metric
+     *
+     * @param metric
+     * @return true when given metric was already pre-computed
+     */
+    boolean hasValidation(String metric);
+
+    /**
+     * Set validation metric (or just computationally expensive part of the
+     * metric)
+     *
+     * @param metric
+     * @param value
+     */
+    void setValidation(String metric, double value);
 }

@@ -606,4 +606,13 @@ public class ClusterListTest {
     @Test
     public void testSetEvaluationTable() {
     }
+
+    @Test
+    public void testValidation() {
+        ClusterList list = new ClusterList(3);
+        assertEquals(false, list.hasValidation("foo"));
+        list.setValidation("foo", 123.0);
+        assertEquals(true, list.hasValidation("foo"));
+        assertEquals(123.0, list.getValidation("foo"), delta);
+    }
 }

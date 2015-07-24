@@ -79,6 +79,10 @@ public class Props implements Map<String, Object> {
         return store.put(pt, key, value);
     }
 
+    public Object put(PropType pt, String key, double value) {
+        return store.put(pt, key, value);
+    }
+
     public Object put(PropType pt, String key, boolean value) {
         return store.put(pt, key, value);
     }
@@ -241,6 +245,14 @@ public class Props implements Map<String, Object> {
             return (boolean) val;
         }
         return Boolean.valueOf(val.toString());
+    }
+
+    public double getDouble(PropType pt, String key, double def) {
+        Object val = get(pt, key, def);
+        if (val instanceof Double) {
+            return (double) val;
+        }
+        return Double.valueOf(val.toString());
     }
 
     public void putBoolean(String key, boolean value) {

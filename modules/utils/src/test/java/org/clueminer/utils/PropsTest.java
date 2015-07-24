@@ -287,6 +287,13 @@ public class PropsTest {
     }
 
     @Test
+    public void testDoubles() {
+        Props p = new Props();
+        p.put(PropType.VALIDATION, "fff", 123.0);
+        assertEquals(123.0, p.getDouble(PropType.VALIDATION, "fff", Double.NaN), delta);
+    }
+
+    @Test
     public void testEntrySet() {
     }
 
