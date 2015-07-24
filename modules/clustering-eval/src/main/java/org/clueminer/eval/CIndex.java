@@ -67,9 +67,10 @@ public class CIndex extends AbstractEvaluator {
         int numWClustPairs = 0;
         //number of within pairs
         for (Cluster clust : clusters) {
-            //numWClustPairs += (clust.size() * clust.size() - n);
-            numWClustPairs += (clust.size() * (clust.size() - 1)) / 2;
+            numWClustPairs += clust.size() * clust.size();
+            //numWClustPairs += (clust.size() * (clust.size() - 1)) / 2;
         }
+        numWClustPairs = (numWClustPairs - clusters.instancesCount()) / 2; // - N
 
         //distances within a cluster
         MinMaxPriorityQueue<Double> pqMax = MinMaxPriorityQueue.create();
@@ -116,7 +117,6 @@ public class CIndex extends AbstractEvaluator {
         for (Double d : pqMax) {
             maxSum += d;
         }
-
 
         // calculate C Index
         double cIndex = (dw - minSum) / (maxSum - minSum);

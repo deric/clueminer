@@ -27,6 +27,15 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
     private double diagonalValue = 0.0;
 
     /**
+     * Initialize a square matrix
+     *
+     * @param dim
+     */
+    public SymmetricMatrix(int dim) {
+        initMatrix(dim, dim);
+    }
+
+    /**
      *
      * @param rows
      * @param cols

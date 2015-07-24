@@ -16,7 +16,13 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -40,23 +46,22 @@ public class GammaTest {
     }
 
     @Test
-    public void testScore() {
-    }
-
-    @Test
-    public void testIsBetter() {
-    }
-
-    @Test
-    public void testIsMaximized() {
-    }
-
-    @Test
-    public void testGetMin() {
-    }
-
-    @Test
-    public void testGetMax() {
+    public void testSchoolScore() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        int k = 3;
+        Clustering<? extends Cluster> clusters = new ClusterList(k);
+        Cluster c;
+        for (int i = 0; i < k; i++) {
+            c = clusters.createCluster(i);
+            c.setAttributes(data.getAttributes());
+        }
+        int mod;
+        for (int i = 0; i < data.size(); i++) {
+            mod = i % k;
+            c = clusters.get(mod);
+            c.add(data.get(i));
+        }
+        assertEquals(-0.17291666666666666, subject.score(clusters), delta);
     }
 
     /**
@@ -69,7 +74,9 @@ public class GammaTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(-0.99999988079071, score, delta);
+        // clusterCrit result
+        //assertEquals(-0.99999988079071, score, delta);
+        assertEquals(-0.9999998720538721, score, delta);
     }
 
 }

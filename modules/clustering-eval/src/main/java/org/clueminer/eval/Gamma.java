@@ -3,7 +3,6 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -47,27 +46,41 @@ public class Gamma extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double maxIntraDist = Double.MIN_VALUE;
-        double sPlus = 0, sMinus = 0;
+        int numWClustPairs = 0;
+        //number of within pairs
+        for (Cluster clust : clusters) {
+            numWClustPairs += clust.size() * clust.size();
+        }
+        numWClustPairs = (numWClustPairs - clusters.instancesCount()) / 2; // - N
 
         Instance x, y;
-        Dataset a, b;
+        Cluster a, b;
+        double distance;
+        Sres s = new Sres();
+
+        double[] iw = new double[numWClustPairs];
+        int l = 0;
         // calculate max intra cluster distance
         for (int i = 0; i < clusters.size(); i++) {
             a = clusters.get(i);
-            for (int j = 0; j < a.size(); j++) {
+            for (int j = 0; j < a.size() - 1; j++) {
                 x = a.instance(j);
                 for (int k = j + 1; k < a.size(); k++) {
                     y = a.instance(k);
-                    double distance = dm.measure(x, y);
-                    if (maxIntraDist < distance) {
-                        maxIntraDist = distance;
-                    }
+                    distance = dm.measure(x, y);
+                    iw[l++] = distance;
                 }
             }
         }
-        // calculate inter cluster distances
-        // count sPlus and sMin
+        betweenDistance(clusters, iw, s);
+        // calculate gamma
+        return (s.plus - s.minus) / (double) (s.plus + s.minus);
+    }
+
+    protected void betweenDistance(Clustering<? extends Cluster> clusters, double[] withinDist, Sres s) {
+        Instance x, y;
+        Cluster a, b;
+        double distance;
         for (int i = 0; i < clusters.size(); i++) {
             a = clusters.get(i);
             for (int j = 0; j < a.size(); j++) {
@@ -76,20 +89,20 @@ public class Gamma extends AbstractEvaluator {
                     b = clusters.get(k);
                     for (int l = 0; l < b.size(); l++) {
                         y = b.instance(l);
-                        double distance = dm.measure(x, y);
-                        if (distance < maxIntraDist) {
-                            sMinus++;
-                        }
-                        if (distance > maxIntraDist) {
-                            sPlus++;
+                        distance = dm.measure(x, y);
+                        for (int m = 0; m < withinDist.length; m++) {
+                            //we don't count cases when distance is the same
+                            if (distance < withinDist[m]) {
+                                s.plus++;
+                            }
+                            if (distance > withinDist[m]) {
+                                s.minus++;
+                            }
                         }
                     }
                 }
             }
         }
-        // calculate gamma
-        double gamma = (sPlus - sMinus) / (sPlus + sMinus);
-        return gamma;
     }
 
     /**
@@ -118,6 +131,17 @@ public class Gamma extends AbstractEvaluator {
     @Override
     public double getMax() {
         return Double.POSITIVE_INFINITY;
+    }
+
+    public class Sres {
+
+        public int plus;
+        public int minus;
+
+        public Sres() {
+            plus = 0;
+            minus = 0;
+        }
     }
 
 }
