@@ -184,6 +184,7 @@ public class Metis implements Partitioning {
             while ((read = input.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
+            out.close();
             file.deleteOnExit();
         } catch (IOException ex) {
             System.err.println(ex.toString());
