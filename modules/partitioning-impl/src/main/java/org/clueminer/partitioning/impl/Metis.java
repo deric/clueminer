@@ -62,7 +62,12 @@ public class Metis implements Partitioning {
     @Override
     public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g) {
         graph = g;
-        k = g.getNodeCount() / maxPartitionSize;
+        k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
+        if (k == 1) {
+            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
+            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            return nodes;
+        }
         createMapping();
         runMetis();
         ArrayList<LinkedList<Node>> clusters = importMetisResult();
