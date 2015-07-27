@@ -85,9 +85,10 @@ public class Metis implements Partitioning {
             writer.close();
             File metisFile = resource("gpmetis");
             //make sure metis is executable
-            Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
+            Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
+            p.waitFor();
             //run metis
-            Process p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
+            p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
             p.waitFor();
             File file = new File("inputGraph");
             file.delete();
