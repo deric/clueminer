@@ -38,8 +38,6 @@ public class FirstJump implements CutoffStrategy {
      */
     public double tryJumps(HierarchicalResult hclust) {
         double average = computeAverageHeight(hclust);
-        System.out.println(average);
-
         for (int i = 100; i >= 0; i /= 2) {
             double result = findFirstJump(hclust, average * i);
             if (result != 0) {
@@ -60,7 +58,6 @@ public class FirstJump implements CutoffStrategy {
     private double findFirstJump(HierarchicalResult hclust, double jumpHeight) {
         double upper;
         double lower = hclust.getHeightByLevel(hclust.treeLevels() / 2 - 1);
-        System.out.println(lower);
         for (int i = hclust.treeLevels() / 2; i < hclust.treeLevels() + 1; i++) {
             upper = hclust.getHeightByLevel(i);
 
@@ -85,9 +82,11 @@ public class FirstJump implements CutoffStrategy {
         double lower = hclust.getHeightByLevel(0);
         for (int i = 1; i <= hclust.treeLevels() / 2; i++) {
             upper = hclust.getHeightByLevel(i);
-            //    System.out.println(upper - lower);
             sum += upper - lower;
             lower = upper;
+        }
+        if (sum == 0) {
+            return 1;
         }
         return sum / (hclust.treeLevels() / 2);
     }
