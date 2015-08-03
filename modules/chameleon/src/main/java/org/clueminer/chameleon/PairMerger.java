@@ -74,7 +74,7 @@ public abstract class PairMerger extends Merger {
     private void initiateTree(ArrayList<LinkedList<Node>> clusterList) {
         nodes = new DendroNode[(2 * clusterList.size() - 1)];
         clusterCount = clusterList.size();
-        height = 1;
+        height = 0;
         for (int i = 0; i < clusterList.size(); i++) {
             nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
             nodes[i].setHeight(0);
@@ -173,8 +173,8 @@ public abstract class PairMerger extends Merger {
         if (sim > 10) {
             sim = 10;
         }
-        if (sim < 0.01) {
-            sim = 0.01;
+        if (sim < 0.005) {
+            sim = 0.005;
         }
         height += 1 / sim;
         newNode.setHeight(height);
