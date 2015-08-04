@@ -11,6 +11,13 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * In statistics the point-biserial coefficient is a correlation measure between
+ * a continuous variable A and a binary variable B.
+ *
+ * Adapted from point biserial correlation evaluator (Brogden 1949)
+ *
+ * @cite Mitligan, G. W. (1981a). A Monte Carlo study of thirty internal
+ * criterion measures for cluster analysis. Psychometrika, 46, 187-199.
  *
  * @author Tomas Barton
  */
