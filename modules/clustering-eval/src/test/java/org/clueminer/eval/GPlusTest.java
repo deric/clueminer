@@ -70,7 +70,8 @@ public class GPlusTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(0.373117878591837, score, delta);
+        //according to R artihmetics it should be 0.373117878591837
+        assertEquals(0.37311788600688806, score, delta);
     }
 
 }

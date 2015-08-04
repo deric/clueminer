@@ -21,6 +21,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.Gamma.Sres;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +44,28 @@ public class GammaTest {
     @Test
     public void testGetName() {
         assertNotNull(subject.getName());
+    }
+
+    @Test
+    public void testSTable() {
+        Dataset<? extends Instance> data = FakeDatasets.schoolData();
+        int k = 3;
+        Clustering<? extends Cluster> clusters = new ClusterList(k);
+        Cluster c;
+        for (int i = 0; i < k; i++) {
+            c = clusters.createCluster(i);
+            c.setAttributes(data.getAttributes());
+        }
+        int mod;
+        for (int i = 0; i < data.size(); i++) {
+            mod = i % k;
+            c = clusters.get(mod);
+            c.add(data.get(i));
+        }
+        Sres res = subject.computeSTable(clusters);
+
+        assertEquals(2252, res.minus, delta);
+        assertEquals(1588, res.plus, delta);
     }
 
     @Test

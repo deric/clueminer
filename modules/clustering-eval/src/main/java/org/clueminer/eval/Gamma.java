@@ -87,7 +87,7 @@ public class Gamma extends AbstractEvaluator {
         Instance x, y;
         Cluster a, b;
         double distance;
-        for (int i = 0; i < clusters.size(); i++) {
+        for (int i = 0; i < clusters.size() - 1; i++) {
             a = clusters.get(i);
             for (int j = 0; j < a.size(); j++) {
                 x = a.instance(j);
@@ -141,8 +141,11 @@ public class Gamma extends AbstractEvaluator {
 
     public class Sres {
 
-        public int plus;
-        public int minus;
+        /**
+         * avoid integer overflow for huge numbers
+         */
+        public long plus;
+        public long minus;
 
         public Sres() {
             plus = 0;
