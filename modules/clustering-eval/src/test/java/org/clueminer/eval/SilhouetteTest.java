@@ -127,17 +127,10 @@ public class SilhouetteTest {
         assertEquals(true, subject.isBetter(1.0, 0.456));
     }
 
-    /**
-     * Check against definition (and tests in R package clusterCrit)
-     * https://cran.r-project.org/web/packages/clusterCrit/index.html
-     *
-     * NOTE: There's a small problem with precision of floating point
-     * operations. First 7 decimal digits seems to match.
-     */
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        //   assertEquals(0.827206253180689, score, delta);
+        //clusterCrit score is 0.827206253180689 because of using sqrt on distances
+        assertEquals(0.9612636717273991, score, delta);
     }
-
 }

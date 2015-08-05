@@ -13,7 +13,12 @@ import org.openide.util.lookup.ServiceProvider;
  * Silhouette score
  *
  * @link http://en.wikipedia.org/wiki/Silhouette_(clustering)
- * @see  Peter J. Rousseeuw (1987). "Silhouettes: a Graphical Aid to the Interpretation and Validation of Cluster Analysis". Computational and Applied Mathematics 20: 53–65. doi:10.1016/0377-0427(87)90125-7
+ *
+ * @cite
+ * Peter J. Rousseeuw (1987). "Silhouettes: a Graphical Aid to the Interpretation
+ * and Validation of Cluster Analysis". Computational and Applied Mathematics 20: 53–65.
+ * doi:10.1016/0377-0427(87)90125-7
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
@@ -49,7 +54,7 @@ public class Silhouette extends AbstractEvaluator {
         for (int i = 0; i < clusters.size(); i++) {
             score += clusterScore(clusters.get(i), clusters, i);
         }
-        return (score / clusters.size());
+        return (score / (double) clusters.size());
     }
 
     /**
@@ -67,7 +72,7 @@ public class Silhouette extends AbstractEvaluator {
         for (int j = 0; j < clust.size(); j++) {
             clusterDist += instanceScore(clust, clusters, i, clust.instance(j));
         }
-        return (clusterDist / clust.size());
+        return (clusterDist / (double) clust.size());
     }
 
     /**
@@ -92,7 +97,7 @@ public class Silhouette extends AbstractEvaluator {
                 }
             }
             //average distance
-            a /= (clust.size() - 1);
+            a /= (clust.size() - 1.0);
         } else {
             //arbitrary defined value, according to the original paper
             a = 0.0;
