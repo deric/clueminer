@@ -64,6 +64,30 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         return sum;
     }
 
+    public double sumBetween(Clustering<? extends Cluster> clusters) {
+        Cluster xc, yc;
+        Instance x, y;
+        double distance;
+        double sum = 0.0;
+        for (int i = 0; i < clusters.size(); i++) {
+            xc = clusters.get(i);
+            for (int m = 0; m < xc.size(); m++) {
+                x = xc.instance(i);
+                for (int j = 0; j < i; j++) {
+                    yc = clusters.get(j);
+                    for (int k = 0; k < yc.size(); k++) {
+                        y = yc.instance(k);
+                        distance = dm.measure(x, y);
+                        if (!Double.isNaN(distance)) {
+                            sum += distance;
+                        }
+                    }
+                }
+            }
+        }
+        return sum;
+    }
+
     /**
      * Number of within-cluster pairs
      *

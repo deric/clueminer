@@ -1,10 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
@@ -40,81 +38,38 @@ public class PointBiserial extends AbstractEvaluator {
         return NAME;
     }
 
+    /**
+     * Simplified computation of PointBiserial index
+     *
+     * @param clusters
+     * @param params
+     * @return
+     */
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double dw = 0, fw = 0;
-        double db = 0, fb = 0;
-        double nd, sd, pb;
+        double nw = numW(clusters);
+        double nt = numT(clusters);
+        double nb = nt - nw;
+        double sw = 0.0, sb;
 
-        Dataset first, second;
-        Instance x, y;
-        for (int i = 0; i < clusters.size(); i++) {
-            first = clusters.get(i);
-            for (int j = 0; j < first.size(); j++) {
-                x = first.instance(j);
-                // calculate sum of intra cluster distances dw and count their
-                // number.
-                for (int k = j + 1; k < first.size(); k++) {
-                    y = first.instance(k);
-                    double distance = dm.measure(x, y);
-                    dw += distance;
-                    fw++;
-                }
-                // calculate sum of inter cluster distances dw and count their
-                // number.
-                for (int k = i + 1; k < clusters.size(); k++) {
-                    second = clusters.get(k);
-                    for (int l = 0; l < second.size(); l++) {
-                        y = second.instance(l);
-                        double distance = dm.measure(x, y);
-                        db += distance;
-                        fb++;
-                    }
-                }
-            }
+        //sum of within cluster distances
+        for (Cluster clust : clusters) {
+            sw += sumWithin(clust);
         }
-        // calculate total number of distances
-        nd = fw + fb;
-        // calculate mean dw and db
-        double meanDw = dw / fw;
-        double meanDb = db / fb;
-        // calculate standard deviation of all distances (sum inter and intra)
-        double tmpSdw = 0, tmpSdb = 0;
-        double distance;
-        for (int i = 0; i < clusters.size(); i++) {
-            first = clusters.get(i);
-            for (int j = 0; j < first.size(); j++) {
-                x = first.instance(j);
-                for (int k = j + 1; k < first.size(); k++) {
-                    y = first.instance(k);
-                    distance = dm.measure(x, y);
-                    tmpSdw += (distance - meanDw) * (distance - meanDw);
-                }
-                for (int k = i + 1; k < clusters.size(); k++) {
-                    second = clusters.get(k);
-                    for (int l = 0; l < second.size(); l++) {
-                        y = second.instance(l);
-                        distance = dm.measure(x, y);
-                        tmpSdb += (distance - meanDb) * (distance - meanDb);
-                    }
-                }
-            }
-        }
-        sd = Math.sqrt((tmpSdw + tmpSdb) / nd);
-        // calculate point biserial score
-        pb = (meanDb - meanDw) * Math.sqrt(((fw * fb) / (nd * nd))) / sd;
-        return pb;
+        //sum of between cluster distances
+        sb = sumBetween(clusters);
+
+        return (sw / nw - sb / nb) * Math.sqrt(nw * nb) / nt;
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        // should be maximized
-        return score1 > score2;
+        return score1 < score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return true;
+        return false;
     }
 
     @Override
