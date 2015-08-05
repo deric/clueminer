@@ -18,16 +18,19 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class PointBiserialNorm extends AbstractEvaluator {
 
     private static String NAME = "PointBiserial-Norm";

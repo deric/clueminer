@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
@@ -9,27 +25,20 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * In statistics the point-biserial coefficient is a correlation measure between
- * a continuous variable A and a binary variable B.
  *
- * Adapted from point biserial correlation evaluator (Brogden 1949)
- *
- * @cite Mitligan, G. W. (1981a). A Monte Carlo study of thirty internal
- * criterion measures for cluster analysis. Psychometrika, 46, 187-199.
- *
- * @author Tomas Barton
+ * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class PointBiserial extends AbstractEvaluator {
+public class McClainRao extends AbstractEvaluator {
 
-    private static String NAME = "PointBiserial";
+    private static String NAME = "McClain-Rao";
     private static final long serialVersionUID = -3222061698654228829L;
 
-    public PointBiserial() {
+    public McClainRao() {
         dm = EuclideanDistance.getInstance();
     }
 
-    public PointBiserial(DistanceMeasure dist) {
+    public McClainRao(DistanceMeasure dist) {
         this.dm = dist;
     }
 
@@ -38,13 +47,6 @@ public class PointBiserial extends AbstractEvaluator {
         return NAME;
     }
 
-    /**
-     * Simplified computation of PointBiserial index
-     *
-     * @param clusters
-     * @param params
-     * @return
-     */
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double nw = numW(clusters);
@@ -59,7 +61,7 @@ public class PointBiserial extends AbstractEvaluator {
         //sum of between cluster distances
         sb = sumBetween(clusters);
 
-        return (sw / nw - sb / nb) * Math.sqrt(nw * nb) / nt;
+        return (nb / nw) * (sw / sb);
     }
 
     @Override
@@ -74,11 +76,12 @@ public class PointBiserial extends AbstractEvaluator {
 
     @Override
     public double getMin() {
-        return Double.NEGATIVE_INFINITY;
+        return 0;
     }
 
     @Override
     public double getMax() {
         return Double.POSITIVE_INFINITY;
     }
+
 }

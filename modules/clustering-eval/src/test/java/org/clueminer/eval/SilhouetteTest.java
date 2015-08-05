@@ -137,7 +137,7 @@ public class SilhouetteTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-//        assertEquals(0.827206253180689, score, delta);
+        //   assertEquals(0.827206253180689, score, delta);
     }
 
 }
