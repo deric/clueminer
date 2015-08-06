@@ -184,7 +184,7 @@ public class CIndexTest {
             c = clusters.get(mod);
             c.add(data.get(i));
         }
-        assertEquals(1.6462941381578, subject.score(clusters), delta);
+        assertEquals(1.794201393473184, subject.score(clusters), delta);
 
         System.out.println("school score = " + subject.score(clusters));
     }
@@ -201,7 +201,7 @@ public class CIndexTest {
         //TODO check the C-index definition
         double score = subject.score(FakeClustering.int100p4());
         //TODO: according to clustCrit it should be 7.0592193043113e-06
-        assertEquals(1.5909295902815752, score, delta);
+        assertEquals(1.5759000901106137, score, delta);
         //assertEquals(7.0592193043113e-06, score, delta);
     }
 }

@@ -72,7 +72,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         for (int i = 0; i < clusters.size(); i++) {
             xc = clusters.get(i);
             for (int m = 0; m < xc.size(); m++) {
-                x = xc.instance(i);
+                x = xc.instance(m);
                 for (int j = 0; j < i; j++) {
                     yc = clusters.get(j);
                     for (int k = 0; k < yc.size(); k++) {

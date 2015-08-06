@@ -67,7 +67,7 @@ public class PointBiserialTest {
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: -1.6928719863069
-        assertEquals(-1.599622780694482, score, delta);
+        assertEquals(-1.6928719274027788, score, delta);
     }
 
 }

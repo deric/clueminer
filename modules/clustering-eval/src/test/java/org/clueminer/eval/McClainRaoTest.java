@@ -37,6 +37,6 @@ public class McClainRaoTest {
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.141800605341339
-        assertEquals(0.14883648447805115, score, delta);
+        assertEquals(0.14180060534134048, score, delta);
     }
 }
