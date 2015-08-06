@@ -26,6 +26,11 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
+ * @cite
+ * McClain, John O., and Vithala R. Rao. "Clustisz: A program to test for the
+ * quality of clustering of a set of objects." JMR, Journal of Marketing
+ * Research (pre-1986) 12.000004 (1975): 456.
+ *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)

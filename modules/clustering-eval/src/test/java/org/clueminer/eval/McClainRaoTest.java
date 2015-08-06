@@ -18,6 +18,7 @@ package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,11 @@ public class McClainRaoTest {
 
     public McClainRaoTest() {
         subject = new McClainRao();
+    }
+
+    @Test
+    public void testGetName() {
+        assertNotNull(subject.getName());
     }
 
     @Test
