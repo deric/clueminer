@@ -35,6 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LogSSRatio extends CalinskiHarabasz implements InternalEvaluator {
 
     private static final String name = "Log SS Ratio";
+    private static final long serialVersionUID = 1027250256090361526L;
 
     public LogSSRatio() {
         dm = EuclideanDistance.getInstance();
@@ -58,7 +59,7 @@ public class LogSSRatio extends CalinskiHarabasz implements InternalEvaluator {
             double d;
             for (int i = 0; i < clusters.size(); i++) {
                 Cluster<? extends Instance> x = clusters.get(i);
-                w += getSumOfSquaredError(x);
+                w += sumOfSquaredError(x);
                 d = dm.measure(centroid, x.getCentroid());
                 b += (x.size()) * FastMath.pow(d, 2);
             }

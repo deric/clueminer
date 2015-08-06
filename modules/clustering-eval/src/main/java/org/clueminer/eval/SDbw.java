@@ -35,6 +35,7 @@ import org.clueminer.utils.Props;
 public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluation {
 
     private static final String name = "S_Dbw";
+    private static final long serialVersionUID = 2687565191321472835L;
 
     @Override
     public String getName() {

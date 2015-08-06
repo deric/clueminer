@@ -27,6 +27,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Sum of squared distances to the centroid (very similar to {@link Deviation})
  *
+ * @cite
+ * Ball, Geoffrey H., and David J. Hall. ISODATA, a novel method of data
+ * analysis and pattern classification. STANFORD RESEARCH INST MENLO PARK CA,
+ * 1965.
+ *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)

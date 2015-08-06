@@ -57,7 +57,7 @@ public class CalinskiHarabasz extends AbstractEvaluator {
             double d;
             for (int i = 0; i < clusters.size(); i++) {
                 Cluster<? extends Instance> x = clusters.get(i);
-                w += getSumOfSquaredError(x);
+                w += sumOfSquaredError(x);
                 d = dm.measure(centroid, x.getCentroid());
                 b += (x.size()) * FastMath.pow(d, 2);
             }
@@ -73,16 +73,6 @@ public class CalinskiHarabasz extends AbstractEvaluator {
              */
             return Double.NaN;
         }
-    }
-
-    public double getSumOfSquaredError(Cluster<? extends Instance> x) {
-        double squaredErrorSum = 0, dist;
-        for (Instance inst : x) {
-            dist = dm.measure(inst, x.getCentroid());
-            squaredErrorSum += FastMath.pow(dist, 2);
-        }
-
-        return squaredErrorSum;
     }
 
     /**

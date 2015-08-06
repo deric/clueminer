@@ -1,5 +1,6 @@
 package org.clueminer.eval;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -112,6 +113,23 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
     public int numT(Clustering<? extends Cluster> clusters) {
         int n = clusters.instancesCount();
         return (n * (n - 1)) >>> 1; // (numWpairs - N) / 2
+    }
+
+    /**
+     * Sum of squared distance differences to the centroid of the cluster
+     *
+     * @param x
+     * @return
+     */
+    public double sumOfSquaredError(Cluster<? extends Instance> x) {
+        double squaredErrorSum = 0, dist;
+        Instance centroid = x.getCentroid();
+        for (Instance inst : x) {
+            dist = dm.measure(inst, centroid);
+            squaredErrorSum += FastMath.pow(dist, 2);
+        }
+
+        return squaredErrorSum;
     }
 
 }

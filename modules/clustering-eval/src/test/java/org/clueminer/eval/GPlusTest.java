@@ -40,26 +40,6 @@ public class GPlusTest {
         assertNotNull(subject.getName());
     }
 
-    @Test
-    public void testScore() {
-    }
-
-    @Test
-    public void testIsBetter() {
-    }
-
-    @Test
-    public void testIsMaximized() {
-    }
-
-    @Test
-    public void testGetMin() {
-    }
-
-    @Test
-    public void testGetMax() {
-    }
-
     /**
      * Check against definition (and tests in R package clusterCrit)
      * https://cran.r-project.org/web/packages/clusterCrit/index.html

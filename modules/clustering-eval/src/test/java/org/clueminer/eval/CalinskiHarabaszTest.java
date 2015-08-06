@@ -77,6 +77,7 @@ public class CalinskiHarabaszTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
+        //clusterCrit = 3959.80613603063
         assertEquals(3959.80613603063, score, delta);
     }
 }
