@@ -4,7 +4,7 @@ import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.CalinskiHarabasz;
-import org.clueminer.eval.WB;
+import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -50,7 +50,7 @@ public class MoEvolutionTest {
         //subject.setAlgorithm(new ));
         subject.addObjective(new CalinskiHarabasz());
         subject.addObjective(new AIC());
-        subject.addObjective(new WB());
+        subject.addObjective(new Silhouette());
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);
 
