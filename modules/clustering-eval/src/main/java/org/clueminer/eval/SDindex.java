@@ -74,26 +74,35 @@ public class SDindex extends AbstractEvaluator {
         return scattering / clusters.size();
     }
 
+    /**
+     * Largest and smallest distance between centroids
+     *
+     * @param cl
+     * @return
+     */
     protected double dissimilarity(Clustering<? extends Cluster> cl) {
         double dissimilarity = 0.0;
-
         double min = Double.POSITIVE_INFINITY;
         double max = Double.NEGATIVE_INFINITY;
-        double dist;
+        double dist, sum;
         for (int i = 0; i < cl.size(); i++) {
-            for (int j = 0; j != i; j++) {
-                dissimilarity += 1.0 / dm.measure(cl.get(i).getCentroid(), cl.get(j).getCentroid());
-                //just reducing number of loops
-                if (j < i) {
+            sum = 0.0;
+            for (int j = 0; j < cl.size(); j++) {
+                if (j != i) {
                     dist = dm.measure(cl.get(i).getCentroid(), cl.get(j).getCentroid());
-                    if (dist > max) {
-                        max = dist;
-                    }
-                    if (dist < min) {
-                        min = dist;
+                    sum += dist;
+                    //just reducing number of checks
+                    if (j < i) {
+                        if (dist > max) {
+                            max = dist;
+                        }
+                        if (dist < min) {
+                            min = dist;
+                        }
                     }
                 }
             }
+            dissimilarity += 1.0 / sum;
         }
         dissimilarity *= max / min;
         return dissimilarity;
@@ -103,7 +112,6 @@ public class SDindex extends AbstractEvaluator {
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double scatt = scattering(clusters);
         double dis = dissimilarity(clusters);
-
 
         /**
          * The formula should have been

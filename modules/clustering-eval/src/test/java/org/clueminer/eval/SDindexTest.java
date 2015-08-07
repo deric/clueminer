@@ -76,7 +76,7 @@ public class SDindexTest {
         double dis = subject.dissimilarity(FakeClustering.int100p4());
         //clusterCrit = 0.424825246347848
         //TODO: check dispersion computation
-        //assertEquals(0.424825246347848, dis, delta);
+        assertEquals(0.424825246347848, dis, delta);
 
         double scat = subject.scattering(FakeClustering.int100p4());
         //clusterCrit = 0.0323239791483279
