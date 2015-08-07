@@ -18,25 +18,28 @@ package org.clueminer.eval;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class TauTest {
+public class TraceWTest {
 
-    private static Tau subject;
+    private final TraceW subject;
     private static final double delta = 1e-9;
 
-    public TauTest() {
-        subject = new Tau();
+    public TraceWTest() {
+        subject = new TraceW();
     }
 
     @Test
-    public void testGetName() {
-        assertNotNull(subject.getName());
+    public void testIris() {
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisWrong4());
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
     /**
@@ -49,10 +52,9 @@ public class TauTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        // R clusterCrit resutl
-        //assertEquals(-0.610833639021322, score, delta);
-        //ours
-        assertEquals(-0.6108337043732986, score, delta);
+        //clustCrit: 105.942129943902
+        assertEquals(105.942129943902, score, delta);
     }
+
 
 }

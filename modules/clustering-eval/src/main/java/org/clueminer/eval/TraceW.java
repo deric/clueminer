@@ -16,35 +16,29 @@
  */
 package org.clueminer.eval;
 
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @cite Ratkowsky, D. A., and G. N. Lance. "A criterion for determining the
- * number of groups in a classification." Australian Computer Journal 10.3
- * (1978): 115-117.
  *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class RatkowskyLance extends AbstractEvaluator {
+public class TraceW extends AbstractEvaluator {
 
-    private static final long serialVersionUID = 3195054290041907628L;
-    private static String name = "Ratkowsky-Lance";
+    private static final long serialVersionUID = 6195054290041907628L;
+    private static String name = "Trace W";
 
-    public RatkowskyLance() {
+    public TraceW() {
         dm = new EuclideanDistance();
     }
 
-    public RatkowskyLance(DistanceMeasure dist) {
+    public TraceW(DistanceMeasure dist) {
         this.dm = dist;
     }
 
@@ -55,55 +49,17 @@ public class RatkowskyLance extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double c = 0.0;
-        //number of dimensions
-        int dim = clusters.get(0).attributeCount();
-        for (int i = 0; i < dim; i++) {
-            c += bgss(clusters, i) / tss(clusters, i);
-        }
-
-        c /= dim;
-
-        return c / Math.sqrt(clusters.size());
-    }
-
-    /**
-     * Between group dispersion for each attribute
-     *
-     * @param clusters
-     * @param d
-     * @return
-     */
-    private double bgss(Clustering<? extends Cluster> clusters, int d) {
+        double wgss = 0.0, dist;
         Cluster clust;
-        double bgss = 0.0;
-        double avg;
-        double mu = attrMean(clusters, d);
-
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
-            avg = 0.0;
             for (int j = 0; j < clust.size(); j++) {
-                avg += clust.get(j).get(d);
+                dist = dm.measure(clust.get(j), clust.getCentroid());
+                wgss += dist * dist;
             }
-            avg /= clust.size();
-            bgss += clust.size() * FastMath.pow(mu - avg, 2);
-
         }
-        return bgss;
-    }
 
-    private double tss(Clustering<? extends Cluster> clusters, int d) {
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
-        double nvar = attrVar(clusters, d);
-        int n;
-        //variance for specific attribute
-        if (dataset == null) {
-            n = clusters.instancesCount();
-        } else {
-            n = dataset.size();
-        }
-        return nvar * n;
+        return wgss;
     }
 
     @Override
