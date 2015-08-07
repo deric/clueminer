@@ -239,7 +239,6 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
         String[] ck = new String[cols.size()];
         int k = 0;
 
-        System.out.println("bimap: " + matching);
         //we have to order items in set, so that on diagonal will be highest
         //numbers - for corresponding clusters
         for (String c : cols) {
@@ -256,14 +255,12 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
             if (rows.size() > cols.size()) {
                 //CollectionUtils.disjunction();
                 Set<String> unmatchedClusters = diff(matching.values(), rows);
-                System.out.println("unmatched rc: " + unmatchedClusters);
                 for (String str : unmatchedClusters) {
                     rk[k++] = str;
                 }
             } else {
                 //more classes than actual clusters
                 Set<String> unmatchedClasses = diff(matching.keySet(), cols);
-                System.out.println("unmatched cc: " + unmatchedClasses);
                 k = rows.size();
                 for (String str : unmatchedClasses) {
                     if (k < ck.length) {

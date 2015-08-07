@@ -64,4 +64,24 @@ public class SDindexTest {
         assertEquals(false, subject.isMaximized());
     }
 
+    /**
+     * Check against definition (and tests in R package clusterCrit)
+     * https://cran.r-project.org/web/packages/clusterCrit/index.html
+     *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
+     */
+    @Test
+    public void testClusterCrit() {
+        double dis = subject.dissimilarity(FakeClustering.int100p4());
+        //clusterCrit = 0.424825246347848
+        //TODO: check dispersion computation
+        //assertEquals(0.424825246347848, dis, delta);
+
+        double scat = subject.scattering(FakeClustering.int100p4());
+        //clusterCrit = 0.0323239791483279
+        //small difference is caused by variance being normalized by (n - 1) instead of just (n)
+        assertEquals(0.03224316920045716, scat, delta);
+    }
+
 }

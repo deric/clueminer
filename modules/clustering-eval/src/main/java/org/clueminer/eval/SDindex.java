@@ -3,12 +3,10 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -50,43 +48,44 @@ public class SDindex extends AbstractEvaluator {
         return name;
     }
 
-    @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
-        if (dataset == null) {
-            throw new RuntimeException("missing dataset");
-        }
+    protected double scattering(Clustering<? extends Cluster> clusters) {
+        double scattering = 0.0;
         //compute intra dataset variance of whole dataset
         double datasetVar = 0.0, var;
-        double scattering = 0.0;
-        double dissimilarity = 0.0;
-        Attribute attr;
-        for (int d = 0; d < dataset.attributeCount(); d++) {
-            attr = dataset.getAttribute(d);
-            var = attr.statistics(AttrNumStats.VARIANCE);
+
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        int dim;
+        if (dataset == null) {
+            dim = clusters.get(0).attributeCount();
+        } else {
+            dim = dataset.attributeCount();
+        }
+
+        for (int d = 0; d < dim; d++) {
+            var = attrVar(clusters, d);
             datasetVar += var * var; //norm over all attributes
         }
         // norm of the variance vector
         datasetVar = Math.sqrt(datasetVar);
 
-        Instance[] centroids = new Instance[clusters.size()];
         for (int i = 0; i < clusters.size(); i++) {
-            centroids[i] = clusters.get(i).getCentroid();
+            scattering += clusterVariance(clusters.get(i), clusters.get(i).getCentroid()) / datasetVar;
         }
+        return scattering / clusters.size();
+    }
 
-        for (int i = 0; i < clusters.size(); i++) {
-            scattering += clusterVariance(clusters.get(i), centroids[i]) / datasetVar;
-        }
+    protected double dissimilarity(Clustering<? extends Cluster> cl) {
+        double dissimilarity = 0.0;
 
         double min = Double.POSITIVE_INFINITY;
         double max = Double.NEGATIVE_INFINITY;
         double dist;
-        for (int i = 0; i < clusters.size(); i++) {
+        for (int i = 0; i < cl.size(); i++) {
             for (int j = 0; j != i; j++) {
-                dissimilarity += 1.0 / dm.measure(centroids[i], centroids[j]);
+                dissimilarity += 1.0 / dm.measure(cl.get(i).getCentroid(), cl.get(j).getCentroid());
                 //just reducing number of loops
                 if (j < i) {
-                    dist = dm.measure(centroids[i], centroids[j]);
+                    dist = dm.measure(cl.get(i).getCentroid(), cl.get(j).getCentroid());
                     if (dist > max) {
                         max = dist;
                     }
@@ -97,8 +96,15 @@ public class SDindex extends AbstractEvaluator {
             }
         }
         dissimilarity *= max / min;
+        return dissimilarity;
+    }
 
-        scattering = scattering / clusters.size();
+    @Override
+    public double score(Clustering<? extends Cluster> clusters, Props params) {
+        double scatt = scattering(clusters);
+        double dis = dissimilarity(clusters);
+
+
         /**
          * The formula should have been
          *
@@ -112,7 +118,7 @@ public class SDindex extends AbstractEvaluator {
          * sd(C) = Dis(|C|) * (Scatt(|C|) + 1)
          *
          */
-        return dissimilarity * (scattering + 1);
+        return dis * (scatt + 1);
     }
 
     private double clusterVariance(Cluster<? extends Instance> clust, Instance centroid) {

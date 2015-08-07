@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import java.util.Iterator;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -25,7 +24,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
-import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -79,16 +77,9 @@ public class RatkowskyLance extends AbstractEvaluator {
     private double bgss(Clustering<? extends Cluster> clusters, int d) {
         Cluster clust;
         double bgss = 0.0;
-        double mu;
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
-        if (dataset == null) {
-            mu = attrMean(clusters, d);
-        } else {
-            //attribute mean for whole
-            mu = dataset.getAttribute(d).statistics(AttrNumStats.AVG);
-
-        }
         double avg;
+        double mu = attrMean(clusters, d);
+
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             avg = 0.0;
@@ -102,51 +93,17 @@ public class RatkowskyLance extends AbstractEvaluator {
         return bgss;
     }
 
-    private double attrMean(Clustering<? extends Cluster> clusters, int d) {
-        Iterator<Instance> iter = clusters.instancesIterator();
-        Instance curr;
-        double mean = 0.0;
-        int i = 0;
-        while (iter.hasNext()) {
-            curr = iter.next();
-            mean += curr.get(d);
-            i++;
-        }
-        return mean / i;
-    }
-
     private double tss(Clustering<? extends Cluster> clusters, int d) {
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
-        double nvar;
+        double nvar = attrVar(clusters, d);
+        int n;
         //variance for specific attribute
         if (dataset == null) {
-            nvar = attrVar(clusters, d);
+            n = clusters.instancesCount();
         } else {
-            nvar = dataset.size() * dataset.getAttribute(d).statistics(AttrNumStats.VARIANCE);
+            n = dataset.size();
         }
-
-        return nvar;
-    }
-
-    /**
-     * Variance of given attribute in the dataset
-     *
-     * @param clusters
-     * @param d
-     * @return
-     */
-    private double attrVar(Clustering<? extends Cluster> clusters, int d) {
-        double mu = attrMean(clusters, d);
-        Iterator<Instance> iter = clusters.instancesIterator();
-        Instance curr;
-        double var = 0.0;
-        int i = 0;
-        while (iter.hasNext()) {
-            curr = iter.next();
-            var += FastMath.pow(mu - curr.get(d), 2);
-            i++;
-        }
-        return var / (i - 1) * i;
+        return nvar * n;
     }
 
     @Override

@@ -175,8 +175,6 @@ public class CountingPairs {
             //check if all classes has been assigned to tp cluster
             for (String klass : table.columnKeySet()) {
                 if (!matching.containsKey(klass)) {
-                    System.out.println("class '" + klass + "' is not assigned");
-                    System.out.println("match: " + matching.toString());
                     int max = 0, value;
                     String maxKey = null;
                     for (String cluster : sortedClusters.keySet()) {

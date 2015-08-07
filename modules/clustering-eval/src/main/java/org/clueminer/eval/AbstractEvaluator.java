@@ -1,13 +1,16 @@
 package org.clueminer.eval;
 
+import java.util.Iterator;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
+import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.Props;
 
 /**
@@ -130,6 +133,57 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         }
 
         return squaredErrorSum;
+    }
+
+    /**
+     * Variance of given attribute in the dataset
+     *
+     * @param clusters
+     * @param d
+     * @return
+     */
+    public double attrVar(Clustering<? extends Cluster> clusters, int d) {
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        //variance for specific attribute - precomputed
+        if (dataset != null) {
+            return dataset.getAttribute(d).statistics(AttrNumStats.VARIANCE);
+        }
+        //compute variance manually
+        double mu = attrMean(clusters, d);
+        Iterator<Instance> iter = clusters.instancesIterator();
+        Instance curr;
+        double var = 0.0;
+        int i = 0;
+        while (iter.hasNext()) {
+            curr = iter.next();
+            var += FastMath.pow(mu - curr.get(d), 2);
+            i++;
+        }
+        return var / (i - 1);
+    }
+
+    /**
+     * Mean attribute value
+     *
+     * @param clusters
+     * @param d        attribute index
+     * @return
+     */
+    public double attrMean(Clustering<? extends Cluster> clusters, int d) {
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset != null) {
+            return dataset.getAttribute(d).statistics(AttrNumStats.AVG);
+        }
+        Iterator<Instance> iter = clusters.instancesIterator();
+        Instance curr;
+        double mean = 0.0;
+        int i = 0;
+        while (iter.hasNext()) {
+            curr = iter.next();
+            mean += curr.get(d);
+            i++;
+        }
+        return mean / i;
     }
 
 }
