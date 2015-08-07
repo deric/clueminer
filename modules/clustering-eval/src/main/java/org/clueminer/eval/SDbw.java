@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
@@ -32,6 +33,7 @@ import org.clueminer.utils.Props;
  * assessment: Finding the optimal partitioning of a data set." Data Mining,
  * 2001. ICDM 2001, Proceedings IEEE International Conference on. IEEE, 2001.
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluation {
 
     private static final String name = "S_Dbw";
@@ -52,42 +54,80 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double score = 0.0;
-        double std_dev = stddev(clusters);
+        double density = 0.0;
+        double sigma = Math.sqrt(varianceSum(clusters)) / clusters.size();
 
-        return score;
+        for (int i = 0; i < clusters.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                density += rkk(clusters, sigma, i, j);
+            }
+        }
+
+        density *= 2.0 / (clusters.size() * (clusters.size() - 1));
+
+        return scattering(clusters) + density;
+    }
+
+    private double rkk(Clustering<? extends Cluster> clusters, double sigma, int i, int j) {
+        Cluster x = clusters.get(i);
+        Cluster y = clusters.get(j);
+        //centroid of two clusters
+        Instance h = centroid(x, y);
+
+        double denom = Math.max(gamma(sigma, x, y, x.getCentroid()), gamma(sigma, x, y, y.getCentroid()));
+        double res = gamma(sigma, x, y, h) / denom;
+        return res;
+    }
+
+    private Instance centroid(Cluster x, Cluster y) {
+        int attrCount = x.attributeCount();
+        if (attrCount == 0) {
+            throw new RuntimeException("number of attributes should not be 0");
+        }
+        Instance avg = x.builder().build(attrCount);
+        for (int j = 0; j < attrCount; j++) {
+            avg.set(j, (x.getCentroid().get(j) + y.getCentroid().get(j)) / 2.0);
+        }
+        return avg;
+    }
+
+    private double gamma(double sigma, Cluster x, Cluster y, Instance center) {
+        double density = 0;
+        double dist;
+        for (int k = 0; k < x.size(); k++) {
+            dist = dm.measure(x.get(k), center);
+            if (dist < sigma) {
+                density++;
+            }
+        }
+        for (int k = 0; k < y.size(); k++) {
+            dist = dm.measure(y.get(k), center);
+            if (dist < sigma) {
+                density++;
+            }
+        }
+
+        return density;
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return score1 < score2;
     }
 
     @Override
     public boolean isMaximized() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public double getMin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 0;
     }
 
     @Override
     public double getMax() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private double stddev(Clustering<? extends Cluster> clusters) {
-        double sdev = 0;
-        Cluster first = clusters.get(0);
-        Instance mean = first.builder().build(first.attributeCount());
-        Instance[] centroids = new Instance[clusters.size()];
-        for (int i = 0; i < clusters.size(); i++) {
-            centroids[i] = clusters.get(i).getCentroid();
-        }
-
-        return sdev;
+        return Double.POSITIVE_INFINITY;
     }
 
 }

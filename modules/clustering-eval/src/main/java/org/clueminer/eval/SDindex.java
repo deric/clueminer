@@ -48,8 +48,22 @@ public class SDindex extends AbstractEvaluator {
         return name;
     }
 
+    /**
+     * Sum of variances for each cluster
+     *
+     * @param clusters
+     * @return
+     */
+    protected double varianceSum(Clustering<? extends Cluster> clusters) {
+        double varSum = 0.0;
+
+        for (int i = 0; i < clusters.size(); i++) {
+            varSum += clusterVariance(clusters.get(i), clusters.get(i).getCentroid());
+        }
+        return varSum;
+    }
+
     protected double scattering(Clustering<? extends Cluster> clusters) {
-        double scattering = 0.0;
         //compute intra dataset variance of whole dataset
         double datasetVar = 0.0, var;
 
@@ -68,10 +82,7 @@ public class SDindex extends AbstractEvaluator {
         // norm of the variance vector
         datasetVar = Math.sqrt(datasetVar);
 
-        for (int i = 0; i < clusters.size(); i++) {
-            scattering += clusterVariance(clusters.get(i), clusters.get(i).getCentroid()) / datasetVar;
-        }
-        return scattering / clusters.size();
+        return varianceSum(clusters) / (clusters.size() * datasetVar);
     }
 
     /**
@@ -80,7 +91,7 @@ public class SDindex extends AbstractEvaluator {
      * @param cl
      * @return
      */
-    protected double dissimilarity(Clustering<? extends Cluster> cl) {
+    protected double dispersion(Clustering<? extends Cluster> cl) {
         double dissimilarity = 0.0;
         double min = Double.POSITIVE_INFINITY;
         double max = Double.NEGATIVE_INFINITY;
@@ -111,7 +122,7 @@ public class SDindex extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double scatt = scattering(clusters);
-        double dis = dissimilarity(clusters);
+        double dis = dispersion(clusters);
 
         /**
          * The formula should have been

@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,13 +25,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class SDindexTest {
+public class SDbwTest {
 
-    private final SDindex subject;
+    private final SDbw subject;
     private static final double delta = 1e-9;
 
-    public SDindexTest() {
-        subject = new SDindex(EuclideanDistance.getInstance());
+    public SDbwTest() {
+        subject = new SDbw();
     }
 
     @Test
@@ -43,9 +42,7 @@ public class SDindexTest {
     @Test
     public void testScore() {
         double scoreBetter = subject.score(FakeClustering.iris());
-        double scoreWorser = subject.score(FakeClustering.irisWrong5());
-        //TODO: on java 1.8.0_31 this score is: 3.706709966847651
-        //assertEquals(3.7044979905303097, scoreBetter, delta);
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         //should recognize "better" clustering (hand made clustering based on labels)
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
@@ -73,15 +70,9 @@ public class SDindexTest {
      */
     @Test
     public void testClusterCrit() {
-        double dis = subject.dispersion(FakeClustering.int100p4());
-        //clusterCrit = 0.424825246347848
-        //TODO: check dispersion computation
-        assertEquals(0.424825246347848, dis, delta);
-
-        double scat = subject.scattering(FakeClustering.int100p4());
+        double dis = subject.score(FakeClustering.int100p4());
         //clusterCrit = 0.0323239791483279
-        //small difference is caused by variance being normalized by (n - 1) instead of just (n)
-        assertEquals(0.03224316920045716, scat, delta);
+        //tiny difference due to variance computing
+        assertEquals(0.03224316920045716, dis, delta);
     }
-
 }
