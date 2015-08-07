@@ -19,13 +19,14 @@ package org.clueminer.eval;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class SDbwTest {
+public class SDbwTest extends InternalTest {
 
     private final SDbw subject;
     private static final double delta = 1e-9;
@@ -54,6 +55,12 @@ public class SDbwTest {
         double scoreWorser = subject.score(FakeClustering.irisWrong2());
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    }
+
+    @Test
+    public void testNotNaN() {
+        assertNotSame(Double.NaN, subject.score(oneClassPerCluster()));
+        assertNotSame(Double.NaN, subject.score(FakeClustering.irisWrong5()));
     }
 
     @Test
