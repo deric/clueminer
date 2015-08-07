@@ -53,8 +53,7 @@ public class PBMTest {
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 78.0903473036081
-        //TODO: check the difference
-        assertEquals(76.72960288658905, score, delta);
+        assertEquals(78.0903473036081, score, delta);
     }
 
 }

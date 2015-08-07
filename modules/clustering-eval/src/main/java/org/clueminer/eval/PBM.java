@@ -26,6 +26,9 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * @cite Pakhira, Malay K., Sanghamitra Bandyopadhyay, and Ujjwal Maulik.
+ * "Validity index for crisp and fuzzy clusters." Pattern recognition 37.3
+ * (2004): 487-501.
  *
  * @author deric
  */
@@ -68,9 +71,9 @@ public class PBM extends AbstractEvaluator {
             //distance of each cluster member to its centroid
             for (int j = 0; j < clust.size(); j++) {
                 y = clust.get(j);
-                ew += dm.measure(x, y);
+                ew += dm.measure(y, x);
                 //distance to global centroid
-                et += dm.measure(x, g);
+                et += dm.measure(y, g);
             }
         }
         score = (et * db) / (ew * clusters.size());
