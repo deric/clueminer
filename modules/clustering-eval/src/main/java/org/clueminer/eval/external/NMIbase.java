@@ -24,7 +24,7 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
 
     /**
      *
-     * @param count total number of elements N (in whole dataset)
+     * @param count    total number of elements N (in whole dataset)
      * @param elements
      * @return
      */
@@ -102,13 +102,15 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
 
         double classEntropy = entropy(clusters.instancesCount(), clusterSizes);
 
-        nmi = countNMI(mutualInformation, c1entropy, classEntropy);
+        return calculate(clusters, params, mutualInformation, c1entropy, classEntropy, klassSizes.size());
+    }
 
-        return nmi;
+    protected double calculate(Clustering<? extends Cluster> clusters, Props params,
+            double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
+        return countNMI(mutualInformation, c1entropy, classEntropy);
     }
 
     public abstract double countNMI(double mi, double ent1, double ent2);
-
 
     @Override
     public double score(Clustering clusters, Matrix proximity, Props params) {
