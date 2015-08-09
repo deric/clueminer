@@ -50,7 +50,7 @@ public class NMInorm extends NMIbase {
             double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
         //when difference is 0, we'll divide by 1 (no change)
         int clustDiff = 1 + Math.abs(clusters.size() - klassesSize);
-        return countNMI(mutualInformation, c1entropy, classEntropy) / clustDiff;
+        return countNMI(mutualInformation, c1entropy, classEntropy) / (1 + Math.log(clustDiff));
     }
 
 }
