@@ -186,4 +186,23 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         return mean / i;
     }
 
+    /**
+     * With-in group squared scatter - distances between centroid.
+     *
+     * @param clusters
+     * @return
+     */
+    public double wgss(Clustering<? extends Cluster> clusters) {
+        double wgss = 0.0, dist;
+        Cluster clust;
+        for (int i = 0; i < clusters.size(); i++) {
+            clust = clusters.get(i);
+            for (int j = 0; j < clust.size(); j++) {
+                dist = dm.measure(clust.get(j), clust.getCentroid());
+                wgss += dist * dist;
+            }
+        }
+        return wgss;
+    }
+
 }

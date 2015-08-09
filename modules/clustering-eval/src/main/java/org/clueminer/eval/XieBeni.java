@@ -25,25 +25,24 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Originally proposed for fuzzy clustering, however could be adjusted for case
+ * of crisp clustering.
  *
- * @cite Ray, Siddheswar, and Rose H. Turi. "Determination of number of clusters
- * in k-means clustering and application in colour image segmentation."
- * Proceedings of the 4th international conference on advances in pattern
- * recognition and digital techniques. 1999.
+ * Very similar to {@link RayTuri}, just different denominator.
  *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class RayTuri extends AbstractEvaluator {
+public class XieBeni extends AbstractEvaluator {
 
-    private static final long serialVersionUID = 6195054290041907628L;
-    private static String name = "Ray-Turi";
+    private static String name = "Xie-Beni";
+    private static final long serialVersionUID = -1556797441498915591L;
 
-    public RayTuri() {
+    public XieBeni() {
         dm = new EuclideanDistance();
     }
 
-    public RayTuri(DistanceMeasure dist) {
+    public XieBeni(DistanceMeasure dist) {
         this.dm = dist;
     }
 
@@ -56,16 +55,22 @@ public class RayTuri extends AbstractEvaluator {
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double wgss = wgss(clusters);
         double dist;
-        Cluster clust;
+        Cluster x, y;
         double min = Double.POSITIVE_INFINITY;
         for (int i = 0; i < clusters.size(); i++) {
-            clust = clusters.get(i);
-            //min squared distance between centroids
+            x = clusters.get(i);
+
+            //min squared distance between all items
             for (int j = 0; j < i; j++) {
-                dist = dm.measure(clust.getCentroid(), clusters.get(j).getCentroid());
-                dist *= dist;
-                if (dist < min) {
-                    min = dist;
+                y = clusters.get(j);
+                for (int k = 0; k < x.size(); k++) {
+                    for (int l = 0; l < y.size(); l++) {
+                        dist = dm.measure(x.get(k), y.get(l));
+                        dist *= dist;
+                        if (dist < min) {
+                            min = dist;
+                        }
+                    }
                 }
             }
         }
