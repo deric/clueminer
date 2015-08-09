@@ -62,7 +62,12 @@ public class Metis implements Partitioning {
     @Override
     public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g) {
         graph = g;
-        k = g.getNodeCount() / maxPartitionSize;
+        k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
+        if (k == 1) {
+            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
+            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            return nodes;
+        }
         createMapping();
         runMetis();
         ArrayList<LinkedList<Node>> clusters = importMetisResult();
@@ -85,9 +90,10 @@ public class Metis implements Partitioning {
             writer.close();
             File metisFile = resource("gpmetis");
             //make sure metis is executable
-            Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
+            Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
+            p.waitFor();
             //run metis
-            Process p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
+            p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
             p.waitFor();
             File file = new File("inputGraph");
             file.delete();
@@ -184,6 +190,7 @@ public class Metis implements Partitioning {
             while ((read = input.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
+            out.close();
             file.deleteOnExit();
         } catch (IOException ex) {
             System.err.println(ex.toString());

@@ -15,6 +15,11 @@ public class FirstJump implements CutoffStrategy {
 
     public static final String name = "First jump cutoff";
 
+    // Values with best average performance found by several experiments
+    // Values 100 and 2 give much better results on specific datasets but not on average
+    private int start = 340;
+    private double factor = 1.91;
+
     @Override
     public String getName() {
         return name;
@@ -38,9 +43,7 @@ public class FirstJump implements CutoffStrategy {
      */
     public double tryJumps(HierarchicalResult hclust) {
         double average = computeAverageHeight(hclust);
-        System.out.println(average);
-
-        for (int i = 100; i >= 0; i /= 2) {
+        for (int i = start; i >= 0; i /= factor) {
             double result = findFirstJump(hclust, average * i);
             if (result != 0) {
                 return result;
@@ -60,7 +63,6 @@ public class FirstJump implements CutoffStrategy {
     private double findFirstJump(HierarchicalResult hclust, double jumpHeight) {
         double upper;
         double lower = hclust.getHeightByLevel(hclust.treeLevels() / 2 - 1);
-        System.out.println(lower);
         for (int i = hclust.treeLevels() / 2; i < hclust.treeLevels() + 1; i++) {
             upper = hclust.getHeightByLevel(i);
 
@@ -85,11 +87,21 @@ public class FirstJump implements CutoffStrategy {
         double lower = hclust.getHeightByLevel(0);
         for (int i = 1; i <= hclust.treeLevels() / 2; i++) {
             upper = hclust.getHeightByLevel(i);
-            //    System.out.println(upper - lower);
             sum += upper - lower;
             lower = upper;
         }
+        if (sum == 0) {
+            return 1;
+        }
         return sum / (hclust.treeLevels() / 2);
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setFactor(double factor) {
+        this.factor = factor;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         tree.print();
         DendroNode root = tree.getRoot();
-        assertEquals(363.3346235252453, root.getHeight(), delta);
+        assertEquals(662.3346235252453, root.getHeight(), delta);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         tree.print();
         DendroNode root = tree.getRoot();
-        assertEquals(396.2089980350674, root.getHeight(), delta);
+        assertEquals(695.2089980350675, root.getHeight(), delta);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         tree.print();
         DendroNode root = tree.getRoot();
-        assertEquals(60.40222184544098, root.getHeight(), delta);
+        assertEquals(59.40222184544098, root.getHeight(), delta);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         tree.print();
         DendroNode root = tree.getRoot();
-        assertEquals(166.38835528693502, root.getHeight(), delta);
+        assertEquals(265.38835528693505, root.getHeight(), delta);
     }
 
     @Test
