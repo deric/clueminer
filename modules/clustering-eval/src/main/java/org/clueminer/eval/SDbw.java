@@ -64,7 +64,7 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
         }
 
         density *= 2.0 / (clusters.size() * (clusters.size() - 1));
-        if (Double.isNaN(density)) {
+        if (Double.isInfinite(density)) {
             return scattering(clusters);
         }
 
