@@ -128,6 +128,7 @@ public class ARFFHandler implements DatasetLoader {
                 values = new double[arr.length - skipSize];
 
                 String classValue = null;
+                int idx;
                 for (int i = 0; i < arr.length; i++) {
                     if (i == classIndex) {
                         classValue = arr[i];
@@ -139,6 +140,10 @@ public class ARFFHandler implements DatasetLoader {
                                 val = Double.parseDouble(arr[i]);
                             } catch (NumberFormatException e) {
                                 val = Double.NaN;
+                            }
+                            idx = i - skip;
+                            if (idx < 0 || idx >= values.length) {
+                                throw new RuntimeException("expected at least " + skip + " columns, on line: '" + line + "', cols: " + values.length);
                             }
                             values[i - skip] = val;
                         } else {

@@ -190,4 +190,15 @@ public class ARFFHandlerTest {
         assertEquals(351, data.size());
     }
 
+    @Test
+    public void testDs577() throws ParserError, FileNotFoundException, IOException {
+        Dataset<Instance> data = new ArrayDataset<>(366, 2);
+
+        String datasetName = "DS-577";
+        arff.load(tf.ds577(), data, 2);
+        assertEquals(2, data.attributeCount());
+        assertEquals(577, data.size());
+        data.setName(datasetName);
+    }
+
 }
