@@ -25,6 +25,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * This objective is called W/B in Milligan (1981)
  *
  * @cite
  * McClain, John O., and Vithala R. Rao. "Clustisz: A program to test for the

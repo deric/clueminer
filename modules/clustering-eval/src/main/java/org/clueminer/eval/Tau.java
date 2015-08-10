@@ -1,14 +1,24 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Corrected Tau index (ties are accounted)
+ *
+ * The metric is based on Kendall's Tau correlation:
+ *
+ * Kendall, M. G. A New Measure of Rank Correlation. Biometrika, volume 30, no.
+ * 1/2, 1938: pp. pp. 81–93, ISSN 00063444
+ *
+ * The concept of counting concordant and disconcordant pairs is the same as in
+ * case of {@link Gamma}.
+ *
  *
  * @author Tomas Barton
  */

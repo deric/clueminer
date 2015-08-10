@@ -1,8 +1,8 @@
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -10,17 +10,19 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This index represents an adaptation of Goodman and Kruskal's
- * Gamma statistic for use in a clustering situation (Baker & Hubert, 1975).
- * The index is computed as [ s(+) - s(-) ] / [ s(+) + s(-) ] where s(+)
- * represents the number of consistent comparisons involving between and
- * within cluster distances, and s(-) represents the number of inconsistent
- * outcomes (Milligan, 1981a). Maximum values were taken to represent
- * the correct hierarchy level.
+ * This index represents an adaptation of Goodman and Kruskal's Gamma statistic
+ * for use in a clustering situation (Baker & Hubert, 1975). The index is
+ * computed as [ s(+) - s(-) ] / [ s(+) + s(-) ] where s(+) represents the
+ * number of consistent comparisons involving between and within cluster
+ * distances, and s(-) represents the number of inconsistent outcomes (Milligan,
+ * 1981a). Maximum values were taken to represent the correct hierarchy level.
  *
  * @cite F. B. Baker and L. J. Hubert. Measuring the power of hierarchical
  * cluster analysis. Journal of the American Statistical Association, 70:31–38,
  * 1975
+ * @cite Baker, F.; Hubert, L. A graph-theoretic approach to goodness-of-fit in
+ * complete-link hierarchical clustering. Journal of the American Statistical
+ * Association, 1976: pp. 870– 878.
  *
  * @author Tomas Barton
  *
