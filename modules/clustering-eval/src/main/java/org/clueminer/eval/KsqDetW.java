@@ -27,59 +27,41 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * k^2 |W| criterion
+ * Best partition size is determined by max score difference
  *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class DetRatio extends AbstractEvaluator {
+public class KsqDetW extends AbstractEvaluator {
 
-    private static String NAME = "DetRatio";
-    private static final long serialVersionUID = -6861450793005245212L;
+    private static final String name = "KsqDetW";
+    private static final long serialVersionUID = 3727657004516559539L;
 
-    public DetRatio() {
+    public KsqDetW() {
         dm = EuclideanDistance.getInstance();
     }
 
-    public DetRatio(DistanceMeasure dist) {
-        this.dm = dist;
+    public KsqDetW(DistanceMeasure dm) {
+        this.dm = dm;
     }
 
     @Override
     public String getName() {
-        return NAME;
+        return name;
     }
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        //int n = clusters.instancesCount();
         //number of dimensions
         int m = clusters.get(0).attributeCount();
-        //int k = clusters.size();
-        //global centroid
-        //Instance gc = clusters.getCentroid();
-
-        Matrix t = totalDispersion(clusters);
-        /*Matrix bg = new SymmetricMatrixDiag(k);
-
-         Instance x, y;
-         Vector dx, dy;
-
-         for (int i = 0; i < k; i++) {
-         x = clusters.get(i).getCentroid();
-         dx = x.minus(gc).times(x.size());
-         for (int j = 0; j <= i; j++) {
-         y = clusters.get(j).getCentroid();
-         dy = y.minus(gc);
-         bg.set(i, j, dx.dot(dy));
-         }
-         }*/
 
         Matrix wg = new JMatrix(m, m);
         for (Cluster clust : clusters) {
             wg.plusEquals(wgScatter(clust));
         }
 
-        return t.det() / wg.det();
+        return clusters.size() * clusters.size() * wg.det();
     }
 
     @Override

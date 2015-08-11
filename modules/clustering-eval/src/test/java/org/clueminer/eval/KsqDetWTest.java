@@ -24,13 +24,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class DetRatioTest {
+public class KsqDetWTest {
 
-    private final DetRatio subject;
+    private final KsqDetW subject;
     private static final double delta = 1e-9;
 
-    public DetRatioTest() {
-        subject = new DetRatio();
+    public KsqDetWTest() {
+        subject = new KsqDetW();
     }
 
     @Test
@@ -52,7 +52,7 @@ public class DetRatioTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        //clustCrit: 964.208175287163
-        assertEquals(964.208175287163, score, delta);
+        //clustCrit: 44740.3406899463
+        assertEquals(44740.3406899463, score, delta);
     }
 }
