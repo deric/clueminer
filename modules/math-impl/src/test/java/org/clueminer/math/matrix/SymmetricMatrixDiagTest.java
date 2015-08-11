@@ -112,4 +112,19 @@ public class SymmetricMatrixDiagTest {
         }
     }
 
+    @Test
+    public void testTimes() {
+        int n = 4;
+        //initialize matrix
+        A = SymmetricMatrixDiag.random(n);
+        Matrix X = A.times(3.0);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                //should be 2 * A
+                assertEquals(3 * A.get(i, j), X.get(i, j), eps);
+            }
+        }
+    }
+
 }

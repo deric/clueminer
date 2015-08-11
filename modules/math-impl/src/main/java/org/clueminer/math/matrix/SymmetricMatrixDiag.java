@@ -302,7 +302,18 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix times(double s) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Matrix X = new JMatrix(n, n);
+        double value;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                value = s * get(i, j);
+                X.set(i, j, value);
+                if (i != j) {
+                    X.set(j, i, value);
+                }
+            }
+        }
+        return X;
     }
 
     @Override
