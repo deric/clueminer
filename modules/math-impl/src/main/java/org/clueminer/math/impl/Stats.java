@@ -1,5 +1,7 @@
 package org.clueminer.math.impl;
 
+import org.clueminer.math.Vector;
+
 /**
  *
  * @author Tomas Barton
@@ -84,13 +86,13 @@ public class Stats {
     }
 
     /**
-     * Computes the variance for an array of doubles.
+     * Computes the variance for an array of doubles (corrected bias = divide by
+     * n-1).
      *
      * @param vector the array
      * @return the variance
      */
     public static double variance(double[] vector) {
-
         double sum = 0, sumSquared = 0;
 
         if (vector.length <= 1) {
@@ -102,6 +104,41 @@ public class Stats {
         }
         double result = (sumSquared - (sum * sum / (double) vector.length))
                 / (double) (vector.length - 1);
+
+        // We don't like negative variance
+        if (result < 0) {
+            return 0;
+        } else {
+            return result;
+        }
+    }
+
+    /**
+     * Computes the variance for an array of doubles (corrected bias = divide by
+     * n-1).
+     *
+     * @param vector      the array
+     * @param correctBias
+     * @return the variance
+     */
+    public static double variance(Vector vector, boolean correctBias) {
+        double sum = 0, sumSquared = 0;
+
+        if (vector.size() <= 1) {
+            return 0;
+        }
+        for (int i = 0; i < vector.size(); i++) {
+            sum += vector.get(i);
+            sumSquared += (vector.get(i) * vector.get(i));
+        }
+
+        double result = (sumSquared - (sum * sum / (double) vector.size()));
+
+        if (correctBias) {
+            result /= vector.size() - 1;
+        } else {
+            result /= vector.size();
+        }
 
         // We don't like negative variance
         if (result < 0) {
