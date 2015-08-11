@@ -2,12 +2,12 @@ package org.clueminer.dataset.row;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
-import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
@@ -34,7 +34,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
      * @TODO this should be treated as a new dataset, where coefficients are
      * attributes
      */
-    private HashMap<String, Double> coefficients = new HashMap<String, Double>();
+    private HashMap<String, Double> coefficients = new HashMap<>();
     private boolean isApproximated = false;
     private Interpolator interpolator;
 
@@ -223,7 +223,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     @Override
     public ContinuousInstance copy() {
-        TimeInstance<E> c = new TimeInstance<E>(size());
+        TimeInstance<E> c = new TimeInstance<>(size());
         c.setParent(this.getParent());
         c.name = this.name;
         c.classValue = this.classValue;
@@ -272,9 +272,39 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private void checkForSameSize(Vector other) {
+        if (this.size() != other.size()) {
+            throw new IllegalArgumentException("Vectors of different sizes cannot be added");
+        }
+    }
+
     @Override
-    public Vector add(Vector other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Vector add(Vector<E> other) {
+        checkForSameSize(other);
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) + other.get(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<E> minus(Vector<E> other) {
+        checkForSameSize(other);
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) - other.get(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<E> times(double scalar) {
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) * scalar);
+        }
+        return res;
     }
 
     @Override
@@ -301,4 +331,5 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     public Vector<E> duplicate() {
         return new TimeInstance(this.size());
     }
+
 }

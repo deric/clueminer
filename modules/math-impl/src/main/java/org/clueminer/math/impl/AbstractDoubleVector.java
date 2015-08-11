@@ -78,15 +78,80 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
      */
     @Override
     public double dot(Vector v) {
-        if (this.size() != v.size()) {
-            throw new ArithmeticException("Vectors must have the same length" + this.size() + " != " + v.size());
-        }
+        checkForSameSize(v);
         double dot = 0.0;
         for (int i = 0; i < this.size(); i++) {
             dot += this.get(i) * v.get(i);
         }
 
         return dot;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param other
+     * @return
+     */
+    @Override
+    public Vector<Double> add(Vector<Double> other) {
+        checkForSameSize(other);
+        int length = other.size();
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < length; ++i) {
+            res.set(i, other.getValue(i) + this.getValue(i));
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param other
+     * @return
+     */
+    @Override
+    public Vector<Double> minus(Vector<Double> other) {
+        checkForSameSize(other);
+        int length = other.size();
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < length; ++i) {
+            res.set(i, other.getValue(i) - this.getValue(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<Double> times(double scalar) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); ++i) {
+            res.set(i, this.getValue(i) * scalar);
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<Double> add(double num) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) + num);
+        }
+        return res;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Vector<Double> minus(double num) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, this.get(i) - num);
+        }
+        return res;
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.clueminer.math.SparseDoubleVector;
  * A decorator for {@link SparseDoubleVector}s that scales every value in a
  * given {@link DoubleVector} by some non zero scale.
  *
- * </p>
  *
  * Note that this automatically computes the scaling of a {@link
  * ScaledDoubleVector} so that backing vector is scaled only once, thus
@@ -17,15 +16,18 @@ import org.clueminer.math.SparseDoubleVector;
 public class ScaledSparseDoubleVector extends ScaledDoubleVector implements SparseDoubleVector {
 
     /**
-    * The original vector.
-    */
+     * The original vector.
+     */
     private SparseDoubleVector vector;
 
     /**
-    * Creates a new {@link ScaledSparseDoubleVector} that decorates a given
-    * {@link SparseDoubleVector} by scaling each value in {@code vector} by
-    * {@code scale}.
-    */
+     * Creates a new {@link ScaledSparseDoubleVector} that decorates a given
+     * {@link SparseDoubleVector} by scaling each value in {@code vector} by
+     * {@code scale}.
+     *
+     * @param vector
+     * @param scale
+     */
     public ScaledSparseDoubleVector(SparseDoubleVector vector, double scale) {
         super(vector, scale);
 
@@ -42,8 +44,10 @@ public class ScaledSparseDoubleVector extends ScaledDoubleVector implements Spar
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     *
+     * @return
+     */
     @Override
     public int[] getNonZeroIndices() {
         return vector.getNonZeroIndices();

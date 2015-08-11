@@ -7,6 +7,7 @@ import org.clueminer.math.Vector;
  * methods in {@link Vector}. {@link Vector} implementations need only implement
  * {@link #size()} and {@link #getDouble(int)} functionality to be read-only
  * vectors.
+ *
  * @param <T>
  */
 public abstract class AbstractVector<T extends Number> implements Vector<T> {
@@ -17,12 +18,19 @@ public abstract class AbstractVector<T extends Number> implements Vector<T> {
     /**
      * Throws an {@link UnsupportedOperationException} if called (vector is
      * unmodifiable).
+     *
      * @param index
      * @param delta
      * @return
      */
     public double add(int index, double delta) {
         throw new UnsupportedOperationException("Modification is unsupported");
+    }
+
+    protected void checkForSameSize(Vector other) {
+        if (this.size() != other.size()) {
+            throw new ArithmeticException("Vectors must have the same length" + this.size() + " != " + other.size());
+        }
     }
 
     /**
@@ -41,7 +49,7 @@ public abstract class AbstractVector<T extends Number> implements Vector<T> {
      * {@inheritDoc }
      */
     @Override
-    public Vector<T> subtract(double num) {
+    public Vector<T> minus(double num) {
         Vector<T> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
             res.set(i, this.get(i) - num);

@@ -1,10 +1,8 @@
 package org.clueminer.dataset.row;
 
 import org.clueminer.math.Vector;
-import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -17,92 +15,17 @@ public class FloatArrayDataRowTest {
     public FloatArrayDataRowTest() {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testGetFullName() {
-    }
-
-    @Test
-    public void testValue() {
-    }
-
-    @Test
-    public void testGetValue_int_double() {
-    }
-
-    @Test
-    public void testGetValue_int() {
-    }
-
-    @Test
-    public void testGet() {
-    }
-
-    @Test
-    public void testPut() {
-    }
-
-    @Test
-    public void testSet_int_double() {
-    }
-
-    @Test
-    public void testSet_floatArr() {
-    }
-
-    @Test
-    public void testRemove() {
-    }
-
-    @Test
-    public void testSetValue() {
-    }
-
-    @Test
-    public void testSize() {
-    }
-
-    @Test
-    public void testIsEmpty() {
-    }
-
-    @Test
-    public void testSetCapacity() {
-    }
-
-    @Test
-    public void testGetCapacity() {
-    }
-
-    @Test
-    public void testTrim() {
-    }
-
-    @Test
-    public void testArrayCopy() {
-    }
-
-    @Test
-    public void testGetPlotter() {
-    }
-
-    @Test
-    public void testMagnitude() {
-    }
-
-    @Test
-    public void testSet_int_Number() {
-    }
-
     @Test
     public void testAdd() {
+        Vector<Float> orig = new FloatArrayDataRow(new float[]{2, 3, 5});
+        Vector<Float> othr = new FloatArrayDataRow(new float[]{1, 2, 3});
+        Vector<Float> expt = new FloatArrayDataRow(new float[]{3, 5, 8});
+        Vector<Float> upd = orig.add(othr);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(upd.get(i), expt.get(i), delta);
+        }
     }
 
     @Test
@@ -121,7 +44,7 @@ public class FloatArrayDataRowTest {
     @Test
     public void testSubtract_double() {
         Vector<Float> orig = new FloatArrayDataRow(new float[]{5, 5, 5});
-        Vector<Float> upd = orig.subtract(1);
+        Vector<Float> upd = orig.minus(1);
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
@@ -131,34 +54,29 @@ public class FloatArrayDataRowTest {
         }
     }
 
-    ;
-
     @Test
-    public void testDuplicate() {
+    public void testMinus() {
+        Vector<Float> orig = new FloatArrayDataRow(new float[]{2, 3, 5});
+        Vector<Float> othr = new FloatArrayDataRow(new float[]{1, 2, 3});
+        Vector<Float> expt = new FloatArrayDataRow(new float[]{1, 1, 2});
+        Vector<Float> upd = orig.minus(othr);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(upd.get(i), expt.get(i), delta);
+        }
     }
 
     @Test
-    public void testIterator() {
-    }
+    public void testTimes() {
+        Vector<Float> orig = new FloatArrayDataRow(new float[]{2, 3, 5});
+        Vector<Float> expt = new FloatArrayDataRow(new float[]{4, 6, 10});
+        Vector<Float> upd = orig.times(2);
 
-    @Test
-    public void testCopy() {
-    }
-
-    @Test
-    public void testHashCode() {
-    }
-
-    @Test
-    public void testEquals() {
-    }
-
-    @Test
-    public void testToString_0args() {
-    }
-
-    @Test
-    public void testToString_String() {
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(upd.get(i), expt.get(i), delta);
+        }
     }
 
 }

@@ -194,14 +194,44 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         set(index, value.floatValue());
     }
 
+    private void checkForSameSize(Vector<Float> other) {
+        if (this.size() != other.size()) {
+            throw new IllegalArgumentException("Vectors of different sizes cannot be added");
+        }
+    }
+
     @Override
     public Vector<Float> add(Vector<Float> other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkForSameSize(other);
+        Vector<Float> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getValue(i) + other.getValue(i));
+        }
+        return res;
     }
 
     @Override
     public Vector<Float> duplicate() {
         return new FloatArrayDataRow(this.size());
+    }
+
+    @Override
+    public Vector<Float> minus(Vector<Float> other) {
+        checkForSameSize(other);
+        Vector<Float> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getValue(i) - other.getValue(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<Float> times(double scalar) {
+        Vector<Float> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getValue(i) * scalar);
+        }
+        return res;
     }
 
     class InstanceValueIterator implements Iterator<Float> {
@@ -260,10 +290,7 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
             return false;
         }
         final FloatArrayDataRow other = (FloatArrayDataRow) obj;
-        if (!Arrays.equals(data, other.data)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(data, other.data);
     }
 
     /**

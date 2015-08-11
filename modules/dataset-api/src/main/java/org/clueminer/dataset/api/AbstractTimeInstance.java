@@ -160,7 +160,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
      * {@inheritDoc }
      */
     @Override
-    public Vector<E> subtract(double num) {
+    public Vector<E> minus(double num) {
         Vector<E> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
             res.set(i, this.get(i) - num);

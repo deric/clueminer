@@ -17,7 +17,7 @@ public interface Vector<T extends Number> {
      * @return
      */
     @Override
-    public boolean equals(Object o);
+    boolean equals(Object o);
 
     /**
      * Return the value of the vector at the given index as a generic
@@ -26,7 +26,7 @@ public interface Vector<T extends Number> {
      * @param index index to retrieve.
      * @return value at index.
      */
-    public T getValue(int index);
+    T getValue(int index);
 
     /**
      * Return double representation of the value. Most of computations are done
@@ -36,7 +36,7 @@ public interface Vector<T extends Number> {
      * @param index in vector starting from 0
      * @return value at given position
      */
-    public double get(int index);
+    double get(int index);
 
     /**
      * Returns the hash code as the sum of the vectors elements, normalized to
@@ -45,21 +45,21 @@ public interface Vector<T extends Number> {
      * @return
      */
     @Override
-    public int hashCode();
+    int hashCode();
 
     /**
      * Return the size of the {@code Vector}.
      *
      * @return size of the vector.
      */
-    public int size();
+    int size();
 
     /**
      * Returns the magnitude of this vector
      *
      * @return
      */
-    public double magnitude();
+    double magnitude();
 
     /**
      * Computes dot product of this and another vector
@@ -67,7 +67,7 @@ public interface Vector<T extends Number> {
      * @param v the other vector
      * @return the dot product of this vector and another
      */
-    public double dot(Vector v);
+    double dot(Vector v);
 
     /**
      * Return p-Norm
@@ -75,7 +75,7 @@ public interface Vector<T extends Number> {
      * @param p
      * @return
      */
-    public double pNorm(double p);
+    double pNorm(double p);
 
     /**
      * Set the value in the vector (optional operation).
@@ -83,7 +83,7 @@ public interface Vector<T extends Number> {
      * @param index index to set.
      * @param value value to set in the vector.
      */
-    public void set(int index, Number value);
+    void set(int index, Number value);
 
     /**
      * Adds other to this and return a new instance of Vector with the result
@@ -91,7 +91,7 @@ public interface Vector<T extends Number> {
      * @param other
      * @return
      */
-    public Vector<T> add(Vector<T> other);
+    Vector<T> add(Vector<T> other);
 
     /**
      * Adds scalar num to each member of the Vector and returns new Vector
@@ -100,7 +100,7 @@ public interface Vector<T extends Number> {
      * @param num
      * @return
      */
-    public Vector<T> add(double num);
+    Vector<T> add(double num);
 
     /**
      * Subtract scalar num form each member of this Vector and return a new
@@ -109,13 +109,29 @@ public interface Vector<T extends Number> {
      * @param num
      * @return
      */
-    public Vector<T> subtract(double num);
+    Vector<T> minus(double num);
+
+    /**
+     * Subtract other from this vector
+     *
+     * @param other
+     * @return
+     */
+    Vector<T> minus(Vector<T> other);
+
+    /**
+     * Multiply vector by a scalar number
+     *
+     * @param scalar
+     * @return
+     */
+    Vector<T> times(double scalar);
 
     /**
      * Will return the same underlying Vector structure without any values.
      *
      * @return empty Vector structure with the same length.
      */
-    public Vector<T> duplicate();
+    Vector<T> duplicate();
 
 }

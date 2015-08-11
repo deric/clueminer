@@ -278,12 +278,35 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public Vector<Double> add(Vector<Double> other) {
-        if (this.size() != other.size()) {
-            throw new IllegalArgumentException("Vectors of different sizes cannot be added");
-        }
+        checkForSameSize(other);
         Vector<Double> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
             res.set(i, getDouble(i) + other.getValue(i));
+        }
+        return res;
+    }
+
+    private void checkForSameSize(Vector<Double> other) {
+        if (this.size() != other.size()) {
+            throw new IllegalArgumentException("Vectors of different sizes cannot be added");
+        }
+    }
+
+    @Override
+    public Vector<Double> minus(Vector<Double> other) {
+        checkForSameSize(other);
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getDouble(i) - other.getValue(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<Double> times(double scalar) {
+        Vector<Double> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getDouble(i) * scalar);
         }
         return res;
     }

@@ -14,7 +14,7 @@ import org.clueminer.math.Vector;
  *
  * @author Keith Stevens
  */
-public class ScaledDoubleVector implements DoubleVector {
+public class ScaledDoubleVector extends AbstractDoubleVector implements DoubleVector {
 
     /**
      * The original vector.
@@ -28,6 +28,7 @@ public class ScaledDoubleVector implements DoubleVector {
     /**
      * Creates a new {@link ScaledDoubleVector} that decorates a given {@link
      * DoubleVector} by scaling each value in {@code vector} by {@code scale}.
+     *
      * @param vector
      * @param scale
      */
@@ -73,6 +74,7 @@ public class ScaledDoubleVector implements DoubleVector {
 
     /**
      * Returns the vector whose values are scaled by this instance
+     *
      * @return
      */
     public DoubleVector getBackingVector() {
@@ -82,6 +84,7 @@ public class ScaledDoubleVector implements DoubleVector {
     /**
      * Returns the scalar multiple used by this instance to change the values of
      * the backing vector
+     *
      * @return
      */
     public double getScalar() {
@@ -176,32 +179,9 @@ public class ScaledDoubleVector implements DoubleVector {
         return Math.pow(norm, 1.0 / p);
     }
 
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public Vector<Double> add(double num) {
-        Vector<Double> res = duplicate();
-        for (int i = 0; i < this.size(); i++) {
-            res.set(i, this.get(i) + num);
-        }
-        return res;
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public Vector<Double> subtract(double num) {
-        Vector<Double> res = duplicate();
-        for (int i = 0; i < this.size(); i++) {
-            res.set(i, this.get(i) - num);
-        }
-        return res;
-    }
-
     @Override
     public Vector<Double> duplicate() {
         return new ScaledDoubleVector(vector, scale);
     }
+
 }

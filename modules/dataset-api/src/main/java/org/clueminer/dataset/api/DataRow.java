@@ -130,7 +130,7 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
      * {@inheritDoc }
      */
     @Override
-    public Vector<T> subtract(double num) {
+    public Vector<T> minus(double num) {
         Vector<T> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
             res.set(i, this.get(i) - num);

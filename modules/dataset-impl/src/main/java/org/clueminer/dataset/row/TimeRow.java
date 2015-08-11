@@ -164,9 +164,39 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         set(index, value.doubleValue());
     }
 
+    private void checkForSameSize(Vector other) {
+        if (this.size() != other.size()) {
+            throw new IllegalArgumentException("Vectors of different sizes cannot be added");
+        }
+    }
+
     @Override
-    public Vector<E> add(Vector<E> other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Vector add(Vector<E> other) {
+        checkForSameSize(other);
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) + other.get(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<E> minus(Vector<E> other) {
+        checkForSameSize(other);
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) - other.get(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<E> times(double scalar) {
+        Vector<E> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, value(i) * scalar);
+        }
+        return res;
     }
 
     /**

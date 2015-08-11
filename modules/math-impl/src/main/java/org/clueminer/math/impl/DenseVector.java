@@ -9,7 +9,8 @@ import org.clueminer.math.Vector;
 
 /**
  * A {@code Vector} where all values are held in memory. The underlying
- * implementation is simply an array of doubles. <p>
+ * implementation is simply an array of doubles.
+ * <p>
  *
  * @author Keith Stevens
  * @author Tomas Barton
@@ -77,6 +78,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
      * @return
      */
     @Override
@@ -88,6 +90,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
      * @param index
      * @return
      */
@@ -103,6 +106,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
      * @return
      */
     @Override
@@ -119,6 +123,9 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
+     * @param index
+     * @param value
      */
     @Override
     public void set(int index, double value) {
@@ -128,6 +135,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
      * @return
      */
     @Override
@@ -137,6 +145,7 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
 
     /**
      * {@inheritDoc}
+     *
      * @return
      */
     @Override
@@ -144,19 +153,10 @@ public class DenseVector extends AbstractDoubleVector implements Serializable {
         return vector.length;
     }
 
-    @Override
-    public Vector<Double> add(Vector<Double> other) {
-        double v;
-        int length = other.size();
-        for (int i = 0; i < length; ++i) {
-            v = other.getValue(i) + this.getValue(i);
-            this.set(i, v);
-        }
-        return this;
-    }
 
     @Override
     public Vector<Double> duplicate() {
         return new DenseVector(this.size());
     }
+
 }

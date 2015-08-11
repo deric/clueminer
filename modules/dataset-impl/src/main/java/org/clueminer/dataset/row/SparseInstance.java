@@ -1,9 +1,18 @@
 package org.clueminer.dataset.row;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.math.Vector;
 
 /**
  * Sparse instance stores data in HashMap which is suitable for instances with
@@ -19,7 +28,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
      * @TODO consider performance when replacing with SortedMap<whatever>
      * myNewMap = new TreeMap<whatever>(myOldMap);
      */
-    private HashMap<Integer, Double> data = new HashMap<Integer, Double>();
+    private HashMap<Integer, Double> data = new HashMap<>();
     private double defaultValue;
     /**
      * @FIXME this is handy especially when converting dataset to other formats
@@ -76,12 +85,12 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
      */
     @Override
     public int put(double value) {
-        int index = maxKey + 1;
-        while (data.containsKey(index)) {
-            index++;
+        int idx = maxKey + 1;
+        while (data.containsKey(idx)) {
+            idx++;
         }
-        set(index, value);
-        checkIndexInterval(index);
+        set(idx, value);
+        checkIndexInterval(idx);
         return this.size();
     }
 
@@ -221,7 +230,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     @Override
     public Instance copy() {
         SparseInstance out = new SparseInstance();
-        out.data = new HashMap<Integer, Double>();
+        out.data = new HashMap<>();
         out.data.putAll(this.data);
         out.defaultValue = this.defaultValue;
         out.setClassValue(this.classValue());
@@ -248,7 +257,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
      */
     @Override
     public String toString(String separator) {
-        List<Integer> keys = new ArrayList<Integer>(data.keySet());
+        List<Integer> keys = new ArrayList<>(data.keySet());
         Collections.sort(keys);
 
         StringBuilder sb = new StringBuilder();
@@ -291,7 +300,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     }
 
     public TreeSet<Integer> keySet() {
-        TreeSet<Integer> set = new TreeSet<Integer>();
+        TreeSet<Integer> set = new TreeSet<>();
         set.addAll(data.keySet());
         return set;
     }
@@ -352,6 +361,16 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     @Override
     public org.clueminer.math.Vector duplicate() {
         return new SparseInstance(this.size());
+    }
+
+    @Override
+    public Vector minus(Vector other) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Vector times(double scalar) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     class SparseInstanceIterator implements Iterator<Double> {

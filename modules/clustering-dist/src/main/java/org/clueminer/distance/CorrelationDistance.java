@@ -63,8 +63,8 @@ public class CorrelationDistance extends SymmetricDistance implements DistanceMe
         meanX = sumX / x.size();
         meanY = sumY / y.size();
 
-        Vector<Double> u = x.subtract(meanX);
-        Vector<Double> v = y.subtract(meanY);
+        Vector<Double> u = x.minus(meanX);
+        Vector<Double> v = y.minus(meanY);
 
         //rest is same as Cosine distance
         double denom = u.pNorm(2) * v.pNorm(2);

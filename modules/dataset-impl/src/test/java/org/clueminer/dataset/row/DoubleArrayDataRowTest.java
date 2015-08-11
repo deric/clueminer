@@ -3,7 +3,10 @@ package org.clueminer.dataset.row;
 import org.clueminer.math.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -410,7 +413,7 @@ public class DoubleArrayDataRowTest {
     @Test
     public void testSubtract_double() {
         Vector<Double> orig = new DoubleArrayDataRow(new double[]{5, 5, 5});
-        Vector<Double> upd = orig.subtract(1);
+        Vector<Double> upd = orig.minus(1);
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
@@ -436,6 +439,13 @@ public class DoubleArrayDataRowTest {
 
     @Test
     public void testDuplicate() {
+        Vector<Double> orig = new DoubleArrayDataRow(new double[]{1, 3, 8});
+        Vector<Double> dup = orig.duplicate();
+
+        for (int i = 0; i < orig.size(); i++) {
+            //duplicated vector is empty
+            assertNotSame(orig.get(i), dup.get(i));
+        }
     }
 
     @Test
@@ -444,5 +454,32 @@ public class DoubleArrayDataRowTest {
 
     @Test
     public void testSetUnknown() {
+    }
+
+    @Test
+    public void testMinus() {
+        Vector<Double> orig = new DoubleArrayDataRow(new double[]{5, 5, 5});
+        Vector<Double> other = new DoubleArrayDataRow(new double[]{1, 1, 1});
+        Vector<Double> upd = orig.minus(other);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(5.0, orig.get(i), delta);
+            //new one should be updated
+            assertEquals(4.0, upd.get(i), delta);
+        }
+    }
+
+    @Test
+    public void testTimes() {
+        Vector<Double> orig = new DoubleArrayDataRow(new double[]{2, 2, 2});
+        Vector<Double> upd = orig.times(2.0);
+
+        for (int i = 0; i < orig.size(); i++) {
+            //original shoud not change
+            assertEquals(2.0, orig.get(i), delta);
+            //new one should be updated
+            assertEquals(4.0, upd.get(i), delta);
+        }
     }
 }

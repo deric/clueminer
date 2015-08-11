@@ -71,6 +71,8 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
 
     /**
      * Returns the desired data for the given index.
+     *
+     * @return
      */
     @Override
     protected double getValue(int index, double defaultValue) {
@@ -230,14 +232,18 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
         return Math.sqrt(m);
     }
 
-    @Override
-    public Vector<Integer> add(Vector<Integer> other) {
+    private void checkForSameSize(Vector<Integer> other) {
         if (this.size() != other.size()) {
             throw new IllegalArgumentException("Vectors of different sizes cannot be added");
         }
+    }
+
+    @Override
+    public Vector<Integer> add(Vector<Integer> other) {
+        checkForSameSize(other);
         Vector<Integer> res = duplicate();
         for (int i = 0; i < this.size(); i++) {
-            res.set(i, getValue(i).doubleValue() + other.getValue(i).doubleValue());
+            res.set(i, getValue(i) + other.getValue(i));
         }
         return res;
     }
@@ -256,6 +262,25 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     @Override
     public Vector<Integer> duplicate() {
         return new IntegerDataRow(this.size());
+    }
+
+    @Override
+    public Vector<Integer> minus(Vector<Integer> other) {
+        checkForSameSize(other);
+        Vector<Integer> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getValue(i) - other.getValue(i));
+        }
+        return res;
+    }
+
+    @Override
+    public Vector<Integer> times(double scalar) {
+        Vector<Integer> res = duplicate();
+        for (int i = 0; i < this.size(); i++) {
+            res.set(i, getValue(i) * scalar);
+        }
+        return res;
     }
 
     class InstanceValueIterator implements Iterator<Integer> {
