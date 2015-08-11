@@ -13,6 +13,7 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.clueminer.math.impl.DenseVector;
 import org.clueminer.math.impl.Stats;
+import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.Props;
@@ -308,6 +309,22 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
                 value = cols[i].dot(cols[j]);
                 wg.set(i, j, value);
             }
+        }
+        return wg;
+    }
+
+    /**
+     * Computes within group (cluster) scatter matrix
+     *
+     * @param clusters
+     * @return
+     */
+    public Matrix withinGroupScatter(Clustering<? extends Cluster> clusters) {
+        //number of dimensions
+        int m = clusters.get(0).attributeCount();
+        Matrix wg = new JMatrix(m, m);
+        for (Cluster clust : clusters) {
+            wg.plusEquals(wgScatter(clust));
         }
         return wg;
     }

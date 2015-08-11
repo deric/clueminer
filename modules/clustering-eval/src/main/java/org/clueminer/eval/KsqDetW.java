@@ -22,7 +22,6 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -33,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class KsqDetW extends AbstractEvaluator {
+public class KsqDetW extends AbstractEvaluator implements InternalEvaluator {
 
     private static final String name = "KsqDetW";
     private static final long serialVersionUID = 3727657004516559539L;
@@ -53,13 +52,7 @@ public class KsqDetW extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        //number of dimensions
-        int m = clusters.get(0).attributeCount();
-
-        Matrix wg = new JMatrix(m, m);
-        for (Cluster clust : clusters) {
-            wg.plusEquals(wgScatter(clust));
-        }
+        Matrix wg = withinGroupScatter(clusters);
 
         return clusters.size() * clusters.size() * wg.det();
     }

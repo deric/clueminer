@@ -30,49 +30,31 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class DetRatio extends AbstractEvaluator implements InternalEvaluator {
+public class LogDetRatio extends AbstractEvaluator implements InternalEvaluator {
 
-    private static String NAME = "DetRatio";
-    private static final long serialVersionUID = -6861450793005245212L;
+    private static final String name = "Log Det Ratio";
+    private static final long serialVersionUID = -353270997388847921L;
 
-    public DetRatio() {
+    public LogDetRatio() {
         dm = EuclideanDistance.getInstance();
     }
 
-    public DetRatio(DistanceMeasure dist) {
-        this.dm = dist;
+    public LogDetRatio(DistanceMeasure distance) {
+        this.dm = distance;
     }
 
     @Override
     public String getName() {
-        return NAME;
+        return name;
     }
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        //int n = clusters.instancesCount();
-        //int k = clusters.size();
-        //global centroid
-        //Instance gc = clusters.getCentroid();
+        int n = clusters.instancesCount();
 
-        /*Matrix bg = new SymmetricMatrixDiag(k);
-
-         Instance x, y;
-         Vector dx, dy;
-
-         for (int i = 0; i < k; i++) {
-         x = clusters.get(i).getCentroid();
-         dx = x.minus(gc).times(x.size());
-         for (int j = 0; j <= i; j++) {
-         y = clusters.get(j).getCentroid();
-         dy = y.minus(gc);
-         bg.set(i, j, dx.dot(dy));
-         }
-         }*/
         Matrix t = totalDispersion(clusters);
         Matrix wg = withinGroupScatter(clusters);
-
-        return t.det() / wg.det();
+        return n * Math.log(t.det() / wg.det());
     }
 
     @Override

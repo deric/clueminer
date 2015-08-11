@@ -24,13 +24,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class DetRatioTest {
+public class LogDetRatioTest {
 
-    private final DetRatio subject;
+    private final LogDetRatio subject;
     private static final double delta = 1e-9;
 
-    public DetRatioTest() {
-        subject = new DetRatio();
+    public LogDetRatioTest() {
+        subject = new LogDetRatio();
     }
 
     @Test
@@ -46,11 +46,13 @@ public class DetRatioTest {
      * Check against definition (and tests in R package clusterCrit)
      * https://cran.r-project.org/web/packages/clusterCrit/index.html
      *
+     * NOTE: There's a small problem with precision of floating point
+     * operations. First 7 decimal digits seems to match.
      */
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        //clustCrit: 964.208175287163
-        assertEquals(964.208175287163, score, delta);
+        //clustCrit: 2748.52288830593
+        assertEquals(2748.52288830593, score, delta);
     }
 }

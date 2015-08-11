@@ -27,7 +27,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Similar index to Calinski-Harabasz index
+ * Similar index to Calinski-Harabasz index {@link CalinskiHarabasz}
  *
  * @author deric
  */
