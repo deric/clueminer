@@ -245,7 +245,14 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix plus(Matrix B) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkMatrixDimensions(B);
+        Matrix C = new JMatrix(n, n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                C.set(i, j, get(i, j) + B.get(i, j));
+            }
+        }
+        return C;
     }
 
     @Override
@@ -308,12 +315,21 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Sum of the diagonal elements
+     *
+     * @return
+     */
     @Override
     public double trace() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double t = 0;
+        for (int i = 0; i < n; i++) {
+            t += get(i, i);
+        }
+        return t;
     }
 
-    public static SymmetricMatrix random(int m) {
+    public static SymmetricMatrixDiag random(int m) {
         return random(m, m);
     }
 
@@ -324,8 +340,8 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
      * @param n Number of columns.
      * @return An m-by-n matrix with uniformly distributed random elements.
      */
-    public static SymmetricMatrix random(int m, int n) {
-        SymmetricMatrix A = new SymmetricMatrix(m, n);
+    public static SymmetricMatrixDiag random(int m, int n) {
+        SymmetricMatrixDiag A = new SymmetricMatrixDiag(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j <= i; j++) {
                 A.set(i, j, Math.random());

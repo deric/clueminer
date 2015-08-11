@@ -19,7 +19,11 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -28,13 +32,17 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BanfeldRaftery extends AbstractEvaluator {
+public class DetRatio extends AbstractEvaluator {
 
-    private static final String NAME = "Banfeld-Raftery";
-    private static final long serialVersionUID = -6474798417487400001L;
+    private static String NAME = "DetRatio";
+    private static final long serialVersionUID = -3222061698654228829L;
 
-    public BanfeldRaftery() {
+    public DetRatio() {
         dm = EuclideanDistance.getInstance();
+    }
+
+    public DetRatio(DistanceMeasure dist) {
+        this.dm = dist;
     }
 
     @Override
@@ -44,18 +52,36 @@ public class BanfeldRaftery extends AbstractEvaluator {
 
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
-        double score = 0.0;
-        double tmp;
+        Instance curr = clusters.get(0).get(0);
+        //int n = clusters.instancesCount();
+        //number of dimensions
+        int m = curr.size();
+        //int k = clusters.size();
+        //global centroid
+        //Instance gc = clusters.getCentroid();
 
-        for (Cluster clust : clusters) {
-            tmp = sumOfSquaredError(clust) / clust.size();
-            //avoid undefined expressions
-            if (tmp > 0) {
-                score += clust.size() * Math.log(tmp);
+        Matrix t = totalDispersion(clusters);
+        /*Matrix bg = new SymmetricMatrixDiag(k);
+
+        Instance x, y;
+        Vector dx, dy;
+
+        for (int i = 0; i < k; i++) {
+            x = clusters.get(i).getCentroid();
+            dx = x.minus(gc).times(x.size());
+            for (int j = 0; j <= i; j++) {
+                y = clusters.get(j).getCentroid();
+                dy = y.minus(gc);
+                bg.set(i, j, dx.dot(dy));
             }
+        }*/
+
+        Matrix wg = new JMatrix(m, m);
+        for (Cluster clust : clusters) {
+            wg = wg.plus(wgScatter(clust));
         }
 
-        return score;
+        return t.det() / wg.det();
     }
 
     @Override

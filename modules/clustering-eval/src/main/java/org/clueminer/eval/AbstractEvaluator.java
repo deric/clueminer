@@ -10,6 +10,10 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.Vector;
+import org.clueminer.math.impl.DenseVector;
+import org.clueminer.math.impl.Stats;
+import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.stats.AttrNumStats;
 import org.clueminer.utils.Props;
 
@@ -203,6 +207,144 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
             }
         }
         return wgss;
+    }
+
+    /**
+     * We use centered column vectors of the matrix
+     *
+     * @param clusters
+     * @return
+     */
+    public Matrix totalDispersion(Clustering<? extends Cluster> clusters) {
+        Instance curr = clusters.get(0).get(0);
+        int n = clusters.instancesCount();
+        //number of dimensions
+        int m = curr.size();
+        Matrix t = new SymmetricMatrixDiag(m);
+        double value;
+
+        Vector[] cols = new Vector[m];
+        double[] mu = new double[m];
+        for (int j = 0; j < m; j++) {
+            cols[j] = new DenseVector(n);
+        }
+        Iterator<Instance> it = clusters.instancesIterator();
+        int l = 0;
+        while (it.hasNext()) {
+            curr = it.next();
+            for (int j = 0; j < m; j++) {
+                value = curr.get(j);
+                mu[j] += value;
+                cols[j].set(l, value);
+            }
+            l++;
+        }
+        //compute average for each column
+        //double var;
+        for (int j = 0; j < m; j++) {
+            mu[j] = mu[j] / l;
+            //var = Stats.variance(cols[j], false);
+        }
+        //center columns
+        it = clusters.instancesIterator();
+        l = 0;
+        while (it.hasNext()) {
+            curr = it.next();
+            for (int j = 0; j < m; j++) {
+                cols[j].set(l, curr.get(j) - mu[j]);
+            }
+            l++;
+        }
+
+        Vector dx, dy;
+        //trace matrix
+        for (int i = 0; i < m; i++) {
+            dx = cols[i];
+            for (int j = 0; j <= i; j++) {
+                dy = cols[j];
+                value = dx.dot(dy);
+                t.set(i, j, value);
+            }
+        }
+
+        return t;
+    }
+
+    /**
+     * Within-group (cluster) scatter
+     *
+     * @param clust
+     * @return
+     */
+    public Matrix wgScatter(Cluster clust) {
+        double value;
+        int m = clust.attributeCount();
+        Instance curr;
+        //column vectors
+        Vector[] cols = new Vector[m];
+        Matrix wg = new SymmetricMatrixDiag(m);
+        double[] mu = new double[m];
+        for (int j = 0; j < m; j++) {
+            cols[j] = new DenseVector(clust.size());
+        }
+        for (int i = 0; i < clust.size(); i++) {
+            curr = clust.get(i);
+            for (int j = 0; j < m; j++) {
+                value = curr.get(j);
+                mu[j] += value;
+                cols[j].set(i, value);
+            }
+        }
+        //compute average for each column
+        for (int j = 0; j < m; j++) {
+            mu[j] = mu[j] / clust.size();
+            //subtract mean value
+            cols[j] = cols[j].minus(mu[j]);
+        }
+
+        //trace matrix
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j <= i; j++) {
+                value = cols[i].dot(cols[j]);
+                wg.set(i, j, value);
+            }
+        }
+        return wg;
+    }
+
+    /**
+     * Trace of within-group matrix
+     *
+     * @param clust
+     * @return
+     */
+    public double trwg(Cluster clust) {
+        double trace = 0.0;
+        double value;
+        int m = clust.attributeCount();
+        Instance curr;
+        //column vectors
+        Vector[] cols = new Vector[m];
+        int k = clust.size();
+        for (int j = 0; j < m; j++) {
+            cols[j] = new DenseVector(clust.size());
+        }
+        for (int i = 0; i < clust.size(); i++) {
+            curr = clust.get(i);
+            for (int j = 0; j < m; j++) {
+                value = curr.get(j);
+                cols[j].set(i, value);
+            }
+        }
+        //compute average for each column
+        double var;
+
+        for (int j = 0; j < m; j++) {
+            var = k * Stats.variance(cols[j], false);
+            trace += var;
+        }
+
+        return trace;
     }
 
 }

@@ -24,32 +24,22 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class BanfeldRafteryTest extends InternalTest {
+public class DetRatioTest {
 
-    private final BanfeldRaftery subject;
+    private final DetRatio subject;
     private static final double delta = 1e-9;
 
-    public BanfeldRafteryTest() {
-        subject = new BanfeldRaftery();
+    public DetRatioTest() {
+        subject = new DetRatio();
     }
 
     @Test
     public void testIris() {
-        double s1 = subject.score(FakeClustering.iris());
-        double s2 = subject.score(FakeClustering.irisMostlyWrong());
-        double s3 = subject.score(FakeClustering.irisWrong5());
-        assertEquals(true, subject.isBetter(s1, s2));
-        assertEquals(true, subject.isBetter(s1, s3));
-    }
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisWrong4());
 
-    @Test
-    public void testCompareScore() {
-        assertEquals(true, subject.isBetter(2, 20));
-    }
-
-    @Test
-    public void testOneClassPerCluster() {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
     /**
@@ -62,8 +52,8 @@ public class BanfeldRafteryTest extends InternalTest {
     @Test
     public void testClusterCrit() {
         double score = subject.score(FakeClustering.int100p4());
-        //clusterCrit = -534.545225046529
-        assertEquals(-534.545225046529, score, delta);
+        //clustCrit: 964.208175287163
+        //TODO: fix index computation
+        assertEquals(964.208175287163, score, delta);
     }
-
 }

@@ -17,6 +17,7 @@
 package org.clueminer.math.matrix;
 
 import java.util.HashSet;
+import org.clueminer.math.Matrix;
 import org.clueminer.utils.Dump;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -95,4 +96,20 @@ public class SymmetricMatrixDiagTest {
         }
         assertEquals(C.triangleSize(n), hash.size());
     }
+
+    @Test
+    public void testPlus() {
+        int n = 4;
+        //initialize matrix
+        A = SymmetricMatrixDiag.random(n);
+        Matrix X = A.plus(A);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                //should be 2 * A
+                assertEquals(2 * A.get(i, j), X.get(i, j), eps);
+            }
+        }
+    }
+
 }

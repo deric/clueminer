@@ -49,11 +49,15 @@ public abstract class AbstractMatrix implements Matrix {
     }
 
     /**
-     * Check if size(A) == size(B) *
+     * Check if size(A) == size(B)
+     *
+     *
+     * @param B
      */
     protected void checkMatrixDimensions(Matrix B) {
         if (B.rowsCount() != this.rowsCount() || B.columnsCount() != this.columnsCount()) {
-            throw new IllegalArgumentException("Matrix dimensions must agree.");
+            throw new IllegalArgumentException("Matrix dimensions must agree. ("
+                    + this.rowsCount() + ", " + this.columnsCount() + ") vs. (" + B.rowsCount() + ", " + B.columnsCount() + ")");
         }
     }
 

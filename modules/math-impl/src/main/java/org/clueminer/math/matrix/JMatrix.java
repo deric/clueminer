@@ -582,15 +582,13 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
     @Override
     public Matrix plus(Matrix B) {
         checkMatrixDimensions(B);
-        Matrix X = new JMatrix(m, n);
-        double[][] C = X.getArray();
-        double[][] Barray = B.getArray();
+        Matrix C = new JMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                C[i][j] = A[i][j] + Barray[i][j];
+                C.set(i, j, A[i][j] + B.get(i, j));
             }
         }
-        return X;
+        return C;
     }
 
     /**
