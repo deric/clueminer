@@ -27,8 +27,8 @@ public class ImprovedSimilarity extends PairMerger {
         LinkedList<Node> clusterNodes = cluster1.getNodes();
         clusterNodes.addAll(cluster2.getNodes());
         addIntoTree(clusterIndex1, clusterIndex2);
-        int index1 = max(clusterIndex2, clusterIndex1);
-        int index2 = min(clusterIndex2, clusterIndex1);
+        int index1 = Math.max(clusterIndex2, clusterIndex1);
+        int index2 = Math.min(clusterIndex2, clusterIndex1);
         double edgeCountSum = cluster1.getEdgeCount() + cluster2.getEdgeCount() + clusterMatrix.get(index1).get(index2).counter;
 
         double newACL = cluster1.getACL() * (cluster1.getEdgeCount() / edgeCountSum)

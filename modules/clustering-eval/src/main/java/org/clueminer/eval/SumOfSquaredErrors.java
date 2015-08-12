@@ -3,7 +3,6 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
 import org.clueminer.utils.Props;
@@ -38,7 +37,7 @@ public class SumOfSquaredErrors extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double sum = 0;
-        Dataset clust;
+        Cluster clust;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             double tmpSum = 0;

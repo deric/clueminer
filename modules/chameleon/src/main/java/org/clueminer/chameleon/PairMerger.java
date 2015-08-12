@@ -15,7 +15,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Bisection;
@@ -52,12 +51,13 @@ public abstract class PairMerger extends Merger {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         buildQueue();
-        initiateTree(clusterList);
+        nodes = initiateTree(clusterList);
+        height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
-            singleMerge(clusterList);
+            singleMerge();
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
@@ -67,35 +67,11 @@ public abstract class PairMerger extends Merger {
     }
 
     /**
-     * Creates tree leaves and fills them with nodes.
-     *
-     * @param clusterList Initial clusters
-     */
-    private void initiateTree(ArrayList<LinkedList<Node>> clusterList) {
-        nodes = new DendroNode[(2 * clusterList.size() - 1)];
-        clusterCount = clusterList.size();
-        height = 0;
-        for (int i = 0; i < clusterList.size(); i++) {
-            nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
-            nodes[i].setHeight(0);
-            nodes[i].setLevel(0);
-        }
-    }
-
-    private LinkedList<Instance> createInstanceList(LinkedList<Node> nodes) {
-        LinkedList<Instance> out = new LinkedList<>();
-        for (Node node : nodes) {
-            out.add(node.getInstance());
-        }
-        return out;
-    }
-
-    /**
      * Merges two most similar clusters
      *
      * @param clusterList
      */
-    private void singleMerge(ArrayList<LinkedList<Node>> clusterList) {
+    private void singleMerge() {
         Element curr = pq.poll();
         while (blacklist.contains(curr.firstCluster) || blacklist.contains(curr.secondCluster)) {
             curr = pq.poll();
@@ -198,12 +174,12 @@ public abstract class PairMerger extends Merger {
             }
             int index1, index2;
             //Swap indices to make the first index bigger (externalProperties matrix is triangular)
-            index1 = max(i, firstCluster);
-            index2 = min(i, firstCluster);
+            index1 = Math.max(i, firstCluster);
+            index2 = Math.min(i, firstCluster);
             ExternalProperties firstClusterProperties = clusterMatrix.get(index1).get(index2);
 
-            index1 = max(i, secondCluster);
-            index2 = min(i, secondCluster);
+            index1 = Math.max(i, secondCluster);
+            index2 = Math.min(i, secondCluster);
             ExternalProperties secondClusterProperties = clusterMatrix.get(index1).get(index2);
 
             ExternalProperties mergedProperties = new ExternalProperties();
@@ -247,20 +223,6 @@ public abstract class PairMerger extends Merger {
             output.add(cluster);
         }
         return output;
-    }
-
-    protected int max(int n1, int n2) {
-        if (n1 > n2) {
-            return n1;
-        }
-        return n2;
-    }
-
-    protected int min(int n1, int n2) {
-        if (n1 < n2) {
-            return n1;
-        }
-        return n2;
     }
 
 }

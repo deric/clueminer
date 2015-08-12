@@ -3,9 +3,12 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.partitioning.api.Bisection;
 
 /**
@@ -194,5 +197,30 @@ public abstract class Merger {
             return a;
         }
         return b;
+    }
+
+    /**
+     * Creates tree leaves and fills them with nodes.
+     *
+     * @param clusterList Initial clusters
+     * @return
+     */
+    protected DendroNode[] initiateTree(ArrayList<LinkedList<Node>> clusterList) {
+        DendroNode[] nodes = new DendroNode[(2 * clusterList.size() - 1)];
+        clusterCount = clusterList.size();
+        for (int i = 0; i < clusterList.size(); i++) {
+            nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
+            nodes[i].setHeight(0);
+            nodes[i].setLevel(0);
+        }
+        return nodes;
+    }
+
+    protected LinkedList<Instance> createInstanceList(LinkedList<Node> nodes) {
+        LinkedList<Instance> out = new LinkedList<>();
+        for (Node node : nodes) {
+            out.add(node.getInstance());
+        }
+        return out;
     }
 }

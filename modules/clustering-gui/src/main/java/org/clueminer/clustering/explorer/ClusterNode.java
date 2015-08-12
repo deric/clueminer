@@ -5,14 +5,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusteringController;
 import org.clueminer.dataset.api.Instance;
 import org.openide.ErrorManager;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
@@ -88,8 +86,7 @@ public class ClusterNode extends AbstractNode {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.selectCluster(cluster);
+            //TODO: implement
         }
     }
 
@@ -103,14 +100,12 @@ public class ClusterNode extends AbstractNode {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.groupCluster(cluster);
+            //TODO: implement
         }
 
         @Override
         public boolean isEnabled() {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            return cc.canGroup(cluster);
+            return false;
         }
     }
 
@@ -124,14 +119,12 @@ public class ClusterNode extends AbstractNode {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            cc.ungroupCluster(cluster);
+            //TODO
         }
 
         @Override
         public boolean isEnabled() {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            return cc.canUngroup(cluster);
+            return false;
         }
     }
 }

@@ -14,31 +14,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.eval;
-
-import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.distance.EuclideanDistance;
-import org.openide.util.lookup.ServiceProvider;
+package org.clueminer.clustering.api;
 
 /**
- * The only difference between this version and the standard one is applying
- * SQRT on Euclidean distances.
+ * Method for computing cost of merging two clusters
  *
  * @author deric
  */
-@ServiceProvider(service = InternalEvaluator.class)
-public class SilhoutetteSqrt extends Silhouette {
+public interface MergeEvaluation {
 
-    private static final String name = "Silhouette-sqrt";
-    private static final long serialVersionUID = -6749580294703273126L;
+    /**
+     * Method identification
+     *
+     * @return unique name
+     */
+    String getName();
 
-    public SilhoutetteSqrt() {
-        dm = EuclideanDistance.getInstance();
-    }
+    /**
+     * Compute cost of merging cluster A and cluster B and thus forming larger
+     * cluster C
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    double score(Cluster a, Cluster b);
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    /**
+     * Whether bigger values are better
+     *
+     * @return
+     */
+    boolean isMaximized();
 
 }

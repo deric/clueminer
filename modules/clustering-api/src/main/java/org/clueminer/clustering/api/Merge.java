@@ -1,5 +1,7 @@
 package org.clueminer.clustering.api;
 
+import java.io.Serializable;
+
 /**
  * A status object that represents the result of agglomerative merging of two
  * clusters. This class provides the information on which clusters were merged,
@@ -7,7 +9,7 @@ package org.clueminer.clustering.api;
  * clusters at the point at which they were merged.
  *
  */
-public class Merge implements java.io.Serializable {
+public class Merge implements Comparable, Serializable {
 
     private static final long serialVersionUID = 7366397676154738636L;
     private final int remainingCluster;
@@ -38,6 +40,8 @@ public class Merge implements java.io.Serializable {
 
     /**
      * Returns the ID of the cluster that was merged into another cluster.
+     *
+     * @return
      */
     public int mergedCluster() {
         return mergedCluster;
@@ -46,6 +50,8 @@ public class Merge implements java.io.Serializable {
     /**
      * Returns the ID of the clusters into which another cluster was merged,
      * i.e. all the data points in the merged cluster would now have this ID.
+     *
+     * @return
      */
     public int remainingCluster() {
         return remainingCluster;
@@ -53,6 +59,8 @@ public class Merge implements java.io.Serializable {
 
     /**
      * Returns the similarity of the two clusters at the time of their merging.
+     *
+     * @return
      */
     public double similarity() {
         return similarity;
@@ -65,4 +73,16 @@ public class Merge implements java.io.Serializable {
                 .append(remainingCluster).append(": ").append(similarity).append(")");
         return res.toString();
     }
+
+    @Override
+    public int compareTo(Object o) {
+        Merge e = (Merge) o;
+        if (similarity > e.similarity) {
+            return -1;
+        } else if (similarity < e.similarity) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

@@ -122,7 +122,7 @@ public class Silhouette extends AbstractEvaluator {
      * @param i        i-th cluster
      * @return
      */
-    private double minDistance(Instance x, Clustering<? extends Cluster> clusters, int i) {
+    protected double minDistance(Instance x, Clustering<? extends Cluster> clusters, int i) {
         double minDist = Double.MAX_VALUE;
         double clusterDist;
         Instance y;

@@ -7,9 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringController;
 import org.openide.nodes.AbstractNode;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
@@ -55,10 +53,7 @@ public class ClustersNode extends AbstractNode implements PropertyChangeListener
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            for (Cluster cluster : clusters) {
-                cc.selectCluster(cluster);
-            }
+
         }
     }
 
@@ -72,22 +67,11 @@ public class ClustersNode extends AbstractNode implements PropertyChangeListener
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            for (Cluster cluster : clusters) {
-                if (cc.canGroup(cluster)) {
-                    cc.groupCluster(cluster);
-                }
-            }
+
         }
 
         @Override
         public boolean isEnabled() {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            for (Cluster cluster : clusters) {
-                if (cc.canGroup(cluster)) {
-                    return true;
-                }
-            }
             return false;
         }
     }
@@ -102,22 +86,10 @@ public class ClustersNode extends AbstractNode implements PropertyChangeListener
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            for (Cluster cluster : clusters) {
-                if (cc.canUngroup(cluster)) {
-                    cc.ungroupCluster(cluster);
-                }
-            }
         }
 
         @Override
         public boolean isEnabled() {
-            ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
-            for (Cluster cluster : clusters) {
-                if (cc.canUngroup(cluster)) {
-                    return true;
-                }
-            }
             return false;
         }
     }
