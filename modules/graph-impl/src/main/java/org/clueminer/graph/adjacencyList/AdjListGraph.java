@@ -2,12 +2,12 @@ package org.clueminer.graph.adjacencyList;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -96,7 +96,7 @@ public class AdjListGraph implements Graph {
             return false;
         }
         idToIndex.put(node.getId(), nodes.size());
-        adjList.put(node, new HashSet<Neighbor>());
+        adjList.put(node, new TreeSet<Neighbor>());
         nodes.put(node.getId(), (AdjListNode) node);
         return true;
     }
