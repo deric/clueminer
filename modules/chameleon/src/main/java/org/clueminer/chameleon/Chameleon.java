@@ -186,8 +186,10 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
         if (maxPartitionSize == -1) {
             if (dataset.size() < 500) {
                 return 5;
+            } else if ((dataset.size() < 2000)) {
+                return dataset.size() / 100;
             } else {
-                return 10;
+                return dataset.size() / 200;
             }
         } else {
             return maxPartitionSize;
