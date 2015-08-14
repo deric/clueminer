@@ -5,7 +5,7 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
@@ -59,14 +59,14 @@ public class KMeansTest {
             data.attributeBuilder().create("petal width", BasicAttrType.NUMERICAL);
             FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
-            PartitioningClustering km = new KMeans();
+            ClusteringAlgorithm km = new KMeans();
             Props p = new Props();
             p.putInt("k", 3);
             /*
              * Cluster the data, it will be returned as an array of data sets,
              * with each dataset representing a cluster
              */
-            Clustering<? extends Cluster> clusters = km.partition(data, p);
+            Clustering<? extends Cluster> clusters = km.cluster(data, p);
             System.out.println("Cluster count: " + clusters.size());
             int i = 0;
             for (Cluster d : clusters) {
@@ -79,7 +79,7 @@ public class KMeansTest {
             //we have 3 classes there, we do NOT expect k-means to be sucesseful
             //in separating this 3 classes
             assertEquals(3, clusters.size());
-          //  ClusterEvaluation ci = new CIndex();
+            //  ClusterEvaluation ci = new CIndex();
             // System.out.println("CIndex= " + ci.score(clusters, data));
             //  ClusterEvaluation gamma = new Gamma();
             // System.out.println("gamma= " + gamma.score(clusters, data));
@@ -117,7 +117,7 @@ public class KMeansTest {
                 Props p = new Props();
                 p.putInt("k", 2);
                 p.putInt("iterations", 1);
-                cluster.partition(dataset, p);
+                cluster.cluster(dataset, p);
             }
         });
         t.start();

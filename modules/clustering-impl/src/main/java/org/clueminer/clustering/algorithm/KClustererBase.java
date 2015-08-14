@@ -5,7 +5,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceMeasure;
@@ -14,8 +14,8 @@ import org.clueminer.distance.api.DistanceMeasure;
  *
  * @author Tomas Barton
  */
-public abstract class KClustererBase extends AbstractClusteringAlgorithm implements PartitioningClustering {
-    
+public abstract class KClustererBase extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+
     @Override
     public DistanceMeasure getDistanceFunction() {
         return distanceFunction;
@@ -32,8 +32,9 @@ public abstract class KClustererBase extends AbstractClusteringAlgorithm impleme
      * assignments, and return a list of lists.
      *
      * @param assignments cluster assignments
-     * @param dataset the original data set, with data in the same order as was
-     * used to create the assignments array
+     * @param dataset     the original data set, with data in the same order as
+     *                    was
+     *                    used to create the assignments array
      * @return a final clustering
      */
     public static Clustering<Cluster> fromAssignment(Assignment assignments, Dataset<? extends Instance> dataset) {

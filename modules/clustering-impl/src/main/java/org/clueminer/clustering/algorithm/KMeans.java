@@ -5,7 +5,6 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
@@ -22,10 +21,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implements the K-means algorithms as described by Mac Queen in 1967.
  *
- * <bibtex> J. B. MacQueen (1967): "Some Methods for classification and Analysis
+ * @cite J. B. MacQueen (1967): "Some Methods for classification and Analysis
  * of Multivariate Observations, Proceedings of 5-th Berkeley Symposium on
  * Mathematical Statistics and Probability", Berkeley, University of California
- * Press, 1:281-297</bibtex>
+ * Press, 1:281-297
  *
  *
  * @author Thomas Abeel
@@ -33,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeans extends AbstractClusteringAlgorithm implements PartitioningClustering {
+public class KMeans extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
     public static final String K = "k";
 
@@ -87,10 +86,11 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
     /**
      * Execute the KMeans clustering algorithm on the data set that is provided.
      *
-     * @param data data set to cluster
+     * @param data   data set to cluster
+     * @param params set of algorithm parameters
      */
     @Override
-    public Clustering<? extends Cluster> partition(Dataset<? extends Instance> data, Props params) {
+    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> data, Props params) {
         if (data == null || data.isEmpty()) {
             throw new RuntimeException("The dataset should not be empty");
         }
@@ -242,11 +242,6 @@ public class KMeans extends AbstractClusteringAlgorithm implements PartitioningC
          */
         output.lookupAdd(data);
         return output;
-    }
-
-    @Override
-    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
-        return partition(dataset, props);
     }
 
     public void setRandom(Random rand) {

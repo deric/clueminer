@@ -6,7 +6,7 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -62,13 +62,13 @@ public class DunnIndexTest {
      */
     @Test
     public void testScore() throws IOException, FileNotFoundException {
-        PartitioningClustering km = new KMeans();
+        ClusteringAlgorithm km = new KMeans();
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> iris = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), iris, 4);
         Props p = new Props();
         p.putInt("k", 3);
-        Clustering clusters = km.partition(iris, p);
+        Clustering clusters = km.cluster(iris, p);
         System.out.println("dunn=" + subject.score(clusters));
 
     }

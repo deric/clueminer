@@ -13,8 +13,8 @@ import java.util.Map;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -177,9 +177,9 @@ public class KmeansBenchmark {
         Props p = new Props();
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
-            PartitioningClustering km = new KMeans();
+            ClusteringAlgorithm km = new KMeans();
             p.putInt("k", n);
-            Clustering<? extends Cluster> clusters = km.partition(data, p);
+            Clustering<? extends Cluster> clusters = km.cluster(data, p);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);
@@ -279,12 +279,12 @@ public class KmeansBenchmark {
 
     /**
      *
-     * @param data the dataset
+     * @param data  the dataset
      * @param kmin
      * @param kmax
      * @param kreal - known k for dataset
-     * @param x - attribute on axis x (start from 1)
-     * @param y - attribute on axis y (start from 1)
+     * @param x     - attribute on axis x (start from 1)
+     * @param y     - attribute on axis y (start from 1)
      * @throws IOException
      * @throws Exception
      */

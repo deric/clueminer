@@ -27,7 +27,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Consensus;
-import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.ConsensusFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -43,7 +42,7 @@ import org.uma.jmetal.solution.Solution;
  * @author deric
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeansBagging extends AbstractClusteringAlgorithm implements PartitioningClustering {
+public class KMeansBagging extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
     private static final String name = "K-Means bagging";
 
@@ -161,11 +160,6 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Partit
         }
 
         return res;
-    }
-
-    @Override
-    public Clustering<? extends Cluster> partition(Dataset<? extends Instance> dataset, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Props getDefaultProps() {

@@ -22,7 +22,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
@@ -159,9 +159,9 @@ public class BenchmarkTest {
         Props params = new Props();
         for (int n = kmin; n < kmax; n++) {
             long start = System.currentTimeMillis();
-            PartitioningClustering km = new KMeans();
+            ClusteringAlgorithm km = new KMeans();
             params.putInt("k", n);
-            Clustering<? extends Cluster> clusters = km.partition(data, params);
+            Clustering<? extends Cluster> clusters = km.cluster(data, params);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);

@@ -7,7 +7,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -63,9 +63,9 @@ public class CIndexTest {
         System.out.println("\t CIndex \t AIC \t BIC \t  SSE \t Gamma");
         Props p = new Props();
         for (int n = 2; n < 10; n++) {
-            PartitioningClustering km = new KMeans();
+            ClusteringAlgorithm km = new KMeans();
             p.putInt("k", n);
-            Clustering clusters = km.partition(data, p);
+            Clustering clusters = km.cluster(data, p);
 
             double cindScore = cind.score(clusters);
             double aicScore = aic.score(clusters);
@@ -148,9 +148,9 @@ public class CIndexTest {
         System.out.println("CIndex \t AIC \t BIC \t  SSE \t Gamma \t Tau \t G+ \t SumOfAvgPairwise \t MinMaxCut");
         Props p = new Props();
         for (int n = 2; n < 10; n++) {
-            PartitioningClustering km = new KMeans();
+            ClusteringAlgorithm km = new KMeans();
             p.putInt("k", n);
-            Clustering clusters = km.partition(data, p);
+            Clustering clusters = km.cluster(data, p);
 
             double score;
             for (j = 0; j < evalNum; j++) {

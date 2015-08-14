@@ -8,7 +8,7 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -40,13 +40,13 @@ public class CountingPairsTest extends ExternalTest {
         clusters = FakeClustering.iris();
 
         //now try some real clustering
-        PartitioningClustering km = new KMeans();
+        ClusteringAlgorithm km = new KMeans();
         Props p = new Props();
         p.putInt("k", 3);
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> irisDataset = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), irisDataset, 4);
-        iris = km.partition(irisDataset, p);
+        iris = km.cluster(irisDataset, p);
     }
 
     /**

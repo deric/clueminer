@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.BaseIndividual;
@@ -90,7 +89,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
             }
             data.add(copy);
         }
-        Clustering<? extends Cluster> result = ((PartitioningClustering) algorithm).partition(data, props);
+        Clustering<? extends Cluster> result = algorithm.cluster(data, props);
         Props p = result.getParams();
         for (int i = 0; i < weights.length; i++) {
             p.put("w(" + data.getAttribute(i).getName() + ")", String.format("%1$,.2f", weights[i]));

@@ -1,11 +1,10 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
-import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
@@ -16,7 +15,7 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
-public class PAM extends KClustererBase implements PartitioningClustering {
+public class PAM extends KClustererBase implements ClusteringAlgorithm {
 
     private static final String name = "PAM";
     protected int repeats = 1;
@@ -94,18 +93,6 @@ public class PAM extends KClustererBase implements PartitioningClustering {
      */
     public int guessK(Dataset<? extends Instance> dataset) {
         return (int) Math.sqrt(dataset.size() / 2);
-    }
-
-    @Override
-    public Clustering<Cluster> partition(Dataset<? extends Instance> dataset, Props params) {
-        Assignment assignments = new HardAssignment(dataset.size());
-        int[] medioids = selectMedioids(dataset);
-
-        return null;
-    }
-
-    private int[] selectMedioids(Dataset<? extends Instance> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

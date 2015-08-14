@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.PartitioningClustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
@@ -53,10 +53,10 @@ public class ClusterListTest {
 
     @Before
     public void setUp() throws IOException {
-        PartitioningClustering km = new KMeans();
+        ClusteringAlgorithm km = new KMeans();
         Props p = new Props();
         p.putInt("k", 3);
-        clusters = km.partition(data, p);
+        clusters = km.cluster(data, p);
     }
 
     @After
@@ -90,8 +90,6 @@ public class ClusterListTest {
     /**
      * Test of put method, of class ClusterList.
      */
-
-
     @Test
     public void testPut_rand_idx() {
         ClusterList subject = new ClusterList(10);
