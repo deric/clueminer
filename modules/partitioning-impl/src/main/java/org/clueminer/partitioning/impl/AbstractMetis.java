@@ -117,14 +117,14 @@ public abstract class AbstractMetis implements Partitioning {
         try {
             InputStream input = getClass().getResourceAsStream(resource);
             file = File.createTempFile("metis", ".tmp");
-            OutputStream out = new FileOutputStream(file);
-            int read;
-            byte[] bytes = new byte[1024];
+            try (OutputStream out = new FileOutputStream(file)) {
+                int read;
+                byte[] bytes = new byte[1024];
 
-            while ((read = input.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
             }
-            out.close();
             file.deleteOnExit();
         } catch (IOException ex) {
             System.err.println(ex.toString());

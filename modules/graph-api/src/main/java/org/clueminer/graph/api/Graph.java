@@ -356,11 +356,19 @@ public interface Graph {
     void ensureCapacity(int size);
 
     /**
-     * Export graph in the metis form
+     * Export graph in the metis format
      *
      * @param weighted whether the edge weights should be exported
      * @return
      */
     public String metisExport(boolean weighted);
+
+    /**
+     * Export a (hyper)graph into hmetis format. Each line is a hyperedge
+     *
+     * @param weighted
+     * @return
+     */
+    public String hMetisExport(boolean weighted);
 
 }

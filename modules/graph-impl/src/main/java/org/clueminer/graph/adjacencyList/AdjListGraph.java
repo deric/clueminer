@@ -404,6 +404,17 @@ public class AdjListGraph implements Graph {
         //nothing to do
     }
 
+    /**
+     * Export graph to METIS format. ID of node is given by line number. Node
+     * numbering start from 1
+     *
+     * {node count} {edges count}
+     *
+     * {neighbour1} {neighbour2} {neighbour3}
+     *
+     * @param weighted
+     * @return
+     */
     @Override
     public String metisExport(boolean weighted) {
         Node[] nodeMapping = new Node[getNodeCount()];
@@ -412,6 +423,37 @@ public class AdjListGraph implements Graph {
         }
         StringBuilder sb = new StringBuilder();
         sb.append(getNodeCount()).append(" ").append(getEdgeCount()).append("\n");
+        for (int i = 0; i < getNodeCount(); i++) {
+            String space = "";
+            for (Node neighbor : getNeighbors(nodeMapping[i])) {
+                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
+                space = " ";
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * {hyperedge cnt} {node cnt}
+     *
+     * //list of hyperedges goes here
+     *
+     * @param weighted
+     * @return
+     */
+    @Override
+    public String hMetisExport(boolean weighted) {
+        Node[] nodeMapping = new Node[getNodeCount()];
+        for (Node node : getNodes()) {
+            nodeMapping[idToIndex.get(node.getId())] = node;
+        }
+        StringBuilder sb = new StringBuilder();
+
+        //same number of nodes as hyperedges - a hyperedge is formed by node's neighbourhood
+        sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
         for (int i = 0; i < getNodeCount(); i++) {
             String space = "";
             for (Node neighbor : getNeighbors(nodeMapping[i])) {

@@ -214,6 +214,42 @@ public class AdjMatrixGraph implements Graph {
         return new EdgeCollectionIterator(edges);
     }
 
+    @Override
+    public String metisExport(boolean weighted) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNodeCount()).append(" ").append(getEdgeCount()).append("\n");
+        for (int i = 0; i < getNodeCount(); i++) {
+            String space = "";
+            for (Node neighbor : getNeighbors(nodes[i])) {
+                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
+                space = " ";
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @param weighted
+     * @return
+     */
+    @Override
+    public String hMetisExport(boolean weighted) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+        for (int i = 0; i < getNodeCount(); i++) {
+            String space = "";
+            for (Node neighbor : getNeighbors(nodes[i])) {
+                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
+                space = " ";
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     private class EdgeCollectionIterator implements EdgeIterable {
 
         private final LinkedList<Edge> edges;
@@ -425,7 +461,7 @@ public class AdjMatrixGraph implements Graph {
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
-     * @param k number of neighbors for each node
+     * @param k         number of neighbors for each node
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
@@ -453,21 +489,6 @@ public class AdjMatrixGraph implements Graph {
     @Override
     public int getIndex(Node node) {
         return idToIndex.get(node.getId());
-    }
-
-    @Override
-    public String metisExport(boolean weighted) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getNodeCount()).append(" ").append(getEdgeCount()).append("\n");
-        for (int i = 0; i < getNodeCount(); i++) {
-            String space = "";
-            for (Node neighbor : getNeighbors(nodes[i])) {
-                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
-                space = " ";
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
     }
 
 }

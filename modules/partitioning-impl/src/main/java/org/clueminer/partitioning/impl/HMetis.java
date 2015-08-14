@@ -45,7 +45,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
 
     @Override
     public void runMetis(Graph graph, int k) {
-        String metis = graph.metisExport(false);
+        String metis = graph.hMetisExport(false);
         try (PrintWriter writer = new PrintWriter("inputGraph", "UTF-8")) {
             writer.print(metis);
             writer.close();
