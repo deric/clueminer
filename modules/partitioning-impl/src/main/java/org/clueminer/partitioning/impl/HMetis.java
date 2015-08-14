@@ -28,6 +28,10 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * See hMETIS documentation for detailed options explanation
+ *
+ * TODO: currently we're calling directly Linux x64 binaries, make it platform
+ * independent
  *
  * @author deric
  */
@@ -37,6 +41,12 @@ public class HMetis extends AbstractMetis implements Partitioning {
     private static final String name = "hMETIS";
 
     private int ubFactor = 5;
+    private int nruns = 10;//default value used by smetis
+    private int rtype = 1;// 1-3
+    private int ctype = 1;// 1-5
+    private int vcycle = 1;// 0-3
+    private int reconst = 0;// 0-1
+    private int dbglvl = 0;
 
     @Override
     public String getName() {
@@ -49,12 +59,24 @@ public class HMetis extends AbstractMetis implements Partitioning {
         try (PrintWriter writer = new PrintWriter("inputGraph", "UTF-8")) {
             writer.print(metis);
             writer.close();
-            File metisFile = resource("shmetis");
+            File metisFile = resource("hmetis");
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
             p.waitFor();
             //run metis
-            p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " inputGraph " + String.valueOf(k) + " " + String.valueOf(ubFactor));
+            String space = " ";
+            StringBuilder sb = new StringBuilder(metisFile.getAbsolutePath());
+            sb.append(" inputGraph ")
+                    .append(String.valueOf(k)).append(space)
+                    .append(String.valueOf(ubFactor)).append(space)
+                    .append(String.valueOf(nruns)).append(space)
+                    .append(String.valueOf(ctype)).append(space)
+                    .append(String.valueOf(rtype)).append(space)
+                    .append(String.valueOf(vcycle)).append(space)
+                    .append(String.valueOf(reconst)).append(space)
+                    .append(String.valueOf(dbglvl));
+            System.out.println("cmd: " + sb.toString());
+            p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
             readStdout(p);
             File file = new File("inputGraph");
