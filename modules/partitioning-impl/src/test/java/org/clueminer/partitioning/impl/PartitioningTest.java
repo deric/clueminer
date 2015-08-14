@@ -15,7 +15,7 @@ import org.clueminer.graph.api.Node;
 public class PartitioningTest {
 
     protected Dataset<? extends Instance> twoDistinctNeighbors() {
-        Dataset<Instance> data = new ArrayDataset<>(4, 2);
+        Dataset<Instance> data = new ArrayDataset<>(8, 2);
         data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
         data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
         data.builder().create(new double[]{1, 1});
