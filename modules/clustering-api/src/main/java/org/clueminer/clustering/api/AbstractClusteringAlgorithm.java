@@ -42,6 +42,11 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
 
     public static final String DISTANCE = "distance";
 
+    /**
+     * Cluster label for outliers or noises.
+     */
+    public static final int OUTLIER = Integer.MAX_VALUE;
+
     @Override
     public DistanceMeasure getDistanceFunction() {
         return distanceFunction;
