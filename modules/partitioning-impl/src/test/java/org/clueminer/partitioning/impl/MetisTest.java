@@ -20,7 +20,7 @@ import org.junit.Test;
  */
 public class MetisTest extends PartitioningTest {
 
-    private Metis subject;
+    private final Metis subject;
 
     public MetisTest() {
         subject = new Metis();
@@ -32,9 +32,8 @@ public class MetisTest extends PartitioningTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         Graph g = new AdjMatrixGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 4);
-        Metis m = new Metis();
-        m.setPtype("rb");
-        ArrayList<LinkedList<Node>> res = m.partition(2, g);
+        subject.setPtype("rb");
+        ArrayList<LinkedList<Node>> res = subject.partition(2, g);
         assertEquals(4, res.size());
     }
 
@@ -44,9 +43,8 @@ public class MetisTest extends PartitioningTest {
         Dataset dataset = FakeDatasets.irisDataset();
         Graph g = new AdjListGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 20);
-        Metis m = new Metis();
-        m.setPtype("rb");
-        ArrayList<LinkedList<Node>> res = m.partition(10, g);
+        subject.setPtype("rb");
+        ArrayList<LinkedList<Node>> res = subject.partition(10, g);
         assertNotNull(res);
         assertEquals(15, res.size());
     }
