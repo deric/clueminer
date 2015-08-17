@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.junit.After;
@@ -45,7 +45,7 @@ public class ClusteringExecutorCachedTest {
 
     @Test
     public void testHclustColumns() {
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         Props pref = new Props();
         HierarchicalResult hres = subject.hclustRows(FakeClustering.irisDataset(), pref);
         assertNotNull(hres);
@@ -59,7 +59,7 @@ public class ClusteringExecutorCachedTest {
     //TODO: move some cutoff strategy to this package
     @Ignore
     public void testClusterAll() {
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         Props pref = new Props();
         DendrogramMapping mapping = subject.clusterAll(FakeClustering.irisDataset(), pref);
         assertNotNull(mapping);

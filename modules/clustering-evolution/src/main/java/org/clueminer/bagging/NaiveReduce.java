@@ -25,7 +25,7 @@ import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -121,7 +121,7 @@ public class NaiveReduce implements Consensus {
      * @param clusts
      * @return array with n-1 mappings
      */
-    private int[][] findMapping(Clustering[] clusts, int k, DistanceMeasure dm) {
+    private int[][] findMapping(Clustering[] clusts, int k, Distance dm) {
         Clustering<? extends Cluster> first = clusts[0];
         int[][] res = new int[clusts.length - 1][k];
         double dist;

@@ -8,7 +8,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public interface DistanceMeasure extends Serializable {
+public interface Distance extends Serializable {
 
     public String getName();
 

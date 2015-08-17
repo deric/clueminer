@@ -2,7 +2,7 @@ package org.clueminer.clustering.api;
 
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
@@ -74,7 +74,7 @@ public class AgglParams {
 
     private Props pref;
 
-    private DistanceMeasure distance;
+    private Distance distance;
 
     public AgglParams(Props props) {
         this.pref = props;
@@ -93,7 +93,7 @@ public class AgglParams {
         this.pref = pref;
     }
 
-    public DistanceMeasure getDistanceMeasure() {
+    public Distance getDistanceMeasure() {
         String simFuncProp = pref.get(DIST, DEFAULT_DISTANCE_FUNCTION);
         return DistanceFactory.getInstance().getProvider(simFuncProp);
     }

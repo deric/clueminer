@@ -8,7 +8,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.clueminer.math.impl.DenseVector;
@@ -26,10 +26,10 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
 
     private static final long serialVersionUID = 6345948849700989503L;
 
-    protected DistanceMeasure dm;
+    protected Distance dm;
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 

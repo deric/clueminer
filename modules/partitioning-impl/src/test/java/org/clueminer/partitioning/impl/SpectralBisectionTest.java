@@ -9,7 +9,7 @@ import static junit.framework.Assert.assertEquals;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
@@ -28,7 +28,7 @@ public class SpectralBisectionTest extends PartitioningTest {
     public void basicTest() throws IOException, UnsupportedEncodingException, FileNotFoundException, InterruptedException {
 
         Dataset<? extends Instance> dataset = KLFail();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
@@ -55,7 +55,7 @@ public class SpectralBisectionTest extends PartitioningTest {
     public void twoDistinctNeighborsTest() throws IOException, UnsupportedEncodingException, FileNotFoundException, InterruptedException {
 
         Dataset<? extends Instance> dataset = twoDistinctNeighbors();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
@@ -80,7 +80,7 @@ public class SpectralBisectionTest extends PartitioningTest {
     public void threeDistinctNeighborsTest() throws IOException, UnsupportedEncodingException, FileNotFoundException, InterruptedException {
 
         Dataset<? extends Instance> dataset = threeDistinctNeighbors();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
 
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());

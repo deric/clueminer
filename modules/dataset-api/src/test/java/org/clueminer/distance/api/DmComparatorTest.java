@@ -35,7 +35,7 @@ public class DmComparatorTest {
 
     @Before
     public void setUp() {
-        DistanceMeasure eucl = mock(DistanceMeasure.class);
+        Distance eucl = mock(Distance.class);
         when(eucl.compare(1.0, 5.0)).thenReturn(true);
         subject = new DmComparator(eucl);
     }

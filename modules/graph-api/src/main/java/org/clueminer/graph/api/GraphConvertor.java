@@ -18,7 +18,7 @@ package org.clueminer.graph.api;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
@@ -50,5 +50,5 @@ public interface GraphConvertor {
      *
      * @param dm
      */
-    void setDistanceMeasure(DistanceMeasure dm);
+    void setDistanceMeasure(Distance dm);
 }

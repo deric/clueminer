@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -44,7 +44,7 @@ public class CIndex extends AbstractEvaluator {
         dm = EuclideanDistance.getInstance();
     }
 
-    public CIndex(DistanceMeasure dist) {
+    public CIndex(Distance dist) {
         this.dm = dist;
     }
 

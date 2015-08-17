@@ -3,7 +3,7 @@ package org.clueminer.clustering.aggl;
 import java.util.AbstractQueue;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
 import org.clueminer.math.Vector;
@@ -26,7 +26,7 @@ public class AgglClustering {
      * @param dm
      * @return
      */
-    public static Matrix rowSimilarityMatrix(Matrix m, DistanceMeasure dm) {
+    public static Matrix rowSimilarityMatrix(Matrix m, Distance dm) {
         return rowSimilarityMatrix(m, dm, null);
     }
 
@@ -42,7 +42,7 @@ public class AgglClustering {
      * @param queue queue to store computed number
      * @return
      */
-    public static Matrix rowSimilarityMatrix(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue) {
+    public static Matrix rowSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
         double dist;
         if (dm.isSymmetric()) {
@@ -93,7 +93,7 @@ public class AgglClustering {
      * @param threads
      * @return
      */
-    public static Matrix rowSimilarityMatrixParSym(final Matrix m, final DistanceMeasure dm, final AbstractQueue<Element> queue, int threads) {
+    public static Matrix rowSimilarityMatrixParSym(final Matrix m, final Distance dm, final AbstractQueue<Element> queue, int threads) {
         final Matrix similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
         CyclicBarrier barrier = new CyclicBarrier(threads);
         Thread[] run = new Thread[threads];
@@ -112,7 +112,7 @@ public class AgglClustering {
         return similarityMatrix;
     }
 
-    public static Matrix rowSimilarityMatrixParSymLock(final Matrix m, final DistanceMeasure dm, final AbstractQueue<Element> queue, int threads) {
+    public static Matrix rowSimilarityMatrixParSymLock(final Matrix m, final Distance dm, final AbstractQueue<Element> queue, int threads) {
         final Matrix similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
         CyclicBarrier barrier = new CyclicBarrier(threads);
         ReentrantLock lock = new ReentrantLock();
@@ -139,11 +139,11 @@ public class AgglClustering {
      * @param dm
      * @return
      */
-    public static Matrix columnSimilarityMatrix(Matrix m, DistanceMeasure dm) {
+    public static Matrix columnSimilarityMatrix(Matrix m, Distance dm) {
         return columnSimilarityMatrix(m, dm, null);
     }
 
-    static Matrix columnSimilarityMatrix(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue) {
+    static Matrix columnSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
         double dist;
         if (dm.isSymmetric()) {

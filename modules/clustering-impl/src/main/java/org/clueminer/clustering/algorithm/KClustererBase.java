@@ -8,7 +8,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 
 /**
  *
@@ -17,12 +17,12 @@ import org.clueminer.distance.api.DistanceMeasure;
 public abstract class KClustererBase extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
 
     @Override
-    public DistanceMeasure getDistanceFunction() {
+    public Distance getDistanceFunction() {
         return distanceFunction;
     }
 
     @Override
-    public void setDistanceFunction(DistanceMeasure dm) {
+    public void setDistanceFunction(Distance dm) {
         this.distanceFunction = dm;
     }
 

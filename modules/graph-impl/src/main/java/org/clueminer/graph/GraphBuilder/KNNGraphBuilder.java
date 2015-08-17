@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
@@ -30,13 +30,13 @@ public class KNNGraphBuilder {
 
     private Dataset<? extends Instance> input;
 
-    private DistanceMeasure dm;
+    private Distance dm;
 
     public KNNGraphBuilder() {
         dm = new EuclideanDistance();
     }
 
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 

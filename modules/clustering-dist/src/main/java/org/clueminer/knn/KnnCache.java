@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * A distance matrix implemented using HashMap
  *
  * @author Tomas Barton
  */

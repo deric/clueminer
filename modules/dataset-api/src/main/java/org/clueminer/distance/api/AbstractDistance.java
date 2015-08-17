@@ -7,7 +7,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractDistance implements DistanceMeasure {
+public abstract class AbstractDistance implements Distance {
 
     private static final long serialVersionUID = -4166447737887574607L;
 

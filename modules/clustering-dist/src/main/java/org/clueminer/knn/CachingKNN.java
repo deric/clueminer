@@ -20,7 +20,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.KNN;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -66,13 +66,13 @@ public class CachingKNN implements KNN {
 
     private Instance[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache, Props params) {
         String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
-        DistanceMeasure dm = DistanceFactory.getInstance().getProvider(dmProvider);
+        Distance dm = DistanceFactory.getInstance().getProvider(dmProvider);
         Instance[] res = computeNN(dataset, idx, k, dm);
         cache.put(dataset, idx, res);
         return res;
     }
 
-    private Instance[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, DistanceMeasure dm) {
+    private Instance[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, Distance dm) {
         Instance target = dataset.get(idx);
         ForgetingQueue queue = new ForgetingQueue(k, dm, target);
 

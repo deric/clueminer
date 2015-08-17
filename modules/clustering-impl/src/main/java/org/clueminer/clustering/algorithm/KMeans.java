@@ -13,7 +13,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -74,12 +74,12 @@ public class KMeans extends AbstractClusteringAlgorithm implements ClusteringAlg
     }
 
     @Override
-    public DistanceMeasure getDistanceFunction() {
+    public Distance getDistanceFunction() {
         return distanceFunction;
     }
 
     @Override
-    public void setDistanceFunction(DistanceMeasure dm) {
+    public void setDistanceFunction(Distance dm) {
         this.distanceFunction = dm;
     }
 

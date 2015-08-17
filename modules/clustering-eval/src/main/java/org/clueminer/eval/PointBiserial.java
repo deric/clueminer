@@ -4,7 +4,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -29,7 +29,7 @@ public class PointBiserial extends AbstractEvaluator {
         dm = EuclideanDistance.getInstance();
     }
 
-    public PointBiserial(DistanceMeasure dist) {
+    public PointBiserial(Distance dist) {
         this.dm = dist;
     }
 

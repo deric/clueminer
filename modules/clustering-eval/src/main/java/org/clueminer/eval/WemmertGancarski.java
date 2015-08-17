@@ -21,7 +21,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
@@ -37,7 +37,7 @@ public class WemmertGancarski extends AbstractEvaluator implements InternalEvalu
         dm = EuclideanDistance.getInstance();
     }
 
-    public WemmertGancarski(DistanceMeasure distance) {
+    public WemmertGancarski(Distance distance) {
         this.dm = distance;
     }
 

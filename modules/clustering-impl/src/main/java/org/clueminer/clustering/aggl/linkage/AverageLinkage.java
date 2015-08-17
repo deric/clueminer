@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -29,7 +29,7 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
         super(EuclideanDistance.getInstance());
     }
 
-    public AverageLinkage(DistanceMeasure dm) {
+    public AverageLinkage(Distance dm) {
         super(dm);
     }
 

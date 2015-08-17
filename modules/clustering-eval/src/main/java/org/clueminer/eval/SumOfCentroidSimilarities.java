@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.CosineDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -25,7 +25,7 @@ public class SumOfCentroidSimilarities extends AbstractEvaluator {
         dm = new CosineDistance();
     }
 
-    public SumOfCentroidSimilarities(DistanceMeasure dist) {
+    public SumOfCentroidSimilarities(Distance dist) {
         this.dm = dist;
     }
 

@@ -18,7 +18,7 @@ package org.clueminer.knn;
 
 import java.util.Comparator;
 import java.util.Map;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 
 /**
  * Comparator for sorting map by values (default are keys)
@@ -29,10 +29,10 @@ import org.clueminer.distance.api.DistanceMeasure;
  */
 public class DmInstComparator<K extends Comparable<? super K>, V extends Double> implements Comparator<Map.Entry<K, V>> {
 
-    private DistanceMeasure dm;
+    private Distance dm;
     private double delta = 1e-9;
 
-    public DmInstComparator(DistanceMeasure dm) {
+    public DmInstComparator(Distance dm) {
         this.dm = dm;
     }
 
@@ -44,11 +44,11 @@ public class DmInstComparator<K extends Comparable<? super K>, V extends Double>
         this.delta = delta;
     }
 
-    public DistanceMeasure getMeasure() {
+    public Distance getMeasure() {
         return dm;
     }
 
-    public void setMeasure(DistanceMeasure dm) {
+    public void setMeasure(Distance dm) {
         this.dm = dm;
     }
 

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroTreeDataOld;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Dump;
 
 /*
@@ -35,7 +35,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
     private int[] right;
     private int[] order;
     private double[] height;
-    private DistanceMeasure function;
+    private Distance function;
     private double cutoff = -1;
     private int clusterAssignment[];
     private double min = Double.MAX_VALUE;
@@ -49,7 +49,7 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
      */
     private int clusterNum = 0;
 
-    public TreeDataImpl(DistanceMeasure function) {
+    public TreeDataImpl(Distance function) {
         this.function = function;
     }
 
@@ -147,11 +147,11 @@ public class TreeDataImpl implements Serializable, DendroTreeData, DendroTreeDat
         //Dump.array(level, "tree level");
     }
 
-    public void setFunction(DistanceMeasure function) {
+    public void setFunction(Distance function) {
         this.function = function;
     }
 
-    public DistanceMeasure getFunction() {
+    public Distance getFunction() {
         return function;
     }
 

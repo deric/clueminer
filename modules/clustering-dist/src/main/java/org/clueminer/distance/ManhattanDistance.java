@@ -1,6 +1,6 @@
 package org.clueminer.distance;
 
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -13,8 +13,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = DistanceMeasure.class)
-public class ManhattanDistance extends MinkowskiDistance implements DistanceMeasure {
+@ServiceProvider(service = Distance.class)
+public class ManhattanDistance extends MinkowskiDistance implements Distance {
 
     private static final String name = "Manhattan";
     private static float similarityFactor = 1.0f;

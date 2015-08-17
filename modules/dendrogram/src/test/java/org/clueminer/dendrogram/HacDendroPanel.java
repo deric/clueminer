@@ -9,7 +9,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
 
@@ -51,7 +51,7 @@ public class HacDendroPanel extends DendroPanel {
         MemInfo memInfo = new MemInfo();
 
         DistanceFactory df = DistanceFactory.getInstance();
-        DistanceMeasure func = df.getProvider("Euclidean");
+        Distance func = df.getProvider("Euclidean");
         if (algorithm == null) {
             throw new RuntimeException("no algorithm was set");
         }

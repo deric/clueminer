@@ -1,6 +1,12 @@
 package org.clueminer.dendrogram.tree;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
@@ -8,14 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.clustering.api.dendrogram.DendroPane;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.gui.ColorGenerator;
 import org.clueminer.hclust.TreeDataImpl;
 
@@ -58,7 +64,7 @@ public abstract class AbstractTree extends JPanel implements DendrogramDataListe
     protected double minHeight;
     protected double maxHeight;
     protected boolean flatTree = false;
-    protected DistanceMeasure function;
+    protected Distance function;
     private double similarityFactor = 1.0;
     private double nodeHeightOffset = 0.0;
     protected DendrogramMapping dataset;

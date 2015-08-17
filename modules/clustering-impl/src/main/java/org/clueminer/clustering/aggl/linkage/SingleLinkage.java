@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -30,7 +30,7 @@ public class SingleLinkage extends AbstractLinkage {
         super(EuclideanDistance.getInstance());
     }
 
-    public SingleLinkage(DistanceMeasure dm) {
+    public SingleLinkage(Distance dm) {
         super(dm);
     }
 

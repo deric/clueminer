@@ -20,7 +20,7 @@ import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
@@ -44,7 +44,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
     private static final String name = "muti-mute";
     protected Executor exec;
-    protected List<DistanceMeasure> dist;
+    protected List<Distance> dist;
     protected List<ClusterLinkage> linkage;
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
     protected List<String> stds;

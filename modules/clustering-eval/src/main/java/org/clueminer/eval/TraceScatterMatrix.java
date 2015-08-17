@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.CosineDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -30,7 +30,7 @@ public class TraceScatterMatrix extends AbstractEvaluator {
         dm = new CosineDistance();
     }
 
-    public TraceScatterMatrix(DistanceMeasure dist) {
+    public TraceScatterMatrix(Distance dist) {
         this.dm = dist;
     }
 
@@ -81,7 +81,7 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     }
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         throw new UnsupportedOperationException("Should use cosine distance.");
     }
 

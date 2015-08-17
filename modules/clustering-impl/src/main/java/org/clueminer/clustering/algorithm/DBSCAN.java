@@ -16,7 +16,9 @@
  */
 package org.clueminer.clustering.algorithm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -24,6 +26,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.utils.Props;
 
@@ -89,30 +92,30 @@ public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlg
 
         for (int i = 0; i < n; i++) {
             if (y[i] == UNCLASSIFIED) {
-                /*  List<Neighbor<T, T>> neighbors = new ArrayList<Neighbor<T, T>>();
-                 nns.range(data[i], radius, neighbors);
-                 if (neighbors.size() < minPts) {
-                 y[i] = OUTLIER;
-                 } else {
-                 y[i] = k;
-                 for (int j = 0; j < neighbors.size(); j++) {
-                 if (y[neighbors.get(j).index] == UNCLASSIFIED) {
-                 y[neighbors.get(j).index] = k;
-                 Neighbor<T, T> neighbor = neighbors.get(j);
-                 List<Neighbor<T, T>> secondaryNeighbors = new ArrayList<Neighbor<T, T>>();
-                 nns.range(neighbor.key, radius, secondaryNeighbors);
+                List<Neighbor<T>> neighbors = new ArrayList<Neighbor<T>>();
+                nns.range(dataset.get(i), radius, neighbors);
+                if (neighbors.size() < minPts) {
+                    y[i] = OUTLIER;
+                } else {
+                    y[i] = k;
+                    for (int j = 0; j < neighbors.size(); j++) {
+                        if (y[neighbors.get(j).index] == UNCLASSIFIED) {
+                            y[neighbors.get(j).index] = k;
+                            Neighbor<T> neighbor = neighbors.get(j);
+                            List<Neighbor<T>> secondaryNeighbors = new ArrayList<Neighbor<T>>();
+                            nns.range(neighbor.key, radius, secondaryNeighbors);
 
-                 if (secondaryNeighbors.size() >= minPts) {
-                 neighbors.addAll(secondaryNeighbors);
-                 }
-                 }
+                            if (secondaryNeighbors.size() >= minPts) {
+                                neighbors.addAll(secondaryNeighbors);
+                            }
+                        }
 
-                 if (y[neighbors.get(j).index] == OUTLIER) {
-                 y[neighbors.get(j).index] = k;
-                 }
-                 }
-                 k++;
-                 }*/
+                        if (y[neighbors.get(j).index] == OUTLIER) {
+                            y[neighbors.get(j).index] = k;
+                        }
+                    }
+                    k++;
+                }
             }
         }
 

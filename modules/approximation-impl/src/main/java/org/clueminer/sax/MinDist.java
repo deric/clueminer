@@ -6,7 +6,7 @@ import edu.hawaii.jmotif.logic.sax.alphabet.Alphabet;
 import edu.hawaii.jmotif.logic.sax.alphabet.NormalAlphabet;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 
@@ -18,7 +18,7 @@ import org.clueminer.math.Vector;
  * @author Marek Dvoroznak
  * @author Tomas Barton
  */
-public class MinDist implements DistanceMeasure {
+public class MinDist implements Distance {
 
     private static final long serialVersionUID = 2961510614729965506L;
     private static final Alphabet normalAlphabet = new NormalAlphabet();

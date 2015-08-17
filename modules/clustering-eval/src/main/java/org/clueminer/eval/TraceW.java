@@ -20,7 +20,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -38,7 +38,7 @@ public class TraceW extends AbstractEvaluator {
         dm = new EuclideanDistance();
     }
 
-    public TraceW(DistanceMeasure dist) {
+    public TraceW(Distance dist) {
         this.dm = dist;
     }
 

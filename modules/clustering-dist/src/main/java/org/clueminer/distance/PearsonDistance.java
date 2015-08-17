@@ -1,6 +1,6 @@
 package org.clueminer.distance;
 
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.SymmetricDistance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
@@ -23,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = DistanceMeasure.class)
+@ServiceProvider(service = Distance.class)
 public class PearsonDistance extends SymmetricDistance {
 
     private static String name = "Pearson";

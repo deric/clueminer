@@ -1,7 +1,7 @@
 package org.clueminer.distance;
 
 import org.clueminer.distance.api.AbstractDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
@@ -11,8 +11,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = DistanceMeasure.class)
-public class CovarianceDistance extends AbstractDistance implements DistanceMeasure {
+@ServiceProvider(service = Distance.class)
+public class CovarianceDistance extends AbstractDistance implements Distance {
 
     private static final String name = "Covariance";
     private static float similarityFactor = -1.0f;

@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -29,7 +29,7 @@ public class AdjMatrixGraph implements Graph {
     private int edgeCounter;
     private int size;
     private int nodeCounter;
-    private DistanceMeasure dm;
+    private Distance dm;
     private final double EPS = 1e-6;
     private static final String name = "Adjacency matrix graph";
 
@@ -44,7 +44,7 @@ public class AdjMatrixGraph implements Graph {
         this(size, EuclideanDistance.getInstance());
     }
 
-    public AdjMatrixGraph(int size, DistanceMeasure dm) {
+    public AdjMatrixGraph(int size, Distance dm) {
         this.dm = dm;
         ensureCapacity(size);
     }

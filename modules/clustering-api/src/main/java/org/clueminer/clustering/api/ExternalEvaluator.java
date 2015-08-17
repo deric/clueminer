@@ -1,7 +1,7 @@
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
@@ -14,7 +14,7 @@ import org.clueminer.utils.Props;
  */
 public interface ExternalEvaluator extends ClusterEvaluation, Serializable {
 
-    void setDistanceMeasure(DistanceMeasure dm);
+    void setDistanceMeasure(Distance dm);
 
     /**
      * Returns score for given clustering compared to class labels. The original

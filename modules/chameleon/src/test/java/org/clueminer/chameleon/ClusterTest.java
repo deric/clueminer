@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
@@ -36,7 +36,7 @@ public class ClusterTest {
     @Test
     public void testClosenessAndInterconnectivity() {
         Dataset<? extends Instance> dataset = simpleData();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 3);
 
@@ -57,7 +57,7 @@ public class ClusterTest {
     @Test
     public void testAverageCloseness() {
         Dataset<? extends Instance> dataset = simpleData();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 3);
 

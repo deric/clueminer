@@ -24,10 +24,10 @@ import java.util.Comparator;
  */
 public class DmComparator implements Comparator<Double> {
 
-    private DistanceMeasure dm;
+    private Distance dm;
     private double delta = 1e-9;
 
-    public DmComparator(DistanceMeasure dm) {
+    public DmComparator(Distance dm) {
         this.dm = dm;
     }
 
@@ -55,11 +55,11 @@ public class DmComparator implements Comparator<Double> {
         this.delta = delta;
     }
 
-    public DistanceMeasure getMeasure() {
+    public Distance getMeasure() {
         return dm;
     }
 
-    public void setMeasure(DistanceMeasure dm) {
+    public void setMeasure(Distance dm) {
         this.dm = dm;
     }
 

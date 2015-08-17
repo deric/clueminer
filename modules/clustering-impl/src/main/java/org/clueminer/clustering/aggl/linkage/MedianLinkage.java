@@ -7,7 +7,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -30,7 +30,7 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
         super(EuclideanDistance.getInstance());
     }
 
-    public MedianLinkage(DistanceMeasure dm) {
+    public MedianLinkage(Distance dm) {
         super(dm);
     }
 

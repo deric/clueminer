@@ -10,7 +10,7 @@ import org.clueminer.clustering.params.AlgParam;
 import org.clueminer.clustering.params.ParamType;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.DataStandardization;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
@@ -24,7 +24,7 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     //@Param(name = AgglParams.DIST,
     //       factory = "org.clueminer.distance.api.DistanceFactory",
     //       type = org.clueminer.clustering.params.ParamType.STRING)
-    protected DistanceMeasure distanceFunction;
+    protected Distance distanceFunction;
 
     //standartization method that is used as part of preprocessing
     @Param(name = AgglParams.STD,
@@ -48,12 +48,12 @@ public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm
     public static final int OUTLIER = Integer.MAX_VALUE;
 
     @Override
-    public DistanceMeasure getDistanceFunction() {
+    public Distance getDistanceFunction() {
         return distanceFunction;
     }
 
     @Override
-    public void setDistanceFunction(DistanceMeasure dm) {
+    public void setDistanceFunction(Distance dm) {
         this.distanceFunction = dm;
     }
 

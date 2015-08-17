@@ -3,7 +3,7 @@ package org.clueminer.eval.external;
 import java.io.Serializable;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AbstractComparator;
 
 /**
@@ -14,10 +14,10 @@ public abstract class AbstractExternalEval extends AbstractComparator implements
 
     private static final long serialVersionUID = 7150802573224388450L;
 
-    protected DistanceMeasure dm;
+    protected Distance dm;
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 

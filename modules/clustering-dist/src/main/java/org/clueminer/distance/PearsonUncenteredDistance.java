@@ -1,6 +1,6 @@
 package org.clueminer.distance;
 
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -8,7 +8,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = DistanceMeasure.class)
+@ServiceProvider(service = Distance.class)
 public class PearsonUncenteredDistance extends PearsonDistance {
 
     private static final long serialVersionUID = 1420036724161464942L;

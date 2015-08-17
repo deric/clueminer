@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.FileHandler;
 import static org.junit.Assert.assertEquals;
@@ -23,7 +23,7 @@ public class KNNGraphBuilderTest {
     public void irisDataTest() throws IOException {
         CommonFixture tf = new CommonFixture();
         Dataset data = new SampleDataset();
-        DistanceMeasure distanceMeasure = new EuclideanDistance();
+        Distance distanceMeasure = new EuclideanDistance();
         data.attributeBuilder().create("sepal length", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("sepal width", BasicAttrType.NUMERICAL);
         data.attributeBuilder().create("petal length", BasicAttrType.NUMERICAL);
@@ -58,7 +58,7 @@ public class KNNGraphBuilderTest {
     @Test
     public void simpleDataTest() {
         Dataset<? extends Instance> dataset = simpleData();
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 4);
 

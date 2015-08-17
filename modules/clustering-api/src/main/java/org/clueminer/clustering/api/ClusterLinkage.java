@@ -3,7 +3,7 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.Set;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -24,7 +24,7 @@ public interface ClusterLinkage extends Serializable {
      *
      * @param distanceMeasure
      */
-    void setDistanceMeasure(DistanceMeasure distanceMeasure);
+    void setDistanceMeasure(Distance distanceMeasure);
 
     /**
      * Calculates distance between two clusters

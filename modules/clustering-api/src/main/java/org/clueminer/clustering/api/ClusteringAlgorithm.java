@@ -4,7 +4,7 @@ import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -26,9 +26,9 @@ public interface ClusteringAlgorithm {
      */
     Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
 
-    DistanceMeasure getDistanceFunction();
+    Distance getDistanceFunction();
 
-    void setDistanceFunction(DistanceMeasure dm);
+    void setDistanceFunction(Distance dm);
 
     /**
      * Algorithm responsible for assigning colors to new clusters

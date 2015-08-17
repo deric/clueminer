@@ -1,6 +1,6 @@
 package org.clueminer.clustering.api;
 
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 
 /**
  * The method to use when comparing the similarity of two clusters. See <a
@@ -12,18 +12,18 @@ import org.clueminer.distance.api.DistanceMeasure;
 public abstract class AbstractLinkage implements ClusterLinkage {
 
     private static final long serialVersionUID = -4024535548255187696L;
-    protected DistanceMeasure distanceMeasure;
+    protected Distance distanceMeasure;
     
-    public AbstractLinkage(DistanceMeasure dm){
+    public AbstractLinkage(Distance dm){
         this.distanceMeasure = dm;
     }
 
-    public DistanceMeasure getDistanceMeasure() {
+    public Distance getDistanceMeasure() {
         return distanceMeasure;
     }
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure distanceMeasure) {
+    public void setDistanceMeasure(Distance distanceMeasure) {
         this.distanceMeasure = distanceMeasure;
     }
 }

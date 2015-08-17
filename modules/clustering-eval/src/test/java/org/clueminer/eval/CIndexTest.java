@@ -14,7 +14,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -52,7 +52,7 @@ public class CIndexTest {
 
         assertEquals(2, data.attributeCount());
 
-        DistanceMeasure dist = new EuclideanDistance();
+        Distance dist = new EuclideanDistance();
 
         ClusterEvaluation cind = new CIndex(dist);
         ClusterEvaluation aic = new AIC();
@@ -134,7 +134,7 @@ public class CIndexTest {
         int evalNum = 9;
         ClusterEvaluation[] eval = new ClusterEvaluation[evalNum];
         int j = 0;
-        DistanceMeasure dm = new EuclideanDistance();
+        Distance dm = new EuclideanDistance();
         eval[j++] = new CIndex(dm);
         eval[j++] = new AIC();
         eval[j++] = new BIC();

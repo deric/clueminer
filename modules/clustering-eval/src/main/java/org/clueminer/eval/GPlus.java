@@ -4,7 +4,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,7 +26,7 @@ public class GPlus extends Gamma {
         dm = EuclideanDistance.getInstance();
     }
 
-    public GPlus(DistanceMeasure dist) {
+    public GPlus(Distance dist) {
         this.dm = dist;
     }
 

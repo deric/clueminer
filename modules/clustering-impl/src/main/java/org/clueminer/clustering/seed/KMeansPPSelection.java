@@ -10,7 +10,7 @@ import org.clueminer.clustering.api.SeedSelection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Vector;
 import org.clueminer.utils.ListUtils;
 import org.clueminer.utils.SystemInfo;
@@ -26,18 +26,18 @@ import org.openide.util.Exceptions;
 public class KMeansPPSelection extends AbstractSelection implements SeedSelection {
 
     private static final String name = "k-means++ selection";
-    private DistanceMeasure dm = new EuclideanDistance();
+    private Distance dm = new EuclideanDistance();
 
     @Override
     public String getName() {
         return name;
     }
 
-    public DistanceMeasure getDistanceMeasure() {
+    public Distance getDistanceMeasure() {
         return dm;
     }
 
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 

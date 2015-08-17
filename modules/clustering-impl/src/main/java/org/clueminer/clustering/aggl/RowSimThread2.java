@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.Exceptions;
 
@@ -16,7 +16,7 @@ import org.openide.util.Exceptions;
 public class RowSimThread2 implements Runnable {
 
     private final Matrix m;
-    private final DistanceMeasure dm;
+    private final Distance dm;
     private final AbstractQueue<Element> queue;
     private final int threadId;
     private final int threads;
@@ -24,7 +24,7 @@ public class RowSimThread2 implements Runnable {
     private final CyclicBarrier barrier;
     private final ReentrantLock lock;
 
-    public RowSimThread2(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue,
+    public RowSimThread2(Matrix m, Distance dm, AbstractQueue<Element> queue,
             int threadId, int threads, Matrix similarityMatrix, CyclicBarrier barrier, final ReentrantLock lock) {
         this.m = m;
         this.dm = dm;

@@ -3,7 +3,7 @@ package org.clueminer.graph.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.KNN;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
@@ -20,7 +20,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphConvertor.class)
 public class KnnInitializator implements GraphConvertor {
 
-    private DistanceMeasure dm;
+    private Distance dm;
     private static final String name = "k-NN";
 
     @Override
@@ -59,7 +59,7 @@ public class KnnInitializator implements GraphConvertor {
     }
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 

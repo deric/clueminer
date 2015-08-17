@@ -3,7 +3,7 @@ package org.clueminer.clustering.aggl;
 import java.util.AbstractQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.openide.util.Exceptions;
 
@@ -14,14 +14,14 @@ import org.openide.util.Exceptions;
 public class RowSimThread implements Runnable {
 
     private final Matrix m;
-    private final DistanceMeasure dm;
+    private final Distance dm;
     private final AbstractQueue<Element> queue;
     private final int threadId;
     private final int threads;
     private final Matrix similarityMatrix;
     private final CyclicBarrier barrier;
 
-    public RowSimThread(Matrix m, DistanceMeasure dm, AbstractQueue<Element> queue,
+    public RowSimThread(Matrix m, Distance dm, AbstractQueue<Element> queue,
             int threadId, int threads, Matrix similarityMatrix, CyclicBarrier barrier) {
         this.m = m;
         this.dm = dm;

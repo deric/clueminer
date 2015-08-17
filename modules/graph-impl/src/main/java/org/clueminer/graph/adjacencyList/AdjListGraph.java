@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -34,7 +34,7 @@ public class AdjListGraph implements Graph {
     //mapping to Dataset's Instance index
     private final HashMap<Long, Integer> idToIndex;
     private final double EPS = 1e-6;
-    private final DistanceMeasure dm;
+    private final Distance dm;
 
     private final HashMap<Node, Set<Neighbor>> adjList;
 

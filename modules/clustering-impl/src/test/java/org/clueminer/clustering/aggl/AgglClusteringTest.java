@@ -5,7 +5,7 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public class AgglClusteringTest {
 
-    private static final DistanceMeasure dm = new EuclideanDistance();
+    private static final Distance dm = new EuclideanDistance();
     private static final double delta = 1e-9;
 
     /**

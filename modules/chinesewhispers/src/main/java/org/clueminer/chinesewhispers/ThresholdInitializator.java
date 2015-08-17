@@ -19,7 +19,7 @@ package org.clueminer.chinesewhispers;
 import static org.clueminer.chinesewhispers.ChineseWhispers.EDGE_THRESHOLD;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphConvertor.class)
 public class ThresholdInitializator implements GraphConvertor {
 
-    private DistanceMeasure dm;
+    private Distance dm;
     private static final String name = "distance threshold";
 
     @Override
@@ -71,7 +71,7 @@ public class ThresholdInitializator implements GraphConvertor {
     }
 
     @Override
-    public void setDistanceMeasure(DistanceMeasure dm) {
+    public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 }

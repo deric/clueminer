@@ -32,6 +32,7 @@ public class Neighbor<K> implements Comparable<Neighbor<K>> {
      * The index of neighbor object in the dataset.
      */
     public int index;
+
     /**
      * The distance between the query and the neighbor.
      */

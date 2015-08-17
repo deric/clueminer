@@ -22,7 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 
 /**
@@ -40,7 +40,7 @@ public class CompleteLinkageInv extends AbstractLinkage implements ClusterLinkag
         super(EuclideanDistance.getInstance());
     }
 
-    public CompleteLinkageInv(DistanceMeasure dm) {
+    public CompleteLinkageInv(Distance dm) {
         super(dm);
     }
 

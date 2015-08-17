@@ -19,7 +19,7 @@ import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
@@ -45,7 +45,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     private static final String name = "Brute-force HAC";
     protected final Executor exec;
     protected int gen;
-    private List<DistanceMeasure> dist;
+    private List<Distance> dist;
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
     protected List<InternalEvaluator> evaluators;
@@ -136,7 +136,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
 
         for (CutoffStrategy cut : cutoff) {
             params.put(AgglParams.CUTOFF_STRATEGY, cut.getName());
-            for (DistanceMeasure dm : dist) {
+            for (Distance dm : dist) {
                 params.put(AgglParams.DIST, dm.getName());
                 for (InternalEvaluator ie : evaluators) {
                     params.put(AgglParams.CUTOFF_SCORE, ie.getName());

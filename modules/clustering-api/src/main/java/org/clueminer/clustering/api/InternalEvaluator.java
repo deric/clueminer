@@ -1,7 +1,7 @@
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 
 /**
  * Internal evaluator should not use information from labels or meta attributes.
@@ -10,6 +10,6 @@ import org.clueminer.distance.api.DistanceMeasure;
  */
 public interface InternalEvaluator extends ClusterEvaluation, Serializable {
 
-    void setDistanceMeasure(DistanceMeasure dm);
+    void setDistanceMeasure(Distance dm);
 
 }

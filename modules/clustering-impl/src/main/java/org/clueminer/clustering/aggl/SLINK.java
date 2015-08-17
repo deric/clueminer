@@ -14,7 +14,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Dump;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.Props;
@@ -49,7 +49,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         int[] pi = new int[dataset.size()];
         //we need to sort indexes by lambdas, it's better to have it in a map
         Map<Integer, Double> lambda = new HashMap<>(dataset.size());
-        DistanceMeasure dm = params.getDistanceMeasure();
+        Distance dm = params.getDistanceMeasure();
 
         int i = 0, id;
         for (Instance inst : dataset) {
@@ -88,7 +88,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
         lambda.put(id, Double.POSITIVE_INFINITY);
     }
 
-    private void step2(int newId, int[] processed, int i, DistanceMeasure dm, double[] m, Dataset<? extends Instance> dataset) {
+    private void step2(int newId, int[] processed, int i, Distance dm, double[] m, Dataset<? extends Instance> dataset) {
         for (int j = 0; j < i; j++) {
             // M(i) = dist(i, n+1)
             m[j] = dm.measure(dataset.get(newId), dataset.get(processed[j]));
@@ -96,7 +96,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
 
     }
 
-    private void step3(int newId, int[] processed, int i, DistanceMeasure dm,
+    private void step3(int newId, int[] processed, int i, Distance dm,
             Map<Integer, Double> lambda, int[] pi, double[] m) {
         double l_i, m_i, mp_i;
         int p_i, id;

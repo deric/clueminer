@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 
 /**
  *
@@ -38,12 +38,12 @@ public class ForgetingQueue {
     //private final Object2DoubleSortedMap<Instance> queue;
     //sorted map would be nice, but we need to sort by value
     private final List<Map.Entry<Instance, Double>> queue;
-    private final DistanceMeasure dm;
+    private final Distance dm;
     private final Instance target;
     private final int k;
     private final DmInstComparator comparator;
 
-    public ForgetingQueue(int k, DistanceMeasure dm, Instance target) {
+    public ForgetingQueue(int k, Distance dm, Instance target) {
         this.queue = new LinkedList<>();
         this.dm = dm;
         this.comparator = new DmInstComparator(dm);

@@ -6,7 +6,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -39,7 +39,7 @@ public class SDindex extends AbstractEvaluator {
         dm = EuclideanDistance.getInstance();
     }
 
-    public SDindex(DistanceMeasure dist) {
+    public SDindex(Distance dist) {
         this.dm = dist;
     }
 

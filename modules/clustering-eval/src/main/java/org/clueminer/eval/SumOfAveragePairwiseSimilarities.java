@@ -5,7 +5,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -25,7 +25,7 @@ public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
         dm = EuclideanDistance.getInstance();
     }
 
-    public SumOfAveragePairwiseSimilarities(DistanceMeasure dist) {
+    public SumOfAveragePairwiseSimilarities(Distance dist) {
         this.dm = dist;
     }
 

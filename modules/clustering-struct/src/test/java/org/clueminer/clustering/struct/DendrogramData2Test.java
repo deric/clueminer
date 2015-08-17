@@ -8,7 +8,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.distance.api.DistanceMeasure;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
@@ -109,13 +109,13 @@ public class DendrogramData2Test {
 
     //@Test
     public void testGetDataset() throws IOException {
-        DistanceMeasure dm = DistanceFactory.getInstance().getDefault();
+        Distance dm = DistanceFactory.getInstance().getDefault();
         Dataset<? extends Instance> dataset = loadIris();
         HierarchicalResult rowsResult = hclustRows(dataset, dm, new Props());
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
     }
 
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, DistanceMeasure dm, Props params) {
+    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Distance dm, Props params) {
         /*
          HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
          CutoffStrategy strategy = getCutoffStrategy(params);
