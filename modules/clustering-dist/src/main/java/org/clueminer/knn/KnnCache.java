@@ -25,12 +25,13 @@ import org.clueminer.dataset.api.Instance;
  * A distance matrix implemented using HashMap
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public class KnnCache {
+public class KnnCache<T> {
 
     private static KnnCache instance;
 
-    private final Table<Dataset, Integer, Instance[]> cache;
+    private final Table<Dataset, Integer, T[]> cache;
 
     private KnnCache() {
         cache = HashBasedTable.create();
@@ -51,7 +52,7 @@ public class KnnCache {
         return cache.contains(dataset, id);
     }
 
-    public Instance[] get(Dataset<? extends Instance> dataset, int id) {
+    public T[] get(Dataset<? extends Instance> dataset, int id) {
         return cache.get(dataset, id);
     }
 
@@ -62,7 +63,7 @@ public class KnnCache {
      * @param id
      * @param inst
      */
-    public void put(Dataset<? extends Instance> dataset, int id, Instance[] inst) {
+    public void put(Dataset<? extends Instance> dataset, int id, T[] inst) {
         cache.put(dataset, id, inst);
     }
 }

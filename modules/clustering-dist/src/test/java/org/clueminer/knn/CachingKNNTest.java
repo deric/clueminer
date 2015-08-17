@@ -18,8 +18,8 @@ package org.clueminer.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.Props;
-import org.junit.Assert;
+import static org.clueminer.knn.KnnTest.delta;
+import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -36,33 +36,37 @@ public class CachingKNNTest extends KnnTest {
     }
 
     @Test
-    public void testNnIds() {
+    public void testKnn() {
         Dataset<? extends Instance> d = insectDataset();
-
+        subject.setDataset(d);
         int idx = 0;
         int k = 3;
-        int[] neighbors = subject.nnIds(idx, k, d, new Props());
+        Neighbor[] neighbors = subject.knn(d.get(idx), k);
 
         int[] expected = new int[]{6, 7, 1};
-        Assert.assertArrayEquals(expected, neighbors);
+
+        for (int i = 0; i < neighbors.length; i++) {
+            Neighbor neighbor = neighbors[i];
+            assertEquals(expected[i], ((Instance) neighbor.key).getIndex());
+        }
     }
 
     @Test
     public void testNn() {
         Dataset<? extends Instance> d = irisDataset();
+        subject.setDataset(d);
         int k = 5;
-        Instance[] nn = subject.nn(0, k, d, new Props());
-        assertEquals(k, nn.length);
-
-        nn = subject.nn(9, k, d, new Props());
         //4.9,3.1,1.5,0.1, Iris-setosa
         Instance ref = d.get(9);
+        Neighbor[] nn = subject.knn(ref, k);
+        assertEquals(k, nn.length);
+        Instance inst;
         //there are 3 same instances iris dataset
-
         //should find two very same instances (id: 34, 37)
         for (int i = 0; i < 2; i++) {
+            inst = (Instance) nn[i].key;
             for (int j = 0; j < d.attributeCount(); j++) {
-                assertEquals(ref.get(j), nn[i].get(j), delta);
+                assertEquals(ref.get(j), inst.get(j), delta);
             }
         }
         assertEquals(k, nn.length);

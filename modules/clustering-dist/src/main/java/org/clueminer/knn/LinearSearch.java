@@ -17,15 +17,18 @@
 package org.clueminer.knn;
 
 import java.util.List;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.sort.HeapSelect;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -34,9 +37,11 @@ import org.clueminer.sort.HeapSelect;
  */
 public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T>, KNNSearch<T>, RNNSearch<T> {
 
-    private Dataset<? extends Instance> dataset;
+    private Dataset<T> dataset;
 
     private Distance dm;
+
+    private static final String name = "liner k-nn";
 
     /**
      * Whether to exclude query object self from the neighborhood.
@@ -50,6 +55,11 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
     public LinearSearch(Dataset<T> dataset) {
         this.dataset = dataset;
         this.dm = EuclideanDistance.getInstance();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -141,10 +151,6 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
         return dataset;
     }
 
-    public void setDataset(Dataset<? extends Instance> dataset) {
-        this.dataset = dataset;
-    }
-
     public boolean isIdenticalExcluded() {
         return identicalExcluded;
     }
@@ -155,6 +161,18 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
 
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
+    }
+
+    @Override
+    public Neighbor[] knn(T q, int k, Props params) {
+        String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
+        this.dm = DistanceFactory.getInstance().getProvider(dmProvider);
+        return knn(q, k);
+    }
+
+    @Override
+    public void setDataset(Dataset<T> dataset) {
+        this.dataset = dataset;
     }
 
 }

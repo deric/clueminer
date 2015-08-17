@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.distance.api;
+package org.clueminer.neighbor;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -25,7 +25,7 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-public class KnnFactory extends ServiceFactory<KNN> {
+public class KnnFactory extends ServiceFactory<KNNSearch> {
 
     private static KnnFactory instance;
 
@@ -38,8 +38,8 @@ public class KnnFactory extends ServiceFactory<KNN> {
 
     private KnnFactory() {
         providers = new LinkedHashMap<>();
-        Collection<? extends KNN> list = Lookup.getDefault().lookupAll(KNN.class);
-        for (KNN c : list) {
+        Collection<? extends KNNSearch> list = Lookup.getDefault().lookupAll(KNNSearch.class);
+        for (KNNSearch c : list) {
             providers.put(c.getName(), c);
         }
         sort();

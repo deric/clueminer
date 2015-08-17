@@ -21,8 +21,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.KNN;
-import org.clueminer.distance.api.KnnFactory;
+import org.clueminer.neighbor.KNNSearch;
+import org.clueminer.neighbor.KnnFactory;
+import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -61,18 +62,18 @@ public class Connectivity extends AbstractEvaluator {
         //parameter specifing number of neighbours that contribute to connectivity
         // value 10 is suggested by Handl, Knowles
         int L = params.getInt(PARAM, 10);
-        KNN knn = KnnFactory.getInstance().getDefault();
+        KNNSearch knn = KnnFactory.getInstance().getDefault();
         if (knn == null) {
             throw new RuntimeException("missing k-nn implementation");
         }
         Cluster c;
-        Instance[] nn;
+        Neighbor[] nn;
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {
-                nn = knn.nn(j, L, dataset, params);
+                nn = knn.knn(c.get(i), L, params);
                 for (int k = 0; k < L; k++) {
-                    if (c.contains(nn[k].getIndex())) {
+                    if (c.contains(nn[k].index)) {
                         conn += 1.0 / (k + 1);
                     }
                 }

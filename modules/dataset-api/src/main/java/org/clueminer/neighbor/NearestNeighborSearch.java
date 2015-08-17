@@ -16,13 +16,44 @@
  */
 package org.clueminer.neighbor;
 
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
+
 /**
  *
  * @author deric
  * @param <K> the key
  */
-public interface NearestNeighborSearch<K> {
+public interface NearestNeighborSearch<K extends Instance> {
 
+    /**
+     * Unique algorithm identifier
+     *
+     * @return the name of algorithm implementation
+     */
+    String getName();
+
+    /**
+     * Set current working dataset
+     *
+     * @param dataset
+     */
+    void setDataset(Dataset<K> dataset);
+
+    /**
+     * Set distance measure
+     *
+     * @param dist
+     */
+    void setDistanceMeasure(Distance dist);
+
+    /**
+     * Find closest data point
+     *
+     * @param q
+     * @return
+     */
     Neighbor<K> nearest(K q);
 
 }

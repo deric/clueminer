@@ -19,20 +19,41 @@ package org.clueminer.knn;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.distance.api.KNN;
+import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.neighbor.KNNSearch;
+import org.clueminer.neighbor.Neighbor;
+import org.clueminer.sort.HeapSelect;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-@ServiceProvider(service = KNN.class)
-public class CachingKNN implements KNN {
+@ServiceProvider(service = KNNSearch.class)
+public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
     private static final String name = "caching k-nn";
+
+    private Dataset<T> dataset;
+
+    private Distance dm;
+
+    /**
+     * Whether to exclude query object self from the neighborhood.
+     */
+    private boolean identicalExcluded = true;
+
+    public CachingKNN() {
+        this.dm = EuclideanDistance.getInstance();
+    }
+
+    public CachingKNN(Distance dist) {
+        this.dm = dist;
+    }
 
     @Override
     public String getName() {
@@ -40,47 +61,96 @@ public class CachingKNN implements KNN {
     }
 
     @Override
-    public int[] nnIds(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
-        Instance[] nn = nn(idx, k, dataset, params);
-        int[] res = new int[k];
-        for (int i = 0; i < k; i++) {
-            res[i] = nn[i].getIndex();
-        }
-        return res;
-    }
-
-    @Override
-    public Instance[] nn(int idx, int k, Dataset<? extends Instance> dataset, Props params) {
-        KnnCache cache = KnnCache.getInstance();
-        Instance[] res;
-        if (cache.contains(dataset, idx)) {
-            res = cache.get(dataset, idx);
+    public Neighbor<T>[] knn(T q, int k) {
+        KnnCache<Neighbor<T>> cache = KnnCache.getInstance();
+        Neighbor<T>[] res;
+        if (cache.contains(dataset, q.getIndex())) {
+            res = cache.get(dataset, q.getIndex());
             if (res.length < k) {
-                res = updateNN(dataset, idx, k, cache, params);
+                res = updateNN(dataset, q.getIndex(), k, cache);
             }
         } else {
-            res = updateNN(dataset, idx, k, cache, params);
+            res = updateNN(dataset, q.getIndex(), k, cache);
         }
         return res;
     }
 
-    private Instance[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache, Props params) {
-        String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
-        Distance dm = DistanceFactory.getInstance().getProvider(dmProvider);
-        Instance[] res = computeNN(dataset, idx, k, dm);
+    private Neighbor<T>[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache) {
+        Neighbor<T>[] res = computeNN(dataset, idx, k, dm);
         cache.put(dataset, idx, res);
         return res;
     }
 
-    private Instance[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, Distance dm) {
-        Instance target = dataset.get(idx);
-        ForgetingQueue queue = new ForgetingQueue(k, dm, target);
+    private Neighbor<T>[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, Distance dm) {
+        Instance q = dataset.get(idx);
+        double dist;
+
+        Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
+        @SuppressWarnings("unchecked")
+        Neighbor<T>[] neighbors = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
+        HeapSelect<Neighbor<T>> heap = new HeapSelect<>(neighbors);
+        for (int i = 0; i < k; i++) {
+            heap.add(neighbor);
+            neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
+        }
 
         for (int i = 0; i < dataset.size(); i++) {
-            if (i != idx) {
-                queue.check(dataset.get(i));
+            if (q == dataset.get(i) && identicalExcluded) {
+                continue;
+            }
+
+            dist = dm.measure(q, dataset.get(i));
+            //replace smallest value in the heap
+            Neighbor<T> datum = heap.peekLast();
+            if (dm.compare(dist, datum.distance)) {
+                datum.distance = dist;
+                datum.index = i;
+                datum.key = (T) dataset.get(i);
+                heap.heapify();
             }
         }
-        return queue.getResult();
+
+        heap.sort();
+        //heap is stored in inversed order
+        Neighbor<T>[] res = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
+        for (int i = 0; i < k; i++) {
+            res[i] = heap.get(i);
+        }
+        return res;
+
     }
+
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
+    }
+
+    public boolean isIdenticalExcluded() {
+        return identicalExcluded;
+    }
+
+    public void setIdenticalExcluded(boolean identicalExcluded) {
+        this.identicalExcluded = identicalExcluded;
+    }
+
+    public void setDistanceMeasure(Distance dm) {
+        this.dm = dm;
+    }
+
+    @Override
+    public Neighbor[] knn(T q, int k, Props params) {
+        String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
+        this.dm = DistanceFactory.getInstance().getProvider(dmProvider);
+        return knn(q, k);
+    }
+
+    @Override
+    public void setDataset(Dataset<T> dataset) {
+        this.dataset = dataset;
+    }
+
+    @Override
+    public Neighbor<T> nearest(T q) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

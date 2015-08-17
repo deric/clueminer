@@ -4,13 +4,14 @@ package org.clueminer.graph.knn;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.distance.api.KNN;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
+import org.clueminer.neighbor.KNNSearch;
+import org.clueminer.neighbor.KnnFactory;
+import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
-import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,19 +39,21 @@ public class KnnInitializator implements GraphConvertor {
      */
     @Override
     public void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params) {
-        KNN knn = Lookup.getDefault().lookup(KNN.class);
-        if (knn == null) {
+        KNNSearch alg = KnnFactory.getInstance().getDefault();
+        if (alg == null) {
             throw new RuntimeException("did not find any provider for k-NN");
         }
+        alg.setDataset(dataset);
+        alg.setDistanceMeasure(dm);
         int k = params.getInt("k", 5);
-        int[] nn;
+        Neighbor[] nn;
         long nodeId;
         Node target;
         Edge edge;
         for (Node node : graph.getNodes()) {
-            nn = knn.nnIds(node.getInstance().getIndex(), k, dataset, params);
-            for (int i = 0; i < nn.length; i++) {
-                nodeId = mapping[nn[i]];
+            nn = alg.knn(node.getInstance(), k, params);
+            for (Neighbor neighbor : nn) {
+                nodeId = mapping[neighbor.index];
                 target = graph.getNode(nodeId);
                 edge = graph.getFactory().newEdge(node, target);
                 graph.addEdge(edge);

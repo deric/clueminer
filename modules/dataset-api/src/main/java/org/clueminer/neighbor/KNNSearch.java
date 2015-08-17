@@ -16,13 +16,16 @@
  */
 package org.clueminer.neighbor;
 
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
+
 /**
  * Find nearest neighbors to the given query
  *
  * @author deric
  * @param <K>
  */
-public interface KNNSearch<K> {
+public interface KNNSearch<K extends Instance> extends NearestNeighborSearch<K> {
 
     /**
      * Search the k nearest neighbors to the query.
@@ -32,5 +35,15 @@ public interface KNNSearch<K> {
      * @return
      */
     Neighbor[] knn(K q, int k);
+
+    /**
+     * Search the k nearest neighbors to the query.
+     *
+     * @param q      the query key.
+     * @param k	     the number of nearest neighbors to search for.
+     * @param params
+     * @return
+     */
+    Neighbor[] knn(K q, int k, Props params);
 
 }
