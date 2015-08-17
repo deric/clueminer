@@ -21,7 +21,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -30,14 +29,9 @@ import org.junit.Test;
  */
 public class CachingKNNTest extends KnnTest {
 
-    private CachingKNN subject;
-    private static final double delta = 1e-9;
+    private final CachingKNN subject;
 
     public CachingKNNTest() {
-    }
-
-    @Before
-    public void setUp() {
         subject = new CachingKNN();
     }
 

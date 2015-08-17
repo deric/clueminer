@@ -120,7 +120,21 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
 
     @Override
     public void range(T q, double radius, List<Neighbor<T>> neighbors) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (radius <= 0.0) {
+            throw new IllegalArgumentException("Invalid radius: " + radius);
+        }
+
+        for (int i = 0; i < dataset.size(); i++) {
+            if (q == dataset.get(i) && identicalExcluded) {
+                continue;
+            }
+
+            double d = dm.measure(q, dataset.get(i));
+
+            if (d <= radius) {
+                neighbors.add(new Neighbor<>((T) dataset.get(i), i, d));
+            }
+        }
     }
 
     public Dataset<? extends Instance> getDataset() {
