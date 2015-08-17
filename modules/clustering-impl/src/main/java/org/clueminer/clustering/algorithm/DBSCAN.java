@@ -65,6 +65,8 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
     @Param(name = RADIUS, description = "the range of a point neighborhood", required = true, min = 1e-9, max = Double.MAX_VALUE)
     private double radius;
 
+    private RNNSearch<T> nns;
+
     public DBSCAN() {
 
     }
@@ -88,11 +90,12 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
 
         int k = 0;
 
-        String rnnProvider = props.get(RNN_ALG, "linear k-nn");
-        RNNSearch<T> nns = RnnFactory.getInstance().getProvider(rnnProvider);
+        String rnnProvider = props.get(RNN_ALG, "linear RNN");
+        nns = RnnFactory.getInstance().getProvider(rnnProvider);
         if (nns == null) {
             throw new RuntimeException("RNN provider was not found");
         }
+        nns.setDataset(dataset);
 
         int n = dataset.size();
         int[] y = new int[n];
@@ -139,4 +142,11 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
         return null;
     }
 
+    public RNNSearch<T> getNns() {
+        return nns;
+    }
+
+    public void setNns(RNNSearch<T> nns) {
+        this.nns = nns;
+    }
 }

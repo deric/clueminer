@@ -16,37 +16,27 @@
  */
 package org.clueminer.knn;
 
-import java.util.List;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
-import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.sort.HeapSelect;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  * @param <T>
  */
-public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T>, KNNSearch<T>, RNNSearch<T> {
-
-    private Dataset<T> dataset;
-
-    private Distance dm;
+@ServiceProvider(service = KNNSearch.class)
+public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements NearestNeighborSearch<T>, KNNSearch<T> {
 
     public static final String name = "linear k-nn";
-
-    /**
-     * Whether to exclude query object self from the neighborhood.
-     */
-    private boolean identicalExcluded = true;
 
     public LinearSearch() {
         this.dm = EuclideanDistance.getInstance();
@@ -60,28 +50,6 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public Neighbor<T> nearest(T q) {
-        T neighbor = null;
-        int index = -1;
-        double max = Double.MAX_VALUE;
-        double d;
-        for (int i = 0; i < dataset.size(); i++) {
-            if (q == dataset.get(i) && identicalExcluded) {
-                continue;
-            }
-
-            d = dm.measure(q, dataset.get(i));
-            if (d < max) {
-                neighbor = (T) dataset.get(i);
-                index = i;
-                max = d;
-            }
-        }
-
-        return new Neighbor<>(neighbor, index, max);
     }
 
     @Override
@@ -129,50 +97,10 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
     }
 
     @Override
-    public void range(T q, double radius, List<Neighbor<T>> neighbors) {
-        if (radius <= 0.0) {
-            throw new IllegalArgumentException("Invalid radius: " + radius);
-        }
-
-        for (int i = 0; i < dataset.size(); i++) {
-            if (q == dataset.get(i) && identicalExcluded) {
-                continue;
-            }
-
-            double d = dm.measure(q, dataset.get(i));
-
-            if (d <= radius) {
-                neighbors.add(new Neighbor<>((T) dataset.get(i), i, d));
-            }
-        }
-    }
-
-    public Dataset<? extends Instance> getDataset() {
-        return dataset;
-    }
-
-    public boolean isIdenticalExcluded() {
-        return identicalExcluded;
-    }
-
-    public void setIdenticalExcluded(boolean identicalExcluded) {
-        this.identicalExcluded = identicalExcluded;
-    }
-
-    public void setDistanceMeasure(Distance dm) {
-        this.dm = dm;
-    }
-
-    @Override
     public Neighbor[] knn(T q, int k, Props params) {
         String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
         this.dm = DistanceFactory.getInstance().getProvider(dmProvider);
         return knn(q, k);
-    }
-
-    @Override
-    public void setDataset(Dataset<T> dataset) {
-        this.dataset = dataset;
     }
 
 }

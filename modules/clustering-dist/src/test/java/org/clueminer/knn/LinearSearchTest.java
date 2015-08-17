@@ -16,8 +16,6 @@
  */
 package org.clueminer.knn;
 
-import java.util.LinkedList;
-import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
@@ -80,23 +78,4 @@ public class LinearSearchTest extends KnnTest {
         }
         assertEquals(k, nn.length);
     }
-
-    @Test
-    public void testRange() {
-        Dataset<? extends Instance> d = irisDataset();
-        subject.setDataset(d);
-
-        List<Neighbor<Instance>> neighbors = new LinkedList<>();
-        Instance ref = d.get(9);
-        double range = 0.1;
-        subject.range(ref, range, neighbors);
-
-        for (Neighbor<Instance> neighbor : neighbors) {
-            assertEquals(0.0, neighbor.distance, delta);
-        }
-        //there are 2 same instances
-        assertEquals(2, neighbors.size());
-
-    }
-
 }
