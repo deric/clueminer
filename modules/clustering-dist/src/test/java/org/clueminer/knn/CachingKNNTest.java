@@ -16,28 +16,21 @@
  */
 package org.clueminer.knn;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author deric
  */
-public class CachingKNNTest {
+public class CachingKNNTest extends KnnTest {
 
     private CachingKNN subject;
-    private Dataset<? extends Instance> irisData;
-    private Dataset<? extends Instance> insectData;
     private static final double delta = 1e-9;
 
     public CachingKNNTest() {
@@ -50,6 +43,14 @@ public class CachingKNNTest {
 
     @Test
     public void testNnIds() {
+        Dataset<? extends Instance> d = insectDataset();
+
+        int idx = 0;
+        int k = 3;
+        int[] neighbors = subject.nnIds(idx, k, d, new Props());
+
+        int[] expected = new int[]{6, 7, 1};
+        Assert.assertArrayEquals(expected, neighbors);
     }
 
     @Test
@@ -71,38 +72,6 @@ public class CachingKNNTest {
             }
         }
         assertEquals(k, nn.length);
-    }
-
-    public Dataset<? extends Instance> insectDataset() {
-        if (insectData == null) {
-            CommonFixture tf = new CommonFixture();
-            insectData = new ArrayDataset(30, 3);
-            ARFFHandler arff = new ARFFHandler();
-            try {
-                arff.load(tf.insectArff(), irisData, 3);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return irisData;
-    }
-
-    public Dataset<? extends Instance> irisDataset() {
-        if (irisData == null) {
-            CommonFixture tf = new CommonFixture();
-            irisData = new ArrayDataset(150, 4);
-            ARFFHandler arff = new ARFFHandler();
-            try {
-                arff.load(tf.irisArff(), irisData, 4);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return irisData;
     }
 
 }
