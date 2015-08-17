@@ -195,7 +195,11 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     public int hashCode() {
         final int prime = 127;
         int result = 1;
-        result = prime * result + ((data == null) ? 0 : data.hashCode());
+        //instances having same values should not be considered as the same
+        if (index >= 0) {
+            result += (index + prime);
+        }
+        result *= ((data == null) ? 0 : data.hashCode());
         long temp;
         temp = Double.doubleToLongBits(defaultValue);
         result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -214,6 +218,9 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
             return false;
         }
         final SparseInstance other = (SparseInstance) obj;
+        if (this.getIndex() != other.getIndex()) {
+            return false;
+        }
         if (data == null) {
             if (other.data != null) {
                 return false;
@@ -221,10 +228,7 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         } else if (!data.equals(other.data)) {
             return false;
         }
-        if (Double.doubleToLongBits(defaultValue) != Double.doubleToLongBits(other.defaultValue)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(defaultValue) == Double.doubleToLongBits(other.defaultValue);
     }
 
     @Override

@@ -86,11 +86,7 @@ public class DataItem extends Number implements Serializable, Numeric {
         }
         DataItem that = (DataItem) obj;
 
-        if (this.value != that.value) {
-            return false;
-        }
-
-        return true;
+        return this.value == that.value;
     }
 
     @Override

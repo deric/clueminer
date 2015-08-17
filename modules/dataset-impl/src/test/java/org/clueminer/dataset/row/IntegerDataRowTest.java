@@ -2,10 +2,11 @@ package org.clueminer.dataset.row;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -26,7 +27,6 @@ public class IntegerDataRowTest {
     public static void setUpClass() {
         d1 = new int[]{424, 2155, 3014, 2982, 3502, 2891, 3948, 3778, 4091, 4068, 3736, 3915, 4125, 4090, 4087};
         d2 = new int[]{527, 2308, 2871, 3384, 3505, 2802, 4020, 4344, 4016, 4540, 4736, 4171, 4759, 4562, 4922};
-
 
         t1 = new IntegerDataRow(15);
         t2 = new IntegerDataRow(d2);
@@ -251,18 +251,22 @@ public class IntegerDataRowTest {
     public void testIterator() {
     }
 
-    /**
-     * Test of hashCode method, of class IntegerDataRow.
-     */
-    @Test
-    public void testHashCode() {
-    }
-
-    /**
-     * Test of equals method, of class IntegerDataRow.
-     */
     @Test
     public void testEquals() {
+        int[] data = new int[]{1, 2, 3};
+        IntegerDataRow a, b;
+        a = new IntegerDataRow(data);
+        b = new IntegerDataRow(data);
+
+        //objects which are .equals() MUST have the same .hashCode()
+        assertEquals(true, a.equals(b));
+        assertEquals(a.hashCode(), b.hashCode());
+
+        //after setting index instances should NOT be considered as the same
+        a.setIndex(0);
+        a.setIndex(1);
+        assertEquals(false, a.equals(b));
+        assertEquals(false, a.hashCode() == b.hashCode());
     }
 
     /**

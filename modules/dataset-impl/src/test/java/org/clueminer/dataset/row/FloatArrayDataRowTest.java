@@ -79,4 +79,22 @@ public class FloatArrayDataRowTest {
         }
     }
 
+    @Test
+    public void testHashCode() {
+        float[] data = new float[]{1, 2, 3};
+        FloatArrayDataRow a, b;
+        a = new FloatArrayDataRow(data);
+        b = new FloatArrayDataRow(data);
+
+        //objects which are .equals() MUST have the same .hashCode()
+        assertEquals(true, a.equals(b));
+        assertEquals(a.hashCode(), b.hashCode());
+
+        //after setting index instances should NOT be considered as the same
+        a.setIndex(0);
+        a.setIndex(1);
+        assertEquals(false, a.equals(b));
+        assertEquals(false, a.hashCode() == b.hashCode());
+    }
+
 }

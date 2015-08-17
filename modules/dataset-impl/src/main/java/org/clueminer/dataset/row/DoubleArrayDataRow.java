@@ -362,7 +362,11 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode(data);
+        //instances having same values should not be considered as the same
+        if (index >= 0) {
+            result += (index + prime);
+        }
+        result += Arrays.hashCode(data);
         return result;
     }
 
@@ -378,6 +382,9 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
             return false;
         }
         final DoubleArrayDataRow other = (DoubleArrayDataRow) obj;
+        if (this.getIndex() != other.getIndex()) {
+            return false;
+        }
         return Arrays.equals(data, other.data);
     }
 

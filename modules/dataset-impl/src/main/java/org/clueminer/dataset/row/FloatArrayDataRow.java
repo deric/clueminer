@@ -274,7 +274,11 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
     public int hashCode() {
         final int prime = 29;
         int result = 1;
-        result = prime * result + Arrays.hashCode(data);
+        //instances having same values should not be considered as the same
+        if (index >= 0) {
+            result += (index + prime);
+        }
+        result += Arrays.hashCode(data);
         return result;
     }
 
@@ -290,6 +294,9 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
             return false;
         }
         final FloatArrayDataRow other = (FloatArrayDataRow) obj;
+        if (this.getIndex() != other.getIndex()) {
+            return false;
+        }
         return Arrays.equals(data, other.data);
     }
 

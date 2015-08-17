@@ -176,7 +176,6 @@ public class DoubleArrayDataRowTest {
     @Test
     public void testCopy() {
         DoubleArrayDataRow copy = (DoubleArrayDataRow) t1.copy();
-        System.out.println("copy: " + copy.toString());
         assertTrue(t1.equals(copy));
         copy.set(0, 10);
         assertFalse(t1.equals(copy));
@@ -200,6 +199,20 @@ public class DoubleArrayDataRowTest {
      */
     @Test
     public void testHashCode() {
+        double[] data = new double[]{1, 2, 3};
+        DoubleArrayDataRow a, b;
+        a = new DoubleArrayDataRow(data);
+        b = new DoubleArrayDataRow(data);
+
+        //objects which are .equals() MUST have the same .hashCode()
+        assertEquals(true, a.equals(b));
+        assertEquals(a.hashCode(), b.hashCode());
+
+        //after setting index instances should NOT be considered as the same
+        a.setIndex(0);
+        a.setIndex(1);
+        assertEquals(false, a.equals(b));
+        assertEquals(false, a.hashCode() == b.hashCode());
     }
 
     /**

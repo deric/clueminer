@@ -3,7 +3,7 @@ package org.clueminer.dataset.row;
 import java.util.Iterator;
 import java.util.Random;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -129,6 +129,23 @@ public class SparseInstanceTest {
      */
     @Test
     public void testEquals() {
+        SparseInstance a, b;
+        a = new SparseInstance();
+        b = new SparseInstance();
+        for (int i = 0; i < 3; i++) {
+            a.set(i, i + 1);
+            b.set(i, i + 1);
+        }
+
+        //objects which are .equals() MUST have the same .hashCode()
+        assertEquals(true, a.equals(b));
+        assertEquals(a.hashCode(), b.hashCode());
+
+        //after setting index instances should NOT be considered as the same
+        a.setIndex(0);
+        a.setIndex(1);
+        assertEquals(false, a.equals(b));
+        assertEquals(false, a.hashCode() == b.hashCode());
     }
 
     /**
@@ -220,8 +237,8 @@ public class SparseInstanceTest {
     @Test
     public void testIterator() {
         Iterator it = instance.iterator();
-        int cnt =0;
-        while(it.hasNext()){
+        int cnt = 0;
+        while (it.hasNext()) {
             it.next();
             cnt++;
         }
