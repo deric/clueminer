@@ -68,6 +68,7 @@ public class Connectivity extends AbstractEvaluator {
         }
         Cluster c;
         Neighbor[] nn;
+        knn.setDataset(dataset);
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {
@@ -79,19 +80,17 @@ public class Connectivity extends AbstractEvaluator {
                 }
             }
         }
-
         return conn;
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        // should be minimzed.
-        return score1 < score2;
+        return score1 > score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     /**
@@ -100,12 +99,12 @@ public class Connectivity extends AbstractEvaluator {
      */
     @Override
     public double getMin() {
-        return Double.POSITIVE_INFINITY;
+        return 0;
     }
 
     @Override
     public double getMax() {
-        return 0;
+        return Double.POSITIVE_INFINITY;
     }
 
 }

@@ -70,7 +70,7 @@ public class ConnectivityTest {
 
     @Test
     public void testIsMaximized() {
-        assertEquals(false, subject.isMaximized());
+        assertEquals(true, subject.isMaximized());
     }
 
 }

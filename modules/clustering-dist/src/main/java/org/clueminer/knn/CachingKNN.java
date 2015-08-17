@@ -67,21 +67,21 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
         if (cache.contains(dataset, q.getIndex())) {
             res = cache.get(dataset, q.getIndex());
             if (res.length < k) {
-                res = updateNN(dataset, q.getIndex(), k, cache);
+                res = updateNN(q.getIndex(), k, cache);
             }
         } else {
-            res = updateNN(dataset, q.getIndex(), k, cache);
+            res = updateNN(q.getIndex(), k, cache);
         }
         return res;
     }
 
-    private Neighbor<T>[] updateNN(Dataset<? extends Instance> dataset, int idx, int k, KnnCache cache) {
-        Neighbor<T>[] res = computeNN(dataset, idx, k, dm);
+    private Neighbor<T>[] updateNN(int idx, int k, KnnCache cache) {
+        Neighbor<T>[] res = computeNN(idx, k, dm);
         cache.put(dataset, idx, res);
         return res;
     }
 
-    private Neighbor<T>[] computeNN(Dataset<? extends Instance> dataset, int idx, int k, Distance dm) {
+    private Neighbor<T>[] computeNN(int idx, int k, Distance dm) {
         Instance q = dataset.get(idx);
         double dist;
 

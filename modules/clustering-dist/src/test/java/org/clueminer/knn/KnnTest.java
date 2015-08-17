@@ -23,6 +23,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
+import org.clueminer.neighbor.Neighbor;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 import org.openide.util.Exceptions;
 
 /**
@@ -67,4 +70,25 @@ public class KnnTest {
         return irisData;
     }
 
+    @Test
+    public void testBenchmark() {
+        CachingKNN t1 = new CachingKNN();
+        LinearSearch t2 = new LinearSearch();
+        Dataset<? extends Instance> d = irisDataset();
+        t1.setDataset(d);
+        t2.setDataset(d);
+        int k = 5;
+        for (int i = 0; i < d.size(); i++) {
+            Instance ref = d.get(i);
+            Neighbor[] nn1 = t1.knn(ref, k);
+            Neighbor[] nn2 = t2.knn(ref, k);
+
+            Instance inst1, inst2;
+            for (int j = 0; j < k; j++) {
+                inst1 = (Instance) nn1[j].key;
+                inst2 = (Instance) nn2[j].key;
+                assertEquals(inst1, inst2);
+            }
+        }
+    }
 }
