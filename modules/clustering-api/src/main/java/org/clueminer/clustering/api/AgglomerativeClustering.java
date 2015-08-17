@@ -7,8 +7,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public interface AgglomerativeClustering extends ClusteringAlgorithm {
+public interface AgglomerativeClustering<T extends Instance> extends ClusteringAlgorithm<T> {
 
     /**
      * Run hierarchical clustering on dataset
@@ -17,7 +18,7 @@ public interface AgglomerativeClustering extends ClusteringAlgorithm {
      * @param pref
      * @return
      */
-    HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref);
+    HierarchicalResult hierarchy(Dataset<T> dataset, Props pref);
 
     /**
      * Some implementation can not support certain linkage types

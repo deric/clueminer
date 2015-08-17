@@ -35,9 +35,10 @@ import org.openide.util.lookup.ServiceProvider;
  * 373-380.
  *
  * @author Tomas Barton
+ * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLWMS extends HACLW implements AgglomerativeClustering {
+public class HACLWMS<T extends Instance> extends HAC<T> implements AgglomerativeClustering<T> {
 
     private final static String name = "HAC-LW-MS";
     private static final Logger logger = Logger.getLogger(HACLWMS.class.getName());

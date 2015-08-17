@@ -28,8 +28,9 @@ import org.clueminer.utils.Props;
  * 16 (1): 30–34. doi:10.1093/comjnl/16.1.30.
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
+public class SLINK<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
 
     public static final String name = "SLINK";
 
@@ -68,7 +69,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
 
         HierarchicalResult result = new HClustResult(dataset, pref);
 
@@ -201,7 +202,7 @@ public class SLINK extends AbstractClusteringAlgorithm implements AgglomerativeC
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -32,9 +32,10 @@ import org.openide.util.lookup.ServiceProvider;
  * clustering using dynamic modeling." Computer 32.8 (1999): 68-75.
  *
  * @author Tomas Bruna
+ * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class Chameleon extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
+public class Chameleon<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
 
     public static final String K = "k";
 
@@ -104,13 +105,13 @@ public class Chameleon extends AbstractClusteringAlgorithm implements Agglomerat
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props pref) {
+    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props pref) {
         HierarchicalResult res = hierarchy(dataset, pref);
         return res.getClustering();
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
         AgglParams params = new AgglParams(pref);
         if (params.clusterColumns()) {
             // throw new RuntimeException("Chameleon cannot cluster attributes");

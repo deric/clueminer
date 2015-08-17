@@ -40,9 +40,10 @@ import org.uma.jmetal.solution.Solution;
 /**
  *
  * @author deric
+ * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeansBagging extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public class KMeansBagging<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
 
     private static final String name = "K-Means bagging";
 
@@ -101,7 +102,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Cluste
     }
 
     @Override
-    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         bagging = props.getInt(BAGGING, 5);
         String initSet = props.get(INIT_METHOD, "RANDOM");
         //String initSet = props.get("init_set", "MO");
@@ -114,7 +115,7 @@ public class KMeansBagging extends AbstractClusteringAlgorithm implements Cluste
         String consensus = props.get(CONSENSUS, "co-association HAC");
         Consensus reducer = ConsensusFactory.getInstance().getProvider(consensus);
         logger.log(Level.INFO, "consensus:{0}", consensus);
-        Clustering<? extends Cluster> res = null;
+        Clustering<? extends Cluster<? super T>> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {
             case "RANDOM":

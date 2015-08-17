@@ -41,7 +41,7 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
 
     private Distance dm;
 
-    private static final String name = "liner k-nn";
+    public static final String name = "linear k-nn";
 
     /**
      * Whether to exclude query object self from the neighborhood.

@@ -1,11 +1,11 @@
 package org.clueminer.clustering.algorithm;
 
-import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -13,8 +13,9 @@ import org.clueminer.distance.api.Distance;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public abstract class KClustererBase extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public abstract class KClustererBase<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
 
     @Override
     public Distance getDistanceFunction() {

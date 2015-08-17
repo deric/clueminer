@@ -10,14 +10,16 @@ import org.clueminer.clustering.params.AlgParam;
 import org.clueminer.clustering.params.ParamType;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.DataStandardization;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public abstract class AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public abstract class AbstractClusteringAlgorithm<T extends Instance> implements ClusteringAlgorithm<T> {
 
     // don't mutate distance by default - most of evaluation metrics are not
     // adjusted for this

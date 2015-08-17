@@ -11,8 +11,9 @@ import org.netbeans.api.progress.ProgressHandle;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public interface ClusteringAlgorithm {
+public interface ClusteringAlgorithm<T extends Instance> {
 
     String getName();
 
@@ -24,7 +25,7 @@ public interface ClusteringAlgorithm {
      *                performance
      * @return
      */
-    Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props);
+    Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props);
 
     Distance getDistanceFunction();
 

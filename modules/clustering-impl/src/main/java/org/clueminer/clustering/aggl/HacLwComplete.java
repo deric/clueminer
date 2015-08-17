@@ -4,6 +4,7 @@ import java.util.HashMap;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
@@ -13,8 +14,9 @@ import org.clueminer.utils.Props;
  * function is used
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public class HacLwComplete extends HACLW implements AgglomerativeClustering {
+public class HacLwComplete<T extends Instance> extends HACLW<T> implements AgglomerativeClustering<T> {
 
     private final static String name = "HAC-LW-Complete";
 

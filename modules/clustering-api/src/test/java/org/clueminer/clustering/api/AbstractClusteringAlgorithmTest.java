@@ -4,8 +4,6 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -17,41 +15,13 @@ public class AbstractClusteringAlgorithmTest {
     public AbstractClusteringAlgorithmTest() {
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testGetDistanceFunction() {
-    }
-
-    @Test
-    public void testSetDistanceFunction() {
-    }
-
-    @Test
-    public void testGetColorGenerator() {
-    }
-
-    @Test
-    public void testSetColorGenerator() {
-    }
-
-    @Test
-    public void testSetProgressHandle() {
-    }
-
     @Test
     public void testGetParameters() {
         DummyAlgorithm alg = new DummyAlgorithm();
         alg.getParameters();
     }
 
-    private class DummyAlgorithm extends AbstractClusteringAlgorithm {
+    private class DummyAlgorithm<T extends Instance> extends AbstractClusteringAlgorithm<T> {
 
         @Param(name = "k")
         int k = 5;
@@ -65,7 +35,7 @@ public class AbstractClusteringAlgorithmTest {
         }
 
         @Override
-        public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+        public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }

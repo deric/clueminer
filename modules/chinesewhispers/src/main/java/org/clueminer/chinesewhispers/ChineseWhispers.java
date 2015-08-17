@@ -26,9 +26,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Hamster
+ * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class ChineseWhispers extends AbstractClusteringAlgorithm {
+public class ChineseWhispers<T extends Instance> extends AbstractClusteringAlgorithm<T> {
 
     private AdjListGraph graph;
 
@@ -53,7 +54,7 @@ public class ChineseWhispers extends AbstractClusteringAlgorithm {
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         graph = new AdjListGraph();
         String dist = props.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);

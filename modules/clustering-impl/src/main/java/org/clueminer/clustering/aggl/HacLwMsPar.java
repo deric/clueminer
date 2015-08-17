@@ -14,8 +14,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <T>
  */
-public class HacLwMsPar extends HACLWMS {
+public class HacLwMsPar<T extends Instance> extends HACLWMS<T> {
 
     private final static String name = "HAC-LW-MS-PAR";
     private int threads = 4;
@@ -43,7 +44,7 @@ public class HacLwMsPar extends HACLWMS {
      * @return
      */
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());

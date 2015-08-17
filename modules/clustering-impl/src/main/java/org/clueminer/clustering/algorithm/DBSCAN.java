@@ -28,23 +28,27 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
+import org.clueminer.neighbor.RnnFactory;
 import org.clueminer.utils.Props;
 
 /**
  * A density-based algorithm for discovering clusters in large spatial databases
  * with noise.
  *
+ * @param <T>
  * @cite Ester, Martin, et al. "A density-based algorithm for discovering
  * clusters in large spatial databases with noise." Kdd. Vol. 96. No. 34. 1996.
  *
  * @author deric
  */
-public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
 
     public static final String name = "DBSCAN";
 
     public static final String MIN_PTS = "minPts";
     public static final String RADIUS = "radius";
+
+    public static final String RNN_ALG = "rnnAlg";
 
     /**
      * Label for unclassified data samples.
@@ -71,7 +75,7 @@ public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlg
     }
 
     @Override
-    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         minPts = props.getDouble(MIN_PTS);
         if (minPts < 1) {
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
@@ -84,7 +88,11 @@ public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlg
 
         int k = 0;
 
-        RNNSearch<Instance> nns;
+        String rnnProvider = props.get(RNN_ALG, "linear k-nn");
+        RNNSearch<T> nns = RnnFactory.getInstance().getProvider(rnnProvider);
+        if (nns == null) {
+            throw new RuntimeException("RNN provider was not found");
+        }
 
         int n = dataset.size();
         int[] y = new int[n];
@@ -92,7 +100,7 @@ public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlg
 
         for (int i = 0; i < n; i++) {
             if (y[i] == UNCLASSIFIED) {
-                List<Neighbor<T>> neighbors = new ArrayList<Neighbor<T>>();
+                List<Neighbor<T>> neighbors = new ArrayList<>();
                 nns.range(dataset.get(i), radius, neighbors);
                 if (neighbors.size() < minPts) {
                     y[i] = OUTLIER;
@@ -102,7 +110,7 @@ public class DBSCAN extends AbstractClusteringAlgorithm implements ClusteringAlg
                         if (y[neighbors.get(j).index] == UNCLASSIFIED) {
                             y[neighbors.get(j).index] = k;
                             Neighbor<T> neighbor = neighbors.get(j);
-                            List<Neighbor<T>> secondaryNeighbors = new ArrayList<Neighbor<T>>();
+                            List<Neighbor<T>> secondaryNeighbors = new ArrayList<>();
                             nns.range(neighbor.key, radius, secondaryNeighbors);
 
                             if (secondaryNeighbors.size() >= minPts) {

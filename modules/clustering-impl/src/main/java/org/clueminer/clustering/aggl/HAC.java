@@ -49,12 +49,13 @@ import org.openide.util.lookup.ServiceProvider;
  * Note: In order to avoid concurrency issues, the algorithm shouldn't keep
  * state
  *
+ * @param <T>
  * @see
  * http://nlp.stanford.edu/IR-book/html/htmledition/time-complexity-of-hac-1.html
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
+public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
 
     private final static String name = "HAC";
     private static final Logger logger = Logger.getLogger(HAC.class.getName());
@@ -89,7 +90,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
      * @return
      */
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
@@ -327,7 +328,7 @@ public class HAC extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

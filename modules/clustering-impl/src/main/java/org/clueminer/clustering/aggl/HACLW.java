@@ -14,6 +14,7 @@ import org.clueminer.clustering.aggl.linkage.MedianLinkage;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -26,9 +27,10 @@ import org.openide.util.lookup.ServiceProvider;
  * 373-380.
  *
  * @author Tomas Barton
+ * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLW extends HAC implements AgglomerativeClustering {
+public class HACLW<T extends Instance> extends HAC<T> implements AgglomerativeClustering<T> {
 
     private final static String name = "HAC-LW";
 

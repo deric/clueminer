@@ -12,8 +12,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -21,6 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implements the K-means algorithms as described by Mac Queen in 1967.
  *
+ * @param <T>
  * @cite J. B. MacQueen (1967): "Some Methods for classification and Analysis
  * of Multivariate Observations, Proceedings of 5-th Berkeley Symposium on
  * Mathematical Statistics and Probability", Berkeley, University of California
@@ -32,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeans extends AbstractClusteringAlgorithm implements ClusteringAlgorithm {
+public class KMeans<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
 
     public static final String K = "k";
 
@@ -90,7 +91,7 @@ public class KMeans extends AbstractClusteringAlgorithm implements ClusteringAlg
      * @param params set of algorithm parameters
      */
     @Override
-    public Clustering<? extends Cluster> cluster(Dataset<? extends Instance> data, Props params) {
+    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> data, Props params) {
         if (data == null || data.isEmpty()) {
             throw new RuntimeException("The dataset should not be empty");
         }

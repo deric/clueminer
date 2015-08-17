@@ -17,14 +17,16 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
  * Reduce multiple clusterings into one resulting (consensus) clustering
  *
  * @author deric
+ * @param <T>
  */
-public interface Consensus {
+public interface Consensus<T extends Instance> {
 
     /**
      * Unique method identification
@@ -42,5 +44,5 @@ public interface Consensus {
      * @param props
      * @return
      */
-    Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props);
+    Clustering<? extends Cluster<? super T>> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props);
 }

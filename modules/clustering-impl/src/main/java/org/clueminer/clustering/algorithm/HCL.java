@@ -16,7 +16,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
-public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClustering {
+public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
 
     private boolean stop = false;
     private int parentless;
@@ -40,7 +40,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<? extends Instance> dataset, Props map) {
+    public HierarchicalResult hierarchy(Dataset<T> dataset, Props map) {
         System.out.println(map.toString());
         TreeDataImpl treeData = new TreeDataImpl(distanceFunction);
         result = new HCLResult(dataset);
@@ -865,7 +865,7 @@ public class HCL extends AbstractClusteringAlgorithm implements AgglomerativeClu
     }
 
     @Override
-    public Clustering<Cluster> cluster(Dataset<? extends Instance> dataset, Props props) {
+    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

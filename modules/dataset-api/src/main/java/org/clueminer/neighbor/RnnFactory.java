@@ -16,17 +16,32 @@
  */
 package org.clueminer.neighbor;
 
-import java.util.List;
-import org.clueminer.dataset.api.Instance;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import org.clueminer.utils.ServiceFactory;
+import org.openide.util.Lookup;
 
 /**
- * Range neighbor search - search within given radius
  *
  * @author deric
- * @param <K>
  */
-public interface RNNSearch<K extends Instance> extends NearestNeighborSearch<K> {
+public class RnnFactory extends ServiceFactory<RNNSearch> {
 
-    void range(K q, double radius, List<Neighbor<K>> neighbors);
+    private static RnnFactory instance;
 
+    public static RnnFactory getInstance() {
+        if (instance == null) {
+            instance = new RnnFactory();
+        }
+        return instance;
+    }
+
+    private RnnFactory() {
+        providers = new LinkedHashMap<>();
+        Collection<? extends RNNSearch> list = Lookup.getDefault().lookupAll(RNNSearch.class);
+        for (RNNSearch c : list) {
+            providers.put(c.getName(), c);
+        }
+        sort();
+    }
 }
