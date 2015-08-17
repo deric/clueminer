@@ -187,6 +187,11 @@ public class SortUtils {
      * not smaller than either child or the bottom is reached. Note that if n is
      * even and k is n/2, then the node at k has only one child -- this case
      * must be treated properly.
+     *
+     * @param <T>
+     * @param arr
+     * @param k
+     * @param n
      */
     public static <T extends Comparable<? super T>> void siftDown(T[] arr, int k, int n) {
         while (2 * k <= n) {

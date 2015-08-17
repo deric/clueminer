@@ -16,6 +16,7 @@
  */
 package org.clueminer.sort;
 
+import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -25,7 +26,25 @@ import org.junit.Test;
  */
 public class HeapSelectTest {
 
+    private static final double delta = 1e-9;
+
     public HeapSelectTest() {
+    }
+
+    @Test
+    public void testSort() {
+        HeapSelect<Integer> heap = new HeapSelect<>(new Integer[10]);
+        int size = 10;
+        for (int i = 0; i < size; i++) {
+            heap.add(10 - i);
+        }
+        heap.sort();
+
+        //sorted values from 1 to 10
+        for (int i = 0; i < size; i++) {
+            assertEquals(true, (i + 1) == heap.get(i));
+        }
+        assertEquals(10.0, heap.peekLast(), delta);
     }
 
     @Test
@@ -58,13 +77,14 @@ public class HeapSelectTest {
     public void testSelectBig() {
         System.out.println("HeapSelect Big");
         HeapSelect<Double> instance = new HeapSelect<>(new Double[10]);
-        for (int i = 0; i < 100000000; i++) {
-            instance.add(Math.random());
+        Random rand = new Random();
+        for (int i = 0; i < 1000000; i++) {
+            instance.add(rand.nextDouble());
         }
 
         for (int j = 0; j < 10; j++) {
             System.out.println(instance.get(j));
         }
     }
-    
+
 }

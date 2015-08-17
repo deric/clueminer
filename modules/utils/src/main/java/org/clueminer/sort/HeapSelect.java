@@ -26,7 +26,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
     /**
      * The heap size.
      */
-    private int k;
+    private final int k;
     /**
      * The number of objects that have been added into heap.
      */
@@ -38,7 +38,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
     /**
      * The heap array.
      */
-    private T[] heap;
+    private final T[] heap;
 
     /**
      * Constructor.
@@ -54,6 +54,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
 
     /**
      * Assimilate a new value from the stream.
+     *
      * @param datum
      */
     public void add(T datum) {
@@ -87,6 +88,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
 
     /**
      * Returns the k-<i>th</i> smallest value seen so far.
+     *
      * @return
      */
     public T peek() {
@@ -94,10 +96,20 @@ public class HeapSelect<T extends Comparable<? super T>> {
     }
 
     /**
+     * Return largest value in the heap
+     *
+     * @return
+     */
+    public T peekLast() {
+        return get(heap.length - 1);
+    }
+
+    /**
      * Returns the i-<i>th</i> smallest value seen so far. i = 0 returns the
      * smallest value seen, i = 1 the second largest, ..., i = k-1 the last
      * position tracked. Also, i must be less than the number of previous
      * assimilated.
+     *
      * @param i
      * @return
      */

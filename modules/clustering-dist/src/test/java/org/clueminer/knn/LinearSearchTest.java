@@ -18,6 +18,7 @@ package org.clueminer.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -27,28 +28,59 @@ import org.junit.Test;
  */
 public class LinearSearchTest extends KnnTest {
 
-    private LinearSearch subject;
+    private final LinearSearch subject;
 
     public LinearSearchTest() {
-        //subject = new LinearSearch();
+        subject = new LinearSearch();
     }
 
     @Test
     public void testNearest() {
         Dataset<? extends Instance> data = insectDataset();
-        subject = new LinearSearch(data);
         subject.setDataset(data);
 
         assertEquals(data.get(6), subject.nearest(data.get(0)).key);
     }
 
-    @Test
+//    @Test
     public void testKnn() {
+        Dataset<? extends Instance> d = insectDataset();
+        subject.setDataset(d);
+        int idx = 0;
+        int k = 3;
+        Neighbor[] neighbors = subject.knn(d.get(idx), k);
+
+        int[] expected = new int[]{6, 7, 1};
+
+        for (int i = 0; i < neighbors.length; i++) {
+            Neighbor neighbor = neighbors[i];
+            assertEquals(expected[i], ((Instance) neighbor.key).getIndex());
+        }
+    }
+
+    @Test
+    public void testNn() {
+        Dataset<? extends Instance> d = irisDataset();
+        subject.setDataset(d);
+        int k = 5;
+        //4.9,3.1,1.5,0.1, Iris-setosa
+        Instance ref = d.get(9);
+        Neighbor[] nn = subject.knn(ref, k);
+        assertEquals(k, nn.length);
+        Instance inst;
+        //there are 3 same instances iris dataset
+        //should find two very same instances (id: 34, 37)
+        for (int i = 0; i < 2; i++) {
+            inst = (Instance) nn[i].key;
+            for (int j = 0; j < d.attributeCount(); j++) {
+                assertEquals(ref.get(j), inst.get(j), delta);
+            }
+        }
+        assertEquals(k, nn.length);
     }
 
     @Test
     public void testRange() {
     }
-
 
 }

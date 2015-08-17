@@ -25,6 +25,7 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
+import org.clueminer.sort.HeapSelect;
 
 /**
  *
@@ -35,7 +36,7 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
 
     private Dataset<? extends Instance> dataset;
 
-    private Distance dist;
+    private Distance dm;
 
     /**
      * Whether to exclude query object self from the neighborhood.
@@ -43,12 +44,12 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
     private boolean identicalExcluded = true;
 
     public LinearSearch() {
-        this.dist = EuclideanDistance.getInstance();
+        this.dm = EuclideanDistance.getInstance();
     }
 
     public LinearSearch(Dataset<T> dataset) {
         this.dataset = dataset;
-        this.dist = EuclideanDistance.getInstance();
+        this.dm = EuclideanDistance.getInstance();
     }
 
     @Override
@@ -56,13 +57,13 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
         T neighbor = null;
         int index = -1;
         double max = Double.MAX_VALUE;
+        double d;
         for (int i = 0; i < dataset.size(); i++) {
             if (q == dataset.get(i) && identicalExcluded) {
                 continue;
             }
 
-            double d = dist.measure(q, dataset.get(i));
-
+            d = dm.measure(q, dataset.get(i));
             if (d < max) {
                 neighbor = (T) dataset.get(i);
                 index = i;
@@ -75,7 +76,46 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
 
     @Override
     public Neighbor[] knn(T q, int k) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (k <= 0) {
+            throw new IllegalArgumentException("Invalid k: " + k);
+        }
+
+        if (k > dataset.size()) {
+            throw new IllegalArgumentException("Neighbor array length is larger than the dataset size");
+        }
+        double dist;
+        Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
+        @SuppressWarnings("unchecked")
+        Neighbor<T>[] neighbors = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
+        HeapSelect<Neighbor<T>> heap = new HeapSelect<>(neighbors);
+        for (int i = 0; i < k; i++) {
+            heap.add(neighbor);
+            neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
+        }
+
+        for (int i = 0; i < dataset.size(); i++) {
+            if (q == dataset.get(i) && identicalExcluded) {
+                continue;
+            }
+
+            dist = dm.measure(q, dataset.get(i));
+            //replace smallest value in the heap
+            Neighbor<T> datum = heap.peekLast();
+            if (dm.compare(dist, datum.distance)) {
+                datum.distance = dist;
+                datum.index = i;
+                datum.key = (T) dataset.get(i);
+                heap.heapify();
+            }
+        }
+
+        heap.sort();
+        //heap is stored in inversed order
+        Neighbor<T>[] res = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
+        for (int i = 0; i < k; i++) {
+            res[i] = heap.get(i);
+        }
+        return res;
     }
 
     @Override
@@ -100,7 +140,7 @@ public class LinearSearch<T extends Instance> implements NearestNeighborSearch<T
     }
 
     public void setDistanceMeasure(Distance dm) {
-        this.dist = dm;
+        this.dm = dm;
     }
 
 }

@@ -31,6 +31,7 @@ import org.openide.util.Exceptions;
  */
 public class KnnTest {
 
+    protected static final double delta = 1e-9;
     private Dataset<? extends Instance> irisData;
     private Dataset<? extends Instance> insectData;
 
