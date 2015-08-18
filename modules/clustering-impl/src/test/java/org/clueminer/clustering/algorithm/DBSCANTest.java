@@ -17,6 +17,8 @@
 package org.clueminer.clustering.algorithm;
 
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
@@ -39,9 +41,10 @@ public class DBSCANTest {
         Dataset dataset = FakeClustering.schoolData();
         Props pref = new Props();
 
-        pref.putDouble(DBSCAN.MIN_PTS, 3);
-        pref.putDouble(DBSCAN.RADIUS, 0.5);
-        subject.cluster(dataset, pref);
+        pref.putDouble(DBSCAN.MIN_PTS, 2);
+        pref.putDouble(DBSCAN.RADIUS, 20);
+        Clustering<? extends Cluster> c = subject.cluster(dataset, pref);
+        System.out.println("size = " + c.size());
     }
 
 }

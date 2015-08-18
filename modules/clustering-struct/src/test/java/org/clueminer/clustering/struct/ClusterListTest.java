@@ -53,6 +53,11 @@ public class ClusterListTest {
 
     @Test
     public void testEnsureCapacity() {
+        ClusterList clusters = new ClusterList();
+        clusters.ensureCapacity(4);
+        clusters.createCluster();
+        assertEquals(1, clusters.size());
+        assertEquals(6, clusters.getCapacity());
     }
 
     @Test

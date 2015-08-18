@@ -24,6 +24,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
@@ -130,16 +131,24 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
             }
         }
 
-        int[] size = new int[k + 1];
+        Clustering res = Clusterings.newList();
+        int avgSize = (int) Math.sqrt(dataset.size());
+        Cluster curr;
+        int clustIdx;
         for (int i = 0; i < n; i++) {
             if (y[i] == OUTLIER) {
-                size[k]++;
+                clustIdx = k;
             } else {
-                size[y[i]]++;
+                clustIdx = y[i];
             }
+            if (!res.hasAt(clustIdx)) {
+                res.createCluster(clustIdx, avgSize);
+            }
+            curr = res.get(clustIdx);
+            curr.add(dataset.get(i));
         }
 
-        return null;
+        return res;
     }
 
     public RNNSearch<T> getNns() {
