@@ -140,6 +140,9 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
         int avgSize = (int) Math.sqrt(dataset.size());
         Cluster curr;
         int clustIdx;
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
         for (int i = 0; i < n; i++) {
             if (y[i] == OUTLIER) {
                 clustIdx = k;
@@ -147,7 +150,10 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
                 clustIdx = y[i];
             }
             if (!res.hasAt(clustIdx)) {
-                res.createCluster(clustIdx, avgSize);
+                curr = res.createCluster(clustIdx, avgSize);
+                if (colorGenerator != null) {
+                    curr.setColor(colorGenerator.next());
+                }
             }
             curr = res.get(clustIdx);
             curr.add(dataset.get(i));
