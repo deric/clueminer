@@ -8,6 +8,7 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C>
  */
 public interface AgglomerativeClustering<E extends Instance, C extends Cluster<E>> extends ClusteringAlgorithm<E, C> {
 

@@ -73,7 +73,16 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      *
      * @param d
      */
-    void put(Cluster<E> d);
+    void put(C d);
+
+    /**
+     * Add element to collection
+     *
+     * @param e
+     * @return
+     */
+    @Override
+    boolean add(C e);
 
     /**
      * Inserts Cluster at i-th position
@@ -81,7 +90,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @param index
      * @param d
      */
-    void put(int index, Cluster<E> d);
+    void put(int index, C d);
 
     /**
      * Return true if Dataset exists at index
@@ -96,7 +105,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      *
      * @param datasets
      */
-    void merge(Cluster<E>... datasets);
+    void merge(C... datasets);
 
     /**
      * Name of i-th cluster
@@ -156,7 +165,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @param inst
      * @return cluster to which is {@code inst} assigned
      */
-    Cluster<E> assignedCluster(E inst);
+    C assignedCluster(E inst);
 
     /**
      * Create new cluster on given index
@@ -164,14 +173,14 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
      * @return newly created cluster
      */
-    Cluster<E> createCluster(int clusterIndex);
+    C createCluster(int clusterIndex);
 
     /**
      * Create cluster with new ID (starting from 1)
      *
      * @return
      */
-    Cluster<E> createCluster();
+    C createCluster();
 
     /**
      * Create new cluster with given ID and initial capacity
@@ -180,7 +189,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @param capacity cluster capacity
      * @return newly created cluster
      */
-    Cluster<E> createCluster(int clusterIndex, int capacity);
+    C createCluster(int clusterIndex, int capacity);
 
     /**
      * Lookup is used for retrieving objects associated with this clustering

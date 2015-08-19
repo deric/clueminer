@@ -175,18 +175,18 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     }
 
     @Override
-    public void put(Cluster<E> d) {
-        this.add((C) d);
+    public void put(C d) {
+        this.add(d);
     }
 
     @Override
-    public void put(int index, Cluster<E> x) {
+    public void put(int index, C x) {
         ensureCapacity(index);
 
         if (data[index] == null) {
             n++;
         }
-        data[index] = (C) x;
+        data[index] = x;
         //cluster numbers start from 1
         x.setClusterId(index);
         ensureName(x);
@@ -313,7 +313,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      * @return
      */
     @Override
-    public Cluster<E> assignedCluster(E inst) {
+    public C assignedCluster(E inst) {
         for (C cluster : this) {
             if (cluster.contains(inst.getIndex())) {
                 return cluster;
@@ -406,9 +406,9 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      * @return
      */
     @Override
-    public Cluster<E> createCluster(int clusterId) {
+    public C createCluster(int clusterId) {
         int attrSize = guessAttrCnt();
-        Cluster<E> c = new BaseCluster(5, attrSize);
+        C c = (C) new BaseCluster<E>(5, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
         //some validity measures needs to access attribute properties
@@ -424,9 +424,9 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      * {@inheritDoc}
      */
     @Override
-    public Cluster<E> createCluster() {
+    public C createCluster() {
         int attrSize = guessAttrCnt();
-        Cluster<E> c = new BaseCluster(5, attrSize);
+        C c = (C) new BaseCluster<E>(5, attrSize);
         int clusterId = size();
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
@@ -447,9 +447,9 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      * @return
      */
     @Override
-    public Cluster<E> createCluster(int clusterId, int capacity) {
+    public C createCluster(int clusterId, int capacity) {
         int attrSize = guessAttrCnt();
-        Cluster<E> c = new BaseCluster(capacity, attrSize);
+        C c = (C) new BaseCluster<E>(capacity, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
         put(clusterId, c);
@@ -469,7 +469,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
-        for (Cluster<E> e : this) {
+        for (C e : this) {
             sb.append(e.toString());
         }
 
