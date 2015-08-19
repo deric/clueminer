@@ -20,34 +20,29 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.algorithm.DBSCAN;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class KmeansDialogTest {
+public class DBSCANDialogTest {
 
-    private final KmeansDialog subject;
+    private final DBSCANDialog subject;
 
-    public KmeansDialogTest() {
-        subject = new KmeansDialog();
-    }
-
-    @Before
-    public void setUp() {
+    public DBSCANDialogTest() {
+        subject = new DBSCANDialog();
     }
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new KMeans()));
+        assertEquals(true, subject.isUIfor(new DBSCAN()));
     }
 
     public String getTitle() {
-        return "k-means test";
+        return "DBSCAN test";
     }
 
     protected JFrame showInFrame() {
@@ -65,7 +60,7 @@ public class KmeansDialogTest {
 
             @Override
             public void run() {
-                new KmeansDialogTest().showInFrame();
+                new DBSCANDialogTest().showInFrame();
             }
         });
     }

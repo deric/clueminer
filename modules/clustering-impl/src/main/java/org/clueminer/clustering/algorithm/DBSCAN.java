@@ -31,6 +31,7 @@ import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.neighbor.RnnFactory;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A density-based algorithm for discovering clusters in large spatial databases
@@ -42,6 +43,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
 
     public static final String name = "DBSCAN";
