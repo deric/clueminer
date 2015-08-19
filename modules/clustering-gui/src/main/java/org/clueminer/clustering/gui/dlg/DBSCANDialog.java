@@ -44,7 +44,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
 
     private JSlider sliderMinPts;
     private JTextField tfMinPts;
-    private JTextField tfIterations;
+    private JTextField tfRadius;
     private JSlider sliderRadius;
     private JComboBox comboDistance;
     private static final String name = "DBSCAN";
@@ -62,8 +62,8 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     private void initComponents() {
         setLayout(new GridBagLayout());
 
-        tfMinPts = new JTextField("4", 4);
-        sliderMinPts = new JSlider(2, 1000, 4);
+        tfMinPts = new JTextField("20", 4);
+        sliderMinPts = new JSlider(2, 1000, 20);
         sliderMinPts.addChangeListener(new ChangeListener() {
 
             @Override
@@ -112,16 +112,16 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
 
             @Override
             public void stateChanged(ChangeEvent e) {
-                tfIterations.setText(String.valueOf(sliderRadius.getValue()));
+                tfRadius.setText(String.valueOf(sliderRadius.getValue()));
             }
         });
         c.gridx = 1;
         add(sliderRadius, c);
 
         c.gridx = 2;
-        tfIterations = new JTextField("100", 4);
-        add(tfIterations, c);
-        tfIterations.addKeyListener(new KeyListener() {
+        tfRadius = new JTextField("100", 10);
+        add(tfRadius, c);
+        tfRadius.addKeyListener(new KeyListener() {
 
             @Override
             public void keyTyped(KeyEvent e) {
@@ -138,7 +138,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
                 updateRadiusSlider();
             }
         });
-        sliderRadius.setValue(1);
+        sliderRadius.setValue(5);
 
         //distance measure
         c.gridy++;
@@ -160,7 +160,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
 
     private void updateRadiusSlider() {
         try {
-            int val = Integer.valueOf(tfIterations.getText());
+            int val = Integer.valueOf(tfRadius.getText());
             sliderRadius.setValue(val);
         } catch (NumberFormatException ex) {
             // wrong input so we do not set the slider but also do not want to raise an exception
