@@ -12,9 +12,10 @@ import org.openide.util.Lookup;
  * Dataset interface.
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <C>
+ * @param <E>
  */
-public interface Clustering<T extends Cluster> extends Cloneable, Serializable, Iterable<T>, Collection<T> {
+public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cloneable, Serializable, Iterable<C>, Collection<C> {
 
     /**
      * ID is usually assigned by algorithms generating many different
@@ -57,7 +58,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param i
      * @return
      */
-    T get(int i);
+    C get(int i);
 
     /**
      * Find cluster by label, nil if given label is not present
@@ -65,14 +66,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param label
      * @return cluster with given label
      */
-    T get(String label);
+    C get(String label);
 
     /**
      * Inserts Dataset (a cluster) into Clustering (a set of clusters)
      *
      * @param d
      */
-    void put(Cluster<? extends Instance> d);
+    void put(Cluster<E> d);
 
     /**
      * Inserts Cluster at i-th position
@@ -80,7 +81,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param index
      * @param d
      */
-    void put(int index, Cluster<Instance> d);
+    void put(int index, Cluster<E> d);
 
     /**
      * Return true if Dataset exists at index
@@ -95,7 +96,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @param datasets
      */
-    void merge(Cluster<Instance>... datasets);
+    void merge(Cluster<E>... datasets);
 
     /**
      * Name of i-th cluster
@@ -119,14 +120,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return instances iterator
      */
-    Iterator<Instance> instancesIterator();
+    Iterator<E> instancesIterator();
 
     /**
      * Computes centroid for the whole dataset (clustering)
      *
      * @return centroid for all clusters
      */
-    Instance getCentroid();
+    E getCentroid();
 
     /**
      * Instances are numbered from 0 to {@code instancesCount()-1}
@@ -134,7 +135,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param i
      * @return i-th instance in the clustering
      */
-    Instance instance(int i);
+    E instance(int i);
 
     /**
      *
@@ -155,7 +156,7 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param inst
      * @return cluster to which is {@code inst} assigned
      */
-    Cluster<? extends Instance> assignedCluster(Instance inst);
+    Cluster<E> assignedCluster(E inst);
 
     /**
      * Create new cluster on given index
@@ -163,23 +164,23 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
      * @return newly created cluster
      */
-    Cluster<? extends Instance> createCluster(int clusterIndex);
+    Cluster<E> createCluster(int clusterIndex);
 
     /**
      * Create cluster with new ID (starting from 1)
      *
      * @return
      */
-    Cluster<? extends Instance> createCluster();
+    Cluster<E> createCluster();
 
     /**
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity     cluster capacity
+     * @param capacity cluster capacity
      * @return newly created cluster
      */
-    Cluster<? extends Instance> createCluster(int clusterIndex, int capacity);
+    Cluster<E> createCluster(int clusterIndex, int capacity);
 
     /**
      * Lookup is used for retrieving objects associated with this clustering
@@ -225,14 +226,14 @@ public interface Clustering<T extends Cluster> extends Cloneable, Serializable, 
      *
      * @return structure for storing evaluation results
      */
-    EvaluationTable getEvaluationTable();
+    EvaluationTable<E, C> getEvaluationTable();
 
     /**
      * Set structure (hash-map) for storing results
      *
      * @param table
      */
-    void setEvaluationTable(EvaluationTable table);
+    void setEvaluationTable(EvaluationTable<E, C> table);
 
     /**
      * Structure fingerprint, clustering with the same fingerprint does not have

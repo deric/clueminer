@@ -20,14 +20,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class Clusterings {
+public class Clusterings<E extends Instance, C extends Cluster<E>> {
 
     /**
      * Allows creating new clusterings without declaring direct dependency on
@@ -38,12 +41,12 @@ public class Clusterings {
      *
      * @return
      */
-    public static Clustering<? extends Cluster> newList() {
+    public static Clustering<? extends Instance, ? extends Cluster> newList() {
         //simple lookup would return an existing instance on any clustering
         Class c = Lookup.getDefault().lookup(Clustering.class).getClass();
-        Clustering<? extends Cluster> res = null;
+        Clustering<? extends Instance, ? extends Cluster> res = null;
         try {
-            res = (Clustering<? extends Cluster>) c.newInstance();
+            res = (Clustering<? extends Instance, ? extends Cluster>) c.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -57,12 +60,12 @@ public class Clusterings {
      * @param size expected size of clusterings
      * @return
      */
-    public static Clustering<? extends Cluster> newList(int size) {
+    public static Clustering<? extends Instance, ? extends Cluster> newList(int size) {
         Class c = Lookup.getDefault().lookup(Clustering.class).getClass();
-        Clustering<? extends Cluster> res = null;
+        Clustering<? extends Instance, ? extends Cluster> res = null;
         try {
             Constructor<?> ctor = c.getConstructor(Integer.class);
-            res = (Clustering<? extends Cluster>) ctor.newInstance(new Object[]{size});
+            res = (Clustering<? extends Instance, ? extends Cluster>) ctor.newInstance(new Object[]{size});
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
             Exceptions.printStackTrace(ex);
         }

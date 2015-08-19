@@ -8,12 +8,14 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface Executor {
+public interface Executor<E extends Instance, C extends Cluster<E>> {
 
-    ClusteringAlgorithm getAlgorithm();
+    ClusteringAlgorithm<E, C> getAlgorithm();
 
-    void setAlgorithm(ClusteringAlgorithm algorithm);
+    void setAlgorithm(ClusteringAlgorithm<E, C> algorithm);
 
     /**
      * Run hierarchical clustering of rows in the given dataset
@@ -22,7 +24,7 @@ public interface Executor {
      * @param params
      * @return
      */
-    HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params);
+    HierarchicalResult hclustRows(Dataset<E> dataset, Props params);
 
     /**
      * Run hierarchical clustering of columns in the given dataset
@@ -31,7 +33,7 @@ public interface Executor {
      * @param params
      * @return
      */
-    HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params);
+    HierarchicalResult hclustColumns(Dataset<E> dataset, Props params);
 
     /**
      *
@@ -39,7 +41,7 @@ public interface Executor {
      * @param params
      * @return
      */
-    Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params);
+    Clustering<E, C> clusterRows(Dataset<E> dataset, Props params);
 
     /**
      *
@@ -47,6 +49,6 @@ public interface Executor {
      * @param params
      * @return
      */
-    DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params);
+    DendrogramMapping clusterAll(Dataset<E> dataset, Props params);
 
 }

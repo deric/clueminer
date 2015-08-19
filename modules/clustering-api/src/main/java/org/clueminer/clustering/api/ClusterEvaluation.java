@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
@@ -7,8 +8,10 @@ import org.clueminer.utils.Props;
  * Interface is used to evaluate quality of clusterings
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface ClusterEvaluation {
+public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
 
     /**
      *
@@ -22,17 +25,17 @@ public interface ClusterEvaluation {
      * @param clusters - clustering to be evaluated
      * @return criterion value obtained on this particular clustering
      */
-    double score(Clustering<? extends Cluster> clusters);
+    double score(Clustering<E, C> clusters);
 
     /**
      * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
-     * @param params a HashMap with parameter settings (many criterion does not
-     * take parameters)
+     * @param params a HashMap with parameter settings (many criterion does
+     * not take parameters)
      * @return criterion value obtained on this particular clustering
      */
-    double score(Clustering<? extends Cluster> clusters, Props params);
+    double score(Clustering<E, C> clusters, Props params);
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
@@ -43,7 +46,7 @@ public interface ClusterEvaluation {
      * @param params optional parameters evaluation metric
      * @return
      */
-    double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params);
+    double score(Clustering<E, C> clusters, Matrix proximity, Props params);
 
     /**
      * Compares the two scores according to the criterion in the implementation.

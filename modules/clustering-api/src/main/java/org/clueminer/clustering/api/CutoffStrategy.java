@@ -1,12 +1,15 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface CutoffStrategy {
+public interface CutoffStrategy<E extends Instance, C extends Cluster<E>> {
 
     /**
      * A human readable name of cutoff strategy
@@ -29,5 +32,5 @@ public interface CutoffStrategy {
      *
      * @param evaluator
      */
-    void setEvaluator(InternalEvaluator evaluator);
+    void setEvaluator(InternalEvaluator<E, C> evaluator);
 }

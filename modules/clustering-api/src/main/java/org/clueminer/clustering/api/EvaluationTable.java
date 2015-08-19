@@ -10,10 +10,12 @@ import org.clueminer.utils.Props;
  * Table with evaluation results, might perform caching or other optimizations
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface EvaluationTable {
+public interface EvaluationTable<E extends Instance, C extends Cluster<E>> {
 
-    void setData(Clustering<? extends Cluster> clusters, Dataset<? extends Instance> dataset);
+    void setData(Clustering<E, C> clusters, Dataset<E> dataset);
 
     /**
      * Get score for given evaluator
@@ -21,7 +23,7 @@ public interface EvaluationTable {
      * @param evaluator
      * @return
      */
-    double getScore(ClusterEvaluation evaluator);
+    double getScore(ClusterEvaluation<E, C> evaluator);
 
     /**
      *
@@ -29,7 +31,7 @@ public interface EvaluationTable {
      * @param params optional parameters of evaluation metric
      * @return
      */
-    double getScore(ClusterEvaluation evaluator, Props params);
+    double getScore(ClusterEvaluation<E, C> evaluator, Props params);
 
     /**
      * Get score for given evaluator

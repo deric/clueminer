@@ -24,9 +24,10 @@ import org.clueminer.utils.Props;
  * Reduce multiple clusterings into one resulting (consensus) clustering
  *
  * @author deric
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
-public interface Consensus<T extends Instance> {
+public interface Consensus<E extends Instance, C extends Cluster<E>> {
 
     /**
      * Unique method identification
@@ -44,5 +45,5 @@ public interface Consensus<T extends Instance> {
      * @param props
      * @return
      */
-    Clustering<? extends Cluster<? super T>> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props);
+    Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props);
 }

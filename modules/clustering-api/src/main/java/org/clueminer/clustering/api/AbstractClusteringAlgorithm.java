@@ -17,9 +17,10 @@ import org.netbeans.api.progress.ProgressHandle;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
-public abstract class AbstractClusteringAlgorithm<T extends Instance> implements ClusteringAlgorithm<T> {
+public abstract class AbstractClusteringAlgorithm<E extends Instance, C extends Cluster<E>> implements ClusteringAlgorithm<E, C> {
 
     // don't mutate distance by default - most of evaluation metrics are not
     // adjusted for this

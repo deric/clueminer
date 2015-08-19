@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
@@ -11,8 +12,10 @@ import org.clueminer.utils.Props;
  * the nature of an unsupervised learning)
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface ExternalEvaluator extends ClusterEvaluation, Serializable {
+public interface ExternalEvaluator<E extends Instance, C extends Cluster<E>> extends ClusterEvaluation<E, C>, Serializable {
 
     void setDistanceMeasure(Distance dm);
 
@@ -25,7 +28,7 @@ public interface ExternalEvaluator extends ClusterEvaluation, Serializable {
      * @return criterion value obtained on this particular clustering
      */
     @Override
-    double score(Clustering<? extends Cluster> clusters, Props params);
+    double score(Clustering<E, C> clusters, Props params);
 
     /**
      * We want to compare two clusterings to evaluate how similar they are
@@ -35,6 +38,6 @@ public interface ExternalEvaluator extends ClusterEvaluation, Serializable {
      * @param params
      * @return
      */
-    double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params);
+    double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params);
 
 }

@@ -21,7 +21,7 @@ public class AbstractClusteringAlgorithmTest {
         alg.getParameters();
     }
 
-    private class DummyAlgorithm<T extends Instance> extends AbstractClusteringAlgorithm<T> {
+    private class DummyAlgorithm<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> {
 
         @Param(name = "k")
         int k = 5;
@@ -35,9 +35,10 @@ public class AbstractClusteringAlgorithmTest {
         }
 
         @Override
-        public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
+
     }
 
 }
