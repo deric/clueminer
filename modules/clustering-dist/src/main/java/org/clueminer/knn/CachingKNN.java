@@ -67,6 +67,9 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
         if (dataset == null) {
             throw new RuntimeException("dataset not set");
         }
+        if (q == null) {
+            throw new RuntimeException("q not set");
+        }
         if (cache.contains(dataset, q.getIndex())) {
             res = cache.get(dataset, q.getIndex());
             if (res.length < k) {

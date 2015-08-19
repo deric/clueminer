@@ -33,6 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  * arbitrary shapes (different than circles/spheres).
  *
  *
+ * @param <T>
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
@@ -40,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Connectivity extends AbstractEvaluator {
+public class Connectivity<T extends Instance> extends AbstractEvaluator {
 
     private static final long serialVersionUID = 5416705978468100914L;
     private static final String name = "Connectivity";
@@ -54,7 +55,7 @@ public class Connectivity extends AbstractEvaluator {
     @Override
     public double score(Clustering<? extends Cluster> clusters, Props params) {
         double conn = 0.0;
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        Dataset<T> dataset = clusters.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }
@@ -62,17 +63,18 @@ public class Connectivity extends AbstractEvaluator {
         //parameter specifing number of neighbours that contribute to connectivity
         // value 10 is suggested by Handl, Knowles
         int L = params.getInt(PARAM, 10);
-        KNNSearch knn = KnnFactory.getInstance().getDefault();
+        KNNSearch<T> knn = KnnFactory.getInstance().getDefault();
         if (knn == null) {
             throw new RuntimeException("missing k-nn implementation");
         }
-        Cluster c;
+        Cluster<T> c;
         Neighbor[] nn;
         knn.setDataset(dataset);
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {
-                nn = knn.knn(c.get(i), L, params);
+                T inst = c.get(i);
+                nn = knn.knn(inst, L, params);
                 for (int k = 0; k < L; k++) {
                     if (c.contains(nn[k].index)) {
                         conn += 1.0 / (k + 1);
