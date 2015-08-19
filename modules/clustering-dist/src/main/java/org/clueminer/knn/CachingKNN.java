@@ -64,6 +64,9 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
     public Neighbor<T>[] knn(T q, int k) {
         KnnCache<Neighbor<T>> cache = KnnCache.getInstance();
         Neighbor<T>[] res;
+        if (dataset == null) {
+            throw new RuntimeException("dataset not set");
+        }
         if (cache.contains(dataset, q.getIndex())) {
             res = cache.get(dataset, q.getIndex());
             if (res.length < k) {
