@@ -37,14 +37,15 @@ import org.openide.util.lookup.ServiceProvider;
  * A density-based algorithm for discovering clusters in large spatial databases
  * with noise.
  *
- * @param <T>
+ * @param <E>
+ * @param <C>
  * @cite Ester, Martin, et al. "A density-based algorithm for discovering
  * clusters in large spatial databases with noise." Kdd. Vol. 96. No. 34. 1996.
  *
  * @author deric
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
+public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     public static final String name = "DBSCAN";
 
@@ -68,7 +69,7 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
     @Param(name = RADIUS, description = "the range of a point neighborhood", required = true, min = 1e-9, max = Double.MAX_VALUE)
     private double radius;
 
-    private RNNSearch<T> nns;
+    private RNNSearch<E> nns;
 
     public DBSCAN() {
 
@@ -80,7 +81,7 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
     }
 
     @Override
-    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         minPts = props.getDouble(MIN_PTS);
         if (minPts < 1) {
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
@@ -107,7 +108,7 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
         for (int i = 0; i < n; i++) {
             if (y[i] == UNCLASSIFIED) {
                 //expand cluster
-                List<Neighbor<T>> seeds = new ArrayList<>();
+                List<Neighbor<E>> seeds = new ArrayList<>();
                 nns.range(dataset.get(i), radius, seeds);
                 //no core points
                 if (seeds.size() < minPts) {
@@ -118,8 +119,8 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
                     for (int j = 0; j < seeds.size(); j++) {
                         if (y[seeds.get(j).index] == UNCLASSIFIED) {
                             y[seeds.get(j).index] = k;
-                            Neighbor<T> neighbor = seeds.get(j);
-                            List<Neighbor<T>> secondaryNeighbors = new ArrayList<>();
+                            Neighbor<E> neighbor = seeds.get(j);
+                            List<Neighbor<E>> secondaryNeighbors = new ArrayList<>();
                             nns.range(neighbor.key, radius, secondaryNeighbors);
 
                             if (secondaryNeighbors.size() >= minPts) {
@@ -162,11 +163,11 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
         return res;
     }
 
-    public RNNSearch<T> getNns() {
+    public RNNSearch<E> getNns() {
         return nns;
     }
 
-    public void setNns(RNNSearch<T> nns) {
+    public void setNns(RNNSearch<E> nns) {
         this.nns = nns;
     }
 }

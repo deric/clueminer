@@ -52,7 +52,7 @@ public class KClustererBaseTest {
         Assignment assign = new HardAssignment(memebership);
         assertEquals(3, assign.distinct());
 
-        Clustering<Cluster> clustering = KClustererBase.fromAssignment(assign, dataset);
+        Clustering<Instance, Cluster<Instance>> clustering = KClustererBase.fromAssignment(assign, dataset);
         //we should have all instances
         assertEquals(dataset.size(), clustering.instancesCount());
         assertEquals(3, clustering.size());

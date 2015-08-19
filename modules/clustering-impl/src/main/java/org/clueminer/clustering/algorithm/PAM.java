@@ -16,7 +16,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  * @param <T>
  */
-public class PAM<T extends Instance> extends KClustererBase<T> implements ClusteringAlgorithm<T> {
+public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBase<E, C> implements ClusteringAlgorithm<E, C> {
 
     private static final String name = "PAM";
     protected int repeats = 1;
@@ -27,7 +27,7 @@ public class PAM<T extends Instance> extends KClustererBase<T> implements Cluste
         return name;
     }
 
-    protected double cluster(Dataset<T> dataset, int[] medioids, Assignment assignments) {
+    protected double cluster(Dataset<E> dataset, int[] medioids, Assignment assignments) {
         double totalDistance = 0.0;
         int changes;
         int[] bestMedCand = new int[medioids.length];
@@ -97,7 +97,7 @@ public class PAM<T extends Instance> extends KClustererBase<T> implements Cluste
     }
 
     @Override
-    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

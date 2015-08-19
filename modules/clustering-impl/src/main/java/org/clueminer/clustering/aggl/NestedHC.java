@@ -5,14 +5,17 @@ import java.util.concurrent.CyclicBarrier;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class NestedHC {
+public class NestedHC<E extends Instance, C extends Cluster<E>> {
 
     private ClusteringAlgorithm mapper;
     private ClusteringAlgorithm reducer;
@@ -24,7 +27,7 @@ public class NestedHC {
      * @param clustering
      * @return
      */
-    public Clustering<? extends Cluster> hierarchy(Clustering<? extends Cluster> clustering) {
+    public Clustering<E, C> hierarchy(Clustering<E, C> clustering) {
         return null;
     }
 
@@ -34,7 +37,7 @@ public class NestedHC {
      * @param clustering
      * @return
      */
-    public Clustering<? extends Cluster> compute(Clustering<? extends Cluster> clustering) {
+    public Clustering<E, C> compute(Clustering<E, C> clustering) {
         CyclicBarrier barrier = new CyclicBarrier(clustering.size());
         Props p = new Props();
         try {

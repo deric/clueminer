@@ -3,6 +3,7 @@ package org.clueminer.clustering.aggl;
 import java.util.AbstractQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -14,9 +15,10 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
-public class HacLwMsPar2<T extends Instance> extends HACLWMS<T> {
+public class HacLwMsPar2<E extends Instance, C extends Cluster<E>> extends HACLWMS<E, C> {
 
     private final static String name = "HAC-LW-MS-PAR-lock";
     private int threads = 4;
@@ -44,7 +46,7 @@ public class HacLwMsPar2<T extends Instance> extends HACLWMS<T> {
      * @return
      */
     @Override
-    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
         AgglParams params = new AgglParams(pref);

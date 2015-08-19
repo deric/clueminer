@@ -13,9 +13,10 @@ import org.clueminer.distance.api.Distance;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
-public abstract class KClustererBase<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
+public abstract class KClustererBase<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     @Override
     public Distance getDistanceFunction() {
@@ -33,14 +34,14 @@ public abstract class KClustererBase<T extends Instance> extends AbstractCluster
      * assignments, and return a list of lists.
      *
      * @param assignments cluster assignments
-     * @param dataset     the original data set, with data in the same order as
-     *                    was
-     *                    used to create the assignments array
+     * @param dataset the original data set, with data in the same order as
+     * was
+     * used to create the assignments array
      * @return a final clustering
      */
-    public static Clustering<Cluster> fromAssignment(Assignment assignments, Dataset<? extends Instance> dataset) {
+    public static Clustering fromAssignment(Assignment assignments, Dataset dataset) {
         //an assignment class with number of distinct values might be useful
-        Clustering<Cluster> clusterings = new ClusterList(assignments.distinct());
+        Clustering clusterings = new ClusterList<>(assignments.distinct());
 
         int clusterId;
         Cluster curr;

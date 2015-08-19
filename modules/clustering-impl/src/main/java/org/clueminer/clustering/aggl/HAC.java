@@ -49,13 +49,14 @@ import org.openide.util.lookup.ServiceProvider;
  * Note: In order to avoid concurrency issues, the algorithm shouldn't keep
  * state
  *
- * @param <T>
+ * @param <E>
+ * @param <C>
  * @see
  * http://nlp.stanford.edu/IR-book/html/htmledition/time-complexity-of-hac-1.html
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
+public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HAC";
     private static final Logger logger = Logger.getLogger(HAC.class.getName());
@@ -90,7 +91,7 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
      * @return
      */
     @Override
-    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
@@ -188,12 +189,12 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
     /**
      * Find most closest items and merges them into one cluster (subtree)
      *
-     * @param pq               queue with sorted distances (lowest distance pops
-     *                         out first)
+     * @param pq queue with sorted distances (lowest distance pops
+     * out first)
      * @param similarityMatrix
      * @param dataset
      * @param params
-     * @param n                number of items to cluster
+     * @param n number of items to cluster
      * @return
      */
     protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
@@ -271,15 +272,15 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
 
     /**
      *
-     * @param mergedId         id of newly created cluster
-     * @param mergedCluster    id of all items in merged cluster
+     * @param mergedId id of newly created cluster
+     * @param mergedCluster id of all items in merged cluster
      * @param similarityMatrix matrix of distances
      * @param assignments
      * @param pq
      * @param linkage
      * @param cache
-     * @param leftId           left cluster ID
-     * @param rightId          right cluster ID
+     * @param leftId left cluster ID
+     * @param rightId right cluster ID
      * @param ma
      * @param mb
      */
@@ -302,7 +303,7 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
     /**
      * Each data point forms an individual cluster
      *
-     * @param n       the number of data points
+     * @param n the number of data points
      * @param dataset
      * @param params
      * @param nodes
@@ -328,11 +329,6 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
     }
 
     @Override
-    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean isLinkageSupported(String linkage) {
         switch (linkage) {
             case "Ward's Linkage":
@@ -340,6 +336,11 @@ public class HAC<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
             default:
                 return true;
         }
+    }
+
+    @Override
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

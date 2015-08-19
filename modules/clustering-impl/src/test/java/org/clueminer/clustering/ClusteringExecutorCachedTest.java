@@ -5,6 +5,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
@@ -38,7 +39,7 @@ public class ClusteringExecutorCachedTest {
     @Ignore
     public void testHclustRows() {
         Props pref = new Props();
-        Clustering<Cluster> clust = subject.clusterRows(FakeClustering.irisDataset(), pref);
+        Clustering<Instance, Cluster<Instance>> clust = subject.clusterRows(FakeClustering.irisDataset(), pref);
         assertNotNull(clust);
         //cutoff implementation is needed
     }

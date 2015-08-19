@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -35,10 +36,11 @@ import org.openide.util.lookup.ServiceProvider;
  * 373-380.
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLWMS<T extends Instance> extends HAC<T> implements AgglomerativeClustering<T> {
+public class HACLWMS<E extends Instance, C extends Cluster<E>> extends HAC<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HAC-LW-MS";
     private static final Logger logger = Logger.getLogger(HACLWMS.class.getName());

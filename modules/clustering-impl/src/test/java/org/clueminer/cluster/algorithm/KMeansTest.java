@@ -7,16 +7,15 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.Props;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 
@@ -27,14 +26,6 @@ import org.openide.util.Exceptions;
 public class KMeansTest {
 
     public KMeansTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     /**
@@ -66,7 +57,7 @@ public class KMeansTest {
              * Cluster the data, it will be returned as an array of data sets,
              * with each dataset representing a cluster
              */
-            Clustering<? extends Cluster> clusters = km.cluster(data, p);
+            Clustering<Instance, Cluster<Instance>> clusters = km.cluster(data, p);
             System.out.println("Cluster count: " + clusters.size());
             int i = 0;
             for (Cluster d : clusters) {

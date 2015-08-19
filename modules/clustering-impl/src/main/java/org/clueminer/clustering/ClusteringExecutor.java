@@ -24,11 +24,13 @@ import org.clueminer.utils.Props;
  * (e.g. a dense matrix) and then joining the original inputs with appropriate
  * clustering result
  *
+ * @param <E>
+ * @param <C>
  * @deprecated use cached executor @link{ClusteringExecutorCached}
  * @author Tomas Barton
  */
 @Deprecated
-public class ClusteringExecutor extends AbstractExecutor implements Executor {
+public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extends AbstractExecutor<E, C> implements Executor<E, C> {
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
 
@@ -37,7 +39,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
+    public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -58,7 +60,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params) {
+    public HierarchicalResult hclustColumns(Dataset<E> dataset, Props params) {
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -73,7 +75,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
     }
 
     @Override
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
+    public Clustering<E, C> clusterRows(Dataset<E> dataset, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
 
@@ -91,7 +93,7 @@ public class ClusteringExecutor extends AbstractExecutor implements Executor {
      * @return
      */
     @Override
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params) {
+    public DendrogramMapping clusterAll(Dataset<E> dataset, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, params);
 

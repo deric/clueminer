@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class DBSCANTest {
 
-    private static DBSCAN<? extends Instance> subject;
+    private static DBSCAN<Instance, Cluster<Instance>> subject;
 
     public DBSCANTest() {
         subject = new DBSCAN<>();
@@ -71,7 +71,7 @@ public class DBSCANTest {
 
         pref.putDouble(DBSCAN.MIN_PTS, 2);
         pref.putDouble(DBSCAN.RADIUS, 20);
-        Clustering<? extends Cluster> c = subject.cluster(dataset, pref);
+        Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(2, c.size());
     }
 
@@ -85,7 +85,7 @@ public class DBSCANTest {
 
         pref.putDouble(DBSCAN.MIN_PTS, 2);
         pref.putDouble(DBSCAN.RADIUS, 5);
-        Clustering<? extends Cluster> c = subject.cluster(dataset, pref);
+        Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(4, c.size());
         System.out.println(c.toString());
     }

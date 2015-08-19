@@ -12,6 +12,7 @@ import java.util.Set;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkageInv;
 import org.clueminer.clustering.aggl.linkage.MedianLinkage;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Instance;
@@ -30,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <T>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLW<T extends Instance> extends HAC<T> implements AgglomerativeClustering<T> {
+public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HAC-LW";
 
@@ -79,11 +80,11 @@ public class HACLW<T extends Instance> extends HAC<T> implements AgglomerativeCl
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r       cluster R is created after merging A and B
-     * @param q       existing cluster
-     * @param a       a cluster that is being merged
-     * @param b       a cluster that is being merged
-     * @param sim     similarity matrix
+     * @param r cluster R is created after merging A and B
+     * @param q existing cluster
+     * @param a a cluster that is being merged
+     * @param b a cluster that is being merged
+     * @param sim similarity matrix
      * @param linkage cluster linkage method
      * @param cache
      * @param ma

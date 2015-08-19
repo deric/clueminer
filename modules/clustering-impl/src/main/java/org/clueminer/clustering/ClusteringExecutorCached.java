@@ -32,15 +32,17 @@ import org.clueminer.utils.Props;
  * of standardizations)
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ClusteringExecutorCached extends AbstractExecutor implements Executor {
+public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> extends AbstractExecutor<E, C> implements Executor<E, C> {
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
     private Map<Dataset<? extends Instance>, StdStorage> storage;
     private OptimalTreeOrder treeOrder = new MOLO();
 
     public ClusteringExecutorCached() {
-        algorithm = new HACLW();
+        algorithm = new HACLW<>();
     }
 
     public ClusteringExecutorCached(ClusteringAlgorithm alg) {
@@ -48,7 +50,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Props params) {
+    public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
@@ -63,7 +65,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public HierarchicalResult hclustColumns(Dataset<? extends Instance> dataset, Props params) {
+    public HierarchicalResult hclustColumns(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.putBoolean(AgglParams.CLUSTER_ROWS, false);
@@ -99,7 +101,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
     }
 
     @Override
-    public Clustering<Cluster> clusterRows(Dataset<? extends Instance> dataset, Props params) {
+    public Clustering<E, C> clusterRows(Dataset<E> dataset, Props params) {
         Clustering clustering;
         if (algorithm instanceof AgglomerativeClustering) {
             HierarchicalResult rowsResult = hclustRows(dataset, params);
@@ -132,7 +134,7 @@ public class ClusteringExecutorCached extends AbstractExecutor implements Execut
      * @return
      */
     @Override
-    public DendrogramMapping clusterAll(Dataset<? extends Instance> dataset, Props params) {
+    public DendrogramMapping clusterAll(Dataset<E> dataset, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         findCutoff(rowsResult, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, params);

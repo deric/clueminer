@@ -29,7 +29,7 @@ import org.openide.util.Exceptions;
  */
 public class ClusterListTest {
 
-    private Clustering<? extends Cluster> clusters;
+    private Clustering clusters;
     private static Dataset<? extends Instance> data;
 
     public ClusterListTest() {

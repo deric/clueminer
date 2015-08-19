@@ -16,7 +16,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = AgglomerativeClustering.class)
-public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
+public class HCL<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private boolean stop = false;
     private int parentless;
@@ -40,7 +40,7 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
     }
 
     @Override
-    public HierarchicalResult hierarchy(Dataset<T> dataset, Props map) {
+    public HierarchicalResult hierarchy(Dataset<E> dataset, Props map) {
         System.out.println(map.toString());
         TreeDataImpl treeData = new TreeDataImpl(distanceFunction);
         result = new HCLResult(dataset);
@@ -536,18 +536,18 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
      * determined until the optimal orderings of both children of the node are
      * calculated.
      *
-     * @param Child1           the first child of a given node
-     * @param Child2           the second child of a given node
+     * @param Child1 the first child of a given node
+     * @param Child2 the second child of a given node
      * @param NumberOfChildren the number of leaves below a given node
-     * @param LeavesUnder      an array of nodes with arrays of leaves under
-     *                         those
-     *                         nodes
-     * @param OptimalSum       matrix containing the optimal sum of all
-     *                         similarities
-     *                         between adjacent leaves between two leaves set to be a maximum apart
+     * @param LeavesUnder an array of nodes with arrays of leaves under
+     * those
+     * nodes
+     * @param OptimalSum matrix containing the optimal sum of all
+     * similarities
+     * between adjacent leaves between two leaves set to be a maximum apart
      * @param SimilarityMatrix matrix containing similarities between all leaves
-     * @param n                the total number of leaves
-     * @param node             the node to be optimized
+     * @param n the total number of leaves
+     * @param node the node to be optimized
      *
      * @author dschlauch
      */
@@ -659,34 +659,34 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
      * of similarities of all adjacent leaves between u and w. The float is
      * stored in the OptimalSum JMatrix.
      *
-     * @param NumberOfChildren   the number of leaves below a given node
-     * @param rankedU            contains an array in ascending order of the
-     *                           optimal sum
-     *                           values for each leaf of U
-     * @param rankedW            contains an array in ascending order of the
-     *                           optimal sum
-     *                           values for each leaf of W
-     * @param SimilarityMatrix   matrix containing similarities between all
-     *                           leaves
+     * @param NumberOfChildren the number of leaves below a given node
+     * @param rankedU contains an array in ascending order of the
+     * optimal sum
+     * values for each leaf of U
+     * @param rankedW contains an array in ascending order of the
+     * optimal sum
+     * values for each leaf of W
+     * @param SimilarityMatrix matrix containing similarities between all
+     * leaves
      * @param leafRankingOrderU, leafRankingOrderW contains a ranked order of
-     *                           leaves in M by optimal sum versus a leaf in U
+     * leaves in M by optimal sum versus a leaf in U
      * @param leafRankingOrderU, leafRankingOrderW contains a ranked order of
-     *                           leaves in K by optimal sum versus a leaf in W
-     * @param OptimalSum         matrix containing the optimal sum of all
-     *                           similarities
-     *                           between adjacent leaves between two leaves set to be a maximum apart
-     * @param LeavesUnder        an array of nodes with arrays of leaves under
-     *                           those
-     *                           nodes
-     * @param n                  the total number of leaves
-     * @param unode              the grand-child node on the outside, adjacent
-     *                           to mnode
-     * @param mnode              the grand-child node on the inside, adjacent to
-     *                           unode
-     * @param knode              the grand-child node on the inside, adjacent to
-     *                           wnode
-     * @param wnode              the grand-child node on the outside, adjacent
-     *                           to knode
+     * leaves in K by optimal sum versus a leaf in W
+     * @param OptimalSum matrix containing the optimal sum of all
+     * similarities
+     * between adjacent leaves between two leaves set to be a maximum apart
+     * @param LeavesUnder an array of nodes with arrays of leaves under
+     * those
+     * nodes
+     * @param n the total number of leaves
+     * @param unode the grand-child node on the outside, adjacent
+     * to mnode
+     * @param mnode the grand-child node on the inside, adjacent to
+     * unode
+     * @param knode the grand-child node on the inside, adjacent to
+     * wnode
+     * @param wnode the grand-child node on the outside, adjacent
+     * to knode
      *
      * @author dschlauch
      */
@@ -748,19 +748,19 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
      * the complete tree and two optimal outside leaves and uses recursion to
      * order the new, optimized tree.
      *
-     * @param node             the node to be ordered
+     * @param node the node to be ordered
      * @param NumberOfChildren the number of leaves below a given node
-     * @param LeavesUnder      an array of nodes with arrays of leaves under
-     *                         those
-     *                         nodes
-     * @param Child1           the first child of a given node
-     * @param Child2           the second child of a given node
-     * @param OptimalSum       matrix containing the optimal sum of all
-     *                         similarities
-     *                         between adjacent leaves between two leaves set to be a maximum apart
-     * @param bestU            the leaf set to be on the outside of the child U
-     * @param bestW            the leaf set to be on the outside of the child W
-     * @param n                the total number of leaves
+     * @param LeavesUnder an array of nodes with arrays of leaves under
+     * those
+     * nodes
+     * @param Child1 the first child of a given node
+     * @param Child2 the second child of a given node
+     * @param OptimalSum matrix containing the optimal sum of all
+     * similarities
+     * between adjacent leaves between two leaves set to be a maximum apart
+     * @param bestU the leaf set to be on the outside of the child U
+     * @param bestW the leaf set to be on the outside of the child W
+     * @param n the total number of leaves
      *
      * @author dschlauch
      */
@@ -821,17 +821,17 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
      * fix it.
      *
      * @param NumberOfChildren the number of leaves below a given node
-     * @param Child1           the first child of a given node
-     * @param Child2           the second child of a given node
-     * @param bestU            the leaf set to be on the outside of the child U
-     * @param bestW            the leaf set to be on the outside of the child W
-     * @param node             the node that will have its children or
-     *                         grand-children
-     *                         rotated, if necessary
-     * @param n                the total number of leaves
-     * @param LeavesUnder      an array of nodes with arrays of leaves under
-     *                         those
-     *                         nodes
+     * @param Child1 the first child of a given node
+     * @param Child2 the second child of a given node
+     * @param bestU the leaf set to be on the outside of the child U
+     * @param bestW the leaf set to be on the outside of the child W
+     * @param node the node that will have its children or
+     * grand-children
+     * rotated, if necessary
+     * @param n the total number of leaves
+     * @param LeavesUnder an array of nodes with arrays of leaves under
+     * those
+     * nodes
      *
      * @author dschlauch
      */
@@ -865,7 +865,7 @@ public class HCL<T extends Instance> extends AbstractClusteringAlgorithm<T> impl
     }
 
     @Override
-    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

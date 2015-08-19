@@ -21,7 +21,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Implements the K-means algorithms as described by Mac Queen in 1967.
  *
- * @param <T>
+ * @param <E>
+ * @param <C>
  * @cite J. B. MacQueen (1967): "Some Methods for classification and Analysis
  * of Multivariate Observations, Proceedings of 5-th Berkeley Symposium on
  * Mathematical Statistics and Probability", Berkeley, University of California
@@ -33,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeans<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
+public class KMeans<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     public static final String K = "k";
 
@@ -87,11 +88,11 @@ public class KMeans<T extends Instance> extends AbstractClusteringAlgorithm<T> i
     /**
      * Execute the KMeans clustering algorithm on the data set that is provided.
      *
-     * @param data   data set to cluster
+     * @param data data set to cluster
      * @param params set of algorithm parameters
      */
     @Override
-    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> data, Props params) {
+    public Clustering<E, C> cluster(Dataset<E> data, Props params) {
         if (data == null || data.isEmpty()) {
             throw new RuntimeException("The dataset should not be empty");
         }

@@ -25,11 +25,11 @@ import org.openide.util.Exceptions;
  */
 public class FakeClustering {
 
-    private static Clustering<Cluster> irisClusters;
-    private static Clustering<Cluster> irisWrong;
-    private static Clustering<Cluster> irisWrong2;
-    private static Clustering<Cluster> simpleClustering;
-    private static Clustering<Cluster> simpleResponse;
+    private static Clustering<Instance, Cluster<Instance>> irisClusters;
+    private static Clustering<Instance, Cluster<Instance>> irisWrong;
+    private static Clustering<Instance, Cluster<Instance>> irisWrong2;
+    private static Clustering<Instance, Cluster<Instance>> simpleClustering;
+    private static Clustering<Instance, Cluster<Instance>> simpleResponse;
     private static Dataset<Instance> irisData;
     private static Dataset<Instance> wine;
     private static Dataset<Instance> kumar;

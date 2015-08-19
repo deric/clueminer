@@ -34,7 +34,7 @@ public class HCLResult implements HierarchicalResult {
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;
     private TreeDataImpl treeData;
-    private final Map<String, Map<Integer, Double>> scores = new HashMap<String, Map<Integer, Double>>();
+    private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private CutoffStrategy cutoffStrategy;
     private int[] itemsMapping;
     private Matrix inputData;
@@ -119,7 +119,7 @@ public class HCLResult implements HierarchicalResult {
 
         //we need number of instances in dataset
         int[] clusters = treeData.getClusters(parent.size());
-        ClusterList<Instance> result = new ClusterList(treeData.getNumberOfClusters());
+        ClusterList result = new ClusterList(treeData.getNumberOfClusters());
         logger.log(Level.INFO, "created clustering result with capacity {0}", new Object[]{result.getCapacity()});
         if (treeData.getNumberOfClusters() <= 0) {
             logger.log(Level.WARNING, "0 clusters according to treeData");
