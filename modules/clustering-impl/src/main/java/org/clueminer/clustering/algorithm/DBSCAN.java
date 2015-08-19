@@ -104,26 +104,29 @@ public class DBSCAN<T extends Instance> extends AbstractClusteringAlgorithm<T> i
 
         for (int i = 0; i < n; i++) {
             if (y[i] == UNCLASSIFIED) {
-                List<Neighbor<T>> neighbors = new ArrayList<>();
-                nns.range(dataset.get(i), radius, neighbors);
-                if (neighbors.size() < minPts) {
+                //expand cluster
+                List<Neighbor<T>> seeds = new ArrayList<>();
+                nns.range(dataset.get(i), radius, seeds);
+                //no core points
+                if (seeds.size() < minPts) {
                     y[i] = OUTLIER;
                 } else {
+                    //all points in seeds are density-reachable from Point y[i]
                     y[i] = k;
-                    for (int j = 0; j < neighbors.size(); j++) {
-                        if (y[neighbors.get(j).index] == UNCLASSIFIED) {
-                            y[neighbors.get(j).index] = k;
-                            Neighbor<T> neighbor = neighbors.get(j);
+                    for (int j = 0; j < seeds.size(); j++) {
+                        if (y[seeds.get(j).index] == UNCLASSIFIED) {
+                            y[seeds.get(j).index] = k;
+                            Neighbor<T> neighbor = seeds.get(j);
                             List<Neighbor<T>> secondaryNeighbors = new ArrayList<>();
                             nns.range(neighbor.key, radius, secondaryNeighbors);
 
                             if (secondaryNeighbors.size() >= minPts) {
-                                neighbors.addAll(secondaryNeighbors);
+                                seeds.addAll(secondaryNeighbors);
                             }
                         }
 
-                        if (y[neighbors.get(j).index] == OUTLIER) {
-                            y[neighbors.get(j).index] = k;
+                        if (y[seeds.get(j).index] == OUTLIER) {
+                            y[seeds.get(j).index] = k;
                         }
                     }
                     k++;
