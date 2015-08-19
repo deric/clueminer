@@ -5,15 +5,18 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
+ * @param <I>
  * @param <E>
+ * @param <C>
  * @TODO eventually move to the API package, when mature enough
  *
  * @author Tomas Barton
  */
-public interface Individual<E extends Individual> extends Comparable<Individual> {
+public interface Individual<I extends Individual, E extends Instance, C extends Cluster<E>> extends Comparable<I> {
 
     /**
      * From encoded information about clustering should generate real
@@ -21,7 +24,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return final clustering
      */
-    Clustering<? extends Cluster> getClustering();
+    Clustering<E, C> getClustering();
 
     /**
      * Update fitness function value (might take a while counting fitness could
@@ -41,7 +44,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return Clustering algorithm which is used in the Individual
      */
-    ClusteringAlgorithm getAlgorithm();
+    ClusteringAlgorithm<E, C> getAlgorithm();
 
     /**
      * Force to initial use some algorithm (might be later changed by evolution
@@ -49,7 +52,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @param algorithm
      */
-    void setAlgorithm(ClusteringAlgorithm algorithm);
+    void setAlgorithm(ClusteringAlgorithm<E, C> algorithm);
 
     /**
      * With given probability (from Evolution class) should mutate each property
@@ -65,7 +68,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @param other
      * @return
      */
-    List<E> cross(Individual other);
+    List<I> cross(Individual other);
 
     /**
      * Crossover between completely different algorithms might to be very
@@ -83,7 +86,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return not a precise clone
      */
-    E duplicate();
+    I duplicate();
 
     /**
      * Should make exact clone. Deep copy (unlike shallow copy) means that
@@ -91,7 +94,7 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      *
      * @return exact clone of Individual
      */
-    E deepCopy();
+    I deepCopy();
 
     /**
      * Some mutations might bring us to invalid state
@@ -112,12 +115,12 @@ public interface Individual<E extends Individual> extends Comparable<Individual>
      * @param clustering
      * @return
      */
-    EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering);
+    EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering);
 
     /**
      * Run clustering according to its genom
      *
      * @return resulting clustering
      */
-    Clustering<? extends Cluster> updateCustering();
+    Clustering<E, C> updateCustering();
 }

@@ -20,6 +20,7 @@ import java.io.Serializable;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
@@ -27,8 +28,10 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  * @param <T> type of stored properties
+ * @param <E>
+ * @param <C>
  */
-public interface OpSolution<T> extends Serializable {
+public interface OpSolution<T, E extends Instance, C extends Cluster<E>> extends Serializable {
 
     void setObjective(int index, double value);
 
@@ -86,14 +89,14 @@ public interface OpSolution<T> extends Serializable {
      * @param clustering
      * @return
      */
-    EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering);
+    EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering);
 
     /**
      * Run clustering according to its genom
      *
      * @return resulting clustering
      */
-    Clustering<? extends Cluster> updateCustering();
+    Clustering<E, C> updateCustering();
 
     /**
      * From encoded information about clustering should generate real
@@ -101,5 +104,5 @@ public interface OpSolution<T> extends Serializable {
      *
      * @return final clustering
      */
-    Clustering<? extends Cluster> getClustering();
+    Clustering<E, C> getClustering();
 }
