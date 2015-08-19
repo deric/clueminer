@@ -93,7 +93,7 @@ public class ClusterListTest {
 
     @Test
     public void testPut_int_Cluster() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         Cluster clus = new BaseCluster(5);
         clusters.put(3, clus);
         assertEquals(clus, clusters.get(3));
@@ -120,13 +120,13 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesCount() {
-        Clustering<Cluster> clusters = createClusters();
+        Clustering<Instance, Cluster<Instance>> clusters = createClusters();
         assertEquals(12, clusters.instancesCount());
     }
 
     @Test
     public void testGetCentroid() {
-        Clustering<Cluster> clusters = createClusters2();
+        Clustering<Instance, Cluster<Instance>> clusters = createClusters2();
         assertEquals(3, clusters.get(0).size());
         Instance centroid = clusters.getCentroid();
         System.out.println("centroid: " + centroid.toString());
@@ -136,13 +136,13 @@ public class ClusterListTest {
         assertEquals(1.0, centroid.get(1), delta);
     }
 
-    private Clustering<Cluster> createEmptyClusters() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+    private Clustering<Instance, Cluster<Instance>> createEmptyClusters() {
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         return clusters;
     }
 
-    private Clustering<Cluster> createClusters() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+    private Clustering<Instance, Cluster<Instance>> createClusters() {
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         assertEquals(0, clusters.size());
         instanceIter(clusters);
         int size = 4;
@@ -158,8 +158,8 @@ public class ClusterListTest {
         return clusters;
     }
 
-    private Clustering<Cluster> createClustersOrdered() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+    private Clustering<Instance, Cluster<Instance>> createClustersOrdered() {
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
         clust.attributeBuilder().create("x", "NUMERIC");
@@ -170,8 +170,8 @@ public class ClusterListTest {
         return clusters;
     }
 
-    private Clustering<Cluster> createClustersDifferentOrder() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+    private Clustering<Instance, Cluster<Instance>> createClustersDifferentOrder() {
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
@@ -180,8 +180,8 @@ public class ClusterListTest {
         return clusters;
     }
 
-    private Clustering<Cluster> createClusters2() {
-        Clustering<Cluster> clusters = new ClusterList(5);
+    private Clustering<Instance, Cluster<Instance>> createClusters2() {
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
         clust.attributeBuilder().create("x", "NUMERIC");
@@ -194,13 +194,13 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesIterator() {
-        Clustering<Cluster> clusters = createClustersOrdered();
+        Clustering<Instance, Cluster<Instance>> clusters = createClustersOrdered();
         Cluster clust = clusters.get(0);
         assertEquals(3, clust.size());
         assertEquals(3, clusters.instancesCount());
     }
 
-    private void instanceIter(Clustering<Cluster> clusters) {
+    private void instanceIter(Clustering<Instance, Cluster<Instance>> clusters) {
         Iterator<Instance> iter = clusters.instancesIterator();
         Instance elem;
         int i = 0;
@@ -222,7 +222,7 @@ public class ClusterListTest {
 
     @Test
     public void testAssignedCluster() {
-        Clustering<Cluster> clusters = new ClusterList(3);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(3);
         instanceIter(clusters);
         Cluster c1 = clusters.createCluster();
         c1.attributeBuilder().create("x", "NUMERIC");
@@ -252,7 +252,7 @@ public class ClusterListTest {
 
     @Test
     public void testGet() {
-        Clustering<Cluster> clusters = createClusters();
+        Clustering<Instance, Cluster<Instance>> clusters = createClusters();
         Cluster clust = clusters.get(3);
         assertEquals(3, clust.size());
     }
@@ -262,7 +262,7 @@ public class ClusterListTest {
      */
     @Test
     public void testIterator() {
-        Clustering<Cluster> clusters = new ClusterList(10);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList(10);
         //create 6 empty clusters
         for (int i = 0; i < 6; i++) {
             clusters.createCluster(i + 1);
@@ -275,7 +275,7 @@ public class ClusterListTest {
         }
         assertEquals(6, i);
 
-        Iterator<Cluster> iter = clusters.iterator();
+        Iterator<Cluster<Instance>> iter = clusters.iterator();
         i = 0;
         while (iter.hasNext()) {
             iter.next();
@@ -286,7 +286,7 @@ public class ClusterListTest {
 
     @Test
     public void testShortForEach() {
-        Clustering<Cluster> clust = createClusters();
+        Clustering<Instance, Cluster<Instance>> clust = createClusters();
         for (Cluster elem : clust) {
             assertNotNull(elem);
         }
@@ -297,7 +297,7 @@ public class ClusterListTest {
         assertEquals(false, subject.isEmpty());
 
         //empty clusters
-        Clustering<Cluster> clusters = new ClusterList(3);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList(3);
         assertEquals(true, clusters.isEmpty());
         clusters.add(new BaseCluster(1));
         assertEquals(false, clusters.isEmpty());
@@ -305,8 +305,8 @@ public class ClusterListTest {
 
     @Test
     public void testContains() {
-        Clustering<Cluster> c1 = createClusters();
-        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        Clustering<Instance, Cluster<Instance>> c2 = createClustersDifferentOrder();
 
         for (int i = 0; i < c2.size(); i++) {
             assertEquals(true, c1.contains(c2.get(i)));
@@ -327,17 +327,17 @@ public class ClusterListTest {
 
     @Test
     public void testContainsAll() {
-        Clustering<Cluster> c1 = createClusters();
-        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        Clustering<Instance, Cluster<Instance>> c2 = createClustersDifferentOrder();
         assertEquals(true, c1.containsAll(c2));
 
-        Clustering<Cluster> c3 = createClusters2();
+        Clustering<Instance, Cluster<Instance>> c3 = createClusters2();
         assertEquals(false, c1.containsAll(c3));
     }
 
     @Test
     public void testGetByName() {
-        Clustering<Cluster> c1 = createClusters();
+        Clustering c1 = createClusters();
         Cluster c = c1.get("cluster 1");
         assertNotNull(c);
         assertEquals(3, c.size());
@@ -357,7 +357,7 @@ public class ClusterListTest {
 
     @Test
     public void testClear() {
-        Clustering<Cluster> clust = createClusters();
+        Clustering clust = createClusters();
         assertEquals(4, clust.size());
         clust.clear();
         assertEquals(0, clust.size());
@@ -402,7 +402,7 @@ public class ClusterListTest {
 
     private Clustering irisWrong() throws IOException {
         Dataset<? extends Instance> irisData = loadIris();
-        Clustering<Cluster> irisWrong = new ClusterList(3);
+        Clustering irisWrong = new ClusterList(3);
         Cluster a = new BaseCluster(4);
         a.setName("cluster 1");
         a.setAttributes(irisData.getAttributes());
@@ -477,7 +477,7 @@ public class ClusterListTest {
 
     @Test
     public void testFingerprint() throws IOException {
-        Clustering<Cluster> clusters = createClustersOrdered();
+        Clustering clusters = createClustersOrdered();
         assertEquals("[3]", clusters.fingerprint());
 
         clusters = irisWrong();
@@ -487,24 +487,24 @@ public class ClusterListTest {
 
     @Test
     public void testHashCode() {
-        Clustering<Cluster> c1 = createClustersOrdered();
-        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        Clustering c1 = createClustersOrdered();
+        Clustering c2 = createClustersDifferentOrder();
         assertEquals(c1.hashCode(), c2.hashCode());
 
-        Clustering<Cluster> c3 = createClusters2();
-        Clustering<Cluster> c4 = createEmptyClusters();
+        Clustering c3 = createClusters2();
+        Clustering c4 = createEmptyClusters();
         assertNotSame(c2.hashCode(), c3.hashCode());
         assertNotSame(c4.hashCode(), c3.hashCode());
     }
 
     @Test
     public void testEquals() {
-        Clustering<Cluster> c1 = createClustersOrdered();
-        Clustering<Cluster> c2 = createClustersDifferentOrder();
+        Clustering c1 = createClustersOrdered();
+        Clustering c2 = createClustersDifferentOrder();
         assertEquals(true, c1.equals(c2));
         assertEquals(true, c2.equals(c1));
 
-        Clustering<Cluster> c3 = createClusters2();
+        Clustering c3 = createClusters2();
         assertEquals(false, c3.equals(c1));
     }
 
@@ -524,7 +524,7 @@ public class ClusterListTest {
     @Test
     public void testAddingToZeroSize() {
         //clustering with 0 capacity
-        Clustering<Cluster> clusters = new ClusterList(0);
+        Clustering clusters = new ClusterList(0);
         clusters.createCluster(0);
         assertEquals(1, clusters.size());
     }
@@ -545,7 +545,7 @@ public class ClusterListTest {
      * @return
      * @throws IOException
      */
-    public Clustering irisClustering(int k) throws IOException {
+    public Clustering<Instance, Cluster<Instance>> irisClustering(int k) throws IOException {
         Dataset<? extends Instance> iris = loadIris();
         Clustering clust = new ClusterList(k);
         Cluster c = null;

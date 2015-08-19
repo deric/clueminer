@@ -25,8 +25,8 @@ import org.openide.util.Exceptions;
  */
 public class BaseClusterTest {
 
-    private static Dataset<? extends Instance> irisData;
-    private static Clustering<Cluster> irisClusters;
+    private static Dataset<Instance> irisData;
+    private static Clustering<Instance, Cluster<Instance>> irisClusters;
     private static final double delta = 1e-9;
 
     @Before
