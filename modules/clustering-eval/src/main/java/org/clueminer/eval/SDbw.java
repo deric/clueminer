@@ -28,13 +28,15 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  *
  * @cite Halkidi, Maria, and Michalis Vazirgiannis. "Clustering validity
  * assessment: Finding the optimal partitioning of a data set." Data Mining,
  * 2001. ICDM 2001, Proceedings IEEE International Conference on. IEEE, 2001.
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluation {
+public class SDbw<E extends Instance, C extends Cluster<E>> extends SDindex<E, C> implements InternalEvaluator<E, C>, ClusterEvaluation<E, C> {
 
     private static final String name = "S_Dbw";
     private static final long serialVersionUID = 2687565191321472835L;
@@ -53,7 +55,7 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double density = 0.0;
         double sigma = Math.sqrt(varianceSum(clusters)) / clusters.size();
 
@@ -71,7 +73,7 @@ public class SDbw extends SDindex implements InternalEvaluator, ClusterEvaluatio
         return scattering(clusters) + density;
     }
 
-    private double rkk(Clustering<? extends Cluster> clusters, double sigma, int i, int j) {
+    private double rkk(Clustering<E, C> clusters, double sigma, int i, int j) {
         Cluster x = clusters.get(i);
         Cluster y = clusters.get(j);
         //centroid of two clusters

@@ -16,7 +16,9 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -25,9 +27,11 @@ import org.openide.util.lookup.ServiceProvider;
  * SQRT on Euclidean distances.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SilhoutetteSqrt extends Silhouette {
+public class SilhoutetteSqrt<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
     private static final String name = "Silhouette-sqrt";
     private static final long serialVersionUID = -6749580294703273126L;

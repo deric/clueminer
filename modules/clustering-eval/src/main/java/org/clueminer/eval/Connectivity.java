@@ -33,7 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
  * arbitrary shapes (different than circles/spheres).
  *
  *
- * @param <T>
+ * @param <E>
+ * @param <C>
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Connectivity<T extends Instance> extends AbstractEvaluator {
+public class Connectivity<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 5416705978468100914L;
     private static final String name = "Connectivity";
@@ -53,9 +54,9 @@ public class Connectivity<T extends Instance> extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double conn = 0.0;
-        Dataset<T> dataset = clusters.getLookup().lookup(Dataset.class);
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }
@@ -63,18 +64,18 @@ public class Connectivity<T extends Instance> extends AbstractEvaluator {
         //parameter specifing number of neighbours that contribute to connectivity
         // value 10 is suggested by Handl, Knowles
         int L = params.getInt(PARAM, 10);
-        KNNSearch<T> knn = KnnFactory.getInstance().getDefault();
-        if (knn == null) {
+        KNNSearch<E> nns = KnnFactory.getInstance().getDefault();
+        if (nns == null) {
             throw new RuntimeException("missing k-nn implementation");
         }
-        Cluster<T> c;
+        C c;
         Neighbor[] nn;
-        knn.setDataset(dataset);
+        nns.setDataset(dataset);
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {
-                T inst = c.get(i);
-                nn = knn.knn(inst, L, params);
+                E inst = (E) c.get(i);
+                nn = nns.knn(inst, L, params);
                 for (int k = 0; k < L; k++) {
                     if (c.contains(nn[k].index)) {
                         conn += 1.0 / (k + 1);

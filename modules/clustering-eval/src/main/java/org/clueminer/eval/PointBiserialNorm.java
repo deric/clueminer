@@ -19,7 +19,6 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -29,9 +28,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class PointBiserialNorm extends AbstractEvaluator {
+public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "PointBiserial-Norm";
     private static final long serialVersionUID = -3222061698654228829L;
@@ -58,12 +59,12 @@ public class PointBiserialNorm extends AbstractEvaluator {
      * @return
      */
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double dw = 0, fw = 0;
         double db = 0, fb = 0;
         double nd, sd, pb;
 
-        Dataset first, second;
+        C first, second;
         Instance x, y;
         for (int i = 0; i < clusters.size(); i++) {
             first = clusters.get(i);

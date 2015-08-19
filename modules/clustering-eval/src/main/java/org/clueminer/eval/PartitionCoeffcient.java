@@ -11,8 +11,10 @@ import org.clueminer.utils.Props;
  * membership to a cluster. Doesn't make sense for hard clustering
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class PartitionCoeffcient extends AbstractEvaluator {
+public class PartitionCoeffcient<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String name = "PC";
     private static final long serialVersionUID = 888558324967098222L;
@@ -23,7 +25,7 @@ public class PartitionCoeffcient extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         //TODO fix this for fuzzy case
         double mu;
         double pc = 0.0;

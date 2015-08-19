@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -31,9 +32,11 @@ import org.openide.util.lookup.ServiceProvider;
  * Very similar to {@link RayTuri}, just different denominator.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class XieBeni extends AbstractEvaluator {
+public class XieBeni<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String name = "Xie-Beni";
     private static final long serialVersionUID = -1556797441498915591L;
@@ -52,7 +55,7 @@ public class XieBeni extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double wgss = wgss(clusters);
         double dist;
         Cluster x, y;

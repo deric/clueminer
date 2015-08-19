@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
@@ -11,7 +12,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = InternalEvaluator.class)
-public class MinMaxCut extends AbstractEvaluator {
+public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "min-max cut";
     private static final long serialVersionUID = -4963722097900153865L;
@@ -30,7 +31,7 @@ public class MinMaxCut extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         Dataset a, b;
         double sum = 0;
         for (int i = 0; i < clusters.size(); i++) {

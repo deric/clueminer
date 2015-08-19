@@ -29,9 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
  * Simplified silhoulette index
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SilhouetteSimpl extends Silhouette {
+public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
     private static String name = "Silhouette Simpl";
     private static final long serialVersionUID = 2679542818862912390L;
@@ -50,7 +52,7 @@ public class SilhouetteSimpl extends Silhouette {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         //Silhouette Coefficent is only defined if number of labels
         // is 2 <= num_clusters <= num_samples - 1.
         if (clusters.size() == 1 || clusters.size() >= clusters.instancesCount()) {
@@ -72,7 +74,8 @@ public class SilhouetteSimpl extends Silhouette {
      * @param i
      * @return
      */
-    public double clusterScore(Cluster clust, Clustering clusters, int i) {
+    @Override
+    public double clusterScore(C clust, Clustering<E, C> clusters, int i) {
         double clusterDist = 0.0;
 
         //calculate distance to all other objects in cluster
@@ -86,11 +89,12 @@ public class SilhouetteSimpl extends Silhouette {
      *
      * @param clust
      * @param clusters
-     * @param i        index of cluster
+     * @param i index of cluster
      * @param x
      * @return
      */
-    public double instanceScore(Cluster clust, Clustering clusters, int i, Instance x) {
+    @Override
+    public double instanceScore(C clust, Clustering<E, C> clusters, int i, E x) {
         double b, denom;
 
         //find minimal distance to other clusters
@@ -113,7 +117,7 @@ public class SilhouetteSimpl extends Silhouette {
      * @param x
      * @return
      */
-    public double avgDistance(Cluster clust, Clustering clusters, int i, Instance x) {
+    public double avgDistance(C clust, Clustering<E, C> clusters, int i, E x) {
         Instance y;
         double a, dist;
         a = 0;

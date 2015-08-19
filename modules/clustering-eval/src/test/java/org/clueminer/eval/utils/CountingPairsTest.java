@@ -79,7 +79,7 @@ public class CountingPairsTest extends ExternalTest {
 
         //let's test stupid clustering
         // Dataset<Instance> irisData = FakeClustering.irisDataset();
-        Clustering<? extends Cluster> irisClusters = FakeClustering.irisWrong();
+        Clustering<Instance, Cluster<Instance>> irisClusters = FakeClustering.irisWrong();
 
         table = CountingPairs.contingencyTable(irisClusters);
         matching = CountingPairs.findMatching(table);
@@ -96,7 +96,7 @@ public class CountingPairsTest extends ExternalTest {
     @Test
     public void testEmptyClass() {
         System.out.println("===test empty class");
-        Clustering<? extends Cluster> irisClusters = FakeClustering.irisWrong2();
+        Clustering<Instance, Cluster<Instance>> irisClusters = FakeClustering.irisWrong2();
 
         Table<String, String, Integer> table = CountingPairs.contingencyTable(irisClusters);
         Matching matching = CountingPairs.findMatching(table);
@@ -166,14 +166,14 @@ public class CountingPairsTest extends ExternalTest {
 
     @Test
     public void testMatchPairs_Clustering() {
-        Clustering<? extends Cluster> clust = pcaData();
+        Clustering<Instance, Cluster<Instance>> clust = pcaData();
 
         assertEquals(10, clust.instancesCount());
         assertEquals(2, clust.get(0).size());
         assertEquals(3, clust.get(1).size());
         assertEquals(5, clust.get(2).size());
 
-        PairMatch pm = CountingPairs.matchPairs(clust);
+        PairMatch pm = CountingPairs.getInstance().matchPairs(clust);
         assertEquals(7, pm.tp, delta);
         assertEquals(6, pm.fp, delta);
         assertEquals(7, pm.fn, delta);
@@ -190,7 +190,7 @@ public class CountingPairsTest extends ExternalTest {
         assertEquals(100, c1.instancesCount());
         Clustering c2 = FakeClustering.ext100p3();
         assertEquals(100, c2.instancesCount());
-        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+        PairMatch pm = CountingPairs.getInstance().matchPairs(c1, c2);
 
         assertEquals(845, pm.tp, delta);
         assertEquals(806, pm.fp, delta);

@@ -3,6 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -21,9 +22,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Tau extends Gamma {
+public class Tau<E extends Instance, C extends Cluster<E>> extends Gamma<E, C> {
 
     private static String NAME = "Tau";
     private static final long serialVersionUID = 7019129875909018702L;
@@ -42,7 +45,7 @@ public class Tau extends Gamma {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double nw = numW(clusters);
         double nt = numT(clusters);
         double nb = nt - nw;

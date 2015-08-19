@@ -17,6 +17,8 @@ import org.openide.util.lookup.ServiceProvider;
  * distances, and s(-) represents the number of inconsistent outcomes (Milligan,
  * 1981a). Maximum values were taken to represent the correct hierarchy level.
  *
+ * @param <E>
+ * @param <C>
  * @cite F. B. Baker and L. J. Hubert. Measuring the power of hierarchical
  * cluster analysis. Journal of the American Statistical Association, 70:31–38,
  * 1975
@@ -28,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Gamma extends AbstractEvaluator {
+public class Gamma<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Gamma";
     private static final long serialVersionUID = 4782242459481724512L;
@@ -49,13 +51,13 @@ public class Gamma extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         Sres s = computeSTable(clusters);
         // calculate gamma
         return (s.plus - s.minus) / (double) (s.plus + s.minus);
     }
 
-    public Sres computeSTable(Clustering<? extends Cluster> clusters) {
+    public Sres computeSTable(Clustering<E, C> clusters) {
         Instance x, y;
         Cluster c;
         double distance;
@@ -85,7 +87,7 @@ public class Gamma extends AbstractEvaluator {
         return s;
     }
 
-    protected void betweenDistance(Clustering<? extends Cluster> clusters, double[] withinDist, Sres s) {
+    protected void betweenDistance(Clustering<E, C> clusters, double[] withinDist, Sres s) {
         Instance x, y;
         Cluster a, b;
         double distance;

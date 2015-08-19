@@ -4,6 +4,7 @@ import com.google.common.collect.Table;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
@@ -88,7 +89,7 @@ public class AdjustedRandTest extends ExternalTest {
 
     @Test
     public void testIris() {
-        Clustering<? extends Cluster> clustering = FakeClustering.irisWrong5();
+        Clustering<Instance, Cluster<Instance>> clustering = FakeClustering.irisWrong5();
         Table<String, String, Integer> table = CountingPairs.contingencyTable(clustering);
         CountingPairs.dumpTable(table);
         AdjustedRand rand = (AdjustedRand) subject;
@@ -150,7 +151,7 @@ public class AdjustedRandTest extends ExternalTest {
     @Test
     public void testTwoClusterings() {
         AdjustedRand ari = (AdjustedRand) subject;
-        PairMatch pm = CountingPairs.matchPairs(FakeClustering.irisWrong(), FakeClustering.iris());
+        PairMatch pm = CountingPairs.getInstance().matchPairs(FakeClustering.irisWrong(), FakeClustering.iris());
 
         pm.dump();
         //number of pairs we can draw from 150 instances (150 \over 2)
@@ -169,7 +170,7 @@ public class AdjustedRandTest extends ExternalTest {
      */
     @Test
     public void testPcaData() {
-        Clustering<? extends Cluster> clust = pcaData();
+        Clustering<Instance, Cluster<Instance>> clust = pcaData();
         double score = subject.score(clust);
         assertEquals(0.3125734430082256, score, delta);
     }

@@ -65,8 +65,8 @@ public class ExternalTest {
      *
      * @return
      */
-    public Clustering<? extends Cluster> pcaData() {
-        Clustering clustering = new ClusterList(3);
+    public Clustering<Instance, Cluster<Instance>> pcaData() {
+        Clustering<Instance, Cluster<Instance>> clustering = new ClusterList<>(3);
         Random rand = new Random();
         int size = 10;
         Dataset<? extends Instance> data = new ArrayDataset<>(size, 2);
@@ -100,8 +100,8 @@ public class ExternalTest {
         return builder.create(new double[]{rand.nextDouble(), rand.nextDouble()}, klass);
     }
 
-    public Clustering<? extends Cluster> oneClassPerCluster() {
-        Clustering<Cluster> oneClass = new ClusterList(3);
+    public Clustering<Instance, Cluster<Instance>> oneClassPerCluster() {
+        Clustering<Instance, Cluster<Instance>> oneClass = new ClusterList(3);
         int size = 10;
         Random rand = new Random();
         Dataset<? extends Instance> data = new ArrayDataset<>(size, 2);

@@ -3,6 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -11,13 +12,15 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Based on similar concepts as Gamma index.
  *
+ * @param <E>
+ * @param <C>
  * @cite F. J. Rohlf. Methods of comparing classifications. Annual Review of
  * Ecology and Systematics, 5:101–113, 1974.
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class GPlus extends Gamma {
+public class GPlus<E extends Instance, C extends Cluster<E>> extends Gamma<E, C> {
 
     private static final String NAME = "G+";
     private static final long serialVersionUID = 558399535473028351L;
@@ -36,7 +39,7 @@ public class GPlus extends Gamma {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         //double nw = numW(clusters);
         double nt = numT(clusters);
 

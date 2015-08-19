@@ -30,9 +30,11 @@ import org.openide.util.lookup.ServiceProvider;
  * Similar index to Calinski-Harabasz index {@link CalinskiHarabasz}
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class LogSSRatio extends CalinskiHarabasz implements InternalEvaluator {
+public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends CalinskiHarabasz<E, C> implements InternalEvaluator<E, C> {
 
     private static final String name = "Log SS Ratio";
     private static final long serialVersionUID = 1027250256090361526L;
@@ -51,14 +53,14 @@ public class LogSSRatio extends CalinskiHarabasz implements InternalEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         if (clusters.size() > 1) {
             double w = 0.0, b = 0.0;
             //centroid of all data
             Instance centroid = clusters.getCentroid();
             double d;
             for (int i = 0; i < clusters.size(); i++) {
-                Cluster<? extends Instance> x = clusters.get(i);
+                C x = clusters.get(i);
                 w += sumOfSquaredError(x);
                 d = dm.measure(centroid, x.getCentroid());
                 b += (x.size()) * FastMath.pow(d, 2);

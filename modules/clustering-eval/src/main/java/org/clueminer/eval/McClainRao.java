@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -27,6 +28,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * This objective is called W/B in Milligan (1981)
  *
+ * @param <E>
+ * @param <C>
  * @cite
  * McClain, John O., and Vithala R. Rao. "Clustisz: A program to test for the
  * quality of clustering of a set of objects." JMR, Journal of Marketing
@@ -35,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class McClainRao extends AbstractEvaluator {
+public class McClainRao<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "McClain-Rao";
     private static final long serialVersionUID = -3222061698654228829L;
@@ -54,14 +57,14 @@ public class McClainRao extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double nw = numW(clusters);
         double nt = numT(clusters);
         double nb = nt - nw;
         double sw = 0.0, sb;
 
         //sum of within cluster distances
-        for (Cluster clust : clusters) {
+        for (C clust : clusters) {
             sw += sumWithin(clust);
         }
         //sum of between cluster distances

@@ -27,6 +27,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Sum of squared distances to the centroid (very similar to {@link Deviation})
  *
+ * @param <E>
+ * @param <C>
  * @cite
  * Ball, Geoffrey H., and David J. Hall. ISODATA, a novel method of data
  * analysis and pattern classification. STANFORD RESEARCH INST MENLO PARK CA,
@@ -35,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BallHall extends AbstractEvaluator {
+public class BallHall<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Ball-Hall";
     private static final long serialVersionUID = -7672134423406888310L;
@@ -50,7 +52,7 @@ public class BallHall extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
         Cluster clust;
         double error, tmpSum;

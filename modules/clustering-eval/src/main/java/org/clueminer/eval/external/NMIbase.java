@@ -17,14 +17,16 @@ import org.clueminer.utils.Props;
  * Normalized Mutual Information
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public abstract class NMIbase extends AbstractExternalEval implements ClusterEvaluation {
+public abstract class NMIbase<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> implements ClusterEvaluation<E, C> {
 
     private static final long serialVersionUID = -480979241137671097L;
 
     /**
      *
-     * @param count    total number of elements N (in whole dataset)
+     * @param count total number of elements N (in whole dataset)
      * @param elements
      * @return
      */
@@ -50,7 +52,7 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
      * @return
      */
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double nmi = 0.0;
         if (clusters.size() == 0) {
             return nmi;
@@ -105,7 +107,7 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
         return calculate(clusters, params, mutualInformation, c1entropy, classEntropy, klassSizes.size());
     }
 
-    protected double calculate(Clustering<? extends Cluster> clusters, Props params,
+    protected double calculate(Clustering<E, C> clusters, Props params,
             double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
         return countNMI(mutualInformation, c1entropy, classEntropy);
     }
@@ -148,7 +150,7 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
      * @return
      */
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+    public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
         double nmi = 0.0;
         if (c1.size() == 0 || c2.size() == 0) {
             return nmi;
@@ -164,10 +166,10 @@ public abstract class NMIbase extends AbstractExternalEval implements ClusterEva
 
         double mutualInformation = 0;
         int common;
-        for (Cluster<Instance> a : c1) {
+        for (Cluster<E> a : c1) {
             final int clusterSize = a.size();
-            for (Cluster<Instance> b : c2) {
-                Set<Instance> intersection = Sets.intersection(a, b);
+            for (Cluster<E> b : c2) {
+                Set<E> intersection = Sets.intersection(a, b);
                 common = intersection.size();
                 //System.out.println("a = " + a.getName() + ", b = " + b.getName());
                 //System.out.println("common = " + common);

@@ -24,13 +24,15 @@ import org.openide.util.lookup.ServiceProvider;
  * another way to calculate B(k) is B = T - W where T is the sum of squared
  * error for all elements to the global average
  *
+ * @param <E>
+ * @param <C>
  * @cite T. Calinski and J. Harabasz. A dendrite method for cluster analysis.
  * Communications in Statistics, 3, no. 1:1–27, 1974.
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class CalinskiHarabasz extends AbstractEvaluator {
+public class CalinskiHarabasz<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -2699019526373205522L;
     private static final String name = "Calinski-Harabasz";
@@ -49,14 +51,14 @@ public class CalinskiHarabasz extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         if (clusters.size() > 1) {
             double w = 0.0, b = 0.0;
             //centroid of all data
-            Instance centroid = clusters.getCentroid();
+            E centroid = clusters.getCentroid();
             double d;
             for (int i = 0; i < clusters.size(); i++) {
-                Cluster<? extends Instance> x = clusters.get(i);
+                C x = clusters.get(i);
                 w += sumOfSquaredError(x);
                 d = dm.measure(centroid, x.getCentroid());
                 b += (x.size()) * FastMath.pow(d, 2);

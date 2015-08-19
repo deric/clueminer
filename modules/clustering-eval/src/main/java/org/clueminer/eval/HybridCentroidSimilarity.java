@@ -4,6 +4,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -12,9 +13,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class HybridCentroidSimilarity extends AbstractEvaluator {
+public class HybridCentroidSimilarity<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Hybrid Centroid Similarity";
     private static final long serialVersionUID = 5859566115007803560L;
@@ -33,10 +36,10 @@ public class HybridCentroidSimilarity extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
-        ClusterEvaluation ceTop = new SumOfCentroidSimilarities();// I_2
+    public double score(Clustering<E, C> clusters, Props params) {
+        ClusterEvaluation<E, C> ceTop = new SumOfCentroidSimilarities();// I_2
         double sum = ceTop.score(clusters, params);
-        ClusterEvaluation ce = new TraceScatterMatrix();// E_1
+        ClusterEvaluation<E, C> ce = new TraceScatterMatrix();// E_1
         sum /= ce.score(clusters, params);
 
         return sum;

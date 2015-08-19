@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
@@ -30,9 +31,11 @@ import org.openide.util.lookup.ServiceProvider;
  * Best partition size is determined by max score difference
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class KsqDetW extends AbstractEvaluator implements InternalEvaluator {
+public class KsqDetW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
     private static final String name = "KsqDetW";
     private static final long serialVersionUID = 3727657004516559539L;
@@ -51,7 +54,7 @@ public class KsqDetW extends AbstractEvaluator implements InternalEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         Matrix wg = withinGroupScatter(clusters);
 
         return clusters.size() * clusters.size() * wg.det();

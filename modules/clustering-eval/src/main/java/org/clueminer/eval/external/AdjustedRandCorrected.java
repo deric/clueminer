@@ -36,8 +36,10 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class AdjustedRandCorrected extends AbstractExternalEval {
+public class AdjustedRandCorrected<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {
 
     private static final long serialVersionUID = 8408696944704938977L;
     private static final String name = "Adjusted Rand (corr)";
@@ -81,9 +83,9 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
      * @param c2 - clustering displayed in columns
      * @return matrix with numbers of instances in same clusters
      */
-    public int[][] countMutual(Clustering<? extends Cluster> c1, Clustering<? extends Cluster> c2) {
+    public int[][] countMutual(Clustering<E, C> c1, Clustering<E, C> c2) {
         int[][] conf = new int[c1.size() + 1][c2.size() + 1];
-        Cluster<Instance> curr;
+        Cluster<E> curr;
         int s1 = c1.size();
         int s2 = c2.size();
 
@@ -116,7 +118,7 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
      * @param clust
      * @return
      */
-    public int[][] countMutual(Clustering<? extends Cluster> clust) {
+    public int[][] countMutual(Clustering<E, C> clust) {
         //SortedSet klasses = dataset.getClasses();
         //Table<String, String, Integer> table = counting.contingencyTable(clust);
         Table<String, String, Integer> table = contingencyTable(clust);
@@ -163,7 +165,7 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
+    public Table<String, String, Integer> contingencyTable(Clustering<E, C> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
@@ -171,7 +173,7 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
         Instance inst;
         String cluster, label;
         int cnt;
-        for (Cluster<Instance> current : clustering) {
+        for (Cluster<E> current : clustering) {
             for (int i = 0; i < current.size(); i++) {
                 inst = current.instance(i);
                 cluster = current.getName();
@@ -315,7 +317,7 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         int[][] conf = countMutual(clusters);
         return countScore(conf);
     }
@@ -326,12 +328,12 @@ public class AdjustedRandCorrected extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
         return score(clusters, params);
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+    public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
         int[][] conf = countMutual(c1, c2);
         return countScore(conf);
     }

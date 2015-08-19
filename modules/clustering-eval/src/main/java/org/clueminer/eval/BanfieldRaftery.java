@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -26,9 +27,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <T>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BanfieldRaftery extends AbstractEvaluator {
+public class BanfieldRaftery<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Banfield-Raftery";
     private static final long serialVersionUID = -6474798417487400001L;
@@ -43,7 +45,7 @@ public class BanfieldRaftery extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double score = 0.0;
         double tmp;
 

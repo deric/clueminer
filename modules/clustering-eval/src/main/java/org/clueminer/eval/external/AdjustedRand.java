@@ -7,6 +7,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
 import org.clueminer.eval.utils.PairMatch;
@@ -18,11 +19,13 @@ import org.openide.util.lookup.ServiceProvider;
  * Based on Adjusted Rand coefficient: Hubert, L. and Arabie, P. (1985)
  * Comparing partitions. Journal of Classification, 193– 218
  *
+ * @param <E>
+ * @param <C>
  * @see RandIndex
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class AdjustedRand extends AbstractExternalEval {
+public class AdjustedRand<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {
 
     private static final long serialVersionUID = -7408696944704938976L;
     private static final String name = "Adjusted Rand";
@@ -194,8 +197,8 @@ public class AdjustedRand extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
-        PairMatch pm = CountingPairs.matchPairs(clusters);
+    public double score(Clustering<E, C> clusters, Props params) {
+        PairMatch pm = CountingPairs.getInstance().matchPairs(clusters);
         return score(pm);
     }
 
@@ -205,13 +208,13 @@ public class AdjustedRand extends AbstractExternalEval {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
         return score(clusters, params);
     }
 
     @Override
-    public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
-        PairMatch pm = CountingPairs.matchPairs(c1, c2);
+    public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
+        PairMatch pm = CountingPairs.getInstance().matchPairs(c1, c2);
         return score(pm);
     }
 

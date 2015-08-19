@@ -11,8 +11,10 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ClusteringComparator implements Comparator<Clustering> {
+public class ClusteringComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>> {
 
     private ClusterEvaluation evaluator;
 
@@ -20,12 +22,12 @@ public class ClusteringComparator implements Comparator<Clustering> {
 
     }
 
-    public ClusteringComparator(ClusterEvaluation eval) {
+    public ClusteringComparator(ClusterEvaluation<E, C> eval) {
         this.evaluator = eval;
     }
 
     @Override
-    public int compare(Clustering c1, Clustering c2) {
+    public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
         EvaluationTable t1 = evaluationTable(c1);
         EvaluationTable t2 = evaluationTable(c2);
 
@@ -34,15 +36,15 @@ public class ClusteringComparator implements Comparator<Clustering> {
         return evaluator.compare(s1, s2);
     }
 
-    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+    public EvaluationTable evaluationTable(Clustering<E, C> clustering) {
+        EvaluationTable<E, C> evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
             if (dataset == null) {
                 throw new RuntimeException("no dataset in lookup");
             }
-            evalTable = new HashEvaluationTable(clustering, dataset);
+            evalTable = new HashEvaluationTable<>(clustering, dataset);
             clustering.lookupAdd(evalTable);
         }
         return evalTable;
@@ -55,7 +57,7 @@ public class ClusteringComparator implements Comparator<Clustering> {
      * @param clustering
      * @return score of given clustering with current evaluator
      */
-    public double getScore(Clustering<? extends Cluster> clustering) {
+    public double getScore(Clustering<E, C> clustering) {
         return evaluationTable(clustering).getScore(evaluator);
     }
 

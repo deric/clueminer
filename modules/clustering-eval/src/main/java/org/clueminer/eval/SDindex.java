@@ -18,6 +18,8 @@ import org.openide.util.lookup.ServiceProvider;
  * of the clusters.
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  *
  * @cite M. Halkidi and M. Vazirgiannis and Y. Batistakis: Quality Scheme
  * Assessment in the Clustering Process, Proc. of the 4th European Conference on
@@ -30,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * 1998.
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SDindex extends AbstractEvaluator {
+public class SDindex<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 4323522308319865590L;
     private static final String name = "SD index";
@@ -54,7 +56,7 @@ public class SDindex extends AbstractEvaluator {
      * @param clusters
      * @return
      */
-    protected double varianceSum(Clustering<? extends Cluster> clusters) {
+    protected double varianceSum(Clustering<E, C> clusters) {
         double varSum = 0.0;
 
         for (int i = 0; i < clusters.size(); i++) {
@@ -63,11 +65,11 @@ public class SDindex extends AbstractEvaluator {
         return varSum;
     }
 
-    protected double scattering(Clustering<? extends Cluster> clusters) {
+    protected double scattering(Clustering<E, C> clusters) {
         //compute intra dataset variance of whole dataset
         double datasetVar = 0.0, var;
 
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
         int dim;
         if (dataset == null) {
             dim = clusters.get(0).attributeCount();
@@ -91,7 +93,7 @@ public class SDindex extends AbstractEvaluator {
      * @param cl
      * @return
      */
-    protected double dispersion(Clustering<? extends Cluster> cl) {
+    protected double dispersion(Clustering<E, C> cl) {
         double dissimilarity = 0.0;
         double min = Double.POSITIVE_INFINITY;
         double max = Double.NEGATIVE_INFINITY;
@@ -120,7 +122,7 @@ public class SDindex extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double scatt = scattering(clusters);
         double dis = dispersion(clusters);
 
@@ -140,7 +142,7 @@ public class SDindex extends AbstractEvaluator {
         return dis * (scatt + 1);
     }
 
-    private double clusterVariance(Cluster<? extends Instance> clust, Instance centroid) {
+    private double clusterVariance(Cluster<E> clust, E centroid) {
         double sigma, var, totalVar = 0.0;
 
         for (int k = 0; k < clust.attributeCount(); k++) {

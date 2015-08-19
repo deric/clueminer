@@ -3,6 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -14,13 +15,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * Adapted from point biserial correlation evaluator (Brogden 1949)
  *
+ * @param <E>
+ * @param <C>
  * @cite Mitligan, G. W. (1981a). A Monte Carlo study of thirty internal
  * criterion measures for cluster analysis. Psychometrika, 46, 187-199.
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class PointBiserial extends AbstractEvaluator {
+public class PointBiserial<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "PointBiserial";
     private static final long serialVersionUID = -3222061698654228829L;
@@ -46,7 +49,7 @@ public class PointBiserial extends AbstractEvaluator {
      * @return
      */
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double nw = numW(clusters);
         double nt = numT(clusters);
         double nb = nt - nw;

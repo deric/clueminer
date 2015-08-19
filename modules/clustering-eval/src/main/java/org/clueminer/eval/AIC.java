@@ -3,6 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -12,6 +13,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Andreas De Rijcke
  * @author Thomas Abeel
+ * @param <E>
+ * @param <C>
  *
  * @see
  * AKAIKE, H. A new look at the statistical model identification. IEEE
@@ -19,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class AIC extends AbstractEvaluator {
+public class AIC<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "AIC";
     private static final long serialVersionUID = -8805325971847590600L;
@@ -31,7 +34,7 @@ public class AIC extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         // number of free parameters K
         double k = 1;
         likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));

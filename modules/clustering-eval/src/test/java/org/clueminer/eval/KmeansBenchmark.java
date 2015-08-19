@@ -90,7 +90,7 @@ public class KmeansBenchmark {
         return color;
     }
 
-    public void toCsv(DatasetWriter writer, Clustering<? extends Cluster> clusters, Dataset<Instance> dataset) {
+    public void toCsv(DatasetWriter writer, Clustering<Instance, Cluster<Instance>> clusters, Dataset<Instance> dataset) {
         String[] header = new String[dataset.attributeCount() + 1];
         header[dataset.attributeCount()] = "label";
         int i = 0;
@@ -116,7 +116,7 @@ public class KmeansBenchmark {
         return res.append(',').append(klass);
     }
 
-    private String plotTemplate(int k, int x, int y, Clustering<? extends Cluster> clustering, String dataFile) {
+    private String plotTemplate(int k, int x, int y, Clustering<Instance, Cluster<Instance>> clustering, String dataFile) {
         Cluster<Instance> first = clustering.get(0);
         int attrCnt = first.attributeCount();
         int labelPos = attrCnt + 1;
@@ -179,7 +179,7 @@ public class KmeansBenchmark {
             long start = System.currentTimeMillis();
             ClusteringAlgorithm km = new KMeans();
             p.putInt("k", n);
-            Clustering<? extends Cluster> clusters = km.cluster(data, p);
+            Clustering<Instance, Cluster<Instance>> clusters = km.cluster(data, p);
             long end = System.currentTimeMillis();
             System.out.println("measuring k = " + n + " took " + (end - start) + " ms");
             System.out.println("k = " + n);
@@ -279,12 +279,12 @@ public class KmeansBenchmark {
 
     /**
      *
-     * @param data  the dataset
+     * @param data the dataset
      * @param kmin
      * @param kmax
      * @param kreal - known k for dataset
-     * @param x     - attribute on axis x (start from 1)
-     * @param y     - attribute on axis y (start from 1)
+     * @param x - attribute on axis x (start from 1)
+     * @param y - attribute on axis y (start from 1)
      * @throws IOException
      * @throws Exception
      */

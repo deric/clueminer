@@ -50,7 +50,7 @@ public class GammaTest {
     public void testSTable() {
         Dataset<? extends Instance> data = FakeDatasets.schoolData();
         int k = 3;
-        Clustering<? extends Cluster> clusters = new ClusterList(k);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(k);
         Cluster c;
         for (int i = 0; i < k; i++) {
             c = clusters.createCluster(i);
@@ -72,7 +72,7 @@ public class GammaTest {
     public void testSchoolScore() {
         Dataset<? extends Instance> data = FakeDatasets.schoolData();
         int k = 3;
-        Clustering<? extends Cluster> clusters = new ClusterList(k);
+        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(k);
         Cluster c;
         for (int i = 0; i < k; i++) {
             c = clusters.createCluster(i);

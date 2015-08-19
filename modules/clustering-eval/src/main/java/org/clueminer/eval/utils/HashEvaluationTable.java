@@ -21,23 +21,25 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class HashEvaluationTable implements EvaluationTable {
+public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> implements EvaluationTable<E, C> {
 
-    private Clustering<Cluster> clustering;
-    private Dataset<? extends Instance> dataset;
+    private Clustering<E, C> clustering;
+    private Dataset<E> dataset;
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
     private HashMap<String, Double> scores;
 
-    public HashEvaluationTable(Clustering<? extends Cluster> clustering, Dataset<? extends Instance> dataset) {
+    public HashEvaluationTable(Clustering<E, C> clustering, Dataset<E> dataset) {
         initEvaluators();
         setData(clustering, dataset);
     }
 
     @Override
-    public final void setData(Clustering<? extends Cluster> clustering, Dataset<? extends Instance> dataset) {
-        this.clustering = (Clustering<Cluster>) clustering;
+    public final void setData(Clustering<E, C> clustering, Dataset<E> dataset) {
+        this.clustering = (Clustering<E, C>) clustering;
         this.dataset = dataset;
         reset();
     }
@@ -53,17 +55,17 @@ public class HashEvaluationTable implements EvaluationTable {
 
     @Override
     public HashMap<String, Double> countAll() {
-        for (ClusterEvaluation eval : internalMap.values()) {
+        for (ClusterEvaluation<E, C> eval : internalMap.values()) {
             getScore(eval);
         }
-        for (ClusterEvaluation eval : externalMap.values()) {
+        for (ClusterEvaluation<E, C> eval : externalMap.values()) {
             getScore(eval);
         }
         return getAll();
     }
 
     @Override
-    public double getScore(ClusterEvaluation evaluator, Props params) {
+    public double getScore(ClusterEvaluation<E, C> evaluator, Props params) {
         String key = evaluator.getName();
         if (scores.containsKey(key)) {
             return scores.get(key);

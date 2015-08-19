@@ -26,6 +26,8 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * @param <E>
+ * @param <C>
  * @cite Pakhira, Malay K., Sanghamitra Bandyopadhyay, and Ujjwal Maulik.
  * "Validity index for crisp and fuzzy clusters." Pattern recognition 37.3
  * (2004): 487-501.
@@ -33,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class PBM extends AbstractEvaluator {
+public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String name = "PBM";
     private static final long serialVersionUID = -8947980448201668614L;
@@ -48,7 +50,7 @@ public class PBM extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double db = Double.MIN_VALUE;
         double tmp, score;
         Instance g = clusters.getCentroid();

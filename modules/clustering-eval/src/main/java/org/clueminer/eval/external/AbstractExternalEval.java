@@ -1,16 +1,21 @@
 package org.clueminer.eval.external;
 
 import java.io.Serializable;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AbstractComparator;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public abstract class AbstractExternalEval extends AbstractComparator implements ClusterEvaluation, ExternalEvaluator, Serializable {
+public abstract class AbstractExternalEval<E extends Instance, C extends Cluster<E>> extends AbstractComparator<E, C>
+        implements ClusterEvaluation<E, C>, ExternalEvaluator<E, C>, Serializable {
 
     private static final long serialVersionUID = 7150802573224388450L;
 

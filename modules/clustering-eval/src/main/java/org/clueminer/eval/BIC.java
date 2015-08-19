@@ -3,6 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -14,9 +15,11 @@ import org.openide.util.lookup.ServiceProvider;
  * 6:461–464, 1978
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BIC extends AbstractEvaluator {
+public class BIC<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "BIC";
     private static final long serialVersionUID = -8771446315217152042L;
@@ -28,7 +31,7 @@ public class BIC extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         // number of free parameters K
         double k = 1;
         // sampelsize N

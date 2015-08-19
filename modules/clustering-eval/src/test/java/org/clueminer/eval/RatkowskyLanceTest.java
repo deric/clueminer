@@ -70,7 +70,7 @@ public class RatkowskyLanceTest {
          * fictive clustering, create iris cluster based on class labels (the
          * dataset is sorted)
          */
-        Clustering<Cluster> irisClusters = new ClusterList(3);
+        Clustering irisClusters = new ClusterList(3);
         Cluster a = new BaseCluster(50);
         a.setColor(cg.next());
         a.setName("cluster 1");

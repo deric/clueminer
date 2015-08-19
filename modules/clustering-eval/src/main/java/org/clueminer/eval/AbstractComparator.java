@@ -1,14 +1,18 @@
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.dataset.api.Instance;
 
 /**
  * Ensures comparing between standard Double values and not finite values (NaN,
  * positive infinity, negative infinity)
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public abstract class AbstractComparator implements ClusterEvaluation {
+public abstract class AbstractComparator<E extends Instance, C extends Cluster<E>> implements ClusterEvaluation<E, C> {
 
     protected static final double eps = 1e-8;
 

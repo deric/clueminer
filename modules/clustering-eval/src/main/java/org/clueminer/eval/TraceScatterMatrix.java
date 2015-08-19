@@ -5,10 +5,8 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.CosineDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -19,9 +17,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Andreas De Rijcke
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class TraceScatterMatrix extends AbstractEvaluator {
+public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "Trace Scatter Matrix";
     private static final long serialVersionUID = -3714149292456837484L;
@@ -40,31 +40,22 @@ public class TraceScatterMatrix extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }
-        Instance[] clusterCentroid = new Instance[clusters.size()];
-        Instance overAllCentroid;
+        E[] clusterCentroid = (E[]) new Instance[clusters.size()];
+        // calculate centroid all instances
+        E overAllCentroid = clusters.getCentroid();
         int[] clusterSizes = new int[clusters.size()];
 
         // calculate centroids of each cluster
         for (int i = 0; i < clusters.size(); i++) {
-            clusterCentroid[i] = DatasetTools.average(clusters.get(i));
+            clusterCentroid[i] = clusters.get(i).getCentroid();
             clusterSizes[i] = clusters.get(i).size();
         }
 
-        // calculate centroid all instances
-        // firs put all cluster back together
-        Dataset data = new SampleDataset();
-        data.setAttributes(dataset.getAttributes());
-        for (int i = 0; i < clusters.size(); i++) {
-            for (int j = 0; j < clusters.get(i).size(); j++) {
-                data.add(clusters.get(i).instance(j));
-            }
-        }
-        overAllCentroid = DatasetTools.average(data);
         // calculate trace of the between-cluster scatter matrix.
         double sum = 0;
         for (int i = 0; i < clusters.size(); i++) {

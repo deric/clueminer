@@ -21,8 +21,11 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public abstract class AbstractEvaluator extends AbstractComparator implements InternalEvaluator, ClusterEvaluation {
+public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>>
+        extends AbstractComparator<E, C> implements InternalEvaluator<E, C>, ClusterEvaluation<E, C> {
 
     private static final long serialVersionUID = 6345948849700989503L;
 
@@ -49,7 +52,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
     }
 
     @Override
-    public double score(Clustering clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
         return score(clusters, params);
     }
 
@@ -59,7 +62,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param cluster
      * @return
      */
-    public double sumWithin(Cluster<? extends Instance> cluster) {
+    public double sumWithin(Cluster<E> cluster) {
         double sum = 0.0;
         Instance x, y;
         for (int i = 0; i < cluster.size(); i++) {
@@ -73,7 +76,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         return sum;
     }
 
-    public double sumBetween(Clustering<? extends Cluster> clusters) {
+    public double sumBetween(Clustering<E, C> clusters) {
         Cluster xc, yc;
         Instance x, y;
         double distance;
@@ -103,7 +106,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clusters
      * @return
      */
-    public int numW(Clustering<? extends Cluster> clusters) {
+    public int numW(Clustering<E, C> clusters) {
         int numWPairs = 0;
         //number of within pairs
         for (Cluster clust : clusters) {
@@ -118,7 +121,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clusters
      * @return
      */
-    public int numT(Clustering<? extends Cluster> clusters) {
+    public int numT(Clustering<E, C> clusters) {
         int n = clusters.instancesCount();
         return (n * (n - 1)) >>> 1; // (numWpairs - N) / 2
     }
@@ -129,7 +132,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param x
      * @return
      */
-    public double sumOfSquaredError(Cluster<? extends Instance> x) {
+    public double sumOfSquaredError(Cluster<E> x) {
         double squaredErrorSum = 0, dist;
         Instance centroid = x.getCentroid();
         for (Instance inst : x) {
@@ -147,7 +150,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param d
      * @return
      */
-    public double attrVar(Clustering<? extends Cluster> clusters, int d) {
+    public double attrVar(Clustering<E, C> clusters, int d) {
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
         //variance for specific attribute - precomputed
         if (dataset != null) {
@@ -155,7 +158,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         }
         //compute variance manually
         double mu = attrMean(clusters, d);
-        Iterator<Instance> iter = clusters.instancesIterator();
+        Iterator<E> iter = clusters.instancesIterator();
         Instance curr;
         double var = 0.0;
         int i = 0;
@@ -171,15 +174,15 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * Mean attribute value
      *
      * @param clusters
-     * @param d        attribute index
+     * @param d attribute index
      * @return
      */
-    public double attrMean(Clustering<? extends Cluster> clusters, int d) {
+    public double attrMean(Clustering<E, C> clusters, int d) {
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
         if (dataset != null) {
             return dataset.getAttribute(d).statistics(AttrNumStats.AVG);
         }
-        Iterator<Instance> iter = clusters.instancesIterator();
+        Iterator<E> iter = clusters.instancesIterator();
         Instance curr;
         double mean = 0.0;
         int i = 0;
@@ -197,7 +200,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clusters
      * @return
      */
-    public double wgss(Clustering<? extends Cluster> clusters) {
+    public double wgss(Clustering<E, C> clusters) {
         double wgss = 0.0, dist;
         Cluster clust;
         for (int i = 0; i < clusters.size(); i++) {
@@ -216,7 +219,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clusters
      * @return
      */
-    public Matrix totalDispersion(Clustering<? extends Cluster> clusters) {
+    public Matrix totalDispersion(Clustering<E, C> clusters) {
         Instance curr = clusters.get(0).get(0);
         int n = clusters.instancesCount();
         //number of dimensions
@@ -229,7 +232,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
         for (int j = 0; j < m; j++) {
             cols[j] = new DenseVector(n);
         }
-        Iterator<Instance> it = clusters.instancesIterator();
+        Iterator<E> it = clusters.instancesIterator();
         int l = 0;
         while (it.hasNext()) {
             curr = it.next();
@@ -277,7 +280,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clust
      * @return
      */
-    public Matrix wgScatter(Cluster clust) {
+    public Matrix wgScatter(Cluster<E> clust) {
         double value;
         int m = clust.attributeCount();
         Instance curr;
@@ -319,7 +322,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clusters
      * @return
      */
-    public Matrix withinGroupScatter(Clustering<? extends Cluster> clusters) {
+    public Matrix withinGroupScatter(Clustering<E, C> clusters) {
         //number of dimensions
         int m = clusters.get(0).attributeCount();
         Matrix wg = new JMatrix(m, m);
@@ -335,7 +338,7 @@ public abstract class AbstractEvaluator extends AbstractComparator implements In
      * @param clust
      * @return
      */
-    public double trwg(Cluster clust) {
+    public double trwg(C clust) {
         double trace = 0.0;
         double value;
         int m = clust.attributeCount();

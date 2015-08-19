@@ -28,6 +28,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * @param <T>
  * @cite Ratkowsky, D. A., and G. N. Lance. "A criterion for determining the
  * number of groups in a classification." Australian Computer Journal 10.3
  * (1978): 115-117.
@@ -35,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class RatkowskyLance extends AbstractEvaluator {
+public class RatkowskyLance<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 3195054290041907628L;
     private static String name = "Ratkowsky-Lance";
@@ -54,7 +55,7 @@ public class RatkowskyLance extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double c = 0.0;
         //number of dimensions
         int dim = clusters.get(0).attributeCount();
@@ -74,7 +75,7 @@ public class RatkowskyLance extends AbstractEvaluator {
      * @param d
      * @return
      */
-    private double bgss(Clustering<? extends Cluster> clusters, int d) {
+    private double bgss(Clustering<E, C> clusters, int d) {
         Cluster clust;
         double bgss = 0.0;
         double avg;
@@ -93,8 +94,8 @@ public class RatkowskyLance extends AbstractEvaluator {
         return bgss;
     }
 
-    private double tss(Clustering<? extends Cluster> clusters, int d) {
-        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+    private double tss(Clustering<E, C> clusters, int d) {
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
         double nvar = attrVar(clusters, d);
         int n;
         //variance for specific attribute

@@ -2,6 +2,7 @@ package org.clueminer.eval;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
@@ -15,7 +16,6 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
-import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,8 +29,8 @@ import org.junit.Test;
  */
 public class DunnIndexTest {
 
-    private static final DunnIndex subject = new DunnIndex(new EuclideanDistance());
-    private static Cluster<? extends Instance> cluster;
+    private static final DunnIndex<Instance, Cluster<Instance>> subject = new DunnIndex<>(new EuclideanDistance());
+    private static Cluster<Instance> cluster;
     private static final CommonFixture tf = new CommonFixture();
     private static final double delta = 1e-9;
 
@@ -91,9 +91,25 @@ public class DunnIndexTest {
          * after changing order of elements in dataset the distance should stay
          * the same
          */
-        Dataset<? extends Instance> x = DatasetTools.shuffle(cluster);
+        Cluster x = shuffle(cluster);
         dist = subject.maxIntraClusterDistance(x);
         assertEquals(Math.sqrt(50), dist, 0.0001);
+    }
+
+    public static Cluster<Instance> shuffle(Cluster<Instance> input) {
+        Cluster<Instance> out = (Cluster<Instance>) input.copy();
+        Random rnd = new Random();
+        // Shuffle array
+        for (int i = input.size(); i > 1; i--) {
+            swap(out, i - 1, rnd.nextInt(i));
+        }
+        return out;
+    }
+
+    private static void swap(Cluster<Instance> out, int i, int j) {
+        Instance tmp = out.get(i);
+        out.set(i, out.get(j));
+        out.set(j, tmp);
     }
 
     /**

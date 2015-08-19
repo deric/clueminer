@@ -25,10 +25,24 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class CountingPairs {
+public class CountingPairs<E extends Instance, C extends Cluster<E>> {
 
     private static final String unknownLabel = "unknown";
+    private static CountingPairs instance;
+
+    private CountingPairs() {
+
+    }
+
+    public static CountingPairs getInstance() {
+        if (instance == null) {
+            instance = new CountingPairs();
+        }
+        return instance;
+    }
 
     public static Table<String, String, Integer> newTable() {
         return Tables.newCustomTable(
@@ -51,7 +65,7 @@ public class CountingPairs {
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public static Table<String, String, Integer> contingencyTable(Clustering<? extends Cluster> clustering) {
+    public static Table<String, String, Integer> contingencyTable(Clustering<? extends Instance, ? extends Cluster> clustering) {
         // tp lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
@@ -59,7 +73,7 @@ public class CountingPairs {
         Instance inst;
         String cluster, label;
         int cnt;
-        for (Cluster<Instance> current : clustering) {
+        for (Cluster current : clustering) {
             for (int i = 0; i < current.size(); i++) {
                 inst = current.instance(i);
                 cluster = current.getName();
@@ -90,21 +104,22 @@ public class CountingPairs {
      * @param c2 clustering B - reference cluster (considered as "correct")
      * @return
      */
-    public static Table<String, String, Integer> contingencyTable(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public static Table<String, String, Integer> contingencyTable(
+            Clustering<? extends Instance, ? extends Cluster> c1, Clustering<? extends Instance, ? extends Cluster> c2) {
         // tp lookup table for storing same / differently classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
         String label1, label2;
         int cnt;
-        for (Cluster<Instance> a : c1) {
-            for (Cluster<Instance> b : c2) {
+        for (Cluster<? extends Instance> a : c1) {
+            for (Cluster<? extends Instance> b : c2) {
 
                 label1 = a.getName();
                 label2 = b.getName();
 
                 if (!table.contains(label1, label2)) {
-                    Set<Instance> tp = Sets.intersection(a, b);
+                    Set<? extends Instance> tp = Sets.intersection(a, b);
                     cnt = tp.size();
                     if (cnt > 0) {
                         table.put(label1, label2, cnt);
@@ -213,7 +228,7 @@ public class CountingPairs {
      * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     *         supervised learning)
+     * supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
@@ -262,8 +277,8 @@ public class CountingPairs {
         return res;
     }
 
-    public static Clustering<? extends Cluster> clusteringFromClasses(Clustering clust) {
-        Clustering<? extends Cluster> golden = null;
+    public static Clustering<? extends Instance, ? extends Cluster> clusteringFromClasses(Clustering clust) {
+        Clustering<? extends Instance, ? extends Cluster> golden = null;
 
         Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
         if (dataset != null) {
@@ -338,11 +353,11 @@ public class CountingPairs {
      *
      * @return
      */
-    public static PairMatch matchPairs(Clustering<? extends Cluster> ref, Clustering<? extends Cluster> curr) {
+    public PairMatch matchPairs(Clustering<E, C> ref, Clustering<E, C> curr) {
         PairMatch pm = new PairMatch();
 
-        Instance x, y;
-        Cluster cx1, cx2, cy1, cy2;
+        E x, y;
+        Cluster<E> cx1, cx2, cy1, cy2;
         for (int i = 0; i < ref.instancesCount(); i++) {
             x = ref.instance(i);
             cx1 = ref.assignedCluster(x);
@@ -376,16 +391,16 @@ public class CountingPairs {
      * @param clust
      * @return
      */
-    public static PairMatch matchPairs(Clustering<? extends Cluster> clust) {
+    public PairMatch matchPairs(Clustering<E, C> clust) {
         PairMatch pm = new PairMatch();
 
-        Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+        Dataset<E> dataset = clust.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("missing reference dataset");
         }
 
-        Instance x, y;
-        Cluster cx2, cy2;
+        E x, y;
+        Cluster<E> cx2, cy2;
         //class labels
         Object cx1, cy1;
         for (int i = 0; i < dataset.size() - 1; i++) {

@@ -14,6 +14,8 @@ import org.openide.util.lookup.ServiceProvider;
  * Davies-Bouldin index the value of the DB index between [0, infinity) zero
  * being a sign for a good cluster
  *
+ * @param <E>
+ * @param <C>
  * @cite Davies, David L., and Donald W. Bouldin. "A cluster separation
  * measure." Pattern Analysis and Machine Intelligence, IEEE Transactions on 2
  * (1979): 224-227.
@@ -21,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class DaviesBouldin extends AbstractEvaluator {
+public class DaviesBouldin<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String name = "Davies-Bouldin";
@@ -40,11 +42,11 @@ public class DaviesBouldin extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double db = 0;
-        Cluster<Instance> x, y;
+        C x, y;
         double intraX, intraY, max, interGroup, dij;
-        Instance centroidX, centroidY;
+        E centroidX, centroidY;
         HashMap<Integer, Double> intraDists = new HashMap<>();
         for (int i = 0; i < clusters.size(); i++) {
             x = clusters.get(i);
@@ -71,7 +73,7 @@ public class DaviesBouldin extends AbstractEvaluator {
         return db / clusters.size();
     }
 
-    private double getClusterIntraDistance(int i, Cluster<Instance> x, HashMap<Integer, Double> intraDists) {
+    private double getClusterIntraDistance(int i, Cluster<E> x, HashMap<Integer, Double> intraDists) {
         if (!intraDists.containsKey(i)) {
             double val = intraDistance(x);
             intraDists.put(i, val);
@@ -86,10 +88,10 @@ public class DaviesBouldin extends AbstractEvaluator {
      * @param cluster
      * @return
      */
-    private double intraDistance(Cluster<Instance> cluster) {
+    private double intraDistance(Cluster<E> cluster) {
         double intraDist = 0.0;
-        Instance centroid = cluster.getCentroid();
-        for (Instance elem : cluster) {
+        E centroid = cluster.getCentroid();
+        for (E elem : cluster) {
             intraDist += dm.measure(elem, centroid);
         }
         return intraDist / cluster.size();

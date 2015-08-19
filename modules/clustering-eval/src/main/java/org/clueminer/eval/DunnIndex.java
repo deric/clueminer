@@ -5,7 +5,6 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.LinkageFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -15,13 +14,15 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Dunn's index should be maximized
  *
+ * @param <E>
+ * @param <C>
  * @cite J. Dunn. Well separated clusters and optimal fuzzy partitions. Journal
  * of Cybernetics, 4:95–104, 1974.
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class DunnIndex extends AbstractEvaluator {
+public class DunnIndex<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String name = "Dunn index";
@@ -40,7 +41,7 @@ public class DunnIndex extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         int k = clusters.size();
         if (k < 2) {
             //doesn't make much sense to compute index for one cluster
@@ -49,7 +50,7 @@ public class DunnIndex extends AbstractEvaluator {
 
         double maxIntraClusterdist = Double.MIN_VALUE, temp;
         double minClusterDistance = Double.MAX_VALUE;
-        Cluster<? extends Instance> clusterX, clusterY;
+        C clusterX, clusterY;
         ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
         link.setDistanceMeasure(dm);
 
@@ -78,7 +79,7 @@ public class DunnIndex extends AbstractEvaluator {
         return minClusterDistance / maxIntraClusterdist;
     }
 
-    public double maxIntraClusterDistance(Dataset<? extends Instance> cluster) {
+    public double maxIntraClusterDistance(C cluster) {
         double max = Double.MIN_VALUE;
         Instance x, y;
         double dist;

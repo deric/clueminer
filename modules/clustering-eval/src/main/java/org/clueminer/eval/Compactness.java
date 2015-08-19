@@ -30,12 +30,14 @@ import org.openide.util.lookup.ServiceProvider;
  * average of pairwise distances in each cluster.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  *
  * @see Caruana, Rich, et al. "Meta clustering." Data Mining, 2006. ICDM'06.
  * Sixth International Conference on. IEEE, 2006.
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Compactness extends AbstractEvaluator {
+public class Compactness<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Compactness";
     private static final long serialVersionUID = -6033217683756447290L;
@@ -50,7 +52,7 @@ public class Compactness extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
         Cluster clust;
         double dist;

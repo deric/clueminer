@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -72,7 +73,7 @@ public class RandIndexTest extends ExternalTest {
      */
     @Test
     public void testPcaData() {
-        Clustering<? extends Cluster> clust = pcaData();
+        Clustering<Instance, Cluster<Instance>> clust = pcaData();
         double score = subject.score(clust);
         assertEquals(0.71111111111111, score, delta);
     }

@@ -29,6 +29,8 @@ import org.openide.util.lookup.ServiceProvider;
  * objective is not recommended. It would produce too many compact clusters
  * (with minimal distance to centroid).
  *
+ * @param <E>
+ * @param <C>
  * @see Handl, Julia, and Joshua Knowles. "An evolutionary approach to
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
@@ -36,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Deviation extends AbstractEvaluator {
+public class Deviation<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -1456624325537837873L;
     private static final String NAME = "Deviation";
@@ -51,7 +53,7 @@ public class Deviation extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
         Cluster clust;
         double error, tmpSum;

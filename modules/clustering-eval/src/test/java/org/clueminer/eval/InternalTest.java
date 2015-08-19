@@ -29,28 +29,30 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class InternalTest {
+public class InternalTest<E extends Instance, C extends Cluster<E>> {
 
     public Instance next(Random rand, InstanceBuilder<? extends Instance> builder, String klass) {
         return builder.create(new double[]{rand.nextDouble(), rand.nextDouble()}, klass);
     }
 
-    public Clustering<? extends Cluster> oneClassPerCluster() {
-        Clustering<Cluster> oneClass = new ClusterList(3);
+    public Clustering<E, C> oneClassPerCluster() {
+        Clustering<E, C> oneClass = new ClusterList<>(3);
         int size = 10;
         Random rand = new Random();
-        Dataset<? extends Instance> data = new ArrayDataset<>(size, 2);
+        Dataset<E> data = new ArrayDataset<>(size, 2);
         data.attributeBuilder().create("x1", "NUMERIC");
         data.attributeBuilder().create("x2", "NUMERIC");
 
         for (int i = 0; i < size; i++) {
             Instance inst = next(rand, data.builder(), "same class");
             //cluster with single class
-            BaseCluster clust = new BaseCluster(1);
+            BaseCluster<E> clust = new BaseCluster<>(1);
             clust.setAttributes(data.getAttributes());
             clust.add(inst);
-            oneClass.add(clust);
+            oneClass.add((C) clust);
         }
         oneClass.lookupAdd(data);
         return oneClass;

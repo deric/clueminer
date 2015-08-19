@@ -19,6 +19,7 @@ package org.clueminer.eval.external;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -28,9 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
  * and actual number of clusters.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class NMInorm extends NMIbase {
+public class NMInorm<E extends Instance, C extends Cluster<E>> extends NMIbase<E, C> {
 
     private static final String name = "NMI-norm";
     private static final long serialVersionUID = -1387444222605992582L;
@@ -46,7 +49,7 @@ public class NMInorm extends NMIbase {
     }
 
     @Override
-    protected double calculate(Clustering<? extends Cluster> clusters, Props params,
+    protected double calculate(Clustering<E, C> clusters, Props params,
             double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
         //when difference is 0, we'll divide by 1 (no change)
         int clustDiff = 1 + Math.abs(clusters.size() - klassesSize);

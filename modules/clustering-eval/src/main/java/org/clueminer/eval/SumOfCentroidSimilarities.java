@@ -7,16 +7,17 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.CosineDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SumOfCentroidSimilarities extends AbstractEvaluator {
+public class SumOfCentroidSimilarities<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "Sum of Centroid Similarities";
     private static final long serialVersionUID = -2323688637159800449L;
@@ -35,10 +36,10 @@ public class SumOfCentroidSimilarities extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
-        Instance[] centroids = new Instance[clusters.size()];
+    public double score(Clustering<E, C> clusters, Props params) {
+        E[] centroids = (E[]) new Instance[clusters.size()];
         for (int i = 0; i < clusters.size(); i++) {
-            centroids[i] = DatasetTools.average(clusters.get(i));
+            centroids[i] = clusters.get(i).getCentroid();
         }
         double sum = 0;
         Dataset c;

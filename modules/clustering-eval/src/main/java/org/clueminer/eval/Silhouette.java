@@ -12,6 +12,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Silhouette score
  *
+ * @param <E>
+ * @param <C>
  * @link http://en.wikipedia.org/wiki/Silhouette_(clustering)
  *
  * @cite
@@ -22,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Silhouette extends AbstractEvaluator {
+public class Silhouette<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -2195054290041907628L;
     private static String name = "Silhouette";
@@ -43,7 +45,7 @@ public class Silhouette extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         //Silhouette Coefficent is only defined if number of labels
         // is 2 <= num_clusters <= num_samples - 1.
         if (clusters.size() == 1 || clusters.size() >= clusters.instancesCount()) {
@@ -65,7 +67,7 @@ public class Silhouette extends AbstractEvaluator {
      * @param i
      * @return
      */
-    public double clusterScore(Cluster clust, Clustering clusters, int i) {
+    public double clusterScore(C clust, Clustering<E, C> clusters, int i) {
         double clusterDist = 0.0;
 
         //calculate distance to all other objects in cluster
@@ -79,11 +81,11 @@ public class Silhouette extends AbstractEvaluator {
      *
      * @param clust
      * @param clusters
-     * @param i        index of cluster
+     * @param i index of cluster
      * @param x
      * @return
      */
-    public double instanceScore(Cluster clust, Clustering clusters, int i, Instance x) {
+    public double instanceScore(C clust, Clustering<E, C> clusters, int i, E x) {
         Instance y;
         double a, b, dist, denom;
         a = 0;
@@ -119,10 +121,10 @@ public class Silhouette extends AbstractEvaluator {
      *
      * @param x
      * @param clusters
-     * @param i        i-th cluster
+     * @param i i-th cluster
      * @return
      */
-    protected double minDistance(Instance x, Clustering<? extends Cluster> clusters, int i) {
+    protected double minDistance(E x, Clustering<E, C> clusters, int i) {
         double minDist = Double.MAX_VALUE;
         double clusterDist;
         Instance y;

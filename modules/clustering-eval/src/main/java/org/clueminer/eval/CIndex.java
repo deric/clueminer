@@ -20,6 +20,7 @@ import org.openide.util.lookup.ServiceProvider;
  * value across the hierarchy levels was used to indicate the optimal number of
  * clusters
  *
+ * @param <T>
  * @cite L. Hubert and J. Schultz. Quadratic assignment as a general
  * data-analysis strategy. British Journal of Mathematical and Statistical
  * Psychologie, 29:190–241, 1976.
@@ -35,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class CIndex extends AbstractEvaluator {
+public class CIndex<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -4725798362682980138L;
     private static String NAME = "C-index";
@@ -54,7 +55,7 @@ public class CIndex extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double dw = 0;
         double minSum = 0.0, maxSum = 0.0;
 

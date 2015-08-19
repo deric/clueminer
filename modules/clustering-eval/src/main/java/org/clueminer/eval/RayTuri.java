@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -26,6 +27,8 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
+ * @param <E>
+ * @param <C>
  * @cite Ray, Siddheswar, and Rose H. Turi. "Determination of number of clusters
  * in k-means clustering and application in colour image segmentation."
  * Proceedings of the 4th international conference on advances in pattern
@@ -34,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class RayTuri extends AbstractEvaluator {
+public class RayTuri<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 6195054290041907628L;
     private static String name = "Ray-Turi";
@@ -53,7 +56,7 @@ public class RayTuri extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double wgss = wgss(clusters);
         double dist;
         Cluster clust;

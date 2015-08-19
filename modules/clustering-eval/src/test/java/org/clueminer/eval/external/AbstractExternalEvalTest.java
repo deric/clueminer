@@ -2,6 +2,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
@@ -13,7 +14,7 @@ import org.junit.Test;
  */
 public class AbstractExternalEvalTest {
 
-    private final AbstractExternalEvalImpl subject = new AbstractExternalEvalImpl();
+    private final AbstractExternalEvalImpl<Instance, Cluster<Instance>> subject = new AbstractExternalEvalImpl<>();
 
     public AbstractExternalEvalTest() {
     }
@@ -55,7 +56,7 @@ public class AbstractExternalEvalTest {
         assertEquals(1, subject.compare(0.0, 0.9));
     }
 
-    public class AbstractExternalEvalImpl extends AbstractExternalEval {
+    public class AbstractExternalEvalImpl<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {
 
         private static final long serialVersionUID = 1L;
 
@@ -85,24 +86,25 @@ public class AbstractExternalEvalTest {
         }
 
         @Override
-        public double score(Clustering<? extends Cluster> clusters) {
+        public double score(Clustering<E, C> clusters) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public double score(Clustering<? extends Cluster> clusters, Props params) {
+        public double score(Clustering<E, C> clusters, Props params) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+        public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        public double score(Clustering<Cluster> c1, Clustering<Cluster> c2, Props params) {
+        public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
+
     }
 
 }

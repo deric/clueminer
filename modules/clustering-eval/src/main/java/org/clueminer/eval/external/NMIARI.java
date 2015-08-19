@@ -23,6 +23,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
 import org.clueminer.eval.utils.PairMatch;
@@ -33,9 +34,11 @@ import org.openide.util.lookup.ServiceProvider;
  * Combination of NMI and ARI metrics
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class NMIARI extends NMIbase {
+public class NMIARI<E extends Instance, C extends Cluster<E>> extends NMIbase<E, C> {
 
     private static final String name = "NMI+ARI";
     private static final long serialVersionUID = -5755991651852972241L;
@@ -68,10 +71,10 @@ public class NMIARI extends NMIbase {
     }
 
     @Override
-    protected double calculate(Clustering<? extends Cluster> clusters, Props params,
+    protected double calculate(Clustering<E, C> clusters, Props params,
             double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
 
-        PairMatch pm = CountingPairs.matchPairs(clusters);
+        PairMatch pm = CountingPairs.getInstance().matchPairs(clusters);
 
         return (countNMI(mutualInformation, c1entropy, classEntropy) + score(pm)) / 2.0;
     }

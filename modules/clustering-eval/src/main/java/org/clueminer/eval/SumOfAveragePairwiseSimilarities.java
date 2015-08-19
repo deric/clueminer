@@ -3,7 +3,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -14,9 +14,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Andreas De Rijcke
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
+public class SumOfAveragePairwiseSimilarities<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 3813005489221333305L;
     private static String NAME = "Sum of AVG parwise similarities";
@@ -35,10 +37,9 @@ public class SumOfAveragePairwiseSimilarities extends AbstractEvaluator {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
-
+    public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
-        Dataset clust;
+        Cluster clust;
         for (int i = 0; i < clusters.size(); i++) {
             double tmpSum = 0;
             clust = clusters.get(i);

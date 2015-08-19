@@ -27,8 +27,10 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class Dunn2 extends DunnIndex {
+public class Dunn2<E extends Instance, C extends Cluster<E>> extends DunnIndex<E, C> {
 
     private static final String name = "Dunn2";
     private static final long serialVersionUID = 8016326307215384730L;
@@ -43,7 +45,7 @@ public class Dunn2 extends DunnIndex {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         int k = clusters.size();
         if (k < 2) {
             //doesn't make much sense to compute index for one cluster
@@ -52,7 +54,7 @@ public class Dunn2 extends DunnIndex {
 
         double maxIntraClusterdist = Double.MIN_VALUE, temp;
         double minClusterDistance = Double.MAX_VALUE;
-        Cluster<? extends Instance> clusterX, clusterY;
+        C clusterX, clusterY;
         ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
         link.setDistanceMeasure(dm);
 

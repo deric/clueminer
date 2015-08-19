@@ -27,8 +27,10 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class WemmertGancarski extends AbstractEvaluator implements InternalEvaluator {
+public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
     private static final String name = "WemmertGancarski";
     private static final long serialVersionUID = -1206250158135544566L;
@@ -47,10 +49,10 @@ public class WemmertGancarski extends AbstractEvaluator implements InternalEvalu
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         double score = 0.0;
-        Cluster clust;
-        Instance c, inst;
+        C clust;
+        E c, inst;
         double jk, sr;
         int n = 0;
         for (int i = 0; i < clusters.size(); i++) {
@@ -70,7 +72,7 @@ public class WemmertGancarski extends AbstractEvaluator implements InternalEvalu
         return score / n;
     }
 
-    private double r(Clustering<? extends Cluster> clusters, Instance inst, Instance centroid, int id) {
+    private double r(Clustering<E, C> clusters, E inst, E centroid, int id) {
         Instance c;
         double d;
         double min = Double.POSITIVE_INFINITY;
