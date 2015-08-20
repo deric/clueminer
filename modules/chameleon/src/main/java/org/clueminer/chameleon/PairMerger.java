@@ -212,7 +212,7 @@ public abstract class PairMerger extends Merger {
         return result;
     }
 
-    private Clustering<Cluster> getClusterResult() {
+    private Clustering getClusterResult() {
         Clustering output = Clusterings.newList(clusters.size());
         int i = 0;
         for (Partition g : clusters) {

@@ -32,10 +32,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Hamster
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class FastCommunity<T extends Instance> extends AbstractClusteringAlgorithm<T> implements AgglomerativeClustering<T> {
+public class FastCommunity<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private AdjListGraph graph;
     private PriorityQueue<ReverseElement> pq;
@@ -54,12 +55,7 @@ public class FastCommunity<T extends Instance> extends AbstractClusteringAlgorit
     }
 
     @Override
-    public Clustering<Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public HierarchicalResult hierarchy(Dataset<T> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         graph = new AdjListGraph();
         String dist = pref.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
@@ -194,5 +190,10 @@ public class FastCommunity<T extends Instance> extends AbstractClusteringAlgorit
                 }
             }
         }
+    }
+
+    @Override
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
