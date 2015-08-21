@@ -9,8 +9,9 @@ import org.clueminer.math.Matrix;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface ClusterLinkage extends Serializable {
+public interface ClusterLinkage<E extends Instance> extends Serializable {
 
     /**
      * Name identifier must be unique in application
@@ -33,16 +34,16 @@ public interface ClusterLinkage extends Serializable {
      * @param cluster2
      * @return
      */
-    double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2);
+    double distance(Cluster<E> cluster1, Cluster<E> cluster2);
 
     /**
      * Returns the similarity of two clusters according the specified linkage
      * function.
      *
      * @param similarityMatrix a matrix containing pair-wise similarity of each
-     *                         data point in the entire set
-     * @param cluster          the first cluster to be considered
-     * @param toAdd            the second cluster to be considered
+     * data point in the entire set
+     * @param cluster the first cluster to be considered
+     * @param toAdd the second cluster to be considered
      *
      * @return the similarity of the two clusters
      */

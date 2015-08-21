@@ -3,14 +3,16 @@ package org.clueminer.clustering.api.factory;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class LinkageFactory extends ServiceFactory<ClusterLinkage> {
+public class LinkageFactory<E extends Instance> extends ServiceFactory<ClusterLinkage<E>> {
 
     private static LinkageFactory instance;
 

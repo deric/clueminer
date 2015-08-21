@@ -1,6 +1,7 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.clustering.api.factory.LinkageFactory;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
@@ -8,8 +9,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class AgglParams {
+public class AgglParams<E extends Instance> {
 
     /**
      * Linkage method, see classes implementing
@@ -100,7 +102,7 @@ public class AgglParams {
 
     public ClusterLinkage getLinkage() {
         String linkageProp = pref.get(LINKAGE, DEFAULT_LINKAGE);
-        ClusterLinkage linkage = LinkageFactory.getInstance().getProvider(linkageProp);
+        ClusterLinkage<E> linkage = (ClusterLinkage<E>) LinkageFactory.getInstance().getProvider(linkageProp);
         linkage.setDistanceMeasure(distance);
         return linkage;
     }
