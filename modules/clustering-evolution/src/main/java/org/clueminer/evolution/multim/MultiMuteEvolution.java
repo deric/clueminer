@@ -38,20 +38,24 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Evolution.class)
-public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends BaseEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String name = "muti-mute";
-    protected Executor exec;
+    protected Executor<E, C> exec;
     protected List<Distance> dist;
-    protected List<ClusterLinkage> linkage;
+    protected List<ClusterLinkage<E>> linkage;
     private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
     protected List<String> stds;
     protected final Random rand = new Random();
     protected ObjectOpenHashSet<String> tabu;
     protected boolean isFinished = false;
-    protected Population<? extends Individual> population;
+    protected Population<I> population;
 
     /**
      * for start and final average fitness
@@ -68,14 +72,14 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
     public MultiMuteEvolution() {
         //cache normalized datasets
-        init(new ClusteringExecutorCached());
+        init(new ClusteringExecutorCached<E, C>());
     }
 
     public MultiMuteEvolution(Executor executor) {
         init(executor);
     }
 
-    protected final void init(Executor executor) {
+    protected final void init(Executor<E, C> executor) {
         this.exec = executor;
         algorithm = new HACLW();
         instanceContent = new InstanceContent();
@@ -139,12 +143,12 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
         printStarted();
 
         time.a = System.currentTimeMillis();
-        LinkedList<Individual> children = new LinkedList<>();
+        LinkedList<I> children = new LinkedList<>();
         population = new TournamentPopulation(this, populationSize, MultiMuteIndividual.class);
         avgFitness.a = population.getAvgFitness();
         Individual best = population.getBestIndividual();
         bestFitness.a = best.getFitness();
-        ArrayList<Individual> selected = new ArrayList<>(populationSize);
+        ArrayList<I> selected = new ArrayList<>(populationSize);
         double fitness;
         for (int g = 0; g < generations && !isFinished; g++) {
 
@@ -153,7 +157,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
 
             // apply mutate operator
             for (int i = 0; i < population.size(); i++) {
-                Individual current = population.getIndividual(i).deepCopy();
+                I current = population.getIndividual(i).deepCopy();
                 current.mutate();
                 if (this.isValid(current) && current.isValid()) {
                     if (!isItTabu(current.toString())) {
@@ -172,12 +176,12 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {
-                Individual tmpi = population.getIndividual(i).deepCopy();
+                I tmpi = population.getIndividual(i).deepCopy();
                 tmpi.countFitness();
                 selected.add(tmpi);
             }
 
-            for (Individual ind : children) {
+            for (I ind : children) {
                 fitness = ind.getFitness();
                 if (!Double.isNaN(fitness)) {
                     selected.add(ind);
@@ -217,7 +221,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
             Individual bestInd = population.getBestIndividual();
-            Clustering<Cluster> clustering = bestInd.getClustering();
+            Clustering<E, C> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
             fireBestIndividual(g, population);
             if (ph != null) {
@@ -230,7 +234,7 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
         avgFitness.b = population.getAvgFitness();
         best = population.getBestIndividual();
         bestFitness.b = best.getFitness();
-        fireFinalResult(generations, best, time, bestFitness, avgFitness);
+        fireFinalResult(generations, (I) best, time, bestFitness, avgFitness);
 
         finish();
     }
@@ -262,8 +266,8 @@ public class MultiMuteEvolution extends BaseEvolution implements Runnable, Evolu
     }
 
     @Override
-    public MultiMuteIndividual createIndividual() {
-        return new MultiMuteIndividual(this);
+    public I createIndividual() {
+        return (I) new MultiMuteIndividual(this);
     }
 
 }

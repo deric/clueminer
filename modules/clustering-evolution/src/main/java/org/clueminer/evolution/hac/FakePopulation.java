@@ -1,20 +1,22 @@
 package org.clueminer.evolution.hac;
 
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Population;
 
 /**
  *
  * @author Tomas Barton
+ * @param <I>
  */
-public class FakePopulation implements Population<SimpleIndividual> {
+public class FakePopulation<I extends Individual> implements Population<I> {
 
-    private SimpleIndividual current;
+    private I current;
 
-    public SimpleIndividual getCurrent() {
+    public I getCurrent() {
         return current;
     }
 
-    public void setCurrent(SimpleIndividual current) {
+    public void setCurrent(I current) {
         this.current = current;
     }
 
@@ -32,27 +34,22 @@ public class FakePopulation implements Population<SimpleIndividual> {
     }
 
     @Override
-    public SimpleIndividual getBestIndividual() {
+    public I getBestIndividual() {
         return current;
     }
 
     @Override
-    public SimpleIndividual[] getIndividuals() {
+    public I[] getIndividuals() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void setIndividuals(SimpleIndividual[] individuals) {
+    public void setIndividuals(I[] individuals) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public SimpleIndividual getIndividual(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setIndividuals(int index, SimpleIndividual individual) {
+    public I getIndividual(int idx) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -67,6 +64,11 @@ public class FakePopulation implements Population<SimpleIndividual> {
     @Override
     public void sortByFitness() {
         //nothing to do
+    }
+
+    @Override
+    public void setIndividuals(int index, I individual) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

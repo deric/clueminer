@@ -16,14 +16,17 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public class WeightsIndividual extends BaseIndividual<WeightsIndividual> implements Individual<WeightsIndividual> {
+public class WeightsIndividual<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends BaseIndividual<I, E, C> implements Individual<I, E, C> {
 
     private double fitness = 0;
     private static Random rand = new Random();
     private double[] weights;
     private Props props;
-    private Clustering<? extends Cluster> clustering;
+    private Clustering<E, C> clustering;
 
     public WeightsIndividual(Evolution evolution) {
         this.evolution = (EvolutionSO) evolution;
@@ -56,7 +59,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     }
 
     @Override
-    public Clustering<? extends Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return clustering;
     }
 
@@ -75,11 +78,11 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
      * @return clustering according to current parameters
      */
     @Override
-    public Clustering<? extends Cluster> updateCustering() {
-        Dataset<Instance> data = (Dataset<Instance>) evolution.getDataset().duplicate();
-        Instance copy;
-        Dataset<? extends Instance> orig = evolution.getDataset();
-        for (Instance inst : orig) {
+    public Clustering<E, C> updateCustering() {
+        Dataset<E> data = (Dataset<E>) evolution.getDataset().duplicate();
+        E copy;
+        Dataset<E> orig = evolution.getDataset();
+        for (E inst : orig) {
             copy = data.builder().createCopyOf(inst, data);
             copy.setId(inst.getId());
             copy.setIndex(inst.getIndex());
@@ -89,7 +92,7 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
             }
             data.add(copy);
         }
-        Clustering<? extends Cluster> result = algorithm.cluster(data, props);
+        Clustering<E, C> result = algorithm.cluster(data, props);
         Props p = result.getParams();
         for (int i = 0; i < weights.length; i++) {
             p.put("w(" + data.getAttribute(i).getName() + ")", String.format("%1$,.2f", weights[i]));
@@ -121,24 +124,24 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     }
 
     @Override
-    public List<WeightsIndividual> cross(Individual i) {
-        List<WeightsIndividual> offsprings = new ArrayList<>();
+    public List<I> cross(Individual i) {
+        List<I> offsprings = new ArrayList<>();
         // we'll work with copies
-        WeightsIndividual thisOne = this.deepCopy();
-        WeightsIndividual secondOne = ((WeightsIndividual) i).deepCopy();
+        WeightsIndividual thisOne = (WeightsIndividual) this.deepCopy();
+        WeightsIndividual secondOne = (WeightsIndividual) (I) i.deepCopy();
         int cross_id = rand.nextInt(evolution.attributesCount());
         System.arraycopy(((WeightsIndividual) i).weights, 0, thisOne.weights, 0, cross_id);
         System.arraycopy(((WeightsIndividual) i).weights, cross_id, secondOne.weights, cross_id, evolution.attributesCount() - cross_id);
         System.arraycopy(this.weights, 0, secondOne.weights, 0, cross_id);
         System.arraycopy(this.weights, cross_id, thisOne.weights, cross_id, evolution.attributesCount() - cross_id);
-        offsprings.add(thisOne);
-        offsprings.add(secondOne);
+        offsprings.add((I) thisOne);
+        offsprings.add((I) secondOne);
         return offsprings;
     }
 
     @Override
-    public WeightsIndividual deepCopy() {
-        WeightsIndividual newOne = new WeightsIndividual(this);
+    public I deepCopy() {
+        I newOne = (I) new WeightsIndividual(this);
         return newOne;
     }
 
@@ -148,8 +151,8 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     }
 
     @Override
-    public WeightsIndividual duplicate() {
-        WeightsIndividual duplicate = new WeightsIndividual(evolution);
+    public I duplicate() {
+        I duplicate = (I) new WeightsIndividual(evolution);
         return duplicate;
     }
 
@@ -176,4 +179,5 @@ public class WeightsIndividual extends BaseIndividual<WeightsIndividual> impleme
     public Props getProps() {
         return props;
     }
+
 }

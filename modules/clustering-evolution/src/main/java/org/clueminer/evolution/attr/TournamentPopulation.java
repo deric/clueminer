@@ -3,7 +3,8 @@ package org.clueminer.evolution.attr;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import org.clueminer.evolution.api.Individual;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.api.AbstractIndividual;
 import org.clueminer.evolution.api.AbstractPopulation;
@@ -12,15 +13,17 @@ import org.clueminer.evolution.api.EvolutionSO;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public class TournamentPopulation<T extends AbstractIndividual> extends AbstractPopulation<T> implements Population<T> {
+public class TournamentPopulation<I extends AbstractIndividual<I, E, C>, E extends Instance, C extends Cluster<E>> extends AbstractPopulation<I> implements Population<I> {
 
-    private final EvolutionSO<T> evolution;
+    private final EvolutionSO<I, E, C> evolution;
 
-    public TournamentPopulation(EvolutionSO evolve, int size, Class<?> klass) {
+    public TournamentPopulation(EvolutionSO<I, E, C> evolve, int size, Class<?> klass) {
         this.evolution = evolve;
-        individuals = (T[]) Array.newInstance(klass, size);
+        individuals = (I[]) Array.newInstance(klass, size);
         for (int i = 0; i < individuals.length; i++) {
             individuals[i] = evolution.createIndividual();
             individuals[i].countFitness();
@@ -34,8 +37,8 @@ public class TournamentPopulation<T extends AbstractIndividual> extends Abstract
      * @param count how many individuals would be selected
      * @return List<> of selected individuals
      */
-    public List<? extends Individual> selectIndividuals(int count) {
-        ArrayList<T> selected = new ArrayList<>(count);
+    public List<I> selectIndividuals(int count) {
+        ArrayList<I> selected = new ArrayList<>(count);
         //tournament selection
         int rand_cnt = getIndividuals().length / 10;
         int rand[] = new int[rand_cnt];
@@ -73,7 +76,7 @@ public class TournamentPopulation<T extends AbstractIndividual> extends Abstract
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== POPULATION ===\n");
-        for (T individual : individuals) {
+        for (I individual : individuals) {
             sb.append(individual.toString());
             sb.append("\n");
         }

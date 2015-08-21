@@ -40,10 +40,11 @@ import org.uma.jmetal.solution.Solution;
 /**
  *
  * @author deric
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeansBagging<T extends Instance> extends AbstractClusteringAlgorithm<T> implements ClusteringAlgorithm<T> {
+public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     private static final String name = "K-Means bagging";
 
@@ -102,7 +103,7 @@ public class KMeansBagging<T extends Instance> extends AbstractClusteringAlgorit
     }
 
     @Override
-    public Clustering<? extends Cluster<? super T>> cluster(Dataset<T> dataset, Props props) {
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         bagging = props.getInt(BAGGING, 5);
         String initSet = props.get(INIT_METHOD, "RANDOM");
         //String initSet = props.get("init_set", "MO");
@@ -115,7 +116,7 @@ public class KMeansBagging<T extends Instance> extends AbstractClusteringAlgorit
         String consensus = props.get(CONSENSUS, "co-association HAC");
         Consensus reducer = ConsensusFactory.getInstance().getProvider(consensus);
         logger.log(Level.INFO, "consensus:{0}", consensus);
-        Clustering<? extends Cluster<? super T>> res = null;
+        Clustering<E, C> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {
             case "RANDOM":
@@ -125,10 +126,10 @@ public class KMeansBagging<T extends Instance> extends AbstractClusteringAlgorit
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;
             case "MO":
-                KmEvolution km = new KmEvolution(new ClusteringExecutorCached(alg));
+                KmEvolution km = new KmEvolution(new ClusteringExecutorCached<E, C>(alg));
                 km.setGenerations(5);
                 km.setDataset(dataset);
-                InternalEvaluatorFactory eef = InternalEvaluatorFactory.getInstance();
+                InternalEvaluatorFactory<E, C> eef = InternalEvaluatorFactory.getInstance();
 
                 km.addObjective(eef.getProvider(props.get("mo_1", "AIC")));
                 km.addObjective(eef.getProvider(props.get("mo_2", "SD index")));

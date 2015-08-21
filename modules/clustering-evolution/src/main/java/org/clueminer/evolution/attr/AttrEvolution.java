@@ -25,9 +25,11 @@ import org.openide.util.lookup.InstanceContent;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 //@ServiceProvider(service = Evolution.class)
-public class AttrEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
+public class AttrEvolution<E extends Instance, C extends Cluster<E>> extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
 
     private boolean isFinished = true;
     private final Random rand = new Random();
@@ -170,7 +172,7 @@ public class AttrEvolution extends BaseEvolution implements Runnable, Evolution,
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
             AbstractIndividual bestInd = pop.getBestIndividual();
-            Clustering<Cluster> clustering = bestInd.getClustering();
+            Clustering<E, C> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
             fireBestIndividual(g, pop);
             if (ph != null) {

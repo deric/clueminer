@@ -13,11 +13,14 @@ import org.clueminer.evolution.api.Individual;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public abstract class BaseIndividual<T extends Individual> extends AbstractIndividual<T> {
+public abstract class BaseIndividual<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends AbstractIndividual<I, E, C> {
 
-    protected EvolutionSO evolution;
+    protected EvolutionSO<I, E, C> evolution;
 
     /**
      * Hash table with various evaluations scores (eliminates repeated
@@ -27,15 +30,15 @@ public abstract class BaseIndividual<T extends Individual> extends AbstractIndiv
      * @return
      */
     @Override
-    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getEvaluationTable();
+    public EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering) {
+        EvaluationTable<E, C> evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
             if (dataset == null) {
                 throw new RuntimeException("no dataset associated with clustering");
             }
-            evalTable = new HashEvaluationTable(clustering, dataset);
+            evalTable = new HashEvaluationTable<>(clustering, dataset);
             clustering.setEvaluationTable(evalTable);
         }
         return evalTable;

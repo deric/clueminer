@@ -1,10 +1,12 @@
 package org.clueminer.evolution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.AbstractEvolution;
 import org.clueminer.evolution.api.Evolution;
@@ -17,9 +19,12 @@ import org.clueminer.evolution.api.UpdateFeed;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public abstract class BaseEvolution<T extends Individual> extends AbstractEvolution<T> {
+public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends AbstractEvolution<I, E, C> {
 
     protected ColorGenerator cg = new ColorBrewer();
     protected ObjectOpenCustomHashSet<Clustering> uniqueClusterings = new ObjectOpenCustomHashSet<>(new ClustHash<>());
@@ -36,12 +41,12 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
      *
      * @param e
      */
-    protected void evolutionStarted(Evolution e) {
+    protected void evolutionStarted(Evolution<I, E, C> e) {
         fireEvolutionStarts(e);
     }
 
     @Override
-    public void setAlgorithm(ClusteringAlgorithm algorithm) {
+    public void setAlgorithm(ClusteringAlgorithm<E, C> algorithm) {
         this.algorithm = algorithm;
         if (cg != null) {
             algorithm.setColorGenerator(cg);
@@ -87,7 +92,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
-    protected void fireIndividualCreated(Individual individual) {
+    protected void fireIndividualCreated(I individual) {
         for (UpdateFeed listener : metaListeners) {
             if (listener != null) {
                 listener.individualCreated(runId, individual);
@@ -95,8 +100,8 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
-    protected void fireBestIndividual(int generationNum, Population<? extends Individual> population) {
-        Individual best = population.getBestIndividual();
+    protected void fireBestIndividual(int generationNum, Population<I> population) {
+        I best = population.getBestIndividual();
         if (best != null) {
             for (EvolutionListener listener : evoListeners) {
                 listener.bestInGeneration(generationNum, population, externalValidation(best));
@@ -104,14 +109,14 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
-    protected double externalValidation(Individual best) {
+    protected double externalValidation(I best) {
         if (external != null) {
             return external.score(best.getClustering());
         }
         return Double.NaN;
     }
 
-    protected void fireFinalResult(int g, Individual best, Pair<Long, Long> time,
+    protected void fireFinalResult(int g, I best, Pair<Long, Long> time,
             Pair<Double, Double> bestFitness, Pair<Double, Double> avgFitness) {
 
         if (evoListeners != null) {
@@ -121,7 +126,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
         }
     }
 
-    protected void fireResultUpdate(Individual[] population) {
+    protected void fireResultUpdate(I[] population) {
         for (EvolutionListener listener : evoListeners) {
             listener.resultUpdate(population);
         }
@@ -134,7 +139,7 @@ public abstract class BaseEvolution<T extends Individual> extends AbstractEvolut
      * @return
      */
     @Override
-    public boolean isValid(Individual individual) {
+    public boolean isValid(I individual) {
         return individual != null;
     }
 

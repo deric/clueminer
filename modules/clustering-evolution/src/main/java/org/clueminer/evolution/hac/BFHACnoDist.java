@@ -14,8 +14,10 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
@@ -25,9 +27,13 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Evolution.class)
-public class BFHACnoDist extends BruteForceHacEvolution implements Runnable, Evolution, Lookup.Provider {
+public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends BruteForceHacEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String name = "Brute-force HAC (no dist)";
     private static final Logger logger = Logger.getLogger(BFHACnoDist.class.getName());
@@ -89,7 +95,7 @@ public class BFHACnoDist extends BruteForceHacEvolution implements Runnable, Evo
     @Override
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
-        Clustering<? extends Cluster> clustering;
+        Clustering<E, C> clustering;
         //for cophenetic correlation we need proximity matrix
         params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         params.put(AgglParams.ALG, exec.getAlgorithm().getName());

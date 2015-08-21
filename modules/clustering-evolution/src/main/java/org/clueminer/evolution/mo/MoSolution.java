@@ -31,12 +31,14 @@ import org.uma.jmetal.util.pseudorandom.JMetalRandom;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolution<Integer> {
+public class MoSolution<E extends Instance, C extends Cluster<E>> implements IntegerSolution, Solution<Integer>, OpSolution<Integer, E, C> {
 
     private static final long serialVersionUID = -523309284446031981L;
 
-    protected Clustering<? extends Cluster> clustering;
+    protected Clustering<E, C> clustering;
     protected ClusteringAlgorithm algorithm;
     protected Props genom;
     private final BaseIntProblem problem;
@@ -362,7 +364,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
      * @return
      */
     @Override
-    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
+    public EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering) {
         EvaluationTable evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
@@ -377,7 +379,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     }
 
     @Override
-    public final Clustering<? extends Cluster> updateCustering() {
+    public final Clustering<E, C> updateCustering() {
         logger.log(Level.FINE, "starting clustering {0}", genom.toString());
         //count number of clustering algorithm executions
         counter++;
@@ -388,7 +390,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
             clustering = problem.exec.clusterRows(problem.getDataset(), genom);
         }
 
-        ClusterEvaluation eval = problem.getExternal();
+        ClusterEvaluation<E, C> eval = problem.getExternal();
         if (eval != null) {
             logger.log(Level.FINE, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
         }
@@ -396,7 +398,7 @@ public class MoSolution implements IntegerSolution, Solution<Integer>, OpSolutio
     }
 
     @Override
-    public Clustering<? extends Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return clustering;
     }
 

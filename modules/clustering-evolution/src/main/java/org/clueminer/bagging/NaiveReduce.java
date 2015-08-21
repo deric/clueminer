@@ -32,9 +32,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Consensus.class)
-public class NaiveReduce implements Consensus {
+public class NaiveReduce<E extends Instance, C extends Cluster<E>> implements Consensus<E, C> {
 
     public static final String name = "assignment agreement";
 
@@ -44,14 +46,14 @@ public class NaiveReduce implements Consensus {
     }
 
     @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
+    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props) {
         int k = props.getInt(KMeans.K);
 
-        Clustering<? extends Cluster> result = new ClusterList(k); //reducer - find consensus
+        Clustering<E, C> result = new ClusterList<>(k); //reducer - find consensus
         //vote about final result
-        Instance curr;
-        Iterator<Instance> it = clusts[0].instancesIterator();
-        Cluster<? extends Instance> cluster;
+        E curr;
+        Iterator<E> it = clusts[0].instancesIterator();
+        Cluster<E> cluster;
         int[][] mapping = findMapping(clusts, k, alg.getDistanceFunction());
 
         if (cg != null) {
@@ -122,7 +124,7 @@ public class NaiveReduce implements Consensus {
      * @return array with n-1 mappings
      */
     private int[][] findMapping(Clustering[] clusts, int k, Distance dm) {
-        Clustering<? extends Cluster> first = clusts[0];
+        Clustering<E, C> first = clusts[0];
         int[][] res = new int[clusts.length - 1][k];
         double dist;
         for (int i = 1; i < clusts.length; i++) {

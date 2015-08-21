@@ -4,6 +4,7 @@ import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
@@ -11,12 +12,15 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public class SimpleIndividual extends BaseIndividual implements Individual {
+public class SimpleIndividual<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends BaseIndividual<I, E, C> implements Individual<I, E, C> {
 
-    private final Clustering<? extends Cluster> clustering;
+    private final Clustering<E, C> clustering;
 
-    public SimpleIndividual(Clustering<? extends Cluster> clustering) {
+    public SimpleIndividual(Clustering<E, C> clustering) {
         this.clustering = clustering;
     }
 
@@ -54,12 +58,12 @@ public class SimpleIndividual extends BaseIndividual implements Individual {
     }
 
     @Override
-    public Individual duplicate() {
+    public I duplicate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Individual deepCopy() {
+    public I deepCopy() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

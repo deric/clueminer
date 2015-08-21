@@ -9,6 +9,7 @@ import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Population;
@@ -20,14 +21,18 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <C>
+ * @param <E>
  */
 @ServiceProvider(service = Evolution.class)
-public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable, Evolution, Lookup.Provider {
+public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends MultiMuteEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String name = "single-mute";
     private static final Logger logger = Logger.getLogger(SingleMuteEvolution.class.getName());
     private boolean isFinished = false;
-    private Population<? extends Individual> population;
+    private Population<I> population;
 
     public SingleMuteEvolution() {
         //cache normalized datasets
@@ -44,8 +49,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
     }
 
     @Override
-    public SingleMuteIndividual createIndividual() {
-        return new SingleMuteIndividual(this);
+    public I createIndividual() {
+        return (I) new SingleMuteIndividual(this);
     }
 
     @Override
@@ -57,7 +62,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         printStarted();
 
         time.a = System.currentTimeMillis();
-        LinkedList<Individual> children = new LinkedList<>();
+        LinkedList<I> children = new LinkedList<>();
         population = new TournamentPopulation(this, populationSize, SingleMuteIndividual.class);
         avgFitness.a = population.getAvgFitness();
         Individual best = population.getBestIndividual();
@@ -70,7 +75,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
             double fitness;
             // apply mutate operator
             for (int i = 0; i < population.size(); i++) {
-                Individual current = population.getIndividual(i).deepCopy();
+                I current = (I) population.getIndividual(i).deepCopy();
 
                 do {
                     do {
@@ -128,8 +133,8 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
 
             // print statistic
             // System.out.println("gen: " + g + "\t bestFit: " + pop.getBestIndividual().getFitness() + "\t avgFit: " + pop.getAvgFitness());
-            Individual bestInd = population.getBestIndividual();
-            Clustering<Cluster> clustering = bestInd.getClustering();
+            I bestInd = (I) population.getBestIndividual();
+            Clustering<E, C> clustering = bestInd.getClustering();
             instanceContent.add(clustering);
             fireBestIndividual(g, population);
             fireResultUpdate(population.getIndividuals());
@@ -145,7 +150,7 @@ public class SingleMuteEvolution extends MultiMuteEvolution implements Runnable,
         best = population.getBestIndividual();
         bestFitness.b = best.getFitness();
 
-        fireFinalResult(generations, best, time, bestFitness, avgFitness);
+        fireFinalResult(generations, (I) best, time, bestFitness, avgFitness);
 
         finish();
     }

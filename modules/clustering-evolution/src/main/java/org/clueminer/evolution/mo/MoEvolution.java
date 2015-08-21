@@ -7,11 +7,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
@@ -35,19 +38,23 @@ import org.uma.jmetal.util.comparator.DominanceComparator;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Evolution.class)
-public class MoEvolution extends MultiMuteEvolution implements Runnable, EvolutionMO, Lookup.Provider {
+public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends MultiMuteEvolution<I, E, C> implements Runnable, EvolutionMO<I, E, C>, Lookup.Provider {
 
     private static final String name = "MOE";
     private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
-    protected List<ClusterEvaluation> objectives;
+    protected List<ClusterEvaluation<E, C>> objectives;
     private int numSolutions = 5;
     private boolean kLimit;
     protected final transient ListenerList<OpListener> moListeners = new ListenerList<>();
 
     public MoEvolution() {
-        init(new ClusteringExecutorCached());
+        init(new ClusteringExecutorCached<E, C>());
     }
 
     public MoEvolution(Executor executor) {
@@ -80,7 +87,7 @@ public class MoEvolution extends MultiMuteEvolution implements Runnable, Evoluti
     }
 
     @Override
-    public List<ClusterEvaluation> getObjectives() {
+    public List<ClusterEvaluation<E, C>> getObjectives() {
         return objectives;
     }
 

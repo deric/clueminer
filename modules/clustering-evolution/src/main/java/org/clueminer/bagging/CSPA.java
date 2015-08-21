@@ -21,6 +21,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
@@ -33,8 +34,10 @@ import org.clueminer.utils.Props;
  * Research 3 (2003): 583-617.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class CSPA extends CoAssocMatrix implements Consensus {
+public class CSPA<E extends Instance, C extends Cluster<E>> extends CoAssocMatrix implements Consensus<E, C> {
 
     public static final String name = "CSPA";
 
@@ -44,10 +47,9 @@ public class CSPA extends CoAssocMatrix implements Consensus {
     }
 
     @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg,
+    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg,
             ColorGenerator cg, Props props) {
         Matrix coassoc = createMatrix(clusts);
-
 
         return null;
     }

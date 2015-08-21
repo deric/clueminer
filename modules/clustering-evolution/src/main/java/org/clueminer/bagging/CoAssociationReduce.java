@@ -48,9 +48,11 @@ import org.openide.util.lookup.ServiceProvider;
  * cluster
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Consensus.class)
-public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
+public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> extends CoAssocMatrix<E, C> implements Consensus<E, C> {
 
     private static final Logger logger = Logger.getLogger(CoAssociationReduce.class.getName());
     public static final String name = "co-association HAC";
@@ -61,7 +63,7 @@ public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
     }
 
     @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg,
+    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg,
             ColorGenerator cg, Props props) {
         Matrix coassoc = createMatrix(clusts);
 
@@ -86,7 +88,7 @@ public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
         //props.put(AgglParams.LINKAGE, CompleteLinkage.name);
         //props.put(AgglParams.LINKAGE, MedianLinkage.name);
         hac.setColorGenerator(cg);
-        Dataset<? extends Instance> dataset = clusts[0].getLookup().lookup(Dataset.class);
+        Dataset<E> dataset = clusts[0].getLookup().lookup(Dataset.class);
 
         HierarchicalResult rowsResult = hac.hierarchy(coassoc, dataset, props);
         rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
@@ -96,7 +98,7 @@ public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
         findCutoff(rowsResult, props);
         DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
 
-        Clustering clustering = rowsResult.getClustering();
+        Clustering<E, C> clustering = rowsResult.getClustering();
         clustering.mergeParams(props);
         clustering.lookupAdd(mapping);
 
@@ -120,7 +122,7 @@ public class CoAssociationReduce extends CoAssocMatrix implements Consensus {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
         String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
-        InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
+        InternalEvaluator<E, C> eval = (InternalEvaluator<E, C>) InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
         strategy.setEvaluator(eval);
 
         return strategy;

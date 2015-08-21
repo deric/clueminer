@@ -8,12 +8,14 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
@@ -22,12 +24,16 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> implements Individual<MultiMuteIndividual> {
+public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends BaseIndividual<I, E, C> implements Individual<I, E, C> {
 
     protected double fitness = 0;
     protected static Random rand = new Random();
-    protected Clustering<? extends Cluster> clustering;
+    protected Clustering<E, C> clustering;
     protected Props genom;
     private static final Logger logger = Logger.getLogger(MultiMuteIndividual.class.getName());
 
@@ -35,7 +41,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
 
     }
 
-    public MultiMuteIndividual(EvolutionSO evolution) {
+    public MultiMuteIndividual(EvolutionSO<I, E, C> evolution) {
         this.evolution = evolution;
         this.algorithm = evolution.getAlgorithm();
         this.genom = evolution.getDefaultProps();
@@ -78,19 +84,21 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     protected String std(Random rand) {
         int size = ((MultiMuteEvolution) evolution).stds.size();
         int i = rand.nextInt(size);
-        return ((MultiMuteEvolution) evolution).stds.get(i);
+        return (String) ((MultiMuteEvolution) evolution).stds.get(i);
     }
 
     protected String linkage(Random rand) {
         int size = ((MultiMuteEvolution) evolution).linkage.size();
         int i = rand.nextInt(size);
-        return ((MultiMuteEvolution) evolution).linkage.get(i).getName();
+        ClusterLinkage<E> link = (ClusterLinkage<E>) ((MultiMuteEvolution) evolution).linkage.get(i);
+        return link.getName();
     }
 
     protected String distance(Random rand) {
         int size = ((MultiMuteEvolution) evolution).dist.size();
         int i = rand.nextInt(size);
-        return ((MultiMuteEvolution) evolution).dist.get(i).getName();
+        Distance dist = (Distance) ((MultiMuteEvolution) evolution).dist.get(i);
+        return dist.getName();
     }
 
     public InternalEvaluator evaluator() {
@@ -102,7 +110,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     @Override
-    public Clustering<? extends Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return clustering;
     }
 
@@ -139,7 +147,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
                 return Double.NaN;
             }
         }
-        EvaluationTable et = evaluationTable(clustering);
+        EvaluationTable<E, C> et = evaluationTable(clustering);
         if (et == null) {
             throw new RuntimeException("missing eval table");
         }
@@ -154,7 +162,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
      * @return clustering according to current parameters
      */
     @Override
-    public Clustering<? extends Cluster> updateCustering() {
+    public Clustering<E, C> updateCustering() {
         logger.log(Level.INFO, "starting clustering {0}", genom.toString());
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
         ClusterEvaluation eval = evolution.getExternal();
@@ -196,7 +204,7 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     @Override
-    public List<MultiMuteIndividual> cross(Individual i) {
+    public List<I> cross(Individual i) {
         throw new UnsupportedOperationException("not supported yet");
     }
 
@@ -205,8 +213,8 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     @Override
-    public MultiMuteIndividual deepCopy() {
-        MultiMuteIndividual newOne = new MultiMuteIndividual(this);
+    public I deepCopy() {
+        I newOne = (I) new MultiMuteIndividual(this);
         return newOne;
     }
 
@@ -216,8 +224,8 @@ public class MultiMuteIndividual extends BaseIndividual<MultiMuteIndividual> imp
     }
 
     @Override
-    public MultiMuteIndividual duplicate() {
-        MultiMuteIndividual duplicate = new MultiMuteIndividual(evolution);
+    public I duplicate() {
+        I duplicate = (I) new MultiMuteIndividual(evolution);
         return duplicate;
     }
 

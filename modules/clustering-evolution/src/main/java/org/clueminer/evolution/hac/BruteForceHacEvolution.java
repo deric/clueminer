@@ -38,9 +38,13 @@ import org.openide.util.lookup.ServiceProvider;
  * hierarchical agglomerative clustering
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Evolution.class)
-public class BruteForceHacEvolution extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
+public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends BaseEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String name = "Brute-force HAC";
     protected final Executor exec;
@@ -48,16 +52,16 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     private List<Distance> dist;
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
-    protected List<InternalEvaluator> evaluators;
+    protected List<InternalEvaluator<E, C>> evaluators;
     private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
     protected int cnt;
-    protected final FakePopulation population = new FakePopulation();
+    protected final FakePopulation<I> population = new FakePopulation<>();
 
     public BruteForceHacEvolution() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         //TODO allow changing algorithm used
-        exec = new ClusteringExecutorCached();
+        exec = new ClusteringExecutorCached<>();
         gen = 0;
     }
 
@@ -84,7 +88,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         linkage = lf.getAll();
         CutoffStrategyFactory cf = CutoffStrategyFactory.getInstance();
         cutoff = cf.getAll();
-        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         evaluators = ief.getAll();
 
         int stdMethods = standartizations.size();
@@ -125,7 +129,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
      */
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
-        Clustering<? extends Cluster> clustering;
+        Clustering<E, C> clustering;
         //for cophenetic correlation we need proximity matrix
         params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         params.put(AgglParams.ALG, exec.getAlgorithm().getName());
@@ -164,16 +168,16 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
         }
     }
 
-    protected void individualCreated(Clustering<? extends Cluster> clustering) {
+    protected void individualCreated(Clustering<E, C> clustering) {
         if (uniqueClusterings.contains(clustering)) {
-            Clustering other = (Clustering) uniqueClusterings.get(clustering);
+            Clustering<E, C> other = uniqueClusterings.get(clustering);
             Props p = other.getParams();
             int occur = p.getInt(NUM_OCCUR, 1);
             p.putInt(NUM_OCCUR, occur + 1);
         } else {
             uniqueClusterings.add(clustering);
             instanceContent.add(clustering);
-            SimpleIndividual current = new SimpleIndividual(clustering);
+            I current = (I) new SimpleIndividual(clustering);
             current.countFitness();
             population.setCurrent(current);
             //update meta-database
@@ -183,7 +187,7 @@ public class BruteForceHacEvolution extends BaseEvolution implements Runnable, E
     }
 
     @Override
-    public Individual createIndividual() {
+    public I createIndividual() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

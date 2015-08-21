@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -24,9 +25,7 @@ import org.clueminer.eval.BIC;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.JaccardIndex;
 import org.clueminer.utils.FileUtils;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.NbBundle;
@@ -88,14 +87,6 @@ public class AttrEvolutionTest {
         rc.writeToCsv(csvOutput);
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of attributesCount method, of class AttrEvolution.
      */
@@ -146,7 +137,7 @@ public class AttrEvolutionTest {
 
     @Test
     public void testVariousMeasuresAndDatasets() {
-        InternalEvaluatorFactory factory = InternalEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory<Instance, Cluster<Instance>> factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
         Map<Dataset<Instance>, Integer> datasets = new HashMap<>();
         //just to make the test fast

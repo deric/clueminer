@@ -16,6 +16,7 @@
  */
 package org.clueminer.bagging;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
@@ -25,8 +26,10 @@ import org.clueminer.math.matrix.SymmetricMatrix;
  * Compute co-association matrix from multiple clusterings
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public abstract class CoAssocMatrix {
+public abstract class CoAssocMatrix<E extends Instance, C extends Cluster<E>> {
 
     /**
      * Count number of pairs (instances pairs) in the same cluster
@@ -34,8 +37,8 @@ public abstract class CoAssocMatrix {
      * @param clusts
      * @return
      */
-    public Matrix createMatrix(Clustering[] clusts) {
-        Clustering c = clusts[0];
+    public Matrix createMatrix(Clustering<E, C>[] clusts) {
+        Clustering<E, C> c = clusts[0];
         //total number of items
         int n = c.instancesCount();
         Matrix coassoc = new SymmetricMatrix(n, n);
@@ -44,7 +47,7 @@ public abstract class CoAssocMatrix {
         int ca, cb;
         double value;
         int x = 0;
-        for (Clustering clust : clusts) {
+        for (Clustering<E, C> clust : clusts) {
             System.out.println("reducing " + (x++));
             for (int i = 1; i < n; i++) {
                 a = clust.instance(i);

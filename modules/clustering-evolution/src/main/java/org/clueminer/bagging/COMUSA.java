@@ -45,9 +45,11 @@ import org.openide.util.lookup.ServiceProvider;
  * 2010.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Consensus.class)
-public class COMUSA implements Consensus {
+public class COMUSA<E extends Instance, C extends Cluster<E>> implements Consensus<E, C> {
 
     public static final String name = "COMUSA";
 
@@ -103,7 +105,7 @@ public class COMUSA implements Consensus {
     }
 
     @Override
-    public Clustering<? extends Cluster> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg, ColorGenerator cg, Props props) {
+    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props) {
         Graph graph = createGraph(clusts);
 
         //degree of freedom
@@ -128,7 +130,7 @@ public class COMUSA implements Consensus {
         //number of clusters is just a hint
         int k = props.getInt(KMeans.K, 5);
         double relax = props.getDouble(RELAX, 0.5);
-        Clustering<? extends Cluster> result = new ClusterList(k);
+        Clustering<E, C> result = new ClusterList(k);
         Dataset<? extends Instance> dataset = clusts[0].getLookup().lookup(Dataset.class);
         result.lookupAdd(dataset);
         ObjectOpenHashSet<Node> blacklist = new ObjectOpenHashSet();
