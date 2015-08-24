@@ -29,8 +29,8 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     protected String id;
     protected String name;
     protected ColorGenerator colorGenerator;
-    protected Dataset<? extends Instance> parent = null;
-    protected HashMap<String, Dataset<Instance>> children;
+    protected Dataset<E> parent = null;
+    protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
 
     public AbstractArrayDataset() {
@@ -58,12 +58,12 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
-    public Dataset<? extends Instance> getParent() {
+    public Dataset<E> getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(Dataset<? extends Instance> parent) {
+    public void setParent(Dataset<E> parent) {
         this.parent = parent;
     }
 
@@ -131,7 +131,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
-    public void addChild(String key, Dataset<Instance> dataset) {
+    public void addChild(String key, Dataset<E> dataset) {
         if (children == null) {
             children = new HashMap<>(5);
         }
@@ -139,7 +139,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     }
 
     @Override
-    public Dataset<Instance> getChild(String key) {
+    public Dataset<E> getChild(String key) {
         if (children == null) {
             return null;
         }

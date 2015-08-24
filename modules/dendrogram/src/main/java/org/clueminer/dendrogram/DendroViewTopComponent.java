@@ -33,7 +33,9 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays dendrograms
+ *
  * @param <E>
+ * @param <C>
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.dendrogram//DendroView//EN",
@@ -56,7 +58,8 @@ import org.openide.windows.TopComponent;
     "CTL_DendroViewTopComponent=DendroView Window",
     "HINT_DendroViewTopComponent=This is a DendroView window"
 })
-public final class DendroViewTopComponent<E extends Instance> extends TopComponent implements LookupListener, ClusteringListener<E> {
+public final class DendroViewTopComponent<E extends Instance, C extends Cluster<E>>
+        extends TopComponent implements LookupListener, ClusteringListener<E, C> {
 
     private static final long serialVersionUID = -1479282981915282578L;
     private Lookup.Result<Clustering> result = null;
@@ -151,7 +154,7 @@ public final class DendroViewTopComponent<E extends Instance> extends TopCompone
     }
 
     @Override
-    public void clusteringChanged(Clustering<E, Cluster<E>> clust) {
+    public void clusteringChanged(Clustering<E, C> clust) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
         pc.getCurrentProject().add(Lookups.singleton(clust));

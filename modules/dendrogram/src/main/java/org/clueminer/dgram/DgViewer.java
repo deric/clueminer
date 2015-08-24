@@ -1,6 +1,11 @@
 package org.clueminer.dgram;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
@@ -12,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -22,6 +28,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.ClusterPreviewer;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
@@ -30,8 +37,10 @@ import org.openide.util.Lookup;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class DgViewer extends JPanel implements Exportable, AdjustmentListener, DendroViewer {
+public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel implements Exportable, AdjustmentListener, DendroViewer<E, C> {
 
     private static final long serialVersionUID = -9145028094444482028L;
     protected ArrayList<TreeCluster> clusters;
@@ -258,16 +267,16 @@ public class DgViewer extends JPanel implements Exportable, AdjustmentListener, 
      * @param listener
      */
     @Override
-    public void addClusteringListener(ClusteringListener listener) {
+    public void addClusteringListener(ClusteringListener<E, C> listener) {
         clusteringListeners.add(ClusteringListener.class, listener);
     }
 
-    public void removeClusteringListener(ClusteringListener listener) {
+    public void removeClusteringListener(ClusteringListener<E, C> listener) {
         clusteringListeners.remove(ClusteringListener.class, listener);
     }
 
     @Override
-    public void fireClusteringChanged(Clustering clust) {
+    public void fireClusteringChanged(Clustering<E, C> clust) {
         ClusteringListener[] listeners;
 
         listeners = clusteringListeners.getListeners(ClusteringListener.class);

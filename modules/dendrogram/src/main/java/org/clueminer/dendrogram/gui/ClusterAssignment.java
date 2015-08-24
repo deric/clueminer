@@ -27,8 +27,9 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C>
  */
-public class ClusterAssignment<E extends Instance> extends BPanel implements DendrogramDataListener, ClusteringListener<E> {
+public class ClusterAssignment<E extends Instance, C extends Cluster<E>> extends BPanel implements DendrogramDataListener, ClusteringListener<E, C> {
 
     private static final long serialVersionUID = 7662186965958650502L;
     private final DendroPane panel;

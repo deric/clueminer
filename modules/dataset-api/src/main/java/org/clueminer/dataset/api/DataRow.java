@@ -7,6 +7,7 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  * @param <T>
+ * @param <E>
  */
 public abstract class DataRow<T extends Number> extends AbstractInstance<T> implements Instance<T> {
 

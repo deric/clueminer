@@ -13,9 +13,10 @@ import org.openide.util.lookup.ServiceProvider;
  * will put all values to an interval between −1 and 1.
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = DataStandardization.class)
-public class StdMax implements DataStandardization {
+public class StdMax<E extends Instance> implements DataStandardization<E> {
 
     public static final String name = "Maximum";
 
@@ -25,10 +26,10 @@ public class StdMax implements DataStandardization {
     }
 
     @Override
-    public Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset) {
+    public Dataset<E> optimize(Dataset<E> dataset) {
         double[] maxVal = new double[dataset.attributeCount()];
         double min, max;
-        Dataset<? extends Instance> opt = dataset.duplicate();
+        Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         //find max|data_{ij}| value
         for (Entry<Integer, Attribute> entry : dataset.getAttributes().entrySet()) {
             min = Math.abs(entry.getValue().statistics(AttrNumStats.MIN));

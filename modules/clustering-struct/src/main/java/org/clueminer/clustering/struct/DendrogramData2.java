@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -17,10 +18,10 @@ import org.clueminer.math.Matrix;
  *
  * @author Tomas Barton
  */
-public class DendrogramData2 implements DendrogramMapping {
+public class DendrogramData2<E extends Instance, C extends Cluster<E>> implements DendrogramMapping<E, C> {
 
-    private Dataset<? extends Instance> normData;
-    private Dataset<? extends Instance> origData;
+    private Dataset<E> normData;
+    private Dataset<E> origData;
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private double mid = 0;
@@ -32,19 +33,19 @@ public class DendrogramData2 implements DendrogramMapping {
 
     }
 
-    public DendrogramData2(Dataset<? extends Instance> dataset) {
+    public DendrogramData2(Dataset<E> dataset) {
         setDataset(dataset);
 
     }
 
-    public DendrogramData2(Dataset<? extends Instance> dataset, HierarchicalResult rowResult, HierarchicalResult columnResult) {
+    public DendrogramData2(Dataset<E> dataset, HierarchicalResult rowResult, HierarchicalResult columnResult) {
         setDataset(dataset);
         checkParams(rowResult, columnResult);
         this.rowsResult = rowResult;
         this.colsResult = columnResult;
     }
 
-    public DendrogramData2(Dataset<? extends Instance> dataset, HierarchicalResult rowResult) {
+    public DendrogramData2(Dataset<E> dataset, HierarchicalResult rowResult) {
         setDataset(dataset);
         checkParams(rowResult, null);
         this.rowsResult = rowResult;
@@ -62,9 +63,9 @@ public class DendrogramData2 implements DendrogramMapping {
     }
 
     @Override
-    public final void setDataset(Dataset<? extends Instance> dataset) {
+    public final void setDataset(Dataset<E> dataset) {
         this.normData = dataset;
-        Dataset<? extends Instance> current = normData;
+        Dataset<E> current = normData;
         while (current.getParent() != null) {
             current = current.getParent();
         }
@@ -178,7 +179,7 @@ public class DendrogramData2 implements DendrogramMapping {
      * @return the instances
      */
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return normData;
     }
 

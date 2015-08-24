@@ -5,8 +5,9 @@ package org.clueminer.dataset.api;
  * Datasets
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface DataStandardization {
+public interface DataStandardization<E extends Instance> {
 
     /**
      *
@@ -21,6 +22,6 @@ public interface DataStandardization {
      * @param dataset
      * @return
      */
-    Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset);
+    Dataset<E> optimize(Dataset<E> dataset);
 
 }

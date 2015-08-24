@@ -52,7 +52,8 @@ public class DataScalerTest {
         Matrix res = Scaler.standartize(data, method, log);
 
         Dataset<? extends Instance> dataset = new ArrayDataset(data);
-        Dataset<? extends Instance> out = DataScaler.standartize(dataset, method, log);
+        DataScaler<Instance> ds = new DataScaler();
+        Dataset<? extends Instance> out = ds.standartize((Dataset<Instance>) dataset, method, log);
 
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
@@ -67,7 +68,8 @@ public class DataScalerTest {
     private void run(Dataset<? extends Instance> dataset, String method, boolean log) {
         System.out.println(method);
         Matrix res = Scaler.standartize(dataset.arrayCopy(), method, log);
-        Dataset<? extends Instance> out = DataScaler.standartize(dataset, method, log);
+        DataScaler<Instance> ds = new DataScaler();
+        Dataset<? extends Instance> out = ds.standartize((Dataset<Instance>) dataset, method, log);
 
         for (int i = 0; i < dataset.size(); i++) {
             assertEquals(dataset.get(i).getName(), out.get(i).getName());

@@ -4,7 +4,7 @@ package org.clueminer.math;
  *
  * @author Tomas Barton
  */
-public abstract class Standardisation {
+public abstract class Standardisation{
 
     public abstract String getName();
 

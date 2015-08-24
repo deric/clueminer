@@ -126,7 +126,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     public Plotter getPlotter() {
         TimePlot plot = new TimePlot();
         // add a line plot to the PlotPanel
-        plot.addLinePlot(getName(), parent.getTimePointsArray(), this.arrayCopy());
+        plot.addLinePlot(getName(), ((Timeseries) parent).getTimePointsArray(), this.arrayCopy());
         return plot;
     }
 
@@ -241,7 +241,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return interpolator.value(x, low, up);
     }
 
-    @Override
+    
     public void setParent(Timeseries<? extends ContinuousInstance> parent) {
         super.setParent(parent);
         this.timePoints = (TimePointAttribute[]) parent.getTimePoints();

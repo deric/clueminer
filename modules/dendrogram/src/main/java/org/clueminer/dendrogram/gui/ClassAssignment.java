@@ -21,8 +21,9 @@ import org.clueminer.eval.utils.Matching;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C>
  */
-public class ClassAssignment<E extends Instance> extends ClusterAssignment<E> {
+public class ClassAssignment<E extends Instance, C extends Cluster<E>> extends ClusterAssignment<E, C> {
 
     private static final Logger logger = Logger.getLogger(ClassAssignment.class.getName());
     private static final long serialVersionUID = 5843490511014364712L;

@@ -133,7 +133,7 @@ public class HCLResult<E extends Instance> implements HierarchicalResult<E> {
         //estimated capacity
         int perCluster = (int) (parent.size() / (float) treeData.getNumberOfClusters());
         int num, idx;
-        Cluster<Instance> clust;
+        Cluster<E> clust;
         ColorGenerator cg = new ColorBrewer();
         //Dump.array(clusters, "clusters-assignment");
         //Dump.array(itemsMapping, "items-mapping");

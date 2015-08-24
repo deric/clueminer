@@ -8,6 +8,7 @@ import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
@@ -181,7 +182,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
      * @return
      */
     public TimePoint[] getTimePoints() {
-        return parent.getTimePoints();
+        return ((Timeseries) parent).getTimePoints();
     }
 
     @Override

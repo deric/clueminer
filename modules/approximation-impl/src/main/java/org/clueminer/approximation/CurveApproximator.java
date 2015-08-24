@@ -96,7 +96,7 @@ public class CurveApproximator extends Approximator {
         }
 
         if (Double.isNaN(ymin)) {
-            Timeseries ts = instance.getParent();
+            Timeseries ts = (Timeseries) instance.getParent();
             if (ts == null) {
                 throw new RuntimeException("parent dataset is not set");
             }

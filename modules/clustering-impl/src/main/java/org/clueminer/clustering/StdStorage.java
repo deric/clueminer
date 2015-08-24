@@ -19,6 +19,7 @@ public class StdStorage {
 
     private final Dataset<? extends Instance> dataset;
     private final Table<String, Boolean, Dataset<? extends Instance>> cache;
+    private DataScaler ds;
 
     /**
      * Currently it is storage only for one dataset
@@ -32,7 +33,10 @@ public class StdStorage {
 
     public Dataset<? extends Instance> get(String method, boolean logscale) {
         if (!isCached(method, logscale)) {
-            Dataset<? extends Instance> norm = DataScaler.standartize(dataset, method, logscale);
+            if (ds == null) {
+                ds = new DataScaler();
+            }
+            Dataset<? extends Instance> norm = ds.standartize(dataset, method, logscale);
             cache.put(method, logscale, norm);
         }
         return cache.get(method, logscale);

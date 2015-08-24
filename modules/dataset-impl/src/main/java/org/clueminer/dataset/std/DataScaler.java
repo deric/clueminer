@@ -9,12 +9,13 @@ import org.clueminer.std.StdNone;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class DataScaler {
+public class DataScaler<E extends Instance> {
 
-    public static Dataset<? extends Instance> standartize(Dataset<? extends Instance> dataset, String method, boolean logScale) {
+    public Dataset<E> standartize(Dataset<E> dataset, String method, boolean logScale) {
         DataStandardizationFactory sf = DataStandardizationFactory.getInstance();
-        Dataset<? extends Instance> res;
+        Dataset<E> res;
         if (method.equals(StdNone.name)) {
             //nothing to optimize
             res = dataset;

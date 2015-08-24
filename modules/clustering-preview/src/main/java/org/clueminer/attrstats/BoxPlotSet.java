@@ -21,7 +21,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public class BoxPlotSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E>, ClusterPreviewer<E, C> {
+public class BoxPlotSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;

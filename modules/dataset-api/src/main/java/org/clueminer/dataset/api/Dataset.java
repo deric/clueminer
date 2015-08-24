@@ -121,9 +121,9 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      *
      * @return Dataset original dataset from which was created this one
      */
-    Dataset<? extends Instance> getParent();
+    Dataset<E> getParent();
 
-    void setParent(Dataset<? extends Instance> parent);
+    void setParent(Dataset<E> parent);
 
     /**
      *
@@ -164,7 +164,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param current
      * @param source
      */
-    void changedClass(Object orig, Object current, Instance source);
+    void changedClass(Object orig, Object current, Object source);
 
     /**
      * Get a copy of attributes
@@ -345,7 +345,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param key     must be unique
      * @param dataset
      */
-    void addChild(String key, Dataset<Instance> dataset);
+    void addChild(String key, Dataset<E> dataset);
 
     /**
      * Return dataset if exists, otherwise null
@@ -353,7 +353,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @param key
      * @return
      */
-    Dataset<Instance> getChild(String key);
+    Dataset<E> getChild(String key);
 
     /**
      * Should provide matrix-like facade to access values of the dataset

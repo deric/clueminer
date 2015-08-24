@@ -260,7 +260,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     }
 
     @Override
-    public void changedClass(Object orig, Object current, Instance source) {
+    public void changedClass(Object orig, Object current, Object source) {
         if (current != null) {
             if (!classes.contains(current)) {
                 classes.add(current);

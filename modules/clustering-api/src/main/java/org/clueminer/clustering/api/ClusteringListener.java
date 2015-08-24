@@ -9,8 +9,9 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C>
  */
-public interface ClusteringListener<E extends Instance> extends EventListener {
+public interface ClusteringListener<E extends Instance, C extends Cluster<E>> extends EventListener {
 
     /**
      * Triggered when starts executor starts data clustering
@@ -25,7 +26,7 @@ public interface ClusteringListener<E extends Instance> extends EventListener {
      *
      * @param clust
      */
-    void clusteringChanged(Clustering<E, Cluster<E>> clust);
+    void clusteringChanged(Clustering<E, C> clust);
 
     void resultUpdate(HierarchicalResult<E> hclust);
 }

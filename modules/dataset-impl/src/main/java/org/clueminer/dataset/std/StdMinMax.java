@@ -10,14 +10,15 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = DataStandardization.class)
-public class StdMinMax extends StdScale implements DataStandardization {
+public class StdMinMax<E extends Instance> extends StdScale implements DataStandardization<E> {
 
     @Override
-    public Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset) {
+    public Dataset<E> optimize(Dataset<E> dataset) {
         double min, max;
-        Dataset<? extends Instance> opt = dataset.duplicate();
+        Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         Instance orig;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -16,11 +17,13 @@ import org.clueminer.math.Matrix;
  * result.
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class DendrogramData implements DendrogramMapping {
+public class DendrogramData<E extends Instance, C extends Cluster<E>> implements DendrogramMapping<E, C> {
 
     private Matrix matrix;
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private double mid = 0;
@@ -32,12 +35,12 @@ public class DendrogramData implements DendrogramMapping {
 
     }
 
-    public DendrogramData(Dataset<? extends Instance> dataset) {
+    public DendrogramData(Dataset<E> dataset) {
         this.dataset = dataset;
 
     }
 
-    public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
+    public DendrogramData(Dataset<E> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
         this.dataset = dataset;
         // checkParams(matrix, rowResult, columnResult);
         this.setMatrix(matrix);
@@ -45,7 +48,7 @@ public class DendrogramData implements DendrogramMapping {
         this.colsResult = columnResult;
     }
 
-    public DendrogramData(Dataset<? extends Instance> dataset, Matrix matrix, HierarchicalResult rowResult) {
+    public DendrogramData(Dataset<E> dataset, Matrix matrix, HierarchicalResult rowResult) {
         this.dataset = dataset;
         // checkParams(matrix, rowResult, null);
         this.setMatrix(matrix);
@@ -186,7 +189,7 @@ public class DendrogramData implements DendrogramMapping {
      * @return the instances
      */
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
@@ -194,7 +197,7 @@ public class DendrogramData implements DendrogramMapping {
      * @param instances the instances to set
      */
     @Override
-    public void setDataset(Dataset<? extends Instance> instances) {
+    public void setDataset(Dataset<E> instances) {
         this.dataset = instances;
     }
 

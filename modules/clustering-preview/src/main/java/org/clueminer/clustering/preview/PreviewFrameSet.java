@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = ClusterPreviewer.class)
-public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E>, ClusterPreviewer<E, C> {
+public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;

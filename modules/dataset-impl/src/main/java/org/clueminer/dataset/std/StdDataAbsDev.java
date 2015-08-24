@@ -11,14 +11,15 @@ import org.openide.util.lookup.ServiceProvider;
  * Standardized measurement normalization
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = DataStandardization.class)
-public class StdDataAbsDev extends StdAbsDev implements DataStandardization {
+public class StdDataAbsDev<E extends Instance> extends StdAbsDev implements DataStandardization<E> {
 
     @Override
-    public Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset) {
+    public Dataset<E> optimize(Dataset<E> dataset) {
         double avg, dev;
-        Dataset<? extends Instance> opt = dataset.duplicate();
+        Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         Instance orig;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {

@@ -28,7 +28,8 @@ public class ConfNormData extends JFrame {
     public ConfNormData() throws IOException {
         initComponents();
 
-        Dataset<? extends Instance> out = DataScaler.standartize(FakeDatasets.irisDataset(), "z-score", false);
+        DataScaler<Instance> ds = new DataScaler();
+        Dataset<? extends Instance> out = ds.standartize((Dataset<Instance>) FakeDatasets.irisDataset(), "z-score", false);
         ClusteringExecutorCached executor = new ClusteringExecutorCached();
         Clustering<Instance, Cluster<Instance>> clustering = executor.clusterRows(out, new Props());
 

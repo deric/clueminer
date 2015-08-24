@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api.dendrogram;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -9,8 +10,10 @@ import org.clueminer.math.Matrix;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface DendrogramMapping {
+public interface DendrogramMapping<E extends Instance, C extends Cluster<E>> {
 
     public int getColumnIndex(int column);
 
@@ -29,14 +32,14 @@ public interface DendrogramMapping {
      */
     public void setMatrix(Matrix input);
 
-    public Dataset<? extends Instance> getDataset();
+    public Dataset<E> getDataset();
 
     /**
      * Set dataset which was clustered
      *
      * @param dataset
      */
-    public void setDataset(Dataset<? extends Instance> dataset);
+    public void setDataset(Dataset<E> dataset);
 
     /**
      *
@@ -57,15 +60,15 @@ public interface DendrogramMapping {
      *
      * @param rowsResult
      */
-    public void setRowsResult(HierarchicalResult rowsResult);
+    public void setRowsResult(HierarchicalResult<E> rowsResult);
 
-    public HierarchicalResult getColsResult();
+    public HierarchicalResult<E> getColsResult();
 
-    public void setColsResult(HierarchicalResult colsResult);
+    public void setColsResult(HierarchicalResult<E> colsResult);
 
-    public Clustering getRowsClustering();
+    public Clustering<E, C> getRowsClustering();
 
-    public Clustering getColumnsClustering();
+    public Clustering<E, C> getColumnsClustering();
 
     /**
      * Get value at given position

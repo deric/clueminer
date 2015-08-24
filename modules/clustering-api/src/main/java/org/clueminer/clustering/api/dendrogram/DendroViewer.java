@@ -1,17 +1,21 @@
 package org.clueminer.clustering.api.dendrogram;
 
 import java.awt.Dimension;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Exportable;
 
 /**
  * Interface for a dendrogram displayer
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public interface DendroViewer extends Exportable {
+public interface DendroViewer<E extends Instance, C extends Cluster<E>> extends Exportable {
 
     /**
      * One heatmap size should be same as dendrogram branches spacing
@@ -24,14 +28,14 @@ public interface DendroViewer extends Exportable {
 
     void removeDendrogramDataListener(DendrogramDataListener listener);
 
-    void addClusteringListener(ClusteringListener listener);
+    void addClusteringListener(ClusteringListener<E, C> listener);
 
     /**
      * Fire an event when user modifies clustering (changing cutoff)
      *
      * @param clust
      */
-    void fireClusteringChanged(Clustering clust);
+    void fireClusteringChanged(Clustering<E, C> clust);
 
     boolean isHorizontalTreeVisible();
 

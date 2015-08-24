@@ -16,9 +16,12 @@ import org.clueminer.stats.AttrNumStats;
 import org.clueminer.std.Scaler;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -390,7 +393,8 @@ public class ArrayDatasetTest {
 
     @Test
     public void testNormalize() {
-        Dataset<? extends Instance> out = DataScaler.standartize(dataset, "z-score", false);
+        DataScaler<Instance> ds = new DataScaler<>();
+        Dataset<? extends Instance> out = ds.standartize(dataset, "z-score", false);
 
         //make sure normalized data are not written to original dataset
         for (int i = 0; i < dataset.size(); i++) {
@@ -403,8 +407,9 @@ public class ArrayDatasetTest {
 
     @Test
     public void testNormalize2() {
-        Dataset<? extends Instance> test = data2x5();
-        Dataset<? extends Instance> out = DataScaler.standartize(test, "z-score", false);
+        Dataset<Instance> test = (Dataset<Instance>) data2x5();
+        DataScaler<Instance> ds = new DataScaler<>();
+        Dataset<Instance> out = ds.standartize(test, "z-score", false);
 
         //make sure normalized data are not written to original dataset
         for (int i = 0; i < test.size(); i++) {
@@ -571,7 +576,7 @@ public class ArrayDatasetTest {
         assertEquals(false, dataset.hasParent());
 
         Dataset<? extends Instance> dupl = dataset.duplicate();
-        dataset.setParent(dupl);
+        dataset.setParent((Dataset<Instance>) dupl);
         assertEquals(true, dataset.hasParent());
     }
 

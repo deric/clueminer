@@ -26,7 +26,7 @@ import org.imgscalr.Scalr;
  *
  * @author Tomas Barton
  */
-public class SilhouettePlot<E extends Instance> extends BPanel implements DendrogramDataListener, ClusteringListener<E> {
+public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BPanel implements DendrogramDataListener, ClusteringListener<E, C> {
 
     private static final long serialVersionUID = 4887302917255522954L;
     private Clustering<? extends Instance, ? extends Cluster> clustering;

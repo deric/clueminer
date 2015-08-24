@@ -37,16 +37,6 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
     public ContinuousInstance copy();
 
     /**
-     * Set parent dataset which is used for storing time points, that are shared
-     * between instances
-     *
-     * @param parent
-     */
-    public void setParent(Timeseries<? extends ContinuousInstance> parent);
-
-    public Timeseries<? extends ContinuousInstance> getParent();
-
-    /**
      * Returns an iterator over all statistics objects available for this type
      * of instance. Additional statistics can be registered via
      * {@link #registerStatistics(Statistics)}.

@@ -27,10 +27,10 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     protected String id;
     protected String name;
     protected ColorGenerator colorGenerator;
-    protected Dataset<? extends Instance> parent = null;
+    protected Dataset<E> parent = null;
     //default capacity same as with ArrayList
     private int capacity = 10;
-    protected HashMap<String, Dataset<Instance>> children;
+    protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
 
     public AbstractDataset() {
@@ -63,12 +63,12 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
-    public Dataset<? extends Instance> getParent() {
+    public Dataset<E> getParent() {
         return parent;
     }
 
     @Override
-    public void setParent(Dataset<? extends Instance> parent) {
+    public void setParent(Dataset<E> parent) {
         this.parent = parent;
     }
 
@@ -148,7 +148,7 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
-    public void addChild(String key, Dataset<Instance> dataset) {
+    public void addChild(String key, Dataset<E> dataset) {
         if (children == null) {
             children = new HashMap<>(5);
         }
@@ -156,7 +156,7 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
-    public Dataset<Instance> getChild(String key) {
+    public Dataset<E> getChild(String key) {
         if (children == null) {
             return null;
         }

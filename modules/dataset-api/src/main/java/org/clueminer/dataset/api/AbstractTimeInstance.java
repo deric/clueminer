@@ -12,11 +12,11 @@ import org.clueminer.math.Vector;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <I>
  */
 public abstract class AbstractTimeInstance<E extends Number> extends AbstractInstance<E> implements ContinuousInstance<E>, Iterable<E>, Vector<E> {
 
     private static final long serialVersionUID = 7144673261130372477L;
-    protected Timeseries<? extends ContinuousInstance> parent;
     protected Instance ancestor;
     //real count
     protected int last = 0;
@@ -166,16 +166,6 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
             res.set(i, this.get(i) - num);
         }
         return res;
-    }
-
-    @Override
-    public Timeseries<? extends ContinuousInstance> getParent() {
-        return parent;
-    }
-
-    @Override
-    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
-        this.parent = parent;
     }
 
     /**

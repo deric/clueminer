@@ -12,12 +12,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DataStandardization.class)
-public class StdDataDev extends StdDev implements DataStandardization {
+public class StdDataDev<E extends Instance> extends StdDev implements DataStandardization<E> {
 
     @Override
-    public Dataset<? extends Instance> optimize(Dataset<? extends Instance> dataset) {
+    public Dataset<E> optimize(Dataset<E> dataset) {
         double avg, dev;
-        Dataset<? extends Instance> opt = dataset.duplicate();
+        Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         Instance orig;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {
