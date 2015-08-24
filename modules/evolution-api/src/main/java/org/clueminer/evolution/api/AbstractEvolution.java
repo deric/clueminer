@@ -1,5 +1,6 @@
 package org.clueminer.evolution.api;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
@@ -12,19 +13,22 @@ import org.openide.util.lookup.InstanceContent;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public abstract class AbstractEvolution<T extends Individual> implements EvolutionSO<T> {
+public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        implements EvolutionSO<I, E, C> {
 
     protected int generations = 10;
-    protected ClusterEvaluation external;
-    protected ClusteringAlgorithm algorithm;
+    protected ClusterEvaluation<E, C> external;
+    protected ClusteringAlgorithm<E, C> algorithm;
     protected boolean maximizedFitness;
     protected ProgressHandle ph;
     protected transient InstanceContent instanceContent;
     protected transient Lookup lookup;
-    protected Dataset<? extends Instance> dataset;
-    protected ClusterEvaluation evaluator;
+    protected Dataset<E> dataset;
+    protected ClusterEvaluation<E, C> evaluator;
     protected int populationSize = 10;
     protected Props defaultProp;
     /**
@@ -66,12 +70,12 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 
@@ -81,12 +85,12 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
     }
 
     @Override
-    public ClusteringAlgorithm getAlgorithm() {
+    public ClusteringAlgorithm<E, C> getAlgorithm() {
         return algorithm;
     }
 
     @Override
-    public ClusterEvaluation getEvaluator() {
+    public ClusterEvaluation<E, C> getEvaluator() {
         return evaluator;
     }
 
@@ -97,12 +101,12 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
      * @return
      */
     @Override
-    public ClusterEvaluation getExternal() {
+    public ClusterEvaluation<E, C> getExternal() {
         return external;
     }
 
     @Override
-    public void setExternal(ClusterEvaluation external) {
+    public void setExternal(ClusterEvaluation<E, C> external) {
         this.external = external;
     }
 
@@ -148,7 +152,7 @@ public abstract class AbstractEvolution<T extends Individual> implements Evoluti
 
     @Override
     public String getDefaultParam(String key) {
-        T ind = createIndividual();
+        I ind = createIndividual();
         return ind.getProps().get(key);
     }
 

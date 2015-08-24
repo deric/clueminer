@@ -29,7 +29,7 @@ import org.imgscalr.Scalr;
 public class SilhouettePlot extends BPanel implements DendrogramDataListener, ClusteringListener {
 
     private static final long serialVersionUID = 4887302917255522954L;
-    private Clustering<? extends Cluster> clustering;
+    private Clustering<? extends Instance, ? extends Cluster> clustering;
     private Dimension element = new Dimension(5, 5);
     private final Silhouette silhouette;
     private final StdScale scale;
@@ -161,7 +161,7 @@ public class SilhouettePlot extends BPanel implements DendrogramDataListener, Cl
         return true;
     }
 
-    public void setClustering(Clustering<? extends Cluster> data) {
+    public void setClustering(Clustering<? extends Instance, ? extends Cluster> data) {
         this.clustering = data;
         DendrogramMapping d = data.getLookup().lookup(DendrogramMapping.class);
         if (d != null) {

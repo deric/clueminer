@@ -132,12 +132,12 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
         return evaluators.toArray(new String[internalMap.size()]);
     }
 
-    private static void initEvaluators() {
+    private void initEvaluators() {
         if (internalMap == null) {
-            InternalEvaluatorFactory inf = InternalEvaluatorFactory.getInstance();
+            InternalEvaluatorFactory<E, C> inf = InternalEvaluatorFactory.getInstance();
             internalMap = new Object2ObjectOpenHashMap<>();
 
-            for (InternalEvaluator eval : inf.getAll()) {
+            for (InternalEvaluator<E, C> eval : inf.getAll()) {
                 internalMap.put(eval.getName(), eval);
             }
         }

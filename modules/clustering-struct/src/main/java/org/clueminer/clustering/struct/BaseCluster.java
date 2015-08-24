@@ -4,7 +4,9 @@ import com.google.common.collect.Sets;
 import java.awt.Color;
 import java.util.Set;
 import org.clueminer.attributes.AttributeFactoryImpl;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -132,6 +134,40 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
             attributeBuilder = new AttributeFactoryImpl<>(this);
         }
         return attributeBuilder;
+    }
+
+    /**
+     * Deep copy of a cluster
+     *
+     * @return
+     */
+    @Override
+    public Cluster<E> copy() {
+        Cluster<E> out = (Cluster<E>) duplicate();
+        for (int i = 0; i < size(); i++) {
+            out.set(i, (E) get(i).copy());
+        }
+        return out;
+    }
+
+    /**
+     * Copies attributes but not data itself
+     *
+     * @return copy of dataset structure
+     */
+    @Override
+    public Dataset<E> duplicate() {
+        BaseCluster<E> copy = new BaseCluster<>(this.size(), this.attributeCount());
+        int i = 0;
+        for (Attribute attribute : attributes) {
+            if (attribute == null) {
+                throw new RuntimeException("null attribute at position " + i);
+            }
+            copy.attributeBuilder().create(attribute.getName(), BasicAttrType.NUMERIC, attribute.getRole());
+            i++;
+        }
+        copy.setParent(this);
+        return copy;
     }
 
     @Override

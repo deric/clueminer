@@ -1,5 +1,6 @@
 package org.clueminer.evolution.api;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.ColorGenerator;
@@ -11,9 +12,12 @@ import org.openide.util.Lookup;
 /**
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public interface Evolution<T extends Individual> extends Runnable, Lookup.Provider {
+public interface Evolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
+        extends Runnable, Lookup.Provider {
 
     /**
      *
@@ -21,9 +25,9 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      */
     String getName();
 
-    Dataset<? extends Instance> getDataset();
+    Dataset<E> getDataset();
 
-    void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<E> dataset);
 
     /**
      * Number of attributes in current dataset
@@ -54,18 +58,18 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
 
     void setCrossoverProbability(double crossoverProbability);
 
-    ClusteringAlgorithm getAlgorithm();
+    ClusteringAlgorithm<E, C> getAlgorithm();
 
-    void setAlgorithm(ClusteringAlgorithm algorithm);
+    void setAlgorithm(ClusteringAlgorithm<E, C> algorithm);
 
-    ClusterEvaluation getExternal();
+    ClusterEvaluation<E, C> getExternal();
 
     /**
      * Set external objective function
      *
      * @param external
      */
-    void setExternal(ClusterEvaluation external);
+    void setExternal(ClusterEvaluation<E, C> external);
 
     int getPopulationSize();
 
@@ -109,7 +113,7 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      *
      * @return new individual
      */
-    T createIndividual();
+    I createIndividual();
 
     /**
      * Default settings of parameter in newly created individual
@@ -125,5 +129,5 @@ public interface Evolution<T extends Individual> extends Runnable, Lookup.Provid
      * @param individual
      * @return
      */
-    boolean isValid(Individual individual);
+    boolean isValid(I individual);
 }

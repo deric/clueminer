@@ -55,7 +55,7 @@ public class Dunn2<E extends Instance, C extends Cluster<E>> extends DunnIndex<E
         double maxIntraClusterdist = Double.MIN_VALUE, temp;
         double minClusterDistance = Double.MAX_VALUE;
         C clusterX, clusterY;
-        ClusterLinkage link = LinkageFactory.getInstance().getProvider("Single Linkage");
+        ClusterLinkage<E> link = (ClusterLinkage<E>) LinkageFactory.getInstance().getProvider("Single Linkage");
         link.setDistanceMeasure(dm);
 
         for (int i = 0; i < clusters.size(); i++) {

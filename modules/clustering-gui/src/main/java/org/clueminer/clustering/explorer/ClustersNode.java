@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
@@ -14,12 +15,14 @@ import org.openide.util.lookup.Lookups;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ClustersNode extends AbstractNode implements PropertyChangeListener {
+public class ClustersNode<E extends Instance, C extends Cluster<E>> extends AbstractNode implements PropertyChangeListener {
 
-    private Clustering<Cluster> clusters;
+    private Clustering<E, C> clusters;
 
-    public ClustersNode(Clustering<Cluster> clusters) {
+    public ClustersNode(Clustering<E, C> clusters) {
         super(new ClustersChildren(clusters), Lookups.singleton(clusters));
         this.clusters = clusters;
         setIconBaseWithExtension("org/clueminer/resources/cluster.png");
