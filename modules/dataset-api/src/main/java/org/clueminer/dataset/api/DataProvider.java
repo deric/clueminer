@@ -19,8 +19,9 @@ package org.clueminer.dataset.api;
 /**
  *
  * @author deric
+ * @param <E>
  */
-public interface DataProvider extends Iterable<Dataset<? extends Instance>> {
+public interface DataProvider<E extends Instance> extends Iterable<Dataset<E>> {
 
     /**
      *
@@ -34,13 +35,13 @@ public interface DataProvider extends Iterable<Dataset<? extends Instance>> {
      * @param name
      * @return
      */
-    Dataset<? extends Instance> getDataset(String name);
+    Dataset<E> getDataset(String name);
 
     /**
      *
      * @return first dataset in collection
      */
-    Dataset<? extends Instance> first();
+    Dataset<E> first();
 
     /**
      *

@@ -25,12 +25,13 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class DataProviderMap implements DataProvider {
+public class DataProviderMap<E extends Instance> implements DataProvider<E> {
 
-    private final Map<String, Dataset<? extends Instance>> data;
+    private final Map<String, Dataset<E>> data;
 
-    public DataProviderMap(Map<String, Dataset<? extends Instance>> data) {
+    public DataProviderMap(Map<String, Dataset<E>> data) {
         this.data = data;
     }
 
@@ -40,12 +41,12 @@ public class DataProviderMap implements DataProvider {
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset(String name) {
+    public Dataset<E> getDataset(String name) {
         return data.get(name);
     }
 
     @Override
-    public Dataset<? extends Instance> first() {
+    public Dataset<E> first() {
         return data.values().iterator().next();
     }
 
@@ -58,7 +59,7 @@ public class DataProviderMap implements DataProvider {
     }
 
     @Override
-    public Iterator<Dataset<? extends Instance>> iterator() {
+    public Iterator<Dataset<E>> iterator() {
         return new DataProviderMapIterator();
     }
 
@@ -72,7 +73,7 @@ public class DataProviderMap implements DataProvider {
         return false;
     }
 
-    private class DataProviderMapIterator implements Iterator<Dataset<? extends Instance>> {
+    private class DataProviderMapIterator implements Iterator<Dataset<E>> {
 
         private int index;
         private final String[] names;
@@ -88,7 +89,7 @@ public class DataProviderMap implements DataProvider {
         }
 
         @Override
-        public Dataset<? extends Instance> next() {
+        public Dataset<E> next() {
             return data.get(names[index++]);
         }
 

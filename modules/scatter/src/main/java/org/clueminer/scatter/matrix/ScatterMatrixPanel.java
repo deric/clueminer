@@ -41,8 +41,10 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class ScatterMatrixPanel extends JPanel {
+public class ScatterMatrixPanel<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = 4957672836007726620L;
 
@@ -70,7 +72,7 @@ public class ScatterMatrixPanel extends JPanel {
                 });
     }
 
-    public void setClustering(final Clustering<? extends Cluster> clustering) {
+    public void setClustering(final Clustering<E, C> clustering) {
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -105,7 +107,7 @@ public class ScatterMatrixPanel extends JPanel {
                         int i = 0;
                         Table<Integer, String, LegendEntry> labels = newTable();
                         SeriesColorMarkerLineStyleCycler generator = new SeriesColorMarkerLineStyleCycler();
-                        for (Cluster<Instance> clust : clustering) {
+                        for (Cluster<E> clust : clustering) {
                             Marker m = generator.getNextSeriesColorMarkerLineStyle().getMarker();
                             labels.put(i, clust.getName(), new LegendEntry(clust.getName(), clust.getColor(), m));
                             i++;
@@ -126,7 +128,7 @@ public class ScatterMatrixPanel extends JPanel {
 
     }
 
-    private JPanel clusteringPlot(final Clustering<? extends Cluster> clustering, int attrX, int attrY) {
+    private JPanel clusteringPlot(final Clustering<E, C> clustering, int attrX, int attrY) {
         Chart chart = new Chart(getWidth(), getHeight());
         chart.getStyleManager().setChartType(StyleManager.ChartType.Scatter);
 
@@ -135,7 +137,7 @@ public class ScatterMatrixPanel extends JPanel {
         chart.getStyleManager().setLegendVisible(false);
         chart.getStyleManager().setMarkerSize(10);
 
-        for (Cluster<Instance> clust : clustering) {
+        for (Cluster<E> clust : clustering) {
             Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
             s.setMarkerColor(clust.getColor());
         }

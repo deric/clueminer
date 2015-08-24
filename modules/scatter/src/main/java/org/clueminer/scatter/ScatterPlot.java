@@ -33,8 +33,10 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class ScatterPlot extends JPanel {
+public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = 2083423601634918077L;
 
@@ -55,7 +57,7 @@ public class ScatterPlot extends JPanel {
      *
      * @param clustering
      */
-    public void setClustering(final Clustering<? extends Cluster> clustering) {
+    public void setClustering(final Clustering<E, C> clustering) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -74,7 +76,7 @@ public class ScatterPlot extends JPanel {
         });
     }
 
-    private JPanel clusteringPlot(final Clustering<? extends Cluster> clustering) {
+    private JPanel clusteringPlot(final Clustering<E, C> clustering) {
         int attrX = 0;
         int attrY = 1;
 
@@ -86,7 +88,7 @@ public class ScatterPlot extends JPanel {
         chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.OutsideE);
         chart.getStyleManager().setMarkerSize(markerSize);
 
-        for (Cluster<Instance> clust : clustering) {
+        for (Cluster<E> clust : clustering) {
             Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
             s.setMarkerColor(clust.getColor());
         }
@@ -94,7 +96,7 @@ public class ScatterPlot extends JPanel {
         return new XChartPanel(chart);
     }
 
-    public void setClusterings(final Clustering<Cluster> clusteringA, final Clustering<Cluster> clusteringB) {
+    public void setClusterings(final Clustering<E, C> clusteringA, final Clustering<E, C> clusteringB) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
