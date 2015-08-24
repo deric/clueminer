@@ -6,8 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -26,8 +26,10 @@ import org.openide.util.Exceptions;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class IconDemo extends JFrame implements DendrogramVisualizationListener {
+public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame implements DendrogramVisualizationListener<E, C> {
 
     private static final long serialVersionUID = -8493251992060371012L;
     private JLabel picLabel;
@@ -46,10 +48,11 @@ public class IconDemo extends JFrame implements DendrogramVisualizationListener 
 
         DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);
 
-        Clustering<? extends Cluster> clustering = FakeClustering.iris();
+        Clustering<E, C> clustering = FakeClustering.iris();
         clustering.lookupAdd(dendroData);
 
-        Image image = DGramVis.generate(clustering, 300, 300, this);
+        DGramVis<E, C> dgram = new DGramVis();
+        Image image = dgram.generate(clustering, 300, 300, this);
         picLabel = new JLabel(new ImageIcon(image));
 
         add(picLabel);
@@ -79,10 +82,6 @@ public class IconDemo extends JFrame implements DendrogramVisualizationListener 
         });
     }
 
-    @Override
-    public void clusteringFinished(Clustering<? extends Cluster> clustering) {
-        //
-    }
 
     @Override
     public void previewUpdated(final Image preview) {
@@ -97,6 +96,11 @@ public class IconDemo extends JFrame implements DendrogramVisualizationListener 
                 repaint();
             }
         });
+    }
+
+    @Override
+    public void clusteringFinished(Clustering<E, C> clustering) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

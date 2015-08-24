@@ -12,16 +12,17 @@ import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Median linkage is a variation of
+ * Median linkage is a variation of {@link AverageLinkage}, this method should
+ * be less sensitive to outliers because we consider distance between existing
+ * data points and not just "virtual ones".
  *
- * {@link AverageLinkage}, this method should be less sensitive to outliers
- * because we consider distance between existing data points and not just
- * "virtual ones".
+ * A.K.A. Weighted Pair Group Method using Centroids
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
+public class MedianLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 7942079385178130303L;
     public static final String name = "Median Linkage";
@@ -48,7 +49,7 @@ public class MedianLinkage extends AbstractLinkage implements ClusterLinkage {
      * @return distance between clusters computed with current distance metric
      */
     @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

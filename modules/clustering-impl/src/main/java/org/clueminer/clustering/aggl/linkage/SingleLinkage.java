@@ -19,9 +19,10 @@ import org.openide.util.lookup.ServiceProvider;
  * Single Link or MIN
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class SingleLinkage extends AbstractLinkage {
+public class SingleLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 6661476787499047883L;
     public static final String name = "Single Linkage";
@@ -40,7 +41,7 @@ public class SingleLinkage extends AbstractLinkage {
     }
 
     @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
         double distance = Double.MAX_VALUE;
 
         Instance x, y;

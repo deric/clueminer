@@ -2,15 +2,17 @@ package org.clueminer.explorer.gui;
 
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author deric
  */
-public class EvalFuncPanel extends javax.swing.JPanel {
+public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -3509452685974315163L;
 
@@ -36,14 +38,15 @@ public class EvalFuncPanel extends javax.swing.JPanel {
             evaluator = ExternalEvaluatorFactory.getInstance().getProvider(eval);
         } else {
             eval = (String) cbInternal.getSelectedItem();
-            evaluator = InternalEvaluatorFactory.getInstance().getProvider(eval);
+            InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+            evaluator = ief.getProvider(eval);
         }
 
         return evaluator;
     }
 
     private String[] initInternalEvaluator() {
-        InternalEvaluatorFactory ef = InternalEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory<E, C> ef = InternalEvaluatorFactory.getInstance();
         List<String> list = ef.getProviders();
         return list.toArray(new String[list.size()]);
     }

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
@@ -22,7 +23,7 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  */
-public class ClustSorted extends Children.SortedArray implements EvolutionListener {
+public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Children.SortedArray implements EvolutionListener {
 
     private Lookup.Result<Clustering> result;
     private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
@@ -56,9 +57,9 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
         addClustering(population.getBestIndividual().getClustering());
     }
 
-    public void addClustering(Clustering<? extends Cluster> clustering) {
+    public void addClustering(Clustering<E, C> clustering) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
-        nodesAry[0] = new ClusteringNode((Clustering<Cluster>) clustering);
+        nodesAry[0] = new ClusteringNode<>((Clustering<E, C>) clustering);
         map.put(nodesAry, clustering.hashCode());
         project.add(clustering);
 
@@ -82,7 +83,7 @@ public class ClustSorted extends Children.SortedArray implements EvolutionListen
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
         int hash;
 
-        Clustering<? extends Cluster> c;
+        Clustering<E, C> c;
         for (Individual ind : result) {
             c = ind.getClustering();
             hash = c.hashCode();

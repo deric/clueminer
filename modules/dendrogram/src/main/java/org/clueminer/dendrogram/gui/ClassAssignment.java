@@ -20,8 +20,9 @@ import org.clueminer.eval.utils.Matching;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class ClassAssignment extends ClusterAssignment {
+public class ClassAssignment<E extends Instance> extends ClusterAssignment<E> {
 
     private static final Logger logger = Logger.getLogger(ClassAssignment.class.getName());
     private static final long serialVersionUID = 5843490511014364712L;
@@ -122,7 +123,7 @@ public class ClassAssignment extends ClusterAssignment {
         }
     }
 
-    private Matching getMatching(Clustering<? extends Cluster> ref) {
+    private Matching getMatching(Clustering<E, Cluster<E>> ref) {
         Matching matching = ref.getLookup().lookup(Matching.class);
         if (matching == null) {
             Table<String, String, Integer> table = CountingPairs.contingencyTable(ref);

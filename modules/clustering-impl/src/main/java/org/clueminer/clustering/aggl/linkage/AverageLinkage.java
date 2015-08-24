@@ -15,12 +15,14 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * Clusters will be compared using the similarity of the computed mean data
  * point (or <i>centroid</i>) for each cluster. This comparison method is also
- * known as UPGMA or Mean Linkage.
+ * known as UPGMA (Unweighted Pair Group Method with Arithmetic mean) or Mean
+ * Linkage.
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
+public class AverageLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 1357290267936276833L;
     public static String name = "Average Linkage";
@@ -36,11 +38,6 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -73,4 +70,10 @@ public class AverageLinkage extends AbstractLinkage implements ClusterLinkage {
     public double gamma() {
         return 0;
     }
+
+    @Override
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

@@ -9,12 +9,13 @@ import java.awt.event.ComponentListener;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ConfusionMatrix extends JPanel {
+public class ConfusionMatrix<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = 8898532203822388282L;
     private ConfusionTable table;
@@ -151,13 +152,13 @@ public class ConfusionMatrix extends JPanel {
         add(columnLabels, c);
     }
 
-    public void setClustering(Clustering<Cluster> clust) {
+    public void setClustering(Clustering<E, C> clust) {
         table.setClustering(clust);
         updateLabels();
 
     }
 
-    public void setClusterings(Clustering<Cluster> a, Clustering<Cluster> b) {
+    public void setClusterings(Clustering<E, C> a, Clustering<E, C> b) {
         table.setClusterings(a, b);
         updateLabels();
     }

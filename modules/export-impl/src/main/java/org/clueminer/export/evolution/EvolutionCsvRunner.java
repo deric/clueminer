@@ -11,11 +11,11 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
-import org.clueminer.evolution.api.Evolution;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.HashEvaluationTable;
+import org.clueminer.evolution.api.Evolution;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 
@@ -23,7 +23,7 @@ import org.openide.util.Exceptions;
  *
  * @author Tomas Barton
  */
-public class EvolutionCsvRunner implements Runnable {
+public class EvolutionCsvRunner<E extends Instance, C extends Cluster<E>> implements Runnable {
 
     private File file;
     private Evolution evolution;
@@ -94,11 +94,11 @@ public class EvolutionCsvRunner implements Runnable {
         quoteStrings = pref.getBoolean("quote_strings", false);
     }
 
-    protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+    protected EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering) {
+        EvaluationTable<E, C> evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+            Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
             if (dataset == null) {
                 throw new RuntimeException("no dataset in lookup");
             }

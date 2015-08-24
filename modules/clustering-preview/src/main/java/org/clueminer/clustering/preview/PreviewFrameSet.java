@@ -26,15 +26,17 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ClusterPreviewer.class)
-public class PreviewFrameSet extends JPanel implements ClusteringListener, ClusterPreviewer {
+public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E>, ClusterPreviewer<E, C> {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
     private JPanel parent;
     private Plotter[] plots;
-    private Clustering<Cluster> clust;
+    private Clustering<E, C> clust;
     private Dimension dimChart;
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
     private boolean useGlobalScale = true;
@@ -211,7 +213,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     }
 
     @Override
-    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+    public void clusteringStarted(Dataset<E> dataset, Props params) {
         //nothing to do
     }
 
@@ -221,7 +223,7 @@ public class PreviewFrameSet extends JPanel implements ClusteringListener, Clust
     }
 
     @Override
-    public void setClustering(Clustering<Cluster> clustering) {
+    public void setClustering(Clustering<E, C> clustering) {
         this.clust = clustering;
         redraw();
         if (parent != null) {

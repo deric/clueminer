@@ -37,8 +37,10 @@ import org.openide.util.lookup.Lookups;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ClusteringNode extends AbstractNode implements DendrogramVisualizationListener {
+public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends AbstractNode implements DendrogramVisualizationListener<E, C> {
 
     private Image image;
     DendrogramMapping mapping;
@@ -46,7 +48,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
     private final ReentrantLock lock = new ReentrantLock();
 
-    public ClusteringNode(Clustering<Cluster> clusters) {
+    public ClusteringNode(Clustering<E, C> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
         String name = generateName();
         setDisplayName(name);
@@ -68,7 +70,8 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
                 //ensure that for each clustering we submit exatctly one task
                 rendering = true;
                 //image should be updated asynchronously when image is generated
-                DGramVis.generate(clustering, 64, 64, this);
+                DGramVis dg = new DGramVis();
+                dg.generate(clustering, 64, 64, this);
                 //image is rendering, wait for it...
                 return DGramVis.loading();
             } finally {
@@ -81,7 +84,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         return image;
     }
 
-    public Clustering<? extends Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return getLookup().lookup(Clustering.class);
     }
 
@@ -106,7 +109,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     private String generateName() {
-        Clustering<? extends Cluster> clustering = getClustering();
+        Clustering<E, C> clustering = getClustering();
         if (clustering != null) {
             String name = clustering.getName();
             if (name.length() > 10) {
@@ -156,7 +159,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         if (set == null) {
             set = Sheet.createPropertiesSet();
         }
-        Clustering<? extends Cluster> clustering = getClustering();
+        Clustering<E, C> clustering = getClustering();
         if (clustering != null) {
             try {
                 set.setDisplayName("Clustering (" + clustering.size() + ")");
@@ -180,28 +183,28 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         return sheet;
     }
 
-    private Dataset<? extends Instance> getDataset(Clustering<? extends Cluster> clustering) {
-        Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+    private Dataset<E> getDataset(Clustering<E, C> clustering) {
+        Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             logger.warning("no dataset in lookup");
         }
         return dataset;
     }
 
-    protected EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getEvaluationTable();
+    protected EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering) {
+        EvaluationTable<E, C> evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
-            Dataset<? extends Instance> dataset = getDataset(clustering);
-            evalTable = new HashEvaluationTable(clustering, dataset);
+            Dataset<E> dataset = getDataset(clustering);
+            evalTable = new HashEvaluationTable<>(clustering, dataset);
             clustering.setEvaluationTable(evalTable);
         }
         return evalTable;
     }
 
-    private void internalSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
+    private void internalSheet(Clustering<E, C> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
-        EvaluationTable evalTable = evaluationTable(clustering);
+        EvaluationTable<E, C> evalTable = evaluationTable(clustering);
         set.setName("Internal Evaluation");
         set.setDisplayName("Internal Evaluation");
         for (final Entry<String, Double> score : evalTable.getInternal().entrySet()) {
@@ -211,13 +214,13 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         sheet.put(set);
     }
 
-    private void externalSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
+    private void externalSheet(Clustering<E, C> clustering, Sheet sheet) {
         Dataset<? extends Instance> dataset = getDataset(clustering);
         //we need dataset for external evaluation
         if (dataset != null) {
             if (dataset.getClasses().size() > 0) {
                 Sheet.Set set = new Sheet.Set();
-                EvaluationTable evalTable = evaluationTable(clustering);
+                EvaluationTable<E, C> evalTable = evaluationTable(clustering);
                 set.setName("External Evaluation");
                 set.setDisplayName("External Evaluation");
                 for (final Entry<String, Double> score : evalTable.getExternal().entrySet()) {
@@ -234,7 +237,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
         }
     }
 
-    private void algorithmSheet(Clustering<? extends Cluster> clustering, Sheet sheet) {
+    private void algorithmSheet(Clustering<E, C> clustering, Sheet sheet) {
         final Props params = clustering.getParams();
         if (params == null) {
             return;
@@ -256,7 +259,7 @@ public class ClusteringNode extends AbstractNode implements DendrogramVisualizat
     }
 
     @Override
-    public void clusteringFinished(Clustering<? extends Cluster> clustering) {
+    public void clusteringFinished(Clustering<E, C> clustering) {
         //not much to do
     }
 

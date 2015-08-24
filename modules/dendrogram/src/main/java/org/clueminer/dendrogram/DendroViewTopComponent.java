@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -32,6 +33,7 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays dendrograms
+ * @param <E>
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.dendrogram//DendroView//EN",
@@ -54,7 +56,7 @@ import org.openide.windows.TopComponent;
     "CTL_DendroViewTopComponent=DendroView Window",
     "HINT_DendroViewTopComponent=This is a DendroView window"
 })
-public final class DendroViewTopComponent extends TopComponent implements LookupListener, ClusteringListener {
+public final class DendroViewTopComponent<E extends Instance> extends TopComponent implements LookupListener, ClusteringListener<E> {
 
     private static final long serialVersionUID = -1479282981915282578L;
     private Lookup.Result<Clustering> result = null;
@@ -149,7 +151,7 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
     }
 
     @Override
-    public void clusteringChanged(Clustering clust) {
+    public void clusteringChanged(Clustering<E, Cluster<E>> clust) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
         pc.getCurrentProject().add(Lookups.singleton(clust));
@@ -172,7 +174,7 @@ public final class DendroViewTopComponent extends TopComponent implements Lookup
     }
 
     @Override
-    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+    public void clusteringStarted(Dataset<E> dataset, Props params) {
         //nothing to do
     }
 }

@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 
 /**
@@ -8,12 +9,13 @@ import org.clueminer.distance.api.Distance;
  * here </a> for an example of how the different linkages operate.
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public abstract class AbstractLinkage implements ClusterLinkage {
+public abstract class AbstractLinkage<E extends Instance> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = -4024535548255187696L;
     protected Distance distanceMeasure;
-    
+
     public AbstractLinkage(Distance dm){
         this.distanceMeasure = dm;
     }

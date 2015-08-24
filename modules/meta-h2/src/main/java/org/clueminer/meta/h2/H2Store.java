@@ -42,7 +42,7 @@ import org.skife.jdbi.v2.tweak.HandleCallback;
  * @author Tomas Barton
  */
 @ServiceProvider(service = MetaStorage.class)
-public class H2Store implements MetaStorage {
+public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaStorage<E, C> {
 
     private static H2Store instance;
     private Connection conn = null;
@@ -173,7 +173,7 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public void add(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering) {
+    public void add(Dataset<E> dataset, Clustering<E, C> clustering) {
         addClustering(fetchDataset(dataset), clustering, -1);
     }
 
@@ -184,7 +184,7 @@ public class H2Store implements MetaStorage {
      * @param clustering
      */
     @Override
-    public void add(int runId, Clustering<? extends Cluster> clustering) {
+    public void add(int runId, Clustering<E, C> clustering) {
         //check that given run exists
         int datasetId = findRunsDataset(runId);
         addClustering(datasetId, clustering, runId);
@@ -196,7 +196,7 @@ public class H2Store implements MetaStorage {
      * @param datasetId
      * @param clustering
      */
-    public void addClustering(int datasetId, Clustering<? extends Cluster> clustering, int runId) {
+    public void addClustering(int datasetId, Clustering<E, C> clustering, int runId) {
         int partitionId = fetchPartitioning(datasetId, clustering);
         Props p = clustering.getParams();
         int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
@@ -210,7 +210,7 @@ public class H2Store implements MetaStorage {
             } else {
                 rId = rm.insert(templateId, partitionId, datasetId);
             }
-            EvaluationTable evalTable = clustering.getEvaluationTable();
+            EvaluationTable<E, C> evalTable = clustering.getEvaluationTable();
             if (evalTable != null) {
                 StringBuilder sb = new StringBuilder("UPDATE results SET ");
                 double val;
@@ -292,7 +292,7 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    protected int findPartitioning(Clustering<? extends Cluster> clustering) {
+    protected int findPartitioning(Clustering<E, C> clustering) {
         int id;
         try (Handle h = db().open()) {
             PartitioningModel pt = h.attach(PartitioningModel.class);
@@ -301,7 +301,7 @@ public class H2Store implements MetaStorage {
         return id;
     }
 
-    protected int fetchPartitioning(int datasetId, Clustering<? extends Cluster> clustering) {
+    protected int fetchPartitioning(int datasetId, Clustering<E, C> clustering) {
         int id = findPartitioning(clustering);
 
         if (id <= 0) {
@@ -314,7 +314,7 @@ public class H2Store implements MetaStorage {
     }
 
     @Override
-    public double findScore(Dataset<? extends Instance> dataset, Clustering<? extends Cluster> clustering, ClusterEvaluation eval) {
+    public double findScore(Dataset<E> dataset, Clustering<E, C> clustering, ClusterEvaluation<E, C> eval) {
         double res;
         int datasetId = fetchDataset(dataset);
         int partitioningId = fetchPartitioning(datasetId, clustering);
@@ -420,7 +420,7 @@ public class H2Store implements MetaStorage {
      * @return
      */
     @Override
-    public Collection<MetaResult> findResults(Dataset<? extends Instance> dataset, String evolutionaryAlgorithm, final ClusterEvaluation score) {
+    public Collection<MetaResult> findResults(Dataset<E> dataset, String evolutionaryAlgorithm, final ClusterEvaluation<E, C> score) {
         final int datasetId = fetchDataset(dataset);
         final int evoId = fetchEvolution(evolutionaryAlgorithm);
         final String order = score.isMaximized() ? "DESC" : "ASC";

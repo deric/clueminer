@@ -26,10 +26,13 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class DistributionFrame extends JPanel implements Serializable, AdjustmentListener, ChangeListener, ActionListener {
+public class DistributionFrame<E extends Instance, C extends Cluster<E>>
+        extends JPanel implements Serializable, AdjustmentListener, ChangeListener, ActionListener {
 
-    private Clustering<Cluster> clustering;
+    private Clustering<E, C> clustering;
     private JScrollPane scroller;
     private BoxPlotSet boxPlotSet;
     private JSlider chartSizeSlider;
@@ -42,17 +45,17 @@ public class DistributionFrame extends JPanel implements Serializable, Adjustmen
         initComponents();
     }
 
-    public Clustering<Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return clustering;
     }
 
-    public void setClustering(Clustering<Cluster> clust) {
+    public void setClustering(Clustering<E, C> clust) {
         this.clustering = clust;
         boxPlotSet.setClustering(clustering);
         updateAttributes(clust);
     }
 
-    private void updateAttributes(Clustering<Cluster> clust) {
+    private void updateAttributes(Clustering<E, C> clust) {
         if (clust.size() > 0) {
             Dataset<? extends Instance> d = clust.get(0);
             for (int i = 0; i < d.attributeCount(); i++) {

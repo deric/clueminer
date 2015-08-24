@@ -26,8 +26,9 @@ import org.clueminer.utils.Props;
  * Color stripe for showing assignments to clusters
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class ClusterAssignment extends BPanel implements DendrogramDataListener, ClusteringListener {
+public class ClusterAssignment<E extends Instance> extends BPanel implements DendrogramDataListener, ClusteringListener<E> {
 
     private static final long serialVersionUID = 7662186965958650502L;
     private final DendroPane panel;
@@ -40,7 +41,7 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
     protected Font font = new Font("verdana", Font.BOLD, 12);
     protected int lineHeight;
     private final int labelOffset = 5;
-    protected Clustering<Cluster> flatClust;
+    protected Clustering<E, Cluster<E>> flatClust;
     protected HierarchicalResult hieraRes;
 
     public ClusterAssignment(DendroPane panel) {
@@ -165,7 +166,7 @@ public class ClusterAssignment extends BPanel implements DendrogramDataListener,
     }
 
     @Override
-    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+    public void clusteringStarted(Dataset<E> dataset, Props params) {
         //nothing to do
     }
 

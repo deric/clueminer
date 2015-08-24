@@ -16,8 +16,10 @@ import org.openide.util.Exceptions;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class CsvExportRunner implements Runnable {
+public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implements Runnable {
 
     private final File file;
     private final DendroViewer viewer;
@@ -46,9 +48,9 @@ public class CsvExportRunner implements Runnable {
             if (result != null) {
                 //number of items in dataset must be same as number of instances in clusters
                 ph.start(result.getDataset().size());
-                Clustering<Cluster> clust = result.getClustering();
+                Clustering<E, C> clust = result.getClustering();
                 int cnt = 0;
-                for (Cluster<? extends Instance> c : clust) {
+                for (Cluster<E> c : clust) {
                     for (Instance inst : c) {
                         line = inst.getName().split(",");
                         for (int i = 0; i < line.length; i++) {

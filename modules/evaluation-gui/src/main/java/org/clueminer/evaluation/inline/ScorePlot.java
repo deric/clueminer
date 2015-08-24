@@ -66,7 +66,7 @@ import org.openide.util.TaskListener;
  *
  * @author deric
  */
-public class ScorePlot extends BPanel implements TaskListener {
+public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel implements TaskListener {
 
     private static final long serialVersionUID = -4456572592761477081L;
 
@@ -75,8 +75,8 @@ public class ScorePlot extends BPanel implements TaskListener {
     private Clustering[] external;
     private ClusteringComparator compInternal;
     private ClusteringComparator compExternal;
-    private ClusterEvaluation objective1;
-    private ClusterEvaluation objective2;
+    private ClusterEvaluation<E, C> objective1;
+    private ClusterEvaluation<E, C> objective2;
     private MoEvaluator moEval;
     protected Font defaultFont;
     protected Font headerFont;
@@ -95,7 +95,7 @@ public class ScorePlot extends BPanel implements TaskListener {
     private int scaleTickLength = 6;
     protected DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private int labelOffset = 13;
-    public Clustering<? extends Cluster> goldenStd;
+    public Clustering<E, C> goldenStd;
     private int rectWidth = 10;
     private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
@@ -271,14 +271,14 @@ public class ScorePlot extends BPanel implements TaskListener {
         return c;
     }
 
-    private Clustering<? extends Cluster> goldenStandard(Collection<Clustering> clusters) {
-        Clustering<? extends Cluster> golden = null;
+    private Clustering<E, C> goldenStandard(Collection<Clustering> clusters) {
+        Clustering<E, C> golden = null;
         if (clusters != null && !clusters.isEmpty()) {
-            Clustering<? extends Cluster> clust = clusters.iterator().next();
-            Dataset<? extends Instance> dataset = clust.getLookup().lookup(Dataset.class);
+            Clustering<E, C> clust = clusters.iterator().next();
+            Dataset<E> dataset = clust.getLookup().lookup(Dataset.class);
             if (dataset != null) {
                 SortedSet set = dataset.getClasses();
-                golden = Clusterings.newList();
+                golden = (Clustering<E, C>) Clusterings.newList();
                 golden.lookupAdd(dataset);
                 EvaluationTable evalTable = new HashEvaluationTable(golden, dataset);
                 golden.lookupAdd(evalTable);

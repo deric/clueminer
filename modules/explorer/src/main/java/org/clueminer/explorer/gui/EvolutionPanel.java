@@ -2,9 +2,11 @@ package org.clueminer.explorer.gui;
 
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.gui.EvolutionUI;
@@ -15,7 +17,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = EvolutionUI.class)
-public class EvolutionPanel extends javax.swing.JPanel implements EvolutionUI {
+public class EvolutionPanel<E extends Instance, C extends Cluster<E>> extends javax.swing.JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -8908500509479257849L;
 
@@ -39,7 +41,8 @@ public class EvolutionPanel extends javax.swing.JPanel implements EvolutionUI {
             return getExternal();
         } else {
             eval = (String) cbIntern.getSelectedItem();
-            evaluator = InternalEvaluatorFactory.getInstance().getProvider(eval);
+            InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+            evaluator = ief.getProvider(eval);
         }
 
         return evaluator;

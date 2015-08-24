@@ -1,5 +1,6 @@
 package org.clueminer.posturomed;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
 import java.util.SortedSet;
@@ -201,6 +202,11 @@ public class PosturomedDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public boolean addAll(Dataset<? extends E> d) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<? extends Number> attrCollection(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -3,16 +3,17 @@ package org.clueminer.dendrogram;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.eval.hclust.HillClimbCutoff;
 import org.clueminer.math.Matrix;
 import org.clueminer.std.Scaler;
@@ -118,8 +119,8 @@ public class HclDendroPanel extends DendroPanel {
         //printResult(rowsResult);
         long time = System.currentTimeMillis() - start;
         System.out.println(algorithm.getName() + " clustering took " + time + " ms");
-
-        double cutoff = rowsResult.findCutoff(new HillClimbCutoff(InternalEvaluatorFactory.getInstance().getDefault()));
+        InternalEvaluatorFactory<Instance, Cluster<Instance>> ief = InternalEvaluatorFactory.getInstance();
+        double cutoff = rowsResult.findCutoff(new HillClimbCutoff(ief.getDefault()));
         //   double cutoff = rowsResult.findCutoff();
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
@@ -129,7 +130,7 @@ public class HclDendroPanel extends DendroPanel {
         String cutoffAlg = params.get("cutoff", "-- naive --");
         Clustering clust;
         if (!cutoffAlg.equals("-- naive --")) {
-            InternalEvaluator eval = InternalEvaluatorFactory.getInstance().getProvider(cutoffAlg);
+            InternalEvaluator eval = ief.getProvider(cutoffAlg);
             HillClimbCutoff strategy = new HillClimbCutoff(eval);
             rowsResult.findCutoff(strategy);
         }// else we use a naive approach

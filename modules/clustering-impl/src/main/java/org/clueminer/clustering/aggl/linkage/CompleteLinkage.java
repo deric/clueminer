@@ -18,9 +18,10 @@ import org.openide.util.lookup.ServiceProvider;
  * Complete Link or MAX or CLIQUE
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
+public class CompleteLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = -852898753773273748L;
     public static final String name = "Complete Linkage";
@@ -39,7 +40,7 @@ public class CompleteLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
         double maximumDistance = Double.MIN_VALUE;
         for (Instance i : cluster1) {
             for (Instance j : cluster2) {

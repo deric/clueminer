@@ -8,13 +8,16 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
+import org.clueminer.dataset.api.Instance;
 import org.openide.util.RequestProcessor;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ImageFactory {
+public class ImageFactory<E extends Instance, C extends Cluster<E>> {
 
     private ImageWorker[] workers;
     private static ImageFactory instance;
@@ -70,7 +73,7 @@ public class ImageFactory {
         workers = newWorkers;
     }
 
-    public void generateImage(Clustering<? extends Cluster> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public void generateImage(Clustering<E, C> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         //ensure at least one worker
         ensure(1);
         ImageTask task = new ImageTask(clustering, width, height, listener, mapping);

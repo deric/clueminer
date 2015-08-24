@@ -20,6 +20,7 @@ import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
@@ -28,7 +29,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class MoEvaluator implements ClusterEvaluation {
+public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements ClusterEvaluation<E, C> {
 
     private List<ClusterEvaluation> objectives;
 
@@ -49,17 +50,17 @@ public class MoEvaluator implements ClusterEvaluation {
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters) {
+    public double score(Clustering<E, C> clusters) {
         return clusters.getParams().getInt("mo-order", -1);
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) {
         return clusters.getParams().getInt("mo-order", -1);
     }
 
     @Override
-    public double score(Clustering<? extends Cluster> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
         return clusters.getParams().getInt("mo-order", -1);
     }
 

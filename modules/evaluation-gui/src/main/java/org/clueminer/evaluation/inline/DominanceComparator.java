@@ -31,7 +31,7 @@ import org.clueminer.eval.utils.HashEvaluationTable;
  *
  * @author deric
  */
-public class DominanceComparator implements Comparator<Clustering> {
+public class DominanceComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>> {
 
     private final double epsilon = 1e-9;
     private final List<ClusterEvaluation> objectives;
@@ -102,7 +102,7 @@ public class DominanceComparator implements Comparator<Clustering> {
         return et.getScore(eval);
     }
 
-    public EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
+    public EvaluationTable evaluationTable(Clustering<E, C> clustering) {
         EvaluationTable evalTable = clustering.getEvaluationTable();
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {

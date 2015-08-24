@@ -2,6 +2,7 @@ package org.clueminer.dataset.benchmark;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
@@ -16,7 +17,7 @@ public class ConsoleDump implements EvolutionListener {
 
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
-        Clustering<Cluster> clusters = population.getBestIndividual().getClustering();
+        Clustering<Instance, Cluster<Instance>> clusters = population.getBestIndividual().getClustering();
         System.out.println("============== generation: " + generationNum);
         System.out.println("external = " + external);
         System.out.println("avgFit = " + population.getAvgFitness());

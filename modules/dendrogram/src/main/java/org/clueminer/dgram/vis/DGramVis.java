@@ -11,9 +11,9 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
+import org.clueminer.clustering.order.MOLO;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.order.MOLO;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.openide.util.RequestProcessor;
@@ -23,13 +23,15 @@ import org.openide.util.RequestProcessor;
  * Generates thumbnail of a heat-map
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class DGramVis {
+public class DGramVis<E extends Instance, C extends Cluster<E>> {
 
     private static final Logger log = Logger.getLogger(DGramVis.class.getName());
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
-    public static Image generate(final Clustering<? extends Cluster> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
+    public Image generate(final Clustering<E, C> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             log.warning("missing mapping, can't generate preview");
@@ -71,7 +73,7 @@ public class DGramVis {
          viewer.setClustering(clustering);*/
     }
 
-    private static DendrogramMapping createMapping(Clustering<? extends Cluster> clustering) {
+    private DendrogramMapping createMapping(Clustering<E, C> clustering) {
         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
         Props params = clustering.getParams();
         AgglomerativeClustering algorithm = new HAC();

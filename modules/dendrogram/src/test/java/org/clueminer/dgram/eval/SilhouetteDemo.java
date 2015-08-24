@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.openide.util.RequestProcessor;
 
@@ -25,7 +26,7 @@ public class SilhouetteDemo extends JFrame {
         setLayout(new GridBagLayout());
         sPanel = new SilhouettePlot(true);
 
-        final Clustering<? extends Cluster> data = FakeClustering.irisWrong();
+        final Clustering<Instance, Cluster<Instance>> data = FakeClustering.irisWrong();
         sPanel.setClustering(data);
         System.out.println("dataset size: " + data.size());
         add(sPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));

@@ -37,8 +37,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class HClustResult implements HierarchicalResult {
+public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
 
     private static final long serialVersionUID = -515379303769981129L;
     private Matrix proximity;
@@ -48,7 +49,7 @@ public class HClustResult implements HierarchicalResult {
     private int numClusters = -1;
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
     private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
     private int numNodes = 0;
     private Clustering clustering = null;
@@ -68,12 +69,12 @@ public class HClustResult implements HierarchicalResult {
         init();
     }
 
-    public HClustResult(Dataset<? extends Instance> dataset) {
+    public HClustResult(Dataset<E> dataset) {
         this.dataset = dataset;
         init();
     }
 
-    public HClustResult(Dataset<? extends Instance> dataset, Props props) {
+    public HClustResult(Dataset<E> dataset, Props props) {
         this.dataset = dataset;
         this.props = props;
         init();
@@ -82,7 +83,8 @@ public class HClustResult implements HierarchicalResult {
     private void init() {
         cutoffStrategy = CutoffStrategyFactory.getInstance().getDefault();
         if (cutoffStrategy != null) {
-            cutoffStrategy.setEvaluator(InternalEvaluatorFactory.getInstance().getDefault());
+            InternalEvaluatorFactory<E, Cluster<E>> ief = InternalEvaluatorFactory.getInstance();
+            cutoffStrategy.setEvaluator(ief.getDefault());
         }
     }
 
@@ -181,7 +183,7 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public Clustering getClustering(Dataset<? extends Instance> parent) {
+    public Clustering getClustering(Dataset<E> parent) {
         setDataset(parent);
 
         int estClusters = (int) Math.sqrt(dataset.size());
@@ -405,7 +407,7 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
@@ -518,7 +520,7 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 
@@ -617,7 +619,7 @@ public class HClustResult implements HierarchicalResult {
     }
 
     @Override
-    public Instance getInstance(int index) {
+    public E getInstance(int index) {
         if (dataset != null) {
             return dataset.instance(getMappedIndex(index));
         } else {

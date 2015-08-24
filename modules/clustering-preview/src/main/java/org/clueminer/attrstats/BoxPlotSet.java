@@ -18,14 +18,16 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPreviewer {
+public class BoxPlotSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E>, ClusterPreviewer<E, C> {
 
     private static final long serialVersionUID = 4231956781752926611L;
     private int clusterNum = 0;
     private JPanel parent;
     private DistPlot[] plots;
-    private Clustering<Cluster> clust;
+    private Clustering<E, C> clust;
     private Dimension dimChart;
     private static final Logger logger = Logger.getLogger(BoxPlotSet.class.getName());
     private int attributeIndex;
@@ -96,7 +98,7 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
     }
 
     @Override
-    public void clusteringStarted(Dataset<? extends Instance> dataset, Props params) {
+    public void clusteringStarted(Dataset<E> dataset, Props params) {
         //nothing to do
     }
 
@@ -106,7 +108,7 @@ public class BoxPlotSet extends JPanel implements ClusteringListener, ClusterPre
     }
 
     @Override
-    public void setClustering(Clustering<Cluster> clustering) {
+    public void setClustering(Clustering<E, C> clustering) {
         this.clust = clustering;
         redraw();
         if (parent != null) {

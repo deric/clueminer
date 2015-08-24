@@ -13,9 +13,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = ClusterLinkage.class)
-public class WardsLinkage extends AbstractLinkage implements ClusterLinkage {
+public class WardsLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     public static final String name = "Ward's Linkage";
 
@@ -33,7 +34,7 @@ public class WardsLinkage extends AbstractLinkage implements ClusterLinkage {
     }
 
     @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
         Instance centroid1 = cluster1.getCentroid();
         Instance centroid2 = cluster2.getCentroid();
 

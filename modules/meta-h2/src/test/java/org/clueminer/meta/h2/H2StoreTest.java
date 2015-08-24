@@ -7,6 +7,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.fixtures.clustering.FakeClustering;
@@ -109,7 +110,7 @@ public class H2StoreTest {
     @Test
     public void testAddResult() {
         int datasetId = subject.fetchDataset(FakeDatasets.irisDataset());
-        Clustering<? extends Cluster> c = FakeClustering.iris();
+        Clustering<Instance, Cluster<Instance>> c = FakeClustering.iris();
         EvaluationTable et = new HashEvaluationTable(c, FakeDatasets.irisDataset());
         et.countAll();
         c.setEvaluationTable(et);

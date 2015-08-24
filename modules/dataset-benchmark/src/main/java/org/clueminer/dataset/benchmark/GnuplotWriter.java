@@ -10,15 +10,15 @@ import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.evolution.api.Evolution;
-import org.clueminer.evolution.api.EvolutionListener;
-import org.clueminer.evolution.api.Individual;
-import org.clueminer.evolution.api.Pair;
-import org.clueminer.evolution.api.Population;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.EvolutionSO;
+import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.api.Pair;
+import org.clueminer.evolution.api.Population;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -110,7 +110,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         }
     }
 
-    private String writeData(int n, String dataDir, Clustering<Cluster> clusters) {
+    private String writeData(int n, String dataDir, Clustering<Instance, Cluster<Instance>> clusters) {
         PrintWriter writer = null;
         String strn = String.format("%02d", n);
         String dataFile = "data-" + strn + ".csv";
@@ -252,7 +252,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     private String plotTemplate(int k, int x, int y, Individual best, String dataFile, double external) {
-        Clustering<Cluster> clustering = best.getClustering();
+        Clustering<Instance, Cluster<Instance>> clustering = best.getClustering();
         double fitness = best.getFitness();
         int attrCnt = attrCount();
         int clusterLabelPos = attrCnt + 1;
@@ -296,7 +296,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         return res;
     }
 
-    public void toCsv(DatasetWriter writer, Clustering<Cluster> clusters, Dataset<? extends Instance> dataset) {
+    public void toCsv(DatasetWriter writer, Clustering<Instance, Cluster<Instance>> clusters, Dataset<? extends Instance> dataset) {
         String[] header = new String[dataset.attributeCount() + 2];
         header[dataset.attributeCount()] = "label";
         header[dataset.attributeCount() + 1] = "class";

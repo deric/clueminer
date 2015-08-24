@@ -18,18 +18,19 @@ import java.awt.geom.Ellipse2D;
 import java.util.Collection;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.HashEvaluationTable;
 
 /**
  *
  * @author Tomas Barton
  */
-public class EvaluatorPlot extends JPanel {
+public class EvaluatorPlot<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = 4355229276691601032L;
     private Collection<? extends Clustering> clusterings;
@@ -70,7 +71,7 @@ public class EvaluatorPlot extends JPanel {
 
         DataTable data = new DataTable(Double.class, Double.class);
 
-        for (Clustering<? extends Cluster> clust : clusterings) {
+        for (Clustering<E, C> clust : clusterings) {
             EvaluationTable table = evaluationTable(clust);
             data.add(table.getScore(evaluatorX), table.getScore(evaluatorY));
         }
@@ -99,8 +100,8 @@ public class EvaluatorPlot extends JPanel {
         return new InteractivePanel(plot);
     }
 
-    private EvaluationTable evaluationTable(Clustering<? extends Cluster> clustering) {
-        EvaluationTable evalTable = clustering.getLookup().lookup(EvaluationTable.class);
+    private EvaluationTable<E, C> evaluationTable(Clustering<E, C> clustering) {
+        EvaluationTable<E, C> evalTable = clustering.getLookup().lookup(EvaluationTable.class);
         //we try to compute score just once, to eliminate delays
         if (evalTable == null) {
             evalTable = new HashEvaluationTable(clustering, clustering.getLookup().lookup(Dataset.class));
@@ -115,12 +116,14 @@ public class EvaluatorPlot extends JPanel {
     }
 
     public void setEvaluatorX(String eval) {
-        evaluatorX = InternalEvaluatorFactory.getInstance().getProvider(eval);
+        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+        evaluatorX = ief.getProvider(eval);
         clusteringChanged();
     }
 
     public void setEvaluatorY(String eval) {
-        evaluatorY = InternalEvaluatorFactory.getInstance().getProvider(eval);
+        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+        evaluatorY = ief.getProvider(eval);
         clusteringChanged();
     }
 }

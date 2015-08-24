@@ -25,12 +25,13 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author deric
  */
-public class InlinePanel extends JPanel {
+public class InlinePanel<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = -4474047225035728427L;
 
@@ -93,7 +94,7 @@ public class InlinePanel extends JPanel {
         return plot.getClusterings();
     }
 
-    public void setGolden(Clustering<? extends Cluster> clust) {
+    public void setGolden(Clustering<E, C> clust) {
         plot.goldenStd = clust;
     }
 

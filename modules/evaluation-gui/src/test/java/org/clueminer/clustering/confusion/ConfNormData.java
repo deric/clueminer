@@ -30,7 +30,7 @@ public class ConfNormData extends JFrame {
 
         Dataset<? extends Instance> out = DataScaler.standartize(FakeDatasets.irisDataset(), "z-score", false);
         ClusteringExecutorCached executor = new ClusteringExecutorCached();
-        Clustering<Cluster> clustering = executor.clusterRows(out, new Props());
+        Clustering<Instance, Cluster<Instance>> clustering = executor.clusterRows(out, new Props());
 
         confMatrix.setClustering(clustering);
 

@@ -14,8 +14,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface HierarchicalResult extends Serializable {
+public interface HierarchicalResult<E extends Instance> extends Serializable {
 
     /**
      * Proximity (a.k.a. similarity matrix) is a NxN matrix of distances
@@ -34,11 +35,11 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return a set of clusters
      */
-    Clustering getClustering();
+    Clustering<E, Cluster<E>> getClustering();
 
-    Clustering getClustering(Dataset<? extends Instance> dataset);
+    Clustering<E, Cluster<E>> getClustering(Dataset<E> dataset);
 
-    void setClustering(Clustering clustering);
+    void setClustering(Clustering<E, Cluster<E>> clustering);
 
     /**
      * Array of integers with cluster assignments
@@ -137,7 +138,7 @@ public interface HierarchicalResult extends Serializable {
      *
      * @return original dataset used for clustering
      */
-    Dataset<? extends Instance> getDataset();
+    Dataset<E> getDataset();
 
     /**
      *
@@ -200,7 +201,7 @@ public interface HierarchicalResult extends Serializable {
      * @deprecated in future only {@link DataVector} will be supported
      * @return
      */
-    Instance getInstance(int index);
+    E getInstance(int index);
 
     /**
      * Either row or column vector
@@ -249,7 +250,7 @@ public interface HierarchicalResult extends Serializable {
      *
      * @param dataset input dataset
      */
-    void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<E> dataset);
 
     void setResultType(ResultType type);
 

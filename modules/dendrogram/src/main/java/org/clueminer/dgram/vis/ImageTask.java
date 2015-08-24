@@ -4,20 +4,23 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ImageTask {
+public class ImageTask<E extends Instance, C extends Cluster<E>> {
 
-    private final Clustering<? extends Cluster> clustering;
+    private final Clustering<E, C> clustering;
     private final int width;
     private final int height;
     private final DendrogramVisualizationListener listener;
     private final DendrogramMapping mapping;
 
-    public ImageTask(Clustering<? extends Cluster> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public ImageTask(Clustering<E, C> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         this.clustering = clustering;
         this.width = width;
         this.height = height;
@@ -25,7 +28,7 @@ public class ImageTask {
         this.mapping = mapping;
     }
 
-    public Clustering<? extends Cluster> getClustering() {
+    public Clustering<E, C> getClustering() {
         return clustering;
     }
 

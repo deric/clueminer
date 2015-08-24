@@ -27,9 +27,10 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton use {@link HClustResult} instead
+ * @param <E>
  */
 @Deprecated
-public class HCLResult implements HierarchicalResult {
+public class HCLResult<E extends Instance> implements HierarchicalResult<E> {
 
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;
@@ -43,9 +44,9 @@ public class HCLResult implements HierarchicalResult {
     /**
      * original dataset
      */
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
 
-    public HCLResult(Dataset<? extends Instance> dataset) {
+    public HCLResult(Dataset<E> dataset) {
         this.dataset = dataset;
         cutoffStrategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
     }
@@ -114,7 +115,7 @@ public class HCLResult implements HierarchicalResult {
      * @return
      */
     @Override
-    public Clustering getClustering(Dataset<? extends Instance> parent) {
+    public Clustering getClustering(Dataset<E> parent) {
         setDataset(parent);
 
         //we need number of instances in dataset
@@ -244,12 +245,12 @@ public class HCLResult implements HierarchicalResult {
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 
@@ -381,7 +382,7 @@ public class HCLResult implements HierarchicalResult {
     }
 
     @Override
-    public Instance getInstance(int index) {
+    public E getInstance(int index) {
         return dataset.get(this.getMappedIndex(index));
     }
 

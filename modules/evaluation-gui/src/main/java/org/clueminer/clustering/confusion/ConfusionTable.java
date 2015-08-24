@@ -27,7 +27,7 @@ import org.clueminer.gui.ColorPalette;
  *
  * @author Tomas Barton
  */
-public class ConfusionTable extends JPanel {
+public class ConfusionTable<E extends Instance, C extends Cluster<E>> extends JPanel {
 
     private static final long serialVersionUID = -7558362062012338814L;
     private Dimension elemSize = new Dimension(10, 10);
@@ -62,7 +62,7 @@ public class ConfusionTable extends JPanel {
         colorScheme = new ColorScheme(Color.RED, Color.YELLOW, Color.GREEN);
     }
 
-    public void setClusterings(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public void setClusterings(Clustering<E, C> c1, Clustering<E, C> c2) {
         rowLabels = clusterNames(c1);
         colLabels = clusterNames(c2);
 
@@ -74,7 +74,7 @@ public class ConfusionTable extends JPanel {
         resetCache();
     }
 
-    private String[] clusterNames(Clustering<Cluster> clust) {
+    private String[] clusterNames(Clustering<E, C> clust) {
         String[] labels = new String[clust.size()];
         for (int i = 0; i < clust.size(); i++) {
             labels[i] = clust.get(i).getName();
@@ -82,7 +82,7 @@ public class ConfusionTable extends JPanel {
         return labels;
     }
 
-    public void setClustering(Clustering<Cluster> clust) {
+    public void setClustering(Clustering<E, C> clust) {
         colLabels = clusterNames(clust);
 
         confmat = countMutual(clust);
@@ -99,9 +99,9 @@ public class ConfusionTable extends JPanel {
      * @param c2 - clustering displayed in columns
      * @return matrix with numbers of instances in same clusters
      */
-    public int[][] countMutual(Clustering<Cluster> c1, Clustering<Cluster> c2) {
+    public int[][] countMutual(Clustering<E, C> c1, Clustering<E, C> c2) {
         int[][] conf = new int[c1.size()][c2.size()];
-        Cluster<Instance> curr;
+        Cluster<E> curr;
         sumRows = new int[c1.size()];
         sumCols = new int[c2.size()];
 
@@ -134,7 +134,7 @@ public class ConfusionTable extends JPanel {
      * @param clust
      * @return
      */
-    public int[][] countMutual(Clustering<Cluster> clust) {
+    public int[][] countMutual(Clustering<E, C> clust) {
         //SortedSet klasses = dataset.getClasses();
         //Table<String, String, Integer> table = counting.contingencyTable(clust);
         Table<String, String, Integer> table = contingencyTable(clust);
@@ -147,7 +147,7 @@ public class ConfusionTable extends JPanel {
 
         int k = 0;
         //Dump.array(rowLabels, "classes");
-        for (Cluster c : clust) {
+        for (Cluster<E> c : clust) {
             Map<String, Integer> col = table.column(c.getName());
             for (int i = 0; i < rowLabels.length; i++) {
                 if (col.containsKey(rowLabels[i])) {
@@ -183,15 +183,15 @@ public class ConfusionTable extends JPanel {
      * @param clustering
      * @return table with counts of items for each pair cluster, class
      */
-    public Table<String, String, Integer> contingencyTable(Clustering<Cluster> clustering) {
+    public Table<String, String, Integer> contingencyTable(Clustering<E, C> clustering) {
         // a lookup table for storing correctly / incorrectly classified items
         Table<String, String, Integer> table = newTable();
 
         //Cluster current;
-        Instance inst;
+        E inst;
         String cluster, label;
         int cnt;
-        for (Cluster<Instance> current : clustering) {
+        for (Cluster<E> current : clustering) {
             for (int i = 0; i < current.size(); i++) {
                 inst = current.instance(i);
                 cluster = current.getName();

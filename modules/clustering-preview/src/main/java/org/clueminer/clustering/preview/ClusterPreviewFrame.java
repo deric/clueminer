@@ -35,8 +35,11 @@ import org.openide.util.TaskListener;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
+ * @param <C>
  */
-public class ClusterPreviewFrame extends JPanel implements Serializable, ActionListener, AdjustmentListener, ChangeListener, TaskListener {
+public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
+        extends JPanel implements Serializable, ActionListener, AdjustmentListener, ChangeListener, TaskListener {
 
     private static final long serialVersionUID = -8719504995316248781L;
     private JScrollPane scroller;
@@ -110,7 +113,7 @@ public class ClusterPreviewFrame extends JPanel implements Serializable, ActionL
         //scroller.getViewport().revalidate();
     }
 
-    public void setClustering(Clustering<Cluster> clustering) {
+    public void setClustering(Clustering<E, C> clustering) {
         previewSet.setClustering(clustering);
     }
 

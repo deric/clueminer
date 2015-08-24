@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.dendrogram.DendrogramTopComponent;
+import org.clueminer.dendrogram.DendroViewTopComponent;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
 import org.clueminer.openfile.OpenFileImpl;
@@ -114,7 +114,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 System.out.println("opening task finished");
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
-                DendrogramTopComponent tc = new DendrogramTopComponent();
+                DendroViewTopComponent<HtsInstance> tc = new DendroViewTopComponent();
                 HtsPlate<HtsInstance> plate = importer.getDataset();
 
                 /*   Normalization norm = new QuadruplicateNormalization();
@@ -124,9 +124,9 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 /*                saveDataset(plate, "import", false);
                  saveDataset(normalized, "norm", true);
 */
-                tc.setDataset(plate);
                 //tc.setDataset(plate);
-                tc.setProject(project);
+                //tc.setDataset(plate);
+                //tc.setProject(project);
                 tc.setDisplayName(plate.getName());
                 tc.open();
                 tc.requestActive();

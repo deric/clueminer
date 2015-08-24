@@ -16,6 +16,7 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.math3.util.FastMath;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
@@ -161,7 +162,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
      * Compute sorting distance for all evaluation metrics
      */
     private void computeAll() {
-        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+        InternalEvaluatorFactory<Instance, Cluster<Instance>> ief = InternalEvaluatorFactory.getInstance();
         ClusteringComparator compare = new ClusteringComparator();
         for (ClusterEvaluation eval : ief.getAll()) {
 

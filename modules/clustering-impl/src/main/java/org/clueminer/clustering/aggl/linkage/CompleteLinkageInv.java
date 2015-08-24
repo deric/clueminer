@@ -29,9 +29,10 @@ import org.clueminer.math.Matrix;
  * Inverse distance measuring (bigger is better)
  *
  * @author deric
+ * @param <E>
  */
 //@ServiceProvider(service = ClusterLinkage.class)
-public class CompleteLinkageInv extends AbstractLinkage implements ClusterLinkage {
+public class CompleteLinkageInv<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     public static final String name = "Complete Linkage - inv dist";
     private static final long serialVersionUID = -1863699488371017773L;
@@ -50,7 +51,7 @@ public class CompleteLinkageInv extends AbstractLinkage implements ClusterLinkag
     }
 
     @Override
-    public double distance(Cluster<? extends Instance> cluster1, Cluster<? extends Instance> cluster2) {
+    public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
         double minDist = Double.MAX_VALUE;
         for (Instance i : cluster1) {
             for (Instance j : cluster2) {

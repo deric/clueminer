@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Timeseries;
  * 384 or 1536 wells
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public interface HtsPlate<E extends HtsInstance> extends Timeseries<E>, Dataset<E>, Collection<E>, Set<E> {
 

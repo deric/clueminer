@@ -8,8 +8,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface ClusteringListener extends EventListener {
+public interface ClusteringListener<E extends Instance> extends EventListener {
 
     /**
      * Triggered when starts executor starts data clustering
@@ -17,14 +18,14 @@ public interface ClusteringListener extends EventListener {
      * @param dataset data to be clustered
      * @param params  parameters of the clustering algorithm
      */
-    void clusteringStarted(Dataset<? extends Instance> dataset, Props params);
+    void clusteringStarted(Dataset<E> dataset, Props params);
 
     /**
      * Triggered when clustering finishes
      *
      * @param clust
      */
-    void clusteringChanged(Clustering clust);
+    void clusteringChanged(Clustering<E, Cluster<E>> clust);
 
-    void resultUpdate(HierarchicalResult hclust);
+    void resultUpdate(HierarchicalResult<E> hclust);
 }

@@ -47,6 +47,8 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
+ * @param <E>
+ * @param <C>
  */
 @ConvertAsProperties(
         dtd = "//org.clueminer.explorer//Explorer//EN",
@@ -66,7 +68,7 @@ import org.openide.windows.TopComponent;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, ToolbarListener {
+public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>> extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, ToolbarListener {
 
     private static final long serialVersionUID = 5542932858488609860L;
     private final transient ExplorerManager mgr = new ExplorerManager();
@@ -232,7 +234,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
                 if (alg instanceof EvolutionSO) {
                     EvolutionSO evoSo = (EvolutionSO) alg;
                     if (evoSo.getEvaluator() == null) {
-                        InternalEvaluatorFactory ief = InternalEvaluatorFactory.getInstance();
+                        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
                         evoSo.setEvaluator(ief.getDefault());
                     }
                 }
@@ -290,7 +292,7 @@ public final class ExplorerTopComponent extends CloneableTopComponent implements
             @Override
             public void run() {
                 exec.setAlgorithm(alg);
-                Clustering<? extends Cluster> clustering;
+                Clustering<E, C> clustering;
                 if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
                     DendrogramMapping mapping = exec.clusterAll(dataset, props);
                     clustering = mapping.getRowsClustering();
