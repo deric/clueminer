@@ -17,9 +17,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Hamster
+ * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class KnnInitializator implements GraphConvertor {
+public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
 
     private Distance dm;
     private static final String name = "k-NN";
@@ -38,8 +39,9 @@ public class KnnInitializator implements GraphConvertor {
      * @param params
      */
     @Override
-    public void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params) {
-        KNNSearch alg = KnnFactory.getInstance().getDefault();
+    public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
+        KnnFactory<E> kf = KnnFactory.getInstance();
+        KNNSearch<E> alg = kf.getDefault();
         if (alg == null) {
             throw new RuntimeException("did not find any provider for k-NN");
         }
@@ -48,9 +50,9 @@ public class KnnInitializator implements GraphConvertor {
         int k = params.getInt("k", 5);
         Neighbor[] nn;
         long nodeId;
-        Node target;
+        Node<E> target;
         Edge edge;
-        for (Node node : graph.getNodes()) {
+        for (Node<E> node : graph.getNodes()) {
             nn = alg.knn(node.getInstance(), k, params);
             for (Neighbor neighbor : nn) {
                 nodeId = mapping[neighbor.index];

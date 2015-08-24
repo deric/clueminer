@@ -5,11 +5,12 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface Node extends Element {
+public interface Node<E extends Instance> extends Element {
 
-    public void setInstance(Instance i);
+    public void setInstance(E i);
 
-    public Instance getInstance();
+    public E getInstance();
 
 }

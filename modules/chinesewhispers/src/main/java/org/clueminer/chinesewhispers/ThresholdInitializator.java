@@ -30,9 +30,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class ThresholdInitializator implements GraphConvertor {
+public class ThresholdInitializator<E extends Instance> implements GraphConvertor<E> {
 
     private Distance dm;
     private static final String name = "distance threshold";
@@ -49,14 +50,14 @@ public class ThresholdInitializator implements GraphConvertor {
      * @param dataset
      */
     @Override
-    public void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params) {
+    public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         double dist;
         double edgeThreshold = params.getDouble(EDGE_THRESHOLD, 1.0);
-        Node source, target;
+        Node<E> source, target;
         Edge edge;
         for (int i = 0; i < dataset.size(); i++) {
             source = graph.getNode(mapping[i]);
-            Instance curr = dataset.get(i);
+            E curr = dataset.get(i);
             for (int j = 0; j < i; j++) {
                 if (i != j) {
                     dist = dm.measure(curr, dataset.get(j));

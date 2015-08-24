@@ -25,8 +25,9 @@ import org.clueminer.utils.Props;
  * Interface for converting basic spreadsheet data to a graph structure
  *
  * @author deric
+ * @param <E>
  */
-public interface GraphConvertor {
+public interface GraphConvertor<E extends Instance> {
 
     /**
      * Unique identifier
@@ -43,7 +44,7 @@ public interface GraphConvertor {
      * @param mapping
      * @param params
      */
-    void createEdges(Graph graph, Dataset<? extends Instance> dataset, Long[] mapping, Props params);
+    void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params);
 
     /**
      * Function for measuring distance between data points
