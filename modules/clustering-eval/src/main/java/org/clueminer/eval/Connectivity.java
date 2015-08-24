@@ -64,7 +64,8 @@ public class Connectivity<E extends Instance, C extends Cluster<E>> extends Abst
         //parameter specifing number of neighbours that contribute to connectivity
         // value 10 is suggested by Handl, Knowles
         int L = params.getInt(PARAM, 10);
-        KNNSearch<E> nns = KnnFactory.getInstance().getDefault();
+        KnnFactory<E> kf = KnnFactory.getInstance();
+        KNNSearch<E> nns = kf.getDefault();
         if (nns == null) {
             throw new RuntimeException("missing k-nn implementation");
         }
@@ -74,7 +75,7 @@ public class Connectivity<E extends Instance, C extends Cluster<E>> extends Abst
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {
-                E inst = (E) c.get(i);
+                E inst = (E) c.get(j);
                 nn = nns.knn(inst, L, params);
                 for (int k = 0; k < L; k++) {
                     if (c.contains(nn[k].index)) {
@@ -88,12 +89,12 @@ public class Connectivity<E extends Instance, C extends Cluster<E>> extends Abst
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        return score1 > score2;
+        return score1 < score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return true;
+        return false;
     }
 
     /**

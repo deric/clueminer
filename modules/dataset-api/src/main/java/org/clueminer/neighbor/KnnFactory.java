@@ -18,14 +18,16 @@ package org.clueminer.neighbor;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class KnnFactory extends ServiceFactory<KNNSearch> {
+public class KnnFactory<E extends Instance> extends ServiceFactory<KNNSearch<E>> {
 
     private static KnnFactory instance;
 

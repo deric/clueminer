@@ -19,7 +19,6 @@ package org.clueminer.eval;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -32,10 +31,6 @@ public class ConnectivityTest {
 
     public ConnectivityTest() {
         subject = new Connectivity();
-    }
-
-    @Before
-    public void setUp() {
     }
 
     @Test
@@ -56,11 +51,6 @@ public class ConnectivityTest {
     }
 
     @Test
-    public void testScore_Clustering_Dataset() {
-
-    }
-
-    @Test
     public void testScore_3args() {
     }
 
@@ -70,7 +60,7 @@ public class ConnectivityTest {
 
     @Test
     public void testIsMaximized() {
-        assertEquals(true, subject.isMaximized());
+        assertEquals(false, subject.isMaximized());
     }
 
 }
