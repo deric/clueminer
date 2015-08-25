@@ -71,7 +71,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         setLayout(new GridBagLayout());
 
         tfK = new JTextField("4", 4);
-        sliderK = new JSlider(2, 1000, 4);
+        sliderK = new JSlider(1, 1000, 4);
         sliderK.addChangeListener(new ChangeListener() {
 
             @Override

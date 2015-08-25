@@ -42,6 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class DBSCANDialog extends JPanel implements ClusteringDialog {
 
+    private static final long serialVersionUID = 7956135045201178826L;
+
     private JSlider sliderMinPts;
     private JTextField tfMinPts;
     private JTextField tfRadius;
@@ -63,7 +65,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
         setLayout(new GridBagLayout());
 
         tfMinPts = new JTextField("20", 4);
-        sliderMinPts = new JSlider(2, 1000, 20);
+        sliderMinPts = new JSlider(1, 1000, 20);
         sliderMinPts.addChangeListener(new ChangeListener() {
 
             @Override
