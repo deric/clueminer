@@ -6,6 +6,7 @@ import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
@@ -241,10 +242,11 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return interpolator.value(x, low, up);
     }
 
-    
-    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
+    @Override
+    public void setParent(Dataset parent) {
         super.setParent(parent);
-        this.timePoints = (TimePointAttribute[]) parent.getTimePoints();
+        Timeseries ts = (Timeseries) parent;
+        this.timePoints = (TimePointAttribute[]) ts.getTimePoints();
     }
 
     @Override

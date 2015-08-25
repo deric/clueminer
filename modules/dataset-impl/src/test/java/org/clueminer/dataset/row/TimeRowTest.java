@@ -166,34 +166,6 @@ public class TimeRowTest {
     }
 
     /**
-     * Test of magnitude method, of class TimeRow.
-     */
-    @Test
-    public void testMagnitude() {
-    }
-
-    /**
-     * Test of set method, of class TimeRow.
-     */
-    @Test
-    public void testSet_int_Number() {
-    }
-
-    /**
-     * Test of add method, of class TimeRow.
-     */
-    @Test
-    public void testAdd() {
-    }
-
-    /**
-     * Test of valueAt method, of class TimeRow.
-     */
-    @Test
-    public void testValueAt_double() {
-    }
-
-    /**
      * Test of valueAt method, of class TimeRow.
      */
     @Test
@@ -201,7 +173,7 @@ public class TimeRowTest {
         //linear data
         int size = 7;
 
-        TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<ContinuousInstance>(5);
+        TimeseriesDataset<ContinuousInstance> dataset = new TimeseriesDataset<>(5);
         ContinuousInstance inst = new TimeRow(Double.class, 7);
         TimePoint tp[] = new TimePointAttribute[size];
         for (int i = 0; i < tp.length; i++) {
@@ -222,9 +194,8 @@ public class TimeRowTest {
         Dump.array(inst.arrayCopy(), "ts");
 
         dataset.add(inst);
-        double value;
-
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
+            assertNotNull(inst.valueAt(i));
             System.out.println(i + " = " + inst.valueAt(i));
         }
     }
