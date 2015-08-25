@@ -61,7 +61,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
             writer.close();
             File metisFile = resource("hmetis");
             //make sure metis is executable
-            Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
+            Process p = Runtime.getRuntime().exec("chmod ugo+x " + metisFile.getAbsolutePath());
             p.waitFor();
             //run metis
             String space = " ";

@@ -22,7 +22,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class Metis extends AbstractMetis implements Partitioning {
 
     private String ptype;
-    protected static final String prefix = "/org/clueminer/partitioning/impl";
 
     public Metis() {
         this("kway");

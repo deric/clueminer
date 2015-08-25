@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
-import static org.clueminer.partitioning.impl.Metis.prefix;
 import org.clueminer.resources.ResourceLoader;
 import org.openide.util.Exceptions;
 
@@ -43,6 +42,7 @@ import org.openide.util.Exceptions;
 public abstract class AbstractMetis implements Partitioning {
 
     public abstract void runMetis(Graph graph, int k);
+    protected static final String prefix = "/org/clueminer/partitioning/impl";
 
     private Node[] createMapping(Graph graph) {
         Node[] nodeMapping = new Node[graph.getNodeCount()];
@@ -81,7 +81,7 @@ public abstract class AbstractMetis implements Partitioning {
         URL url = Metis.class.getResource(resource);
         if (url == null) {
             //probably on Windows
-            Collection<String> res = ResourceLoader.getResources("gpmetis");
+            Collection<String> res = ResourceLoader.getResources(path);
             if (res.isEmpty()) {
                 throw new RuntimeException("could not find metis binary!");
             }
