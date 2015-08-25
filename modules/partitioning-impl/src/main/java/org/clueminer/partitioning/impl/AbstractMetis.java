@@ -44,7 +44,7 @@ public abstract class AbstractMetis implements Partitioning {
     public abstract void runMetis(Graph graph, int k);
     protected static final String prefix = "/org/clueminer/partitioning/impl";
 
-    private Node[] createMapping(Graph graph) {
+    protected Node[] createMapping(Graph graph) {
         Node[] nodeMapping = new Node[graph.getNodeCount()];
         for (Node node : graph.getNodes()) {
             nodeMapping[graph.getIndex(node)] = node;

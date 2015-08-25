@@ -38,15 +38,15 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Partitioning.class)
 public class HMetis extends AbstractMetis implements Partitioning {
 
-    private static final String name = "hMETIS";
+    private static final String name = "hMETIS + FF";
 
-    private int ubFactor = 5;
-    private int nruns = 10;//default value used by smetis
-    private int rtype = 1;// 1-3
-    private int ctype = 1;// 1-5
-    private int vcycle = 1;// 0-3
-    private int reconst = 0;// 0-1
-    private int dbglvl = 0;
+    protected int ubFactor = 5;
+    protected int nruns = 10;//default value used by smetis
+    protected int rtype = 1;// 1-3
+    protected int ctype = 1;// 1-5
+    protected int vcycle = 1;// 0-3
+    protected int reconst = 0;// 0-1
+    protected int dbglvl = 0;
 
     @Override
     public String getName() {
