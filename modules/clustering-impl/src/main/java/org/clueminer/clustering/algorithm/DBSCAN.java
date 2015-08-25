@@ -159,6 +159,9 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             curr = res.get(clustIdx);
             curr.add(dataset.get(i));
         }
+        if (res.hasAt(k)) {
+            res.get(k).setName("noise");
+        }
 
         return res;
     }
