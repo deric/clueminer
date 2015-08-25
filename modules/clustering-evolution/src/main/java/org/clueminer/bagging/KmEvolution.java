@@ -90,9 +90,7 @@ public class KmEvolution extends MoEvolution {
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
         System.out.println("mutation: " + mutationProb);
         System.out.println("crossover: " + getCrossoverProbability());
-        moAlg = new NSGAIIBuilder(problem)
-                .setCrossoverOperator(crossover)
-                .setMutationOperator(mutation)
+        moAlg = new NSGAIIBuilder(problem, crossover, mutation)
                 .setSelectionOperator(selection)
                 .setMaxIterations(this.getGenerations())
                 .setPopulationSize(this.getPopulationSize())
@@ -103,10 +101,10 @@ public class KmEvolution extends MoEvolution {
         logger.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
         //try {
-            moAlg.run();
+        moAlg.run();
         /*  } catch (Exception e) {            logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
-            throw new RuntimeException("clustering failed", e);
-        }*/
+         throw new RuntimeException("clustering failed", e);
+         }*/
         moPop = ((NSGAII) moAlg).getResult();
         logger.log(Level.INFO, "result size: {0}", moPop.size());
         fireFinalResult(moPop);

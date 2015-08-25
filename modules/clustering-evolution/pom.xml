@@ -143,7 +143,7 @@
         <dependency>
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-problem</artifactId>
-            <version>5.0-Beta-26</version>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-algorithm</artifactId>
-            <version>5.0-Beta-26</version>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -163,7 +163,8 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
+            <version>1.10.19</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

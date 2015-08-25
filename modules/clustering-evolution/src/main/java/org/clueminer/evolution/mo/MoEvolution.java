@@ -130,9 +130,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         selection = new NaryTournamentSelection(numSolutions, new DominanceComparator());
         System.out.println("mutation: " + mutationProb);
         System.out.println("crossover: " + getCrossoverProbability());
-        moAlg = new NSGAIIBuilder(problem)
-                .setCrossoverOperator(crossover)
-                .setMutationOperator(mutation)
+        moAlg = new NSGAIIBuilder(problem, crossover, mutation)
                 .setSelectionOperator(selection)
                 .setMaxIterations(this.getGenerations())
                 .setPopulationSize(this.getPopulationSize())
