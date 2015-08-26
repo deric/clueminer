@@ -57,7 +57,7 @@ public abstract class PairMerger extends Merger {
 
         level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
-            singleMerge();
+            singleMerge(pq.poll());
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
@@ -71,8 +71,7 @@ public abstract class PairMerger extends Merger {
      *
      * @param clusterList
      */
-    private void singleMerge() {
-        Element curr = pq.poll();
+    private void singleMerge(Element curr) {
         while (blacklist.contains(curr.firstCluster) || blacklist.contains(curr.secondCluster)) {
             curr = pq.poll();
         }

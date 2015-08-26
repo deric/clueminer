@@ -29,7 +29,7 @@ import org.clueminer.clustering.api.MergeEvaluation;
  */
 public class NSGASort {
 
-    public static Pair<Cluster>[] sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
+    public static List<ArrayList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
 
         int n = clusters.length;
         List<ArrayList<Pair<Cluster>>> rankedSubpopulations;
@@ -112,16 +112,7 @@ public class NSGASort {
             }
         }
 
-        Pair<Cluster>[] result = new Pair[clusters.length];
-        int k = 0;
-        for (List<Integer> fr : front) {
-            for (Integer idx : fr) {
-                result[k] = clusters[idx];
-                //result[k].getParams().put("mo-order", k);
-                k++;
-            }
-        }
-        return result;
+        return rankedSubpopulations;
     }
 
 }

@@ -96,7 +96,7 @@ public class Partition {
             ACL = 0;
             return;
         }
-        for (Edge e : graph.getEdges().toCollection()) {
+        for (Edge e : graph.getEdges()) {
             sum += e.getWeight();
         }
         ACL = sum / edgeCount;

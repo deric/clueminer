@@ -16,6 +16,8 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.util.Objects;
+
 /**
  *
  * @author deric
@@ -30,4 +32,23 @@ public class Pair<T> {
         this.B = B;
     }
 
+    @Override
+    public int hashCode() {
+        return 13 * A.hashCode() + 17 * B.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pair<?> other = (Pair<?>) obj;
+        if (!Objects.equals(this.A, other.A)) {
+            return false;
+        }
+        return Objects.equals(this.B, other.B);
+    }
 }

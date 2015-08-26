@@ -1,7 +1,6 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
@@ -116,9 +115,7 @@ public abstract class Merger {
      */
     protected void computeExternalProperties() {
         inititateClusterMatrix();
-        Iterator<Edge> edges = graph.getEdges().iterator();
-        while (edges.hasNext()) {
-            Edge edge = edges.next();
+        for (Edge edge : graph.getEdges()) {
             int firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
             int secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
             if (firstClusterID != secondClusterID) {

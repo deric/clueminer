@@ -104,8 +104,7 @@ public class GraphPrinter {
 
     private String exportNodes(double scale, Graph graph) {
         String result = "";
-        ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
-        for (Node node : nodes) {
+        for (Node node : graph.getNodes()) {
             result += "    " + graph.getIndex(node) + "[fontsize=11 pos=\"" + node.getInstance().get(0) * scale + ","
                     + node.getInstance().get(1) * scale + "!\" width=0.1 height=0.1 shape=point]\n";
         }
@@ -114,8 +113,7 @@ public class GraphPrinter {
 
     private String exportEdges(Graph graph) {
         String result = "";
-        ArrayList<Edge> edges = (ArrayList<Edge>) graph.getEdges().toCollection();
-        for (Edge edge : edges) {
+        for (Edge edge : graph.getEdges()) {
             result += "    " + graph.getIndex(edge.getSource()) + " -- " + graph.getIndex(edge.getTarget()) + ";\n";
         }
         return result;
@@ -171,8 +169,7 @@ public class GraphPrinter {
 
     private String exportNodes(double scale, Graph graph, int nodeToCluster[], Color[] scheme) {
         String result = "";
-        ArrayList<Node> nodes = (ArrayList<Node>) graph.getNodes().toCollection();
-        for (Node node : nodes) {
+        for (Node node : graph.getNodes()) {
             result += "    " + graph.getIndex(node) + "[fontsize=11 pos=\"" + node.getInstance().get(0) * scale + ","
                     + node.getInstance().get(1) * scale + "!\" width=0.1 height=0.1 shape=point color=\"#"
                     + String.format("%02x%02x%02x", scheme[nodeToCluster[graph.getIndex(node)]].getRed(),
