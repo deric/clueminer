@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.Merger;
@@ -46,13 +45,6 @@ public class PairMergerMO extends Merger {
 
     int level;
 
-    /**
-     * Set of merged clusters which are ignored. They could also be deleted but
-     * deleting them from cluster array, external properties matrix and priority
-     * queue would be too expensive.
-     */
-    protected HashSet<Integer> blacklist = new HashSet<>();
-
     protected double height;
 
     public PairMergerMO(Graph g, Bisection bisection, double closenessPriority) {
@@ -65,6 +57,8 @@ public class PairMergerMO extends Merger {
         Pair<Cluster>[] pairs = buildQueue(dataset);
         List<MergeEvaluation> objectives = new LinkedList<>();
         List<ArrayList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives);
+
+        FrontQueue<Pair<Cluster>> queue = new FrontQueue<>(fronts);
         nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
