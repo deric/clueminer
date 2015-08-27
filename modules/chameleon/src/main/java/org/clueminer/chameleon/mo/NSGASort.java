@@ -28,10 +28,10 @@ import org.clueminer.clustering.api.MergeEvaluation;
  */
 public class NSGASort {
 
-    public static List<List<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
+    public static LinkedList<LinkedList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
 
         int n = clusters.length;
-        List<List<Pair<Cluster>>> rankedSubpopulations;
+        LinkedList<LinkedList<Pair<Cluster>>> rankedSubpopulations;
 
         // dominateMe[i] contains the number of solutions dominating i
         int[] dominateMe = new int[n];

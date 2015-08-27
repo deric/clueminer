@@ -18,6 +18,7 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +36,12 @@ public class FrontQueueTest {
 
     @Before
     public void setUp() {
-        LinkedList<ArrayList<Integer>> fronts = new LinkedList<>();
+        LinkedList<List<Integer>> fronts = new LinkedList<>();
         int n = 15;
-        ArrayList<Integer> curr = null;
+        LinkedList<Integer> curr = null;
         for (int i = 0; i < n; i++) {
             if (i % 4 == 0) {
-                curr = new ArrayList<>();
+                curr = new LinkedList<>();
                 fronts.add(curr);
             }
             curr.add(i);
@@ -56,18 +57,33 @@ public class FrontQueueTest {
     @Test
     public void testIsEmpty() {
         assertEquals(false, subject.isEmpty());
+        assertEquals(true, subject.hasNext());
         LinkedList<ArrayList<Integer>> fronts = new LinkedList<>();
         FrontQueue other = new FrontQueue(fronts);
         assertEquals(true, other.isEmpty());
+        assertEquals(false, other.hasNext());
+    }
+
+    @Test
+    public void testNext() {
+        int item;
+        int n = 15;
+        for (int i = 0; i < n; i++) {
+            assertEquals(true, subject.hasNext());
+            item = (int) subject.next();
+            assertEquals(i, item);
+        }
     }
 
     @Test
     public void testPoll() {
         int item;
-        for (int i = 0; i < 15; i++) {
+        int n = 15;
+        for (int i = 0; i < n; i++) {
+            assertEquals(n - i, subject.size());
             item = (int) subject.poll();
-            assertEquals(i, item);
         }
+        assertEquals(0, subject.size());
     }
 
 }

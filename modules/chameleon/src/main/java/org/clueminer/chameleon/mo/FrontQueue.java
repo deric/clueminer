@@ -16,6 +16,8 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,30 +25,60 @@ import java.util.List;
  *
  * @author deric
  */
-public class FrontQueue<Q> {
+public class FrontQueue<Q> implements Iterator<Q> {
 
-    private final List<List<Q>> fronts;
+    private final LinkedList<LinkedList<Q>> fronts;
 
     private int currFront = 0;
 
     private int currItem = 0;
 
-    public FrontQueue(List<List<Q>> fronts) {
+    public FrontQueue(LinkedList<LinkedList<Q>> fronts) {
         this.fronts = fronts;
     }
 
+    /**
+     * Removes the first item from the first front, if any
+     *
+     * @return first item or null
+     */
     public Q poll() {
         Q item = null;
-        List<Q> front = fronts.get(currFront);
-        while (currFront < fronts.size() && front != null) {
-            if (currItem < front.size()) {
-                return front.get(currItem++);
+        if (fronts.isEmpty()) {
+            return item;
+        }
+        LinkedList<Q> front;
+        while (!fronts.isEmpty()) {
+            front = fronts.get(0);
+            if (!front.isEmpty()) {
+                item = front.removeFirst();
+            } else {
+                fronts.remove(0);
             }
-            front = fronts.get(++currFront);
-            currItem = 0;
+
+            if (item != null) {
+                return item;
+            }
         }
 
         return item;
+    }
+
+    @Override
+    public boolean hasNext() {
+        if (fronts.isEmpty()) {
+            return false;
+        }
+        int curr = 0;
+
+        List<Q> front = fronts.get(curr);
+        while (curr < fronts.size() && front != null) {
+            if (front.size() > 0) {
+                return true;
+            }
+            front = fronts.get(curr++);
+        }
+        return false;
     }
 
     public boolean isEmpty() {
@@ -79,6 +111,21 @@ public class FrontQueue<Q> {
             size += front.size();
         }
         return size;
+    }
+
+    @Override
+    public Q next() {
+        Q item = null;
+        List<Q> front = fronts.get(currFront);
+        while (currFront < fronts.size() && front != null) {
+            if (currItem < front.size()) {
+                return front.get(currItem++);
+            }
+            front = fronts.get(++currFront);
+            currItem = 0;
+        }
+
+        return item;
     }
 
 }
