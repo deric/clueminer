@@ -182,20 +182,6 @@ public abstract class Merger {
         return clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
     }
 
-    protected double min(double a, double b) {
-        if (a < b) {
-            return a;
-        }
-        return b;
-    }
-
-    protected double max(double a, double b) {
-        if (a > b) {
-            return a;
-        }
-        return b;
-    }
-
     /**
      * Creates tree leaves and fills them with nodes.
      *

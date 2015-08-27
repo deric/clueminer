@@ -55,10 +55,10 @@ public class ImprovedSimilarity extends PairMerger {
             return clusterMatrix.get(i).get(j).ECL * 40;
         }
 
-        double val = (clusterMatrix.get(i).get(j).counter / (min(ec1, ec2)))
+        double val = (clusterMatrix.get(i).get(j).counter / (Math.min(ec1, ec2)))
                 * Math.pow((clusterMatrix.get(i).get(j).ECL / ((clusters.get(i).getACL() * ec1) / (ec1 + ec2)
                         + (clusters.get(j).getACL() * ec2) / (ec1 + ec2))), closenessPriority)
-                * Math.pow((min(clusters.get(i).getACL(), clusters.get(j).getACL()) / max(clusters.get(i).getACL(), clusters.get(j).getACL())), 1);
+                * Math.pow((Math.min(clusters.get(i).getACL(), clusters.get(j).getACL()) / Math.max(clusters.get(i).getACL(), clusters.get(j).getACL())), 1);
 
         return val;
     }
