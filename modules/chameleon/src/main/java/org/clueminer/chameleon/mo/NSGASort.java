@@ -16,7 +16,6 @@
  */
 package org.clueminer.chameleon.mo;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,10 +28,10 @@ import org.clueminer.clustering.api.MergeEvaluation;
  */
 public class NSGASort {
 
-    public static List<ArrayList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
+    public static List<List<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
 
         int n = clusters.length;
-        List<ArrayList<Pair<Cluster>>> rankedSubpopulations;
+        List<List<Pair<Cluster>>> rankedSubpopulations;
 
         // dominateMe[i] contains the number of solutions dominating i
         int[] dominateMe = new int[n];
@@ -102,10 +101,10 @@ public class NSGASort {
             }
         }
 
-        rankedSubpopulations = new ArrayList<>();
+        rankedSubpopulations = new LinkedList<>();
         //0,1,2,....,i-1 are fronts, then i fronts
         for (int j = 0; j < i; j++) {
-            rankedSubpopulations.add(j, new ArrayList<Pair<Cluster>>(front[j].size()));
+            rankedSubpopulations.add(j, new LinkedList<Pair<Cluster>>());
             it1 = front[j].iterator();
             while (it1.hasNext()) {
                 rankedSubpopulations.get(j).add(clusters[it1.next()]);

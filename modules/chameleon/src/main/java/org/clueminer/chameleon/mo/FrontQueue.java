@@ -16,8 +16,6 @@
  */
 package org.clueminer.chameleon.mo;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,26 +25,19 @@ import java.util.List;
  */
 public class FrontQueue<Q> {
 
-    private final List<ArrayList<Q>> fronts;
+    private final List<List<Q>> fronts;
 
     private int currFront = 0;
 
     private int currItem = 0;
 
-    /**
-     * Set of merged clusters which are ignored. They could also be deleted but
-     * deleting them from cluster array, external properties matrix and priority
-     * queue would be too expensive.
-     */
-    protected HashSet<Integer> blacklist = new HashSet<>();
-
-    public FrontQueue(List<ArrayList<Q>> fronts) {
+    public FrontQueue(List<List<Q>> fronts) {
         this.fronts = fronts;
     }
 
     public Q poll() {
         Q item = null;
-        ArrayList<Q> front = fronts.get(currFront);
+        List<Q> front = fronts.get(currFront);
         while (currFront < fronts.size() && front != null) {
             if (currItem < front.size()) {
                 return front.get(currItem++);
@@ -64,7 +55,7 @@ public class FrontQueue<Q> {
         }
         int curr = 0;
 
-        ArrayList<Q> front = fronts.get(curr);
+        List<Q> front = fronts.get(curr);
         while (curr < fronts.size() && front != null) {
             if (front.size() > 0) {
                 return false;
@@ -82,7 +73,7 @@ public class FrontQueue<Q> {
     public int size() {
         int size = 0;
         int curr = 0;
-        ArrayList<Q> front = fronts.get(currFront);
+        List<Q> front = fronts.get(currFront);
         while (curr < fronts.size() && front != null) {
             front = fronts.get(curr++);
             size += front.size();
