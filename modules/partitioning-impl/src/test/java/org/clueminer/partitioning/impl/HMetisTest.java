@@ -44,25 +44,31 @@ public class HMetisTest extends PartitioningTest {
 
     @Test
     public void simpleGraphTest() {
-        Dataset<? extends Instance> dataset = twoDistinctNeighbors();
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        Graph g = new AdjMatrixGraph(dataset.size());
-        g = knn.getNeighborGraph(dataset, g, 4);
-        ArrayList<LinkedList<Node>> res = subject.partition(2, g);
-        assertEquals(4, res.size());
+        //skip test when binary is not found (e.g. on Travis)
+        if (subject.getBinary().exists()) {
+            Dataset<? extends Instance> dataset = twoDistinctNeighbors();
+            KNNGraphBuilder knn = new KNNGraphBuilder();
+            Graph g = new AdjMatrixGraph(dataset.size());
+            g = knn.getNeighborGraph(dataset, g, 4);
+            ArrayList<LinkedList<Node>> res = subject.partition(2, g);
+            assertEquals(4, res.size());
+        }
     }
 
     @Test
     public void irisTest() {
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        Dataset dataset = FakeDatasets.irisDataset();
-        Graph g = new AdjListGraph(dataset.size());
-        g = knn.getNeighborGraph(dataset, g, 20);
-        ArrayList<LinkedList<Node>> res = subject.partition(10, g);
-        assertNotNull(res);
-        //the result is randomized - we can't be sure to get exactly
-        //the same number of partitions as requested
-        assertEquals(true, res.size() >= 10);
+        //skip test when binary is not found (e.g. on Travis)
+        if (subject.getBinary().exists()) {
+            KNNGraphBuilder knn = new KNNGraphBuilder();
+            Dataset dataset = FakeDatasets.irisDataset();
+            Graph g = new AdjListGraph(dataset.size());
+            g = knn.getNeighborGraph(dataset, g, 20);
+            ArrayList<LinkedList<Node>> res = subject.partition(10, g);
+            assertNotNull(res);
+            //the result is randomized - we can't be sure to get exactly
+            //the same number of partitions as requested
+            assertEquals(true, res.size() >= 10);
+        }
     }
 
 }

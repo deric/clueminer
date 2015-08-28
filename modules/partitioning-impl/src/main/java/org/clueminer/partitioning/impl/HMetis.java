@@ -59,7 +59,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
         try (PrintWriter writer = new PrintWriter("inputGraph", "UTF-8")) {
             writer.print(metis);
             writer.close();
-            File metisFile = resource("hmetis");
+            File metisFile = getBinary();
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod ugo+x " + metisFile.getAbsolutePath());
             p.waitFor();
@@ -86,6 +86,10 @@ public class HMetis extends AbstractMetis implements Partitioning {
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
+    }
+
+    protected File getBinary() {
+        return resource("hmetis");
     }
 
     @Override
