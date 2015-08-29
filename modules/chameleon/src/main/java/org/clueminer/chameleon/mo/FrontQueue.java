@@ -128,4 +128,12 @@ public class FrontQueue<Q> implements Iterator<Q> {
         return item;
     }
 
+    /**
+     * Compatibility with java 7
+     */
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException("not supported.");
+    }
+
 }
