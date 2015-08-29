@@ -2,6 +2,7 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -13,8 +14,9 @@ import org.clueminer.partitioning.api.Bisection;
  *
  *
  * @author Tomas Bruna
+ * @param <E>
  */
-public class ThresholdMerger extends Merger {
+public class ThresholdMerger<E extends Instance> extends Merger<E> {
 
     private final double RICThreshold;
     private final double RCLThreshold;
@@ -26,8 +28,8 @@ public class ThresholdMerger extends Merger {
         this.RCLThreshold = RCLThreshold;
     }
 
-    public ArrayList<LinkedList<Node>> merge(ArrayList<LinkedList<Node>> clusterList) {
-        ArrayList<LinkedList<Node>> result = clusterList;
+    public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList) {
+        ArrayList<LinkedList<Node<E>>> result = clusterList;
         merged = true;
         while (merged) {
             merged = false;
@@ -36,7 +38,7 @@ public class ThresholdMerger extends Merger {
         return result;
     }
 
-    private ArrayList<LinkedList<Node>> singleMerge(ArrayList<LinkedList<Node>> clusterList) {
+    private ArrayList<LinkedList<Node<E>>> singleMerge(ArrayList<LinkedList<Node<E>>> clusterList) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         initiateClustersForMerging();
@@ -74,18 +76,18 @@ public class ThresholdMerger extends Merger {
         }
     }
 
-    protected void mergeTwoClusters(Partition cluster1, Partition cluster2) {
-        if (cluster1.getParent().getId() == cluster2.getParent().getId()) {
+    protected void mergeTwoClusters(GraphCluster<E> cluster1, GraphCluster<E> cluster2) {
+        if (cluster1.getParent().getClusterId() == cluster2.getParent().getClusterId()) {
             return;
         }
         if (cluster1.getParent().offsprings.size() < cluster2.getParent().offsprings.size()) {
-            Partition temp = cluster1;
+            GraphCluster temp = cluster1;
             cluster1 = cluster2;
             cluster2 = temp;
         }
         cluster1.getParent().offsprings.addAll(cluster2.getParent().offsprings);
-        Partition parent = cluster2.getParent();
-        for (Partition cluster : parent.offsprings) {
+        GraphCluster<E> parent = cluster2.getParent();
+        for (GraphCluster<E> cluster : parent.offsprings) {
             cluster.setParent(cluster1.getParent());
         }
         parent.offsprings = null;
@@ -96,13 +98,13 @@ public class ThresholdMerger extends Merger {
      *
      * @return lists of nodes in clusters
      */
-    public ArrayList<LinkedList<Node>> getNewClusters() {
-        ArrayList<LinkedList<Node>> result = new ArrayList<>();
+    public ArrayList<LinkedList<Node<E>>> getNewClusters() {
+        ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
         for (int i = 0; i < clusterCount; i++) {
             if (clusters.get(i).offsprings != null) {
-                LinkedList<Node> list = new LinkedList<>();
-                for (Partition cluster : clusters.get(i).offsprings) {
-                    for (Node node : cluster.getNodes()) {
+                LinkedList<Node<E>> list = new LinkedList<>();
+                for (GraphCluster<E> cluster : clusters.get(i).offsprings) {
+                    for (Node<E> node : cluster.getNodes()) {
                         list.add(node);
                     }
                 }

@@ -46,7 +46,7 @@ public class ClusterTest {
         LinkedList<Node> nodes = new LinkedList<>();
         nodes.addAll(g.getNodes().toCollection());
 
-        Partition c = new Partition(nodes, g, 1, new FiducciaMattheyses());
+        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses());
         // Assert internal interconnectivity
         assertEquals(c.getIIC(), 1 / (sqrt(2)) + 1 / (sqrt(10)) + 1 / (sqrt(5)) + 1 / (sqrt(8)) + 1 / (sqrt(5)), 0.0001);
         // Assert internal closeness
@@ -67,7 +67,7 @@ public class ClusterTest {
         LinkedList<Node> nodes = new LinkedList<>();
         nodes.addAll(g.getNodes().toCollection());
 
-        Partition c = new Partition(nodes, g, 1, new FiducciaMattheyses());
+        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses());
         assertEquals(0.4687162648354779, c.getACL(), 1e-9);
     }
 }

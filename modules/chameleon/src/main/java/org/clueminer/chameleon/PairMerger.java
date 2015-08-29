@@ -25,8 +25,9 @@ import org.clueminer.utils.Props;
  * all pairs are merged at each step.
  *
  * @author Tomas Bruna
+ * @param <E>
  */
-public abstract class PairMerger extends Merger {
+public abstract class PairMerger<E extends Instance> extends Merger<E> {
 
     protected DendroNode[] nodes;
 
@@ -47,7 +48,7 @@ public abstract class PairMerger extends Merger {
         super(g, bisection, closenessPriority);
     }
 
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         buildQueue();
@@ -139,8 +140,8 @@ public abstract class PairMerger extends Merger {
      * @param clusterIndex2
      */
     protected void addIntoTree(int clusterIndex1, int clusterIndex2) {
-        DendroNode left = nodes[clusters.get(clusterIndex1).getId()];
-        DendroNode right = nodes[clusters.get(clusterIndex2).getId()];
+        DendroNode left = nodes[clusters.get(clusterIndex1).getClusterId()];
+        DendroNode right = nodes[clusters.get(clusterIndex2).getClusterId()];
         DTreeNode newNode = new DTreeNode(clusterCount);
         newNode.setLeft(left);
         newNode.setRight(right);
@@ -200,8 +201,8 @@ public abstract class PairMerger extends Merger {
      *
      * @return
      */
-    private ArrayList<LinkedList<Node>> getResult() {
-        ArrayList<LinkedList<Node>> result = new ArrayList<>();
+    private ArrayList<LinkedList<Node<E>>> getResult() {
+        ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
         for (int i = 0; i < clusterCount; i++) {
             if (blacklist.contains(i)) {
                 continue;
@@ -214,9 +215,9 @@ public abstract class PairMerger extends Merger {
     private Clustering getClusterResult() {
         Clustering output = Clusterings.newList(clusters.size());
         int i = 0;
-        for (Partition g : clusters) {
-            Cluster cluster = output.createCluster(i++, g.getNodeCount());
-            for (Node node : g.getNodes()) {
+        for (GraphCluster<E> g : clusters) {
+            Cluster<E> cluster = output.createCluster(i++, g.getNodeCount());
+            for (Node<E> node : g.getNodes()) {
                 cluster.add(node.getInstance());
             }
             output.add(cluster);

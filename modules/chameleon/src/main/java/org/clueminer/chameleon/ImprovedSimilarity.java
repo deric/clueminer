@@ -1,6 +1,7 @@
 package org.clueminer.chameleon;
 
 import java.util.LinkedList;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -13,8 +14,9 @@ import org.clueminer.partitioning.api.Bisection;
  * external and internal properties of the clusters being merged.
  *
  * @author Tomas Bruna
+ * @param <E>
  */
-public class ImprovedSimilarity extends PairMerger {
+public class ImprovedSimilarity<E extends Instance> extends PairMerger<E> {
 
     public ImprovedSimilarity(Graph g, Bisection bisection, double closenessPriority) {
         super(g, bisection, closenessPriority);
@@ -22,8 +24,8 @@ public class ImprovedSimilarity extends PairMerger {
 
     @Override
     protected void createNewCluster(int clusterIndex1, int clusterIndex2) {
-        Partition cluster1 = clusters.get(clusterIndex1);
-        Partition cluster2 = clusters.get(clusterIndex2);
+        GraphCluster cluster1 = clusters.get(clusterIndex1);
+        GraphCluster cluster2 = clusters.get(clusterIndex2);
         LinkedList<Node> clusterNodes = cluster1.getNodes();
         clusterNodes.addAll(cluster2.getNodes());
         addIntoTree(clusterIndex1, clusterIndex2);
@@ -35,7 +37,7 @@ public class ImprovedSimilarity extends PairMerger {
                 + cluster2.getACL() * (cluster2.getEdgeCount() / edgeCountSum)
                 + clusterMatrix.get(index1).get(index2).ECL * (clusterMatrix.get(index1).get(index2).counter / edgeCountSum);
 
-        Partition newCluster = new Partition(clusterNodes, graph, clusterCount++, bisection);
+        GraphCluster newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         newCluster.setACL(newACL);
         newCluster.setEdgeCount((int) edgeCountSum);
         clusters.add(newCluster);

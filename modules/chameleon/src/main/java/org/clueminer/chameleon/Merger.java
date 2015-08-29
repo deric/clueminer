@@ -13,8 +13,9 @@ import org.clueminer.partitioning.api.Bisection;
 /**
  *
  * @author Tomas Bruna
+ * @param <E>
  */
-public abstract class Merger {
+public abstract class Merger<E extends Instance> {
 
     /**
      * Original, not partitioned graph.
@@ -42,7 +43,7 @@ public abstract class Merger {
     /**
      * Clusters to merge.
      */
-    protected ArrayList<Partition> clusters;
+    protected ArrayList<GraphCluster<E>> clusters;
 
     protected SimilarityMeasure similarityMeasure;
 
@@ -63,12 +64,12 @@ public abstract class Merger {
      * @param clusterList
      * @param bisection
      */
-    protected void createClusters(ArrayList<LinkedList<Node>> clusterList, Bisection bisection) {
+    protected void createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
         clusters = new ArrayList<>();
         int i = 0;
-        for (LinkedList<Node> cluster : clusterList) {
-            clusters.add(new Partition(cluster, graph, i, bisection));
+        for (LinkedList<Node<E>> cluster : clusterList) {
+            clusters.add(new GraphCluster(cluster, graph, i, bisection));
             i++;
         }
         assignNodesToClusters(clusterList);
@@ -94,10 +95,10 @@ public abstract class Merger {
      *
      * @param clusterList
      */
-    protected void assignNodesToClusters(ArrayList<LinkedList<Node>> clusterList) {
+    protected void assignNodesToClusters(ArrayList<LinkedList<Node<E>>> clusterList) {
         nodeToCluster = new int[graph.getNodeCount()];
         int i = 0;
-        for (LinkedList<Node> cluster : clusterList) {
+        for (LinkedList<Node<E>> cluster : clusterList) {
             for (Node node : cluster) {
                 nodeToCluster[graph.getIndex(node)] = i;
             }
@@ -188,7 +189,7 @@ public abstract class Merger {
      * @param clusterList Initial clusters
      * @return
      */
-    protected DendroNode[] initiateTree(ArrayList<LinkedList<Node>> clusterList) {
+    protected DendroNode[] initiateTree(ArrayList<LinkedList<Node<E>>> clusterList) {
         DendroNode[] nodes = new DendroNode[(2 * clusterList.size() - 1)];
         clusterCount = clusterList.size();
         for (int i = 0; i < clusterList.size(); i++) {
@@ -199,7 +200,7 @@ public abstract class Merger {
         return nodes;
     }
 
-    protected LinkedList<Instance> createInstanceList(LinkedList<Node> nodes) {
+    protected LinkedList<Instance> createInstanceList(LinkedList<Node<E>> nodes) {
         LinkedList<Instance> out = new LinkedList<>();
         for (Node node : nodes) {
             out.add(node.getInstance());

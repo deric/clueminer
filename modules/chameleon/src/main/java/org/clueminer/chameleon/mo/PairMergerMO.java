@@ -65,7 +65,7 @@ public class PairMergerMO extends Merger {
 
         level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
-            //singleMerge();
+            singleMerge(queue.poll());
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
@@ -100,6 +100,10 @@ public class PairMergerMO extends Merger {
             }
         }
         return allPairs;
+    }
+
+    private void singleMerge(Pair<Cluster> pair) {
+
     }
 
 }
