@@ -85,6 +85,17 @@ public class GraphPropertyStore {
     }
 
     /**
+     * Counter value - number of edges that contributed to EIC weights sum
+     *
+     * @param i
+     * @param j
+     * @return
+     */
+    public double getCnt(int i, int j) {
+        return store[map(i, j)][CNT];
+    }
+
+    /**
      * Update interconnectivity and closeness values
      *
      * @param i

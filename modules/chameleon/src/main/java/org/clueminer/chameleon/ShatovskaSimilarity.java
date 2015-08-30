@@ -24,17 +24,20 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Relative Interconnectivity + Relative Closeness similarity (dynamic modeling
- * framework from Chameleon). An underlying graph structure is required for
- * computing this metric.
+ *
+ * This class implements the improved standard similarity measure proposed in
+ * http://subs.emis.de/LNI/Proceedings/Proceedings107/gi-proc-107-015.pdf.
+ *
+ * Internal properties of the newly created are instantly determined from the
+ * external and internal properties of the clusters being merged.
  *
  * @author deric
  * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
+public class ShatovskaSimilarity<E extends Instance> implements MergeEvaluation<E> {
 
-    private static final String name = "RC+RI";
+    private static final String name = "Shatovska";
 
     @Override
     public String getName() {
@@ -46,46 +49,33 @@ public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
         if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
             throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
         }
-        GraphCluster<E> x = (GraphCluster<E>) a;
-        GraphCluster<E> y = (GraphCluster<E>) b;
-        double RIC = getRIC(x, y);
-        double RCL = getRCL(x, y);
-        double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
-        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
-        if (a.size() == 1 || b.size() == 1) {
-            return RIC * Math.pow(RCL, closenessPriority) * 40;
+        GraphCluster<E> x, y;
+        if (b.getClusterId() > a.getClusterId()) {
+            x = (GraphCluster<E>) b;
+            y = (GraphCluster<E>) a;
+        } else {
+            x = (GraphCluster<E>) a;
+            y = (GraphCluster<E>) b;
         }
 
-        return RIC * Math.pow(RCL, closenessPriority);
-    }
-
-    /**
-     * Compute relative interconnectivity
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    protected double getRIC(GraphCluster<E> x, GraphCluster<E> y) {
+        double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         GraphPropertyStore gps = getGraphPropertyStore(x);
-        double eic = gps.getEIC(x.getClusterId(), y.getClusterId());
-        return eic / ((x.getIIC() + y.getIIC()) / 2);
-    }
+        int i = x.getClusterId();
+        int j = y.getClusterId();
+        double ec1 = x.getEdgeCount();
+        double ec2 = y.getEdgeCount();
+        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
+        if (ec1 == 0 || ec2 == 0) {
+            return gps.getECL(i, j) * 40;
+        }
 
-    /**
-     * Compute relative closeness
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    protected double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
-        double nc1 = x.size();
-        double nc2 = y.size();
-        GraphPropertyStore gps = getGraphPropertyStore(x);
-        double ecl = gps.getECL(x.getClusterId(), y.getClusterId());
+        double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
+                * Math.pow((gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2)
+                        + (y.getACL() * ec2) / (ec1 + ec2))), closenessPriority)
+                * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), 1);
 
-        return ecl / ((nc1 / (nc1 + nc2)) * x.getICL() + (nc2 / (nc1 + nc2)) * y.getICL());
+        return val;
+
     }
 
     private GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {

@@ -38,13 +38,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class RiRcSimilarityTest {
+public class ShatovskaSimilarityTest {
 
-    private final RiRcSimilarity<Instance> subject;
+    private final ShatovskaSimilarity<Instance> subject;
     private static final double delta = 1e-9;
 
-    public RiRcSimilarityTest() {
-        subject = new RiRcSimilarity<>();
+    public ShatovskaSimilarityTest() {
+        subject = new ShatovskaSimilarity<>();
     }
 
     @Test
@@ -67,22 +67,22 @@ public class RiRcSimilarityTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        StandardSimilarity merger = new StandardSimilarity(g, bisection, closenessPriority);
+        ImprovedSimilarity merger = new ImprovedSimilarity(g, bisection, closenessPriority);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
 
         Props pref = new Props();
-
-        assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);
+        assertEquals(4.464646866748596E-13, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
-        assertEquals(0.20807824906992473, subject.score(clusters.get(3), clusters.get(4), pref), delta);
-        assertEquals(0.6636615718193234, subject.score(clusters.get(6), clusters.get(7), pref), delta);
-        assertEquals(0.12291073645819726, subject.score(clusters.get(7), clusters.get(8), pref), delta);
-        assertEquals(0.4382233175670228, subject.score(clusters.get(9), clusters.get(10), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(2), clusters.get(3), pref), delta);
+        assertEquals(0.7164750502687347, subject.score(clusters.get(3), clusters.get(4), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(4), clusters.get(5), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(5), clusters.get(6), pref), delta);
+        assertEquals(0.3857386356649811, subject.score(clusters.get(6), clusters.get(7), pref), delta);
+        assertEquals(5.237476138021256E-13, subject.score(clusters.get(7), clusters.get(8), pref), delta);
+        assertEquals(0.07295002241131861, subject.score(clusters.get(9), clusters.get(10), pref), delta);
+
         assertEquals(0.0, subject.score(clusters.get(8), clusters.get(9), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(10), clusters.get(11), pref), delta);
     }
