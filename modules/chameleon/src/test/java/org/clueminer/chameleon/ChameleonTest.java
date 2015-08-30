@@ -31,7 +31,7 @@ public class ChameleonTest {
         pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, SimilarityMeasure.STANDARD);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
@@ -46,7 +46,7 @@ public class ChameleonTest {
         pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, SimilarityMeasure.IMPROVED);
+        pref.put(Chameleon.SIM_MEASURE, ShatovskaSimilarity.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();

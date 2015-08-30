@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeEvaluation.class)
 public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements MergeEvaluation<E> {
 
-    private static final String name = "RC+RI";
+    public static final String name = "Standard";
 
     public RiRcSimilarity() {
     }

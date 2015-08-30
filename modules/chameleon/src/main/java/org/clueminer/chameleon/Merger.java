@@ -39,8 +39,6 @@ public abstract class Merger<E extends Instance> {
      */
     protected ArrayList<GraphCluster<E>> clusters;
 
-    protected SimilarityMeasure similarityMeasure;
-
     /**
      * Matrix containing external properties of every 2 clusters.
      */

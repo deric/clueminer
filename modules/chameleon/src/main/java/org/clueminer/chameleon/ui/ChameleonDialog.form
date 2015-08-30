@@ -33,41 +33,32 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lbK" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbMaxPartitionSize" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbMaxPartitionSize1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="comboSimilarity" min="-2" max="-2" attributes="0"/>
+                          <Component id="tfPriority" min="-2" pref="30" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="45" pref="45" max="-2" attributes="0"/>
-                              <Component id="rbtnStandard" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="39" pref="39" max="-2" attributes="0"/>
-                              <Component id="rbtnImproved" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lbK" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lbMaxPartitionSize" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lbMaxPartitionSize1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="sliderK" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="sliderMaxPSize" min="-2" pref="180" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                              <EmptySpace min="41" pref="41" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="tfPriority" min="-2" pref="30" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="sliderK" min="-2" pref="180" max="-2" attributes="0"/>
-                                          <Component id="sliderMaxPSize" min="-2" pref="180" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="41" pref="41" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="tfK" min="-2" pref="42" max="-2" attributes="0"/>
-                                          <Component id="tfMaxPSize" min="-2" pref="42" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="chkBoxAutoK" min="-2" max="-2" attributes="0"/>
-                                          <Component id="chkBoxAutoMaxPSize" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                                      <Component id="jSeparator1" min="-2" pref="50" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="tfK" min="-2" pref="42" max="-2" attributes="0"/>
+                                  <Component id="tfMaxPSize" min="-2" pref="42" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="chkBoxAutoK" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkBoxAutoMaxPSize" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                              <Component id="jSeparator1" min="-2" pref="50" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -163,16 +154,12 @@
                   <Component id="lbMaxPartitionSize1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="tfPriority" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="rbtnStandard" min="-2" max="-2" attributes="0"/>
-                  <Component id="rbtnImproved" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboSimilarity" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboPartitioning" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -381,27 +368,6 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="rbtnStandard">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/clueminer/chameleon/ui/Bundle.properties" key="ChameleonDialog.rbtnStandard.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JRadioButton" name="rbtnImproved">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="buttonGroup1"/>
-        </Property>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/clueminer/chameleon/ui/Bundle.properties" key="ChameleonDialog.rbtnImproved.text_1" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -505,6 +471,13 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboPartitioningActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboSimilarity">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new DefaultComboBoxModel(initSimilarity())" type="code"/>
+        </Property>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
