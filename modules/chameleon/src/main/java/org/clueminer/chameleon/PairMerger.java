@@ -79,9 +79,9 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
     private void singleMerge(PairValue<GraphCluster> curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
-        System.out.println("merging " + i + ", " + j + ", sim = " + curr.getValue());
-        System.out.println("blacklist: " + blacklist.toString());
-        while (blacklist.contains(i) || blacklist.contains(j)) {
+        System.out.println("merging [" + i + ", " + j + "], sim = " + curr.getValue());
+        System.out.println("blacklist: " + blacklist.toString() + ", pq size: " + pq.size());
+        while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
             curr = pq.poll();
             System.out.println("curr " + curr.A.getClusterId() + ", " + curr.B.getClusterId());
         }
@@ -92,7 +92,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
         }
         GraphCluster<E> clust = (GraphCluster<E>) createNewCluster(curr.A, curr.B, pref);
         System.out.println("created cluster " + clust.getClusterId());
-        updateExternalProperties(curr.A, curr.B);
+        updateExternalProperties(clust, curr.A, curr.B);
         addIntoQueue(clust, pref);
     }
 
@@ -105,13 +105,13 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
     private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         double sim;
         GraphCluster a;
-        for (int i = 0; i < clusterCount - 1; i++) {
-            if (blacklist.contains(i)) {
-                continue;
+        for (int i = 0; i < cluster.getClusterId(); i++) {
+            if (!blacklist.contains(i)) {
+                a = clusters.get(i);
+                sim = score(a, cluster, pref);
+                pq.add(new PairValue<>(a, cluster, sim));
+                System.out.println("creating [" + i + ", " + cluster.getClusterId() + "], sim = " + sim);
             }
-            a = clusters.get(i);
-            sim = score(a, cluster, pref);
-            pq.add(new PairValue<>(a, cluster, sim));
         }
     }
 
@@ -129,6 +129,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
                 b = clusters.get(j);
                 sim = score(a, b, pref);
                 pq.add(new PairValue<>(a, b, sim));
+                System.out.println("creating [" + i + ", " + j + "], sim = " + sim);
             }
         }
     }
@@ -167,7 +168,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * @param firstCluster
      * @param secondCluster
      */
-    private void updateExternalProperties(GraphCluster<E> firstCluster, GraphCluster<E> secondCluster) {
+    private void updateExternalProperties(GraphCluster<E> cluster, GraphCluster<E> firstCluster, GraphCluster<E> secondCluster) {
         for (int i = 0; i < clusterCount - 1; i++) {
             if (blacklist.contains(i)) {
                 continue;
@@ -176,16 +177,14 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
 
             GraphPropertyStore gps = getGraphPropertyStore(firstCluster);
             //Swap indices to make the first index bigger (externalProperties matrix is triangular)
-            index1 = Math.max(i, firstCluster.getClusterId());
-            index2 = Math.min(i, firstCluster.getClusterId());
+            index1 = firstCluster.getClusterId();
 
-            double eic1 = gps.getEIC(index1, index2);
-            double cnt1 = gps.getCnt(index1, index2);
+            double eic1 = gps.getEIC(index1, i);
+            double cnt1 = gps.getCnt(index1, i);
 
-            index1 = Math.max(i, secondCluster.getClusterId());
-            index2 = Math.min(i, secondCluster.getClusterId());
-            double eic2 = gps.getEIC(index1, index2);
-            double cnt2 = gps.getCnt(index1, index2);
+            index2 = secondCluster.getClusterId();
+            double eic2 = gps.getEIC(index2, i);
+            double cnt2 = gps.getCnt(index2, i);
 
             double eic, ecl = 0, cnt;
             eic = eic1 + eic2;
@@ -194,7 +193,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
             if (cnt > 0) {
                 ecl = eic / cnt;
             }
-            gps.set(clusterCount - 1, i, eic, ecl, cnt);
+            gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
         }
     }
 
