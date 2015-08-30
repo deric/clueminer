@@ -13,9 +13,13 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Implementation of graph storage using a matrix for adjacency edges.
  *
  * @author Tomas Bruna
  */
@@ -33,11 +37,18 @@ public class AdjMatrixGraph implements Graph {
     private final double EPS = 1e-6;
     private static final String name = "Adjacency matrix graph";
 
+    //Lookup
+    private final transient InstanceContent instanceContent;
+    private final transient AbstractLookup lookup;
+
     /**
      * ensureCapacity(n) must be called before using this class!
      */
     public AdjMatrixGraph() {
         this.dm = EuclideanDistance.getInstance();
+        //lookup
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
     }
 
     public AdjMatrixGraph(int size) {
@@ -47,6 +58,9 @@ public class AdjMatrixGraph implements Graph {
     public AdjMatrixGraph(int size, Distance dm) {
         this.dm = dm;
         ensureCapacity(size);
+        //lookup
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
     }
 
     @Override
@@ -248,6 +262,21 @@ public class AdjMatrixGraph implements Graph {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Lookup getLookup() {
+        return lookup;
+    }
+
+    @Override
+    public void lookupAdd(Object instance) {
+        instanceContent.add(instance);
+    }
+
+    @Override
+    public void lookupRemove(Object instance) {
+        instanceContent.remove(instance);
     }
 
     private class EdgeCollectionIterator implements EdgeIterable {
@@ -461,7 +490,7 @@ public class AdjMatrixGraph implements Graph {
      * Create edges in graph according to array of neighbors
      *
      * @param neighbors neighbor array
-     * @param k         number of neighbors for each node
+     * @param k number of neighbors for each node
      */
     @Override
     public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {

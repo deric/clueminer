@@ -1,6 +1,7 @@
 package org.clueminer.graph.api;
 
 import java.util.Collection;
+import org.openide.util.Lookup;
 
 /**
  * Graph interface.
@@ -124,7 +125,7 @@ public interface Graph {
      *
      * @param node1 the first node
      * @param node2 the second node
-     * @param type  the edge type
+     * @param type the edge type
      * @return the adjacent edge, or null if not found
      */
     Edge getEdge(Node node1, Node node2, int type);
@@ -254,9 +255,9 @@ public interface Graph {
      *
      * @param node1 the first node
      * @param node2 the second node
-     * @param type  the edge type
+     * @param type the edge type
      * @return true if node1 and node2 are adjacent with an edge og the given
-     *         type, false otherwise
+     * type, false otherwise
      */
     boolean isAdjacent(Node node1, Node node2, int type);
 
@@ -335,7 +336,7 @@ public interface Graph {
      * Create edges between neighbors according to neighbor array
      *
      * @param nearests array with nearest neighbors
-     * @param k        number of neighbors for each node
+     * @param k number of neighbors for each node
      * @return true if all nodes were added, false otherwise
      */
     boolean addEdgesFromNeigborArray(int[][] nearests, int k);
@@ -370,5 +371,28 @@ public interface Graph {
      * @return
      */
     public String hMetisExport(boolean weighted);
+
+    /**
+     * Lookup is used for retrieving objects associated with this graph
+     * that does not necessarily has to be of pre-defined type (defined in this
+     * API)
+     *
+     * @return lookup object
+     */
+    Lookup getLookup();
+
+    /**
+     * Add object to lookup
+     *
+     * @param instance
+     */
+    void lookupAdd(Object instance);
+
+    /**
+     * Removes object from lookup
+     *
+     * @param instance
+     */
+    void lookupRemove(Object instance);
 
 }

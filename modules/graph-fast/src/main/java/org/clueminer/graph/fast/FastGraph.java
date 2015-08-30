@@ -23,6 +23,9 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -31,6 +34,15 @@ import org.clueminer.graph.api.NodeIterable;
 public class FastGraph implements Graph {
 
     private static final String name = "Fast Graph";
+
+    //Lookup
+    private final transient InstanceContent instanceContent;
+    private final transient AbstractLookup lookup;
+
+    public FastGraph() {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+    }
 
     @Override
     public String getName() {
@@ -260,6 +272,21 @@ public class FastGraph implements Graph {
     @Override
     public String hMetisExport(boolean weighted) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Lookup getLookup() {
+        return lookup;
+    }
+
+    @Override
+    public void lookupAdd(Object instance) {
+        instanceContent.add(instance);
+    }
+
+    @Override
+    public void lookupRemove(Object instance) {
+        instanceContent.remove(instance);
     }
 
 }

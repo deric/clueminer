@@ -17,6 +17,9 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,6 +39,10 @@ public class AdjListGraph implements Graph {
     private final double EPS = 1e-6;
     private final Distance dm;
 
+    //Lookup
+    private final transient InstanceContent instanceContent;
+    private final transient AbstractLookup lookup;
+
     private final HashMap<Node, Set<Neighbor>> adjList;
 
     public AdjListGraph() {
@@ -44,6 +51,9 @@ public class AdjListGraph implements Graph {
         dm = EuclideanDistance.getInstance();
         idToIndex = new HashMap<>();
         adjList = new HashMap<>();
+        //lookup
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
     }
 
     public AdjListGraph(int size) {
@@ -463,6 +473,21 @@ public class AdjListGraph implements Graph {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public Lookup getLookup() {
+        return lookup;
+    }
+
+    @Override
+    public void lookupAdd(Object instance) {
+        instanceContent.add(instance);
+    }
+
+    @Override
+    public void lookupRemove(Object instance) {
+        instanceContent.remove(instance);
     }
 
     private class Neighbor implements Comparable<Neighbor> {
