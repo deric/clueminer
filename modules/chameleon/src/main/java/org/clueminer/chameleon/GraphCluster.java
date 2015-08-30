@@ -52,11 +52,6 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     private Bisection bisection;
 
-    /**
-     * Bisected halves of the cluster
-     */
-    Graph firstHalf, secondHalf;
-
     private GraphCluster<E> parent;
 
     public LinkedList<GraphCluster<E>> offsprings;
@@ -72,6 +67,8 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     private int id;
 
+    private Color color;
+
     public GraphCluster(LinkedList<Node<E>> n, Graph g, int index, Bisection bisection) {
         parentGraph = g;
         graphNodes = n;
@@ -83,9 +80,8 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     /**
      * Bisects the graph and computes IIC and ICL from the bisection
      *
-     * @param bisection Bisection algorithm
      */
-    private void computeBisectionProperties() {
+    protected void computeBisectionProperties() {
         Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
@@ -109,7 +105,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     /**
      * Computes average weight of all edges in the graph
      */
-    private void computeAverageCloseness() {
+    protected void computeAverageCloseness() {
         Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
 
         double sum = 0;
@@ -130,7 +126,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      * @param g Parent graph
      * @return Graph representing this cluster
      */
-    private Graph buildGraphFromCluster(LinkedList<Node<E>> n, Graph g) {
+    protected Graph buildGraphFromCluster(LinkedList<Node<E>> n, Graph g) {
         ArrayList<Node<E>> nodes = new ArrayList<>(n);
         Graph graph = null;
         try {
@@ -217,6 +213,10 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         return graphNodes.size();
     }
 
+    public Graph getGraph() {
+        return parentGraph;
+    }
+
     @Override
     public int getClusterId() {
         return id;
@@ -238,12 +238,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public Color getColor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return color;
     }
 
     @Override
     public void setColor(Color color) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.color = color;
     }
 
     @Override
@@ -323,12 +323,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return graphNodes.size();
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return size() == 0;
     }
 
     @Override

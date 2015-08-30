@@ -63,8 +63,9 @@ public abstract class Merger<E extends Instance> {
      *
      * @param clusterList
      * @param bisection
+     * @return list of clusters
      */
-    protected void createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
+    protected ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
         clusters = new ArrayList<>();
         int i = 0;
@@ -73,6 +74,7 @@ public abstract class Merger<E extends Instance> {
             i++;
         }
         assignNodesToClusters(clusterList);
+        return clusters;
     }
 
     /**
@@ -116,6 +118,7 @@ public abstract class Merger<E extends Instance> {
      */
     protected void computeExternalProperties() {
         inititateClusterMatrix();
+        GraphPropertyStore gps = new GraphPropertyStore(clusterCount);
         for (Edge edge : graph.getEdges()) {
             int firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
             int secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
@@ -126,6 +129,7 @@ public abstract class Merger<E extends Instance> {
                     firstClusterID = secondClusterID;
                     secondClusterID = temp;
                 }
+                gps.updateWeight(firstClusterID, secondClusterID, edge.getWeight());
                 //Update the values
                 ExternalProperties properties = clusterMatrix.get(firstClusterID).get(secondClusterID);
                 properties.EIC += edge.getWeight();
@@ -133,6 +137,7 @@ public abstract class Merger<E extends Instance> {
                 properties.ECL = properties.EIC / properties.counter;
             }
         }
+        graph.lookupAdd(gps);
     }
 
     protected double getEIC(int firstClusterID, int secondClusterID) {

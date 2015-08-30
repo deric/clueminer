@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon.mo;
+package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -31,38 +30,62 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMOTest {
+public class RiRcSimilarityTest {
 
-    private PairMergerMO subject;
+    private final RiRcSimilarity<Instance> subject;
+    private static final double delta = 1e-9;
 
-    public PairMergerMOTest() {
+    public RiRcSimilarityTest() {
+        subject = new RiRcSimilarity<>();
+    }
+
+    @Before
+    public void setUp() {
     }
 
     @Test
-    public void testSchool() {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+    public void testGetName() {
+        assertNotNull(subject.getName());
+    }
+
+    @Test
+    public void testScore() {
+        Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         KNNGraphBuilder knn = new KNNGraphBuilder();
-        int k = 3;
+        int k = 5;
         int maxPartitionSize = 20;
         double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
-        Bisection bisection = new FiducciaMattheyses(20);
+        Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        subject = new PairMergerMO(g, bisection, closenessPriority);
+        StandardSimilarity merger = new StandardSimilarity(g, bisection, closenessPriority);
+        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+        merger.computeExternalProperties();
+        System.out.println("size: " + clusters.size());
+        GraphCluster<Instance> cluster = clusters.get(0);
+
+        int j;
         Props pref = new Props();
-        HierarchicalResult result = subject.getHierarchy(partitioningResult, dataset, pref);
-        //DendroTreeData tree = result.getTreeData();
+        double sc;
+        for (int i = 0; i < clusters.size() - 1; i++) {
+            j = i + 1;
+            sc = subject.score(clusters.get(i), clusters.get(j), pref);
+            assertEquals(merger.computeSimilarity(i, j), sc, delta);
+        }
     }
 
 }

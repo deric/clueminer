@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -28,7 +29,7 @@ import org.clueminer.clustering.api.MergeEvaluation;
  */
 public class NSGASort {
 
-    public static LinkedList<LinkedList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives) {
+    public static LinkedList<LinkedList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives, Props params) {
 
         int n = clusters.length;
         LinkedList<LinkedList<Pair<Cluster>>> rankedSubpopulations;
@@ -55,7 +56,7 @@ public class NSGASort {
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
-        DominanceComparator comparator = new DominanceComparator(objectives);
+        DominanceComparator comparator = new DominanceComparator(objectives, params);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {

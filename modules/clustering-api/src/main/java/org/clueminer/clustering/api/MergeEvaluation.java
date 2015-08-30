@@ -16,12 +16,16 @@
  */
 package org.clueminer.clustering.api;
 
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
+
 /**
  * Method for computing cost of merging two clusters
  *
  * @author deric
+ * @param <E>
  */
-public interface MergeEvaluation {
+public interface MergeEvaluation<E extends Instance> {
 
     /**
      * Method identification
@@ -36,9 +40,10 @@ public interface MergeEvaluation {
      *
      * @param a
      * @param b
+     * @param params optional parameters
      * @return
      */
-    double score(Cluster a, Cluster b);
+    double score(Cluster<E> a, Cluster<E> b, Props params);
 
     /**
      * Whether bigger values are better

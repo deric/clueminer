@@ -56,7 +56,7 @@ public class PairMergerMO extends Merger {
         computeExternalProperties();
         Pair<Cluster>[] pairs = buildQueue(dataset);
         List<MergeEvaluation> objectives = new LinkedList<>();
-        LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives);
+        LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives, pref);
 
         FrontQueue<Pair<Cluster>> queue = new FrontQueue<>(fronts);
         nodes = initiateTree(clusterList);

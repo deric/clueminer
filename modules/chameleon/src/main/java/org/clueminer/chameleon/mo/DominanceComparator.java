@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -29,9 +30,11 @@ public class DominanceComparator implements Comparator<Pair<Cluster>> {
 
     private final double epsilon = 1e-9;
     private final List<MergeEvaluation> objectives;
+    private final Props params;
 
-    public DominanceComparator(List<MergeEvaluation> objectives) {
+    public DominanceComparator(List<MergeEvaluation> objectives, Props params) {
         this.objectives = objectives;
+        this.params = params;
     }
 
     /**
@@ -50,8 +53,8 @@ public class DominanceComparator implements Comparator<Pair<Cluster>> {
         double value1, value2;
         double diff;
         for (MergeEvaluation objective : objectives) {
-            value1 = objective.score(p1.A, p1.B);
-            value2 = objective.score(p2.A, p2.B);
+            value1 = objective.score(p1.A, p1.B, params);
+            value2 = objective.score(p2.A, p2.B, params);
 
             diff = value1 - value2;
             if (Math.abs(diff) <= epsilon) {
