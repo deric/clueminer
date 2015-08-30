@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon.mo;
 
+import org.clueminer.chameleon.Pair;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

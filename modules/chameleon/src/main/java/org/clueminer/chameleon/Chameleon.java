@@ -9,7 +9,9 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
@@ -158,17 +160,12 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
 
         similarityMeasure = pref.get(SIM_MEASURE, SimilarityMeasure.IMPROVED);
+        MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);
+        //TODO this is ugly, we have to move it to different interface
+        m = (PairMerger) me;
+        m.setGraph(g);
+        m.setBisection(bisectionAlg);
 
-        switch (similarityMeasure) {
-            case SimilarityMeasure.IMPROVED:
-                m = new ImprovedSimilarity(g, bisectionAlg, closenessPriority);
-                break;
-            case SimilarityMeasure.STANDARD:
-                m = new StandardSimilarity(g, bisectionAlg, closenessPriority);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown similarity measure.");
-        }
         return m.getHierarchy(partitioningResult, dataset, pref);
     }
 

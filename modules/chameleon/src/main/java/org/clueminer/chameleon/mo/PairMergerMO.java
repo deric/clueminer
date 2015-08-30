@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon.mo;
 
+import org.clueminer.chameleon.Pair;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,8 +48,8 @@ public class PairMergerMO extends Merger {
 
     protected double height;
 
-    public PairMergerMO(Graph g, Bisection bisection, double closenessPriority) {
-        super(g, bisection, closenessPriority);
+    public PairMergerMO(Graph g, Bisection bisection) {
+        super(g, bisection);
     }
 
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {

@@ -35,12 +35,6 @@ public abstract class Merger<E extends Instance> {
     protected int clusterCount;
 
     /**
-     * If bigger than 1, algorithm gives a higher importance to the relative
-     * closeness, otherwise, if lesser than 1, to interconnectivity.
-     */
-    protected double closenessPriority;
-
-    /**
      * Clusters to merge.
      */
     protected ArrayList<GraphCluster<E>> clusters;
@@ -52,10 +46,13 @@ public abstract class Merger<E extends Instance> {
      */
     protected ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
 
-    public Merger(Graph g, Bisection bisection, double closenessPriority) {
+    public Merger(Graph g, Bisection bisection) {
         this.graph = g;
         this.bisection = bisection;
-        this.closenessPriority = closenessPriority;
+    }
+
+    public Merger() {
+
     }
 
     /**
@@ -211,5 +208,13 @@ public abstract class Merger<E extends Instance> {
             out.add(node.getInstance());
         }
         return out;
+    }
+
+    public void setGraph(Graph g) {
+        this.graph = g;
+    }
+
+    public void setBisection(Bisection b) {
+        this.bisection = b;
     }
 }

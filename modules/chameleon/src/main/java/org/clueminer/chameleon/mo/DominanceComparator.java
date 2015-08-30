@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon.mo;
 
+import org.clueminer.chameleon.Pair;
 import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;

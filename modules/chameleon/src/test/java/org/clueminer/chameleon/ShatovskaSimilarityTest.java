@@ -65,11 +65,12 @@ public class ShatovskaSimilarityTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        ImprovedSimilarity merger = new ImprovedSimilarity(g, bisection, closenessPriority);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
-        merger.computeExternalProperties();
+        subject.setGraph(g);
+        subject.setBisection(bisection);
+        ArrayList<GraphCluster<Instance>> clusters = subject.createClusters(partitioningResult, bisection);
+        subject.computeExternalProperties();
         assertEquals(12, clusters.size());
 
         Props pref = new Props();

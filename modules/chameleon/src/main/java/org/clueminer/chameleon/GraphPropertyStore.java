@@ -111,4 +111,19 @@ public class GraphPropertyStore {
         store[map(i, j)][ECL] = store[map(i, j)][EIC] / store[map(i, j)][CNT];
     }
 
+    /**
+     * Directly set all values
+     *
+     * @param i
+     * @param j
+     * @param eic
+     * @param ecl
+     * @param cnt
+     */
+    public void set(int i, int j, double eic, double ecl, double cnt) {
+        store[map(i, j)][EIC] = eic;
+        store[map(i, j)][ECL] = ecl;
+        store[map(i, j)][CNT] = cnt;
+    }
+
 }

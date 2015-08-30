@@ -50,7 +50,6 @@ public class PairMergerMOTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(20);
         g.ensureCapacity(dataset.size());
@@ -59,7 +58,7 @@ public class PairMergerMOTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        subject = new PairMergerMO(g, bisection, closenessPriority);
+        subject = new PairMergerMO(g, bisection);
         Props pref = new Props();
         HierarchicalResult result = subject.getHierarchy(partitioningResult, dataset, pref);
         //DendroTreeData tree = result.getTreeData();

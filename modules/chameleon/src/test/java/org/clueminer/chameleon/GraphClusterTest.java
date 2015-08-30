@@ -30,6 +30,7 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,18 +53,20 @@ public class GraphClusterTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 12;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        StandardSimilarity merger = new StandardSimilarity(g, bisection, closenessPriority);
+        RiRcSimilarity<Instance> merger = new RiRcSimilarity<>();
+        merger.setGraph(g);
+        merger.setBisection(bisection);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         cluster = clusters.get(0);
+        assertNotNull(cluster);
     }
 
     @Before

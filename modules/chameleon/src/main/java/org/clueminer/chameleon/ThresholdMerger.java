@@ -22,8 +22,8 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
     private final double RCLThreshold;
     private boolean merged;
 
-    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, double RICThreshold, double RCLThreshold) {
-        super(g, bisection, closenessPriority);
+    public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
+        super(g, bisection);
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
     }

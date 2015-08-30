@@ -16,10 +16,13 @@
  */
 package org.clueminer.chameleon;
 
+import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -32,9 +35,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
+public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements MergeEvaluation<E> {
 
     private static final String name = "RC+RI";
+
+    public RiRcSimilarity() {
+    }
+
+    public RiRcSimilarity(Graph g, Bisection bisection) {
+        super(g, bisection);
+    }
 
     @Override
     public String getName() {
@@ -43,9 +53,7 @@ public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
 
     @Override
     public double score(Cluster<E> a, Cluster<E> b, Props params) {
-        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
-            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
-        }
+        checkClusters(a, b);
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
         double RIC = getRIC(x, y);
@@ -88,18 +96,27 @@ public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
         return ecl / ((nc1 / (nc1 + nc2)) * x.getICL() + (nc2 / (nc1 + nc2)) * y.getICL());
     }
 
-    private GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {
-        Graph g = clust.getGraph();
-        GraphPropertyStore gps = g.getLookup().lookup(GraphPropertyStore.class);
-        if (gps == null) {
-            throw new RuntimeException("graph property store was not found");
-        }
-        return gps;
-    }
-
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public void createNewCluster(Cluster<E> a, Cluster<E> b, Props params) {
+        checkClusters(a, b);
+        GraphCluster cluster1 = (GraphCluster) a;
+        GraphCluster cluster2 = (GraphCluster) b;
+        LinkedList<Node> clusterNodes = cluster1.getNodes();
+        clusterNodes.addAll(cluster2.getNodes());
+        addIntoTree(cluster1, cluster2, params);
+        GraphCluster newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
+        clusters.add(newCluster);
+    }
+
+    private void checkClusters(Cluster<E> a, Cluster<E> b) {
+        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
+            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
+        }
     }
 
 }

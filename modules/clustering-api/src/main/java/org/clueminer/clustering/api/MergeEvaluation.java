@@ -46,6 +46,16 @@ public interface MergeEvaluation<E extends Instance> {
     double score(Cluster<E> a, Cluster<E> b, Props params);
 
     /**
+     * Method called by merger algorithm when cluster A and cluster B are merged
+     * to form a new cluster
+     *
+     * @param a
+     * @param b
+     * @param params
+     */
+    void createNewCluster(Cluster<E> a, Cluster<E> b, Props params);
+
+    /**
      * Whether bigger values are better
      *
      * @return

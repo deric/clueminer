@@ -58,21 +58,21 @@ public class RiRcSimilarityTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        StandardSimilarity merger = new StandardSimilarity(g, bisection, closenessPriority);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
-        merger.computeExternalProperties();
+        subject.setGraph(g);
+        ArrayList<GraphCluster<Instance>> clusters = subject.createClusters(partitioningResult, bisection);
+        subject.computeExternalProperties();
         assertEquals(12, clusters.size());
 
         Props pref = new Props();
+        pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
 
         assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
