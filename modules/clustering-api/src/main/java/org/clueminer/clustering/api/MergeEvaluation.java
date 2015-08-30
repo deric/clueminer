@@ -52,8 +52,9 @@ public interface MergeEvaluation<E extends Instance> {
      * @param a
      * @param b
      * @param params
+     * @return newly created cluster
      */
-    void createNewCluster(Cluster<E> a, Cluster<E> b, Props params);
+    Cluster<E> createNewCluster(Cluster<E> a, Cluster<E> b, Props params);
 
     /**
      * Whether bigger values are better

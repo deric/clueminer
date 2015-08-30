@@ -16,9 +16,17 @@
  */
 package org.clueminer.chameleon;
 
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
+import org.apache.commons.math3.util.FastMath;
+
 /**
- * Linear array storage of a triple - EIC, ECL and a counter. Instead of of n*n
- * matrix we use n*(n-1)/2 array.
+ * Linear array storage of a triple - EIC, ECL and a counter. It has basically
+ * size of n^2 because for storing leaves we need n*(n-1)/2 and for a complete
+ * binary tree we need 2*{leaves count} -1
  *
  * @author deric
  */
@@ -34,7 +42,12 @@ public class GraphPropertyStore {
     private final double[][] store;
 
     public GraphPropertyStore(int capacity) {
-        store = new double[triangleSize(capacity)][3];
+        double h = FastMath.log(2, capacity);
+        //total number of nodes for storing a binary tree
+        int n = (int) Math.ceil(FastMath.pow(2, h + 1) - 1);
+        //we need similarities for newly created nodes (merged clusters)
+        store = new double[triangleSize(n)][3];
+        System.out.println("allocated gs " + store.length);
     }
 
     /**
@@ -124,6 +137,63 @@ public class GraphPropertyStore {
         store[map(i, j)][EIC] = eic;
         store[map(i, j)][ECL] = ecl;
         store[map(i, j)][CNT] = cnt;
+    }
+
+    public void dump() {
+        printFancy(2, 2);
+    }
+
+    public void printFancy(int w, int d) {
+        DecimalFormat format = new DecimalFormat();
+        format.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        format.setMinimumIntegerDigits(1);
+        format.setMaximumFractionDigits(d);
+        format.setMinimumFractionDigits(d);
+        format.setGroupingUsed(false);
+        printFancy(new PrintWriter(System.out, true), format, w + 2);
+    }
+
+    public void printFancy(PrintWriter output, NumberFormat format, int width) {
+        int colCnt = 3;
+        String s;
+        int padding;
+        output.println();  // start on new line.
+        for (int i = 0; i < store.length; i++) {
+            //print row label
+            s = String.valueOf(i);
+            padding = Math.max(1, width - s.length() - 1);
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+            output.print(" |");
+            for (int j = 0; j < colCnt; j++) {
+                s = format.format(store[i][j]); // format the number
+                padding = Math.max(1, width - s.length()); // At _least_ 1 space
+                for (int k = 0; k < padding; k++) {
+                    output.print(' ');
+                }
+                output.print(s);
+            }
+            output.println();
+        }
+        //footer
+        for (int i = 0; i < width * (colCnt + 1); i++) {
+            output.print('-');
+        }
+        output.println();
+        for (int k = 0; k < width; k++) {
+            output.print(' ');
+        }
+        for (int i = 0; i < colCnt; i++) {
+            s = String.valueOf(i); // format the number
+            padding = Math.max(1, width - s.length()); // At _least_ 1 space
+            for (int k = 0; k < padding; k++) {
+                output.print(' ');
+            }
+            output.print(s);
+        }
+        output.println();
     }
 
 }

@@ -16,38 +16,36 @@
  */
 package org.clueminer.chameleon;
 
+import org.junit.Test;
+
 /**
- * A pair of objects with assigned value (score)
  *
  * @author deric
- * @param <T>
  */
-public class PairValue<T> extends Pair<T> implements Comparable<PairValue<T>> {
+public class GraphPropertyStoreTest {
 
-    private double value;
+    private static GraphPropertyStore subject;
 
-    public PairValue(T A, T B) {
-        super(A, B);
+    public GraphPropertyStoreTest() {
+
     }
 
-    public PairValue(T A, T B, double value) {
-        super(A, B);
-        this.value = value;
-    }
+    @Test
+    public void testStoreIsAddresable() {
+        //number of clusters
+        int n = 4;
+        subject = new GraphPropertyStore(n);
 
-    @Override
-    public int compareTo(PairValue<T> o) {
-        PairValue<T> e = (PairValue<T>) o;
-        if (value > e.value) {
-            return -1;
-        } else if (value < e.value) {
-            return 1;
+        int m = 7;
+        int k = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < i; j++) {
+                subject.updateWeight(i, j, k++);
+            }
         }
-        return 0;
-    }
 
-    public double getValue() {
-        return value;
+        subject.dump();
+
     }
 
 }

@@ -55,7 +55,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
         createClusters(clusterList, bisection);
         computeExternalProperties();
-        buildQueue(pref);
+        buildQueue(clusterList, pref);
         nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
@@ -76,20 +76,24 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      *
      * @param clusterList
      */
-    private void singleMerge(Pair<GraphCluster> curr, Props pref) {
+    private void singleMerge(PairValue<GraphCluster> curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
+        System.out.println("merging " + i + ", " + j + ", sim = " + curr.getValue());
+        System.out.println("blacklist: " + blacklist.toString());
         while (blacklist.contains(i) || blacklist.contains(j)) {
             curr = pq.poll();
+            System.out.println("curr " + curr.A.getClusterId() + ", " + curr.B.getClusterId());
         }
         blacklist.add(i);
         blacklist.add(j);
         if (curr.A.getClusterId() == curr.B.getClusterId()) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        createNewCluster(curr.A, curr.B, pref);
+        GraphCluster<E> clust = (GraphCluster<E>) createNewCluster(curr.A, curr.B, pref);
+        System.out.println("created cluster " + clust.getClusterId());
         updateExternalProperties(curr.A, curr.B);
-        addIntoQueue(pref);
+        addIntoQueue(clust, pref);
     }
 
     /**
@@ -98,17 +102,16 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * both cluster array and external properties matrix, therefore we use index
      * clusterCount -1.
      */
-    private void addIntoQueue(Props pref) {
+    private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         double sim;
-        GraphCluster a, b;
+        GraphCluster a;
         for (int i = 0; i < clusterCount - 1; i++) {
             if (blacklist.contains(i)) {
                 continue;
             }
             a = clusters.get(i);
-            b = clusters.get(clusterCount - 1);
-            sim = score(a, b, pref);
-            pq.add(new PairValue<>(a, b, sim));
+            sim = score(a, cluster, pref);
+            pq.add(new PairValue<>(a, cluster, sim));
         }
     }
 
@@ -116,14 +119,14 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * Computes similarities between all clusters and adds them into the
      * priority queue.
      */
-    private void buildQueue(Props pref) {
+    private void buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
         pq = new PriorityQueue<>();
         double sim;
         GraphCluster a, b;
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusterList.size(); i++) {
             for (int j = 0; j < i; j++) {
                 a = clusters.get(i);
-                b = clusters.get(clusterCount - 1);
+                b = clusters.get(j);
                 sim = score(a, b, pref);
                 pq.add(new PairValue<>(a, b, sim));
             }
@@ -213,8 +216,9 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * @param a
      * @param b
      * @param params
+     * @return
      */
-    public abstract void createNewCluster(Cluster<E> a, Cluster<E> b, Props params);
+    public abstract Cluster<E> createNewCluster(Cluster<E> a, Cluster<E> b, Props params);
 
     /**
      * Fetches graph from a GraphCluster instance

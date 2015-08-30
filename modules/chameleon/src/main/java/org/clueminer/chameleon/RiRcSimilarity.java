@@ -102,7 +102,7 @@ public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements
     }
 
     @Override
-    public void createNewCluster(Cluster<E> a, Cluster<E> b, Props params) {
+    public Cluster<E> createNewCluster(Cluster<E> a, Cluster<E> b, Props params) {
         checkClusters(a, b);
         GraphCluster cluster1 = (GraphCluster) a;
         GraphCluster cluster2 = (GraphCluster) b;
@@ -111,6 +111,7 @@ public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements
         addIntoTree(cluster1, cluster2, params);
         GraphCluster newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         clusters.add(newCluster);
+        return newCluster;
     }
 
     private void checkClusters(Cluster<E> a, Cluster<E> b) {
