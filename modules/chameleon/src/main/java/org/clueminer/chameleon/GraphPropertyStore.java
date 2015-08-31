@@ -20,13 +20,21 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map.Entry;
 import org.apache.commons.math3.util.FastMath;
 
 /**
  * Linear array storage of a triple - EIC, ECL and a counter. It has basically
- * size of n^2 because for storing leaves we need n*(n-1)/2 and for a complete
- * binary tree we need 2*{leaves count} -1
+ * size of n^2 because for storing leaves we need n*(n-1)/2.
+ *
+ * We need space for n*n similarity matrix + similarities of binary tree with
+ * height log2(n). Each inner node of the tree (new cluster) will compute a
+ * distance to unmerged clusters. While distances between leaves forms a dense
+ * matrix, distances between inner nodes are sparse.
+ *
+ * Should be safe to use up to dataset of size 98621
  *
  * @author deric
  */
@@ -38,16 +46,23 @@ public class GraphPropertyStore {
     public static final int EIC = 0;
     public static final int ECL = 1;
     public static final int CNT = 2;
+    //number of properties we store
+    private static final int dim = 3;
+    //dimension of the matrix
+    private final int n;
+    private double defaultValue = 0.0;
 
     private final double[][] store;
+    private final HashMap<Long, double[]> sparse;
 
     public GraphPropertyStore(int capacity) {
-        double h = FastMath.log(2, capacity);
-        //total number of nodes for storing a binary tree
-        int n = (int) Math.ceil(FastMath.pow(2, h + 1) - 1);
+        this.n = capacity;
+        int nodes = innerTreeNodes(capacity);
         //we need similarities for newly created nodes (merged clusters)
-        store = new double[triangleSize(n)][3];
-        System.out.println("allocated gs " + store.length);
+        int simMatrixSize = triangleSize(capacity);
+        store = new double[simMatrixSize][dim];
+        System.out.println("inner tree nodes " + nodes);
+        sparse = new HashMap<>(nodes);
     }
 
     /**
@@ -58,6 +73,13 @@ public class GraphPropertyStore {
      */
     private int triangleSize(int n) {
         return ((n - 1) * n) >>> 1;
+    }
+
+    protected final int innerTreeNodes(int leaves) {
+        //height of a binary tree with {capacity} nodes
+        double h = FastMath.log(2, leaves);
+        //total number of inner nodes of a binary tree
+        return (int) Math.floor(FastMath.pow(2, h) - 1);
     }
 
     /**
@@ -89,12 +111,83 @@ public class GraphPropertyStore {
         return triangleSize(i) + j;
     }
 
+    /**
+     * Simple hash function for 2 integers (i and j will be greater than n).
+     *
+     * TODO: the hash function is an overkill, the number of inner nodes is
+     * relatively small
+     *
+     * @param i
+     * @param j
+     * @return
+     */
+    public long sparseMap(int i, int j) {
+        if (i < j) {
+            /**
+             * swap variables, matrix is symmetrical, we work with lower
+             * triangular matrix
+             */
+            int tmp = i;
+            i = j;
+            j = tmp;
+        }
+        //we can safely substract n from coordinates
+        i -= n;
+        j -= n;
+        long hash = 7;
+        //we can safely substract n from coordinates
+        long bits = Integer.toUnsignedLong(i);
+        hash = 99989 * hash + (bits ^ (bits >>> 32));
+        bits = Integer.toUnsignedLong(j);
+        hash = 98621 * hash + (bits ^ (bits >>> 32));
+        return hash;
+    }
+
+    /**
+     * Set value either to dense matrix or to a sparse storage (for larger i, j)
+     *
+     * @param i
+     * @param j
+     * @param idx
+     * @param value
+     */
+    private void set(int i, int j, int idx, double value) {
+        if (i >= n || j >= n) {
+            //sparse storage
+            double[] d;
+            long mapped = sparseMap(i, j);
+            if (sparse.containsKey(mapped)) {
+                d = sparse.get(mapped);
+            } else {
+                d = new double[dim];
+                sparse.put(mapped, d);
+            }
+            d[idx] = value;
+        } else {
+            store[map(i, j)][idx] = value;
+        }
+    }
+
+    private double get(int i, int j, int idx) {
+        if (i >= n || j >= n) {
+            //sparse storage
+            long mapped = sparseMap(i, j);
+            if (sparse.containsKey(mapped)) {
+                return sparse.get(mapped)[idx];
+            } else {
+                return defaultValue;
+            }
+        } else {
+            return store[map(i, j)][idx];
+        }
+    }
+
     public double getEIC(int i, int j) {
-        return store[map(i, j)][EIC];
+        return get(i, j, EIC);
     }
 
     public double getECL(int i, int j) {
-        return store[map(i, j)][ECL];
+        return get(i, j, ECL);
     }
 
     /**
@@ -105,7 +198,7 @@ public class GraphPropertyStore {
      * @return
      */
     public double getCnt(int i, int j) {
-        return store[map(i, j)][CNT];
+        return get(i, j, CNT);
     }
 
     /**
@@ -119,9 +212,9 @@ public class GraphPropertyStore {
         if (i == j) {
             throw new IllegalArgumentException("diagonal items are not writable");
         }
-        store[map(i, j)][EIC] += edgeWeight;
-        store[map(i, j)][CNT]++;
-        store[map(i, j)][ECL] = store[map(i, j)][EIC] / store[map(i, j)][CNT];
+        set(i, j, EIC, get(i, j, EIC) + edgeWeight);
+        set(i, j, CNT, get(i, j, CNT) + 1);
+        set(i, j, ECL, get(i, j, EIC) / get(i, j, CNT));
     }
 
     /**
@@ -134,9 +227,9 @@ public class GraphPropertyStore {
      * @param cnt
      */
     public void set(int i, int j, double eic, double ecl, double cnt) {
-        store[map(i, j)][EIC] = eic;
-        store[map(i, j)][ECL] = ecl;
-        store[map(i, j)][CNT] = cnt;
+        set(i, j, EIC, eic);
+        set(i, j, ECL, ecl);
+        set(i, j, CNT, cnt);
     }
 
     public void dump() {
@@ -154,7 +247,6 @@ public class GraphPropertyStore {
     }
 
     public void printFancy(PrintWriter output, NumberFormat format, int width) {
-        int colCnt = 3;
         String s;
         int padding;
         output.println();  // start on new line.
@@ -167,7 +259,7 @@ public class GraphPropertyStore {
             }
             output.print(s);
             output.print(" |");
-            for (int j = 0; j < colCnt; j++) {
+            for (int j = 0; j < dim; j++) {
                 s = format.format(store[i][j]); // format the number
                 padding = Math.max(1, width - s.length()); // At _least_ 1 space
                 for (int k = 0; k < padding; k++) {
@@ -178,14 +270,14 @@ public class GraphPropertyStore {
             output.println();
         }
         //footer
-        for (int i = 0; i < width * (colCnt + 1); i++) {
+        for (int i = 0; i < width * (dim + 1); i++) {
             output.print('-');
         }
         output.println();
         for (int k = 0; k < width; k++) {
             output.print(' ');
         }
-        for (int i = 0; i < colCnt; i++) {
+        for (int i = 0; i < dim; i++) {
             s = String.valueOf(i); // format the number
             padding = Math.max(1, width - s.length()); // At _least_ 1 space
             for (int k = 0; k < padding; k++) {
@@ -194,6 +286,24 @@ public class GraphPropertyStore {
             output.print(s);
         }
         output.println();
+
+        output.println("== sparse (" + sparse.size() + "): ");
+        double[] d;
+        for (Entry<Long, double[]> entry : sparse.entrySet()) {
+            output.print(entry.getKey() + ": ");
+            d = entry.getValue();
+            output.print("EIC= " + d[EIC] + ", ");
+            output.print("ECL= " + d[ECL] + ", ");
+            output.println("CNT= " + d[CNT]);
+        }
+    }
+
+    public double getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(double defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
 }
