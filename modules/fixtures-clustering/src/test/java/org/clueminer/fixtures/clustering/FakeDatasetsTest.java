@@ -2,8 +2,8 @@ package org.clueminer.fixtures.clustering;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
@@ -44,6 +44,15 @@ public class FakeDatasetsTest {
         assertEquals(4, usArrests.attributeCount());
         assertEquals("Alabama", usArrests.get(0).classValue());
         assertEquals("Wyoming", usArrests.get(49).classValue());
+    }
+
+    @Test
+    public void testVehicle() {
+        Dataset<? extends Instance> vehicle = FakeDatasets.vehicleDataset();
+        assertEquals(846, vehicle.size());
+        assertEquals(18, vehicle.attributeCount());
+        assertEquals("van", vehicle.get(0).classValue());
+        assertEquals("saab", vehicle.get(49).classValue());
     }
 
 }

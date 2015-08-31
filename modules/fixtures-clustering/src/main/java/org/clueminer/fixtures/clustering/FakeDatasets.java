@@ -24,6 +24,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> usArrests;
     private static Dataset<? extends Instance> glassDataset;
     private static Dataset<? extends Instance> kumar;
+    private static Dataset<? extends Instance> vehicle;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -73,6 +74,23 @@ public class FakeDatasets {
             }
         }
         return irisData;
+    }
+
+    public static Dataset<? extends Instance> vehicleDataset() {
+        if (vehicle == null) {
+            CommonFixture tf = new CommonFixture();
+            vehicle = new ArrayDataset(846, 18);
+            vehicle.setName("vehicle");
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(tf.vehicleArff(), vehicle, 18);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return vehicle;
     }
 
     public static Dataset<? extends Instance> usArrestData() {
