@@ -6,10 +6,12 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.report.NanoBench;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -23,6 +25,41 @@ public class ChameleonTest {
     public void testGetName() {
         Chameleon ch = new Chameleon();
         assertEquals("Chameleon", ch.getName());
+    }
+
+    @Test
+    public void testGlass() {
+        final Props pref = new Props();
+        pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        final Chameleon ch = new Chameleon();
+        pref.putInt(Chameleon.K, 5);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
+        pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+
+        //measure clustering run
+        NanoBench.create().measurements(3).measure(
+                "chameleon - glass (std)",
+                new Runnable() {
+
+                    @Override
+                    public void run() {
+                        HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
+                        DendroTreeData tree = result.getTreeData();
+                        DendroNode root = tree.getRoot();
+                        assertEquals(933.5638730625637, root.getHeight(), delta);
+                    }
+
+                }
+        );
+        // Get the Java runtime
+        Runtime runtime = Runtime.getRuntime();
+        // Run the garbage collector
+        runtime.gc();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     //@Test
