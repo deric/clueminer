@@ -156,16 +156,12 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
 
-        PairMerger m;
         closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
 
         similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
         MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);
         //TODO this is ugly, we have to move it to different interface
-        m = (PairMerger) me;
-        m.setGraph(g);
-        m.setBisection(bisectionAlg);
-
+        PairMerger m = new PairMerger(g, bisectionAlg, me);
         return m.getHierarchy(partitioningResult, dataset, pref);
     }
 

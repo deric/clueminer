@@ -62,7 +62,7 @@ public class ChameleonTest {
         }
     }
 
-    //@Test
+    @Test
     public void testIrisStandard() {
         Props pref = new Props();
         pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
@@ -72,12 +72,11 @@ public class ChameleonTest {
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
-        tree.print();
         DendroNode root = tree.getRoot();
         assertEquals(662.3346235252453, root.getHeight(), delta);
     }
 
-    //@Test
+    @Test
     public void testIrisImproved() {
         Props pref = new Props();
         pref.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
@@ -87,7 +86,6 @@ public class ChameleonTest {
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
-        tree.print();
         DendroNode root = tree.getRoot();
         assertEquals(695.2089980350675, root.getHeight(), delta);
     }

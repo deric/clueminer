@@ -16,13 +16,9 @@
  */
 package org.clueminer.chameleon;
 
-import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.Node;
-import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -35,15 +31,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements MergeEvaluation<E> {
+public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
     public static final String name = "Standard";
 
     public RiRcSimilarity() {
-    }
-
-    public RiRcSimilarity(Graph g, Bisection bisection) {
-        super(g, bisection);
     }
 
     @Override
@@ -102,22 +94,8 @@ public class RiRcSimilarity<E extends Instance> extends PairMerger<E> implements
     }
 
     @Override
-    public Cluster<E> createNewCluster(Cluster<E> a, Cluster<E> b, Props params) {
-        checkClusters(a, b);
-        GraphCluster cluster1 = (GraphCluster) a;
-        GraphCluster cluster2 = (GraphCluster) b;
-        LinkedList<Node> clusterNodes = cluster1.getNodes();
-        clusterNodes.addAll(cluster2.getNodes());
-        addIntoTree(cluster1, cluster2, params);
-        GraphCluster newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
-        clusters.add(newCluster);
-        return newCluster;
-    }
-
-    private void checkClusters(Cluster<E> a, Cluster<E> b) {
-        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
-            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
-        }
+    public void clusterCreated(Cluster<E> a, Cluster<E> b, Cluster<E> newCluster) {
+        //nothing to do
     }
 
 }

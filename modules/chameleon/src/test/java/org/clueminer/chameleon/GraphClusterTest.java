@@ -61,9 +61,8 @@ public class GraphClusterTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        RiRcSimilarity<Instance> merger = new RiRcSimilarity<>();
-        merger.setGraph(g);
-        merger.setBisection(bisection);
+        RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
+        PairMerger merger = new PairMerger(g, bisection, eval);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         cluster = clusters.get(0);
         assertNotNull(cluster);

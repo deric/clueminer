@@ -16,11 +16,9 @@
  */
 package org.clueminer.chameleon;
 
-import java.util.LinkedList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -36,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class ShatovskaSimilarity<E extends Instance> extends PairMerger<E> implements MergeEvaluation<E> {
+public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
     public static final String name = "Shatovska";
 
@@ -76,13 +74,11 @@ public class ShatovskaSimilarity<E extends Instance> extends PairMerger<E> imple
     }
 
     @Override
-    public Cluster<E> createNewCluster(Cluster<E> a, Cluster<E> b, Props params) {
+    public void clusterCreated(Cluster<E> a, Cluster<E> b, Cluster<E> c) {
         checkClusters(a, b);
         GraphCluster cluster1 = (GraphCluster) a;
         GraphCluster cluster2 = (GraphCluster) b;
-        LinkedList<Node> clusterNodes = cluster1.getNodes();
-        clusterNodes.addAll(cluster2.getNodes());
-        addIntoTree(cluster1, cluster2, params);
+        GraphCluster newCluster = (GraphCluster) c;
         int i = Math.max(cluster1.getClusterId(), cluster2.getClusterId());
         int j = Math.min(cluster1.getClusterId(), cluster2.getClusterId());
         GraphPropertyStore gps = getGraphPropertyStore(cluster1);
@@ -92,17 +88,9 @@ public class ShatovskaSimilarity<E extends Instance> extends PairMerger<E> imple
                 + cluster2.getACL() * (cluster2.getEdgeCount() / edgeCountSum)
                 + gps.getECL(i, j) * (gps.getCnt(i, j) / edgeCountSum);
 
-        GraphCluster newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
+
         newCluster.setACL(newACL);
         newCluster.setEdgeCount((int) edgeCountSum);
-        clusters.add(newCluster);
-        return newCluster;
-    }
-
-    private void checkClusters(Cluster<E> a, Cluster<E> b) {
-        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
-            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
-        }
     }
 
 }
