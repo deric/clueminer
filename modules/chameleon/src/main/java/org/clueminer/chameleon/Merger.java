@@ -39,11 +39,7 @@ public abstract class Merger<E extends Instance> {
      */
     protected ArrayList<GraphCluster<E>> clusters;
 
-    /**
-     * Matrix containing external properties of every 2 clusters.
-     */
-    protected ArrayList<ArrayList<ExternalProperties>> clusterMatrix;
-
+    
     public Merger(Graph g, Bisection bisection) {
         this.graph = g;
         this.bisection = bisection;
@@ -73,20 +69,6 @@ public abstract class Merger<E extends Instance> {
     }
 
     /**
-     * Creates empty structure of external properties between every two
-     * clusters.
-     */
-    protected void inititateClusterMatrix() {
-        clusterMatrix = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
-            clusterMatrix.add(new ArrayList<ExternalProperties>());
-            for (int j = 0; j < i; j++) {
-                clusterMatrix.get(i).add(new ExternalProperties());
-            }
-        }
-    }
-
-    /**
      * Assigns clusters to nodes according to list of clusters in each node.
      * Having clusters assigned to nodes can be advantageous in some cases
      *
@@ -112,75 +94,16 @@ public abstract class Merger<E extends Instance> {
      *
      */
     protected void computeExternalProperties() {
-        inititateClusterMatrix();
         GraphPropertyStore gps = new GraphPropertyStore(clusterCount);
+        int firstClusterID, secondClusterID;
         for (Edge edge : graph.getEdges()) {
-            int firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
-            int secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
+            firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
+            secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
             if (firstClusterID != secondClusterID) {
-                //Swap values if the first is bigger. Matrix is symmetric so only a half has to be filled.
-                if (secondClusterID > firstClusterID) {
-                    int temp = firstClusterID;
-                    firstClusterID = secondClusterID;
-                    secondClusterID = temp;
-                }
                 gps.updateWeight(firstClusterID, secondClusterID, edge.getWeight());
-                //Update the values
-                ExternalProperties properties = clusterMatrix.get(firstClusterID).get(secondClusterID);
-                properties.EIC += edge.getWeight();
-                properties.counter++;
-                properties.ECL = properties.EIC / properties.counter;
             }
         }
         graph.lookupAdd(gps);
-    }
-
-    protected double getEIC(int firstClusterID, int secondClusterID) {
-        if (secondClusterID > firstClusterID) {
-            int temp = firstClusterID;
-            firstClusterID = secondClusterID;
-            secondClusterID = temp;
-        }
-        return clusterMatrix.get(firstClusterID).get(secondClusterID).EIC;
-    }
-
-    protected double getECL(int firstClusterID, int secondClusterID) {
-        if (secondClusterID > firstClusterID) {
-            int temp = firstClusterID;
-            firstClusterID = secondClusterID;
-            secondClusterID = temp;
-        }
-        return clusterMatrix.get(firstClusterID).get(secondClusterID).ECL;
-    }
-
-    protected class ExternalProperties {
-
-        public double EIC, ECL;
-        public int counter;
-
-        public ExternalProperties() {
-            EIC = ECL = counter = 0;
-        }
-    }
-
-    protected double getRIC(int i, int j) {
-        if (j > i) {
-            int temp = i;
-            i = j;
-            j = temp;
-        }
-        return clusterMatrix.get(i).get(j).EIC / ((clusters.get(i).getIIC() + clusters.get(j).getIIC()) / 2);
-    }
-
-    protected double getRCL(int i, int j) {
-        if (j > i) {
-            int temp = i;
-            i = j;
-            j = temp;
-        }
-        double nc1 = clusters.get(i).getNodeCount();
-        double nc2 = clusters.get(j).getNodeCount();
-        return clusterMatrix.get(i).get(j).ECL / ((nc1 / (nc1 + nc2)) * clusters.get(i).getICL() + (nc2 / (nc1 + nc2)) * clusters.get(j).getICL());
     }
 
     /**

@@ -50,8 +50,8 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
                 if (i == j) {
                     continue;
                 }
-                double RIC = getRIC(i, j);
-                double RCL = getRCL(i, j);
+                double RIC = 0.0; //getRIC(i, j);
+                double RCL = 0.0; //getRCL(i, j);
                 if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
                     maxRIC = RIC;
                     index = j;
