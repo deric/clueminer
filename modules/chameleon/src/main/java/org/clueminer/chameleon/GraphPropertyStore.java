@@ -16,13 +16,13 @@
  */
 package org.clueminer.chameleon;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map.Entry;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -45,16 +45,15 @@ public class GraphPropertyStore {
     private double defaultValue = 0.0;
 
     private final ExtProp[] store;
-    private final HashMap<Long, ExtProp> sparse;
+    private final Table<Integer, Integer, ExtProp> sparse;
 
     public GraphPropertyStore(int capacity) {
         this.n = capacity;
-        int nodes = innerTreeNodes(capacity);
+        //int nodes = innerTreeNodes(capacity);
         //we need similarities for newly created nodes (merged clusters)
         int simMatrixSize = triangleSize(capacity);
         store = new ExtProp[simMatrixSize];
-        System.out.println("inner tree nodes " + nodes);
-        sparse = new HashMap<>(nodes);
+        sparse = HashBasedTable.create();
     }
 
     /**
@@ -104,38 +103,6 @@ public class GraphPropertyStore {
     }
 
     /**
-     * Simple hash function for 2 integers (i and j will be greater than n).
-     *
-     * TODO: the hash function is an overkill, the number of inner nodes is
-     * relatively small
-     *
-     * @param i
-     * @param j
-     * @return
-     */
-    public long sparseMap(int i, int j) {
-        if (i < j) {
-            /**
-             * swap variables, matrix is symmetrical, we work with lower
-             * triangular matrix
-             */
-            int tmp = i;
-            i = j;
-            j = tmp;
-        }
-        //we can safely substract n from coordinates
-        i -= n;
-        j -= n;
-        long hash = 7;
-        //we can safely substract n from coordinates
-        long bits = Integer.toUnsignedLong(i);
-        hash = 99989 * hash + (bits ^ (bits >>> 32));
-        bits = Integer.toUnsignedLong(j);
-        hash = 98621 * hash + (bits ^ (bits >>> 32));
-        return hash;
-    }
-
-    /**
      * Set value either to dense matrix or to a sparse storage (for larger i, j)
      *
      * @param i
@@ -145,41 +112,57 @@ public class GraphPropertyStore {
      */
     private void set(int i, int j, ExtProp value) {
         if (i >= n || j >= n) {
-            //sparse storage
-            long mapped = sparseMap(i, j);
-            sparse.put(mapped, value);
+            if (i < j) {
+                /**
+                 * swap variables, matrix is symmetrical, we work with lower
+                 * triangular matrix
+                 */
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
+            sparse.put(i, j, value);
         } else {
             store[map(i, j)] = value;
         }
     }
 
-    private ExtProp get(int i, int j) {
+    public ExtProp get(int i, int j) {
         if (i >= n || j >= n) {
+            if (i < j) {
+                /**
+                 * swap variables, matrix is symmetrical, we work with lower
+                 * triangular matrix
+                 */
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
             //sparse storage
-            long mapped = sparseMap(i, j);
-            if (sparse.containsKey(mapped)) {
-                return sparse.get(mapped);
+            if (sparse.contains(i, j)) {
+                return sparse.get(i, j);
             } else {
-                return null;
+                ExtProp p = new ExtProp();
+                set(i, j, p);
+                return p;
             }
         } else {
-            return store[map(i, j)];
+            ExtProp p = store[map(i, j)];
+            if (p == null) {
+                p = new ExtProp();
+                store[map(i, j)] = p;
+            }
+            return p;
         }
     }
 
     public double getEIC(int i, int j) {
         ExtProp r = get(i, j);
-        if (r == null) {
-            return defaultValue;
-        }
         return r.EIC;
     }
 
     public double getECL(int i, int j) {
         ExtProp r = get(i, j);
-        if (r == null) {
-            return defaultValue;
-        }
         return r.ECL;
     }
 
@@ -192,9 +175,6 @@ public class GraphPropertyStore {
      */
     public double getCnt(int i, int j) {
         ExtProp r = get(i, j);
-        if (r == null) {
-            return defaultValue;
-        }
         return r.counter;
     }
 
@@ -210,9 +190,6 @@ public class GraphPropertyStore {
             throw new IllegalArgumentException("diagonal items are not writable");
         }
         ExtProp p = get(i, j);
-        if (p == null) {
-            p = new ExtProp();
-        }
         p.EIC += edgeWeight;
         p.counter += 1;
         p.ECL = p.EIC / p.counter;
@@ -230,9 +207,6 @@ public class GraphPropertyStore {
      */
     public void set(int i, int j, double eic, double ecl, double cnt) {
         ExtProp p = get(i, j);
-        if (p == null) {
-            p = new ExtProp();
-        }
         p.EIC = eic;
         p.ECL = ecl;
         p.counter = (int) cnt;
@@ -269,7 +243,7 @@ public class GraphPropertyStore {
             output.print(" |");
             d = store[i];
             output.print(d.EIC + ", ");
-            output.print( d.ECL + ", ");
+            output.print(d.ECL + ", ");
             output.println(d.counter);
         }
         //footer
@@ -293,8 +267,8 @@ public class GraphPropertyStore {
 
         output.println("== sparse (" + sparse.size() + "): ");
 
-        for (Entry<Long, ExtProp> entry : sparse.entrySet()) {
-            output.print(entry.getKey() + ": ");
+        for (Table.Cell<Integer, Integer, ExtProp> entry : sparse.cellSet()) {
+            output.print(entry.getRowKey() + ", " + entry.getColumnKey() + ": ");
             d = entry.getValue();
             output.print("EIC= " + d.EIC + ", ");
             output.print("ECL= " + d.ECL + ", ");

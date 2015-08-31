@@ -16,7 +16,6 @@
  */
 package org.clueminer.chameleon;
 
-import java.util.HashSet;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -49,27 +48,6 @@ public class GraphPropertyStoreTest {
             }
         }
         subject.dump();
-    }
-
-    @Test
-    public void testCollision() {
-        HashSet<Long> hash = new HashSet<>();
-        int m = 1000;
-        long mapped;
-        boolean res;
-        subject = new GraphPropertyStore(5);
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < i; j++) {
-                mapped = subject.sparseMap(i, j);
-                //make sure hash is unique
-                res = hash.contains(mapped);
-                if (res) {
-                    System.out.println("collision at (" + i + "," + j + ") -> " + mapped);
-                }
-                hash.add(mapped);
-                assertEquals(false, res);
-            }
-        }
     }
 
     @Test
