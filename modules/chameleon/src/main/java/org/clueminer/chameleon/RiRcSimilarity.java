@@ -66,7 +66,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
      * @param y
      * @return
      */
-    protected double getRIC(GraphCluster<E> x, GraphCluster<E> y) {
+    public double getRIC(GraphCluster<E> x, GraphCluster<E> y) {
         GraphPropertyStore gps = getGraphPropertyStore(x);
         double eic = gps.getEIC(x.getClusterId(), y.getClusterId());
         return eic / ((x.getIIC() + y.getIIC()) / 2);
@@ -79,7 +79,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
      * @param y
      * @return
      */
-    protected double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
+    public double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
         double nc1 = x.size();
         double nc2 = y.size();
         GraphPropertyStore gps = getGraphPropertyStore(x);

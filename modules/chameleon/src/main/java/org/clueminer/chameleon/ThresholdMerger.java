@@ -21,11 +21,13 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
     private final double RICThreshold;
     private final double RCLThreshold;
     private boolean merged;
+    private final RiRcSimilarity eval;
 
     public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
         super(g, bisection);
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
+        eval = new RiRcSimilarity<>();
     }
 
     public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList) {
@@ -50,9 +52,9 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
                 if (i == j) {
                     continue;
                 }
-                //TODO: get RCL from another class
-                double RIC = 0.0; //getRIC(i, j);
-                double RCL = 0.0; //getRCL(i, j);
+
+                double RIC = eval.getRIC(clusters.get(i), clusters.get(j));
+                double RCL = eval.getRCL(clusters.get(i), clusters.get(j));
                 if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
                     maxRIC = RIC;
                     index = j;
