@@ -54,7 +54,7 @@ public class GraphPropertyStoreTest {
     @Test
     public void testCollision() {
         HashSet<Long> hash = new HashSet<>();
-        int m = 100;
+        int m = 1000;
         long mapped;
         boolean res;
         subject = new GraphPropertyStore(5);

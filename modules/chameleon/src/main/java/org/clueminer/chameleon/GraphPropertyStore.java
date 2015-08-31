@@ -40,27 +40,19 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class GraphPropertyStore {
 
-    /**
-     * indexes in the double array
-     */
-    public static final int EIC = 0;
-    public static final int ECL = 1;
-    public static final int CNT = 2;
-    //number of properties we store
-    private static final int dim = 3;
     //dimension of the matrix
     private final int n;
     private double defaultValue = 0.0;
 
-    private final double[][] store;
-    private final HashMap<Long, double[]> sparse;
+    private final ExtProp[] store;
+    private final HashMap<Long, ExtProp> sparse;
 
     public GraphPropertyStore(int capacity) {
         this.n = capacity;
         int nodes = innerTreeNodes(capacity);
         //we need similarities for newly created nodes (merged clusters)
         int simMatrixSize = triangleSize(capacity);
-        store = new double[simMatrixSize][dim];
+        store = new ExtProp[simMatrixSize];
         System.out.println("inner tree nodes " + nodes);
         sparse = new HashMap<>(nodes);
     }
@@ -151,43 +143,44 @@ public class GraphPropertyStore {
      * @param idx
      * @param value
      */
-    private void set(int i, int j, int idx, double value) {
+    private void set(int i, int j, ExtProp value) {
         if (i >= n || j >= n) {
             //sparse storage
-            double[] d;
             long mapped = sparseMap(i, j);
-            if (sparse.containsKey(mapped)) {
-                d = sparse.get(mapped);
-            } else {
-                d = new double[dim];
-                sparse.put(mapped, d);
-            }
-            d[idx] = value;
+            sparse.put(mapped, value);
         } else {
-            store[map(i, j)][idx] = value;
+            store[map(i, j)] = value;
         }
     }
 
-    private double get(int i, int j, int idx) {
+    private ExtProp get(int i, int j) {
         if (i >= n || j >= n) {
             //sparse storage
             long mapped = sparseMap(i, j);
             if (sparse.containsKey(mapped)) {
-                return sparse.get(mapped)[idx];
+                return sparse.get(mapped);
             } else {
-                return defaultValue;
+                return null;
             }
         } else {
-            return store[map(i, j)][idx];
+            return store[map(i, j)];
         }
     }
 
     public double getEIC(int i, int j) {
-        return get(i, j, EIC);
+        ExtProp r = get(i, j);
+        if (r == null) {
+            return defaultValue;
+        }
+        return r.EIC;
     }
 
     public double getECL(int i, int j) {
-        return get(i, j, ECL);
+        ExtProp r = get(i, j);
+        if (r == null) {
+            return defaultValue;
+        }
+        return r.ECL;
     }
 
     /**
@@ -198,7 +191,11 @@ public class GraphPropertyStore {
      * @return
      */
     public double getCnt(int i, int j) {
-        return get(i, j, CNT);
+        ExtProp r = get(i, j);
+        if (r == null) {
+            return defaultValue;
+        }
+        return r.counter;
     }
 
     /**
@@ -212,9 +209,14 @@ public class GraphPropertyStore {
         if (i == j) {
             throw new IllegalArgumentException("diagonal items are not writable");
         }
-        set(i, j, EIC, get(i, j, EIC) + edgeWeight);
-        set(i, j, CNT, get(i, j, CNT) + 1);
-        set(i, j, ECL, get(i, j, EIC) / get(i, j, CNT));
+        ExtProp p = get(i, j);
+        if (p == null) {
+            p = new ExtProp();
+        }
+        p.EIC += edgeWeight;
+        p.counter += 1;
+        p.ECL = p.EIC / p.counter;
+        set(i, j, p);
     }
 
     /**
@@ -227,9 +229,14 @@ public class GraphPropertyStore {
      * @param cnt
      */
     public void set(int i, int j, double eic, double ecl, double cnt) {
-        set(i, j, EIC, eic);
-        set(i, j, ECL, ecl);
-        set(i, j, CNT, cnt);
+        ExtProp p = get(i, j);
+        if (p == null) {
+            p = new ExtProp();
+        }
+        p.EIC = eic;
+        p.ECL = ecl;
+        p.counter = (int) cnt;
+        set(i, j, p);
     }
 
     public void dump() {
@@ -249,6 +256,7 @@ public class GraphPropertyStore {
     public void printFancy(PrintWriter output, NumberFormat format, int width) {
         String s;
         int padding;
+        ExtProp d;
         output.println();  // start on new line.
         for (int i = 0; i < store.length; i++) {
             //print row label
@@ -259,26 +267,22 @@ public class GraphPropertyStore {
             }
             output.print(s);
             output.print(" |");
-            for (int j = 0; j < dim; j++) {
-                s = format.format(store[i][j]); // format the number
-                padding = Math.max(1, width - s.length()); // At _least_ 1 space
-                for (int k = 0; k < padding; k++) {
-                    output.print(' ');
-                }
-                output.print(s);
-            }
-            output.println();
+            d = store[i];
+            output.print(d.EIC + ", ");
+            output.print( d.ECL + ", ");
+            output.println(d.counter);
         }
         //footer
-        for (int i = 0; i < width * (dim + 1); i++) {
+        for (int i = 0; i < width * (3 + 1); i++) {
             output.print('-');
         }
         output.println();
         for (int k = 0; k < width; k++) {
             output.print(' ');
         }
-        for (int i = 0; i < dim; i++) {
-            s = String.valueOf(i); // format the number
+        String[] values = new String[]{"EIC", "ECL", "CNT"};
+        for (String value : values) {
+            s = value;
             padding = Math.max(1, width - s.length()); // At _least_ 1 space
             for (int k = 0; k < padding; k++) {
                 output.print(' ');
@@ -288,13 +292,13 @@ public class GraphPropertyStore {
         output.println();
 
         output.println("== sparse (" + sparse.size() + "): ");
-        double[] d;
-        for (Entry<Long, double[]> entry : sparse.entrySet()) {
+
+        for (Entry<Long, ExtProp> entry : sparse.entrySet()) {
             output.print(entry.getKey() + ": ");
             d = entry.getValue();
-            output.print("EIC= " + d[EIC] + ", ");
-            output.print("ECL= " + d[ECL] + ", ");
-            output.println("CNT= " + d[CNT]);
+            output.print("EIC= " + d.EIC + ", ");
+            output.print("ECL= " + d.ECL + ", ");
+            output.println("CNT= " + d.counter);
         }
     }
 
@@ -304,6 +308,16 @@ public class GraphPropertyStore {
 
     public void setDefaultValue(double defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    protected class ExtProp {
+
+        public double EIC, ECL;
+        public int counter;
+
+        public ExtProp() {
+            EIC = ECL = counter = 0;
+        }
     }
 
 }
