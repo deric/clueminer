@@ -1,14 +1,18 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DClusterLeaf;
+import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -39,7 +43,27 @@ public abstract class Merger<E extends Instance> {
      */
     protected ArrayList<GraphCluster<E>> clusters;
 
-    
+    /**
+     * Set of merged clusters which are ignored. They could also be deleted but
+     * deleting them from cluster array, external properties matrix and priority
+     * queue would be too expensive.
+     */
+    protected HashSet<Integer> blacklist = new HashSet<>();
+
+    protected MergeEvaluation evaluation;
+
+    protected DendroNode[] nodes;
+
+    /**
+     * Tree height
+     */
+    protected double height;
+
+    /**
+     * Current tree level
+     */
+    protected int level;
+
     public Merger(Graph g, Bisection bisection) {
         this.graph = g;
         this.bisection = bisection;
@@ -138,4 +162,85 @@ public abstract class Merger<E extends Instance> {
     public void setBisection(Bisection b) {
         this.bisection = b;
     }
+
+    /**
+     * Fetches graph from a GraphCluster instance
+     *
+     * @param clust
+     * @return
+     */
+    public GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {
+        Graph g = clust.getGraph();
+        GraphPropertyStore gps = g.getLookup().lookup(GraphPropertyStore.class);
+        if (gps == null) {
+            throw new RuntimeException("graph property store was not found");
+        }
+        return gps;
+    }
+
+    /**
+     * Computes external properties of the merged cluster and adds them to the
+     * end of the external properties matrix.
+     *
+     * @param cluster new cluster
+     * @param c1 clusters that are being merged
+     * @param c2 clusters that are being merged
+     */
+    protected void updateExternalProperties(GraphCluster<E> cluster, GraphCluster<E> c1, GraphCluster<E> c2) {
+        double eic1, eic2, cnt1, cnt2, eic, ecl, cnt;
+        for (int i = 0; i < clusterCount - 1; i++) {
+            if (blacklist.contains(i)) {
+                continue;
+            }
+            GraphPropertyStore gps = getGraphPropertyStore(c1);
+
+            eic1 = gps.getEIC(c1.getClusterId(), i);
+            cnt1 = gps.getCnt(c1.getClusterId(), i);
+
+            eic2 = gps.getEIC(c2.getClusterId(), i);
+            cnt2 = gps.getCnt(c2.getClusterId(), i);
+
+            ecl = 0;
+            eic = eic1 + eic2;
+
+            cnt = cnt1 + cnt2;
+            if (cnt > 0) {
+                ecl = eic / cnt;
+            }
+            gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
+        }
+    }
+
+    /**
+     * Adds node representing new cluster (the one created by merging) to
+     * dendroTree
+     *
+     * @param a
+     * @param b
+     * @param pref
+     */
+    protected void addIntoTree(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
+        DendroNode left = nodes[a.getClusterId()];
+        DendroNode right = nodes[b.getClusterId()];
+        DTreeNode newNode = new DTreeNode(clusterCount);
+        newNode.setLeft(left);
+        newNode.setRight(right);
+        double sim = evaluation.score(a, b, pref);
+        if (sim > 10) {
+            sim = 10;
+        }
+        if (sim < 0.005) {
+            sim = 0.005;
+        }
+        height += 1 / sim;
+        newNode.setHeight(height);
+        newNode.setLevel(level++);
+        nodes[clusterCount] = newNode;
+    }
+
+    public void setMergeEvaluation(MergeEvaluation eval) {
+        this.evaluation = eval;
+    }
+
+
 }

@@ -16,16 +16,16 @@
  */
 package org.clueminer.chameleon.mo;
 
-import org.clueminer.chameleon.Pair;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.Merger;
+import org.clueminer.chameleon.Pair;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.Clusters;
 import org.clueminer.dataset.api.Dataset;
@@ -42,17 +42,12 @@ import org.clueminer.utils.Props;
  */
 public class PairMergerMO extends Merger {
 
-    protected DendroNode[] nodes;
-
-    int level;
-
-    protected double height;
-
     public PairMergerMO(Graph g, Bisection bisection) {
         super(g, bisection);
     }
 
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
+        blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
         computeExternalProperties();
         Pair<Cluster>[] pairs = buildQueue(dataset);

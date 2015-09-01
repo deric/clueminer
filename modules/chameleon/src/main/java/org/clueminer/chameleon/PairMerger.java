@@ -9,14 +9,12 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
@@ -30,22 +28,7 @@ import org.clueminer.utils.Props;
  */
 public class PairMerger<E extends Instance> extends Merger<E> {
 
-    protected DendroNode[] nodes;
-
     protected PriorityQueue<PairValue<GraphCluster>> pq;
-
-    protected MergeEvaluation evaluation;
-
-    int level;
-
-    /**
-     * Set of merged clusters which are ignored. They could also be deleted but
-     * deleting them from cluster array, external properties matrix and priority
-     * queue would be too expensive.
-     */
-    protected HashSet<Integer> blacklist = new HashSet<>();
-
-    protected double height;
 
     public PairMerger() {
 
@@ -141,80 +124,6 @@ public class PairMerger<E extends Instance> extends Merger<E> {
     }
 
     /**
-     * Adds node representing new cluster (the one created by merging) to
-     * dendroTree
-     *
-     * @param a
-     * @param b
-     * @param pref
-     */
-    protected void addIntoTree(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
-        DendroNode left = nodes[a.getClusterId()];
-        DendroNode right = nodes[b.getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusterCount);
-        newNode.setLeft(left);
-        newNode.setRight(right);
-        double sim = evaluation.score(a, b, pref);
-        if (sim > 10) {
-            sim = 10;
-        }
-        if (sim < 0.005) {
-            sim = 0.005;
-        }
-        height += 1 / sim;
-        newNode.setHeight(height);
-        newNode.setLevel(level++);
-        nodes[clusterCount] = newNode;
-    }
-
-    /**
-     * Computes external properties of the merged cluster and adds them to the
-     * end of the external properties matrix.
-     *
-     * @param c1
-     * @param c2
-     */
-    private void updateExternalProperties(GraphCluster<E> cluster, GraphCluster<E> c1, GraphCluster<E> c2) {
-        double eic1, eic2, cnt1, cnt2, eic, ecl, cnt;
-        for (int i = 0; i < clusterCount - 1; i++) {
-            if (blacklist.contains(i)) {
-                continue;
-            }
-            GraphPropertyStore gps = getGraphPropertyStore(c1);
-
-            eic1 = gps.getEIC(c1.getClusterId(), i);
-            cnt1 = gps.getCnt(c1.getClusterId(), i);
-
-            eic2 = gps.getEIC(c2.getClusterId(), i);
-            cnt2 = gps.getCnt(c2.getClusterId(), i);
-
-            ecl = 0;
-            eic = eic1 + eic2;
-
-            cnt = cnt1 + cnt2;
-            if (cnt > 0) {
-                ecl = eic / cnt;
-            }
-            gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
-        }
-    }
-
-    /**
-     * Fetches graph from a GraphCluster instance
-     *
-     * @param clust
-     * @return
-     */
-    public GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {
-        Graph g = clust.getGraph();
-        GraphPropertyStore gps = g.getLookup().lookup(GraphPropertyStore.class);
-        if (gps == null) {
-            throw new RuntimeException("graph property store was not found");
-        }
-        return gps;
-    }
-
-    /**
      * Returns lists of nodes in each cluster. Used only for graph printing, the
      * real result is stored in the tree.
      *
@@ -242,10 +151,6 @@ public class PairMerger<E extends Instance> extends Merger<E> {
             output.add(cluster);
         }
         return output;
-    }
-
-    public void setMergeEvaluation(MergeEvaluation eval) {
-        this.evaluation = eval;
     }
 
 }
