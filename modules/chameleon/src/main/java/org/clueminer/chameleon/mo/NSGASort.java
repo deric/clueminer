@@ -16,24 +16,25 @@
  */
 package org.clueminer.chameleon.mo;
 
-import org.clueminer.chameleon.Pair;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author deric
  */
-public class NSGASort {
+public class NSGASort<E extends Instance, C extends Cluster<E>> {
 
-    public static LinkedList<LinkedList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives, Props params) {
+    public LinkedList<LinkedList<Pair<C>>> sort(Pair<C>[] clusters, List<MergeEvaluation<E>> objectives, Props params) {
 
         int n = clusters.length;
-        LinkedList<LinkedList<Pair<Cluster>>> rankedSubpopulations;
+        LinkedList<LinkedList<Pair<C>>> rankedSubpopulations;
 
         // dominateMe[i] contains the number of solutions dominating i
         int[] dominateMe = new int[n];
@@ -106,7 +107,7 @@ public class NSGASort {
         rankedSubpopulations = new LinkedList<>();
         //0,1,2,....,i-1 are fronts, then i fronts
         for (int j = 0; j < i; j++) {
-            rankedSubpopulations.add(j, new LinkedList<Pair<Cluster>>());
+            rankedSubpopulations.add(j, new LinkedList<Pair<C>>());
             it1 = front[j].iterator();
             while (it1.hasNext()) {
                 rankedSubpopulations.get(j).add(clusters[it1.next()]);

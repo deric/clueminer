@@ -17,21 +17,21 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.AbstractMerger;
-import org.clueminer.chameleon.Pair;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.factory.Clusters;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,8 +42,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
-    private List<MergeEvaluation> objectives = new LinkedList<>();
+    private List<MergeEvaluation<E>> objectives = new LinkedList<>();
     private static final String name = "multi-objective merger";
+
+    private FrontQueue<Pair<GraphCluster>> queue;
 
     @Override
     public String getName() {
@@ -52,17 +54,19 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
 
     @Override
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
-        Pair<Cluster>[] pairs = buildQueue(dataset);
-        LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives, pref);
+        blacklist = new HashSet<>(clusterList.size() * clusterList.size() + clusterList.size());
+        Pair<GraphCluster<E>>[] pairs = buildQueue(clusterList, dataset);
+        NSGASort<E, GraphCluster<E>> sorter = new NSGASort<>();
+        LinkedList fronts = sorter.sort(pairs, objectives, pref);
 
-        FrontQueue<Pair<Cluster>> queue = new FrontQueue<>(fronts);
+        queue = new FrontQueue<>(fronts);
         nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         for (int i = 0; i < clusterList.size() - 1; i++) {
-            singleMerge(queue.poll());
+            singleMerge(queue.poll(), pref);
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
@@ -81,17 +85,15 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
         return ((n - 1) * n) >>> 1;
     }
 
-    private Pair<Cluster>[] buildQueue(Dataset<? extends Instance> dataset) {
-        Pair<Cluster>[] allPairs = new Pair[triangleSize(dataset.size())];
-        Cluster c1, c2;
+    private Pair<GraphCluster<E>>[] buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset) {
+        Pair<GraphCluster<E>>[] allPairs = new Pair[triangleSize(clusterList.size())];
+        GraphCluster<E> c1, c2;
         int n = 0;
         //generate all pairs
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusterList.size(); i++) {
+            c1 = new GraphCluster(clusterList.get(i), graph, clusterCount++, bisection);
             for (int j = 0; j < i; j++) {
-                c1 = Clusters.newInst();
-                c1.add(dataset.get(i));
-                c2 = Clusters.newInst();
-                c2.add(dataset.get(j));
+                c2 = new GraphCluster(clusterList.get(j), graph, clusterCount++, bisection);
                 Pair p = new Pair(c1, c2);
                 allPairs[n++] = p;
             }
@@ -99,15 +101,35 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
         return allPairs;
     }
 
-    private void singleMerge(Pair<Cluster> pair) {
+    private void singleMerge(Pair<GraphCluster> curr, Props pref) {
+        int i = curr.A.getClusterId();
+        int j = curr.B.getClusterId();
+        while (blacklist.contains(i) || blacklist.contains(j)) {
+            curr = queue.poll();
+            i = curr.A.getClusterId();
+            j = curr.B.getClusterId();
+        }
+        blacklist.add(i);
+        blacklist.add(j);
+        if (curr.A.getClusterId() == curr.B.getClusterId()) {
+            throw new RuntimeException("Cannot merge two same clusters");
+        }
+        LinkedList<Node> clusterNodes = curr.A.getNodes();
+        clusterNodes.addAll(curr.B.getNodes());
 
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
+        //evaluation.clusterCreated(curr, newCluster, pref);
+        //addIntoTree(curr, pref);
+        clusters.add(newCluster);
+        updateExternalProperties(newCluster, curr.A, curr.B);
+        //addIntoQueue(newCluster, pref);
     }
 
     public void addObjective(MergeEvaluation eval) {
         this.objectives.add(eval);
     }
 
-    public void setObjectives(List<MergeEvaluation> list) {
+    public void setObjectives(List<MergeEvaluation<E>> list) {
         this.objectives = list;
     }
 

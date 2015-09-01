@@ -16,18 +16,18 @@
  */
 package org.clueminer.chameleon.mo;
 
-import org.clueminer.chameleon.Pair;
 import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author deric
  */
-public class DominanceComparator implements Comparator<Pair<Cluster>> {
+public class DominanceComparator<T extends Cluster> implements Comparator<Pair<T>> {
 
     private final double epsilon = 1e-9;
     private final List<MergeEvaluation> objectives;
@@ -46,7 +46,7 @@ public class DominanceComparator implements Comparator<Pair<Cluster>> {
      * @return
      */
     @Override
-    public int compare(Pair<Cluster> p1, Pair<Cluster> p2) {
+    public int compare(Pair<T> p1, Pair<T> p2) {
         boolean solution1Dominates = false;
         boolean solution2Dominates = false;
 
