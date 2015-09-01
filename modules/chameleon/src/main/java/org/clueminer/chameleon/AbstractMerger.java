@@ -11,6 +11,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
 
 /**
@@ -18,7 +19,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Bruna
  * @param <E>
  */
-public abstract class Merger<E extends Instance> {
+public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
 
     /**
      * Original, not partitioned graph.
@@ -61,12 +62,12 @@ public abstract class Merger<E extends Instance> {
      */
     protected int level;
 
-    public Merger(Graph g, Bisection bisection) {
+    public AbstractMerger(Graph g, Bisection bisection) {
         this.graph = g;
         this.bisection = bisection;
     }
 
-    public Merger() {
+    public AbstractMerger() {
 
     }
 
@@ -134,14 +135,14 @@ public abstract class Merger<E extends Instance> {
      * @return
      */
     protected DendroNode[] initiateTree(ArrayList<LinkedList<Node<E>>> clusterList) {
-        DendroNode[] nodes = new DendroNode[(2 * clusterList.size() - 1)];
+        DendroNode[] treeNodes = new DendroNode[(2 * clusterList.size() - 1)];
         clusterCount = clusterList.size();
         for (int i = 0; i < clusterList.size(); i++) {
-            nodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
-            nodes[i].setHeight(0);
-            nodes[i].setLevel(0);
+            treeNodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
+            treeNodes[i].setHeight(0);
+            treeNodes[i].setLevel(0);
         }
-        return nodes;
+        return treeNodes;
     }
 
     protected LinkedList<Instance> createInstanceList(LinkedList<Node<E>> nodes) {

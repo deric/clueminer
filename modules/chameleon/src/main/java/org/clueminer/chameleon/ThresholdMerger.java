@@ -2,10 +2,13 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 
 /**
  * This class merges pairs of clusters exceeding given thresholds for relative
@@ -16,18 +19,24 @@ import org.clueminer.partitioning.api.Bisection;
  * @author Tomas Bruna
  * @param <E>
  */
-public class ThresholdMerger<E extends Instance> extends Merger<E> {
+public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
 
     private final double RICThreshold;
     private final double RCLThreshold;
     private boolean merged;
     private final RiRcSimilarity eval;
+    private static final String name = "threshold merger";
 
     public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
         super(g, bisection);
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
         eval = new RiRcSimilarity<>();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList) {
@@ -115,6 +124,11 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
             }
         }
         return result;
+    }
+
+    @Override
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

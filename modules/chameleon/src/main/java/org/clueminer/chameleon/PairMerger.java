@@ -18,6 +18,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
 
 /**
@@ -27,11 +28,13 @@ import org.clueminer.utils.Props;
  * @author Tomas Bruna
  * @param <E>
  */
-public class PairMerger<E extends Instance> extends Merger<E> {
+public class PairMerger<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
     protected PriorityQueue<PairValue<GraphCluster>> pq;
 
     protected MergeEvaluation evaluation;
+
+    private static final String name = "pair merger";
 
     public PairMerger() {
 
@@ -42,7 +45,21 @@ public class PairMerger<E extends Instance> extends Merger<E> {
         this.evaluation = eval;
     }
 
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Merge clusters while creating a hierarchical structure (dendrogram)
+     *
+     * @param clusterList
+     * @param dataset
+     * @param pref
+     * @return
+     */
+    @Override
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
         blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
         computeExternalProperties();

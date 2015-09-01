@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.chameleon.Merger;
+import org.clueminer.chameleon.AbstractMerger;
 import org.clueminer.chameleon.Pair;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
@@ -40,15 +40,22 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class PairMergerMO extends Merger {
+public class PairMergerMO<E extends Instance> extends AbstractMerger<E> {
 
     private List<MergeEvaluation> objectives = new LinkedList<>();
+    private static final String name = "multi-objective merger";
 
     public PairMergerMO(Graph g, Bisection bisection) {
         super(g, bisection);
     }
 
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
         blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
         computeExternalProperties();
@@ -101,6 +108,18 @@ public class PairMergerMO extends Merger {
 
     private void singleMerge(Pair<Cluster> pair) {
 
+    }
+
+    public void addObjective(MergeEvaluation eval) {
+        this.objectives.add(eval);
+    }
+
+    public void setObjectives(List<MergeEvaluation> list) {
+        this.objectives = list;
+    }
+
+    public void removeObjective(MergeEvaluation eval) {
+        this.objectives.remove(eval);
     }
 
 }

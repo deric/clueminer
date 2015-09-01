@@ -19,6 +19,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
+import org.clueminer.partitioning.api.Merger;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -161,7 +162,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
         MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);
         //TODO this is ugly, we have to move it to different interface
-        PairMerger m = new PairMerger(g, bisectionAlg, me);
+        Merger m = new PairMerger(g, bisectionAlg, me);
         return m.getHierarchy(partitioningResult, dataset, pref);
     }
 

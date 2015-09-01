@@ -273,7 +273,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "cluster " + id;
     }
 
     @Override
@@ -555,5 +555,24 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     public void setParent(Dataset<E> parent) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("GraphCluster ");
+        sb.append(getName());
+        sb.append(" (").append(size()).append(") ");
+        sb.append(" [ ");
+        Node<E> elem;
+        for (int i = 0; i < this.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            elem = this.graphNodes.get(i);
+            sb.append(elem.getId());
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
+
 
 }
