@@ -25,10 +25,12 @@ import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Pair;
@@ -119,10 +121,36 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         //evaluation.clusterCreated(curr, newCluster, pref);
-        //addIntoTree(curr, pref);
+        addIntoTree(curr, pref);
         clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
         //addIntoQueue(newCluster, pref);
+    }
+
+    /**
+     * Adds node representing new cluster (the one created by merging) to
+     * dendroTree
+     *
+     * @param pair
+     * @param pref
+     */
+    protected void addIntoTree(Pair<GraphCluster> pair, Props pref) {
+        DendroNode left = nodes[pair.A.getClusterId()];
+        DendroNode right = nodes[pair.B.getClusterId()];
+        DTreeNode newNode = new DTreeNode(clusterCount - 1);
+        newNode.setLeft(left);
+        newNode.setRight(right);
+        double sim = Double.NaN; //TODO: which objective do we use?
+        if (sim > 10) {
+            sim = 10;
+        }
+        if (sim < 0.005) {
+            sim = 0.005;
+        }
+        height += 1 / sim;
+        newNode.setHeight(height);
+        newNode.setLevel(level++);
+        nodes[clusterCount - 1] = newNode;
     }
 
     public void addObjective(MergeEvaluation eval) {
