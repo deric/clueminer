@@ -49,4 +49,12 @@ public class Neighbor<K> implements Comparable<Neighbor<K>> {
         return (int) Math.signum(distance - o.distance);
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("key: ").append(key).append("[").append(index).append("] = ")
+                .append(distance);
+
+        return sb.toString();
+    }
+
 }

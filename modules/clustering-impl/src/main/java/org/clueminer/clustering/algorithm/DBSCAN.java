@@ -50,7 +50,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
     public static final String name = "DBSCAN";
 
     public static final String MIN_PTS = "minPts";
-    public static final String RADIUS = "radius";
+    public static final String EPS = "eps";
 
     public static final String RNN_ALG = "rnnAlg";
 
@@ -66,7 +66,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
     /**
      * The range of neighborhood.
      */
-    @Param(name = RADIUS, description = "the range of a point neighborhood", required = true, min = 1e-9, max = Double.MAX_VALUE)
+    @Param(name = EPS, description = "the range of a point neighborhood", required = true, min = 1e-9, max = Double.MAX_VALUE)
     private double radius;
 
     private RNNSearch<E> nns;
@@ -87,7 +87,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
         }
 
-        radius = props.getDouble(RADIUS);
+        radius = props.getDouble(EPS);
         if (radius <= 0.0) {
             throw new IllegalArgumentException("Invalid radius: " + radius);
         }

@@ -56,4 +56,17 @@ public interface NearestNeighborSearch<K extends Instance> {
      */
     Neighbor<K> nearest(K q);
 
+    /**
+     * When set to true instance itself will be included in results
+     *
+     * @param identicalExcluded
+     */
+    void setIdenticalExcluded(boolean identicalExcluded);
+
+    /**
+     * Default: true
+     *
+     * @return whether to exclude instance itself in results
+     */
+    boolean isIdenticalExcluded();
 }

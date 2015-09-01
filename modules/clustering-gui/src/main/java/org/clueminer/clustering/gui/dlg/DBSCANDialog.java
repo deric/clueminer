@@ -173,7 +173,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.putInt(DBSCAN.MIN_PTS, sliderMinPts.getValue());
-        params.putDouble(DBSCAN.RADIUS, sliderRadius.getValue());
+        params.putDouble(DBSCAN.EPS, sliderRadius.getValue());
         params.put(AbstractClusteringAlgorithm.DISTANCE, (String) comboDistance.getSelectedItem());
 
         return params;

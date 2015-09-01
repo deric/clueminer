@@ -55,7 +55,7 @@ public class LinearRNN<T extends Instance> extends AbstractKNN<T> implements RNN
         }
 
         for (int i = 0; i < dataset.size(); i++) {
-            if (q == dataset.get(i) && identicalExcluded) {
+            if (q.getIndex() == dataset.get(i).getIndex() && identicalExcluded) {
                 continue;
             }
 

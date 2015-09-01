@@ -42,10 +42,12 @@ public abstract class AbstractKNN<T extends Instance> implements NearestNeighbor
         return dataset;
     }
 
+    @Override
     public boolean isIdenticalExcluded() {
         return identicalExcluded;
     }
 
+    @Override
     public void setIdenticalExcluded(boolean identicalExcluded) {
         this.identicalExcluded = identicalExcluded;
     }

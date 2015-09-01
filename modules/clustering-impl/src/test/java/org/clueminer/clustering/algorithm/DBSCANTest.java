@@ -16,6 +16,8 @@
  */
 package org.clueminer.clustering.algorithm;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -24,6 +26,9 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.knn.LinearRNN;
+import org.clueminer.neighbor.Neighbor;
+import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -64,13 +69,29 @@ public class DBSCANTest {
         return data;
     }
 
+    private Dataset<? extends Instance> smallData() {
+        Dataset<? extends Instance> data = new ArrayDataset(10, 2);
+        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+        InstanceBuilder b = data.builder();
+
+        b.create(new double[]{1, 1}, "1");
+        b.create(new double[]{2, 2}, "1");
+        b.create(new double[]{3, 3}, "1");
+
+        b.create(new double[]{50, 50}, "2");
+        b.create(new double[]{51, 51}, "2");
+
+        return data;
+    }
+
     @Test
     public void testSchoolData() {
         Dataset dataset = FakeClustering.schoolData();
         Props pref = new Props();
 
         pref.putDouble(DBSCAN.MIN_PTS, 2);
-        pref.putDouble(DBSCAN.RADIUS, 20);
+        pref.putDouble(DBSCAN.EPS, 20);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(2, c.size());
     }
@@ -84,10 +105,34 @@ public class DBSCANTest {
         System.out.println("data size: " + dataset.size());
 
         pref.putDouble(DBSCAN.MIN_PTS, 2);
-        pref.putDouble(DBSCAN.RADIUS, 5);
+        pref.putDouble(DBSCAN.EPS, 5);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(4, c.size());
         System.out.println(c.toString());
+    }
+
+    @Test
+    public void testSmallData() {
+        Dataset dataset = smallData();
+        double eps = 1.0;
+        RNNSearch<Instance> nns = new LinearRNN<>(dataset);
+        List<Neighbor<Instance>> seeds = new ArrayList<>();
+
+        nns.range(dataset.get(1), eps, seeds);
+
+        //closest neighbor is in distance of sqrt(2)
+        assertEquals(0, seeds.size());
+
+        //should include just itself
+        nns.setIdenticalExcluded(false);
+        nns.range(dataset.get(1), eps, seeds);
+        assertEquals(1, seeds.size());
+
+        nns.setIdenticalExcluded(true);
+        seeds = new ArrayList<>();
+        eps = 2.0;
+        nns.range(dataset.get(1), eps, seeds);
+        assertEquals(2, seeds.size());
     }
 
 }
