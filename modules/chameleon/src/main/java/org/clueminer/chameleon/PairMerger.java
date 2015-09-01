@@ -1,6 +1,7 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -110,7 +111,20 @@ public class PairMerger<E extends Instance> extends Merger<E> {
      * priority queue.
      */
     private void buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
-        pq = new PriorityQueue<>();
+        if (!evaluation.isMaximized()) {
+            pq = new PriorityQueue<>();
+        } else {
+            //inverse sorting - biggest values first
+            Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
+
+                @Override
+                public int compare(PairValue<GraphCluster> o1, PairValue<GraphCluster> o2) {
+                    return o2.compareTo(o1);
+                }
+
+            };
+            pq = new PriorityQueue<>(comp);
+        }
         double sim;
         GraphCluster a, b;
         for (int i = 0; i < clusterList.size(); i++) {
