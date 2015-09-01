@@ -46,7 +46,6 @@ public class ChameleonTest {
                         HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
                         DendroTreeData tree = result.getTreeData();
                         DendroNode root = tree.getRoot();
-                        //assertEquals(933.5638730625637, root.getHeight(), delta);
                         assertEquals(856.2465904735895, root.getHeight(), delta);
                     }
 

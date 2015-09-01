@@ -1,5 +1,6 @@
 package org.clueminer.chameleon;
 
+import org.clueminer.utils.PairValue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -220,7 +221,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected void addIntoTree(PairValue<GraphCluster> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusterCount);
+        DTreeNode newNode = new DTreeNode(clusterCount - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
         double sim = pair.getValue();
@@ -233,7 +234,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         height += 1 / sim;
         newNode.setHeight(height);
         newNode.setLevel(level++);
-        nodes[clusterCount] = newNode;
+        nodes[clusterCount - 1] = newNode;
     }
 
 }

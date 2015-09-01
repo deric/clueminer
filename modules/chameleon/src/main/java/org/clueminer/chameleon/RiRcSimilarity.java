@@ -19,6 +19,7 @@ package org.clueminer.chameleon;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -84,7 +85,6 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
         double nc2 = y.size();
         GraphPropertyStore gps = getGraphPropertyStore(x);
         double ecl = gps.getECL(x.getClusterId(), y.getClusterId());
-
         return ecl / ((nc1 / (nc1 + nc2)) * x.getICL() + (nc2 / (nc1 + nc2)) * y.getICL());
     }
 
@@ -94,7 +94,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
     }
 
     @Override
-    public void clusterCreated(Cluster<E> a, Cluster<E> b, Cluster<E> newCluster) {
+    public void clusterCreated(PairValue<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params) {
         //nothing to do
     }
 

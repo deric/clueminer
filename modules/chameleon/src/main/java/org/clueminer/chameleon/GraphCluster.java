@@ -61,9 +61,9 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     /**
      * Nodes belonging to the cluster
      */
-    private LinkedList<Node<E>> graphNodes;
+    private final LinkedList<Node<E>> graphNodes;
 
-    private Graph parentGraph;
+    private final Graph parentGraph;
 
     private int id;
 

@@ -14,42 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
-
-import java.util.Objects;
+package org.clueminer.utils;
 
 /**
+ * A pair of objects with assigned value (score)
  *
  * @author deric
  * @param <T>
  */
-public class Pair<T> {
+public class PairValue<T> extends Pair<T> implements Comparable<PairValue<T>> {
 
-    public T A;
-    public T B;
+    public double value;
 
-    public Pair(T A, T B) {
-        this.A = A;
-        this.B = B;
+    public PairValue(T A, T B) {
+        super(A, B);
+    }
+
+    public PairValue(T A, T B, double value) {
+        super(A, B);
+        this.value = value;
     }
 
     @Override
-    public int hashCode() {
-        return 13 * A.hashCode() + 17 * B.hashCode();
+    public int compareTo(PairValue<T> o) {
+        PairValue<T> e = (PairValue<T>) o;
+        if (value > e.value) {
+            return -1;
+        } else if (value < e.value) {
+            return 1;
+        }
+        return 0;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pair<?> other = (Pair<?>) obj;
-        if (!Objects.equals(this.A, other.A)) {
-            return false;
-        }
-        return Objects.equals(this.B, other.B);
+    public double getValue() {
+        return value;
     }
+
 }

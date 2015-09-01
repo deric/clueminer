@@ -19,6 +19,7 @@ package org.clueminer.chameleon;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -74,10 +75,10 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
     }
 
     @Override
-    public void clusterCreated(Cluster<E> a, Cluster<E> b, Cluster<E> c) {
-        checkClusters(a, b);
-        GraphCluster cluster1 = (GraphCluster) a;
-        GraphCluster cluster2 = (GraphCluster) b;
+    public void clusterCreated(PairValue<? extends Cluster<E>> pair, Cluster<E> c, Props params) {
+        checkClusters(pair.A, pair.B);
+        GraphCluster cluster1 = (GraphCluster) pair.A;
+        GraphCluster cluster2 = (GraphCluster) pair.B;
         GraphCluster newCluster = (GraphCluster) c;
         int i = Math.max(cluster1.getClusterId(), cluster2.getClusterId());
         int j = Math.min(cluster1.getClusterId(), cluster2.getClusterId());

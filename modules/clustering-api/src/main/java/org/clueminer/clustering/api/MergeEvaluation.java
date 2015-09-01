@@ -17,6 +17,7 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 
 /**
@@ -49,11 +50,11 @@ public interface MergeEvaluation<E extends Instance> {
      * Method called by merger algorithm when cluster A and cluster B are merged
      * to form a new cluster
      *
-     * @param a
-     * @param b
+     * @param pair
      * @param newCluster
+     * @param params
      */
-    void clusterCreated(Cluster<E> a, Cluster<E> b, Cluster<E> newCluster);
+    void clusterCreated(PairValue<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params);
 
     /**
      * Whether bigger values are better

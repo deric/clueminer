@@ -16,6 +16,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -83,11 +84,16 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         if (curr.A.getClusterId() == curr.B.getClusterId()) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
+        //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
+        //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
+        //WARNING: we copy nodes from previous clusters (we save memory, but
+        //it's not a good idea to work with merged clusters)
         LinkedList<Node> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
-        addIntoTree(curr, pref);
+
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
-        evaluation.clusterCreated(curr.A, curr.B, newCluster);
+        evaluation.clusterCreated(curr, newCluster, pref);
+        addIntoTree(curr, pref);
         clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue(newCluster, pref);
