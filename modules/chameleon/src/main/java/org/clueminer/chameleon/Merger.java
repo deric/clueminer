@@ -215,17 +215,16 @@ public abstract class Merger<E extends Instance> {
      * Adds node representing new cluster (the one created by merging) to
      * dendroTree
      *
-     * @param a
-     * @param b
+     * @param pair
      * @param pref
      */
-    protected void addIntoTree(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
-        DendroNode left = nodes[a.getClusterId()];
-        DendroNode right = nodes[b.getClusterId()];
+    protected void addIntoTree(PairValue<GraphCluster> pair, Props pref) {
+        DendroNode left = nodes[pair.A.getClusterId()];
+        DendroNode right = nodes[pair.B.getClusterId()];
         DTreeNode newNode = new DTreeNode(clusterCount);
         newNode.setLeft(left);
         newNode.setRight(right);
-        double sim = evaluation.score(a, b, pref);
+        double sim = pair.getValue();
         if (sim > 10) {
             sim = 10;
         }

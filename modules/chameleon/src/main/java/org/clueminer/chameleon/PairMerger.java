@@ -80,7 +80,7 @@ public class PairMerger<E extends Instance> extends Merger<E> {
         }
         LinkedList<Node> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
-        addIntoTree(curr.A, curr.B, pref);
+        addIntoTree(curr, pref);
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         evaluation.clusterCreated(curr.A, curr.B, newCluster);
         clusters.add(newCluster);
