@@ -58,7 +58,9 @@ public class PairMergerMOTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        subject = new PairMergerMO(g, bisection);
+        subject = new PairMergerMO();
+        subject.initialize(partitioningResult, g, bisection);
+        //subject.addObjective(null);
         Props pref = new Props();
         HierarchicalResult result = subject.getHierarchy(partitioningResult, dataset, pref);
         //DendroTreeData tree = result.getTreeData();

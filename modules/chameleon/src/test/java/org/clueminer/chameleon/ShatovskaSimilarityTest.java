@@ -67,7 +67,9 @@ public class ShatovskaSimilarityTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        PairMerger merger = new PairMerger(g, bisection, subject);
+        PairMerger merger = new PairMerger();
+        merger.setMergeEvaluation(subject);
+        merger.initialize(partitioningResult, g, bisection);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());

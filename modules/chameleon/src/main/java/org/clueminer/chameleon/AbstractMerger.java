@@ -26,8 +26,6 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected Graph graph;
 
-    protected Bisection bisection;
-
     /**
      * Assigns each node to cluster.
      */
@@ -57,18 +55,21 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected double height;
 
+    protected Bisection bisection;
+
     /**
      * Current tree level
      */
     protected int level;
 
-    public AbstractMerger(Graph g, Bisection bisection) {
-        this.graph = g;
+    @Override
+    public void initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection) {
+        this.graph = graph;
         this.bisection = bisection;
-    }
-
-    public AbstractMerger() {
-
+        nodes = initiateTree(clusterList);
+        blacklist = new HashSet<>();
+        createClusters(clusterList, bisection);
+        computeExternalProperties();
     }
 
     /**

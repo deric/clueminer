@@ -20,6 +20,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.partitioning.api.MergerFactory;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -78,6 +79,11 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * interconnectivity.
      */
     public static final String CLOSENESS_PRIORITY = "closeness_priority";
+
+    /**
+     * Algorithm for merging clusters
+     */
+    public static final String MERGER = "merger";
 
     @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
     private double closenessPriority;
@@ -161,8 +167,13 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
 
         similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
         MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);
-        //TODO this is ugly, we have to move it to different interface
-        Merger m = new PairMerger(g, bisectionAlg, me);
+
+        String merger = pref.get(MERGER, "pair merger");
+        Merger m = MergerFactory.getInstance().getProvider(merger);
+        m.initialize(partitioningResult, g, bisectionAlg);
+        if (m instanceof PairMerger) {
+            ((PairMerger) m).setMergeEvaluation(me);
+        }
         return m.getHierarchy(partitioningResult, dataset, pref);
     }
 

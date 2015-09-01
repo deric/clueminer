@@ -28,10 +28,11 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     private static final String name = "threshold merger";
 
     public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
-        super(g, bisection);
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
         eval = new RiRcSimilarity<>();
+        this.graph = g;
+        this.bisection = bisection;
     }
 
     @Override

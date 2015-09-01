@@ -2,7 +2,6 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -14,12 +13,11 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
-import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This class merges two clusters in one merge. Two most similar clusters among
@@ -28,6 +26,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Bruna
  * @param <E>
  */
+@ServiceProvider(service = Merger.class)
 public class PairMerger<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
     protected PriorityQueue<PairValue<GraphCluster>> pq;
@@ -35,15 +34,6 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     protected MergeEvaluation evaluation;
 
     private static final String name = "pair merger";
-
-    public PairMerger() {
-
-    }
-
-    public PairMerger(Graph g, Bisection bisection, MergeEvaluation eval) {
-        super(g, bisection);
-        this.evaluation = eval;
-    }
 
     @Override
     public String getName() {
@@ -60,11 +50,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      */
     @Override
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
-        blacklist = new HashSet<>();
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
         buildQueue(clusterList, pref);
-        nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 

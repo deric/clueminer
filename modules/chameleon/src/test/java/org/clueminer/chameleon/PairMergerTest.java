@@ -56,7 +56,10 @@ public class PairMergerTest {
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
-        merger = new PairMerger(g, bisection, eval);
+        merger = new PairMerger();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setMergeEvaluation(eval);
+
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
 
         merger.computeExternalProperties();

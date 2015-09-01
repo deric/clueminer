@@ -62,7 +62,9 @@ public class GraphClusterTest {
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
-        PairMerger merger = new PairMerger(g, bisection, eval);
+        PairMerger merger = new PairMerger();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setMergeEvaluation(eval);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         cluster = clusters.get(0);
         assertNotNull(cluster);

@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.AbstractMerger;
@@ -30,24 +29,21 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.Clusters;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
-import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMO<E extends Instance> extends AbstractMerger<E> {
+@ServiceProvider(service = Merger.class)
+public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
     private List<MergeEvaluation> objectives = new LinkedList<>();
     private static final String name = "multi-objective merger";
-
-    public PairMergerMO(Graph g, Bisection bisection) {
-        super(g, bisection);
-    }
 
     @Override
     public String getName() {
@@ -56,9 +52,6 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> {
 
     @Override
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
-        blacklist = new HashSet<>();
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
         Pair<Cluster>[] pairs = buildQueue(dataset);
         LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives, pref);
 

@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
 
@@ -37,6 +38,14 @@ public interface Merger<E extends Instance> {
      * @return method identification
      */
     String getName();
+
+    /**
+     *
+     * @param clusterList
+     * @param graph
+     * @param bisection
+     */
+    void initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection);
 
     /**
      * Merge clusters while creating a hierarchical structure (dendrogram)
