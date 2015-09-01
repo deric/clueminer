@@ -114,7 +114,7 @@ public class PairMerger<E extends Instance> extends Merger<E> {
      */
     private void buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
         if (!evaluation.isMaximized()) {
-            pq = new PriorityQueue<>();
+            pq = new PriorityQueue<PairValue<GraphCluster>>();
         } else {
             //inverse sorting - biggest values first
             Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
@@ -125,7 +125,7 @@ public class PairMerger<E extends Instance> extends Merger<E> {
                 }
 
             };
-            pq = new PriorityQueue<>(comp);
+            pq = new PriorityQueue<PairValue<GraphCluster>>(comp);
         }
         double sim;
         GraphCluster a, b;
