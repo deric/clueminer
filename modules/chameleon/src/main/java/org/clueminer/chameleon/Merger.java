@@ -3,7 +3,6 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
-import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
@@ -49,8 +48,6 @@ public abstract class Merger<E extends Instance> {
      * queue would be too expensive.
      */
     protected HashSet<Integer> blacklist = new HashSet<>();
-
-    protected MergeEvaluation evaluation;
 
     protected DendroNode[] nodes;
 
@@ -236,10 +233,5 @@ public abstract class Merger<E extends Instance> {
         newNode.setLevel(level++);
         nodes[clusterCount] = newNode;
     }
-
-    public void setMergeEvaluation(MergeEvaluation eval) {
-        this.evaluation = eval;
-    }
-
 
 }

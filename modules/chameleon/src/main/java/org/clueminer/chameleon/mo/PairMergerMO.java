@@ -42,6 +42,8 @@ import org.clueminer.utils.Props;
  */
 public class PairMergerMO extends Merger {
 
+    private List<MergeEvaluation> objectives = new LinkedList<>();
+
     public PairMergerMO(Graph g, Bisection bisection) {
         super(g, bisection);
     }
@@ -51,7 +53,6 @@ public class PairMergerMO extends Merger {
         createClusters(clusterList, bisection);
         computeExternalProperties();
         Pair<Cluster>[] pairs = buildQueue(dataset);
-        List<MergeEvaluation> objectives = new LinkedList<>();
         LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives, pref);
 
         FrontQueue<Pair<Cluster>> queue = new FrontQueue<>(fronts);

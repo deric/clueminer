@@ -31,6 +31,8 @@ public class PairMerger<E extends Instance> extends Merger<E> {
 
     protected PriorityQueue<PairValue<GraphCluster>> pq;
 
+    protected MergeEvaluation evaluation;
+
     public PairMerger() {
 
     }
@@ -165,6 +167,10 @@ public class PairMerger<E extends Instance> extends Merger<E> {
             output.add(cluster);
         }
         return output;
+    }
+
+    public void setMergeEvaluation(MergeEvaluation eval) {
+        this.evaluation = eval;
     }
 
 }
