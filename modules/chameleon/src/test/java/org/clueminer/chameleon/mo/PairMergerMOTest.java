@@ -18,8 +18,8 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.chameleon.RiRcSimilarity;
-import org.clueminer.chameleon.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.RiRcSimilarity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;

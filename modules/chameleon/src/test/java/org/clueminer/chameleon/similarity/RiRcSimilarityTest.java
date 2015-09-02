@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
+package org.clueminer.chameleon.similarity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.PairMerger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -38,13 +41,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class ShatovskaSimilarityTest {
+public class RiRcSimilarityTest {
 
-    private final ShatovskaSimilarity<Instance> subject;
+    private final RiRcSimilarity<Instance> subject;
     private static final double delta = 1e-9;
 
-    public ShatovskaSimilarityTest() {
-        subject = new ShatovskaSimilarity<>();
+    public RiRcSimilarityTest() {
+        subject = new RiRcSimilarity<>();
     }
 
     @Test
@@ -58,7 +61,6 @@ public class ShatovskaSimilarityTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
@@ -68,23 +70,25 @@ public class ShatovskaSimilarityTest {
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
         PairMerger merger = new PairMerger();
-        merger.setMergeEvaluation(subject);
         merger.initialize(partitioningResult, g, bisection);
+        merger.setMergeEvaluation(subject);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
 
         Props pref = new Props();
-        assertEquals(4.464646866748596E-13, subject.score(clusters.get(0), clusters.get(1), pref), delta);
+        pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+
+        assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
+        assertEquals(0.20807824906992473, subject.score(clusters.get(3), clusters.get(4), pref), delta);
+        assertEquals(0.6636615718193234, subject.score(clusters.get(6), clusters.get(7), pref), delta);
+        assertEquals(0.12291073645819726, subject.score(clusters.get(7), clusters.get(8), pref), delta);
+        assertEquals(0.4382233175670228, subject.score(clusters.get(9), clusters.get(10), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(2), clusters.get(3), pref), delta);
-        assertEquals(0.7164750502687347, subject.score(clusters.get(3), clusters.get(4), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(4), clusters.get(5), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(5), clusters.get(6), pref), delta);
-        assertEquals(0.3857386356649811, subject.score(clusters.get(6), clusters.get(7), pref), delta);
-        assertEquals(5.237476138021256E-13, subject.score(clusters.get(7), clusters.get(8), pref), delta);
-        assertEquals(0.07295002241131861, subject.score(clusters.get(9), clusters.get(10), pref), delta);
-
         assertEquals(0.0, subject.score(clusters.get(8), clusters.get(9), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(10), clusters.get(11), pref), delta);
     }

@@ -1,5 +1,6 @@
 package org.clueminer.chameleon;
 
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;

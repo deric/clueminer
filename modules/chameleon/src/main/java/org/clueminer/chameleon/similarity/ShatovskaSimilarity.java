@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
+package org.clueminer.chameleon.similarity;
 
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.GraphPropertyStore;
+import org.clueminer.chameleon.similarity.AbstractSimilarity;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;

@@ -1,5 +1,7 @@
 package org.clueminer.chameleon;
 
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;

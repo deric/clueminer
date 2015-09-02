@@ -4,7 +4,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
-import org.clueminer.chameleon.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;

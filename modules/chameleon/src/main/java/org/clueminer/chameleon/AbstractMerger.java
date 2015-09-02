@@ -75,7 +75,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param bisection
      * @return list of clusters
      */
-    protected ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
+    public ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
         clusters = new ArrayList<>(clusterList.size());
         int i = 0;
         for (LinkedList<Node<E>> cluster : clusterList) {
@@ -111,7 +111,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * external values are updated
      *
      */
-    protected void computeExternalProperties() {
+    public void computeExternalProperties() {
         GraphPropertyStore gps = new GraphPropertyStore(clusters.size());
         int firstClusterID, secondClusterID;
         for (Edge edge : graph.getEdges()) {
