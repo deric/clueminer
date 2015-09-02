@@ -1,7 +1,7 @@
 package org.clueminer.chameleon;
 
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -48,7 +48,7 @@ public class ChameleonTest {
                         HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
                         DendroTreeData tree = result.getTreeData();
                         DendroNode root = tree.getRoot();
-                        assertEquals(856.2465904735895, root.getHeight(), delta);
+                        assertEquals(891.8865411798738, root.getHeight(), delta);
                     }
 
                 }
@@ -76,7 +76,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();
         //assertEquals(662.3346235252453, root.getHeight(), delta);
-        assertEquals(660.141843476143, root.getHeight(), delta);
+        assertEquals(663.3261605858437, root.getHeight(), delta);
     }
 
     @Test

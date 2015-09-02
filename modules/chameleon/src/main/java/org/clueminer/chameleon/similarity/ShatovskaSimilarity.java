@@ -19,7 +19,6 @@ package org.clueminer.chameleon.similarity;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.GraphPropertyStore;
-import org.clueminer.chameleon.similarity.AbstractSimilarity;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;

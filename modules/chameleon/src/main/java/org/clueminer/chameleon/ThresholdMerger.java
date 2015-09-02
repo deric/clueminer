@@ -1,8 +1,9 @@
 package org.clueminer.chameleon;
 
-import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.similarity.Closeness;
+import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -25,13 +26,15 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     private final double RICThreshold;
     private final double RCLThreshold;
     private boolean merged;
-    private final RiRcSimilarity eval;
+    private final Interconnectivity<E> interconnectivity;
+    private final Closeness<E> closeness;
     private static final String name = "threshold merger";
 
     public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
-        eval = new RiRcSimilarity<>();
+        interconnectivity = new Interconnectivity<>();
+        closeness = new Closeness<>();
         this.graph = g;
         this.bisection = bisection;
     }
@@ -64,8 +67,8 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
                     continue;
                 }
 
-                double RIC = eval.getRIC(clusters.get(i), clusters.get(j));
-                double RCL = eval.getRCL(clusters.get(i), clusters.get(j));
+                double RIC = interconnectivity.getRIC(clusters.get(i), clusters.get(j));
+                double RCL = closeness.getRCL(clusters.get(i), clusters.get(j));
                 if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
                     maxRIC = RIC;
                     index = j;

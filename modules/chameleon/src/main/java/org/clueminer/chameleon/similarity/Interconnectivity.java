@@ -16,8 +16,8 @@
  */
 package org.clueminer.chameleon.similarity;
 
-import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.GraphPropertyStore;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
@@ -26,24 +26,15 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Relative Interconnectivity + Relative Closeness similarity (dynamic modeling
- * framework from Chameleon). An underlying graph structure is required for
- * computing this metric.
+ * Based on Chameleon's dynamic modeling framework, relative interconnectivity
+ * forms half of the objective function.
  *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class Interconnectivity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Standard";
-    private final Interconnectivity<E> interconnectivity;
-    private final Closeness<E> closeness;
-
-    public RiRcSimilarity() {
-        interconnectivity = new Interconnectivity<>();
-        closeness = new Closeness<>();
-    }
+    public static final String name = "Interconnectivity";
 
     @Override
     public String getName() {
@@ -55,18 +46,23 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
         checkClusters(a, b);
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
+        double RIC = getRIC(x, y);
 
-        double RCL = closeness.getRCL(x, y);
-        double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
-        //TODO: this is kind of magic. it's not described in original paper. move to another method?
-        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
-        //if (a.size() == 1 || b.size() == 1) {
-        //    return Math.pow(RCL, closenessPriority) * 40;
-        //}
-
-        return interconnectivity.getRIC(x, y) * Math.pow(RCL, closenessPriority);
+        return RIC;
     }
 
+    /**
+     * Compute relative interconnectivity
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public double getRIC(GraphCluster<E> x, GraphCluster<E> y) {
+        GraphPropertyStore gps = getGraphPropertyStore(x);
+        double eic = gps.getEIC(x.getClusterId(), y.getClusterId());
+        return eic / ((x.getIIC() + y.getIIC()) / 2);
+    }
 
     @Override
     public boolean isMaximized() {

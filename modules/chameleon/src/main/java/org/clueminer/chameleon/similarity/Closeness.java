@@ -18,6 +18,7 @@ package org.clueminer.chameleon.similarity;
 
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.GraphPropertyStore;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
@@ -26,24 +27,15 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Relative Interconnectivity + Relative Closeness similarity (dynamic modeling
- * framework from Chameleon). An underlying graph structure is required for
- * computing this metric.
+ * Based on Chameleon's dynamic modeling framework, relative closeness forms
+ * half of the objective function.
  *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class Closeness<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Standard";
-    private final Interconnectivity<E> interconnectivity;
-    private final Closeness<E> closeness;
-
-    public RiRcSimilarity() {
-        interconnectivity = new Interconnectivity<>();
-        closeness = new Closeness<>();
-    }
+    public static final String name = "Closeness";
 
     @Override
     public String getName() {
@@ -55,8 +47,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
         checkClusters(a, b);
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
-
-        double RCL = closeness.getRCL(x, y);
+        double RCL = getRCL(x, y);
         double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         //TODO: this is kind of magic. it's not described in original paper. move to another method?
         //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
@@ -64,9 +55,23 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
         //    return Math.pow(RCL, closenessPriority) * 40;
         //}
 
-        return interconnectivity.getRIC(x, y) * Math.pow(RCL, closenessPriority);
+        return Math.pow(RCL, closenessPriority);
     }
 
+    /**
+     * Compute relative closeness
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
+        double nc1 = x.size();
+        double nc2 = y.size();
+        GraphPropertyStore gps = getGraphPropertyStore(x);
+        double ecl = gps.getECL(x.getClusterId(), y.getClusterId());
+        return ecl / ((nc1 / (nc1 + nc2)) * x.getICL() + (nc2 / (nc1 + nc2)) * y.getICL());
+    }
 
     @Override
     public boolean isMaximized() {
