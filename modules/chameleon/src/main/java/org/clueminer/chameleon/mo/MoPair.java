@@ -16,14 +16,14 @@
  */
 package org.clueminer.chameleon.mo;
 
-import org.clueminer.utils.Pair;
+import org.clueminer.utils.PairValue;
 
 /**
  * A pair of objects evaluated by N objectives (N is typically between 2 and 5).
  *
  * @author deric
  */
-public class MoPair<T> extends Pair<T> {
+public class MoPair<T> extends PairValue<T> {
 
     private double[] objectives;
 
@@ -47,6 +47,20 @@ public class MoPair<T> extends Pair<T> {
 
     public void setObjective(int i, double value) {
         objectives[i] = value;
+    }
+
+    /**
+     * Express multiple objectives by single value
+     *
+     * @return
+     */
+    @Override
+    public double getValue() {
+        double value = 0.0;
+        for (int i = 0; i < objectives.length; i++) {
+            value += objectives[i];
+        }
+        return value;
     }
 
     @Override

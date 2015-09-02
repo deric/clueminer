@@ -86,7 +86,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     public static final String MERGER = "merger";
 
     @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
-    private double closenessPriority;
+    protected double closenessPriority;
 
     /**
      * Similarity function used to compute similarity between two clusters
@@ -97,7 +97,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Param(name = Chameleon.SIM_MEASURE, description = "Similarity function used to compute similarity between two clusters")
     private String similarityMeasure;
 
-    private RecursiveBisection recursiveBisection;
+    protected RecursiveBisection recursiveBisection;
 
     private final KNNGraphBuilder knn;
 
@@ -163,7 +163,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
 
-        closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
+        //closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
 
         similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
         MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);

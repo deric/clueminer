@@ -119,7 +119,9 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
         clusters.add(newCluster);
-        //evaluation.clusterCreated(curr, newCluster, pref);
+        for (MergeEvaluation<E> eval : objectives) {
+            eval.clusterCreated(curr, newCluster, pref);
+        }
         addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);

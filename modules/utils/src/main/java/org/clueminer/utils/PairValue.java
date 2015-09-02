@@ -24,7 +24,7 @@ package org.clueminer.utils;
  */
 public class PairValue<T> extends Pair<T> implements Comparable<PairValue<T>> {
 
-    public double value;
+    private double value;
 
     public PairValue(T A, T B) {
         super(A, B);

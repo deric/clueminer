@@ -17,7 +17,7 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.PairValue;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 
 /**
@@ -54,7 +54,7 @@ public interface MergeEvaluation<E extends Instance> {
      * @param newCluster
      * @param params
      */
-    void clusterCreated(PairValue<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params);
+    void clusterCreated(Pair<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params);
 
     /**
      * Whether bigger values are better
