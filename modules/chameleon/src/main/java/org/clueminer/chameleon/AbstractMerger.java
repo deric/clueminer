@@ -77,30 +77,21 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     public ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
         clusters = new ArrayList<>(clusterList.size());
-        int i = 0;
-        for (LinkedList<Node<E>> cluster : clusterList) {
-            clusters.add(new GraphCluster(cluster, graph, i, bisection));
-            i++;
-        }
-        assignNodesToClusters(clusterList);
-        return clusters;
-    }
-
-    /**
-     * Assigns clusters to nodes according to list of clusters in each node.
-     * Having clusters assigned to nodes can be advantageous in some cases
-     *
-     * @param clusterList
-     */
-    protected void assignNodesToClusters(ArrayList<LinkedList<Node<E>>> clusterList) {
         nodeToCluster = new int[graph.getNodeCount()];
         int i = 0;
         for (LinkedList<Node<E>> cluster : clusterList) {
+            clusters.add(new GraphCluster(cluster, graph, i, bisection));
+            /**
+             * Assigns clusters to nodes according to list of clusters in each
+             * node. Having clusters assigned to nodes can be advantageous in
+             * some cases
+             */
             for (Node node : cluster) {
                 nodeToCluster[graph.getIndex(node)] = i;
             }
             i++;
         }
+        return clusters;
     }
 
     /**
