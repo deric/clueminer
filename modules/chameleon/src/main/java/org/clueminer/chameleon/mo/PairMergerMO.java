@@ -117,10 +117,10 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        clusters.add(newCluster);
         //evaluation.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
-        clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
     }
@@ -161,7 +161,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     protected void addIntoTree(MoPair<GraphCluster<E>> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusterCount - 1);
+        DTreeNode newNode = new DTreeNode(clusters.size() - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
         double sim = 0.0;
@@ -178,7 +178,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         height += 1 / sim;
         newNode.setHeight(height);
         newNode.setLevel(level++);
-        nodes[clusterCount - 1] = newNode;
+        nodes[clusters.size() - 1] = newNode;
     }
 
     public void addObjective(MergeEvaluation eval) {

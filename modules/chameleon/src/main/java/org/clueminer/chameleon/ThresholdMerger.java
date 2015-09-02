@@ -55,10 +55,10 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
         computeExternalProperties();
         initiateClustersForMerging();
 
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusters.size(); i++) {
             double maxRIC = Double.NEGATIVE_INFINITY;
             int index = -1;
-            for (int j = 0; j < clusterCount; j++) {
+            for (int j = 0; j < clusters.size(); j++) {
                 if (i == j) {
                     continue;
                 }
@@ -82,10 +82,10 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
      * Prepares clusters for merging
      */
     public void initiateClustersForMerging() {
-        for (int i = 0; i < clusterCount; i++) {
-            clusters.get(i).offsprings = new LinkedList<>();
-            clusters.get(i).offsprings.add(clusters.get(i));
-            clusters.get(i).setParent(clusters.get(i));
+        for (GraphCluster<E> cluster : clusters) {
+            cluster.offsprings = new LinkedList<>();
+            cluster.offsprings.add(cluster);
+            cluster.setParent(cluster);
         }
     }
 
@@ -113,10 +113,10 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
      */
     public ArrayList<LinkedList<Node<E>>> getNewClusters() {
         ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
-            if (clusters.get(i).offsprings != null) {
+        for (GraphCluster<E> clust : clusters) {
+            if (clust.offsprings != null) {
                 LinkedList<Node<E>> list = new LinkedList<>();
-                for (GraphCluster<E> cluster : clusters.get(i).offsprings) {
+                for (GraphCluster<E> cluster : clust.offsprings) {
                     for (Node<E> node : cluster.getNodes()) {
                         list.add(node);
                     }

@@ -58,11 +58,13 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
-        for (int i = 0; i < clusters.size() - 1; i++) {
+        //number of initial clusters
+        int numClusters = clusters.size();
+        for (int i = 0; i < numClusters - 1; i++) {
             singleMerge(pq.poll(), pref);
         }
         //getGraphPropertyStore(clusters.get(0)).dump();
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusters.size() - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
@@ -83,7 +85,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         }
         blacklist.add(i);
         blacklist.add(j);
-        if (curr.A.getClusterId() == curr.B.getClusterId()) {
+        if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
         //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
@@ -93,10 +95,10 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         LinkedList<Node> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
         addIntoTree(curr, pref);
-        clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue(newCluster, pref);
     }
@@ -159,7 +161,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      */
     private ArrayList<LinkedList<Node<E>>> getResult() {
         ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusters.size(); i++) {
             if (blacklist.contains(i)) {
                 continue;
             }

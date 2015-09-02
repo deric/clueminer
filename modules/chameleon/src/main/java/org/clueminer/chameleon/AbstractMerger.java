@@ -33,11 +33,6 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected int nodeToCluster[];
 
     /**
-     * Number of clusters.
-     */
-    protected int clusterCount;
-
-    /**
      * Clusters to merge.
      */
     protected ArrayList<GraphCluster<E>> clusters;
@@ -81,8 +76,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @return list of clusters
      */
     protected ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
-        clusterCount = clusterList.size();
-        clusters = new ArrayList<>(clusterCount);
+        clusters = new ArrayList<>(clusterList.size());
         int i = 0;
         for (LinkedList<Node<E>> cluster : clusterList) {
             clusters.add(new GraphCluster(cluster, graph, i, bisection));
@@ -118,7 +112,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      *
      */
     protected void computeExternalProperties() {
-        GraphPropertyStore gps = new GraphPropertyStore(clusterCount);
+        GraphPropertyStore gps = new GraphPropertyStore(clusters.size());
         int firstClusterID, secondClusterID;
         for (Edge edge : graph.getEdges()) {
             firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
@@ -138,7 +132,6 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected DendroNode[] initiateTree(ArrayList<LinkedList<Node<E>>> clusterList) {
         DendroNode[] treeNodes = new DendroNode[(2 * clusterList.size() - 1)];
-        clusterCount = clusterList.size();
         for (int i = 0; i < clusterList.size(); i++) {
             treeNodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
             treeNodes[i].setHeight(0);
@@ -188,7 +181,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected void updateExternalProperties(GraphCluster<E> cluster, GraphCluster<E> c1, GraphCluster<E> c2) {
         double eic1, eic2, cnt1, cnt2, eic, ecl, cnt;
-        for (int i = 0; i < clusterCount - 1; i++) {
+        for (int i = 0; i < clusters.size() - 1; i++) {
             if (blacklist.contains(i)) {
                 continue;
             }
@@ -221,7 +214,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected void addIntoTree(PairValue<GraphCluster> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusterCount - 1);
+        DTreeNode newNode = new DTreeNode(clusters.size() - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
         double sim = pair.getValue();
@@ -234,7 +227,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         height += 1 / sim;
         newNode.setHeight(height);
         newNode.setLevel(level++);
-        nodes[clusterCount - 1] = newNode;
+        nodes[clusters.size() - 1] = newNode;
     }
 
 }
