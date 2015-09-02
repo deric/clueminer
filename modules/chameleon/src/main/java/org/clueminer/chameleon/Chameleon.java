@@ -174,7 +174,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         if (m instanceof PairMerger) {
             ((PairMerger) m).setMergeEvaluation(me);
         }
-        return m.getHierarchy(partitioningResult, dataset, pref);
+        return m.getHierarchy(dataset, pref);
     }
 
     private int determineK(Dataset<? extends Instance> dataset) {

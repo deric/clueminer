@@ -50,10 +50,9 @@ public interface Merger<E extends Instance> {
     /**
      * Merge clusters while creating a hierarchical structure (dendrogram)
      *
-     * @param clusterList
      * @param dataset
      * @param pref
      * @return
      */
-    HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref);
+    HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref);
 }

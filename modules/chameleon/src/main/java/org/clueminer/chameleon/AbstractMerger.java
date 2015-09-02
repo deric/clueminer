@@ -1,6 +1,5 @@
 package org.clueminer.chameleon;
 
-import org.clueminer.utils.PairValue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,6 +12,7 @@ import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 
 /**
@@ -82,7 +82,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
         clusterCount = clusterList.size();
-        clusters = new ArrayList<>();
+        clusters = new ArrayList<>(clusterCount);
         int i = 0;
         for (LinkedList<Node<E>> cluster : clusterList) {
             clusters.add(new GraphCluster(cluster, graph, i, bisection));

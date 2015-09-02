@@ -44,23 +44,25 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     /**
      * Merge clusters while creating a hierarchical structure (dendrogram)
      *
-     * @param clusterList
      * @param dataset
      * @param pref
      * @return
      */
     @Override
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
-        buildQueue(clusterList, pref);
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        if (clusters.isEmpty()) {
+            throw new RuntimeException("initialize() must be called first");
+        }
+        buildQueue(clusters.size(), pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
-        for (int i = 0; i < clusterList.size() - 1; i++) {
+        for (int i = 0; i < clusters.size() - 1; i++) {
             singleMerge(pq.poll(), pref);
         }
         //getGraphPropertyStore(clusters.get(0)).dump();
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusters.size() - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
@@ -121,8 +123,8 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      * Computes similarities between all clusters and adds them into the
      * priority queue.
      */
-    private void buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
-        int capacity = clusterList.size() * clusterList.size();
+    private void buildQueue(int numClusters, Props pref) {
+        int capacity = numClusters * numClusters;
         if (!evaluation.isMaximized()) {
             pq = new PriorityQueue<>(capacity);
         } else {
@@ -139,9 +141,9 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         }
         double sim;
         GraphCluster a, b;
-        for (int i = 0; i < clusterList.size(); i++) {
+        for (int i = 0; i < numClusters; i++) {
+            a = clusters.get(i);
             for (int j = 0; j < i; j++) {
-                a = clusters.get(i);
                 b = clusters.get(j);
                 sim = evaluation.score(a, b, pref);
                 pq.add(new PairValue<>(a, b, sim));

@@ -128,7 +128,7 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     }
 
     @Override
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
