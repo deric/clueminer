@@ -60,14 +60,16 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         if (objectives.isEmpty()) {
             throw new RuntimeException("you must specify at least 2 objectives");
         }
-        ArrayList<P> pairs = buildQueue(clusters.size(), pref);
+        ArrayList<P> pairs = createPairs(clusters.size(), pref);
         queue = new FrontQueue<>(pairs, objectives, pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         int numClusters = clusters.size();
+        System.out.println("total " + numClusters);
         for (int i = 0; i < numClusters - 1; i++) {
+            System.out.println("merge: " + i);
             singleMerge(queue.poll(), pref);
         }
 
@@ -77,7 +79,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         return result;
     }
 
-    private ArrayList<P> buildQueue(int numClusters, Props pref) {
+    protected ArrayList<P> createPairs(int numClusters, Props pref) {
         ArrayList<P> allPairs = new ArrayList<>(triangleSize(numClusters));
         C c1, c2;
         //generate all pairs
