@@ -34,7 +34,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
 
     protected MergeEvaluation evaluation;
 
-    private static final String name = "pair merger";
+    public static final String name = "pair merger";
 
     @Override
     public String getName() {

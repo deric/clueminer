@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<C>> extends AbstractMerger<E> implements Merger<E> {
 
     private List<MergeEvaluation<E>> objectives = new LinkedList<>();
-    private static final String name = "multi-objective merger";
+    public static final String name = "multi-objective merger";
 
     private FrontQueue<E, C, P> queue;
 

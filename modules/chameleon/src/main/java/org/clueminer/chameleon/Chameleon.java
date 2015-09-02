@@ -1,8 +1,9 @@
 package org.clueminer.chameleon;
 
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.mo.PairMergerMO;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -106,6 +107,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Param(name = Chameleon.GRAPH_STORAGE, description = "Structure for storing graphs")
     private String graphStorage;
 
+    public static final String OBJECTIVE_1 = "mo_objective_1";
+    public static final String OBJECTIVE_2 = "mo_objective_2";
+
     public Chameleon() {
         knn = new KNNGraphBuilder();
     }
@@ -164,16 +168,19 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
 
-        //closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
-
-        similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
-        MergeEvaluation me = MergeEvaluationFactory.getInstance().getProvider(similarityMeasure);
-
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
         m.initialize(partitioningResult, g, bisectionAlg);
+
+        MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (m instanceof PairMerger) {
+            similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
+            MergeEvaluation me = mef.getProvider(similarityMeasure);
             ((PairMerger) m).setMergeEvaluation(me);
+        } else if (m instanceof PairMergerMO) {
+            PairMergerMO mo = (PairMergerMO) m;
+            mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
+            mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
         return m.getHierarchy(dataset, pref);
     }
