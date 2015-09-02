@@ -122,8 +122,9 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      * priority queue.
      */
     private void buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
+        int capacity = clusterList.size() * clusterList.size();
         if (!evaluation.isMaximized()) {
-            pq = new PriorityQueue<PairValue<GraphCluster>>();
+            pq = new PriorityQueue<>(capacity);
         } else {
             //inverse sorting - biggest values first
             Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
@@ -134,7 +135,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
                 }
 
             };
-            pq = new PriorityQueue<PairValue<GraphCluster>>(comp);
+            pq = new PriorityQueue<>(capacity, comp);
         }
         double sim;
         GraphCluster a, b;
