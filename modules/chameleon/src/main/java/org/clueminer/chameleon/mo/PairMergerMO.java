@@ -195,4 +195,8 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         this.objectives.remove(eval);
     }
 
+    public void clearObjectives() {
+        this.objectives.clear();
+    }
+
 }

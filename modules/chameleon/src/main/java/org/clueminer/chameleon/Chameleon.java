@@ -179,6 +179,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
             ((PairMerger) m).setMergeEvaluation(me);
         } else if (m instanceof PairMergerMO) {
             PairMergerMO mo = (PairMergerMO) m;
+            mo.clearObjectives();
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
