@@ -32,10 +32,11 @@ import org.clueminer.utils.Props;
  */
 public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
 
-    private final LinkedList<LinkedList<P>> fronts;
+    private LinkedList<LinkedList<P>> fronts;
     private NSGASort<E, C, P> sorter;
     private List<MergeEvaluation<E>> objectives;
     private ArrayList<P> pairs;
+    private Props props;
 
     private int currFront = 0;
 
@@ -43,7 +44,9 @@ public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPa
 
     public FrontQueue(ArrayList<P> pairs, List<MergeEvaluation<E>> objectives, Props pref) {
         sorter = new NSGASort<>();
+        this.objectives = objectives;
         this.pairs = pairs;
+        this.props = pref;
         this.fronts = sorter.sort(pairs, objectives, pref);
     }
 
@@ -59,22 +62,29 @@ public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPa
     public P poll() {
         P item = null;
         if (fronts.isEmpty()) {
-            return item;
+            return null;
         }
         LinkedList<P> front;
         while (!fronts.isEmpty()) {
             front = fronts.get(0);
-            if (!front.isEmpty()) {
-                item = front.removeFirst();
-            } else {
+            if (front.isEmpty()) {
                 fronts.remove(0);
+            } else {
+                item = front.removeFirst();
             }
 
             if (item != null) {
-                return item;
+                return remove(item);
             }
         }
 
+        return item;
+    }
+
+    P remove(P item) {
+        if (pairs != null) {
+            pairs.remove(item);
+        }
         return item;
     }
 
@@ -150,8 +160,25 @@ public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPa
         throw new UnsupportedOperationException("not supported.");
     }
 
-    void add(P createPair) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void add(P pair) {
+        pairs.add(pair);
+        //TODO: this is really inefficient, we have to resort all items for each insert
+        this.fronts = sorter.sort(pairs, objectives, props);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("FrontQueue [");
+        if (fronts != null) {
+            for (int i = 0; i < fronts.size(); i++) {
+                sb.append("front ").append(i).append("[").append(fronts.get(i).size()).append("]").append(": ");
+                /* for (P elem : fronts.get(i)) {                    sb.append(elem);
+                }*/
+                sb.append("\n");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
 }

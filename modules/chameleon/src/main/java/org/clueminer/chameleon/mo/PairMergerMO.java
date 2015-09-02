@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.AbstractMerger;
@@ -33,7 +32,6 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
-import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -55,34 +53,38 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     }
 
     @Override
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
-        blacklist = new HashSet<>(clusterList.size() * clusterList.size() + clusterList.size());
-        ArrayList<P> pairs = buildQueue(clusterList, pref);
-
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        if (clusters.isEmpty()) {
+            throw new RuntimeException("initialize() must be called first");
+        }
+        if (objectives.isEmpty()) {
+            throw new RuntimeException("you must specify at least 2 objectives");
+        }
+        ArrayList<P> pairs = buildQueue(clusters.size(), pref);
         queue = new FrontQueue<>(pairs, objectives, pref);
-        nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
-        for (int i = 0; i < clusterList.size() - 1; i++) {
+        int numClusters = clusters.size();
+        for (int i = 0; i < numClusters - 1; i++) {
             singleMerge(queue.poll(), pref);
         }
 
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
     }
 
-    private ArrayList<P> buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
-        ArrayList<P> allPairs = new ArrayList<>(triangleSize(clusterList.size()));
+    private ArrayList<P> buildQueue(int numClusters, Props pref) {
+        ArrayList<P> allPairs = new ArrayList<>(triangleSize(numClusters));
         C c1, c2;
         //generate all pairs
-        for (int i = 0; i < clusterList.size(); i++) {
-            c1 = (C) new GraphCluster(clusterList.get(i), graph, clusterCount++, bisection);
+        for (int i = 0; i < numClusters; i++) {
+            c1 = (C) clusters.get(i);
             for (int j = 0; j < i; j++) {
-                c2 = (C) new GraphCluster(clusterList.get(j), graph, clusterCount++, bisection);
+                c2 = (C) clusters.get(j);
                 allPairs.add((P) createPair(c1, c2, pref));
             }
         }
@@ -109,7 +111,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
         blacklist.add(i);
         blacklist.add(j);
-        if (curr.A.getClusterId() == curr.B.getClusterId()) {
+        if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
         LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
@@ -117,7 +119,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         //evaluation.clusterCreated(curr, newCluster, pref);
-        addIntoTree((Pair<GraphCluster<E>>) curr, pref);
+        addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
         clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
@@ -156,13 +158,17 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
      * @param pair
      * @param pref
      */
-    protected void addIntoTree(Pair<GraphCluster<E>> pair, Props pref) {
+    protected void addIntoTree(MoPair<GraphCluster<E>> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
         DTreeNode newNode = new DTreeNode(clusterCount - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
-        double sim = Double.NaN; //TODO: which objective do we use?
+        double sim = 0.0;
+        for (int i = 0; i < objectives.size(); i++) {
+            //TODO: we might multiply objectives or use another criteria for building tree
+            sim += pair.getObjective(i);
+        }
         if (sim > 10) {
             sim = 10;
         }

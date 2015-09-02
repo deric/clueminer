@@ -18,7 +18,10 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.RiRcSimilarity;
+import org.clueminer.chameleon.ShatovskaSimilarity;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -45,8 +48,8 @@ public class PairMergerMOTest {
     }
 
     @Test
-    public void testSchool() {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+    public void testUsArrest() {
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         int maxPartitionSize = 20;
@@ -59,11 +62,15 @@ public class PairMergerMOTest {
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
         subject = new PairMergerMO();
+        subject.addObjective(new RiRcSimilarity());
+        subject.addObjective(new ShatovskaSimilarity());
+
         subject.initialize(partitioningResult, g, bisection);
-        //subject.addObjective(null);
+
         Props pref = new Props();
-        HierarchicalResult result = subject.getHierarchy(partitioningResult, dataset, pref);
-        //DendroTreeData tree = result.getTreeData();
+        HierarchicalResult result = subject.getHierarchy(dataset, pref);
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
     }
 
 }
