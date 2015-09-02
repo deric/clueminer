@@ -42,12 +42,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
+public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<C>> extends AbstractMerger<E> implements Merger<E> {
 
     private List<MergeEvaluation<E>> objectives = new LinkedList<>();
     private static final String name = "multi-objective merger";
 
-    private FrontQueue<Pair<GraphCluster>> queue;
+    private FrontQueue<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -57,11 +57,9 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
     @Override
     public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset, Props pref) {
         blacklist = new HashSet<>(clusterList.size() * clusterList.size() + clusterList.size());
-        Pair<GraphCluster<E>>[] pairs = buildQueue(clusterList, dataset);
-        NSGASort<E, GraphCluster<E>> sorter = new NSGASort<>();
-        LinkedList fronts = sorter.sort(pairs, objectives, pref);
+        ArrayList<P> pairs = buildQueue(clusterList, pref);
 
-        queue = new FrontQueue<>(fronts);
+        queue = new FrontQueue<>(pairs, objectives, pref);
         nodes = initiateTree(clusterList);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
@@ -77,6 +75,20 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
         return result;
     }
 
+    private ArrayList<P> buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Props pref) {
+        ArrayList<P> allPairs = new ArrayList<>(triangleSize(clusterList.size()));
+        C c1, c2;
+        //generate all pairs
+        for (int i = 0; i < clusterList.size(); i++) {
+            c1 = (C) new GraphCluster(clusterList.get(i), graph, clusterCount++, bisection);
+            for (int j = 0; j < i; j++) {
+                c2 = (C) new GraphCluster(clusterList.get(j), graph, clusterCount++, bisection);
+                allPairs.add((P) createPair(c1, c2, pref));
+            }
+        }
+        return allPairs;
+    }
+
     /**
      * Compute size of triangular matrix (n x n) minus diagonal
      *
@@ -87,23 +99,7 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
         return ((n - 1) * n) >>> 1;
     }
 
-    private Pair<GraphCluster<E>>[] buildQueue(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<E> dataset) {
-        Pair<GraphCluster<E>>[] allPairs = new Pair[triangleSize(clusterList.size())];
-        GraphCluster<E> c1, c2;
-        int n = 0;
-        //generate all pairs
-        for (int i = 0; i < clusterList.size(); i++) {
-            c1 = new GraphCluster(clusterList.get(i), graph, clusterCount++, bisection);
-            for (int j = 0; j < i; j++) {
-                c2 = new GraphCluster(clusterList.get(j), graph, clusterCount++, bisection);
-                Pair p = new Pair(c1, c2);
-                allPairs[n++] = p;
-            }
-        }
-        return allPairs;
-    }
-
-    private void singleMerge(Pair<GraphCluster> curr, Props pref) {
+    private void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {
@@ -116,15 +112,41 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
         if (curr.A.getClusterId() == curr.B.getClusterId()) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        LinkedList<Node> clusterNodes = curr.A.getNodes();
+        LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusterCount++, bisection);
         //evaluation.clusterCreated(curr, newCluster, pref);
-        addIntoTree(curr, pref);
+        addIntoTree((Pair<GraphCluster<E>>) curr, pref);
         clusters.add(newCluster);
         updateExternalProperties(newCluster, curr.A, curr.B);
-        //addIntoQueue(newCluster, pref);
+        addIntoQueue((C) newCluster, pref);
+    }
+
+    private void addIntoQueue(C cluster, Props pref) {
+        for (int i = 0; i < cluster.getClusterId(); i++) {
+            if (!blacklist.contains(i)) {
+                queue.add((P) createPair((C) clusters.get(i), cluster, pref));
+            }
+        }
+    }
+
+    /**
+     * Create a pair of clusters and pre-computes all objectives
+     *
+     * @param a
+     * @param b
+     * @param pref
+     * @return
+     */
+    private MoPair createPair(C a, C b, Props pref) {
+        P pair = (P) new MoPair<>(a, b, objectives.size());
+        double sim;
+        for (int j = 0; j < objectives.size(); j++) {
+            sim = objectives.get(j).score(a, b, pref);
+            pair.setObjective(j, sim);
+        }
+        return pair;
     }
 
     /**
@@ -134,7 +156,7 @@ public class PairMergerMO<E extends Instance> extends AbstractMerger<E> implemen
      * @param pair
      * @param pref
      */
-    protected void addIntoTree(Pair<GraphCluster> pair, Props pref) {
+    protected void addIntoTree(Pair<GraphCluster<E>> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
         DTreeNode newNode = new DTreeNode(clusterCount - 1);

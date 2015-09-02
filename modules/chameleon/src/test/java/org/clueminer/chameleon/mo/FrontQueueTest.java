@@ -30,21 +30,25 @@ import org.junit.Test;
 public class FrontQueueTest {
 
     private FrontQueue subject;
+    private static final double delta = 1e-9;
 
     public FrontQueueTest() {
     }
 
     @Before
     public void setUp() {
-        LinkedList<List<Integer>> fronts = new LinkedList<>();
+        LinkedList<List<MoPair>> fronts = new LinkedList<>();
         int n = 15;
-        LinkedList<Integer> curr = null;
+        LinkedList<MoPair> curr = null;
+        MoPair pair;
         for (int i = 0; i < n; i++) {
             if (i % 4 == 0) {
                 curr = new LinkedList<>();
                 fronts.add(curr);
             }
-            curr.add(i);
+            pair = new MoPair(i, i, 1);
+            pair.setObjective(0, i);
+            curr.add(pair);
         }
         subject = new FrontQueue(fronts);
     }
@@ -66,22 +70,22 @@ public class FrontQueueTest {
 
     @Test
     public void testNext() {
-        int item;
+        MoPair item;
         int n = 15;
         for (int i = 0; i < n; i++) {
             assertEquals(true, subject.hasNext());
-            item = (int) subject.next();
-            assertEquals(i, item);
+            item = subject.next();
+            assertEquals(i, item.getObjective(0), delta);
         }
     }
 
     @Test
     public void testPoll() {
-        int item;
+        MoPair item;
         int n = 15;
         for (int i = 0; i < n; i++) {
             assertEquals(n - i, subject.size());
-            item = (int) subject.poll();
+            item = subject.poll();
         }
         assertEquals(0, subject.size());
     }
