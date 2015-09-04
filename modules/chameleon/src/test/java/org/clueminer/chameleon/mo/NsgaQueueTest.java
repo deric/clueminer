@@ -34,6 +34,7 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -75,12 +76,12 @@ public class NsgaQueueTest {
         //TODO: make sure we can remove and add items to queue in fast manner
         int n = 21;
         MoPair item;
-        /*for (int i = 0; i < n; i++) {
-         //assertEquals(n - i, queue.size());
-         item = queue.poll();
-         System.out.println("getting " + i + " item: " + item);
-         }
-         assertEquals(0, queue.size());*/
+        for (int i = 0; i < n; i++) {
+            //assertEquals(n - i, queue.size());
+            item = queue.poll();
+            System.out.println("got " + i + " item: " + item + ", size " + queue.size());
+        }
+        assertEquals(0, queue.size());
     }
 
 }
