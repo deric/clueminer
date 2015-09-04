@@ -57,24 +57,22 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
      * @return first item or null
      */
     public P poll() {
-        FndsMember<P> item = null;
+        FndsMember<P> item;
         if (fronts.isEmpty()) {
             return null;
         }
-        Set<FndsMember<P>> front;
-        while (!fronts.isEmpty()) {
-            front = fronts.get(0);
-            if (!front.isEmpty()) {
-                item = front.iterator().next();
-            }
-
-            if (item != null) {
+        //System.out.println(this.toString());
+        int curr = 0;
+        Set<FndsMember<P>> front = fronts.get(curr);
+        Iterator<FndsMember<P>> iter = front.iterator();
+        while (size() > 0) {
+            if (iter.hasNext()) {
+                item = iter.next();
                 front.remove(item);
                 return remove(item);
             }
-        }
-        if (item != null) {
-            return item.getValue();
+            front = fronts.get(++curr);
+            iter = front.iterator();
         }
         return null;
     }
@@ -84,7 +82,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             pairs.remove(item.getValue());
         }
         //make sure we update graph of dominancy
-        item.delete(fronts);
+        //item.delete(fronts);
         return item.getValue();
     }
 
@@ -109,16 +107,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         if (fronts.isEmpty()) {
             return true;
         }
-        int curr = 0;
-
-        Set<FndsMember<P>> front = fronts.get(curr);
-        while (curr < fronts.size() && front != null) {
-            if (front.size() > 0) {
-                return false;
-            }
-            front = fronts.get(curr++);
-        }
-        return true;
+        return size() == 0;
     }
 
     /**
@@ -128,11 +117,9 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
      */
     public int size() {
         int size = 0;
-        int curr = 0;
         if (fronts.size() > 0) {
-            Set<FndsMember<P>> front = fronts.get(currFront);
-            while (front != null && curr < fronts.size()) {
-                front = fronts.get(curr++);
+            //reduce(0) { front.size }
+            for (Set<FndsMember<P>> front : fronts) {
                 size += front.size();
             }
         }
