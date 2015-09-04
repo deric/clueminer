@@ -150,7 +150,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         int flagDominate;
         FndsMember<P> item;
         int curr = 0;
-        Set<FndsMember<P>> front = fronts.get(curr);
+        Set<FndsMember<P>> front = fronts.get(curr++);
         Iterator<FndsMember<P>> iter = front.iterator();
         while (curr < fronts.size()) {
             if (iter.hasNext()) {
@@ -175,7 +175,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
                 }
             }
             //go to next front
-            front = fronts.get(++curr);
+            front = fronts.get(curr++);
             iter = front.iterator();
         }
     }

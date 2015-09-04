@@ -52,9 +52,10 @@ public class FndsMember<T> {
     public void addIDominate(FndsMember<T> other, NsgaQueue fronts) {
         iDominate.add(other);
         other.dominatesMe.add(this);
+        //TODO: we have to perform move without modifing iterator.
         //move item to lower front
-        fronts.getFront(other.front++).remove(other);
-        fronts.getFront(other.front).add(other);
+        //fronts.getFront(other.front++).remove(other);
+        //fronts.getFront(other.front).add(other);
     }
 
     /**
