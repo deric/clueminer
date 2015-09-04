@@ -42,7 +42,7 @@ public class DominanceComparator<C extends Cluster, P extends MoPair<C>> impleme
      *
      * @param p1
      * @param p2
-     * @return
+     * @return -1 when p1 dominates, +1 when p2 dominates
      */
     @Override
     public int compare(P p1, P p2) {

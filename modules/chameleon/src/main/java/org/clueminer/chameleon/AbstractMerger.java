@@ -221,4 +221,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         nodes[clusters.size() - 1] = newNode;
     }
 
+    public ArrayList<GraphCluster<E>> getClusters() {
+        return clusters;
+    }
+
 }

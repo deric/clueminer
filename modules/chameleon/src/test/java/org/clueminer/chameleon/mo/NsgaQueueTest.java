@@ -19,6 +19,7 @@ package org.clueminer.chameleon.mo;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.MergeEvaluation;
@@ -127,6 +128,55 @@ public class NsgaQueueTest {
             assertNotNull(item);
         }
         assertEquals(21, queue.size());
+    }
+
+    @Test
+    public void testMergig() {
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        Props props = new Props();
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+
+        List<MergeEvaluation> objectives = new LinkedList<>();
+        objectives.add(new RiRcSimilarity());
+        objectives.add(new ShatovskaSimilarity());
+
+        PairMergerMO merger = new PairMergerMO();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
+
+        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        queue = new NsgaQueue(pairs, objectives, props);
+        //there are 21 pairs of clusters
+        assertEquals(21, queue.size());
+        //we should have 6 fronts (last one is empty)
+        assertEquals(6, queue.numFronts());
+        //TODO: make sure we can remove and add items to queue in fast manner
+        int n = 21;
+        MoPair<GraphCluster> item;
+        ArrayList<GraphCluster<Instance>> clusters = merger.getClusters();
+        for (int i = 0; i < n; i++) {
+            item = queue.poll();
+            assertNotNull(item);
+            LinkedList<Node<Instance>> clusterNodes = item.A.getNodes();
+            clusterNodes.addAll(item.B.getNodes());
+            GraphCluster<Instance> newCluster = new GraphCluster(clusterNodes, g, clusters.size(), bisection);
+            clusters.add(newCluster);
+            /*for (MergeEvaluation<Instance> eval : objectives) {
+             eval.clusterCreated(item, newCluster, props);
+             }*/
+            //TODO: iterate over all other pairs
+
+        }
+        //assertEquals(0, queue.size());
     }
 
 }

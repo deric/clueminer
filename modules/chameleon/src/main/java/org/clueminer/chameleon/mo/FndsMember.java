@@ -31,7 +31,7 @@ public class FndsMember<T> {
     private final HashSet<FndsMember<T>> dominatesMe;
     private int domCnt;
     //currently assigned front ID
-    private int front = -1;
+    protected int front = 0;
 
     public FndsMember(T value) {
         this.value = value;
@@ -49,9 +49,12 @@ public class FndsMember<T> {
         other.dominatesMe.add(this);
     }
 
-    public void addDominatesMe(FndsMember<T> other) {
-        dominatesMe.add(other);
-        other.iDominate.add(this);
+    public void addIDominate(FndsMember<T> other, NsgaQueue fronts) {
+        iDominate.add(other);
+        other.dominatesMe.add(this);
+        //move item to lower front
+        fronts.getFront(other.front++).remove(other);
+        fronts.getFront(other.front).add(other);
     }
 
     /**
@@ -105,8 +108,7 @@ public class FndsMember<T> {
         for (FndsMember<T> mem : dominatesMe) {
             mem.iDominate.remove(this);
             //move mem to lower front
-            fronts.getFront(mem.front).remove(mem);
-            mem.front++;
+            fronts.getFront(mem.front++).remove(mem);
             fronts.getFront(mem.front).add(mem);
         }
     }

@@ -145,7 +145,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
      * @param pref
      * @return
      */
-    private MoPair createPair(C a, C b, Props pref) {
+    protected MoPair<C> createPair(C a, C b, Props pref) {
         P pair = (P) new MoPair<>(a, b, objectives.size());
         double sim;
         for (int j = 0; j < objectives.size(); j++) {
