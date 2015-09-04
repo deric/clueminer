@@ -18,6 +18,7 @@ package org.clueminer.chameleon.mo;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * Member of Fast non-dominated sort queue
@@ -30,6 +31,8 @@ public class FndsMember<T> {
     private final HashSet<FndsMember<T>> iDominate;
     private final HashSet<FndsMember<T>> dominatesMe;
     private int domCnt;
+    //front ID
+    private int front = -1;
 
     public FndsMember(T value) {
         this.value = value;
@@ -61,6 +64,10 @@ public class FndsMember<T> {
         return dominatesMe.size();
     }
 
+    public int rankDiff() {
+        return dominatesMe.size() - iDominate.size();
+    }
+
     public int domDiff() {
         return dominatesMe.size() - domCnt;
     }
@@ -69,19 +76,40 @@ public class FndsMember<T> {
         domCnt++;
     }
 
+    public int getIDominateCnt() {
+        return iDominate.size();
+    }
+
+    public int getDominatesMeCnt() {
+        return dominatesMe.size();
+    }
+
     /**
      * Remove this member from all other lists, thus lowering/increasing rank of
      * others
      */
-    public void delete() {
+    public void delete(LinkedList<LinkedList<FndsMember<T>>> fronts) {
         for (FndsMember<T> mem : iDominate) {
             mem.dominatesMe.remove(this);
-            //TODO: move mem to higher front
+            //move mem to higher front
+            fronts.get(mem.front).remove(mem);
+            mem.front--;
+            if (mem.front > 0) {
+                fronts.get(mem.front).add(mem);
+            }
         }
 
         for (FndsMember<T> mem : dominatesMe) {
             mem.iDominate.remove(this);
-            //TODO: move mem to lower front
+            //move mem to lower front
+            fronts.get(mem.front).remove(mem);
+            mem.front++;
+            if (mem.front < fronts.size()) {
+                fronts.get(mem.front).add(mem);
+            } else {
+                throw new RuntimeException("front overflow");
+            }
+
         }
     }
 
@@ -91,6 +119,29 @@ public class FndsMember<T> {
 
     public Iterator<FndsMember<T>> iterDominatesMe() {
         return dominatesMe.iterator();
+    }
+
+    public void setFront(int frontId) {
+        this.front = frontId;
+    }
+
+    public int getFront() {
+        return front;
+    }
+
+    public int frontRank(int minFront) {
+        int rank = 0;
+        System.out.println("my front " + front + " val " + value);
+        for (FndsMember<T> mem : dominatesMe) {
+            /* if (mem.front < 0) {
+             throw new RuntimeException("front number not set for " + mem);
+             }*/
+            System.out.println("front: " + mem.front + " > " + mem.value);
+            if (mem.front < minFront) {
+                rank += 1;
+            }
+        }
+        return rank;
     }
 
 }

@@ -17,9 +17,11 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
@@ -35,6 +37,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
     private List<MergeEvaluation<E>> objectives;
     private ArrayList<P> pairs;
     private Props params;
+    private DominanceComparator<C, P> comparator;
 
     private int currFront = 0;
 
@@ -44,6 +47,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         this.objectives = objectives;
         this.pairs = pairs;
         this.params = pref;
+        this.comparator = new DominanceComparator(objectives, params);
         System.out.println("got " + pairs.size() + " pairs");
         this.fronts = sort(pairs);
     }
@@ -78,7 +82,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
     P remove(FndsMember<P> item) {
         if (pairs != null) {
             pairs.remove(item.getValue());
-
+            item.delete(fronts);
         }
         return item.getValue();
     }
@@ -180,14 +184,13 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         int n = pairs.size();
 
         // front[i] contains the list of individuals belonging to the front i
-        List<FndsMember<P>>[] front = new List[n + 1];
+        Set<FndsMember<P>>[] front = new Set[n + 1];
 
         // Initialize the fronts
         for (int i = 0; i < front.length; i++) {
-            front[i] = new LinkedList<>();
+            front[i] = new HashSet<>();
         }
 
-        DominanceComparator<C, P> comparator = new DominanceComparator(objectives, params);
         int flagDominate;
 
         ArrayList<FndsMember<P>> members = new ArrayList<>();
@@ -207,7 +210,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
                 if (flagDominate == -1) {
                     p.addIDominate(q);
                 } else if (flagDominate == 1) {
-                    q.addIDominate(q);
+                    q.addIDominate(p);
                 }
             }
         }
@@ -215,6 +218,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         for (FndsMember<P> member : members) {
             if (member.rank() == 0) {
                 front[0].add(member);
+                member.setFront(0);
             }
         }
 
@@ -232,10 +236,21 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
                     p.incDomCnt();
                     if (p.domDiff() == 0) {
                         front[i].add(p);
+                        p.setFront(i);
                     }
+                    //System.out.println("q " + p.rank() + " rd: " + p.rankDiff() + " domDiff: " + p.domDiff() + " front rank" + p.frontRank(i));
                 }
             }
         }
+        for (int j = 0; j < front.length; j++) {
+            Set<FndsMember<P>> curr = front[j];
+            System.out.println("front " + j + " size: " + curr.size());
+            for (FndsMember<P> item : curr) {
+                System.out.println("  " + item.getFront() + " - " + item.getValue() + ", I dominate: " + item.getIDominateCnt() + " dominate me: " + item.getDominatesMeCnt() + " sc = " + item.domDiff());
+            }
+
+        }
+        System.out.println("total fronts: " + i);
 
         LinkedList<LinkedList<FndsMember<P>>> rankedSubpopulations = new LinkedList<>();
         //0,1,2,....,i-1 are fronts, then i fronts

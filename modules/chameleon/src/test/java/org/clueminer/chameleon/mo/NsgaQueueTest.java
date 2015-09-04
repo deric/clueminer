@@ -68,10 +68,19 @@ public class NsgaQueueTest {
 
         PairMergerMO merger = new PairMergerMO();
         merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         queue = new NsgaQueue(pairs, objectives, props);
         //TODO: make sure we can remove and add items to queue in fast manner
+        int n = 21;
+        MoPair item;
+        /*for (int i = 0; i < n; i++) {
+         //assertEquals(n - i, queue.size());
+         item = queue.poll();
+         System.out.println("getting " + i + " item: " + item);
+         }
+         assertEquals(0, queue.size());*/
     }
 
 }
