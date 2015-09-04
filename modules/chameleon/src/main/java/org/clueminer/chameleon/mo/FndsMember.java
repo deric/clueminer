@@ -16,10 +16,8 @@
  */
 package org.clueminer.chameleon.mo;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Member of Fast non-dominated sort queue
@@ -89,30 +87,27 @@ public class FndsMember<T> {
      * Remove this member from all other lists, thus lowering/increasing rank of
      * others
      */
-    public void delete(ArrayList<Set<FndsMember<T>>> fronts) {
+    public void delete(NsgaQueue fronts) {
         for (FndsMember<T> mem : iDominate) {
             mem.dominatesMe.remove(this);
-            //move mem to higher front
-            fronts.get(mem.front).remove(mem);
 
-            if (mem.front > 1) {
-                mem.front--;
-                fronts.get(mem.front).add(mem);
-            }
+            //highest front is 0
+            //if (mem.front > 1) {
+            //move mem to higher front
+            fronts.getFront(mem.front).remove(mem);
+            //recompute front to which should be item assigned
+            //due to ties in dominancy we can't just substract 1
+            mem.front = mem.frontAssign();
+            fronts.getFront(mem.front).add(mem);
+            //}
         }
 
         for (FndsMember<T> mem : dominatesMe) {
             mem.iDominate.remove(this);
             //move mem to lower front
-            fronts.get(mem.front).remove(mem);
-
-            if (mem.front < (fronts.size() - 1)) {
-                mem.front++;
-                fronts.get(mem.front).add(mem);
-            } else {
-                throw new RuntimeException("front overflow");
-            }
-
+            fronts.getFront(mem.front).remove(mem);
+            mem.front++;
+            fronts.getFront(mem.front).add(mem);
         }
     }
 

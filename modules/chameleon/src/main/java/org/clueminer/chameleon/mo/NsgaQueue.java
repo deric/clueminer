@@ -47,7 +47,6 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         this.pairs = pairs;
         this.params = pref;
         this.comparator = new DominanceComparator(objectives, params);
-        System.out.println("got " + pairs.size() + " pairs");
         sort(pairs);
     }
 
@@ -82,7 +81,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             pairs.remove(item.getValue());
         }
         //make sure we update graph of dominancy
-        //item.delete(fronts);
+        item.delete(this);
         return item.getValue();
     }
 
@@ -159,21 +158,6 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         sort(pairs);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("NsgaQueue [");
-        if (fronts != null) {
-            for (int i = 0; i < fronts.size(); i++) {
-                sb.append("front ").append(i).append("[").append(fronts.get(i).size()).append("]").append(": ");
-                /* for (P elem : fronts.get(i)) {                    sb.append(elem);
-                 }*/
-                sb.append("\n");
-            }
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
     private void sort(ArrayList<P> pairs) {
         int n = pairs.size();
         int flagDominate;
@@ -226,19 +210,9 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
                         getFront(i).add(p);
                         p.setFront(i);
                     }
-                    //   System.out.println("q " + p.rank() + " rd: " + p.rankDiff() + " domDiff: " + p.domDiff() + " front " + p.frontAssign() + " i = " + i);
                 }
             }
         }
-        for (int j = 0; j < fronts.size(); j++) {
-            Set<FndsMember<P>> curr = getFront(j);
-            System.out.println("front " + j + " size: " + curr.size());
-            for (FndsMember<P> item : curr) {
-                System.out.println("  " + item.getFront() + " - " + item.getValue() + ", I dominate: " + item.getIDominateCnt() + " dominate me: " + item.getDominatesMeCnt() + " fa = " + item.frontAssign());
-            }
-
-        }
-        System.out.println("total fronts: " + i);
     }
 
     /**
@@ -247,7 +221,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
      * @param i
      * @return front with required rank (start from 0 up to (n+1))
      */
-    private Set<FndsMember<P>> getFront(int i) {
+    protected Set<FndsMember<P>> getFront(int i) {
         Set<FndsMember<P>> front = null;
         while (i >= fronts.size()) {
             front = new HashSet<>();
@@ -264,6 +238,34 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             return 0;
         }
         return fronts.size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < fronts.size(); j++) {
+            Set<FndsMember<P>> curr = getFront(j);
+            sb.append("front ").append(j).append(" size: ").append(curr.size()).append("\n");
+            for (FndsMember<P> item : curr) {
+                sb.append("  ").append(item.getFront()).append(" - ").append(item.getValue()).append(", I dominate: ").append(item.getIDominateCnt()).append(" dominate me: ").append(item.getDominatesMeCnt()).append(" fa = ").append(item.frontAssign());
+            }
+
+        }
+        return sb.toString();
+    }
+
+    public String stats() {
+        StringBuilder sb = new StringBuilder("NsgaQueue [");
+        if (fronts != null) {
+            for (int i = 0; i < fronts.size(); i++) {
+                if (i > 0) {
+                    sb.append("\n");
+                }
+                sb.append("front ").append(i).append("[").append(fronts.get(i).size()).append("]").append(": ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
 }

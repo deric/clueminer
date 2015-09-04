@@ -35,6 +35,7 @@ import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -73,6 +74,7 @@ public class NsgaQueueTest {
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         queue = new NsgaQueue(pairs, objectives, props);
+        System.out.println(queue.stats());
         //there are 21 pairs of clusters
         assertEquals(21, queue.size());
         //we should have 6 fronts (last one is empty)
@@ -81,11 +83,50 @@ public class NsgaQueueTest {
         int n = 21;
         MoPair item;
         for (int i = 0; i < n; i++) {
-            //assertEquals(n - i, queue.size());
+            assertEquals(n - i, queue.size());
             item = queue.poll();
-            System.out.println("got " + i + " item: " + item + ", size " + queue.size());
+            assertNotNull(item);
         }
         assertEquals(0, queue.size());
+    }
+
+    @Test
+    public void testIterating() {
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        Props props = new Props();
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+
+        List<MergeEvaluation> objectives = new LinkedList<>();
+        objectives.add(new RiRcSimilarity());
+        objectives.add(new ShatovskaSimilarity());
+
+        PairMergerMO merger = new PairMergerMO();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
+
+        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        queue = new NsgaQueue(pairs, objectives, props);
+        //there are 21 pairs of clusters
+        assertEquals(21, queue.size());
+        //we should have 6 fronts (last one is empty)
+        assertEquals(6, queue.numFronts());
+        //TODO: make sure we can remove and add items to queue in fast manner
+        int n = 21;
+        MoPair item;
+        for (int i = 0; i < n; i++) {
+            item = queue.next();
+            assertNotNull(item);
+        }
+        assertEquals(21, queue.size());
     }
 
 }
