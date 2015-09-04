@@ -64,9 +64,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         Set<FndsMember<P>> front;
         while (!fronts.isEmpty()) {
             front = fronts.get(0);
-            if (front.isEmpty()) {
-                fronts.remove(0);
-            } else {
+            if (!front.isEmpty()) {
                 item = front.iterator().next();
             }
 
@@ -197,11 +195,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         ArrayList<FndsMember<P>> members = new ArrayList<>();
         FndsMember<P> p, q;
 
-        // Initialize the fronts
-        for (int i = 0; i < (n + 1); i++) {
-            fronts.add(new HashSet<FndsMember<P>>());
-        }
-
+        //wrap cluster pairs into sorting structure (a graph node)
         for (int i = 0; i < n; i++) {
             // Initialize the list of individuals
             p = new FndsMember<>(pairs.get(i));
@@ -222,9 +216,10 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             }
         }
 
+        //find dominating items
         for (FndsMember<P> member : members) {
             if (member.rank() == 0) {
-                fronts.get(0).add(member);
+                getFront(0).add(member);
                 member.setFront(0);
             }
         }
@@ -232,25 +227,24 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         //Obtain the rest of fronts
         int i = 0;
         Iterator<FndsMember<P>> it1, it2; // Iterators
-        while (!fronts.get(i).isEmpty()) {
+        while (!getFront(i).isEmpty()) {
             i++;
-            it1 = fronts.get(i - 1).iterator();
+            it1 = getFront(i - 1).iterator();
             while (it1.hasNext()) {
                 it2 = it1.next().iterIDominate();
-                //it2 = iDominate[it1.next()].iterator();
                 while (it2.hasNext()) {
                     p = it2.next();
                     p.incDomCnt();
                     if (p.domDiff() == 0) {
-                        fronts.get(i).add(p);
+                        getFront(i).add(p);
                         p.setFront(i);
                     }
                     //   System.out.println("q " + p.rank() + " rd: " + p.rankDiff() + " domDiff: " + p.domDiff() + " front " + p.frontAssign() + " i = " + i);
                 }
             }
         }
-        for (int j = 0; j < 5; j++) {
-            Set<FndsMember<P>> curr = fronts.get(j);
+        for (int j = 0; j < fronts.size(); j++) {
+            Set<FndsMember<P>> curr = getFront(j);
             System.out.println("front " + j + " size: " + curr.size());
             for (FndsMember<P> item : curr) {
                 System.out.println("  " + item.getFront() + " - " + item.getValue() + ", I dominate: " + item.getIDominateCnt() + " dominate me: " + item.getDominatesMeCnt() + " fa = " + item.frontAssign());
@@ -258,7 +252,31 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
 
         }
         System.out.println("total fronts: " + i);
+    }
 
+    /**
+     * Ensure that front with given ID exists
+     *
+     * @param i
+     * @return front with required rank (start from 0 up to (n+1))
+     */
+    private Set<FndsMember<P>> getFront(int i) {
+        Set<FndsMember<P>> front = null;
+        while (i >= fronts.size()) {
+            front = new HashSet<>();
+            fronts.add(front);
+        }
+        if (front == null) {
+            front = fronts.get(i);
+        }
+        return front;
+    }
+
+    public int numFronts() {
+        if (fronts == null) {
+            return 0;
+        }
+        return fronts.size();
     }
 
 }

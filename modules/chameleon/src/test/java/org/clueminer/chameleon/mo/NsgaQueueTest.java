@@ -73,6 +73,8 @@ public class NsgaQueueTest {
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         queue = new NsgaQueue(pairs, objectives, props);
+        //we should have 6 fronts (last one is empty)
+        assertEquals(6, queue.numFronts());
         //TODO: make sure we can remove and add items to queue in fast manner
         int n = 21;
         MoPair item;
