@@ -152,6 +152,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         int curr = 0;
         Set<FndsMember<P>> front = fronts.get(curr++);
         Iterator<FndsMember<P>> iter = front.iterator();
+        HashSet<FndsMember<P>> toUpdate = new HashSet<>();
         while (curr < fronts.size()) {
             if (iter.hasNext()) {
                 item = iter.next();
@@ -162,20 +163,35 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
                     while (iter.hasNext()) {
                         item = iter.next();
                         mem.addIDominate(item, this);
+                        toUpdate.add(item);
                     }
                 } else if (flagDominate == 1) {
                     item.addIDominate(mem);
                     while (iter.hasNext()) {
                         item = iter.next();
                         item.addIDominate(mem, this);
+                        toUpdate.add(mem);
                     }
                 } else if (flagDominate == 0) {
                     //we can't decide which one dominates, item belongs to this front
-                    front.add(mem);
+                    toUpdate.add(mem);
                 }
             }
             //go to next front
             front = fronts.get(curr++);
+            //move items between fronts
+            int f;
+            for (FndsMember m : toUpdate) {
+                //move an item to different front
+                f = m.frontAssign();
+                if (m.front != f) {
+                    getFront(m.front).remove(m);
+                    m.front = f;
+                    getFront(f).add(m);
+                }
+            }
+            toUpdate.clear();
+            //now we can safely fetch the iterator
             iter = front.iterator();
         }
     }
