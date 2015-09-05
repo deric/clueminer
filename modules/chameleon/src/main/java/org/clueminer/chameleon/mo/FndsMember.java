@@ -88,18 +88,20 @@ public class FndsMember<T> {
      * others
      */
     public void delete(NsgaQueue fronts) {
+        int upd;
         for (FndsMember<T> mem : iDominate) {
             mem.dominatesMe.remove(this);
 
             //highest front is 0
-            //if (mem.front > 1) {
             //move mem to higher front
-            fronts.getFront(mem.front).remove(mem);
-            //recompute front to which should be item assigned
-            //due to ties in dominancy we can't just substract 1
-            mem.front = mem.frontAssign();
-            fronts.getFront(mem.front).add(mem);
-            //}
+            upd = mem.frontAssign();
+            if (upd != mem.front) {
+                fronts.getFront(mem.front).remove(mem);
+                //recompute front to which should be item assigned
+                //due to ties in dominancy we can't just substract 1
+                mem.front = upd;
+                fronts.getFront(mem.front).add(mem);
+            }
         }
 
         for (FndsMember<T> mem : dominatesMe) {
@@ -149,6 +151,13 @@ public class FndsMember<T> {
             i++;
         }
         return i + 1;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("FndsMem ");
+        sb.append("iDom: ").append(iDominate.size()).append(", dominates Me: ").append(dominatesMe.size());
+        return sb.toString();
     }
 
 }

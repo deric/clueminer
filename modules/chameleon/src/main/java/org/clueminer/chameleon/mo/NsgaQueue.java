@@ -37,6 +37,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
     private final DominanceComparator<C, P> comparator;
 
     private int currFront = 0;
+    private int maxFront;
 
     private Iterator<FndsMember<P>> currIter;
 
@@ -60,7 +61,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         int curr = 0;
         Set<FndsMember<P>> front = fronts.get(curr);
         Iterator<FndsMember<P>> iter = front.iterator();
-        while (size() > 0) {
+        while (curr < (fronts.size() - 1)) {
             if (iter.hasNext()) {
                 item = iter.next();
                 front.remove(item);
@@ -203,6 +204,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
         ArrayList<Set<FndsMember<P>>> fr = new ArrayList<>(n + 1);
         ArrayList<FndsMember<P>> members = new ArrayList<>(n);
         FndsMember<P> p, q;
+        maxFront = n + 1;
 
         //wrap cluster pairs into sorting structure (a graph node)
         for (int i = 0; i < n; i++) {
@@ -266,6 +268,9 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
 
     private Set<FndsMember<P>> getFront(ArrayList<Set<FndsMember<P>>> paretoF, int i) {
         Set<FndsMember<P>> front = null;
+        if (i > maxFront) {
+            i = maxFront;
+        }
         while (i >= paretoF.size()) {
             front = new HashSet<>();
             paretoF.add(front);
@@ -290,7 +295,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             Set<FndsMember<P>> curr = getFront(j);
             sb.append("front ").append(j).append(" size: ").append(curr.size()).append("\n");
             for (FndsMember<P> item : curr) {
-                sb.append("  ").append(item.getFront()).append(" - ").append(item.getValue()).append(", I dominate: ").append(item.getIDominateCnt()).append(" dominate me: ").append(item.getDominatesMeCnt()).append(" fa = ").append(item.frontAssign());
+                sb.append("  ").append(item.getFront()).append(" - ").append(item.getValue()).append(", I dominate: ").append(item.getIDominateCnt()).append(" dominate me: ").append(item.getDominatesMeCnt()).append(" fa = ").append(item.frontAssign()).append("\n");
             }
 
         }
