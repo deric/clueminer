@@ -182,7 +182,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             front = fronts.get(curr++);
             //move items between fronts
             int f;
-            for (FndsMember m : toUpdate) {
+            for (FndsMember<P> m : toUpdate) {
                 //move an item to different front
                 f = m.frontAssign();
                 if (m.front != f) {

@@ -67,7 +67,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
 
         level = 1;
         int numClusters = clusters.size();
-        System.out.println("total " + numClusters);
+        System.out.println("total " + numClusters + "queue size " + queue.size());
         for (int i = 0; i < numClusters - 1; i++) {
             System.out.println("merge: " + i);
             singleMerge(queue.poll(), pref);
@@ -169,9 +169,13 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         newNode.setLeft(left);
         newNode.setRight(right);
         double sim = 0.0;
+        double val;
         for (int i = 0; i < objectives.size(); i++) {
             //TODO: we might multiply objectives or use another criteria for building tree
-            sim += pair.getObjective(i);
+            val = pair.getObjective(i);
+            if (!Double.isNaN(val)) {
+                sim += val;
+            }
         }
         if (sim > 10) {
             sim = 10;

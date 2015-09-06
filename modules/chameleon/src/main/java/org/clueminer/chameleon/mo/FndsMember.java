@@ -27,8 +27,8 @@ import java.util.Iterator;
 public class FndsMember<T> {
 
     private final T value;
-    private final HashSet<FndsMember<T>> iDominate;
-    private final HashSet<FndsMember<T>> dominatesMe;
+    protected final HashSet<FndsMember<T>> iDominate;
+    protected final HashSet<FndsMember<T>> dominatesMe;
     private int domCnt;
     //currently assigned front ID
     protected int front = 0;
