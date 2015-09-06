@@ -4,16 +4,20 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
-import org.clueminer.chameleon.SimilarityMeasure;
+import org.clueminer.chameleon.PairMerger;
+import org.clueminer.chameleon.mo.PairMergerMO;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.partitioning.api.BisectionFactory;
+import org.clueminer.partitioning.api.MergerFactory;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.utils.Props;
@@ -36,6 +40,9 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboCutoffMethod.setSelectedItem("First jump cutoff");
         comboCutoff.setSelectedItem("SD index");
         comboGraphStorage.setSelectedItem("Adj Graph Matrix");
+        comboSimilarity.setSelectedItem(ShatovskaSimilarity.name);
+        comboMerger.setSelectedItem(PairMerger.name);
+        comboMoObjective.setEnabled(false);
     }
 
     /**
@@ -67,8 +74,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         tfMaxPSize = new javax.swing.JTextField();
         lbMaxPartitionSize1 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        rbtnStandard = new javax.swing.JRadioButton();
-        rbtnImproved = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
         comboBisection = new javax.swing.JComboBox();
         labelLimit = new javax.swing.JLabel();
@@ -81,6 +86,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboGraphStorage = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
         comboPartitioning = new javax.swing.JComboBox();
+        comboSimilarity = new javax.swing.JComboBox();
+        lbMerger = new javax.swing.JLabel();
+        comboMerger = new javax.swing.JComboBox();
+        comboMoObjective = new javax.swing.JComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbDistance, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.text")); // NOI18N
         lbDistance.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.toolTipText")); // NOI18N
@@ -159,13 +168,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel1.text")); // NOI18N
         jLabel1.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel1.toolTipText")); // NOI18N
 
-        buttonGroup1.add(rbtnStandard);
-        org.openide.awt.Mnemonics.setLocalizedText(rbtnStandard, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.rbtnStandard.text")); // NOI18N
-
-        buttonGroup1.add(rbtnImproved);
-        rbtnImproved.setSelected(true);
-        org.openide.awt.Mnemonics.setLocalizedText(rbtnImproved, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.rbtnImproved.text_1")); // NOI18N
-
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel2.text")); // NOI18N
         jLabel2.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel2.toolTipText")); // NOI18N
 
@@ -214,6 +216,19 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
             }
         });
 
+        comboSimilarity.setModel(new DefaultComboBoxModel(initSimilarity()));
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbMerger, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbMerger.text")); // NOI18N
+
+        comboMerger.setModel(new DefaultComboBoxModel(initMerger()));
+        comboMerger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboMergerActionPerformed(evt);
+            }
+        });
+
+        comboMoObjective.setModel(new DefaultComboBoxModel(initSimilarity()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -223,59 +238,52 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(45, 45, 45)
-                                .addComponent(rbtnStandard)
-                                .addGap(39, 39, 39)
-                                .addComponent(rbtnImproved))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbK)
-                                    .addComponent(lbMaxPartitionSize)
-                                    .addComponent(lbMaxPartitionSize1))
-                                .addGap(17, 17, 17)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfPriority, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(sliderK, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(sliderMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(41, 41, 41)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(tfK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(tfMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(chkBoxAutoK)
-                                            .addComponent(chkBoxAutoMaxPSize))
-                                        .addGap(6, 6, 6)
-                                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                            .addComponent(lbK)
+                            .addComponent(lbMaxPartitionSize)
+                            .addComponent(lbMaxPartitionSize1))
+                        .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfPriority, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(152, 152, 152)
-                                .addComponent(comboPartitioning, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel3)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)
-                        .addGap(101, 101, 101)
-                        .addComponent(comboBisection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sliderK, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sliderMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(41, 41, 41)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tfK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(tfMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(chkBoxAutoK)
+                                    .addComponent(chkBoxAutoMaxPSize))
+                                .addGap(6, 6, 6)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(labelLimit)
-                                        .addGap(76, 76, 76)
-                                        .addComponent(sliderLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lbDistance)
-                                        .addGap(43, 43, 43)
-                                        .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(26, 26, 26)
+                                        .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(labelLimit)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel3)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(152, 152, 152)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(comboBisection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(comboPartitioning, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(comboSimilarity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(comboMerger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jLabel1))
+                                        .addGap(26, 26, 26)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(comboMoObjective, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(sliderLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(41, 41, 41)
                                 .addComponent(tfLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -287,7 +295,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                                     .addComponent(comboCutoffMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(comboGraphStorage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(lbGraphStorage))))
+                            .addComponent(lbGraphStorage)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lbMerger)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -320,34 +331,34 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbMaxPartitionSize1)
                     .addComponent(tfPriority, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbMerger)
+                    .addComponent(comboMerger, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel1))
-                    .addComponent(rbtnStandard)
-                    .addComponent(rbtnImproved))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(comboSimilarity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboMoObjective, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(comboPartitioning, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(comboBisection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sliderLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(32, 32, 32)
-                                .addComponent(labelLimit))
-                            .addComponent(sliderLimit, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(4, 4, 4)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(comboBisection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(22, 22, 22)
+                                .addComponent(labelLimit)))
                         .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addComponent(lbDistance))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbDistance)
                             .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -445,6 +456,19 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_comboPartitioningActionPerformed
 
+    private void comboMergerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboMergerActionPerformed
+        String merger = (String) comboMerger.getSelectedItem();
+        switch (merger) {
+            case PairMerger.name:
+                comboMoObjective.setEnabled(false);
+                break;
+            case PairMergerMO.name:
+                comboMoObjective.setEnabled(true);
+                break;
+        }
+
+    }//GEN-LAST:event_comboMergerActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
@@ -458,7 +482,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JComboBox comboCutoffMethod;
     private javax.swing.JComboBox comboDistance;
     private javax.swing.JComboBox comboGraphStorage;
+    private javax.swing.JComboBox comboMerger;
+    private javax.swing.JComboBox comboMoObjective;
     private javax.swing.JComboBox comboPartitioning;
+    private javax.swing.JComboBox comboSimilarity;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -471,8 +498,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JLabel lbK;
     private javax.swing.JLabel lbMaxPartitionSize;
     private javax.swing.JLabel lbMaxPartitionSize1;
-    private javax.swing.JRadioButton rbtnImproved;
-    private javax.swing.JRadioButton rbtnStandard;
+    private javax.swing.JLabel lbMerger;
     private javax.swing.JSlider sliderK;
     private javax.swing.JSlider sliderLimit;
     private javax.swing.JSlider sliderMaxPSize;
@@ -515,10 +541,16 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         }
         params.putDouble(Chameleon.CLOSENESS_PRIORITY, Double.valueOf(tfPriority.getText()));
 
-        if (rbtnImproved.isSelected()) {
-            params.put(Chameleon.SIM_MEASURE, SimilarityMeasure.IMPROVED);
-        } else {
-            params.put(Chameleon.SIM_MEASURE, SimilarityMeasure.STANDARD);
+        String merger = (String) comboMerger.getSelectedItem();
+        params.put(Chameleon.MERGER, merger);
+        switch (merger) {
+            case PairMerger.name:
+                params.put(Chameleon.SIM_MEASURE, (String) comboSimilarity.getSelectedItem());
+                break;
+            case PairMergerMO.name:
+                params.put(Chameleon.OBJECTIVE_1, (String) comboSimilarity.getSelectedItem());
+                params.put(Chameleon.OBJECTIVE_2, (String) comboMoObjective.getSelectedItem());
+                break;
         }
 
         String name = (String) comboPartitioning.getSelectedItem();
@@ -559,5 +591,13 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
             list[i++] = gr.getClass().getCanonicalName();
         }
         return list;
+    }
+
+    private Object[] initSimilarity() {
+        return MergeEvaluationFactory.getInstance().getProvidersArray();
+    }
+
+    private Object[] initMerger() {
+        return MergerFactory.getInstance().getProvidersArray();
     }
 }

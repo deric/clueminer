@@ -1,24 +1,24 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
-import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Merger;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * This class merges two clusters in one merge. Two most similar clusters among
@@ -27,41 +27,44 @@ import org.clueminer.utils.Props;
  * @author Tomas Bruna
  * @param <E>
  */
-public abstract class PairMerger<E extends Instance> extends Merger<E> {
+@ServiceProvider(service = Merger.class)
+public class PairMerger<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
-    protected DendroNode[] nodes;
+    protected PriorityQueue<PairValue<GraphCluster>> pq;
 
-    protected PriorityQueue<Element> pq;
+    protected MergeEvaluation evaluation;
 
-    int level;
+    public static final String name = "pair merger";
 
-    /**
-     * Set of merged clusters which are ignored. They could also be deleted but
-     * deleting them from cluster array, external properties matrix and priority
-     * queue would be too expensive.
-     */
-    protected HashSet<Integer> blacklist = new HashSet<>();
-
-    protected double height;
-
-    public PairMerger(Graph g, Bisection bisection, double closenessPriority) {
-        super(g, bisection, closenessPriority);
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node<E>>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
-        buildQueue();
-        nodes = initiateTree(clusterList);
+    /**
+     * Merge clusters while creating a hierarchical structure (dendrogram)
+     *
+     * @param dataset
+     * @param pref
+     * @return
+     */
+    @Override
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        if (clusters.isEmpty()) {
+            throw new RuntimeException("initialize() must be called first");
+        }
+        buildQueue(clusters.size(), pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
-        for (int i = 0; i < clusterList.size() - 1; i++) {
-            singleMerge(pq.poll());
+        //number of initial clusters
+        int numClusters = clusters.size();
+        for (int i = 0; i < numClusters - 1; i++) {
+            singleMerge(pq.poll(), pref);
         }
-
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        //getGraphPropertyStore(clusters.get(0)).dump();
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
@@ -72,18 +75,32 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      *
      * @param clusterList
      */
-    private void singleMerge(Element curr) {
-        while (blacklist.contains(curr.firstCluster) || blacklist.contains(curr.secondCluster)) {
+    private void singleMerge(PairValue<GraphCluster> curr, Props pref) {
+        int i = curr.A.getClusterId();
+        int j = curr.B.getClusterId();
+        while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
             curr = pq.poll();
+            i = curr.A.getClusterId();
+            j = curr.B.getClusterId();
         }
-        blacklist.add(curr.firstCluster);
-        blacklist.add(curr.secondCluster);
-        if (curr.firstCluster == curr.secondCluster) {
+        blacklist.add(i);
+        blacklist.add(j);
+        if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        createNewCluster(curr.firstCluster, curr.secondCluster);
-        updateExternalProperties(curr.firstCluster, curr.secondCluster);
-        addIntoQueue();
+        //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
+        //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
+        //WARNING: we copy nodes from previous clusters (we save memory, but
+        //it's not a good idea to work with merged clusters)
+        LinkedList<Node> clusterNodes = curr.A.getNodes();
+        clusterNodes.addAll(curr.B.getNodes());
+
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        clusters.add(newCluster);
+        evaluation.clusterCreated(curr, newCluster, pref);
+        addIntoTree(curr, pref);
+        updateExternalProperties(newCluster, curr.A, curr.B);
+        addIntoQueue(newCluster, pref);
     }
 
     /**
@@ -92,12 +109,15 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * both cluster array and external properties matrix, therefore we use index
      * clusterCount -1.
      */
-    private void addIntoQueue() {
-        for (int i = 0; i < clusterCount - 1; i++) {
-            if (blacklist.contains(i)) {
-                continue;
+    private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
+        double sim;
+        GraphCluster a;
+        for (int i = 0; i < cluster.getClusterId(); i++) {
+            if (!blacklist.contains(i)) {
+                a = clusters.get(i);
+                sim = evaluation.score(a, cluster, pref);
+                pq.add(new PairValue<>(a, cluster, sim));
             }
-            pq.add(new Element(computeSimilarity(clusterCount - 1, i), i, clusterCount - 1));
         }
     }
 
@@ -105,93 +125,31 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      * Computes similarities between all clusters and adds them into the
      * priority queue.
      */
-    private void buildQueue() {
-        pq = new PriorityQueue<>();
-        for (int i = 0; i < clusterCount; i++) {
+    private void buildQueue(int numClusters, Props pref) {
+        int capacity = numClusters * numClusters;
+        if (!evaluation.isMaximized()) {
+            pq = new PriorityQueue<>(capacity);
+        } else {
+            //inverse sorting - biggest values first
+            Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
+
+                @Override
+                public int compare(PairValue<GraphCluster> o1, PairValue<GraphCluster> o2) {
+                    return o2.compareTo(o1);
+                }
+
+            };
+            pq = new PriorityQueue<>(capacity, comp);
+        }
+        double sim;
+        GraphCluster a, b;
+        for (int i = 0; i < numClusters; i++) {
+            a = clusters.get(i);
             for (int j = 0; j < i; j++) {
-                pq.add(new Element(computeSimilarity(i, j), i, j));
+                b = clusters.get(j);
+                sim = evaluation.score(a, b, pref);
+                pq.add(new PairValue<>(a, b, sim));
             }
-        }
-    }
-
-    /**
-     * Creates new cluster from the two and add it to the end of the cluster
-     * array.
-     *
-     * @param clusterIndex1
-     * @param clusterIndex2
-     */
-    protected abstract void createNewCluster(int clusterIndex1, int clusterIndex2);
-
-    /**
-     * Computes similarity between two clusters
-     *
-     * @param i index of the first cluster
-     * @param j index of the second cluster
-     * @return similarity degree
-     */
-    protected abstract double computeSimilarity(int i, int j);
-
-    /**
-     * Adds node representing new cluster (the one created by merging) to
-     * dendroTree
-     *
-     * @param clusterIndex1
-     * @param clusterIndex2
-     */
-    protected void addIntoTree(int clusterIndex1, int clusterIndex2) {
-        DendroNode left = nodes[clusters.get(clusterIndex1).getClusterId()];
-        DendroNode right = nodes[clusters.get(clusterIndex2).getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusterCount);
-        newNode.setLeft(left);
-        newNode.setRight(right);
-        double sim = computeSimilarity(clusterIndex1, clusterIndex2);
-        if (sim > 10) {
-            sim = 10;
-        }
-        if (sim < 0.005) {
-            sim = 0.005;
-        }
-        height += 1 / sim;
-        newNode.setHeight(height);
-        newNode.setLevel(level++);
-        nodes[clusterCount] = newNode;
-    }
-
-    /**
-     * Computes external properties of the merged cluster and adds them to the
-     * end of the external properties matrix.
-     *
-     * @param firstCluster
-     * @param secondCluster
-     */
-    private void updateExternalProperties(int firstCluster, int secondCluster) {
-        clusterMatrix.add(new ArrayList<ExternalProperties>());
-        for (int i = 0; i < clusterCount - 1; i++) {
-            if (blacklist.contains(i)) {
-                clusterMatrix.get(clusterCount - 1).add(null);
-                continue;
-            }
-            int index1, index2;
-            //Swap indices to make the first index bigger (externalProperties matrix is triangular)
-            index1 = Math.max(i, firstCluster);
-            index2 = Math.min(i, firstCluster);
-            ExternalProperties firstClusterProperties = clusterMatrix.get(index1).get(index2);
-
-            index1 = Math.max(i, secondCluster);
-            index2 = Math.min(i, secondCluster);
-            ExternalProperties secondClusterProperties = clusterMatrix.get(index1).get(index2);
-
-            ExternalProperties mergedProperties = new ExternalProperties();
-            mergedProperties.EIC = firstClusterProperties.EIC + secondClusterProperties.EIC;
-            mergedProperties.counter = firstClusterProperties.counter + secondClusterProperties.counter;
-            if (mergedProperties.counter != 0) {
-                mergedProperties.ECL = mergedProperties.EIC / mergedProperties.counter;
-            } else {
-                mergedProperties.ECL = 0;
-            }
-
-            clusterMatrix.get(clusterCount - 1).add(mergedProperties);
         }
     }
 
@@ -203,7 +161,7 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
      */
     private ArrayList<LinkedList<Node<E>>> getResult() {
         ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusters.size(); i++) {
             if (blacklist.contains(i)) {
                 continue;
             }
@@ -223,6 +181,10 @@ public abstract class PairMerger<E extends Instance> extends Merger<E> {
             output.add(cluster);
         }
         return output;
+    }
+
+    public void setMergeEvaluation(MergeEvaluation eval) {
+        this.evaluation = eval;
     }
 
 }

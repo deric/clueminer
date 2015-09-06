@@ -19,59 +19,78 @@ package org.clueminer.chameleon.mo;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.chameleon.Merger;
+import org.clueminer.chameleon.AbstractMerger;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.factory.Clusters;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
-import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMO extends Merger {
+@ServiceProvider(service = Merger.class)
+public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<C>> extends AbstractMerger<E> implements Merger<E> {
 
-    protected DendroNode[] nodes;
+    private List<MergeEvaluation<E>> objectives = new LinkedList<>();
+    public static final String name = "multi-objective merger";
 
-    int level;
+    private NsgaQueue<E, C, P> queue;
 
-    protected double height;
-
-    public PairMergerMO(Graph g, Bisection bisection, double closenessPriority) {
-        super(g, bisection, closenessPriority);
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public HierarchicalResult getHierarchy(ArrayList<LinkedList<Node>> clusterList, Dataset<? extends Instance> dataset, Props pref) {
-        createClusters(clusterList, bisection);
-        computeExternalProperties();
-        Pair<Cluster>[] pairs = buildQueue(dataset);
-        List<MergeEvaluation> objectives = new LinkedList<>();
-        LinkedList<LinkedList<Pair<Cluster>>> fronts = NSGASort.sort(pairs, objectives, pref);
-
-        FrontQueue<Pair<Cluster>> queue = new FrontQueue<>(fronts);
-        nodes = initiateTree(clusterList);
+    @Override
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        if (clusters.isEmpty()) {
+            throw new RuntimeException("initialize() must be called first");
+        }
+        if (objectives.isEmpty()) {
+            throw new RuntimeException("you must specify at least 2 objectives");
+        }
+        ArrayList<P> pairs = createPairs(clusters.size(), pref);
+        queue = new NsgaQueue<>(pairs, objectives, pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
-        for (int i = 0; i < clusterList.size() - 1; i++) {
-            singleMerge(queue.poll());
+        int numClusters = clusters.size();
+        System.out.println("total " + numClusters + "queue size " + queue.size());
+        for (int i = 0; i < numClusters - 1; i++) {
+            System.out.println("merge: " + i);
+            singleMerge(queue.poll(), pref);
         }
 
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * clusterList.size() - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
+    }
+
+    protected ArrayList<P> createPairs(int numClusters, Props pref) {
+        ArrayList<P> allPairs = new ArrayList<>(triangleSize(numClusters));
+        C c1, c2;
+        //generate all pairs
+        for (int i = 0; i < numClusters; i++) {
+            c1 = (C) clusters.get(i);
+            for (int j = 0; j < i; j++) {
+                c2 = (C) clusters.get(j);
+                allPairs.add((P) createPair(c1, c2, pref));
+            }
+        }
+        return allPairs;
     }
 
     /**
@@ -84,26 +103,106 @@ public class PairMergerMO extends Merger {
         return ((n - 1) * n) >>> 1;
     }
 
-    private Pair<Cluster>[] buildQueue(Dataset<? extends Instance> dataset) {
-        Pair<Cluster>[] allPairs = new Pair[triangleSize(dataset.size())];
-        Cluster c1, c2;
-        int n = 0;
-        //generate all pairs
-        for (int i = 0; i < clusterCount; i++) {
-            for (int j = 0; j < i; j++) {
-                c1 = Clusters.newInst();
-                c1.add(dataset.get(i));
-                c2 = Clusters.newInst();
-                c2.add(dataset.get(j));
-                Pair p = new Pair(c1, c2);
-                allPairs[n++] = p;
-            }
+    private void singleMerge(P curr, Props pref) {
+        int i = curr.A.getClusterId();
+        int j = curr.B.getClusterId();
+        while (blacklist.contains(i) || blacklist.contains(j)) {
+            curr = queue.poll();
+            i = curr.A.getClusterId();
+            j = curr.B.getClusterId();
         }
-        return allPairs;
+        blacklist.add(i);
+        blacklist.add(j);
+        if (i == j) {
+            throw new RuntimeException("Cannot merge two same clusters");
+        }
+        LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
+        clusterNodes.addAll(curr.B.getNodes());
+
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        clusters.add(newCluster);
+        for (MergeEvaluation<E> eval : objectives) {
+            eval.clusterCreated(curr, newCluster, pref);
+        }
+        addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
+        updateExternalProperties(newCluster, curr.A, curr.B);
+        addIntoQueue((C) newCluster, pref);
     }
 
-    private void singleMerge(Pair<Cluster> pair) {
+    private void addIntoQueue(C cluster, Props pref) {
+        for (int i = 0; i < cluster.getClusterId(); i++) {
+            if (!blacklist.contains(i)) {
+                queue.add((P) createPair((C) clusters.get(i), cluster, pref));
+            }
+        }
+    }
 
+    /**
+     * Create a pair of clusters and pre-computes all objectives
+     *
+     * @param a
+     * @param b
+     * @param pref
+     * @return
+     */
+    protected MoPair<C> createPair(C a, C b, Props pref) {
+        P pair = (P) new MoPair<>(a, b, objectives.size());
+        double sim;
+        for (int j = 0; j < objectives.size(); j++) {
+            sim = objectives.get(j).score(a, b, pref);
+            pair.setObjective(j, sim);
+        }
+        return pair;
+    }
+
+    /**
+     * Adds node representing new cluster (the one created by merging) to
+     * dendroTree
+     *
+     * @param pair
+     * @param pref
+     */
+    protected void addIntoTree(MoPair<GraphCluster<E>> pair, Props pref) {
+        DendroNode left = nodes[pair.A.getClusterId()];
+        DendroNode right = nodes[pair.B.getClusterId()];
+        DTreeNode newNode = new DTreeNode(clusters.size() - 1);
+        newNode.setLeft(left);
+        newNode.setRight(right);
+        double sim = 0.0;
+        double val;
+        for (int i = 0; i < objectives.size(); i++) {
+            //TODO: we might multiply objectives or use another criteria for building tree
+            val = pair.getObjective(i);
+            if (!Double.isNaN(val)) {
+                sim += val;
+            }
+        }
+        if (sim > 10) {
+            sim = 10;
+        }
+        if (sim < 0.005) {
+            sim = 0.005;
+        }
+        height += 1 / sim;
+        newNode.setHeight(height);
+        newNode.setLevel(level++);
+        nodes[clusters.size() - 1] = newNode;
+    }
+
+    public void addObjective(MergeEvaluation eval) {
+        this.objectives.add(eval);
+    }
+
+    public void setObjectives(List<MergeEvaluation<E>> list) {
+        this.objectives = list;
+    }
+
+    public void removeObjective(MergeEvaluation eval) {
+        this.objectives.remove(eval);
+    }
+
+    public void clearObjectives() {
+        this.objectives.clear();
     }
 
 }

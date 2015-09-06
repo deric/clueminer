@@ -2,10 +2,15 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.similarity.Closeness;
+import org.clueminer.chameleon.similarity.Interconnectivity;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 
 /**
  * This class merges pairs of clusters exceeding given thresholds for relative
@@ -16,16 +21,27 @@ import org.clueminer.partitioning.api.Bisection;
  * @author Tomas Bruna
  * @param <E>
  */
-public class ThresholdMerger<E extends Instance> extends Merger<E> {
+public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
 
     private final double RICThreshold;
     private final double RCLThreshold;
     private boolean merged;
+    private final Interconnectivity<E> interconnectivity;
+    private final Closeness<E> closeness;
+    private static final String name = "threshold merger";
 
-    public ThresholdMerger(Graph g, Bisection bisection, double closenessPriority, double RICThreshold, double RCLThreshold) {
-        super(g, bisection, closenessPriority);
+    public ThresholdMerger(Graph g, Bisection bisection, double RICThreshold, double RCLThreshold) {
         this.RICThreshold = RICThreshold;
         this.RCLThreshold = RCLThreshold;
+        interconnectivity = new Interconnectivity<>();
+        closeness = new Closeness<>();
+        this.graph = g;
+        this.bisection = bisection;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList) {
@@ -43,15 +59,16 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
         computeExternalProperties();
         initiateClustersForMerging();
 
-        for (int i = 0; i < clusterCount; i++) {
+        for (int i = 0; i < clusters.size(); i++) {
             double maxRIC = Double.NEGATIVE_INFINITY;
             int index = -1;
-            for (int j = 0; j < clusterCount; j++) {
+            for (int j = 0; j < clusters.size(); j++) {
                 if (i == j) {
                     continue;
                 }
-                double RIC = getRIC(i, j);
-                double RCL = getRCL(i, j);
+
+                double RIC = interconnectivity.getRIC(clusters.get(i), clusters.get(j));
+                double RCL = closeness.getRCL(clusters.get(i), clusters.get(j));
                 if (RIC > RICThreshold && RCL > RCLThreshold && RIC > maxRIC) {
                     maxRIC = RIC;
                     index = j;
@@ -69,10 +86,10 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
      * Prepares clusters for merging
      */
     public void initiateClustersForMerging() {
-        for (int i = 0; i < clusterCount; i++) {
-            clusters.get(i).offsprings = new LinkedList<>();
-            clusters.get(i).offsprings.add(clusters.get(i));
-            clusters.get(i).setParent(clusters.get(i));
+        for (GraphCluster<E> cluster : clusters) {
+            cluster.offsprings = new LinkedList<>();
+            cluster.offsprings.add(cluster);
+            cluster.setParent(cluster);
         }
     }
 
@@ -100,10 +117,10 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
      */
     public ArrayList<LinkedList<Node<E>>> getNewClusters() {
         ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
-        for (int i = 0; i < clusterCount; i++) {
-            if (clusters.get(i).offsprings != null) {
+        for (GraphCluster<E> clust : clusters) {
+            if (clust.offsprings != null) {
                 LinkedList<Node<E>> list = new LinkedList<>();
-                for (GraphCluster<E> cluster : clusters.get(i).offsprings) {
+                for (GraphCluster<E> cluster : clust.offsprings) {
                     for (Node<E> node : cluster.getNodes()) {
                         list.add(node);
                     }
@@ -112,6 +129,11 @@ public class ThresholdMerger<E extends Instance> extends Merger<E> {
             }
         }
         return result;
+    }
+
+    @Override
+    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

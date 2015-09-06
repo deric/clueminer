@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon;
 
+import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.dataset.api.Dataset;
@@ -29,62 +30,46 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
-import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class ShatovskaSimilarityTest {
+public class PairMergerTest {
 
-    private final ShatovskaSimilarity<Instance> subject;
-    private static final double delta = 1e-9;
-
-    public ShatovskaSimilarityTest() {
-        subject = new ShatovskaSimilarity<>();
-    }
+    private PairMerger merger;
 
     @Test
-    public void testGetName() {
-        assertNotNull(subject.getName());
-    }
+    public void testGetHierarchy() {
 
-    @Test
-    public void testScore() {
-        Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        ImprovedSimilarity merger = new ImprovedSimilarity(g, bisection, closenessPriority);
+        RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
+        merger = new PairMerger();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setMergeEvaluation(eval);
+
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+
         merger.computeExternalProperties();
-        assertEquals(12, clusters.size());
+        assertEquals(7, clusters.size());
 
-        Props pref = new Props();
-        assertEquals(4.464646866748596E-13, subject.score(clusters.get(0), clusters.get(1), pref), delta);
-        assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
-        assertEquals(0.0, subject.score(clusters.get(2), clusters.get(3), pref), delta);
-        assertEquals(0.7164750502687347, subject.score(clusters.get(3), clusters.get(4), pref), delta);
-        assertEquals(0.0, subject.score(clusters.get(4), clusters.get(5), pref), delta);
-        assertEquals(0.0, subject.score(clusters.get(5), clusters.get(6), pref), delta);
-        assertEquals(0.3857386356649811, subject.score(clusters.get(6), clusters.get(7), pref), delta);
-        assertEquals(5.237476138021256E-13, subject.score(clusters.get(7), clusters.get(8), pref), delta);
-        assertEquals(0.07295002241131861, subject.score(clusters.get(9), clusters.get(10), pref), delta);
+        assertEquals(3, clusters.get(0).size());
+        assertEquals(13, clusters.get(1).size());
+        assertEquals(13, clusters.get(2).size());
 
-        assertEquals(0.0, subject.score(clusters.get(8), clusters.get(9), pref), delta);
-        assertEquals(0.0, subject.score(clusters.get(10), clusters.get(11), pref), delta);
     }
 
 }

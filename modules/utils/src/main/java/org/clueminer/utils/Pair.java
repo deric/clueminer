@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon.mo;
+package org.clueminer.utils;
 
 import java.util.Objects;
 
 /**
  *
  * @author deric
+ * @param <T>
  */
 public class Pair<T> {
 

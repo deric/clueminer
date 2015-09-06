@@ -26,7 +26,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class DominanceComparator implements Comparator<Pair<Cluster>> {
+public class DominanceComparator<C extends Cluster, P extends MoPair<C>> implements Comparator<P> {
 
     private final double epsilon = 1e-9;
     private final List<MergeEvaluation> objectives;
@@ -42,19 +42,21 @@ public class DominanceComparator implements Comparator<Pair<Cluster>> {
      *
      * @param p1
      * @param p2
-     * @return
+     * @return -1 when p1 dominates, +1 when p2 dominates
      */
     @Override
-    public int compare(Pair<Cluster> p1, Pair<Cluster> p2) {
+    public int compare(P p1, P p2) {
         boolean solution1Dominates = false;
         boolean solution2Dominates = false;
 
         int flag;
         double value1, value2;
         double diff;
-        for (MergeEvaluation objective : objectives) {
-            value1 = objective.score(p1.A, p1.B, params);
-            value2 = objective.score(p2.A, p2.B, params);
+        MergeEvaluation objective;
+        for (int i = 0; i < objectives.size(); i++) {
+            objective = objectives.get(i);
+            value1 = p1.getObjective(i);
+            value2 = p2.getObjective(i);
 
             diff = value1 - value2;
             if (Math.abs(diff) <= epsilon) {

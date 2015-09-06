@@ -2,6 +2,8 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.mo.PairMergerMO;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -9,7 +11,9 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
@@ -17,6 +21,8 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
+import org.clueminer.partitioning.api.Merger;
+import org.clueminer.partitioning.api.MergerFactory;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -76,8 +82,13 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      */
     public static final String CLOSENESS_PRIORITY = "closeness_priority";
 
+    /**
+     * Algorithm for merging clusters
+     */
+    public static final String MERGER = "merger";
+
     @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
-    private double closenessPriority;
+    protected double closenessPriority;
 
     /**
      * Similarity function used to compute similarity between two clusters
@@ -88,13 +99,16 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Param(name = Chameleon.SIM_MEASURE, description = "Similarity function used to compute similarity between two clusters")
     private String similarityMeasure;
 
-    private RecursiveBisection recursiveBisection;
+    protected RecursiveBisection recursiveBisection;
 
     private final KNNGraphBuilder knn;
 
     public static final String GRAPH_STORAGE = "graph_storage";
     @Param(name = Chameleon.GRAPH_STORAGE, description = "Structure for storing graphs")
     private String graphStorage;
+
+    public static final String OBJECTIVE_1 = "mo_objective_1";
+    public static final String OBJECTIVE_2 = "mo_objective_2";
 
     public Chameleon() {
         knn = new KNNGraphBuilder();
@@ -154,22 +168,22 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
 
-        PairMerger m;
-        closenessPriority = pref.getDouble(CLOSENESS_PRIORITY, 2.0);
+        String merger = pref.get(MERGER, "pair merger");
+        Merger m = MergerFactory.getInstance().getProvider(merger);
+        m.initialize(partitioningResult, g, bisectionAlg);
 
-        similarityMeasure = pref.get(SIM_MEASURE, SimilarityMeasure.IMPROVED);
-
-        switch (similarityMeasure) {
-            case SimilarityMeasure.IMPROVED:
-                m = new ImprovedSimilarity(g, bisectionAlg, closenessPriority);
-                break;
-            case SimilarityMeasure.STANDARD:
-                m = new StandardSimilarity(g, bisectionAlg, closenessPriority);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown similarity measure.");
+        MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
+        if (m instanceof PairMerger) {
+            similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
+            MergeEvaluation me = mef.getProvider(similarityMeasure);
+            ((PairMerger) m).setMergeEvaluation(me);
+        } else if (m instanceof PairMergerMO) {
+            PairMergerMO mo = (PairMergerMO) m;
+            mo.clearObjectives();
+            mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
+            mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
-        return m.getHierarchy(partitioningResult, dataset, pref);
+        return m.getHierarchy(dataset, pref);
     }
 
     private int determineK(Dataset<? extends Instance> dataset) {

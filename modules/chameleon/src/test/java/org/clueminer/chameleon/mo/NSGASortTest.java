@@ -18,10 +18,10 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
-import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -34,24 +34,27 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMOTest {
+public class NSGASortTest {
 
-    private PairMergerMO subject;
+    private final NSGASort subject;
 
-    public PairMergerMOTest() {
+    public NSGASortTest() {
+        subject = new NSGASort();
     }
 
     @Test
-    public void testUsArrest() {
+    public void testSort() {
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
+        Props props = new Props();
         int maxPartitionSize = 20;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(20);
@@ -60,17 +63,28 @@ public class PairMergerMOTest {
 
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        List<MergeEvaluation> objectives = new LinkedList<>();
+        objectives.add(new RiRcSimilarity());
+        objectives.add(new ShatovskaSimilarity());
 
-        subject = new PairMergerMO();
-        subject.addObjective(new RiRcSimilarity());
-        subject.addObjective(new ShatovskaSimilarity());
+        PairMergerMO merger = new PairMergerMO();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
 
-        subject.initialize(partitioningResult, g, bisection);
+        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        assertEquals(21, pairs.size());
 
-        Props pref = new Props();
-        HierarchicalResult result = subject.getHierarchy(dataset, pref);
-        DendroTreeData tree = result.getTreeData();
-        tree.print();
+        LinkedList<LinkedList<MoPair>> res = subject.sort(pairs, objectives, props);
+
+        //number of fronts
+        assertEquals(5, res.size());
+        //first front size
+        assertEquals(15, res.get(0).size());
+        assertEquals(1, res.get(1).size());
+        assertEquals(2, res.get(2).size());
+        assertEquals(2, res.get(3).size());
+        assertEquals(1, res.get(4).size());
+
     }
 
 }

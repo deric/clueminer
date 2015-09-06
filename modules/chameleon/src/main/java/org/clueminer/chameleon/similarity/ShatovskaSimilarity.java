@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
+package org.clueminer.chameleon.similarity;
 
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.GraphPropertyStore;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -35,9 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class ShatovskaSimilarity<E extends Instance> implements MergeEvaluation<E> {
+public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    private static final String name = "Shatovska";
+    public static final String name = "Shatovska";
 
     @Override
     public String getName() {
@@ -46,18 +49,10 @@ public class ShatovskaSimilarity<E extends Instance> implements MergeEvaluation<
 
     @Override
     public double score(Cluster<E> a, Cluster<E> b, Props params) {
-        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
-            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
-        }
+        checkClusters(a, b);
         GraphCluster<E> x, y;
-        if (b.getClusterId() > a.getClusterId()) {
-            x = (GraphCluster<E>) b;
-            y = (GraphCluster<E>) a;
-        } else {
-            x = (GraphCluster<E>) a;
-            y = (GraphCluster<E>) b;
-        }
-
+        x = (GraphCluster<E>) b;
+        y = (GraphCluster<E>) a;
         double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         GraphPropertyStore gps = getGraphPropertyStore(x);
         int i = x.getClusterId();
@@ -75,21 +70,31 @@ public class ShatovskaSimilarity<E extends Instance> implements MergeEvaluation<
                 * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), 1);
 
         return val;
-
-    }
-
-    private GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {
-        Graph g = clust.getGraph();
-        GraphPropertyStore gps = g.getLookup().lookup(GraphPropertyStore.class);
-        if (gps == null) {
-            throw new RuntimeException("graph property store was not found");
-        }
-        return gps;
     }
 
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public void clusterCreated(Pair<? extends Cluster<E>> pair, Cluster<E> c, Props params) {
+        checkClusters(pair.A, pair.B);
+        GraphCluster cluster1 = (GraphCluster) pair.A;
+        GraphCluster cluster2 = (GraphCluster) pair.B;
+        GraphCluster newCluster = (GraphCluster) c;
+        int i = Math.max(cluster1.getClusterId(), cluster2.getClusterId());
+        int j = Math.min(cluster1.getClusterId(), cluster2.getClusterId());
+        GraphPropertyStore gps = getGraphPropertyStore(cluster1);
+        double edgeCountSum = cluster1.getEdgeCount() + cluster2.getEdgeCount() + gps.getCnt(i, j);
+
+        double newACL = cluster1.getACL() * (cluster1.getEdgeCount() / edgeCountSum)
+                + cluster2.getACL() * (cluster2.getEdgeCount() / edgeCountSum)
+                + gps.getECL(i, j) * (gps.getCnt(i, j) / edgeCountSum);
+
+
+        newCluster.setACL(newACL);
+        newCluster.setEdgeCount((int) edgeCountSum);
     }
 
 }

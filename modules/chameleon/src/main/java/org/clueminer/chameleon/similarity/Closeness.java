@@ -14,27 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
+package org.clueminer.chameleon.similarity;
 
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.GraphPropertyStore;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Graph;
+import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Relative Interconnectivity + Relative Closeness similarity (dynamic modeling
- * framework from Chameleon). An underlying graph structure is required for
- * computing this metric.
+ * Based on Chameleon's dynamic modeling framework, relative closeness forms
+ * half of the objective function.
  *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
+public class Closeness<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    private static final String name = "RC+RI";
+    public static final String name = "Closeness";
 
     @Override
     public String getName() {
@@ -43,33 +44,18 @@ public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
 
     @Override
     public double score(Cluster<E> a, Cluster<E> b, Props params) {
-        if (!(a instanceof GraphCluster) || !(b instanceof GraphCluster)) {
-            throw new RuntimeException("clusters must contain a graph structure to evaluate similarity");
-        }
+        checkClusters(a, b);
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
-        double RIC = getRIC(x, y);
         double RCL = getRCL(x, y);
         double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+        //TODO: this is kind of magic. it's not described in original paper. move to another method?
         //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
-        if (a.size() == 1 || b.size() == 1) {
-            return RIC * Math.pow(RCL, closenessPriority) * 40;
-        }
+        //if (a.size() == 1 || b.size() == 1) {
+        //    return Math.pow(RCL, closenessPriority) * 40;
+        //}
 
-        return RIC * Math.pow(RCL, closenessPriority);
-    }
-
-    /**
-     * Compute relative interconnectivity
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    protected double getRIC(GraphCluster<E> x, GraphCluster<E> y) {
-        GraphPropertyStore gps = getGraphPropertyStore(x);
-        double eic = gps.getEIC(x.getClusterId(), y.getClusterId());
-        return eic / ((x.getIIC() + y.getIIC()) / 2);
+        return Math.pow(RCL, closenessPriority);
     }
 
     /**
@@ -79,27 +65,22 @@ public class RiRcSimilarity<E extends Instance> implements MergeEvaluation<E> {
      * @param y
      * @return
      */
-    protected double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
+    public double getRCL(GraphCluster<E> x, GraphCluster<E> y) {
         double nc1 = x.size();
         double nc2 = y.size();
         GraphPropertyStore gps = getGraphPropertyStore(x);
         double ecl = gps.getECL(x.getClusterId(), y.getClusterId());
-
         return ecl / ((nc1 / (nc1 + nc2)) * x.getICL() + (nc2 / (nc1 + nc2)) * y.getICL());
-    }
-
-    private GraphPropertyStore getGraphPropertyStore(GraphCluster<E> clust) {
-        Graph g = clust.getGraph();
-        GraphPropertyStore gps = g.getLookup().lookup(GraphPropertyStore.class);
-        if (gps == null) {
-            throw new RuntimeException("graph property store was not found");
-        }
-        return gps;
     }
 
     @Override
     public boolean isMaximized() {
         return false;
+    }
+
+    @Override
+    public void clusterCreated(Pair<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params) {
+        //nothing to do
     }
 
 }

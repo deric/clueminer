@@ -16,23 +16,25 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
  *
  * @author deric
  */
-public class NSGASort {
+public class NSGASort<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> {
 
-    public static LinkedList<LinkedList<Pair<Cluster>>> sort(Pair<Cluster>[] clusters, List<MergeEvaluation> objectives, Props params) {
+    public LinkedList<LinkedList<P>> sort(ArrayList<P> clusters, List<MergeEvaluation<E>> objectives, Props params) {
 
-        int n = clusters.length;
-        LinkedList<LinkedList<Pair<Cluster>>> rankedSubpopulations;
+        int n = clusters.size();
+        LinkedList<LinkedList<P>> rankedSubpopulations;
 
         // dominateMe[i] contains the number of solutions dominating i
         int[] dominateMe = new int[n];
@@ -56,13 +58,13 @@ public class NSGASort {
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
-        DominanceComparator comparator = new DominanceComparator(objectives, params);
+        DominanceComparator<C, P> comparator = new DominanceComparator(objectives, params);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {
             // For all q individuals , calculate if p dominates q or vice versa
             for (int q = p + 1; q < n; q++) {
-                flagDominate = comparator.compare(clusters[p], clusters[q]);
+                flagDominate = comparator.compare(clusters.get(p), clusters.get(q));
                 if (flagDominate == -1) {
                     iDominate[p].add(q);
                     dominateMe[q]++;
@@ -75,7 +77,6 @@ public class NSGASort {
 
         for (int i = 0; i < n; i++) {
             if (dominateMe[i] == 0) {
-
                 front[0].add(i);
                 //RankingAndCrowdingAttr.getAttributes(solutionSet.get(0)).setRank(0);
                 //clusterings[i].getParams().put("rank", 0);
@@ -105,10 +106,10 @@ public class NSGASort {
         rankedSubpopulations = new LinkedList<>();
         //0,1,2,....,i-1 are fronts, then i fronts
         for (int j = 0; j < i; j++) {
-            rankedSubpopulations.add(j, new LinkedList<Pair<Cluster>>());
+            rankedSubpopulations.add(j, new LinkedList<P>());
             it1 = front[j].iterator();
             while (it1.hasNext()) {
-                rankedSubpopulations.get(j).add(clusters[it1.next()]);
+                rankedSubpopulations.get(j).add(clusters.get(it1.next()));
             }
         }
 

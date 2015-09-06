@@ -14,53 +14,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.api;
+package org.clueminer.partitioning.api;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.utils.Pair;
+import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
 
 /**
- * Method for computing cost of merging two clusters
  *
  * @author deric
  * @param <E>
  */
-public interface MergeEvaluation<E extends Instance> {
+public interface Merger<E extends Instance> {
 
     /**
-     * Method identification
+     * A unique name of the method
      *
-     * @return unique name
+     * @return method identification
      */
     String getName();
 
     /**
-     * Compute cost of merging cluster A and cluster B and thus forming larger
-     * cluster C
      *
-     * @param a
-     * @param b
-     * @param params optional parameters
-     * @return
+     * @param clusterList
+     * @param graph
+     * @param bisection
      */
-    double score(Cluster<E> a, Cluster<E> b, Props params);
+    void initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection);
 
     /**
-     * Method called by merger algorithm when cluster A and cluster B are merged
-     * to form a new cluster
+     * Merge clusters while creating a hierarchical structure (dendrogram)
      *
-     * @param pair
-     * @param newCluster
-     * @param params
-     */
-    void clusterCreated(Pair<? extends Cluster<E>> pair, Cluster<E> newCluster, Props params);
-
-    /**
-     * Whether bigger values are better
-     *
+     * @param dataset
+     * @param pref
      * @return
      */
-    boolean isMaximized();
-
+    HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref);
 }

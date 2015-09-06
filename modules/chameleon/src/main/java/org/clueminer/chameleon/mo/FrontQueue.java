@@ -16,24 +16,41 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  * Simple queue for getting items from Pareto front
  *
  * @author deric
  */
-public class FrontQueue<Q> implements Iterator<Q> {
+public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
 
-    private final LinkedList<LinkedList<Q>> fronts;
+    private LinkedList<LinkedList<P>> fronts;
+    private NSGASort<E, C, P> sorter;
+    private List<MergeEvaluation<E>> objectives;
+    private ArrayList<P> pairs;
+    private Props props;
 
     private int currFront = 0;
 
     private int currItem = 0;
 
-    public FrontQueue(LinkedList<LinkedList<Q>> fronts) {
+    public FrontQueue(ArrayList<P> pairs, List<MergeEvaluation<E>> objectives, Props pref) {
+        sorter = new NSGASort<>();
+        this.objectives = objectives;
+        this.pairs = pairs;
+        this.props = pref;
+        this.fronts = sorter.sort(pairs, objectives, pref);
+    }
+
+    public FrontQueue(LinkedList<LinkedList<P>> fronts) {
         this.fronts = fronts;
     }
 
@@ -42,25 +59,32 @@ public class FrontQueue<Q> implements Iterator<Q> {
      *
      * @return first item or null
      */
-    public Q poll() {
-        Q item = null;
+    public P poll() {
+        P item = null;
         if (fronts.isEmpty()) {
-            return item;
+            return null;
         }
-        LinkedList<Q> front;
+        LinkedList<P> front;
         while (!fronts.isEmpty()) {
             front = fronts.get(0);
-            if (!front.isEmpty()) {
-                item = front.removeFirst();
-            } else {
+            if (front.isEmpty()) {
                 fronts.remove(0);
+            } else {
+                item = front.removeFirst();
             }
 
             if (item != null) {
-                return item;
+                return remove(item);
             }
         }
 
+        return item;
+    }
+
+    P remove(P item) {
+        if (pairs != null) {
+            pairs.remove(item);
+        }
         return item;
     }
 
@@ -71,7 +95,7 @@ public class FrontQueue<Q> implements Iterator<Q> {
         }
         int curr = 0;
 
-        List<Q> front = fronts.get(curr);
+        List<P> front = fronts.get(curr);
         while (curr < fronts.size() && front != null) {
             if (front.size() > 0) {
                 return true;
@@ -87,7 +111,7 @@ public class FrontQueue<Q> implements Iterator<Q> {
         }
         int curr = 0;
 
-        List<Q> front = fronts.get(curr);
+        List<P> front = fronts.get(curr);
         while (curr < fronts.size() && front != null) {
             if (front.size() > 0) {
                 return false;
@@ -105,7 +129,7 @@ public class FrontQueue<Q> implements Iterator<Q> {
     public int size() {
         int size = 0;
         int curr = 0;
-        List<Q> front = fronts.get(currFront);
+        List<P> front = fronts.get(currFront);
         while (curr < fronts.size() && front != null) {
             front = fronts.get(curr++);
             size += front.size();
@@ -114,9 +138,9 @@ public class FrontQueue<Q> implements Iterator<Q> {
     }
 
     @Override
-    public Q next() {
-        Q item = null;
-        List<Q> front = fronts.get(currFront);
+    public P next() {
+        P item = null;
+        List<P> front = fronts.get(currFront);
         while (currFront < fronts.size() && front != null) {
             if (currItem < front.size()) {
                 return front.get(currItem++);
@@ -134,6 +158,27 @@ public class FrontQueue<Q> implements Iterator<Q> {
     @Override
     public void remove() {
         throw new UnsupportedOperationException("not supported.");
+    }
+
+    public void add(P pair) {
+        pairs.add(pair);
+        //TODO: this is really inefficient, we have to resort all items for each insert
+        this.fronts = sorter.sort(pairs, objectives, props);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("FrontQueue [");
+        if (fronts != null) {
+            for (int i = 0; i < fronts.size(); i++) {
+                sb.append("front ").append(i).append("[").append(fronts.get(i).size()).append("]").append(": ");
+                /* for (P elem : fronts.get(i)) {                    sb.append(elem);
+                }*/
+                sb.append("\n");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
 }

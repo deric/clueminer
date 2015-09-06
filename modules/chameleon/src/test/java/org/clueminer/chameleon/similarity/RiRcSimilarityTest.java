@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chameleon;
+package org.clueminer.chameleon.similarity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.PairMerger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -58,21 +61,24 @@ public class RiRcSimilarityTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        StandardSimilarity merger = new StandardSimilarity(g, bisection, closenessPriority);
+        PairMerger merger = new PairMerger();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setMergeEvaluation(subject);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
 
         Props pref = new Props();
+        pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
 
         assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
