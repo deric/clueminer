@@ -85,12 +85,21 @@ public class FkQueueTest {
         assertEquals(5, queue.numFronts());
         //TODO: make sure we can remove and add items to queue in fast manner
         int n = 21;
-        MoPair item;
+        MoPair item, prev = null;
+        int cmp;
+        DominanceComparator comparator = new DominanceComparator(objectives);
         for (int i = 0; i < n; i++) {
             assertEquals(n - i, queue.size());
             item = queue.poll();
-            System.out.println(i + ": " + item);
+            if (i > 0) {
+                cmp = comparator.compare(prev, item);
+                System.out.println("cmp = " + cmp);
+                //prev should be better or at same level
+                //assertEquals(true, cmp <= 0);
+            }
+            System.out.println(i + ": " + item.A.toString() + "\n    " + item.B.toString() + "\n " + item.getValue() + item);
             assertNotNull(item);
+            prev = item;
         }
         assertEquals(0, queue.size());
     }

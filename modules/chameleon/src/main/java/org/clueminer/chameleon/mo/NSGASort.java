@@ -29,7 +29,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class NSGASort<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> {
+public class NSGASort<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> {
 
     public LinkedList<LinkedList<P>> sort(ArrayList<P> clusters, List<MergeEvaluation<E>> objectives, Props params) {
 
@@ -58,7 +58,7 @@ public class NSGASort<E extends Instance, C extends Cluster<E>, P extends MoPair
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
-        DominanceComparator<C, P> comparator = new DominanceComparator(objectives);
+        DominanceComparator<E, C, P> comparator = new DominanceComparator(objectives);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {

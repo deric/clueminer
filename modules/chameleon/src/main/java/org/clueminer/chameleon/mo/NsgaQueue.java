@@ -30,10 +30,10 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
+public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterator<P> {
 
     private final ArrayList<Set<FndsMember<P>>> fronts;
-    private final DominanceComparator<C, P> comparator;
+    private final DominanceComparator<E, C, P> comparator;
 
     private int currFront = 0;
     private int maxFront;

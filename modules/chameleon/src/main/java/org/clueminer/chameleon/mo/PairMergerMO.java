@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<C>> extends AbstractMerger<E> implements Merger<E> {
+public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractMerger<E> implements Merger<E> {
 
     private List<MergeEvaluation<E>> objectives = new LinkedList<>();
     public static final String name = "multi-objective merger";
@@ -75,14 +75,13 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         System.out.println("total " + numClusters + ", queue size " + queue.size());
         System.out.println(queue.stats());
 
-
         for (int i = 0; i < numClusters - 1; i++) {
             /* Iterator<P> iter = queue.iterator();
              System.out.println("queue candidates : " + i);
-            for (int j = 0; j < 3; j++) {
-                System.out.println("  " + iter.next());
-            }
-            System.out.println("---");*/
+             for (int j = 0; j < 3; j++) {
+             System.out.println("  " + iter.next());
+             }
+             System.out.println("---");*/
             singleMerge(queue.poll(), pref);
             //System.out.println("====");
         }
@@ -139,7 +138,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
             eval.clusterCreated(curr, newCluster, pref);
         }
         //eval.clusterCreated(curr, newCluster, pref);
-        addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
+        addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
     }
@@ -160,7 +159,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
      * @param pref
      * @return
      */
-    protected MoPair<C> createPair(C a, C b, Props pref) {
+    protected MoPair<E, C> createPair(C a, C b, Props pref) {
         P pair = (P) new MoPair<>(a, b, objectives.size());
         double sim;
         for (int j = 0; j < objectives.size(); j++) {
@@ -177,7 +176,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
      * @param pair
      * @param pref
      */
-    protected void addIntoTree(MoPair<GraphCluster<E>> pair, Props pref) {
+    protected void addIntoTree(MoPair<E, GraphCluster<E>> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
         DTreeNode newNode = new DTreeNode(clusters.size() - 1);

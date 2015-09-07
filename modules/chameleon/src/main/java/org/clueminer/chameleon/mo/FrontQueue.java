@@ -30,7 +30,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
+public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterator<P> {
 
     private LinkedList<LinkedList<P>> fronts;
     private NSGASort<E, C, P> sorter;
@@ -173,7 +173,7 @@ public class FrontQueue<E extends Instance, C extends Cluster<E>, P extends MoPa
             for (int i = 0; i < fronts.size(); i++) {
                 sb.append("front ").append(i).append("[").append(fronts.get(i).size()).append("]").append(": ");
                 /* for (P elem : fronts.get(i)) {                    sb.append(elem);
-                }*/
+                 }*/
                 sb.append("\n");
             }
         }

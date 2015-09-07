@@ -28,14 +28,15 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
- * Multi-objective sorting that preserves first k fronts
+ * Multi-objective sorting that preserves first k fronts. The order is
+ * approximated because we don't compare an item with all front members.
  *
  * @author deric
  */
-public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterable<P> {
+public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
 
     private LinkedList<P>[] fronts;
-    private final DominanceComparator<C, P> comparator;
+    private final DominanceComparator<E, C, P> comparator;
 
     private int lastFront = 0;
     //maximum number of fronts
@@ -221,7 +222,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             }
             //insert new front
             tmp[curr] = ff;
-            //copy rest of fronts exept last one
+            //copy rest of fronts except last one
             System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
             fronts = tmp;
         } else if (flagDominate == 1) {

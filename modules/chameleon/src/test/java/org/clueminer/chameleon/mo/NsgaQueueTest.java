@@ -161,7 +161,7 @@ public class NsgaQueueTest {
         assertEquals(6, queue.numFronts());
         //TODO: make sure we can remove and add items to queue in fast manner
         int n = 21;
-        MoPair<GraphCluster> item;
+        MoPair<Instance, GraphCluster<Instance>> item;
         ArrayList<GraphCluster<Instance>> clusters = merger.getClusters();
         for (int i = 0; i < n; i++) {
             item = queue.poll();

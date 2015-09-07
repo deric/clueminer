@@ -19,8 +19,23 @@ package org.clueminer.chameleon.mo;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.chameleon.similarity.RiRcSimilarity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.partitioning.impl.FiducciaMattheyses;
+import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -35,59 +50,56 @@ public class FrontQueueTest {
     public FrontQueueTest() {
     }
 
-    @Before
-    public void setUp() {
-        LinkedList<List<MoPair>> fronts = new LinkedList<>();
-        int n = 15;
-        LinkedList<MoPair> curr = null;
-        MoPair pair;
+    @Test
+    public void testSorting() {
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        Props props = new Props();
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+
+        List<MergeEvaluation> objectives = new LinkedList<>();
+        objectives.add(new RiRcSimilarity());
+        objectives.add(new ShatovskaSimilarity());
+
+        PairMergerMO merger = new PairMergerMO();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
+
+        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+
+        FrontQueue queue = new FrontQueue(pairs, objectives, props);
+        System.out.println(queue);
+        //System.out.println(queue.stats());
+        //there are 21 pairs of clusters
+        assertEquals(21, queue.size());
+        //we should have 5 fronts
+        //assertEquals(5, queue.numFronts());
+        //TODO: make sure we can remove and add items to queue in fast manner
+        int n = 21, cmp;
+        MoPair item, prev = null;
+        DominanceComparator comparator = new DominanceComparator(objectives);
         for (int i = 0; i < n; i++) {
-            if (i % 4 == 0) {
-                curr = new LinkedList<>();
-                fronts.add(curr);
+            assertEquals(n - i, queue.size());
+            item = queue.poll();
+            if (i > 0) {
+                cmp = comparator.compare(prev, item);
+                //System.out.println("cmp = " + cmp);
+                //prev should be better or at same level
+                //assertEquals(true, cmp <= 0);
             }
-            pair = new MoPair(i, i, 1);
-            pair.setObjective(0, i);
-            curr.add(pair);
+            //System.out.println(i + ": " + item.A.toString() + "\n    " + item.B.toString() + "\n " + item.getValue() + item);
+            assertNotNull(item);
+            prev = item;
         }
-        subject = new FrontQueue(fronts);
-    }
-
-    @Test
-    public void testSize() {
-        assertEquals(15, subject.size());
-    }
-
-    @Test
-    public void testIsEmpty() {
-        assertEquals(false, subject.isEmpty());
-        assertEquals(true, subject.hasNext());
-        LinkedList<ArrayList<Integer>> fronts = new LinkedList<>();
-        FrontQueue other = new FrontQueue(fronts);
-        assertEquals(true, other.isEmpty());
-        assertEquals(false, other.hasNext());
-    }
-
-    @Test
-    public void testNext() {
-        MoPair item;
-        int n = 15;
-        for (int i = 0; i < n; i++) {
-            assertEquals(true, subject.hasNext());
-            item = subject.next();
-            assertEquals(i, item.getObjective(0), delta);
-        }
-    }
-
-    @Test
-    public void testPoll() {
-        MoPair item;
-        int n = 15;
-        for (int i = 0; i < n; i++) {
-            assertEquals(n - i, subject.size());
-            item = subject.poll();
-        }
-        assertEquals(0, subject.size());
+        assertEquals(0, queue.size());
     }
 
 }

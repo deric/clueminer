@@ -20,12 +20,13 @@ import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author deric
  */
-public class DominanceComparator<C extends Cluster, P extends MoPair<C>> implements Comparator<P> {
+public class DominanceComparator<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Comparator<P> {
 
     private final double epsilon = 1e-9;
     private final List<MergeEvaluation> objectives;

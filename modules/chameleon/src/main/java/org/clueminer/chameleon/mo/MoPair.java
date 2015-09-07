@@ -16,23 +16,35 @@
  */
 package org.clueminer.chameleon.mo;
 
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.PairValue;
+import org.clueminer.utils.Props;
 
 /**
  * A pair of objects evaluated by N objectives (N is typically between 2 and 5).
  *
  * @author deric
  */
-public class MoPair<T> extends PairValue<T> {
+public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<C> implements Comparable<PairValue<C>> {
 
     private double[] objectives;
+    private MergeEvaluation<E> eval;
+    private Props props = new Props();
 
-    public MoPair(T A, T B) {
+    public MoPair(C A, C B) {
         super(A, B);
         setNumObjectives(2);
     }
 
-    public MoPair(T A, T B, int numObjectives) {
+    public MoPair(C A, C B, MergeEvaluation<E> eval) {
+        super(A, B);
+        setNumObjectives(2);
+        this.eval = eval;
+    }
+
+    public MoPair(C A, C B, int numObjectives) {
         super(A, B);
         setNumObjectives(numObjectives);
     }
@@ -61,6 +73,19 @@ public class MoPair<T> extends PairValue<T> {
             value += objectives[i];
         }
         return value;
+    }
+
+    @Override
+    public int compareTo(PairValue<C> o) {
+        MoPair<E, C> e = (MoPair<E, C>) o;
+        double sc1 = eval.score(this.A, this.B, props);
+        double sc2 = eval.score(e.A, e.B, props);
+        if (sc1 > sc2) {
+            return eval.isMaximized() ? -1 : 1;
+        } else if (sc1 < sc2) {
+            return eval.isMaximized() ? 1 : -1;
+        }
+        return 0;
     }
 
     @Override
