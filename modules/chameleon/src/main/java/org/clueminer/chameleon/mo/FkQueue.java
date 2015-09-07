@@ -70,22 +70,22 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      * @return first item or null
      */
     public P poll() {
-        if (isEmpty()) {
-            //rebuild queue, if pairs not empty
-            if (pairs.isEmpty()) {
-                return null;
-            }
-            rebuildQueue();
+        if (isEmpty() && pairs.isEmpty()) {
+            return null;
         }
+
         int curr = 0;
-        LinkedList<P> front = fronts[curr++];
-        while (curr <= fronts.length) {
+        LinkedList<P> front;
+        do {
+            front = fronts[curr++];
             if (front.size() > 0) {
                 return front.removeFirst();
             }
-            front = fronts[curr++];
-        }
-        return null;
+        } while (curr < fronts.length);
+
+        rebuildQueue();
+
+        return poll();
     }
 
     @Override
@@ -102,6 +102,12 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         return pairs.size() > 0;
     }
 
+    /**
+     * While Pareto front is empty, the whole queue might not be empty -- there
+     * might still be items located in pair store
+     *
+     * @return true when Pareto front is empty
+     */
     public boolean isEmpty() {
         boolean empty = true;
         for (LinkedList<P> front : fronts) {
@@ -110,7 +116,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 return false;
             }
         }
-        return pairs.isEmpty();
+        return true;
     }
 
     /**
@@ -160,13 +166,20 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
 
     public void add(P pair) {
         //try to insert into first front
-        add(pair, 0);
+        add(pair, 0, pairs);
     }
 
-    public void add(P pair, int curr) {
+    /**
+     * Try inserting item into the Pareto front
+     *
+     * @param pair
+     * @param curr
+     * @param buffer list of items that does not fit to the front
+     */
+    public void add(P pair, int curr, ArrayList<P> buffer) {
         int flagDominate;
         if (curr >= maxFront) {
-            pairs.add(pair);
+            buffer.add(pair);
             return;
         }
         LinkedList<P> front = getFront(curr);
@@ -185,7 +198,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             if (fronts[maxFront - 1] != null) {
                 //move last front to "do it later" list
                 for (P item : fronts[maxFront - 1]) {
-                    pairs.add(item);
+                    buffer.add(item);
                 }
                 //free memory
                 fronts[maxFront - 1] = null;
@@ -203,10 +216,10 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             fronts = tmp;
         } else if (flagDominate == 1) {
             if (curr < maxFront) {
-                add(pair, ++curr);
+                add(pair, ++curr, buffer);
             } else {
                 //last resort - save the item for later
-                pairs.add(pair);
+                buffer.add(pair);
             }
         } else if (flagDominate == 0) {
             //we can't decide which one dominates, item belongs to this front
@@ -221,13 +234,14 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     }
 
     private void rebuildQueue() {
-        ArrayList<P> tmp = new ArrayList<>(pairs.size());
+        int expSize = (int) Math.sqrt(pairs.size());
+        ArrayList<P> tmp = new ArrayList<>(expSize);
         for (P item : pairs) {
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //skip the item
             } else {
                 //try inserting into pareto front
-                add(item, 0);
+                add(item, 0, tmp);
             }
         }
         System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());

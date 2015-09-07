@@ -130,7 +130,7 @@ public class FkQueueTest {
         //we should have 5 fronts
         assertEquals(5, queue.numFronts());
         //TODO: make sure we can remove and add items to queue in fast manner
-        int n = 21;
+        int n = 100;
         MoPair item;
         for (int i = 0; i < n; i++) {
             //assertEquals(n - i, queue.size());

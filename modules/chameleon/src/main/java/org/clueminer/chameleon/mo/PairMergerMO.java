@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.AbstractMerger;
 import org.clueminer.chameleon.GraphCluster;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
@@ -46,6 +47,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     public static final String name = "multi-objective merger";
 
     private FkQueue<E, C, P> queue;
+    private MergeEvaluation eval;
 
     @Override
     public String getName() {
@@ -60,6 +62,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         if (objectives.isEmpty()) {
             throw new RuntimeException("you must specify at least 2 objectives");
         }
+        eval = new ShatovskaSimilarity();
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
         queue = new FkQueue<>(5, blacklist, objectives, pref);
         //initialize queue
@@ -125,6 +128,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         for (MergeEvaluation<E> eval : objectives) {
             eval.clusterCreated(curr, newCluster, pref);
         }
+        //eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
@@ -175,9 +179,10 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
             //TODO: we might multiply objectives or use another criteria for building tree
             val = pair.getObjective(i);
             if (!Double.isNaN(val)) {
-                sim += val;
+                sim *= val;
             }
         }
+        //double sim = eval.score(pair.A, pair.B, pref);
         if (sim > 10) {
             sim = 10;
         }
