@@ -66,7 +66,7 @@ public class Interconnectivity<E extends Instance> extends AbstractSimilarity<E>
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override

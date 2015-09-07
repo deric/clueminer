@@ -32,18 +32,14 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
+public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterable<P> {
 
     private LinkedList<P>[] fronts;
-    private final Props params;
     private final DominanceComparator<C, P> comparator;
 
-    private int currFront = 0;
     private int lastFront = 0;
     //maximum number of fronts
     private int maxFront;
-
-    private Iterator<P> currIter;
     private ArrayList<P> pairs;
     private HashSet<Integer> blacklist;
 
@@ -55,8 +51,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      * @param pref
      */
     public FkQueue(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
-        this.params = pref;
-        this.comparator = new DominanceComparator(objectives, params);
+        this.comparator = new DominanceComparator(objectives);
         this.pairs = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
@@ -88,7 +83,6 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         return poll();
     }
 
-    @Override
     public boolean hasNext() {
         int curr = 0;
 
@@ -138,30 +132,46 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     }
 
     @Override
-    public P next() {
-        P item = null;
-        LinkedList<P> front = fronts[currFront];
-        while (currFront < fronts.length && front != null) {
-            if (currIter == null) {
-                currIter = front.iterator();
-            }
-
-            if (currIter.hasNext()) {
-                return currIter.next();
-            }
-            front = fronts[++currFront];
-            currIter = front.iterator();
-        }
-
-        return item;
+    public Iterator<P> iterator() {
+        return new FrontIterator();
     }
 
-    /**
-     * Compatibility with java 7
-     */
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("not supported.");
+    class FrontIterator implements Iterator<P> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
+
+        }
+
+        @Override
+        public P next() {
+            index++;
+            int currFront = 0;
+            int offset = index;
+            P item = null;
+            LinkedList<P> front;
+            do {
+                front = fronts[currFront++];
+                if (front != null) {
+                    if (offset >= front.size()) {
+                        offset -= front.size();
+                    } else {
+                        return front.get(offset);
+                    }
+                }
+
+            } while (currFront < fronts.length && front != null);
+
+            return item;
+        }
     }
 
     public void add(P pair) {

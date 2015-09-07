@@ -67,6 +67,9 @@ public class MoPair<T> extends PairValue<T> {
     public String toString() {
         StringBuilder sb = new StringBuilder("Pair{ ");
         for (int i = 0; i < objectives.length; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
             sb.append(i).append(":").append(objectives[i]);
         }
         //sb.append("A: ").append(A.toString()).append(", ");

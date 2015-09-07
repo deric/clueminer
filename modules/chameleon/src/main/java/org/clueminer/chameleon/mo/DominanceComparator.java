@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.utils.Props;
 
 /**
  *
@@ -30,11 +29,9 @@ public class DominanceComparator<C extends Cluster, P extends MoPair<C>> impleme
 
     private final double epsilon = 1e-9;
     private final List<MergeEvaluation> objectives;
-    private final Props params;
 
-    public DominanceComparator(List<MergeEvaluation> objectives, Props params) {
+    public DominanceComparator(List<MergeEvaluation> objectives) {
         this.objectives = objectives;
-        this.params = params;
     }
 
     /**

@@ -73,8 +73,18 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         level = 1;
         int numClusters = clusters.size();
         System.out.println("total " + numClusters + ", queue size " + queue.size());
+        System.out.println(queue.stats());
+
+
         for (int i = 0; i < numClusters - 1; i++) {
+            /* Iterator<P> iter = queue.iterator();
+             System.out.println("queue candidates : " + i);
+            for (int j = 0; j < 3; j++) {
+                System.out.println("  " + iter.next());
+            }
+            System.out.println("---");*/
             singleMerge(queue.poll(), pref);
+            //System.out.println("====");
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
@@ -179,7 +189,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
             //TODO: we might multiply objectives or use another criteria for building tree
             val = pair.getObjective(i);
             if (!Double.isNaN(val)) {
-                sim *= val;
+                sim += val;
             }
         }
         //double sim = eval.score(pair.A, pair.B, pref);
@@ -189,7 +199,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         if (sim < 0.005) {
             sim = 0.005;
         }
-        height += 1 / sim;
+        height += 1.0 / sim;
         newNode.setHeight(height);
         newNode.setLevel(level++);
         nodes[clusters.size() - 1] = newNode;

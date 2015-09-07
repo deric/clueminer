@@ -33,7 +33,6 @@ import org.clueminer.utils.Props;
 public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<C>> implements Iterator<P> {
 
     private final ArrayList<Set<FndsMember<P>>> fronts;
-    private final Props params;
     private final DominanceComparator<C, P> comparator;
 
     private int currFront = 0;
@@ -42,8 +41,7 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
     private Iterator<FndsMember<P>> currIter;
 
     public NsgaQueue(ArrayList<P> pairs, List<MergeEvaluation<E>> objectives, Props pref) {
-        this.params = pref;
-        this.comparator = new DominanceComparator(objectives, params);
+        this.comparator = new DominanceComparator(objectives);
         fronts = sort(pairs);
     }
 

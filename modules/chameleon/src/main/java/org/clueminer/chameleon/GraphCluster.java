@@ -99,7 +99,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
                 }
             }
         }
-        ICL = IIC / counter;
+        if (counter > 0) {
+            ICL = IIC / counter;
+        } else {
+            ICL = Double.MAX_VALUE;
+        }
     }
 
     /**
@@ -573,6 +577,5 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         sb.append(" ]");
         return sb.toString();
     }
-
 
 }

@@ -127,9 +127,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      */
     private void buildQueue(int numClusters, Props pref) {
         int capacity = numClusters * numClusters;
-        if (!evaluation.isMaximized()) {
-            pq = new PriorityQueue<>(capacity);
-        } else {
+        if (evaluation.isMaximized()) {
             //inverse sorting - biggest values first
             Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
 
@@ -140,6 +138,8 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
 
             };
             pq = new PriorityQueue<>(capacity, comp);
+        } else {
+            pq = new PriorityQueue<>(capacity);
         }
         double sim;
         GraphCluster a, b;

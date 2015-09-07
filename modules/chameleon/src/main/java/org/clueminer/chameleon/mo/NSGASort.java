@@ -58,7 +58,7 @@ public class NSGASort<E extends Instance, C extends Cluster<E>, P extends MoPair
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
-        DominanceComparator<C, P> comparator = new DominanceComparator(objectives, params);
+        DominanceComparator<C, P> comparator = new DominanceComparator(objectives);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {
