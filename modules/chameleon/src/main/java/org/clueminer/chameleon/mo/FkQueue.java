@@ -47,12 +47,19 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     private ArrayList<P> pairs;
     private HashSet<Integer> blacklist;
 
-    public FkQueue(HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
+    /**
+     *
+     * @param max number of fronts kept
+     * @param blacklist
+     * @param objectives
+     * @param pref
+     */
+    public FkQueue(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
         this.params = pref;
         this.comparator = new DominanceComparator(objectives, params);
         this.pairs = new ArrayList<>();
         //maximum number of fronts
-        maxFront = 5;
+        maxFront = max;
         this.blacklist = blacklist;
         this.fronts = new LinkedList[maxFront];
     }
@@ -64,20 +71,19 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      */
     public P poll() {
         if (isEmpty()) {
-            //TODO: rebuild queue, if pairs not empty
+            //rebuild queue, if pairs not empty
             if (pairs.isEmpty()) {
                 return null;
             }
             rebuildQueue();
         }
-        //System.out.println(this.toString());
         int curr = 0;
-        LinkedList<P> front = fronts[curr];
-        while (curr < (fronts.length - 1)) {
+        LinkedList<P> front = fronts[curr++];
+        while (curr <= fronts.length) {
             if (front.size() > 0) {
                 return front.removeFirst();
             }
-            front = fronts[++curr];
+            front = fronts[curr++];
         }
         return null;
     }
@@ -159,6 +165,10 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
 
     public void add(P pair, int curr) {
         int flagDominate;
+        if (curr >= maxFront) {
+            pairs.add(pair);
+            return;
+        }
         LinkedList<P> front = getFront(curr);
         if (front.isEmpty()) {
             front.add(pair);
@@ -189,7 +199,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             //insert new front
             tmp[curr] = ff;
             //copy rest of fronts exept last one
-            System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 2 - curr);
+            System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
             fronts = tmp;
         } else if (flagDominate == 1) {
             if (curr < maxFront) {

@@ -75,7 +75,7 @@ public class FkQueueTest {
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
-        queue = new FkQueue(blacklist, objectives, props);
+        queue = new FkQueue(5, blacklist, objectives, props);
         queue.addAll(pairs);
         System.out.println(queue);
         System.out.println(queue.stats());
@@ -93,5 +93,50 @@ public class FkQueueTest {
             assertNotNull(item);
         }
         assertEquals(0, queue.size());
+    }
+
+    @Test
+    public void testVehicle() {
+        Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        Props props = new Props();
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+
+        List<MergeEvaluation> objectives = new LinkedList<>();
+        objectives.add(new RiRcSimilarity());
+        objectives.add(new ShatovskaSimilarity());
+
+        PairMergerMO merger = new PairMergerMO();
+        merger.initialize(partitioningResult, g, bisection);
+        merger.setObjectives(objectives);
+
+        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        queue = new FkQueue(5, blacklist, objectives, props);
+        System.out.println("pairs size: " + pairs.size());
+        queue.addAll(pairs);
+        //System.out.println(queue);
+        System.out.println(queue.stats());
+        //there are 6670 pairs of clusters
+        assertEquals(6670, queue.size());
+        //we should have 5 fronts
+        assertEquals(5, queue.numFronts());
+        //TODO: make sure we can remove and add items to queue in fast manner
+        int n = 21;
+        MoPair item;
+        for (int i = 0; i < n; i++) {
+            //assertEquals(n - i, queue.size());
+            item = queue.poll();
+            assertNotNull(item);
+        }
+        //assertEquals(0, queue.size());
     }
 }

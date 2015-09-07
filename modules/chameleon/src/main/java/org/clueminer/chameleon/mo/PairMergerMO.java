@@ -45,7 +45,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     private List<MergeEvaluation<E>> objectives = new LinkedList<>();
     public static final String name = "multi-objective merger";
 
-    private NsgaQueue<E, C, P> queue;
+    private FkQueue<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -61,15 +61,16 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
             throw new RuntimeException("you must specify at least 2 objectives");
         }
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        queue = new NsgaQueue<>(pairs, objectives, pref);
+        queue = new FkQueue<>(5, blacklist, objectives, pref);
+        //initialize queue
+        queue.addAll(pairs);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         int numClusters = clusters.size();
-        System.out.println("total " + numClusters + "queue size " + queue.size());
+        System.out.println("total " + numClusters + ", queue size " + queue.size());
         for (int i = 0; i < numClusters - 1; i++) {
-            System.out.println("merge: " + i);
             singleMerge(queue.poll(), pref);
         }
 
