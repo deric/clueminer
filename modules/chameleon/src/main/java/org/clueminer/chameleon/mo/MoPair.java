@@ -38,9 +38,9 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
         setNumObjectives(2);
     }
 
-    public MoPair(C A, C B, MergeEvaluation<E> eval) {
+    public MoPair(C A, C B, int numObjectives, MergeEvaluation<E> eval) {
         super(A, B);
-        setNumObjectives(2);
+        setNumObjectives(numObjectives);
         this.eval = eval;
     }
 
@@ -77,7 +77,7 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
 
     @Override
     public int compareTo(PairValue<C> o) {
-        MoPair<E, C> e = (MoPair<E, C>) o;
+        PairValue<C> e = (PairValue<C>) o;
         double sc1 = eval.score(this.A, this.B, props);
         double sc2 = eval.score(e.A, e.B, props);
         if (sc1 > sc2) {

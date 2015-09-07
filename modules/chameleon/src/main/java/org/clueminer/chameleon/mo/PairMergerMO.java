@@ -47,7 +47,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     public static final String name = "multi-objective merger";
 
     private FkQueue<E, C, P> queue;
-    private MergeEvaluation eval;
+    private MergeEvaluation eval = new ShatovskaSimilarity();
 
     @Override
     public String getName() {
@@ -160,7 +160,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
      * @return
      */
     protected MoPair<E, C> createPair(C a, C b, Props pref) {
-        P pair = (P) new MoPair<>(a, b, objectives.size());
+        P pair = (P) new MoPair<>(a, b, objectives.size(), eval);
         double sim;
         for (int j = 0; j < objectives.size(); j++) {
             sim = objectives.get(j).score(a, b, pref);

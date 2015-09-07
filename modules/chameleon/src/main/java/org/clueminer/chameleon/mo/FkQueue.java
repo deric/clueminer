@@ -18,13 +18,14 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.sort.Heap;
 import org.clueminer.utils.Props;
 
 /**
@@ -35,7 +36,7 @@ import org.clueminer.utils.Props;
  */
 public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
 
-    private LinkedList<P>[] fronts;
+    private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
 
     private int lastFront = 0;
@@ -43,6 +44,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     private int maxFront;
     private ArrayList<P> pairs;
     private HashSet<Integer> blacklist;
+    private MoPairComparator itemCmp;
 
     /**
      *
@@ -57,7 +59,8 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
-        this.fronts = new LinkedList[maxFront];
+        this.fronts = new Heap[maxFront];
+        this.itemCmp = new MoPairComparator();
     }
 
     /**
@@ -71,11 +74,11 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         }
 
         int curr = 0;
-        LinkedList<P> front;
+        Heap<P> front;
         do {
             front = fronts[curr++];
             if (front.size() > 0) {
-                return front.removeFirst();
+                return front.pop();
             }
         } while (curr < fronts.length);
 
@@ -87,7 +90,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     public boolean hasNext() {
         int curr = 0;
 
-        LinkedList<P> front = fronts[curr];
+        Heap<P> front = fronts[curr];
         while (curr < fronts.length && front != null) {
             if (front.size() > 0) {
                 return true;
@@ -105,7 +108,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      */
     public boolean isEmpty() {
         boolean empty = true;
-        for (LinkedList<P> front : fronts) {
+        for (Heap<P> front : fronts) {
             empty = empty && front == null;
             if (!empty) {
                 return false;
@@ -123,7 +126,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         int size = 0;
         if (fronts.length > 0) {
             //reduce(0) { front.size }
-            for (LinkedList<P> front : fronts) {
+            for (Heap<P> front : fronts) {
                 if (front != null) {
                     size += front.size();
                 }
@@ -158,7 +161,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             int currFront = 0;
             int offset = index;
             P item = null;
-            LinkedList<P> front;
+            Heap<P> front;
             do {
                 front = fronts[currFront++];
                 if (front != null) {
@@ -193,29 +196,30 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             buffer.add(pair);
             return;
         }
-        LinkedList<P> front = getFront(curr);
+        Heap<P> front = getFront(curr);
         if (front.isEmpty()) {
             front.add(pair);
             return;
         }
 
-        flagDominate = comparator.compare(pair, front.getFirst());
+        flagDominate = comparator.compare(pair, front.peek());
         if (flagDominate == -1) {
             //item dominates whole front
-            LinkedList<P> ff = new LinkedList<>();
+            Heap<P> ff = new Heap<>(itemCmp);
             ff.add(pair);
             //item dominates all known fronts
 
             if (fronts[maxFront - 1] != null) {
                 //move last front to "do it later" list
-                for (P item : fronts[maxFront - 1]) {
-                    buffer.add(item);
+                Iterator<P> iter = fronts[maxFront - 1].iterator();
+                while (iter.hasNext()) {
+                    buffer.add(iter.next());
                 }
                 //free memory
                 fronts[maxFront - 1] = null;
             }
             //shift all fronts one down
-            LinkedList<P>[] tmp = new LinkedList[maxFront];
+            Heap<P>[] tmp = new Heap[maxFront];
             if (curr > 0) {
                 //copy first fronts up to curr
                 System.arraycopy(fronts, 0, tmp, 0, curr);
@@ -234,7 +238,7 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             }
         } else if (flagDominate == 0) {
             //we can't decide which one dominates, item belongs to this front
-            front.addLast(pair);
+            front.add(pair);
         }
     }
 
@@ -265,19 +269,28 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      * @param i
      * @return front with required rank (start from 0 up to (n+1))
      */
-    protected LinkedList<P> getFront(int i) {
+    protected Heap<P> getFront(int i) {
         return getFront(fronts, i);
     }
 
-    private LinkedList<P> getFront(LinkedList<P>[] paretoF, int i) {
+    private Heap<P> getFront(Heap<P>[] paretoF, int i) {
         if (i > lastFront) {
             lastFront = i;
         }
         if (paretoF[i] == null) {
-            paretoF[i] = new LinkedList<>();
+            paretoF[i] = new Heap<>(itemCmp);
         }
 
         return paretoF[i];
+    }
+
+    class MoPairComparator implements Comparator<P> {
+
+        @Override
+        public int compare(P o1, P o2) {
+            return o1.compareTo(o2);
+        }
+
     }
 
     public int numFronts() {
@@ -291,11 +304,11 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < fronts.length; j++) {
-            LinkedList<P> curr = getFront(j);
+            Heap<P> curr = getFront(j);
             sb.append("front ").append(j).append(" size: ").append(curr.size()).append("\n");
-            for (P item : curr) {
-                sb.append("  ").append(item).append("\n");
-            }
+            //for (P item : curr) {
+            //    sb.append("  ").append(item).append("\n");
+            //}
 
         }
         return sb.toString();

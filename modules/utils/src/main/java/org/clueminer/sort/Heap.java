@@ -23,10 +23,10 @@ import java.util.List;
 
 /**
  * Minimum heap implementation. See [Cormen et al 1999] for formal theory.
- * Maintains all elements in a min-heap, such that the minimum element will
- * be the top-most node in the heap at all times. Among many other uses, heaps
- * are ideal for
- * representing priority queues.
+ Maintains all elements in a min-heap, such that the minimum element will
+ be the peek-most node in the heap at all times. Among many other uses, heaps
+ are ideal for
+ representing priority queues.
  *
  * @param <T>
  */
@@ -78,13 +78,13 @@ public class Heap<T> {
     }
 
     /**
-     * Return a reference to the top-most element on the heap. The method does
+     * Return a reference to the peek-most element on the heap. The method does
      * not change the state
      * of the heap in any way. O(k).
      *
-     * @return Reference to top-most element of heap
+     * @return Reference to peek-most element of heap
      */
-    public final T top() {
+    public final T peek() {
         return heap.get(0).element;
     }
 
@@ -96,7 +96,7 @@ public class Heap<T> {
      * @return
      */
     public T pop() {
-        T returnNode = top();
+        T returnNode = peek();
         swap(0, size - 1);
         heap.remove(size - 1);
         size--;
@@ -107,6 +107,10 @@ public class Heap<T> {
         }
 
         return returnNode;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     public T get(int index) {
