@@ -16,9 +16,12 @@
  */
 package org.clueminer.chameleon;
 
-import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import org.clueminer.chameleon.similarity.RiRcSimilarity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -30,6 +33,7 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -40,6 +44,30 @@ import org.junit.Test;
 public class PairMergerTest {
 
     private PairMerger merger;
+
+    @Test
+    public void testUsArrest() {
+        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+
+        merger = new PairMerger();
+        merger.setMergeEvaluation(new ShatovskaSimilarity());
+        merger.initialize(partitioningResult, g, bisection);
+
+        Props pref = new Props();
+        HierarchicalResult result = merger.getHierarchy(dataset, pref);
+        DendroTreeData tree = result.getTreeData();
+        tree.print();
+    }
 
     @Test
     public void testGetHierarchy() {

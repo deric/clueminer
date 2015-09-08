@@ -70,7 +70,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override

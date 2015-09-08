@@ -74,7 +74,7 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override

@@ -88,6 +88,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
+        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
         //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
         //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
         //WARNING: we copy nodes from previous clusters (we save memory, but
@@ -128,7 +129,17 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     private void buildQueue(int numClusters, Props pref) {
         int capacity = numClusters * numClusters;
         if (evaluation.isMaximized()) {
-            //inverse sorting - biggest values first
+            Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
+
+                @Override
+                public int compare(PairValue<GraphCluster> o1, PairValue<GraphCluster> o2) {
+                    return o1.compareTo(o2);
+                }
+
+            };
+            pq = new PriorityQueue<>(capacity, comp);
+        } else {
+            //inverse sorting - smallest values first
             Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
 
                 @Override
@@ -138,8 +149,6 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
 
             };
             pq = new PriorityQueue<>(capacity, comp);
-        } else {
-            pq = new PriorityQueue<>(capacity);
         }
         double sim;
         GraphCluster a, b;

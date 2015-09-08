@@ -75,7 +75,7 @@ public class Closeness<E extends Instance> extends AbstractSimilarity<E> impleme
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override

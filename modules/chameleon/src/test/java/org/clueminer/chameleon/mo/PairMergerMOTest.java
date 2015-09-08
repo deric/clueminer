@@ -18,8 +18,8 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import org.clueminer.chameleon.similarity.RiRcSimilarity;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.Closeness;
+import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -62,8 +62,8 @@ public class PairMergerMOTest {
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
         subject = new PairMergerMO();
-        subject.addObjective(new RiRcSimilarity());
-        subject.addObjective(new ShatovskaSimilarity());
+        subject.addObjective(new Closeness());
+        subject.addObjective(new Interconnectivity());
 
         subject.initialize(partitioningResult, g, bisection);
 

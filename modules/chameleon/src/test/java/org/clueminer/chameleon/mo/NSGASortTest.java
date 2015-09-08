@@ -79,11 +79,11 @@ public class NSGASortTest {
         //number of fronts
         assertEquals(5, res.size());
         //first front size
-        assertEquals(15, res.get(0).size());
+        assertEquals(2, res.get(0).size());
         assertEquals(1, res.get(1).size());
         assertEquals(2, res.get(2).size());
-        assertEquals(2, res.get(3).size());
-        assertEquals(1, res.get(4).size());
+        assertEquals(1, res.get(3).size());
+        assertEquals(15, res.get(4).size());
 
     }
 
