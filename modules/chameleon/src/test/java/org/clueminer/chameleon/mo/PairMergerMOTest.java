@@ -42,7 +42,7 @@ import org.junit.Test;
  */
 public class PairMergerMOTest {
 
-    private PairMergerMO subject;
+    private PairMergerMOF subject;
 
     public PairMergerMOTest() {
     }
@@ -61,7 +61,7 @@ public class PairMergerMOTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        subject = new PairMergerMO();
+        subject = new PairMergerMOF();
         subject.addObjective(new Closeness());
         subject.addObjective(new Interconnectivity());
 

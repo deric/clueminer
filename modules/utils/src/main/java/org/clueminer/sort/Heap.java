@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @param <T>
  */
-public class Heap<T> {
+public class Heap<T> implements Iterable<T> {
 
     private int size;
     final private List<Node> heap;
@@ -163,7 +163,7 @@ public class Heap<T> {
         }
     }
 
-    private final void swap(final int index, final int index2) {
+    private void swap(final int index, final int index2) {
         Node temp = heap.get(index);
         temp.position = index2;
 
@@ -196,6 +196,7 @@ public class Heap<T> {
      *
      * @return
      */
+    @Override
     public final Iterator<T> iterator() {
         return new Iterator<T>() {
             private final Iterator<Node> iterator = heap.iterator();
