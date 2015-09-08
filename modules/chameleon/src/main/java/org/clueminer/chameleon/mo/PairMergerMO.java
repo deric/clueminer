@@ -74,16 +74,10 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         int numClusters = clusters.size();
         System.out.println("total " + numClusters + ", queue size " + queue.size());
         System.out.println(queue.stats());
-
+        System.out.println(queue);
         for (int i = 0; i < numClusters - 1; i++) {
-            /* Iterator<P> iter = queue.iterator();
-             System.out.println("queue candidates : " + i);
-             for (int j = 0; j < 3; j++) {
-             System.out.println("  " + iter.next());
-             }
-             System.out.println("---");*/
             singleMerge(queue.poll(), pref);
-            //System.out.println("====");
+            System.out.println(queue);
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
@@ -129,7 +123,9 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
+        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //System.out.println("   " + curr.toString());
+        LinkedList<Node<E>> clusterNodes = (LinkedList<Node<E>>) curr.A.getNodes().clone();
         clusterNodes.addAll(curr.B.getNodes());
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
@@ -137,7 +133,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         for (MergeEvaluation<E> eval : objectives) {
             eval.clusterCreated(curr, newCluster, pref);
         }
-        //eval.clusterCreated(curr, newCluster, pref);
+        eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
@@ -146,6 +142,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     private void addIntoQueue(C cluster, Props pref) {
         for (int i = 0; i < cluster.getClusterId(); i++) {
             if (!blacklist.contains(i)) {
+                //System.out.println("adding pair [" + cluster.getClusterId() + ", " + clusters.get(i).getClusterId() + "]");
                 queue.add((P) createPair((C) clusters.get(i), cluster, pref));
             }
         }
@@ -182,16 +179,15 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         DTreeNode newNode = new DTreeNode(clusters.size() - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
-        double sim = 0.0;
-        double val;
+        /*double sim = 0.0;
+         double val;
         for (int i = 0; i < objectives.size(); i++) {
             //TODO: we might multiply objectives or use another criteria for building tree
             val = pair.getObjective(i);
             if (!Double.isNaN(val)) {
-                sim += val;
-            }
-        }
-        //double sim = eval.score(pair.A, pair.B, pref);
+                sim += val;            }
+        }*/
+        double sim = eval.score(pair.A, pair.B, pref);
         if (sim > 10) {
             sim = 10;
         }

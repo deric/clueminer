@@ -39,6 +39,7 @@ import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -96,9 +97,9 @@ public class FkQueueTest {
             if (i > 0) {
                 cmp = comparator.compare(prev, item);
                 //prev should be better or at same level
-                //assertTrue(cmp + "should be -1 or 0", cmp <= 0);
+                assertTrue(cmp + "should be -1 or 0", cmp <= 1);
             }
-            System.out.println(i + ": " + item.A.toString() + "\n    " + item.B.toString() + "\n " + item.getValue() + item + " cmp: " + cmp);
+            System.out.println(i + ": " + item.A.toString() + "\n    " + item.B.toString() + "\n " + item.getValue() + item + "\n cmp: " + cmp);
             assertNotNull(item);
             prev = item;
         }

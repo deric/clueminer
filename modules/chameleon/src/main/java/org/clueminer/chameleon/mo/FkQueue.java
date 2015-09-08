@@ -72,13 +72,18 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         if (isEmpty() && pairs.isEmpty()) {
             return null;
         }
-
+        P item;
         int curr = 0;
         Heap<P> front;
         do {
             front = fronts[curr++];
             if (front.size() > 0) {
-                return front.pop();
+                item = front.pop();
+                if (front.isEmpty()) {
+                    //TODO: maybe the rebuild is too frequent (and expensive)
+                    rebuildQueue();
+                }
+                return item;
             }
         } while (curr < fronts.length);
 
@@ -249,8 +254,19 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     }
 
     private void rebuildQueue() {
-        int expSize = (int) Math.sqrt(pairs.size());
-        ArrayList<P> tmp = new ArrayList<>(expSize);
+        ArrayList<P> tmp = new ArrayList<>(pairs.size());
+        Iterator<P> iter;
+        P elem;
+        for (Heap<P> front : fronts) {
+            if (front != null && !front.isEmpty()) {
+                iter = front.iterator();
+                while (iter.hasNext()) {
+                    elem = iter.next();
+                    pairs.add(elem);
+                }
+                front.clear();
+            }
+        }
         for (P item : pairs) {
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //skip the item
@@ -306,9 +322,14 @@ public class FkQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);
             sb.append("front ").append(j).append(" size: ").append(curr.size()).append("\n");
-            //for (P item : curr) {
-            //    sb.append("  ").append(item).append("\n");
-            //}
+            Iterator<P> iter = curr.iterator();
+            P item;
+            while (iter.hasNext()) {
+                item = iter.next();
+                sb.append("  ").append(item).append("; ");
+                sb.append("A:").append(item.A.getClusterId()).append(", ");
+                sb.append("B:").append(item.B.getClusterId()).append("\n");
+            }
 
         }
         return sb.toString();
