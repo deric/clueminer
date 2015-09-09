@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 /**
  * A wrapper for containing two objects of different types.
+ *
+ * @param <T>
+ * @param <U>
  */
 public class Duple<T, U> implements Serializable {
 

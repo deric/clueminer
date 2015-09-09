@@ -346,7 +346,6 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         @Override
         public void remove() {
             throw new UnsupportedOperationException("Cannot remove from instance using the iterator.");
-
         }
     }
 

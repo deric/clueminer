@@ -17,7 +17,9 @@
 package org.clueminer.sort;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Random;
+import org.clueminer.utils.Duple;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -94,10 +96,23 @@ public class HeapTest {
         for (int i = 0; i < n; i++) {
             heap.add(i);
         }
-
-        for (int item : heap) {
-            System.out.println("item " + item);
+        Iterator<Duple<Integer, Integer>> iter = heap.indexValue();
+        Duple<Integer, Integer> item;
+        int j = 0;
+        while (iter.hasNext()) {
+            item = iter.next();
+            j++;
         }
-        heap.printHeap();
+        assertEquals(heap.size(), j);
+        heap.print();
+        System.out.println("===");
+        System.out.println("removing 1 -> " + heap.get(1));
+        int size = heap.size();
+        int idx = 1;
+        heap.remove(idx);
+        assertEquals(size - 1, heap.size());
+        assertTrue("left child should be smaller than its parent", heap.get(idx) > heap.get(heap.left(idx)));
+        assertTrue("right child should be smaller than its parent", heap.get(idx) > heap.get(heap.right(idx)));
+        heap.print();
     }
 }

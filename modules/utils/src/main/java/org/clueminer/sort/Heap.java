@@ -16,16 +16,19 @@
  */
 package org.clueminer.sort;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import org.clueminer.utils.Duple;
+import org.openide.util.Exceptions;
 
 /**
  * Minimum heap implementation. See [Cormen et al 1999] for formal theory.
- Maintains all elements in a min-heap, such that the minimum element will
- be the peek-most node in the heap at all times. Among many other uses, heaps
- are ideal for
- representing priority queues.
+ * Maintains all elements in a min-heap, such that the minimum element will be
+ * the peek-most node in the heap at all times. Among many other uses, heaps are
+ * ideal for representing priority queues.
  *
  * @param <T>
  */
@@ -44,6 +47,21 @@ public class Heap<T> implements Iterable<T> {
         size = 0;
         //Allocate space
         heap = new ArrayList<>();
+
+        //Comparator
+        this.comparator = comparator;
+    }
+
+    /**
+     * Create heap with given capacity
+     *
+     * @param comparator
+     * @param capacity expected capacity (might be eventually exceeded)
+     */
+    public Heap(Comparator<T> comparator, int capacity) {
+        size = 0;
+        //Allocate space
+        heap = new ArrayList<>(capacity);
 
         //Comparator
         this.comparator = comparator;
@@ -69,8 +87,7 @@ public class Heap<T> implements Iterable<T> {
 
     /**
      * Return a reference to the peek-most element on the heap. The method does
-     * not change the state
-     * of the heap in any way. O(k).
+     * not change the state of the heap in any way. O(k).
      *
      * @return Reference to peek-most element of heap
      */
@@ -103,10 +120,21 @@ public class Heap<T> implements Iterable<T> {
         return size == 0;
     }
 
+    /**
+     * Value at given index. Root is at position 0
+     *
+     * @param index
+     * @return value stored in heap at given index
+     */
     public T get(int index) {
         return heap.get(index);
     }
 
+    /**
+     * Actual number of item on the heap
+     *
+     * @return
+     */
     public final int size() {
         return size;
     }
@@ -114,7 +142,6 @@ public class Heap<T> implements Iterable<T> {
     private boolean decreaseKey(int index) {
         boolean modified = false;
 
-        //    while ( index>0 &&  (heap[parent(index)]).compareTo( heap[index]) >= 0 ) {
         while (index > 0 && comparator.compare(heap.get(parent(index)), heap.get(index)) >= 0) {
             swap(index, parent(index));
             index = parent(index);
@@ -129,14 +156,12 @@ public class Heap<T> implements Iterable<T> {
         int left = left(index);
         int right = right(index);
 
-        //  if (left<size && (heap[left]).compareTo(heap[index]) <= 0 )
         if (left < size && comparator.compare(heap.get(left), heap.get(index)) <= 0) {
             smallest = left;
         } else {
             smallest = index;
         }
 
-        //    if (right<size && (heap[right]).compareTo(heap[smallest]) <=0 )
         if (right < size && comparator.compare(heap.get(right), heap.get(smallest)) <= 0) {
             smallest = right;
         }
@@ -154,21 +179,46 @@ public class Heap<T> implements Iterable<T> {
     }
 
     /**
+     * Remove item at given internal heap index. Removed value is replaced by
+     * last value in the heap, which is then sifted down.
+     *
+     * Complexity of removal is O(log n)
+     *
+     * @param index
+     * @return item on given index, null if item doesn't exist
+     */
+    public T remove(int index) {
+        if (index >= size) {
+            return null;
+        }
+        T item = heap.get(index);
+        swap(index, size - 1);
+        heap.remove(size - 1);
+        size--;
+
+        //if any elements left in heap, do minHeapify
+        if (size > 0) {
+            minHeapify(index);
+        }
+        return item;
+    }
+
+    /**
      * Index divided by 2
      *
      * @param i
      * @return
      */
-    private int parent(final int i) {
+    int parent(final int i) {
         return i >>> 1;
     }
 
-    private int left(final int i) {
-        return 2 * i;
+    int left(final int i) {
+        return 2 * i + 1;
     }
 
-    private int right(final int i) {
-        return 2 * i + 1;
+    int right(final int i) {
+        return 2 * i + 2;
     }
 
     /**
@@ -182,19 +232,76 @@ public class Heap<T> implements Iterable<T> {
         return heap.iterator();
     }
 
-    public void printHeap() {
-        int step = 1;
-        int i = 0;
-        for (int n = 0; n < size; n++) {
-            i++;
-            System.out.print("" + heap.get(n) + "*");
-            if (i % step == 0) {
-                step *= 2;
-                i = 0;
-                System.out.println("");
-            }
+    public final Iterator<Duple<Integer, T>> indexValue() {
+        return new HeapIndexValueIterator<>();
+
+    }
+
+    private class HeapIndexValueIterator<T> implements Iterator<Duple<Integer, T>> {
+
+        private int index;
+
+        public HeapIndexValueIterator() {
+            index = 0;
         }
 
-        System.out.println("");
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public Duple<Integer, T> next() {
+            int idx = index++;
+            return new Duple<>(idx, (T) heap.get(idx));
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove using iterator.");
+        }
+
     }
+
+    public void print() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTree(out, 0);
+            out.flush();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void printTree(OutputStreamWriter out, int index) throws IOException {
+        if (index >= size) {
+            return;
+        }
+        printTree(out, left(index), false, "");
+        printNodeValue(out, index);
+        printTree(out, right(index), true, "");
+    }
+
+    protected void printNodeValue(OutputStreamWriter out, int index) throws IOException {
+        out.write("#" + index + " (" + heap.get(index) + ")");
+        out.write('\n');
+    }
+
+    public void printTree(OutputStreamWriter out, int index, boolean isRight, String indent) throws IOException {
+        if (index >= size) {
+            return;
+        }
+        printTree(out, left(index), false, indent + (isRight ? " |      " : "        "));
+
+        out.write(indent);
+        if (isRight) {
+            out.write(" \\");
+        } else {
+            out.write(" /");
+        }
+        out.write("----- ");
+        printNodeValue(out, index);
+        printTree(out, right(index), true, indent + (isRight ? "        " : " |      "));
+    }
+
 }
