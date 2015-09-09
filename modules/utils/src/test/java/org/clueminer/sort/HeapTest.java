@@ -18,6 +18,7 @@ package org.clueminer.sort;
 
 import java.util.Comparator;
 import java.util.Random;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -27,25 +28,36 @@ import org.junit.Test;
  */
 public class HeapTest {
 
-    public HeapTest() {
-    }
+    private Comparator<Double> asc;
+    private Comparator<Integer> desc;
 
-    @Test
-    public void testNonFixedSize() {
-        //create heap with capacity 10
-        Heap<Double> instance = new Heap<>(new Comparator<Double>() {
+    public HeapTest() {
+        asc = new Comparator<Double>() {
 
             @Override
             public int compare(Double o1, Double o2) {
                 return o1.compareTo(o2);
             }
-        });
+        };
+
+        desc = new Comparator<Integer>() {
+
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        };
+    }
+
+    @Test
+    public void testNonFixedSize() {
+        //create heap with capacity 10
+        Heap<Double> instance = new Heap<>(asc);
         Random rand = new Random();
         //add 20 items
         double d;
         for (int i = 0; i < 20; i++) {
             d = rand.nextDouble();
-            System.out.println("adding " + i + " = " + d);
             instance.add(d);
         }
         //and retrieve 20 items
@@ -57,4 +69,35 @@ public class HeapTest {
         }
     }
 
+    @Test
+    public void testSorting() {
+        //create heap with capacity 10
+        Heap<Integer> heap = new Heap<>(desc);
+        int n = 10;
+
+        for (int i = 0; i < n; i++) {
+            heap.add(i);
+        }
+        int item;
+        for (int i = n; i > 0; i--) {
+            item = heap.pop();
+            assertEquals(i - 1, item);
+        }
+    }
+
+    @Test
+    public void testRemove() {
+        //create heap with capacity 10
+        Heap<Integer> heap = new Heap<>(desc);
+        int n = 20;
+
+        for (int i = 0; i < n; i++) {
+            heap.add(i);
+        }
+
+        for (int item : heap) {
+            System.out.println("item " + item);
+        }
+        heap.printHeap();
+    }
 }

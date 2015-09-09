@@ -19,7 +19,6 @@ package org.clueminer.sort;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Minimum heap implementation. See [Cormen et al 1999] for formal theory.
@@ -33,14 +32,8 @@ import java.util.List;
 public class Heap<T> implements Iterable<T> {
 
     private int size;
-    final private List<Node> heap;
+    final private ArrayList<T> heap;
     final private Comparator<T> comparator;
-
-    private class Node {
-
-        public T element;
-        public int position;
-    }
 
     /**
      * Create a new heap
@@ -64,11 +57,8 @@ public class Heap<T> implements Iterable<T> {
      */
     public void add(final T element) {
         size++;
-        Node node = new Node();
-        node.element = element;
-        node.position = size - 1;
-        heap.add(node);
-        decreaseKey(node);
+        heap.add(element);
+        decreaseKey(size - 1);
         //return node;
     }
 
@@ -85,7 +75,7 @@ public class Heap<T> implements Iterable<T> {
      * @return Reference to peek-most element of heap
      */
     public final T peek() {
-        return heap.get(0).element;
+        return heap.get(0);
     }
 
     //bound check missing
@@ -103,7 +93,7 @@ public class Heap<T> implements Iterable<T> {
 
         //if any elements left in heap, do minHeapify
         if (size > 0) {
-            minHeapify(heap.get(0));
+            minHeapify(0);
         }
 
         return returnNode;
@@ -114,24 +104,18 @@ public class Heap<T> implements Iterable<T> {
     }
 
     public T get(int index) {
-        return heap.get(index).element;
+        return heap.get(index);
     }
 
-    //  private final void reinsert( final Node n ) {
-    //    if ( !decreaseKey(n) ) {
-    //      minHeapify(n);
-    //    }
-    //  }
     public final int size() {
         return size;
     }
 
-    private boolean decreaseKey(final Node node) {
-        int index = node.position;
+    private boolean decreaseKey(int index) {
         boolean modified = false;
 
         //    while ( index>0 &&  (heap[parent(index)]).compareTo( heap[index]) >= 0 ) {
-        while (index > 0 && comparator.compare(heap.get(parent(index)).element, heap.get(index).element) >= 0) {
+        while (index > 0 && comparator.compare(heap.get(parent(index)), heap.get(index)) >= 0) {
             swap(index, parent(index));
             index = parent(index);
             modified = true;
@@ -140,46 +124,43 @@ public class Heap<T> implements Iterable<T> {
         return modified;
     }
 
-    private void minHeapify(final Node node) {
+    private void minHeapify(final int index) {
         int smallest;
-        int index = node.position;
         int left = left(index);
         int right = right(index);
 
         //  if (left<size && (heap[left]).compareTo(heap[index]) <= 0 )
-        if (left < size && comparator.compare(heap.get(left).element, heap.get(index).element) <= 0) {
+        if (left < size && comparator.compare(heap.get(left), heap.get(index)) <= 0) {
             smallest = left;
         } else {
             smallest = index;
         }
 
         //    if (right<size && (heap[right]).compareTo(heap[smallest]) <=0 )
-        if (right < size && comparator.compare(heap.get(right).element, heap.get(smallest).element) <= 0) {
+        if (right < size && comparator.compare(heap.get(right), heap.get(smallest)) <= 0) {
             smallest = right;
         }
         if (smallest != index) {
             swap(index, smallest);
-            minHeapify(heap.get(smallest));
+            minHeapify(smallest);
         }
     }
 
     private void swap(final int index, final int index2) {
-        Node temp = heap.get(index);
-        temp.position = index2;
+        T temp = heap.get(index);
 
-        Node temp2 = heap.get(index2);
-        temp2.position = index;
-
-        heap.set(index, temp2);
+        heap.set(index, heap.get(index2));
         heap.set(index2, temp);
-
-        //Update posistion in Node
-        //    heap.get(index).position=index;
-        //    heap.get(index2).position=index2;
     }
 
+    /**
+     * Index divided by 2
+     *
+     * @param i
+     * @return
+     */
     private int parent(final int i) {
-        return i / 2;
+        return i >>> 1;
     }
 
     private int left(final int i) {
@@ -198,23 +179,7 @@ public class Heap<T> implements Iterable<T> {
      */
     @Override
     public final Iterator<T> iterator() {
-        return new Iterator<T>() {
-            private final Iterator<Node> iterator = heap.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public T next() {
-                return iterator.next().element;
-            }
-
-            @Override
-            public void remove() {
-            }
-        };
+        return heap.iterator();
     }
 
     public void printHeap() {
