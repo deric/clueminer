@@ -18,19 +18,15 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
-import org.clueminer.chameleon.AbstractMerger;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
@@ -41,14 +37,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractMerger<E> implements Merger<E> {
+public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    protected List<MergeEvaluation<E>> objectives = new LinkedList<>();
-    public static final String name = "multi-objective merger";
+    public static final String name = "multi-objective merger (heap sorting)";
 
-    private FhQueue<E, C, P> queue;
-    protected MergeEvaluation eval = new ShatovskaSimilarity();
-
+    private FrontHeapQueue<E, C, P> queue;
+    
     @Override
     public String getName() {
         return name;
@@ -64,7 +58,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
         eval = new ShatovskaSimilarity();
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        queue = new FhQueue<>(5, blacklist, objectives, pref);
+        queue = new FrontHeapQueue<>(5, blacklist, objectives, pref);
         //initialize queue
         queue.addAll(pairs);
         height = 0;
@@ -74,39 +68,17 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         int numClusters = clusters.size();
         System.out.println("total " + numClusters + ", queue size " + queue.size());
         System.out.println(queue.stats());
-        System.out.println(queue);
         for (int i = 0; i < numClusters - 1; i++) {
             singleMerge(queue.poll(), pref);
+            //System.out.println("queue size: " + queue.size());
+            //queue.filterOut();
+            //System.out.println(queue);
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot());
         result.setTreeData(treeData);
         return result;
-    }
-
-    protected ArrayList<P> createPairs(int numClusters, Props pref) {
-        ArrayList<P> allPairs = new ArrayList<>(triangleSize(numClusters));
-        C c1, c2;
-        //generate all pairs
-        for (int i = 0; i < numClusters; i++) {
-            c1 = (C) clusters.get(i);
-            for (int j = 0; j < i; j++) {
-                c2 = (C) clusters.get(j);
-                allPairs.add((P) createPair(c1, c2, pref));
-            }
-        }
-        return allPairs;
-    }
-
-    /**
-     * Compute size of triangular matrix (n x n) minus diagonal
-     *
-     * @param n
-     * @return
-     */
-    protected int triangleSize(int n) {
-        return ((n - 1) * n) >>> 1;
     }
 
     private void singleMerge(P curr, Props pref) {
@@ -132,7 +104,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         for (MergeEvaluation<E> eval : objectives) {
             eval.clusterCreated(curr, newCluster, pref);
         }
-        eval.clusterCreated(curr, newCluster, pref);
+        //eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
@@ -147,72 +119,5 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
     }
 
-    /**
-     * Create a pair of clusters and pre-computes all objectives
-     *
-     * @param a
-     * @param b
-     * @param pref
-     * @return
-     */
-    protected MoPair<E, C> createPair(C a, C b, Props pref) {
-        P pair = (P) new MoPair<>(a, b, objectives.size(), eval);
-        double sim;
-        for (int j = 0; j < objectives.size(); j++) {
-            sim = objectives.get(j).score(a, b, pref);
-            pair.setObjective(j, sim);
-        }
-        return pair;
-    }
-
-    /**
-     * Adds node representing new cluster (the one created by merging) to
-     * dendroTree
-     *
-     * @param pair
-     * @param pref
-     */
-    protected void addIntoTree(MoPair<E, GraphCluster<E>> pair, Props pref) {
-        DendroNode left = nodes[pair.A.getClusterId()];
-        DendroNode right = nodes[pair.B.getClusterId()];
-        DTreeNode newNode = new DTreeNode(clusters.size() - 1);
-        newNode.setLeft(left);
-        newNode.setRight(right);
-        /*double sim = 0.0;
-         double val;
-         for (int i = 0; i < objectives.size(); i++) {
-         //TODO: we might multiply objectives or use another criteria for building tree
-         val = pair.getObjective(i);
-         if (!Double.isNaN(val)) {
-         sim += val;            }
-         }*/
-        double sim = eval.score(pair.A, pair.B, pref);
-        if (sim > 10) {
-            sim = 10;
-        }
-        if (sim < 0.005) {
-            sim = 0.005;
-        }
-        height += 1.0 / sim;
-        newNode.setHeight(height);
-        newNode.setLevel(level++);
-        nodes[clusters.size() - 1] = newNode;
-    }
-
-    public void addObjective(MergeEvaluation eval) {
-        this.objectives.add(eval);
-    }
-
-    public void setObjectives(List<MergeEvaluation<E>> list) {
-        this.objectives = list;
-    }
-
-    public void removeObjective(MergeEvaluation eval) {
-        this.objectives.remove(eval);
-    }
-
-    public void clearObjectives() {
-        this.objectives.clear();
-    }
 
 }

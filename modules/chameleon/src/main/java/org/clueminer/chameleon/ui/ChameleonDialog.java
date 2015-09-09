@@ -7,6 +7,7 @@ import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.PairMerger;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.mo.PairMergerMOF;
+import org.clueminer.chameleon.mo.PairMergerMOH;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -465,6 +466,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 break;
             case PairMergerMO.name:
             case PairMergerMOF.name:
+            case PairMergerMOH.name:
                 comboMoObjective.setEnabled(true);
                 break;
         }
@@ -551,6 +553,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 break;
             case PairMergerMOF.name:
             case PairMergerMO.name:
+            case PairMergerMOH.name:
                 params.put(Chameleon.OBJECTIVE_1, (String) comboSimilarity.getSelectedItem());
                 params.put(Chameleon.OBJECTIVE_2, (String) comboMoObjective.getSelectedItem());
                 break;

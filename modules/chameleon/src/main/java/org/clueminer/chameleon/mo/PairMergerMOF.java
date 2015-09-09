@@ -41,10 +41,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class PairMergerMOF<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "multi-objective merger (FF)";
+    public static final String name = "multi-objective merger (non-sorted fronts)";
 
     private FkQueue<E, C, P> queue;
-    private MergeEvaluation eval = new ShatovskaSimilarity();
 
     @Override
     public String getName() {
