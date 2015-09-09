@@ -42,7 +42,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
     public static final String name = "multi-objective merger (heap sorting)";
 
     private FrontHeapQueue<E, C, P> queue;
-    
+
     @Override
     public String getName() {
         return name;
@@ -94,7 +94,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.getValue());
         //System.out.println("   " + curr.toString());
         LinkedList<Node<E>> clusterNodes = (LinkedList<Node<E>>) curr.A.getNodes().clone();
         clusterNodes.addAll(curr.B.getNodes());
@@ -108,6 +108,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
+        queue.filterOut();
     }
 
     private void addIntoQueue(C cluster, Props pref) {

@@ -40,11 +40,11 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMOTest {
+public class PairMergerMOHTest {
 
-    private PairMergerMO subject;
+    private PairMergerMOH subject;
 
-    public PairMergerMOTest() {
+    public PairMergerMOHTest() {
     }
 
     @Test
@@ -61,7 +61,7 @@ public class PairMergerMOTest {
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
 
-        subject = new PairMergerMO();
+        subject = new PairMergerMOH();
         subject.addObjective(new Closeness());
         subject.addObjective(new Interconnectivity());
 
@@ -72,5 +72,4 @@ public class PairMergerMOTest {
         DendroTreeData tree = result.getTreeData();
         tree.print();
     }
-
 }

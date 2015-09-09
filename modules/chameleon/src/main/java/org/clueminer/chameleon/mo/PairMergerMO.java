@@ -74,7 +74,6 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         int numClusters = clusters.size();
         System.out.println("total " + numClusters + ", queue size " + queue.size());
         System.out.println(queue.stats());
-        System.out.println(queue);
         for (int i = 0; i < numClusters - 1; i++) {
             singleMerge(queue.poll(), pref);
         }
@@ -122,7 +121,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.getValue());
         //System.out.println("   " + curr.toString());
         LinkedList<Node<E>> clusterNodes = (LinkedList<Node<E>>) curr.A.getNodes().clone();
         clusterNodes.addAll(curr.B.getNodes());

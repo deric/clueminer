@@ -275,7 +275,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 add(item, 0, tmp);
             }
         }
-        System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
+        //System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
         pairs = tmp;
     }
 

@@ -46,6 +46,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
     private ArrayList<P> pairs;
     private final HashSet<Integer> blacklist;
     private MoPairComparator itemCmp;
+    private int frontsRemoved = 0;
 
     /**
      *
@@ -77,16 +78,17 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
         int curr = 0;
         Heap<P> front;
 
-        filterOut();
         do {
             front = getFront(curr++);
             if (front.size() > 0) {
                 item = front.pop();
-                if (emptyFronts() > 2) {
-                    rebuildQueue();
-                }
                 if (front.isEmpty()) {
+                    frontsRemoved++;
                     removeFront(curr - 1);
+                }
+                if (frontsRemoved > 1) {
+                    rebuildQueue();
+                    frontsRemoved = 0;
                 }
                 return item;
             }
@@ -293,7 +295,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 add(item, 0, tmp);
             }
         }
-        System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
+        //System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
         pairs = tmp;
     }
 
@@ -305,9 +307,10 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      */
     public int filterOut() {
         int removed = 0;
-        //System.out.println("filtering " + item.A.getClusterId() + ", " + item.B.getClusterId());
+        //System.out.println("merging " + item.A.getClusterId() + ", " + item.B.getClusterId());
         //blacklist.add(item.A.getClusterId());
         //blacklist.add(item.B.getClusterId());
+        //System.out.println("blacklist: " + blacklist);
 
         Heap<P> front;
         Duple<Integer, P> curr;
@@ -319,6 +322,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                     curr = iter.next();
                     if (blacklist.contains(curr.y.A.getClusterId()) || blacklist.contains(curr.y.B.getClusterId())) {
                         //remove item - we have to use interal heap index
+                        //System.out.println("removing [" + curr.y.A.getClusterId() + ", " + curr.y.B.getClusterId() + "]");
                         front.remove(curr.x);
                         removed++;
                     }
