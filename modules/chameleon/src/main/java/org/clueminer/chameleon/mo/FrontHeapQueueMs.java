@@ -201,7 +201,10 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
 
     public void add(P pair) {
         //try to insert into first front
-        add(pair, 0, pairs);
+        if (!insertIntoFront(pair, 0)) {
+            //if item doesn't fit into pareto front, save it for later
+            pairs.add(pair);
+        }
     }
 
     /**
@@ -211,16 +214,15 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
      * @param curr
      * @param buffer list of items that does not fit to the front
      */
-    public void add(P pair, int curr, ArrayList<P> buffer) {
+    public boolean insertIntoFront(P pair, int curr) {
         int flagDominate;
         if (curr >= maxFront) {
-            buffer.add(pair);
-            return;
+            return false;
         }
         Heap<P> front = getFront(curr);
         if (front.isEmpty()) {
             front.add(pair);
-            return;
+            return true;
         }
 
         flagDominate = comparator.compare(pair, front.peek());
@@ -229,12 +231,11 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
             Heap<P> ff = new Heap<>(itemCmp);
             ff.add(pair);
             //item dominates all known fronts
-
             if (fronts[maxFront - 1] != null) {
                 //move last front to "do it later" list
                 Iterator<P> iter = fronts[maxFront - 1].iterator();
                 while (iter.hasNext()) {
-                    buffer.add(iter.next());
+                    pairs.add(iter.next());
                 }
                 //free memory
                 fronts[maxFront - 1] = null;
@@ -252,15 +253,16 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
             fronts = tmp;
         } else if (flagDominate == 1) {
             if (curr < maxFront) {
-                add(pair, ++curr, buffer);
+                return insertIntoFront(pair, ++curr);
             } else {
                 //last resort - save the item for later
-                buffer.add(pair);
+                return false;
             }
         } else if (flagDominate == 0) {
             //we can't decide which one dominates, item belongs to this front
             front.add(pair);
         }
+        return true;
     }
 
     public void addAll(Collection<P> coll) {
@@ -286,34 +288,42 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
             }
         }
 
-        P item, tmp;
+        P item;
         int originalSize = (pairs.size() - 1);
         int size;
         for (int i = originalSize; i >= 0; i--) {
             //index of last item
             size = pairs.size() - 1;
             item = pairs.get(i);
-            //we remove all items, util they are reinserted
-            if (i == size) {
-                //last item can be safely removed (without reallocation of an array)
-                pairs.remove(i);
-            } else {
-                //swap current item with last one
-                tmp = item;
-                pairs.set(i, pairs.get(size));
-                pairs.set(size, tmp);
-                //let GC do its work
-                pairs.remove(size);
-            }
+
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
-                //ignore the item
+                //remove the item
+                removePair(pairs, item, i, size);
             } else {
-                add(item, 0, pairs);
+                if (insertIntoFront(item, 0)) {
+                    //item is in the front, we can remove it
+                    removePair(pairs, item, i, size);
+                }
             }
             //dumpPairs();
         }
-        //minimize storage requirements
+        //minimize storage requirements (will reallocate array)
         //pairs.trimToSize();
+    }
+
+    private void removePair(ArrayList<P> pairs, P item, int i, int size) {
+        P tmp;
+        if (i == size) {
+            //last item can be safely removed (without reallocation of an array)
+            pairs.remove(i);
+        } else {
+            //swap current item with last one
+            tmp = item;
+            pairs.set(i, pairs.get(size));
+            pairs.set(size, tmp);
+            //let GC do its work
+            pairs.remove(size);
+        }
     }
 
     private void dumpPairs() {
@@ -337,8 +347,8 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
     public int filterOut() {
         int removed = 0;
         //System.out.println("merging " + item.A.getClusterId() + ", " + item.B.getClusterId());
-        //blacklist.add(item.A.getClusterId());
-        //blacklist.add(item.B.getClusterId());
+        //blacklist.insertIntoFront(item.A.getClusterId());
+        //blacklist.insertIntoFront(item.B.getClusterId());
         //System.out.println("blacklist: " + blacklist);
 
         Heap<P> front;

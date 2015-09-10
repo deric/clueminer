@@ -42,7 +42,7 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMSTest {
+public class FrontHeapQueueMsTest {
 
     private FrontHeapQueueMs queue;
 
@@ -75,11 +75,12 @@ public class PairMergerMSTest {
         queue.pairs.addAll(pairs);
 
         //for (MoPair<Instance, GraphCluster<Instance>> p : pairs) {
-        //    queue.blacklist.insertIntoFront(p.A.getClusterId());
+        //    queue.blacklist.add(p.A.getClusterId());
         //}
         queue.blacklist.add(1);
         queue.blacklist.add(2);
         queue.rebuildQueue();
         assertEquals(0, queue.pairs.size());
     }
+
 }
