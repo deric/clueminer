@@ -35,7 +35,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
+public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -55,7 +55,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      * @param objectives
      * @param pref
      */
-    public FrontHeapQueue(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
+    public FrontHeapQueueMs(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
         this.comparator = new DominanceComparator(objectives);
         this.pairs = new ArrayList<>();
         //maximum number of fronts
@@ -273,7 +273,6 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
         if (pairs.isEmpty() || blacklist.isEmpty()) {
             return;
         }
-        ArrayList<P> tmp = new ArrayList<>(pairs.size());
         Iterator<P> iter;
         P elem;
         for (Heap<P> front : fronts) {
@@ -286,16 +285,47 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 front.clear();
             }
         }
-        for (P item : pairs) {
-            if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
-                //skip the item
+
+        P item, tmp;
+        int originalSize = (pairs.size() - 1);
+        int size;
+        for (int i = originalSize; i >= 0; i--) {
+            //index of last item
+            size = pairs.size() - 1;
+            item = pairs.get(i);
+            //we remove all items, util they are reinserted
+            if (i == size) {
+                //last item can be safely removed (without reallocation of an array)
+                pairs.remove(i);
             } else {
-                //try inserting into pareto front
-                add(item, 0, tmp);
+                //swap current item with last one
+                tmp = item;
+                pairs.set(i, pairs.get(size));
+                pairs.set(size, tmp);
+                //let GC do its work
+                pairs.remove(size);
             }
+            if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
+                //ignore the item
+            } else {
+                add(item, 0, pairs);
+            }
+            //dumpPairs();
         }
-        //System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
-        pairs = tmp;
+        //minimize storage requirements
+        //pairs.trimToSize();
+    }
+
+    private void dumpPairs() {
+        P pair;
+        for (int j = 0; j < pairs.size(); j++) {
+            pair = pairs.get(j);
+            if (j > 0) {
+                System.out.print(", ");
+            }
+            System.out.print(j + ": [" + pair.A.getClusterId() + "," + pair.B.getClusterId() + "]");
+        }
+        System.out.println("");
     }
 
     /**
