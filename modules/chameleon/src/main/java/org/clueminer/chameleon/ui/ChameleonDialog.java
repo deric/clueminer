@@ -46,6 +46,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboSimilarity.setSelectedItem(ShatovskaSimilarity.name);
         comboMerger.setSelectedItem(PairMerger.name);
         comboMoObjective.setEnabled(false);
+        combo3rdSort.setEnabled(false);
+        combo3rdSort.setSelectedItem(ShatovskaSimilarity.name);
     }
 
     /**
