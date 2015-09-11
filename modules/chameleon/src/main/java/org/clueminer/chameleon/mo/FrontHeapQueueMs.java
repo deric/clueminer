@@ -86,7 +86,7 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
                     frontsRemoved++;
                     removeFront(curr - 1);
                 }
-                if (frontsRemoved > 1) {
+                if (frontsRemoved > (maxFront / 2)) {
                     rebuildQueue();
                     frontsRemoved = 0;
                 }
