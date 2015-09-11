@@ -44,9 +44,6 @@ public class PairMergerMOHTest {
 
     private PairMergerMOH subject;
 
-    public PairMergerMOHTest() {
-    }
-
     @Test
     public void testUsArrest() {
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();

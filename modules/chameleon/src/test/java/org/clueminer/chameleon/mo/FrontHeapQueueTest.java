@@ -72,6 +72,7 @@ public class FrontHeapQueueTest {
         PairMergerMOF merger = new PairMergerMOF();
         merger.initialize(partitioningResult, g, bisection);
         merger.setObjectives(objectives);
+        merger.setSortEvaluation(new ShatovskaSimilarity());
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
@@ -125,7 +126,7 @@ public class FrontHeapQueueTest {
         PairMergerMOF merger = new PairMergerMOF();
         merger.initialize(partitioningResult, g, bisection);
         merger.setObjectives(objectives);
-
+        merger.setSortEvaluation(new ShatovskaSimilarity());
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueue(5, blacklist, objectives, props);
@@ -170,6 +171,7 @@ public class FrontHeapQueueTest {
         PairMergerMOF merger = new PairMergerMOF();
         merger.initialize(partitioningResult, g, bisection);
         merger.setObjectives(objectives);
+        merger.setSortEvaluation(new ShatovskaSimilarity());
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();

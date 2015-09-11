@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -68,6 +69,7 @@ public class PairMergerMSTest {
         PairMergerMOF merger = new PairMergerMOF();
         merger.initialize(partitioningResult, g, bisection);
         merger.setObjectives(objectives);
+        merger.setSortEvaluation(new ShatovskaSimilarity());
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();

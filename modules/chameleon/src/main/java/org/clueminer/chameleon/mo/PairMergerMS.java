@@ -25,6 +25,7 @@ import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
@@ -42,7 +43,7 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
 
     public static final String name = "multi-objective merger (heap, memory saving)";
 
-    private FrontHeapQueue<E, C, P> queue;
+    private FrontHeapQueueMs<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -57,9 +58,10 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
         if (objectives.isEmpty()) {
             throw new RuntimeException("you must specify at least 2 objectives");
         }
-        eval = new ShatovskaSimilarity();
+        MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
+        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+        queue = new FrontHeapQueueMs<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
         //initialize queue
         queue.addAll(pairs);
         height = 0;
