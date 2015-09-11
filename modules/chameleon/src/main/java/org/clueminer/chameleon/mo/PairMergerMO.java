@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.AbstractMerger;
+import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -64,7 +65,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
         eval = new ShatovskaSimilarity();
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        queue = new FhQueue<>(5, blacklist, objectives, pref);
+        queue = new FhQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
         //initialize queue
         queue.addAll(pairs);
         height = 0;

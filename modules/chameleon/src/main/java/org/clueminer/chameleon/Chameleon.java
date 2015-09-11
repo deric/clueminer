@@ -110,6 +110,15 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     public static final String OBJECTIVE_1 = "mo_objective_1";
     public static final String OBJECTIVE_2 = "mo_objective_2";
 
+    /**
+     * 3rd level sorting + objective for computing tree height
+     */
+    public static final String SORT_OBJECTIVE = "mo_sort";
+    /**
+     * Number of Pareto fronts
+     */
+    public static final String NUM_FRONTS = "pareto_fronts";
+
     public Chameleon() {
         knn = new KNNGraphBuilder();
     }
