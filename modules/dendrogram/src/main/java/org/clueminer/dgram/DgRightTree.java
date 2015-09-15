@@ -91,6 +91,8 @@ public class DgRightTree extends DgTree {
         if (clustering.getTreeData().containsClusters()) {
             leftOffset = panel.getSliderDiameter() / 3;
         }
+        //to prevent tree flickering
+        recalculate();
     }
 
     @Override

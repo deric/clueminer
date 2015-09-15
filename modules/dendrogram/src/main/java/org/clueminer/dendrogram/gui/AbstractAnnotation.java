@@ -131,4 +131,9 @@ public abstract class AbstractAnnotation extends JPanel {
     public Dimension getDimension() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

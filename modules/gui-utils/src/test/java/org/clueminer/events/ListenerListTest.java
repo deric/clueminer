@@ -131,4 +131,17 @@ public class ListenerListTest {
         assertEquals("third", it.next());
     }
 
+    @Test
+    public void testOrdering() {
+        ListenerList<String> list = new ListenerList<>();
+        //should work in any order
+        list.add("third", new String[]{"first", "second"});
+        list.add("second", new String[]{"first"});
+        list.add("first");
+
+        //TODO: we would need to be able to sort nodes on the same level
+        //expect sorted nodes
+        //assertArrayEquals(new String[]{"first", "second", "third"}, list.getListeners());
+    }
+
 }

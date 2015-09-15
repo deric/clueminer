@@ -140,7 +140,7 @@ public class Node<T> implements Iterable<Node<T>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Node(->(").append(inEdgesCnt()).append("), <-(").append(outEdgesCnt()).append("))");
+        sb.append("Node(in->(").append(inEdgesCnt()).append("), <-out:(").append(outEdgesCnt()).append("))");
         sb.append("[").append(getValue()).append("]");
         sb.append("in: ");
         for (int i = 0; i < inEdgesCnt(); i++) {

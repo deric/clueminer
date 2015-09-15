@@ -288,4 +288,9 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
         //nothing to do
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
 }

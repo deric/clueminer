@@ -61,7 +61,7 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
      *
      * @param panel
      * @param orientation SwingConstants.HORIZONTAL
-     * @param invert      true - left-to-right | false - right-to-left
+     * @param invert true - left-to-right | false - right-to-left
      * @param cutoff
      */
     public CutoffSlider(JPanel panel, int orientation, boolean invert, CutoffLine cutoff) {
@@ -175,5 +175,10 @@ public class CutoffSlider extends JPanel implements DendrogramDataListener, Tree
     @Override
     public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
         //nothing to do
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 }

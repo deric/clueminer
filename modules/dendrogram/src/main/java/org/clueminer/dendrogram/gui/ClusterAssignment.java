@@ -238,4 +238,9 @@ public class ClusterAssignment<E extends Instance, C extends Cluster<E>> extends
     public boolean isAntiAliasing() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

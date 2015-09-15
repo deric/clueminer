@@ -50,6 +50,8 @@ public class DgLeftTree extends DgTree {
         this.dendroData = dataset;
         HierarchicalResult clustering = dataset.getRowsResult();
         setTreeData(clustering.getTreeData());
+        //to prevent tree flickering
+        recalculate();
     }
 
     @Override

@@ -326,9 +326,9 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         // redrew the dendroData plot each time we had to repaint the screen.
         //draws buffered image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
 
         if (dendroData != null) {
             int oldWidth = colorWidth;
@@ -563,9 +563,9 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         Graphics2D g = (Graphics2D) this.getGraphics();
         if (g != null && bufferedImage != null) {
             g.drawImage(bufferedImage,
-                        0, 0,
-                        size.width, size.height,
-                        null);
+                    0, 0,
+                    size.width, size.height,
+                    null);
         } else {
             Logger.getLogger(Heatmap.class.getName()).log(Level.SEVERE, "missing buffered image {0}", size);
         }
@@ -651,7 +651,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         BufferedImage image = drawData(size);
         if (image.getHeight() != height || image.getWidth() != width) {
             image = Scalr.resize(image, Scalr.Method.SPEED,
-                                 Scalr.Mode.FIT_EXACT, width, height, Scalr.OP_ANTIALIAS);
+                    Scalr.Mode.FIT_EXACT, width, height, Scalr.OP_ANTIALIAS);
         }
         return image;
     }
@@ -899,5 +899,10 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         private boolean isCurrentPosition(int row, int column) {
             return (row == oldRow && column == oldColumn);
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 }

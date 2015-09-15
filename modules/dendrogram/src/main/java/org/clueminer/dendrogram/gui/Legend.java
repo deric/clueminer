@@ -168,4 +168,9 @@ public class Legend extends BPanel implements DendrogramDataListener {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
 }

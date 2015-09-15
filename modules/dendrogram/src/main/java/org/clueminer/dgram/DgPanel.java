@@ -430,6 +430,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (rowsTree == null) {
             rowsTree = new DgRightTree(this);
+            //DgPanel should be notified before tree
+            //dataListeners.add(rowsTree, this);
             dataListeners.add(rowsTree);
             //listen to cluster selection
             rowsTree.addTreeListener(heatmap);
@@ -848,6 +850,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     public ListenerList<DendrogramDataListener> getDataListeners() {
         return dataListeners;
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
 }
