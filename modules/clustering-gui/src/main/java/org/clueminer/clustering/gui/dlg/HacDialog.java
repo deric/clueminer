@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
@@ -20,6 +21,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ClusteringDialog.class)
 public class HacDialog extends JPanel implements ClusteringDialog {
+
+    private static final long serialVersionUID = 3050395521006919921L;
 
     /**
      * Creates new form HacDialog
@@ -176,7 +179,8 @@ public class HacDialog extends JPanel implements ClusteringDialog {
             params.putBoolean(AgglParams.LOG, true);
         }
         if (chckColumns.isSelected()) {
-            params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
+            //cluster both rows and columns
+            params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.BOTH);
         }
 
         return params;

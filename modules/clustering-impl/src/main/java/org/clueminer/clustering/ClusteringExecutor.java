@@ -47,7 +47,7 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         //TODO: not very efficient
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
-        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
         logger.log(Level.INFO, "clustering {0}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult rowsResult = aggl.hierarchy(inData, params);
@@ -65,7 +65,7 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
             throw new NullPointerException("no data to process");
         }
         Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult columnsResult = aggl.hierarchy(inData, params);

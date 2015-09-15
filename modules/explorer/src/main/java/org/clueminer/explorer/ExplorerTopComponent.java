@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -47,6 +48,7 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
+ *
  * @param <E>
  * @param <C>
  */
@@ -293,7 +295,8 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
             public void run() {
                 exec.setAlgorithm(alg);
                 Clustering<E, C> clustering;
-                if (props.getBoolean(AgglParams.CLUSTER_COLUMNS, false)) {
+                ClusteringType ct = ClusteringType.parse(props.get(AgglParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
+                if (ct == ClusteringType.BOTH) {
                     DendrogramMapping mapping = exec.clusterAll(dataset, props);
                     clustering = mapping.getRowsClustering();
                     children.addClustering(clustering);

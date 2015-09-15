@@ -4,6 +4,7 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -30,7 +31,7 @@ public class HacLwCompleteTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();

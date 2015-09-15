@@ -13,7 +13,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.ResultType;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.clustering.order.MOLO;
@@ -54,11 +54,10 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
         StdStorage store = getStorage(dataset);
         logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         logger.log(Level.FINER, "clustering {0}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult rowsResult = aggl.hierarchy(norm, params);
-        rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
         //TODO: tree ordering might break assigning items to clusters
         //treeOrder.optimize(rowsResult, true);
         return rowsResult;
@@ -68,10 +67,9 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     public HierarchicalResult hclustColumns(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult columnsResult = aggl.hierarchy(norm, params);
-        columnsResult.setResultType(ResultType.COLUMNS_CLUSTERING);
         //treeOrder.optimize(columnsResult, true);
         //CutoffStrategy strategy = getCutoffStrategy(params);
         //columnsResult.findCutoff(strategy);

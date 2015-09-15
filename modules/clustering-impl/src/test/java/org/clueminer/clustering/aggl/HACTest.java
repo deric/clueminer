@@ -5,6 +5,7 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -38,7 +39,7 @@ public class HACTest {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTER_ROWS, false);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
@@ -61,7 +62,7 @@ public class HACTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
@@ -87,7 +88,7 @@ public class HACTest {
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - single");
         DendroTreeData tree = result.getTreeData();
@@ -107,7 +108,7 @@ public class HACTest {
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - complete");
         DendroTreeData tree = result.getTreeData();
@@ -127,7 +128,7 @@ public class HACTest {
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         //inverse ordering
         pref.put(AgglParams.SMALLEST_FIRST, false);
         HierarchicalResult result = subject.hierarchy(dataset, pref);

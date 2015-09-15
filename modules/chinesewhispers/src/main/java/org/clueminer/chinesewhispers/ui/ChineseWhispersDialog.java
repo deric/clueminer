@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 import org.clueminer.chinesewhispers.ChineseWhispers;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.api.GraphConvertorFactory;
@@ -65,7 +66,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
         params.put(ChineseWhispers.DISTANCE, (String) comboDistance.getSelectedItem());
         params.put(ChineseWhispers.GRAPH_CONV, (String) comboGraphConv.getSelectedItem());

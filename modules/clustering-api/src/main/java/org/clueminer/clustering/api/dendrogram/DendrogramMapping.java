@@ -26,7 +26,7 @@ public interface DendrogramMapping<E extends Instance, C extends Cluster<E>> {
     public Matrix getMatrix();
 
     /**
-     * Set input data matrix for clustring
+     * Set input data matrix for clustering
      *
      * @param input
      */

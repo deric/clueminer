@@ -50,7 +50,7 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
              AgglomerativeClustering algorithm = new HAC();
 
              Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-             params.put(AgglParams.CLUSTER_ROWS, false);
+             params.put(AgglParams.CLUSTERING_TYPE, false);
              HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
              mapping.setColsResult(colsResult);
              mapping.setDataset(dataset);
@@ -78,9 +78,9 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
         Props params = clustering.getParams();
         AgglomerativeClustering algorithm = new HAC();
 
-        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
-        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
         HierarchicalResult colsResult = algorithm.hierarchy(dataset, params);
 
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
