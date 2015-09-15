@@ -79,9 +79,9 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
         }
         //cached image
         g.drawImage(bufferedImage,
-                    0, 0,
-                    size.width, size.height,
-                    null);
+                0, 0,
+                size.width, size.height,
+                null);
     }
 
     /**

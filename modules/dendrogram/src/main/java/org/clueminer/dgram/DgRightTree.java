@@ -66,7 +66,6 @@ public class DgRightTree extends DgTree {
             } else {
                 g2.drawLine(nx, ly, lx, ly);
             }
-
         }
     }
 
@@ -91,8 +90,6 @@ public class DgRightTree extends DgTree {
         if (clustering.getTreeData().containsClusters()) {
             leftOffset = panel.getSliderDiameter() / 3;
         }
-        //to prevent tree flickering
-        recalculate();
     }
 
     @Override

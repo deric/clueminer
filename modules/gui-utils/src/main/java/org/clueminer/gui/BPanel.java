@@ -26,6 +26,7 @@ public abstract class BPanel extends JPanel {
     protected Graphics2D g;
     protected boolean preserveAlpha = false;
     protected boolean fitToSpace = true;
+    protected boolean reloading = false;
 
     public BPanel() {
         setDoubleBuffered(false);
@@ -72,6 +73,9 @@ public abstract class BPanel extends JPanel {
 
     public abstract boolean isAntiAliasing();
 
+    /**
+     * create -> draw -> render{child} -> dispose
+     */
     private void createBufferedGraphics() {
         if (!hasData()) {
             return;
@@ -109,7 +113,7 @@ public abstract class BPanel extends JPanel {
     }
 
     /**
-     * Draws componet on given graphics.
+     * Draws component on given graphics.
      *
      * @param g
      */
@@ -137,6 +141,7 @@ public abstract class BPanel extends JPanel {
 
         if (bufferedImage == null) {
             createBufferedGraphics();
+            reloading = false;
         }
         //if no data, bufferedImage is null
         if (bufferedImage != null) {
@@ -145,6 +150,7 @@ public abstract class BPanel extends JPanel {
 
             //requested size is different from buffered one, resize it
             if (dx > 1 || dy > 1) {
+                reloading = true;
                 if (fitToSpace) {
                     if (reqSize.width <= 0 || reqSize.height <= 0) {
                         return;
@@ -163,8 +169,11 @@ public abstract class BPanel extends JPanel {
                     gr.dispose();
                     bufferedImage = scaledBI;
                 } else {
-                    //difference between real and requested is too big
-                    createBufferedGraphics();
+                    //avoid graphics flickering
+                    if (!reloading) {
+                        //difference between real and requested is too big
+                        createBufferedGraphics();
+                    }
                 }
             }
 
@@ -184,8 +193,8 @@ public abstract class BPanel extends JPanel {
             @Override
             public void run() {
                 bufferedImage = null;
-                createBufferedGraphics();
                 validate();
+                createBufferedGraphics();
                 revalidate();
                 repaint();
             }

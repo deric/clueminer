@@ -72,8 +72,9 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
     public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
         updateLayout();
+        //update all components to work with same data
         fireDatasetChanged(new DendrogramDataEvent(this), data);
-        dendrogramPanel.recalculate();
+        dendrogramPanel.triggerUpdate();
     }
 
     public DendrogramMapping getDendrogramData() {

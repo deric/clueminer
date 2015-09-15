@@ -574,7 +574,13 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        //updateLayout();
+        //wait until all components have same data. then triggerUpdate()
+    }
+
+    public void triggerUpdate() {
+        //update element size
+        recalculate();
+        updateLayout();
         //sizeUpdated(getSize());
         if (rowsTree != null) {
             rowsTree.fireTreeUpdated();
@@ -583,8 +589,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             columnsTree.fireTreeUpdated();
         }
         slider.updatePosition();
-        //@TODO probably call repaint
-        //repaint();
+        validate();
+        revalidate();
+        computeLayout();
+
+        repaint();
     }
 
     public void fireRowsOrderUpdated(Object source, HierarchicalResult rows) {
