@@ -55,9 +55,12 @@ public class KsqDetW<E extends Instance, C extends Cluster<E>> extends AbstractE
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        Matrix wg = withinGroupScatter(clusters);
-
-        return clusters.size() * clusters.size() * wg.det();
+        double res = clusters.size() * clusters.size();
+        if (clusters.size() > 0) {
+            Matrix wg = withinGroupScatter(clusters);
+            res *= wg.det();
+        }
+        return res;
     }
 
     @Override
