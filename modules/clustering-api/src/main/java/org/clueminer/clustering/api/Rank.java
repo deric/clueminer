@@ -16,6 +16,8 @@
  */
 package org.clueminer.clustering.api;
 
+import java.util.HashMap;
+
 /**
  * Measure relationship between rankings
  *
@@ -36,7 +38,8 @@ public interface Rank {
      *
      * @param current a ranking
      * @param ref reference ranking
+     * @param map reference id mapping (id clustering -> actual rank)
      * @return coefficient (typically between -1 and 1)
      */
-    double correlation(Clustering[] current, Clustering[] ref);
+    double correlation(Clustering[] current, Clustering[] ref, HashMap<Integer, Integer> map);
 }

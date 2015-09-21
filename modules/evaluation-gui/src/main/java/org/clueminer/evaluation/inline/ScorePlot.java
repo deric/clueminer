@@ -43,13 +43,15 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.Rank;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.clustering.api.factory.RankFactory;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
-import org.clueminer.eval.external.NMIsum;
+import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
@@ -102,6 +104,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private boolean crossAtMedian = true;
     private static final String GROUND_TRUTH = "ground-truth";
     private double correlation = Double.NaN;
+    private Rank rank;
+    private final HashMap<Integer, Integer> extMap;
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -110,7 +114,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         this.fitToSpace = false;
         this.preserveAlpha = true;
         compInternal = new ClusteringComparator(new AIC());
-        compExternal = new ClusteringComparator(new NMIsum());
+        compExternal = new ClusteringComparator(new NMIsqrt());
         //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
         try {
@@ -119,6 +123,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             Exceptions.printStackTrace(ex);
         }
         moEval = new MoEvaluator();
+        rank = RankFactory.getInstance().getDefault();
+        extMap = new HashMap<>();
     }
 
     private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
@@ -195,10 +201,21 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                         System.out.println(Arrays.toString(score));
                     }
                     compExternal.setEvaluator(provider);
+                    updateExtMapping();
                     ph.finish();
                 }
             });
             task.addTaskListener(this);
+        }
+    }
+
+    /**
+     * create mapping for easier finding reference solution by its ID
+     */
+    private void updateExtMapping() {
+        extMap.clear();
+        for (int i = 0; i < external.length; i++) {
+            extMap.put(external[i].getId(), i);
         }
     }
 
@@ -221,6 +238,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 Arrays.sort(internal, compInternal);
                 Arrays.sort(external, compExternal);
                 clusterings = clusters;
+                updateExtMapping();
             }
         });
         task.addTaskListener(this);
@@ -243,32 +261,11 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      *
      * @return
      */
-    private double updateCorrelation() {
-        int size = internal.length;
-
-        if (size <= 1) {
-            return 1.0;
+    protected double updateCorrelation() {
+        if (rank != null) {
+            return rank.correlation(external, internal, extMap);
         }
-
-        double y11 = 0.0, y22 = 0.0, y12 = 0.0, c;
-
-        //average value of a serie of int numbers (same for both external and internal)
-        //sum of a serie divided by its number of members
-        double avg = ((size * (0 + size)) >>> 1) / (size + 1);
-        double diffX, diffY;
-        for (int i = 0; i < size; i++) {
-            diffX = internal[i].getId() - avg;
-            diffY = external[i].getId() - avg;
-            y11 += Math.pow(diffX, 2);
-            y22 += Math.pow(diffY, 2);
-            y12 += diffX * diffY;
-        }
-        if (y11 * y22 == 0.0) {
-            c = 1.0;
-        } else {
-            c = y12 / Math.sqrt(Math.abs(y11 * y22));
-        }
-        return c;
+        return Double.NaN;
     }
 
     private Clustering<E, C> goldenStandard(Collection<Clustering> clusters) {
@@ -640,4 +637,10 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     public void setCrossAxisAtMedian(boolean crossAtMedian) {
         this.crossAtMedian = crossAtMedian;
     }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+        updateCorrelation();
+    }
+
 }
