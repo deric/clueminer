@@ -99,7 +99,11 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             bufferedImage = null;
         } else {
             visible = true;
-            height = lineHeight * dendroData.getNumberOfRows() + 1;
+            if (dendroData != null) {
+                height = lineHeight * dendroData.getNumberOfRows() + 1;
+            } else {
+                height = lineHeight * 2 + 1;
+            }
         }
         this.size.width = width;
         this.size.height = height;

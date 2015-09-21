@@ -86,7 +86,11 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         int width = 50;
         int height = 50 + maxTextWidth;
         if (this.columnsOrder != null) {
-            width = elementSize.width * dendroData.getNumberOfColumns() + 1;
+            if (dendroData != null) {
+                width = elementSize.width * dendroData.getNumberOfColumns() + 1;
+            } else {
+                width = elementSize.width * 2 + 1;
+            }
         }
         this.size.width = width;
         this.size.height = height;
