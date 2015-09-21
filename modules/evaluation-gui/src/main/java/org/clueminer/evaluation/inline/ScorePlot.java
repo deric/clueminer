@@ -327,9 +327,9 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = 0;
-            while (Double.isNaN(res) && i < clust.length) {
+            do {
                 res = comp.getScore(clust[i++]);
-            }
+            } while (!isFinite(res) && i < clust.length);
         }
         return res;
     }
@@ -344,11 +344,12 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      */
     private double scoreMax(Clustering[] clust, ClusteringComparator comp) {
         double res = Double.NaN;
+
         if (clust != null && clust.length > 0) {
             int i = clust.length - 1;
-            while (Double.isNaN(res) && i >= 0) {
+            do {
                 res = comp.getScore(clust[i--]);
-            }
+            } while (!isFinite(res) && i >= 0);
         }
 
         return res;
