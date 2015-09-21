@@ -575,6 +575,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             //use maximum width avaiable
             realSize.width = size.width;
             maxWidth = 0;
+            resetCache();
         }
     }
 
