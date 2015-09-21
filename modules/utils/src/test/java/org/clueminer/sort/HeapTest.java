@@ -62,6 +62,7 @@ public class HeapTest {
             d = rand.nextDouble();
             instance.add(d);
         }
+        instance.print();
         //and retrieve 20 items
         double prev = -1;
         for (int j = 0; j < 20; j++) {
