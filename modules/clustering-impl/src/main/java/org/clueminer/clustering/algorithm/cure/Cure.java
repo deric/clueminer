@@ -16,27 +16,29 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.StringTokenizer;
+import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class Cure {
+public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
-    /**
-     * The Input Parameters to the algorithm *
-     */
-    private String dataFile;
     private int totalNumberOfPoints;
     private int numberOfClusters;
     private int minRepresentativeCount;
@@ -44,26 +46,30 @@ public class Cure {
     private double requiredRepresentationProbablity;
     private int numberOfPartitions;
     private int reducingFactorForEachPartition;
-
-    private Point[] dataPoints;
-    private ArrayList outliers;
+    private ArrayList<E> outliers;
     private HashMap dataPointsMap;
-
     private static int currentRepAdditionCount;
-    private Hashtable integerTable;
+    private HashSet<Integer> integerTable;
 
-    public Cure(String[] args) {
+    public static final String name = "CURE";
 
-        System.out.println("CURE Clustering Algorithm");
-        System.out.println("-------------------------\n");
+    public Cure() {
 
-        initializeParameters(args);
-        readDataPoints();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        initializeParameters(props);
 
         long beginTime = System.currentTimeMillis();
 
         int sampleSize = calculateSampleSize();
-        ArrayList randomPointSet = selectRandomPoints(sampleSize);
+        ArrayList<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
         ArrayList[] partitionedPointSet = partitionPointSet(randomPointSet);
         ArrayList subClusters = clusterSubPartitions(partitionedPointSet);
         if (reducingFactorForEachPartition >= 10) {
@@ -77,9 +83,10 @@ public class Cure {
         long time = System.currentTimeMillis() - beginTime;
 
         System.out.println("The Algorithm took " + time + " milliseconds to complete.");
-        System.out.println("\nPlease Use GNUPlot to show the clusters by rendering the file using \"load plotcure.txt\" on GNUPlot Console");
 
         showClusters(clusters);
+
+        return null;
     }
 
     /**
@@ -87,56 +94,19 @@ public class Cure {
      *
      * @param args The Command Line Argument
      */
-    private void initializeParameters(String[] args) {
-        if (args.length == 0) {
-            dataFile = "spaeth2_05.txt";
-            totalNumberOfPoints = 59;
-            numberOfClusters = 5;
-            minRepresentativeCount = 6;
-            shrinkFactor = 0.5;
-            requiredRepresentationProbablity = 0.1;
-            numberOfPartitions = 2;
-            reducingFactorForEachPartition = 2;
-        } else {
-            dataFile = args[1];
-            totalNumberOfPoints = Integer.parseInt(args[2]);
-            numberOfClusters = Integer.parseInt(args[3]);
-            minRepresentativeCount = Integer.parseInt(args[4]);
-            shrinkFactor = Double.parseDouble(args[5]);
-            requiredRepresentationProbablity = Double.parseDouble(args[6]);
-            numberOfPartitions = Integer.parseInt(args[7]);
-            reducingFactorForEachPartition = Integer.parseInt(args[8]);
-        }
-        dataPoints = new Point[totalNumberOfPoints];
+    private void initializeParameters(Props props) {
+        totalNumberOfPoints = Integer.parseInt(args[2]);
+        numberOfClusters = Integer.parseInt(args[3]);
+        minRepresentativeCount = Integer.parseInt(args[4]);
+        shrinkFactor = Double.parseDouble(args[5]);
+        requiredRepresentationProbablity = Double.parseDouble(args[6]);
+        numberOfPartitions = Integer.parseInt(args[7]);
+        reducingFactorForEachPartition = Integer.parseInt(args[8]);
+
         dataPointsMap = new HashMap();
         currentRepAdditionCount = totalNumberOfPoints;
-        integerTable = new Hashtable();
+        integerTable = new HashSet<>();
         outliers = new ArrayList();
-    }
-
-    /**
-     * Reads the data points from file
-     */
-    private void readDataPoints() {
-        int pointIndex = 0;
-        FileReader fr = null;
-        try {
-            fr = new FileReader(dataFile);
-            BufferedReader in = new BufferedReader(fr);
-            String data = in.readLine();
-            while (data != null) {
-                StringTokenizer st = new StringTokenizer(data);
-                double x = Double.parseDouble(st.nextToken());
-                double y = Double.parseDouble(st.nextToken());
-                dataPoints[pointIndex] = new Point(x, y, pointIndex);
-                dataPointsMap.put(pointIndex, dataPoints[pointIndex]);
-                pointIndex++;
-                data = in.readLine();
-            }
-            in.close();
-        } catch (Exception e) {
-            debug(e);
-        }
     }
 
     /**
@@ -157,18 +127,16 @@ public class Cure {
      * @return
      * ArrayList The Selected Random Points
      */
-    private ArrayList selectRandomPoints(int sampleSize) {
-        ArrayList randomPointSet = new ArrayList();
+    private ArrayList selectRandomPoints(Dataset<E> dataset, int sampleSize) {
+        ArrayList<E> randomPointSet = new ArrayList();
         Random random = new Random();
         for (int i = 0; i < sampleSize; i++) {
             int index = random.nextInt(totalNumberOfPoints);
-            if (integerTable.containsKey(index)) {
+            if (integerTable.contains(index)) {
                 i--;
-                continue;
             } else {
-                Point point = dataPoints[index];
-                randomPointSet.add(point);
-                integerTable.put(index, "");
+                randomPointSet.add(dataset.get(index));
+                integerTable.add(index);
             }
         }
         return randomPointSet;
@@ -232,7 +200,7 @@ public class Cure {
         ArrayList clustersForRemoval = new ArrayList();
         while (iter.hasNext()) {
             Cluster cluster = (Cluster) iter.next();
-            if (cluster.getClusterSize() <= outlierEligibilityCount) {
+            if (cluster.size() <= outlierEligibilityCount) {
                 updateOutlierSet(cluster);
                 clustersForRemoval.add(cluster);
             }

@@ -40,7 +40,7 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
     public Cluster closestCluster;
     public ArrayList closestClusterRep = new ArrayList();
 
-    public double computeDistanceFromCluster(Cluster cluster) {
+    public double computeDistanceFromCluster(Cluster<E> cluster) {
         double minDistance = 1000000;
         for (int i = 0; i < rep.size(); i++) {
             for (int j = 0; j < cluster.rep.size(); j++) {

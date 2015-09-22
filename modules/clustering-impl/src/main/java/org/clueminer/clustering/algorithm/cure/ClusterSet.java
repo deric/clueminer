@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.knn.KDTree;
 
 /**
  *
