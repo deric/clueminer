@@ -26,7 +26,6 @@ import org.clueminer.partitioning.api.MergerFactory;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
-import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -44,11 +43,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class Chameleon<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
 
-    public static final String K = "k";
-
     /**
      * Number of neighbors for each node in k-NN algorithm.
      */
+    public static final String K = "k";
     @Param(name = Chameleon.K, description = "Number of neighbors for each node in k-NN algorithm", required = false)
     private int k;
 
@@ -57,7 +55,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * partitioning algorithm.
      */
     public static final String MAX_PARTITION = "max_partition_size";
-
     @Param(name = Chameleon.MAX_PARTITION, description = "Maximum number of nodes in each partition after the execution of the partitioning algorithm")
     private int maxPartitionSize;
 
@@ -81,25 +78,28 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * interconnectivity.
      */
     public static final String CLOSENESS_PRIORITY = "closeness_priority";
+    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
 
     /**
      * Algorithm for merging clusters
      */
     public static final String MERGER = "merger";
 
-    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
-    protected double closenessPriority;
-
     /**
      * Similarity function used to compute similarity between two clusters
      * during merging.
      */
     public static final String SIM_MEASURE = "similarity_measure";
-
     @Param(name = Chameleon.SIM_MEASURE, description = "Similarity function used to compute similarity between two clusters")
     private String similarityMeasure;
 
-    protected RecursiveBisection recursiveBisection;
+    /**
+     * Constant used to multiply external similarity of cluster pairs where one
+     * of the clusters contains just one node.
+     */
+    public static final String INDIVIDUAL_MULTIPLIER = "individual_multiplier";
+    @Param(name = Chameleon.SIM_MEASURE, description = "Constant used to multiply external similarity of cluster pairs where one"
+            + "of the clusters contains just one node.")
 
     private final KNNGraphBuilder knn;
 
