@@ -17,7 +17,9 @@
 package org.clueminer.knn;
 
 import java.util.List;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
@@ -33,11 +35,6 @@ import org.clueminer.utils.Props;
 public class KDTree<E extends Instance> extends AbstractKNN<E> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
 
     public static final String name = "KD-tree";
-
-    @Override
-    public String getName() {
-        return name;
-    }
 
     /**
      * The root in the KD-tree.
@@ -79,14 +76,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         }
     }
     /**
-     * The keys of data objects.
-     */
-    private double[][] keys;
-    /**
-     * The data objects.
-     */
-    private E[] data;
-    /**
      * The root node of KD-Tree.
      */
     private Node root;
@@ -98,18 +87,12 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     /**
      * Constructor.
      *
-     * @param key the keys of data objects.
-     * @param data the data objects.
+     * @param dataset
      */
-    public KDTree(double[][] key, E[] data) {
-        if (key.length != data.length) {
-            throw new IllegalArgumentException("The array size of keys and data are different.");
-        }
+    public KDTree(Dataset<E> dataset) {
+        this.dataset = dataset;
 
-        this.keys = key;
-        this.data = data;
-
-        int n = key.length;
+        int n = dataset.size();
         index = new int[n];
         for (int i = 0; i < n; i++) {
             index[i] = i;
@@ -119,16 +102,23 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         root = buildNode(0, n);
     }
 
+    public KDTree() {
+        this.dm = EuclideanDistance.getInstance();
+    }
+
     @Override
-    public String toString() {
-        return "KD-Tree";
+    public String getName() {
+        return name;
     }
 
     /**
      * Build a k-d tree from the given set of dataset.
      */
     private Node buildNode(int begin, int end) {
-        int d = keys[0].length;
+        if (dataset == null) {
+            throw new RuntimeException("missing dataset");
+        }
+        int d = dataset.attributeCount();
 
         // Allocate the node
         Node node = new Node();
@@ -142,13 +132,13 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         double[] upperBound = new double[d];
 
         for (int i = 0; i < d; i++) {
-            lowerBound[i] = keys[index[begin]][i];
-            upperBound[i] = keys[index[begin]][i];
+            lowerBound[i] = dataset.get(index[begin], i);
+            upperBound[i] = dataset.get(index[begin], i);
         }
 
         for (int i = begin + 1; i < end; i++) {
             for (int j = 0; j < d; j++) {
-                double c = keys[index[i]][j];
+                double c = dataset.get(i, j);
                 if (lowerBound[j] > c) {
                     lowerBound[j] = c;
                 }
@@ -180,8 +170,8 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         // right-to-left in the same way that partioning is done in quicksort.
         int i1 = begin, i2 = end - 1, size = 0;
         while (i1 <= i2) {
-            boolean i1Good = (keys[index[i1]][node.split] < node.cutoff);
-            boolean i2Good = (keys[index[i2]][node.split] >= node.cutoff);
+            boolean i1Good = (dataset.get(index[i1], node.split) < node.cutoff);
+            boolean i2Good = (dataset.get(index[i2], node.split) >= node.cutoff);
 
             if (!i1Good && !i2Good) {
                 int temp = index[i1];
@@ -199,6 +189,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 i2--;
             }
         }
+        System.out.println("build (" + begin + ", " + (begin + size) + ")");
 
         // Create the child nodes
         node.lower = buildNode(begin, begin + size);
@@ -219,21 +210,21 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == keys[index[idx]] && identicalExcluded) {
+                if (q == dataset.get(index[idx]) && identicalExcluded) {
                     continue;
                 }
 
-                double distance = Math.squaredDistance(q, keys[index[idx]]);
+                //TODO: squared distance would be enough
+                double distance = dm.measure(q, dataset.get(index[idx]));
                 if (distance < neighbor.distance) {
-                    neighbor.key = keys[index[idx]];
-                    neighbor.value = data[index[idx]];
+                    neighbor.key = dataset.get(index[idx]);
                     neighbor.index = index[idx];
                     neighbor.distance = distance;
                 }
             }
         } else {
             Node nearer, further;
-            double diff = q[node.split] - node.cutoff;
+            double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
                 further = node.upper;
@@ -252,9 +243,8 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     }
 
     /**
-     * Returns (in the supplied heap object) the k nearest
-     * neighbors of the given target starting from the give
-     * tree node.
+     * Returns (in the supplied heap object) the k nearest neighbors of the
+     * given target starting from the give tree node.
      *
      * @param q the query key.
      * @param node the root of subtree.
@@ -262,27 +252,27 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param heap the heap object to store/update the kNNs found during the
      * search.
      */
-    private void search(double[] q, Node node, HeapSelect<Neighbor<E>> heap) {
+    private void search(E q, Node node, HeapSelect<Neighbor<E>> heap) {
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == keys[index[idx]] && identicalExcluded) {
+                if (q == dataset.get(index[idx]) && identicalExcluded) {
                     continue;
                 }
 
-                double distance = Math.squaredDistance(q, keys[index[idx]]);
+                //TODO: squared distance would be enough
+                double distance = dm.measure(q, dataset.get(index[idx]));
                 Neighbor<E> datum = heap.peek();
                 if (distance < datum.distance) {
                     datum.distance = distance;
                     datum.index = index[idx];
-                    datum.key = keys[index[idx]];
-                    datum.value = data[index[idx]];
+                    datum.key = dataset.get(index[idx]);
                     heap.heapify();
                 }
             }
         } else {
             Node nearer, further;
-            double diff = q[node.split] - node.cutoff;
+            double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
                 further = node.upper;
@@ -313,18 +303,18 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == keys[index[idx]] && identicalExcluded) {
+                if (q == dataset.get(index[idx]) && identicalExcluded) {
                     continue;
                 }
 
-                double distance = Math.distance(q, keys[index[idx]]);
+                double distance = dm.measure(q, dataset.get(index[idx]));
                 if (distance <= radius) {
-                    neighbors.add(new Neighbor<E>(keys[index[idx]], data[index[idx]], index[idx], distance));
+                    neighbors.add(new Neighbor<>(dataset.get(index[idx]), index[idx], distance));
                 }
             }
         } else {
             Node nearer, further;
-            double diff = q[node.split] - node.cutoff;
+            double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
                 further = node.upper;
@@ -356,7 +346,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
             throw new IllegalArgumentException("Invalid k: " + k);
         }
 
-        if (k > keys.length) {
+        if (k > dataset.size()) {
             throw new IllegalArgumentException("Neighbor array length is larger than the dataset size");
         }
 
@@ -371,8 +361,8 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
         search(q, root, heap);
         heap.sort();
-        for (int i = 0; i < neighbors.length; i++) {
-            neighbors[i].distance = Math.sqrt(neighbors[i].distance);
+        for (Neighbor<E> neighbor1 : neighbors) {
+            neighbor1.distance = Math.sqrt(neighbor1.distance);
         }
 
         return neighbors;
@@ -390,6 +380,11 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     @Override
     public Neighbor[] knn(E q, int k, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String toString() {
+        return "KD-Tree";
     }
 
 }

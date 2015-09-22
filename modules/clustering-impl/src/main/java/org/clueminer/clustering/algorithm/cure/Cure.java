@@ -16,9 +16,16 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  *
