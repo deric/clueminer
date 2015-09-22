@@ -32,7 +32,6 @@ import java.util.List;
 public abstract class KdTree<T> {
 
     // Static variables
-
     private static final int bucketSize = 24;
 
     // All types
@@ -62,7 +61,8 @@ public abstract class KdTree<T> {
 
     /**
      * Construct a KdTree with a given number of dimensions and a limit on
-     * maxiumum size (after which it throws away old points)
+     * maximum size (after which it throws away old points)
+     *
      * @param dimensions
      * @param sizeLimit
      */
@@ -87,6 +87,7 @@ public abstract class KdTree<T> {
 
     /**
      * Constructor for child nodes. Internal use only.
+     *
      * @param parent
      * @param right
      */
@@ -107,6 +108,7 @@ public abstract class KdTree<T> {
 
     /**
      * Get the number of points in the tree
+     *
      * @return
      */
     public int size() {
@@ -115,6 +117,7 @@ public abstract class KdTree<T> {
 
     /**
      * Add a point and associated value to the tree
+     *
      * @param location
      * @param value
      */
@@ -313,6 +316,7 @@ public abstract class KdTree<T> {
 
     /**
      * Calculates the nearest 'count' points to 'location'
+     *
      * @param location
      * @param count
      * @param sequentialSorting

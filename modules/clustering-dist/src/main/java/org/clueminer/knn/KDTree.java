@@ -91,7 +91,20 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      */
     public KDTree(Dataset<E> dataset) {
         this.dataset = dataset;
+        this.dm = EuclideanDistance.getInstance();
+        ((EuclideanDistance) dm).setSqrt(false);
+        buildTree();
+    }
 
+    public KDTree() {
+        this.dm = new EuclideanDistance();
+        ((EuclideanDistance) dm).setSqrt(false);
+    }
+
+    private void buildTree() {
+        if (dataset == null) {
+            throw new RuntimeException("missing dataset");
+        }
         int n = dataset.size();
         index = new int[n];
         for (int i = 0; i < n; i++) {
@@ -100,10 +113,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
         // Build the tree
         root = buildNode(0, n);
-    }
-
-    public KDTree() {
-        this.dm = EuclideanDistance.getInstance();
     }
 
     @Override
@@ -115,9 +124,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * Build a k-d tree from the given set of dataset.
      */
     private Node buildNode(int begin, int end) {
-        if (dataset == null) {
-            throw new RuntimeException("missing dataset");
-        }
         int d = dataset.attributeCount();
 
         // Allocate the node
@@ -138,7 +144,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
         for (int i = begin + 1; i < end; i++) {
             for (int j = 0; j < d; j++) {
-                double c = dataset.get(i, j);
+                double c = dataset.get(index[i], j);
                 if (lowerBound[j] > c) {
                     lowerBound[j] = c;
                 }
@@ -189,7 +195,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 i2--;
             }
         }
-        System.out.println("build (" + begin + ", " + (begin + size) + ")");
 
         // Create the child nodes
         node.lower = buildNode(begin, begin + size);
@@ -213,7 +218,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 if (q == dataset.get(index[idx]) && identicalExcluded) {
                     continue;
                 }
-
                 //TODO: squared distance would be enough
                 double distance = dm.measure(q, dataset.get(index[idx]));
                 if (distance < neighbor.distance) {
@@ -380,6 +384,12 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     @Override
     public Neighbor[] knn(E q, int k, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDataset(Dataset<E> dataset) {
+        this.dataset = dataset;
+        buildTree();
     }
 
     @Override
