@@ -61,7 +61,7 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         double ec2 = y.getEdgeCount();
         //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
         if (ec1 == 0 || ec2 == 0) {
-            return gps.getECL(i, j) * 40;
+            return gps.getECL(i, j) * params.getDouble(Chameleon.INDIVIDUAL_MULTIPLIER, 1000);
         }
 
         double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
@@ -91,7 +91,6 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         double newACL = cluster1.getACL() * (cluster1.getEdgeCount() / edgeCountSum)
                 + cluster2.getACL() * (cluster2.getEdgeCount() / edgeCountSum)
                 + gps.getECL(i, j) * (gps.getCnt(i, j) / edgeCountSum);
-
 
         newCluster.setACL(newACL);
         newCluster.setEdgeCount((int) edgeCountSum);
