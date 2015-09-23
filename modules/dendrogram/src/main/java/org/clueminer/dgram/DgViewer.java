@@ -72,7 +72,9 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
     public void setDataset(DendrogramMapping dataset) {
         this.data = dataset;
         updateLayout();
+        //update all components to work with same data
         fireDatasetChanged(new DendrogramDataEvent(this), data);
+        dendrogramPanel.triggerUpdate();
     }
 
     public DendrogramMapping getDendrogramData() {
@@ -215,7 +217,7 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
      */
     public boolean fireDatasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         //first notify panel itself
-        //dendrogramPanel.datasetChanged(evt, dataset);
+        dendrogramPanel.datasetChanged(evt, dataset);
         //int i = 0;
         for (DendrogramDataListener listener : dendrogramPanel.getDataListeners()) {
 

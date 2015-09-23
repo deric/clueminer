@@ -12,6 +12,7 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -65,7 +66,7 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
         genom.put(AgglParams.ALG, algorithm.getName());
         genom.putBoolean(AgglParams.LOG, logscale(rand));
         genom.put(AgglParams.STD, std(rand));
-        genom.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        genom.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
         genom.put(AgglParams.CUTOFF_SCORE, evaluator().getName());
         do {

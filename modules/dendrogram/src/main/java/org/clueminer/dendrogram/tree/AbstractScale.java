@@ -95,4 +95,9 @@ public abstract class AbstractScale extends BPanel implements DendrogramDataList
         }
     }
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
 }

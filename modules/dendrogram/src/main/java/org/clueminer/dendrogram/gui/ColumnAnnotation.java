@@ -67,7 +67,6 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
                 }
             }
             g.rotate(-Math.PI / 2.0);
-
         }
     }
 
@@ -87,7 +86,11 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         int width = 50;
         int height = 50 + maxTextWidth;
         if (this.columnsOrder != null) {
-            width = elementSize.width * dendroData.getNumberOfColumns() + 1;
+            if (dendroData != null) {
+                width = elementSize.width * dendroData.getNumberOfColumns() + 1;
+            } else {
+                width = elementSize.width * 2 + 1;
+            }
         }
         this.size.width = width;
         this.size.height = height;
@@ -145,15 +148,27 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
         this.dendroData = dendroData;
         if (dendroData.hasColumnsClustering()) {
             columnsOrder = dendroData.getColsResult().getMapping();
-            resetCache();
+        } else {
+            columnsOrder = createMapping(dendroData.getDataset());
         }
+        resetCache();
     }
 
     @Override
     public void leafOrderUpdated(Object source, HierarchicalResult mapping) {
         if (source != this) {
             columnsOrder = mapping.getMapping();
-            resetCache();
+        } else {
+            columnsOrder = createMapping(dendroData.getDataset());
         }
+        resetCache();
+    }
+
+    private int[] createMapping(Dataset dataset) {
+        int[] mapping = new int[dataset.attributeCount()];
+        for (int i = 0; i < mapping.length; i++) {
+            mapping[i] = i;
+        }
+        return mapping;
     }
 }

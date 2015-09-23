@@ -19,7 +19,10 @@ package org.clueminer.evaluation.inline;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.factory.RankFactory;
 
 /**
  *
@@ -27,8 +30,11 @@ import javax.swing.JPanel;
  */
 public class SettingsPanel extends JPanel {
 
+    private static final long serialVersionUID = -4605487939434178912L;
+
     private JCheckBox chckUseMetricsMax;
     private JCheckBox chckMedian;
+    private JComboBox comboCorrelation;
 
     public SettingsPanel() {
         initComponents();
@@ -54,6 +60,13 @@ public class SettingsPanel extends JPanel {
         chckMedian = new JCheckBox("cross axes at median Y value");
         chckMedian.setSelected(true);
         add(chckMedian, c);
+
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Correlation:"), c);
+        comboCorrelation = new JComboBox(RankFactory.getInstance().getProvidersArray());
+        c.gridx = 1;
+        add(comboCorrelation, c);
     }
 
     /**
@@ -64,6 +77,8 @@ public class SettingsPanel extends JPanel {
     void updatePlot(ScorePlot plot) {
         plot.setUseSupervisedMetricMax(chckUseMetricsMax.isSelected());
         plot.setCrossAxisAtMedian(chckMedian.isSelected());
+        plot.setRank(RankFactory.getInstance().getProvider(comboCorrelation.getSelectedItem().toString()));
+        plot.updateCorrelation();
     }
 
 }

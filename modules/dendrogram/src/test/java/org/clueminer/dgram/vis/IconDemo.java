@@ -43,7 +43,7 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         AgglomerativeClustering algorithm = new HACLW();
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
-        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
+        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
         HierarchicalResult columnsResult = algorithm.hierarchy(dataset, params);
 
         DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);

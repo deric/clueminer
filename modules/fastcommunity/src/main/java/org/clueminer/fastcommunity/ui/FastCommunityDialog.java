@@ -3,6 +3,7 @@ package org.clueminer.fastcommunity.ui;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.fastcommunity.FastCommunity;
 import org.clueminer.utils.Props;
@@ -15,6 +16,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class FastCommunityDialog extends JPanel implements ClusteringDialog {
 
+    private static final long serialVersionUID = 2207676005267510122L;
+
     @Override
     public String getName() {
         return "Fast Community dialog";
@@ -23,7 +26,7 @@ public class FastCommunityDialog extends JPanel implements ClusteringDialog {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         return params;
     }
 

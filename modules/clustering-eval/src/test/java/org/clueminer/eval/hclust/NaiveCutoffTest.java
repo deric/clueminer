@@ -7,6 +7,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,7 +49,7 @@ public class NaiveCutoffTest {
         HAC alg = new HAC();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         result.getTreeData().print();

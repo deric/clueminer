@@ -3,6 +3,7 @@ package org.clueminer.eval.hclust;
 import org.clueminer.clustering.aggl.HACLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -32,7 +33,7 @@ public class HillClimbIncTest {
     public void testFindCutoff() {
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         result.getTreeData().print();

@@ -1,6 +1,5 @@
 package org.clueminer.dgram;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -78,6 +77,8 @@ public class DgBottomTree extends DgTree {
         if (dendroData.hasColumnsClustering()) {
             HierarchicalResult clustering = dataset.getColsResult();
             setTreeData(clustering.getTreeData());
+            //to prevent tree flickering
+            recalculate();
         }
     }
 

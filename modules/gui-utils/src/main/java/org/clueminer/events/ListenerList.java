@@ -81,7 +81,7 @@ public class ListenerList<T> implements Iterable<T> {
     /**
      * Adds listener to list with specified requirements
      *
-     * @param listner  class to be notified
+     * @param listner class to be notified
      * @param requires which classes should be notified earlier
      */
     public void add(T listner, T[] requires) {
@@ -150,14 +150,12 @@ public class ListenerList<T> implements Iterable<T> {
             Set<Node<T>> isolated = new HashSet<>();
             //find components with more than one node
             for (Node<T> curr : tmp.values()) {
-                //System.out.println("curr" + curr.toString());
                 if (curr.outEdgesCnt() == 0 && curr.inEdgesCnt() == 0) {
                     isolated.add(curr);
                 } else {
                     //part of connected component
                     Node<T> root = findComponentRoot(curr);
                     if (!blacklist.contains(root)) {
-                        //System.out.println("root = " + root.getValue().toString());
                         writeNode(data, root, i++);
                         i = writeTreeToAnArray(root, data, i);
                     }
@@ -168,7 +166,6 @@ public class ListenerList<T> implements Iterable<T> {
             }
             //write isolated nodes (in any order)
             for (Node<T> curr : isolated) {
-                //System.out.println("isolated: " + curr.toString());
                 writeNode(data, curr, i++);
             }
         }
@@ -228,10 +225,8 @@ public class ListenerList<T> implements Iterable<T> {
         //node is the root
         if (node.outEdgesCnt() == 0) {
             return node;
-        } else if (node.outEdgesCnt() == 1) {
-            return findComponentRoot(node.iterator().next());
         } else {
-            throw new RuntimeException("outCnt > 1 is not supported yet");
+            return findComponentRoot(node.iterator().next());
         }
     }
 

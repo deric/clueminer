@@ -60,6 +60,8 @@ public class ClassAssignment<E extends Instance, C extends Cluster<E>> extends C
             //int currCluster = clusters[i];
             int mapped = hieraRes.getMappedIndex(i);
             Object currClass = dataset.get(mapped).classValue();
+            //create first class -> color mapping
+            colorForClass(map, currClass, matching);
             int start = 0;
             int x = insets.left;
 
@@ -84,20 +86,30 @@ public class ClassAssignment<E extends Instance, C extends Cluster<E>> extends C
             if (klass == null) {
                 return Color.GRAY;
             }
+            Color color;
             String cls = klass.toString();
             if (matching.containsKey(cls)) {
                 String cluster = matching.get(cls);
                 Cluster c = flatClust.get(cluster);
                 if (c != null) {
-                    map.put(klass, c.getColor());
+                    color = c.getColor();
+                    //that color is already mapped to different class
+                    if (map.containsValue(color)) {
+                        colorGenerator.seek(map.size());
+                        color = colorGenerator.next();
+                    }
+                    map.put(klass, color);
+
                 } else {
                     //FIXME: right now we suppose that the generator is the same as for clusters
-                    colorGenerator.seek(map.size());
-                    map.put(klass, colorGenerator.next());
+                    colorGenerator.seek(map.size() - 1);
+                    color = colorGenerator.next();
+                    map.put(klass, color);
                 }
             } else {
                 colorGenerator.seek(matching.size() + map.size());
-                map.put(klass, colorGenerator.next());
+                color = colorGenerator.next();
+                map.put(klass, color);
             }
         }
         return map.get(klass);

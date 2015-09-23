@@ -5,6 +5,7 @@ import java.util.Map;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -101,15 +102,14 @@ public class HclDendroPanel extends DendroPanel {
 
         //   progress.setTitle("Clustering by rows");
         params.putBoolean("calculate-rows", true);
-        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult rowsResult = algorithm.hierarchy(getDataset(), params);
         Dump.array(rowsResult.getMapping(), "row mapping: ");
 
         //   progress.setTitle("Clustering by columns");
         params.putBoolean("calculate-rows", false);
-        params.putBoolean(AgglParams.CLUSTER_ROWS, false);
         params.putBoolean("calculate-columns", true);
-        params.putBoolean(AgglParams.CLUSTER_COLUMNS, true);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         HierarchicalResult columnsResult = algorithm.hierarchy(getDataset(), params);
         if (columnsResult != null) {
             Dump.array(columnsResult.getMapping(), "col mapping: ");

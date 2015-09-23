@@ -28,7 +28,7 @@ import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.clustering.api.ResultType;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -82,7 +82,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         HAC hac = new HACLW();
         //largest values should be merged first
         //props.put(AgglParams.SMALLEST_FIRST, false);
-        props.put(AgglParams.CLUSTER_ROWS, true);
+        props.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         //props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
         props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
         //props.put(AgglParams.LINKAGE, CompleteLinkage.name);
@@ -91,7 +91,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         Dataset<E> dataset = clusts[0].getLookup().lookup(Dataset.class);
 
         HierarchicalResult rowsResult = hac.hierarchy(coassoc, dataset, props);
-        rowsResult.setResultType(ResultType.ROWS_CLUSTERING);
+        //rowsResult.setResultType(ClusteringType.ROWS_CLUSTERING);
         // rowsResult.getTreeData().print();
         rowsResult.setProximityMatrix(coassoc);
 

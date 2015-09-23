@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
@@ -16,7 +17,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
-import org.clueminer.clustering.api.ResultType;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -54,7 +55,7 @@ public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy;
-    private ResultType resultType;
+    private ClusteringType resultType;
     private final Map<String, Map<Integer, Double>> scores = new HashMap<>();
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
@@ -81,6 +82,7 @@ public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
     }
 
     private void init() {
+        resultType = ClusteringType.parse(props.get(AgglParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
         cutoffStrategy = CutoffStrategyFactory.getInstance().getDefault();
         if (cutoffStrategy != null) {
             InternalEvaluatorFactory<E, Cluster<E>> ief = InternalEvaluatorFactory.getInstance();
@@ -604,12 +606,12 @@ public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
 
     @Override
     public int size() {
-        if (resultType == ResultType.COLUMNS_CLUSTERING) {
+        if (resultType == ClusteringType.COLUMNS_CLUSTERING) {
             return dataset.attributeCount();
-        } else if (resultType == ResultType.ROWS_CLUSTERING) {
+        } else if (resultType == ClusteringType.ROWS_CLUSTERING) {
             return dataset.size();
         } else {
-            throw new RuntimeException("Unknown type of result.");
+            throw new RuntimeException("Don't know wether cluster rows or columns.");
         }
     }
 
@@ -638,8 +640,15 @@ public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
     }
 
     @Override
-    public void setResultType(ResultType type) {
+    public void setResultType(ClusteringType type) {
         resultType = type;
     }
 
+    public ColorGenerator getColorGenerator() {
+        return colorGenerator;
+    }
+
+    public void setColorGenerator(ColorGenerator colorGenerator) {
+        this.colorGenerator = colorGenerator;
+    }
 }

@@ -12,6 +12,7 @@ import org.clueminer.chameleon.mo.PairMergerMS;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
@@ -597,7 +598,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
         params.put(AgglParams.CUTOFF_STRATEGY, (String) comboCutoffMethod.getSelectedItem());
         params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
-        params.putBoolean(AgglParams.CLUSTER_COLUMNS, false);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
 
         if (!chkBoxAutoK.isSelected()) {
             params.putInt(Chameleon.K, sliderK.getValue());

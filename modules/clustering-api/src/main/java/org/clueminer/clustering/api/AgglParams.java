@@ -27,12 +27,7 @@ public class AgglParams<E extends Instance> {
     /**
      * cluster rows (default)
      */
-    public static final String CLUSTER_ROWS = "cluster_rows";
-
-    /**
-     * cluster columns
-     */
-    public static final String CLUSTER_COLUMNS = "cluster_columns";
+    public static final String CLUSTERING_TYPE = "clustering_type";
 
     /**
      * Input matrix standardization method
@@ -108,11 +103,17 @@ public class AgglParams<E extends Instance> {
     }
 
     public boolean clusterRows() {
-        return pref.getBoolean(CLUSTER_ROWS, true);
+        if (pref.containsKey(CLUSTERING_TYPE)) {
+            return ClusteringType.parse(pref.getObject(CLUSTERING_TYPE)) != ClusteringType.COLUMNS_CLUSTERING;
+        }
+        return true; //by default cluster rows
     }
 
     public boolean clusterColumns() {
-        return pref.getBoolean(CLUSTER_COLUMNS, false);
+        if (pref.containsKey(CLUSTERING_TYPE)) {
+            return ClusteringType.parse(pref.getObject(CLUSTERING_TYPE)) == ClusteringType.COLUMNS_CLUSTERING;
+        }
+        return false; //by default cluster rows
     }
 
 }

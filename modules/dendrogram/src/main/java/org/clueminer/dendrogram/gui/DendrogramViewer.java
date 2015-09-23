@@ -397,4 +397,9 @@ public class DendrogramViewer extends JPanel implements Exportable, AdjustmentLi
             //throw new UnsupportedOperationException("Not supported yet.");
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

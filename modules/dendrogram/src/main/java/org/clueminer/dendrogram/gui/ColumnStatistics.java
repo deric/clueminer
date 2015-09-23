@@ -215,4 +215,9 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
             repaint();
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

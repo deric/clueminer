@@ -256,4 +256,9 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

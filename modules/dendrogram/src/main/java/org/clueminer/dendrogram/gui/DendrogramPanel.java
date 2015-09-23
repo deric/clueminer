@@ -583,4 +583,9 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     public int getSliderDiameter() {
         return sliderDiameter;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

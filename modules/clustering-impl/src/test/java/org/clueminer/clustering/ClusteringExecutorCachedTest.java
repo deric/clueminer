@@ -10,10 +10,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,17 +22,6 @@ import org.junit.Test;
 public class ClusteringExecutorCachedTest {
 
     private final ClusteringExecutorCached subject = new ClusteringExecutorCached();
-
-    public ClusteringExecutorCachedTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Ignore
     public void testHclustRows() {

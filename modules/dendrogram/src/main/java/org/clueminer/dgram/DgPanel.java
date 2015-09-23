@@ -430,6 +430,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         //we call constructor just one
         if (rowsTree == null) {
             rowsTree = new DgRightTree(this);
+            //DgPanel should be notified before tree
+            //dataListeners.add(rowsTree, this);
             dataListeners.add(rowsTree);
             //listen to cluster selection
             rowsTree.addTreeListener(heatmap);
@@ -572,7 +574,13 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
         this.dendroData = dataset;
-        //updateLayout();
+        //wait until all components have same data. then triggerUpdate()
+    }
+
+    public void triggerUpdate() {
+        //update element size
+        recalculate();
+        updateLayout();
         //sizeUpdated(getSize());
         if (rowsTree != null) {
             rowsTree.fireTreeUpdated();
@@ -581,8 +589,11 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             columnsTree.fireTreeUpdated();
         }
         slider.updatePosition();
-        //@TODO probably call repaint
-        //repaint();
+        validate();
+        revalidate();
+        computeLayout();
+
+        repaint();
     }
 
     public void fireRowsOrderUpdated(Object source, HierarchicalResult rows) {
@@ -848,6 +859,10 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     public ListenerList<DendrogramDataListener> getDataListeners() {
         return dataListeners;
+    }
+
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 
 }

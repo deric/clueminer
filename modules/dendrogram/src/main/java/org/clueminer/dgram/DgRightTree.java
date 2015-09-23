@@ -66,7 +66,6 @@ public class DgRightTree extends DgTree {
             } else {
                 g2.drawLine(nx, ly, lx, ly);
             }
-
         }
     }
 

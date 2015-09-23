@@ -6,7 +6,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
-import org.clueminer.math.Vector;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.openide.util.Exceptions;

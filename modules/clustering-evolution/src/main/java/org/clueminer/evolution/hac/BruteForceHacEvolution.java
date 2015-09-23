@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -135,7 +136,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
         params.put(AgglParams.ALG, exec.getAlgorithm().getName());
         params.putBoolean(AgglParams.LOG, logscale);
         params.put(AgglParams.STD, std);
-        params.putBoolean(AgglParams.CLUSTER_ROWS, true);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         params.put(AgglParams.LINKAGE, link.getName());
 
         for (CutoffStrategy cut : cutoff) {
