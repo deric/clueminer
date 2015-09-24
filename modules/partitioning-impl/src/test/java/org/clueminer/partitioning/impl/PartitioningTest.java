@@ -7,12 +7,15 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.graph.api.Node;
+import org.clueminer.partitioning.api.Bisection;
 
 /**
  *
  * @author Tomas Bruna
  */
 public class PartitioningTest {
+
+    protected Bisection subject;
 
     protected Dataset<? extends Instance> twoDistinctNeighbors() {
         Dataset<Instance> data = new ArrayDataset<>(8, 2);
