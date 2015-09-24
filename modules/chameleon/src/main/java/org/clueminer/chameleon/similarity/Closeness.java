@@ -49,11 +49,10 @@ public class Closeness<E extends Instance> extends AbstractSimilarity<E> impleme
         GraphCluster<E> y = (GraphCluster<E>) b;
         double RCL = getRCL(x, y);
         double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
-        //TODO: this is kind of magic. it's not described in original paper. move to another method?
         //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
-        //if (a.size() == 1 || b.size() == 1) {
-        //    return Math.pow(RCL, closenessPriority) * 40;
-        //}
+        if (a.size() == 1 || b.size() == 1) {
+            return Math.pow(RCL, closenessPriority) * params.getDouble(Chameleon.INDIVIDUAL_MULTIPLIER, 1000);
+        }
 
         return Math.pow(RCL, closenessPriority);
     }

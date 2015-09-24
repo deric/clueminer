@@ -38,6 +38,7 @@ public class ChameleonTest {
         pref.putInt(Chameleon.K, 5);
         pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+        pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
 
         //measure clustering run
         NanoBench.create().measurements(3).measure(
@@ -73,6 +74,8 @@ public class ChameleonTest {
         pref.putInt(Chameleon.K, 5);
         pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
+        //putting 1 disable this optimization
+        pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();

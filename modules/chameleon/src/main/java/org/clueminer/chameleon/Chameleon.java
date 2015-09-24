@@ -77,8 +77,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * closeness of clusters during merging, otherwise, if lesser than 1, to
      * interconnectivity.
      */
-    public static final String CLOSENESS_PRIORITY = "closeness_priority";
     @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
+    public static final String CLOSENESS_PRIORITY = "closeness_priority";
 
     /**
      * Algorithm for merging clusters
@@ -98,8 +98,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * of the clusters contains just one node.
      */
     public static final String INDIVIDUAL_MULTIPLIER = "individual_multiplier";
-    @Param(name = Chameleon.SIM_MEASURE, description = "Constant used to multiply external similarity of cluster pairs where one"
-            + "of the clusters contains just one node.")
+    @Param(name = Chameleon.INDIVIDUAL_MULTIPLIER, description = "Constant used to multiply external similarity of cluster pairs where one"
+           + "of the clusters contains just one node.")
+    protected int individualMultiplier;
 
     private final KNNGraphBuilder knn;
 

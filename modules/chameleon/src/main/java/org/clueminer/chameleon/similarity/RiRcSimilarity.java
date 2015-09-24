@@ -16,7 +16,6 @@
  */
 package org.clueminer.chameleon.similarity;
 
-import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
@@ -56,15 +55,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
 
-        double RCL = closeness.getRCL(x, y);
-        double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
-        //TODO: this is kind of magic. it's not described in original paper. move to another method?
-        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
-        //if (a.size() == 1 || b.size() == 1) {
-        //    return Math.pow(RCL, closenessPriority) * 40;
-        //}
-
-        return interconnectivity.getRIC(x, y) * Math.pow(RCL, closenessPriority);
+        return interconnectivity.getRIC(x, y) * closeness.score(a, b, params);
     }
 
 
