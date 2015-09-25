@@ -2,7 +2,9 @@ package org.clueminer.clustering.gui;
 
 import java.io.File;
 import java.util.prefs.Preferences;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
@@ -11,17 +13,16 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public interface ClusteringExport extends ExporterGUI {
 
-
     /**
      * Creates Runnable object for performing the export
      *
      * @param file
-     * @param analysis
+     * @param mapping
      * @param pref
      * @param ph
      * @return
      */
-    Runnable getRunner(File file, DendroViewer analysis, Preferences pref, final ProgressHandle ph);
+    Runnable getRunner(File file, DendrogramMapping mapping, Preferences pref, final ProgressHandle ph);
 
     /**
      * Display exporting options
@@ -34,4 +35,17 @@ public interface ClusteringExport extends ExporterGUI {
      * @param analysis
      */
     void setViewer(DendroViewer analysis);
+
+    /**
+     * Dendrogram mapping
+     *
+     * @param mapping
+     */
+    void setDendrogramMapping(DendrogramMapping mapping);
+
+    /**
+     *
+     * @param clustering
+     */
+    void setClustering(Clustering clustering);
 }

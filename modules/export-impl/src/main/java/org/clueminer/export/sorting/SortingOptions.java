@@ -12,9 +12,9 @@ import javax.swing.JPanel;
  */
 public class SortingOptions extends JPanel {
 
-    private JCheckBox chckIncludeHeader;
-
+    private static final long serialVersionUID = -2124372034270507212L;
     public static final String INCLUDE_HEADER = "include_header";
+    private JCheckBox chckIncludeHeader;
 
     public SortingOptions() {
         initComponets();

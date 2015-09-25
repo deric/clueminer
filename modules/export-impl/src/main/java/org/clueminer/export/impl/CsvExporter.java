@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
@@ -68,8 +68,8 @@ public class CsvExporter extends ClusteringExporter implements ActionListener, C
     }
 
     @Override
-    public Runnable getRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
-        return new CsvExportRunner(file, analysis, pref, ph);
+    public Runnable getRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
+        return new CsvExportRunner(file, mapping, pref, ph);
     }
 
 }

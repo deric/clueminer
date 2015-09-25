@@ -16,6 +16,8 @@ import org.clueminer.clustering.gui.ClusteringExport;
  */
 public class FileExportDialog extends JPanel {
 
+    private static final long serialVersionUID = 7587292725427287296L;
+
     private JComboBox<String> cbType;
     private JPanel optPanel;
     private String selected = null;

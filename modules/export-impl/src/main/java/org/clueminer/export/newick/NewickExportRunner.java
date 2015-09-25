@@ -10,7 +10,7 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -33,7 +33,6 @@ import org.openide.util.Exceptions;
 public class NewickExportRunner implements Runnable {
 
     private File file;
-    private DendroViewer analysis;
     private ProgressHandle ph;
     private Dataset<? extends Instance> dataset;
     private boolean includeNodeNames;
@@ -42,14 +41,15 @@ public class NewickExportRunner implements Runnable {
     private String label = "index";
     private int cnt;
     private DecimalFormat df;
+    private DendrogramMapping mapping;
 
     public NewickExportRunner() {
         df = initFormat(3);
     }
 
-    public NewickExportRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
+    public NewickExportRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
         this.file = file;
-        this.analysis = analysis;
+        this.mapping = mapping;
         this.ph = ph;
         parsePref(pref);
     }
@@ -77,9 +77,9 @@ public class NewickExportRunner implements Runnable {
         try (FileWriter fw = new FileWriter(file)) {
             HierarchicalResult hres;
             if (exportRows) {
-                hres = analysis.getDendrogramMapping().getRowsResult();
+                hres = mapping.getRowsResult();
             } else {
-                hres = analysis.getDendrogramMapping().getColsResult();
+                hres = mapping.getColsResult();
             }
             String newick = doExport(hres);
             fw.write(newick);

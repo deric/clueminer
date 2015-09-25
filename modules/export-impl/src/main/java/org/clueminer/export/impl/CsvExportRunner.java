@@ -8,7 +8,7 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
@@ -22,14 +22,14 @@ import org.openide.util.Exceptions;
 public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implements Runnable {
 
     private final File file;
-    private final DendroViewer viewer;
+    private final DendrogramMapping mapping;
     private final Preferences pref;
     private final ProgressHandle ph;
     private boolean includeClass = false;
 
-    public CsvExportRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
+    public CsvExportRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
         this.file = file;
-        this.viewer = analysis;
+        this.mapping = mapping;
         this.pref = pref;
         this.ph = ph;
     }
@@ -38,13 +38,13 @@ public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implement
     public void run() {
         boolean quoteStrings = pref.getBoolean("quote_strings", false);
         char separator = pref.get("separator", ",").charAt(0);
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter(file), separator);
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(file), separator)) {
             String[] line, tmp;
             int size;
             Instance raw;
             //TODO: allow exporting columns result
-            HierarchicalResult result = viewer.getDendrogramMapping().getRowsResult();
+            HierarchicalResult result = mapping.getRowsResult();
             if (result != null) {
                 //number of items in dataset must be same as number of instances in clusters
                 ph.start(result.getDataset().size());
@@ -109,7 +109,6 @@ public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implement
             } else {
                 throw new RuntimeException("no clustering result. did you run clustering?");
             }
-            writer.close();
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

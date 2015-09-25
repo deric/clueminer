@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.prefs.Preferences;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -17,14 +16,14 @@ import org.openide.util.Exceptions;
  */
 public class MatrixRunner implements Runnable {
 
-    private File file;
-    private DendroViewer analysis;
-    private ProgressHandle ph;
+    private final File file;
+    private final ProgressHandle ph;
     private boolean includeHeader;
+    private final DendrogramMapping mapping;
 
-    MatrixRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
+    MatrixRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
         this.file = file;
-        this.analysis = analysis;
+        this.mapping = mapping;
         this.ph = ph;
         parsePref(pref);
     }
@@ -36,34 +35,33 @@ public class MatrixRunner implements Runnable {
     @Override
     public void run() {
         try (FileWriter fw = new FileWriter(file)) {
-            DendrogramMapping map = analysis.getDendrogramMapping();
             StringBuilder sb;
             int cnt = 0;
             if (ph != null) {
-                ph.start(map.getNumberOfRows());
+                ph.start(mapping.getNumberOfRows());
             }
             if (includeHeader) {
                 sb = new StringBuilder();
-                Dataset<? extends Instance> dataset = map.getDataset();
-                for (int j = 0; j < map.getNumberOfColumns(); j++) {
+                Dataset<? extends Instance> dataset = mapping.getDataset();
+                for (int j = 0; j < mapping.getNumberOfColumns(); j++) {
                     if (j > 0) {
                         sb.append(",");
                     }
-                    sb.append(dataset.getAttribute(map.getColumnIndex(j)).getName());
+                    sb.append(dataset.getAttribute(mapping.getColumnIndex(j)).getName());
                 }
                 sb.append("\n");
                 fw.write(sb.toString());
             }
-            for (int i = 0; i < map.getNumberOfRows(); i++) {
+            for (int i = 0; i < mapping.getNumberOfRows(); i++) {
                 sb = new StringBuilder();
-                for (int j = 0; j < map.getNumberOfColumns(); j++) {
+                for (int j = 0; j < mapping.getNumberOfColumns(); j++) {
                     if (j > 0) {
                         sb.append(",");
                     }
-                    sb.append(map.getMappedValue(i, j));
+                    sb.append(mapping.getMappedValue(i, j));
                 }
-                sb.append(",").append(map.getRowsResult().getInstance(i).getName());
-                sb.append(",").append(map.getRowsResult().getInstance(i).getId());
+                sb.append(",").append(mapping.getRowsResult().getInstance(i).getName());
+                sb.append(",").append(mapping.getRowsResult().getInstance(i).getId());
                 sb.append("\n");
                 fw.write(sb.toString());
                 if (ph != null) {

@@ -6,6 +6,8 @@ package org.clueminer.dendrogram;
  */
 public class ImageExportDialog extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 7654516427085421650L;
+
     /**
      * Creates new form ExportDialog
      */
@@ -54,7 +56,6 @@ public class ImageExportDialog extends javax.swing.JPanel {
                 .addContainerGap(34, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton btnCurrent;

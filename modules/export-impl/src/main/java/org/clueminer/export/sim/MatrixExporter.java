@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.ClusteringExporter;
 import org.netbeans.api.progress.ProgressHandle;
@@ -65,8 +65,8 @@ public class MatrixExporter extends ClusteringExporter implements ClusteringExpo
     }
 
     @Override
-    public Runnable getRunner(File file, DendroViewer analysis, Preferences pref, ProgressHandle ph) {
-        return new MatrixRunner(file, analysis, pref, ph);
+    public Runnable getRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
+        return new MatrixRunner(file, mapping, pref, ph);
     }
 
 }
