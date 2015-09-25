@@ -54,6 +54,7 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         x = (GraphCluster<E>) b;
         y = (GraphCluster<E>) a;
         double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+        double interconnectivityPriority = params.getDouble(Chameleon.INTERCONNECTIVITY_PRIORITY, 1.0);
         GraphPropertyStore gps = getGraphPropertyStore(x);
         int i = x.getClusterId();
         int j = y.getClusterId();
@@ -67,7 +68,7 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
                 * Math.pow((gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2)
                         + (y.getACL() * ec2) / (ec1 + ec2))), closenessPriority)
-                * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), 1);
+                * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), interconnectivityPriority);
 
         return val;
     }

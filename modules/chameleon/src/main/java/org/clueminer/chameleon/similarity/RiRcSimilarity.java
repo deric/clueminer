@@ -16,7 +16,6 @@
  */
 package org.clueminer.chameleon.similarity;
 
-import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
@@ -52,12 +51,9 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
     @Override
     public double score(Cluster<E> a, Cluster<E> b, Props params) {
         checkClusters(a, b);
-        GraphCluster<E> x = (GraphCluster<E>) a;
-        GraphCluster<E> y = (GraphCluster<E>) b;
 
-        return interconnectivity.getRIC(x, y) * closeness.score(a, b, params);
+        return interconnectivity.score(a, b, params) * closeness.score(a, b, params);
     }
-
 
     @Override
     public boolean isMaximized() {

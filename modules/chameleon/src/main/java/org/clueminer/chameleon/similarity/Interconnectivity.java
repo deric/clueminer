@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon.similarity;
 
+import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.GraphPropertyStore;
 import org.clueminer.clustering.api.Cluster;
@@ -47,6 +48,10 @@ public class Interconnectivity<E extends Instance> extends AbstractSimilarity<E>
         GraphCluster<E> x = (GraphCluster<E>) a;
         GraphCluster<E> y = (GraphCluster<E>) b;
         double RIC = getRIC(x, y);
+        double priority = params.getDouble(Chameleon.INTERCONNECTIVITY_PRIORITY, 1.0);
+        if (priority != 1.0) {
+            RIC = Math.pow(RIC, priority);
+        }
 
         return RIC;
     }

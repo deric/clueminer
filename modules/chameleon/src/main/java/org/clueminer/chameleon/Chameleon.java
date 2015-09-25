@@ -77,8 +77,13 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      * closeness of clusters during merging, otherwise, if lesser than 1, to
      * interconnectivity.
      */
-    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
     public static final String CLOSENESS_PRIORITY = "closeness_priority";
+    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
+    public double closenessPriority;
+
+    public static final String INTERCONNECTIVITY_PRIORITY = "interconnectivity_priority";
+    @Param(name = Chameleon.INTERCONNECTIVITY_PRIORITY, description = "Priority of merging close clusters")
+    public double interconnectivityPriority;
 
     /**
      * Algorithm for merging clusters
