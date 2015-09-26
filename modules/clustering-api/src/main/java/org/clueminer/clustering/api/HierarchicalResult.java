@@ -15,8 +15,9 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C> type of cluster
  */
-public interface HierarchicalResult<E extends Instance> extends Serializable {
+public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> extends Serializable {
 
     /**
      * Proximity (a.k.a. similarity matrix) is a NxN matrix of distances
@@ -35,11 +36,11 @@ public interface HierarchicalResult<E extends Instance> extends Serializable {
      *
      * @return a set of clusters
      */
-    Clustering<E, Cluster<E>> getClustering();
+    Clustering<E, C> getClustering();
 
-    Clustering<E, Cluster<E>> getClustering(Dataset<E> dataset);
+    Clustering<E, C> getClustering(Dataset<E> dataset);
 
-    void setClustering(Clustering<E, Cluster<E>> clustering);
+    void setClustering(Clustering<E, C> clustering);
 
     /**
      * Array of integers with cluster assignments
@@ -100,7 +101,7 @@ public interface HierarchicalResult<E extends Instance> extends Serializable {
     /**
      *
      * @return return current number of clusters (computed according to current
-     *         cutoff)
+     * cutoff)
      */
     int getNumClusters();
 
@@ -183,7 +184,7 @@ public interface HierarchicalResult<E extends Instance> extends Serializable {
      *
      * @param idx position in input matrix/dataset
      * @return row/column index in original dataset that maps from passed
-     *         row/column index.
+     * row/column index.
      */
     int getMappedIndex(int idx);
 
@@ -281,7 +282,7 @@ public interface HierarchicalResult<E extends Instance> extends Serializable {
      *
      * @return dendrogram mapping
      */
-    DendrogramMapping getDendrogramMapping();
+    DendrogramMapping<E, C> getDendrogramMapping();
 
     public double getHeightByLevel(int level);
 

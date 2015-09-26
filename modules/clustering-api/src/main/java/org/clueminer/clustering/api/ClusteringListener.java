@@ -17,7 +17,7 @@ public interface ClusteringListener<E extends Instance, C extends Cluster<E>> ex
      * Triggered when starts executor starts data clustering
      *
      * @param dataset data to be clustered
-     * @param params  parameters of the clustering algorithm
+     * @param params parameters of the clustering algorithm
      */
     void clusteringStarted(Dataset<E> dataset, Props params);
 
@@ -28,5 +28,5 @@ public interface ClusteringListener<E extends Instance, C extends Cluster<E>> ex
      */
     void clusteringChanged(Clustering<E, C> clust);
 
-    void resultUpdate(HierarchicalResult<E> hclust);
+    void resultUpdate(HierarchicalResult<E, C> hclust);
 }

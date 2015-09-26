@@ -60,11 +60,11 @@ public interface DendrogramMapping<E extends Instance, C extends Cluster<E>> {
      *
      * @param rowsResult
      */
-    public void setRowsResult(HierarchicalResult<E> rowsResult);
+    public void setRowsResult(HierarchicalResult<E, C> rowsResult);
 
-    public HierarchicalResult<E> getColsResult();
+    public HierarchicalResult<E, C> getColsResult();
 
-    public void setColsResult(HierarchicalResult<E> colsResult);
+    public void setColsResult(HierarchicalResult<E, C> colsResult);
 
     public Clustering<E, C> getRowsClustering();
 
