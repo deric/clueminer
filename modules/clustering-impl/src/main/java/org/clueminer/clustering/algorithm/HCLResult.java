@@ -30,7 +30,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  */
 @Deprecated
-public class HCLResult<E extends Instance> implements HierarchicalResult<E> {
+public class HCLResult<E extends Instance, C extends Cluster<E>> implements HierarchicalResult<E, C> {
 
     private static final long serialVersionUID = 2779535800981843584L;
     private Matrix proximity;

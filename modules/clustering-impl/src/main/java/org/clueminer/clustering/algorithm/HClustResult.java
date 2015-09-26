@@ -36,11 +36,13 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
 /**
+ * Hierarchical clustering result containing information about tree structure
  *
  * @author Tomas Barton
  * @param <E>
+ * @param <C>
  */
-public class HClustResult<E extends Instance> implements HierarchicalResult<E> {
+public class HClustResult<E extends Instance, C extends Cluster<E>> implements HierarchicalResult<E, C> {
 
     private static final long serialVersionUID = -515379303769981129L;
     private Matrix proximity;

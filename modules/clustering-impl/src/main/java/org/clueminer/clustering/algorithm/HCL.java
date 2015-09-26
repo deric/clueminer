@@ -23,7 +23,7 @@ public class HCL<E extends Instance, C extends Cluster<E>> extends AbstractClust
     private double TreeHeight;
     private int Assigned;
     private int n;
-    private HCLResult result;
+    private HCLResult<E, C> result;
 
     public HCL() {
         distanceFunction = new EuclideanDistance();
