@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.io.ARFFWriter;
@@ -36,13 +35,13 @@ import org.openide.util.Exceptions;
 class ArffExportRunner<E extends Instance, C extends Cluster<E>> implements Runnable {
 
     private final File file;
-    private final DendrogramMapping<E, C> mapping;
+    private final Clustering<E, C> clustering;
     private final Preferences pref;
     private final ProgressHandle ph;
 
-    public ArffExportRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
+    public ArffExportRunner(File file, Clustering<E, C> clustering, Preferences pref, ProgressHandle ph) {
         this.file = file;
-        this.mapping = mapping;
+        this.clustering = clustering;
         this.pref = pref;
         this.ph = ph;
     }
@@ -50,11 +49,9 @@ class ArffExportRunner<E extends Instance, C extends Cluster<E>> implements Runn
     @Override
     public void run() {
         Dataset<E> dataset;
-        Clustering<E, C> clustering;
         try (ARFFWriter writer = new ARFFWriter(new FileWriter(file))) {
-            if (mapping != null) {
-                dataset = mapping.getDataset();
-                clustering = mapping.getRowsClustering();
+            if (clustering != null) {
+                dataset = clustering.getLookup().lookup(Dataset.class);
                 ph.start(dataset.size());
                 int cnt = 0;
                 writer.writeHeader(dataset, labels(clustering));
@@ -66,6 +63,7 @@ class ArffExportRunner<E extends Instance, C extends Cluster<E>> implements Runn
                     writer.write(inst, instLabel(inst, clustering));
                 }
                 ph.progress(cnt++);
+                writer.close();
             } else {
                 throw new RuntimeException("missing mapping");
             }

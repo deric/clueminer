@@ -80,7 +80,15 @@ public class ArffExporter extends ClusteringExporter implements ActionListener, 
 
     @Override
     public Runnable getRunner(File file, DendrogramMapping mapping, Preferences pref, ProgressHandle ph) {
-        return new ArffExportRunner(file, mapping, pref, ph);
+        if (mapping != null) {
+            return new ArffExportRunner(file, mapping.getRowsClustering(), pref, ph);
+        }
+        return new ArffExportRunner(file, clustering, pref, ph);
+    }
+
+    @Override
+    public boolean hasData() {
+        return clustering != null;
     }
 
 }

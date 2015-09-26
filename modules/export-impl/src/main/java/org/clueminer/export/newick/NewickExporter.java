@@ -72,4 +72,9 @@ public class NewickExporter extends ClusteringExporter implements ClusteringExpo
         return new NewickExportRunner(file, mapping, pref, ph);
     }
 
+    @Override
+    public boolean hasData() {
+        return mapping != null || clustering != null;
+    }
+
 }

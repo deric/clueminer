@@ -72,4 +72,9 @@ public class CsvExporter extends ClusteringExporter implements ActionListener, C
         return new CsvExportRunner(file, mapping, pref, ph);
     }
 
+    @Override
+    public boolean hasData() {
+        return mapping != null || clustering != null;
+    }
+
 }

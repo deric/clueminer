@@ -69,4 +69,9 @@ public class MatrixExporter extends ClusteringExporter implements ClusteringExpo
         return new MatrixRunner(file, mapping, pref, ph);
     }
 
+    @Override
+    public boolean hasData() {
+        return mapping != null || clustering != null;
+    }
+
 }

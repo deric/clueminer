@@ -36,11 +36,6 @@ public abstract class ClusteringExporter extends AbstractExporter implements Clu
     }
 
     @Override
-    public boolean hasData() {
-        return viewer != null;
-    }
-
-    @Override
     public Runnable getRunner(File file, Preferences pref, ProgressHandle ph) {
         return getRunner(file, mapping, pref, ph);
     }
