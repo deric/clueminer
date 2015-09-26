@@ -1,9 +1,11 @@
 package org.clueminer.io;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.stats.AttrNumStats;
 import org.junit.AfterClass;
@@ -26,10 +28,16 @@ public class NumericalStatsTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ARFFHandler arff = new ARFFHandler();
-        dataset = new SampleDataset();
-        arff.load(tf.irisArff(), dataset, 4);
+        irisDataset();
+    }
 
+    public static Dataset<? extends Instance> irisDataset() throws FileNotFoundException, IOException {
+        if (dataset == null) {
+            ARFFHandler arff = new ARFFHandler();
+            dataset = new ArrayDataset(150, 4);
+            arff.load(tf.irisArff(), dataset, 4);
+        }
+        return dataset;
     }
 
     @AfterClass

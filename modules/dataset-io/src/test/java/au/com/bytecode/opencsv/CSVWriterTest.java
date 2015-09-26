@@ -18,8 +18,6 @@ package au.com.bytecode.opencsv;
 import org.junit.Test;
 
 import java.io.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,7 +160,7 @@ public class CSVWriterTest {
     @Test
     public void testWriteAll() throws IOException {
 
-        List<String[]> allElements = new ArrayList<String[]>();
+        List<String[]> allElements = new ArrayList<>();
         String[] line1 = "Name#Phone#Email".split("#");
         String[] line2 = "Glen#1234#glen@abcd.com".split("#");
         String[] line3 = "John#5678#john@efgh.com".split("#");
@@ -189,7 +187,7 @@ public class CSVWriterTest {
     @Test
     public void testWriteAllObjects() throws IOException {
 
-        List<String[]> allElements = new ArrayList<String[]>(3);
+        List<String[]> allElements = new ArrayList<>(3);
         String[] line1 = "Name#Phone#Email".split("#");
         String[] line2 = "Glen#1234#glen@abcd.com".split("#");
         String[] line3 = "John#5678#john@efgh.com".split("#");
@@ -285,12 +283,10 @@ public class CSVWriterTest {
         String[] nextLine = new String[]{"aaaa", "bbbb", "cccc", "dddd"};
 
         FileWriter fileWriter = new FileWriter(tmpFile);
-        CSVWriter writer = new CSVWriter(fileWriter);
-
-        writer.writeNext(nextLine);
-
-        // If this line is not executed, it is not written in the file.
-        writer.close();
+        try (CSVWriter writer = new CSVWriter(fileWriter)) {
+            writer.writeNext(nextLine);
+            // If this line is not executed, it is not written in the file.
+        }
 
     }
 

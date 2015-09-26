@@ -22,7 +22,7 @@ import org.openide.util.Exceptions;
 public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implements Runnable {
 
     private final File file;
-    private final DendrogramMapping mapping;
+    private final DendrogramMapping<E, C> mapping;
     private final Preferences pref;
     private final ProgressHandle ph;
     private boolean includeClass = false;
@@ -44,14 +44,14 @@ public class CsvExportRunner<E extends Instance, C extends Cluster<E>> implement
             int size;
             Instance raw;
             //TODO: allow exporting columns result
-            HierarchicalResult result = mapping.getRowsResult();
+            HierarchicalResult<E, C> result = mapping.getRowsResult();
             if (result != null) {
                 //number of items in dataset must be same as number of instances in clusters
                 ph.start(result.getDataset().size());
                 Clustering<E, C> clust = result.getClustering();
                 int cnt = 0;
                 for (Cluster<E> c : clust) {
-                    for (Instance inst : c) {
+                    for (E inst : c) {
                         line = inst.getName().split(",");
                         for (int i = 0; i < line.length; i++) {
                             line[i] = line[i].trim();

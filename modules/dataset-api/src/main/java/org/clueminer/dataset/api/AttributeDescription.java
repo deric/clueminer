@@ -82,6 +82,8 @@ public class AttributeDescription implements Serializable {
     /**
      * Returns true if the given attribute has the same name and the same table
      * index.
+     *
+     * @param o
      */
     @Override
     public boolean equals(Object o) {
@@ -89,10 +91,7 @@ public class AttributeDescription implements Serializable {
             return false;
         }
         AttributeDescription a = (AttributeDescription) o;
-        if (!this.name.equals(a.getName())) {
-            return false;
-        }
-        return true;
+        return this.name.equals(a.getName());
     }
 
     @Override

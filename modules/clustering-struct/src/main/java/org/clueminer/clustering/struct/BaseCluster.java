@@ -217,4 +217,9 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         }
         return this.hashCode() == other.hashCode();
     }
+
+    @Override
+    public boolean isOutlier() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

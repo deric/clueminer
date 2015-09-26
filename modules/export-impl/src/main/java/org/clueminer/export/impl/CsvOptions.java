@@ -8,6 +8,8 @@ import java.util.prefs.Preferences;
  */
 public class CsvOptions extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 7517925954266797315L;
+
     /**
      * Creates new form CsvOptions
      */

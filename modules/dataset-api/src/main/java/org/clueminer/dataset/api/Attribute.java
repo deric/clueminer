@@ -21,26 +21,26 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @return
      */
-    public String getName();
+    String getName();
 
     /**
      * Sets the name of the attribute.
      *
      * @param name
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * @return index of column in dataset
      */
-    public int getIndex();
+    int getIndex();
 
     /**
      * Set index of an attribute
      *
      * @param index
      */
-    public void setIndex(int index);
+    void setIndex(int index);
 
     /**
      * In order to obtain all values that belong to specific attribute it's
@@ -49,7 +49,7 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @param dataset
      */
-    public void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<? extends Instance> dataset);
 
     /**
      * Returns an iterator over all statistics objects available for this type
@@ -58,14 +58,14 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @return
      */
-    public Iterator<Statistics> getAllStatistics();
+    Iterator<Statistics> getAllStatistics();
 
     /**
      * Registers the attribute statistics.
      *
      * @param statistics
      */
-    public void registerStatistics(Statistics statistics);
+    void registerStatistics(Statistics statistics);
 
     /**
      * Return value of precomputed statistics, which should be on changes in
@@ -74,12 +74,12 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      * @param name
      * @return
      */
-    public double statistics(IStats name);
+    double statistics(IStats name);
 
     /**
      * Invoke reset on all registered statistics
      */
-    public void resetStats();
+    void resetStats();
 
     /**
      * Triggered when a new value is added to a dataset The type of a value
@@ -88,7 +88,7 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @param value
      */
-    public void updateStatistics(Object value);
+    void updateStatistics(Object value);
 
     /**
      * Returns the nominal mapping between nominal values and internal double
@@ -98,7 +98,7 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @return
      */
-    public NominalMapping getMapping();
+    NominalMapping getMapping();
 
     /**
      * Returns the nominal mapping between nominal values and internal double
@@ -107,56 +107,62 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @param nominalMapping
      */
-    public void setMapping(NominalMapping nominalMapping);
+    void setMapping(NominalMapping nominalMapping);
 
     /**
      * Sets the default value for this attribute.
      *
      * @param value
      */
-    public void setDefault(double value);
+    void setDefault(double value);
 
     /**
      * Returns the default value for this attribute.
      *
      * @return
      */
-    public double getDefault();
+    double getDefault();
 
     /**
      * Returns true if the attribute is nominal.
      *
      * @return
      */
-    public boolean isNominal();
+    boolean isNominal();
 
     /**
      * Returns true if the attribute is nominal.
      *
      * @return
      */
-    public boolean isNumerical();
+    boolean isNumerical();
 
     /**
      * If true attribute would not be included in input data of an algorithm
      *
      * @return
      */
-    public boolean isMeta();
+    boolean isMeta();
 
     /**
      * Role could be input data (used for computation) or meta data
      *
      * @return
      */
-    public AttributeRole getRole();
+    AttributeRole getRole();
+
+    /**
+     *
+     * @return
+     */
+    AttributeType getType();
 
     /**
      * Set role of the attribute
      *
      * @param role
      */
-    public void setRole(AttributeRole role);
+    void setRole(AttributeRole role);
 
     /**
      * We should be able to go through all values of an attribute. In
@@ -164,21 +170,21 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      *
      * @return String | Double | Boolean | etc.
      */
-    public Iterator<? extends Object> values();
+    Iterator<? extends Object> values();
 
     /**
      * If attribute is numerical, it should support this conversion
      *
      * @return attribute values as double array
      */
-    public double[] asDoubleArray();
+    double[] asDoubleArray();
 
     /**
      * Number of items (e.g. number of rows in dataset)
      *
      * @return
      */
-    public int size();
+    int size();
 
     /**
      * Returns a formatted string of the given value according to the attribute
@@ -189,7 +195,7 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      * @param quoteNominal
      * @return
      */
-    public String asString(double value, int digits, boolean quoteNominal);
+    String asString(double value, int digits, boolean quoteNominal);
 
     /**
      * Returns true if the given object is an attribute with the same name and
@@ -198,25 +204,25 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
      * @param o
      */
     @Override
-    public boolean equals(Object o);
+    boolean equals(Object o);
 
     /**
      * Returns the hash code. Please note that equal attributes must return the
      * same hash code.
      */
     @Override
-    public int hashCode();
+    int hashCode();
 
     /**
      * Clones this attribute.
      *
      * @return
      */
-    public Object clone();
+    Object clone();
 
     /**
      * Returns a human readable string that describes this attribute.
      */
     @Override
-    public String toString();
+    String toString();
 }
