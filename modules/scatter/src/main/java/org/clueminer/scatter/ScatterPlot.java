@@ -24,6 +24,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -41,9 +43,17 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private static final long serialVersionUID = 2083423601634918077L;
 
     private int markerSize = 10;
+    private MouseListener mouseListener;
+    private MouseMotionListener mouseMotionListener;
 
     public ScatterPlot() {
         initComponents();
+    }
+
+    public ScatterPlot(MouseListener ml, MouseMotionListener mml) {
+        initComponents();
+        this.mouseListener = ml;
+        this.mouseMotionListener = mml;
     }
 
     private void initComponents() {
@@ -92,8 +102,15 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
             Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
             s.setMarkerColor(clust.getColor());
         }
+        XChartPanel xchart = new XChartPanel(chart);
+        if (mouseListener != null) {
+            xchart.addMouseListener(mouseListener);
+        }
+        if (mouseMotionListener != null) {
+            xchart.addMouseMotionListener(mouseMotionListener);
+        }
 
-        return new XChartPanel(chart);
+        return xchart;
     }
 
     public void setClusterings(final Clustering<E, C> clusteringA, final Clustering<E, C> clusteringB) {
