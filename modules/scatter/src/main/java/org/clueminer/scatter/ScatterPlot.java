@@ -24,6 +24,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
@@ -45,6 +47,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private int markerSize = 10;
     private MouseListener mouseListener;
     private MouseMotionListener mouseMotionListener;
+    private Chart currChart;
 
     public ScatterPlot() {
         initComponents();
@@ -98,6 +101,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         chart.getStyleManager().setLegendPosition(StyleManager.LegendPosition.OutsideE);
         chart.getStyleManager().setMarkerSize(markerSize);
 
+        //update reference to current chart
+        this.currChart = chart;
+
         for (Cluster<E> clust : clustering) {
             Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
             s.setMarkerColor(clust.getColor());
@@ -145,6 +151,20 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         revalidate();
         validate();
         repaint();
+    }
+
+    /**
+     * Translate selected area into real values used in the dataset. Currently
+     * only rectangular selection is supported
+     *
+     * @param shape
+     * @return
+     */
+    public Rectangle.Double tranlateSelection(Shape shape) {
+        if (currChart != null) {
+            return currChart.translateSelection(shape.getBounds());
+        }
+        throw new RuntimeException("current chart not set");
     }
 
 }
