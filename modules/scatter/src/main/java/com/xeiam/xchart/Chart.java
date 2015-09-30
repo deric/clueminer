@@ -287,24 +287,47 @@ public class Chart {
      * @return
      */
     public Rectangle.Double translateSelection(Rectangle rect) {
-        Rectangle.Double res = new Rectangle.Double();
-
         //rectangle with
         Rectangle2D plotBounds = chartPainter.getPlot().getBounds();
+
         Axis xAxis = chartPainter.getAxisPair().getXAxis();
         Axis yAxis = chartPainter.getAxisPair().getYAxis();
 
-        System.out.println("x min: " + xAxis.getMin());
-        System.out.println("x max: " + xAxis.getMax());
+        double xval = rect.x - plotBounds.getMinX();
+        double xmax = plotBounds.getMaxX() - plotBounds.getMinX();
+        double ymax = plotBounds.getMaxY() - plotBounds.getMinY();
+        double yval = rect.y - plotBounds.getMinY();
 
-        System.out.println("y min: " + yAxis.getMin());
-        System.out.println("y max: " + yAxis.getMax());
+        //selection of out plot area
+        if (xval < 0) {
+            xval = 0;
+        }
+        if (yval < 0) {
+            yval = 0.0;
+        }
 
-        System.out.println("rect: " + rect);
-        System.out.println("axis bounds: " + chartPainter.getAxisPair().getBounds());
+        Rectangle.Double res = new Rectangle.Double();
+        res.x = scaleToRange(xval, 0.0, xmax, xAxis.getMin(), xAxis.getMax());
+        //on canvas [0,0] is in top left corner, while on chart it's down left
+        res.y = scaleToRange(yval, 0.0, ymax, yAxis.getMax(), yAxis.getMin());
+        res.width = (xAxis.getMax() - xAxis.getMin()) * (rect.width / xmax);
+        res.height = (yAxis.getMax() - yAxis.getMin()) * (rect.height / ymax);
 
-        System.out.println("plot bounds: " + chartPainter.getPlot().getBounds());
         return res;
+    }
+
+    /**
+     * Scale value from one linear scale to another
+     *
+     * @param value
+     * @param fromRangeMin
+     * @param fromRangeMax
+     * @param toRangeMin
+     * @param toRangeMax
+     * @return value scaled to given range
+     */
+    private double scaleToRange(double value, double fromRangeMin, double fromRangeMax, double toRangeMin, double toRangeMax) {
+        return ((value - fromRangeMin) * (toRangeMax - toRangeMin) / (fromRangeMax - fromRangeMin) + toRangeMin);
     }
 
 }
