@@ -192,6 +192,14 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     /**
+     *
+     * @return true when ACL value was already computed
+     */
+    public boolean hasACL() {
+        return ACL != -1;
+    }
+
+    /**
      * Number of edges in the cluster
      *
      * @return
