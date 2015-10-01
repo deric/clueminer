@@ -27,29 +27,66 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
+ * CURE - CLustering Using REpresentatives
+ *
+ * @cite Guha, Sudipto, Rajeev Rastogi, and Kyuseok Shim. "CURE: an efficient
+ * clustering algorithm for large databases." ACM SIGMOD Record. Vol. 27. No. 2.
+ * ACM, 1998.
  *
  * @author deric
  * @param <E>
- * @param <C>
+ * @param <C> CURE requires cluster structure with set of representatives
  */
-public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class Cure<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
-    private int totalNumberOfPoints;
+    /**
+     * total number of points (instances) in the data set
+     */
+    private int n;
+    /**
+     * number of expected clusters
+     */
+    public final String K = "k";
+    @Param(name = K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int numberOfClusters;
+
+    public final String MIN_REPRESENTATIVES = "min_representatives";
+    @Param(name = MIN_REPRESENTATIVES, description = "minimum number of representatives", required = false, min = 1, max = 1000)
     private int minRepresentativeCount;
+
+    public final String SHRINK_FACTOR = "shrink_factor";
+    @Param(name = SHRINK_FACTOR, description = "shrink factor", required = false, min = 0.0, max = 1.0)
     private double shrinkFactor;
-    private double requiredRepresentationProbablity;
+
+    public final String REPRESENTATION_PROBABILITY = "representation_probablity";
+    @Param(name = REPRESENTATION_PROBABILITY,
+           description = "required representation probablity",
+           min = 0.0, max = 1.0)
+    private double representationProbablity;
+
+    /**
+     * For performance only. When clustering large datasets it is recommended to
+     * split in so many parts, that each partition will fit into memory
+     */
+    public final String NUM_PARTITIONS = "num_partitions";
+    @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 1000)
     private int numberOfPartitions;
-    private int reducingFactorForEachPartition;
+
+    public final String REDUCE_FACTOR = "reduce_factor";
+    @Param(name = REDUCE_FACTOR, description = "reduce factor for each partition", min = 1, max = 1000)
+    private int reducingFactor;
+
     private ArrayList<E> outliers;
     private HashMap dataPointsMap;
     private static int currentRepAdditionCount;
-    private HashSet<Integer> integerTable;
+    private HashSet<Integer> blacklist;
 
     public static final String name = "CURE";
 
@@ -64,29 +101,55 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        n = dataset.size();
         initializeParameters(props);
 
         long beginTime = System.currentTimeMillis();
 
         int sampleSize = calculateSampleSize();
         ArrayList<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
-        ArrayList[] partitionedPointSet = partitionPointSet(randomPointSet);
-        ArrayList subClusters = clusterSubPartitions(partitionedPointSet);
-        if (reducingFactorForEachPartition >= 10) {
-            eliminateOutliersFirstStage(subClusters, 1);
-        } else {
-            eliminateOutliersFirstStage(subClusters, 0);
+
+        ArrayList<E> partition;
+        Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(numberOfClusters);
+        Iterator<E> iter = randomPointSet.iterator();
+        for (int i = 0; i < numberOfPartitions - 1; i++) {
+            partition = new ArrayList<>(randomPointSet.size() / numberOfPartitions);
+            int pointIndex = 0;
+            while (pointIndex < dataset.size() / numberOfPartitions) {
+                partition.add(iter.next());
+                pointIndex++;
+            }
+            clusterPartition(partition, clustering);
         }
-        ArrayList clusters = clusterAll(subClusters);
-        clusters = labelRemainingDataPoints(clusters);
+        partition = new ArrayList<>();
+        while (iter.hasNext()) {
+            partition.add(iter.next());
+        }
+        if (!partition.isEmpty()) {
+            clusterPartition(partition, clustering);
+        }
+
+        labelRemainingDataPoints(dataset, clustering);
 
         long time = System.currentTimeMillis() - beginTime;
 
         System.out.println("The Algorithm took " + time + " milliseconds to complete.");
 
-        showClusters(clusters);
+        showClusters(clustering);
 
-        return null;
+        return clustering;
+    }
+
+    private void clusterPartition(ArrayList<E> partition, Clustering<E, C> clustering) {
+        int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
+
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor, dataPointsMap);
+        C[] clusters = clusterSet.getAllClusters();
+        if (reducingFactor >= 10) {
+            clustering.addAll(eliminateOutliers(clusters, 1));
+        } else {
+            clustering.addAll(eliminateOutliers(clusters, 0));
+        }
     }
 
     /**
@@ -95,17 +158,16 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
      * @param args The Command Line Argument
      */
     private void initializeParameters(Props props) {
-        totalNumberOfPoints = Integer.parseInt(args[2]);
-        numberOfClusters = Integer.parseInt(args[3]);
-        minRepresentativeCount = Integer.parseInt(args[4]);
-        shrinkFactor = Double.parseDouble(args[5]);
-        requiredRepresentationProbablity = Double.parseDouble(args[6]);
-        numberOfPartitions = Integer.parseInt(args[7]);
-        reducingFactorForEachPartition = Integer.parseInt(args[8]);
+        numberOfClusters = props.getInt(K);
+        minRepresentativeCount = props.getInt(MIN_REPRESENTATIVES, 5);
+        shrinkFactor = props.getDouble(SHRINK_FACTOR, 0.5);
+        representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
+        numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
+        reducingFactor = props.getInt(REDUCE_FACTOR, 2);
 
         dataPointsMap = new HashMap();
-        currentRepAdditionCount = totalNumberOfPoints;
-        integerTable = new HashSet<>();
+        currentRepAdditionCount = n;
+        blacklist = new HashSet<>();
         outliers = new ArrayList();
     }
 
@@ -113,79 +175,34 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
      * Calculates the Sample Size based on Chernoff Bounds Mentioned in the CURE
      * Algorithm
      *
-     * @return
-     * int The Sample Data Size to be worked on
+     * @return int The Sample Data Size to be worked on
      */
     private int calculateSampleSize() {
-        return (int) ((0.5 * totalNumberOfPoints) + (numberOfClusters * Math.log10(1 / requiredRepresentationProbablity)) + (numberOfClusters * Math.sqrt(Math.pow(Math.log10(1 / requiredRepresentationProbablity), 2) + (totalNumberOfPoints / numberOfClusters) * Math.log10(1 / requiredRepresentationProbablity))));
+        return (int) ((0.5 * n)
+                + (numberOfClusters * Math.log10(1 / representationProbablity))
+                + (numberOfClusters * Math.sqrt(Math.pow(Math.log10(1 / representationProbablity), 2)
+                        + (n / numberOfClusters) * Math.log10(1 / representationProbablity))));
     }
 
     /**
      * Select random points from the data set
      *
      * @param sampleSize The sample size selected
-     * @return
-     * ArrayList The Selected Random Points
+     * @return ArrayList The Selected Random Points
      */
     private ArrayList selectRandomPoints(Dataset<E> dataset, int sampleSize) {
-        ArrayList<E> randomPointSet = new ArrayList();
+        ArrayList<E> randomPointSet = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < sampleSize; i++) {
-            int index = random.nextInt(totalNumberOfPoints);
-            if (integerTable.contains(index)) {
+            int index = random.nextInt(n);
+            if (blacklist.contains(index)) {
                 i--;
             } else {
                 randomPointSet.add(dataset.get(index));
-                integerTable.add(index);
+                blacklist.add(index);
             }
         }
         return randomPointSet;
-    }
-
-    /**
-     * Partition the sampled data points to p partitions (p =
-     * numberOfPartitions)
-     *
-     * @param pointSet Sample data point set
-     * @return
-     * ArrayList[] Data Set Partitioned Sets
-     */
-    private ArrayList[] partitionPointSet(ArrayList pointSet) {
-        ArrayList partitionedSet[] = new ArrayList[numberOfPartitions];
-        Iterator iter = pointSet.iterator();
-        for (int i = 0; i < numberOfPartitions - 1; i++) {
-            partitionedSet[i] = new ArrayList();
-            int pointIndex = 0;
-            while (pointIndex < pointSet.size() / numberOfPartitions) {
-                partitionedSet[i].add(iter.next());
-                pointIndex++;
-            }
-        }
-        partitionedSet[numberOfPartitions - 1] = new ArrayList();
-        while (iter.hasNext()) {
-            partitionedSet[numberOfPartitions - 1].add(iter.next());
-        }
-        return partitionedSet;
-    }
-
-    /**
-     * Cluster each partitioned set to n/pq clusters
-     *
-     * @param partitionedSet Data Point Set
-     * @return
-     * ArrayList Clusters formed
-     */
-    private ArrayList clusterSubPartitions(ArrayList partitionedSet[]) {
-        ArrayList clusters = new ArrayList();
-        int numberOfClusterInEachPartition = totalNumberOfPoints / (numberOfPartitions * reducingFactorForEachPartition);
-        for (int i = 0; i < partitionedSet.length; i++) {
-            ClusterSet clusterSet = new ClusterSet(partitionedSet[i], numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor, dataPointsMap);
-            Cluster[] subClusters = clusterSet.getAllClusters();
-            for (int j = 0; j < subClusters.length; j++) {
-                clusters.add(subClusters[j]);
-            }
-        }
-        return clusters;
     }
 
     /**
@@ -195,34 +212,16 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
      * @param outlierEligibilityCount Min Threshold count for not being outlier
      * cluster
      */
-    private void eliminateOutliersFirstStage(ArrayList clusters, int outlierEligibilityCount) {
-        Iterator iter = clusters.iterator();
-        ArrayList clustersForRemoval = new ArrayList();
-        while (iter.hasNext()) {
-            Cluster cluster = (Cluster) iter.next();
-            if (cluster.size() <= outlierEligibilityCount) {
-                updateOutlierSet(cluster);
-                clustersForRemoval.add(cluster);
+    private ArrayList<C> eliminateOutliers(C[] clusters, int outlierEligibilityCount) {
+        ArrayList<C> res = new ArrayList<>(clusters.length);
+        for (C cluster : clusters) {
+            if (cluster.size() > outlierEligibilityCount) {
+                res.add(cluster);
+            } else {
+                outliers.addAll(cluster);
             }
         }
-        while (!clustersForRemoval.isEmpty()) {
-            Cluster c = (Cluster) clustersForRemoval.remove(0);
-            clusters.remove(c);
-        }
-    }
-
-    /**
-     * Cluster all remaining clusters. Merge all clusters using CURE's
-     * hierarchical clustering algorithm till specified number of clusters
-     * remain.
-     *
-     * @param clusters Pre-clusters formed
-     * @return
-     * ArrayList Set of clusters
-     */
-    private ArrayList clusterAll(ArrayList clusters) {
-        ClusterSet clusterSet = new ClusterSet(clusters, numberOfClusters, minRepresentativeCount, shrinkFactor, dataPointsMap, true);
-        return clusterSet.mergeClusters();
+        return res;
     }
 
     /**
@@ -230,22 +229,20 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
      * set to set of clusters formed
      *
      * @param clusters Set of clusters
-     * @return
-     * ArrayList Modified clusters
+     * @return ArrayList Modified clusters
      */
-    private ArrayList labelRemainingDataPoints(ArrayList clusters) {
-
-        for (int index = 0; index < dataPoints.length; index++) {
-            if (integerTable.containsKey(index)) {
+    private Clustering<E, C> labelRemainingDataPoints(Dataset<E> dataset, Clustering<E, C> clusters) {
+        for (int index = 0; index < dataset.size(); index++) {
+            if (blacklist.contains(index)) {
                 continue;
             }
-            Point p = dataPoints[index];
+            E inst = dataset.get(index);
             double smallestDistance = 1000000;
             int nearestClusterIndex = -1;
             for (int i = 0; i < clusters.size(); i++) {
-                ArrayList rep = ((Cluster) clusters.get(i)).rep;
-                for (int j = 0; j < rep.size(); j++) {
-                    double distance = p.calcDistanceFromPoint((Point) rep.get(j));
+                ArrayList<E> rep = clusters.get(i).rep;
+                for (E other : rep) {
+                    double distance = distanceFunction.measure(inst, other);
                     if (distance < smallestDistance) {
                         smallestDistance = distance;
                         nearestClusterIndex = i;
@@ -253,24 +250,10 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
                 }
             }
             if (nearestClusterIndex != -1) {
-                ((Cluster) clusters.get(nearestClusterIndex)).pointsInCluster.add(p);
+                clusters.get(nearestClusterIndex).add(inst);
             }
         }
         return clusters;
-    }
-
-    /**
-     * Update the outlier set for the clusters which have been identified as
-     * outliers
-     *
-     * @param cluster Outlier Cluster
-     */
-    private void updateOutlierSet(Cluster cluster) {
-        ArrayList outlierPoints = cluster.getPointsInCluster();
-        Iterator iter = outlierPoints.iterator();
-        while (iter.hasNext()) {
-            outliers.add(iter.next());
-        }
     }
 
     private void debug(Exception e) {
@@ -281,16 +264,15 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
      * Gets the current representative count so that the new points added do not
      * conflict with older KD Tree indices
      *
-     * @return
-     * int Next representative count
+     * @return int Next representative count
      */
     public static int getCurrentRepCount() {
         return ++currentRepAdditionCount;
     }
 
-    public void showClusters(ArrayList clusters) {
+    public void showClusters(Clustering<E, C> clusters) {
         for (int i = 0; i < numberOfClusters; i++) {
-            Cluster cluster = (Cluster) clusters.get(i);
+            Cluster<E> cluster = clusters.get(i);
             logCluster(cluster, "cluster" + i);
         }
         logOutlier();
@@ -317,13 +299,19 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
         }
     }
 
-    private void logCluster(Cluster cluster, String filename) {
+    private void logCluster(Cluster<E> cluster, String filename) {
         BufferedWriter out = getWriterHandle(filename);
         try {
             out.write("#\tX\tY\n");
-            for (int j = 0; j < cluster.pointsInCluster.size(); j++) {
-                Point p = (Point) cluster.pointsInCluster.get(j);
-                out.write("\t" + p.x + "\t" + p.y + "\n");
+            for (int j = 0; j < cluster.size(); j++) {
+                E p = cluster.get(j);
+                for (int i = 0; i < p.size(); i++) {
+                    if (i > 0) {
+                        out.write("\t");
+                    }
+                    out.write(String.valueOf(p.value(i)));
+                }
+                out.write("\n");
             }
         } catch (Exception e) {
             debug(e);
@@ -335,9 +323,14 @@ public class Cure<E extends Instance, C extends Cluster<E>> extends AbstractClus
         BufferedWriter out = getWriterHandle("outliers");
         try {
             out.write("#\tX\tY\n");
-            for (int j = 0; j < outliers.size(); j++) {
-                Point p = (Point) outliers.get(j);
-                out.write("\t" + p.x + "\t" + p.y + "\n");
+            for (E outlier : outliers) {
+                for (int i = 0; i < outlier.size(); i++) {
+                    if (i > 0) {
+                        out.write("\t");
+                    }
+                    out.write(String.valueOf(outlier.value(i)));
+                }
+                out.write("\n");
             }
         } catch (Exception e) {
             debug(e);

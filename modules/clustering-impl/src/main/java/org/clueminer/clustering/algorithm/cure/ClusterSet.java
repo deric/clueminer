@@ -16,45 +16,57 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.knn.KDTree;
+import org.clueminer.neighbor.Neighbor;
+import org.openide.util.Exceptions;
 
 /**
- *
  * Creates a set of clusters for a given number of data points or reduces the
- * number of clusters to a fixed number of clusters as specified
- * using CURE's hierarchical clustering algorithm.
+ * number of clusters to a fixed number of clusters as specified using CURE's
+ * hierarchical clustering algorithm.
  *
  * The ClusterSet uses 2 data structures. The KD Tree is initialized and used to
- * store points across clusters.
- * The Min Heap (Uses java.util.PriorityQueue) is used to store the clusters and
- * repetitively perform clustering. The Min Heap is rearranged
- * in every step to bring the closest pair of clusters to the root of the heap
- * and also change the closest distance measures for all clusters.
+ * store points across clusters. The Min Heap (Uses java.util.PriorityQueue) is
+ * used to store the clusters and repetitively perform clustering. The Min Heap
+ * is rearranged in every step to bring the closest pair of clusters to the root
+ * of the heap and also change the closest distance measures for all clusters.
  *
  * Please refer to the CURE Hierarchical Clustering Algorithm for more details.
- * This class works only with the sampled partitioned data
- * or already set of clusters formed. The computation of set of clusters can be
- * done remotely on a machine hence adding concurrency to the
- * overall algorithm.<
+ * This class works only with the sampled partitioned data or already set of
+ * clusters formed. The computation of set of clusters can be done remotely on a
+ * machine hence adding concurrency to the overall algorithm.
  *
  * @author deric
+ * @param <E> type of data to cluster
+ * @param <C> clustering structure based on CURE cluster
  */
-public class ClusterSet {
+public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 
-    int numberOfPoints;
-    Point[] points;
-    CompareCluster cc;
-    PriorityQueue heap;
-    KDTree kdtree;
+    private int numberOfPoints;
+    private E[] points;
+    CureComparator<E> cc;
+    PriorityQueue<C> heap;
+    private KDTree<E> kdtree;
     int clustersToBeFound;
     int numberofRepInCluster;
     double shrinkFactor;
     int newPointCount;
-    HashMap dataPointMap;
+    private HashMap dataPointMap;
+    private Distance dm;
 
     /**
      * Initialize the Containers
@@ -65,12 +77,11 @@ public class ClusterSet {
      * Cluster
      * @param shrinkFactor Shrink Factor for a Cluster
      */
-    public void initializeContainers(int numberOfPoints, int clustersToBeFound, int numberOfRepInCluster, double shrinkFactor) {
+    private void initializeContainers(int numberOfPoints, int clustersToBeFound, int numberOfRepInCluster, double shrinkFactor) {
         this.numberOfPoints = numberOfPoints;
-        points = new Point[numberOfPoints];
-        cc = new CompareCluster();
+        points = (E[]) new Object[numberOfPoints];
+        cc = new CureComparator<>();
         heap = new PriorityQueue(1000, cc);
-        kdtree = new KDTree(2);
         this.clustersToBeFound = clustersToBeFound;
         this.numberofRepInCluster = numberOfRepInCluster;
         this.shrinkFactor = shrinkFactor;
@@ -80,7 +91,7 @@ public class ClusterSet {
     /**
      * Reduce the number of clusters to the specified numberOfClusters
      *
-     * @param clusters Set of Clusters
+     * @param data Set of Clusters
      * @param numberOfClusters Number of Clusters to be found
      * @param numberOfRepInCluster Number of Representative Points in a Cluster
      * @param shrinkFactor Shrink Factor for Representative Points in a new
@@ -88,22 +99,20 @@ public class ClusterSet {
      * @param dataPointMap Data Point Map
      * @param clusterMerge True
      */
-    public ClusterSet(ArrayList clusters, int numberOfClusters, int numberOfRepInCluster, double shrinkFactor, HashMap dataPointMap, boolean clusterMerge) {
-        numberOfPoints = 0;
-        for (int i = 0; i < clusters.size(); i++) {
-            numberOfPoints += ((Cluster) clusters.get(i)).getClusterSize();
-        }
-        points = new Point[numberOfPoints];
-        cc = new CompareCluster();
+    public ClusterSet(Clustering<E, C> data, int numberOfClusters, int numberOfRepInCluster, double shrinkFactor, HashMap dataPointMap, boolean clusterMerge) {
+        numberOfPoints = data.instancesCount();
+        dm = EuclideanDistance.getInstance();
+        points = (E[]) new Object[numberOfPoints];
+        cc = new CureComparator<>();
         heap = new PriorityQueue(1000, cc);
-        kdtree = new KDTree(2);
+        kdtree = new KDTree();
         int pointIndex = 0;
 
         if (clusterMerge) {
-            for (int i = 0; i < clusters.size(); i++) {
-                Cluster cluster = (Cluster) clusters.get(i);
-                for (int j = 0; j < cluster.getClusterSize(); j++) {
-                    points[pointIndex] = (Point) cluster.pointsInCluster.get(j);
+            for (int i = 0; i < data.size(); i++) {
+                C cluster = data.get(i);
+                for (int j = 0; j < cluster.size(); j++) {
+                    points[pointIndex] = cluster.get(j);
                     pointIndex++;
                 }
             }
@@ -112,19 +121,8 @@ public class ClusterSet {
             this.shrinkFactor = shrinkFactor;
             this.dataPointMap = dataPointMap;
         }
-        buildKDTree();
-        buildHeapForClusters(clusters);
-    }
-
-    /**
-     * Build the heap for set of clusters specified
-     *
-     * @param clusters Set of Clusters
-     */
-    public void buildHeapForClusters(ArrayList clusters) {
-        for (int i = 0; i < clusters.size(); i++) {
-            heap.add((Cluster) clusters.get(i));
-        }
+        buildKDTree(data);
+        buildHeapForClusters(data);
     }
 
     /**
@@ -138,12 +136,24 @@ public class ClusterSet {
      * @param shrinkFactor Shrink factor for Representative points
      * @param dataPointMap The HashMap to store the data points
      */
-    public ClusterSet(ArrayList dataPoints, int numberOfClusters, int numberOfRepInCluster, double shrinkFactor, HashMap dataPointMap) {
+    public ClusterSet(ArrayList<E> dataPoints, int numberOfClusters, int numberOfRepInCluster, double shrinkFactor, HashMap dataPointMap) {
+        dm = EuclideanDistance.getInstance();
         initializeContainers(dataPoints.size(), numberOfClusters, numberOfRepInCluster, shrinkFactor);
         initializePoints(dataPoints, dataPointMap);
-        buildKDTree();
+        buildKDTree(dataPoints);
         buildHeap();
         startClustering();
+    }
+
+    /**
+     * Build the heap for set of clusters specified
+     *
+     * @param clusters Set of Clusters
+     */
+    private void buildHeapForClusters(Clustering<E, C> clusters) {
+        for (C clust : clusters) {
+            heap.add(clust);
+        }
     }
 
     /**
@@ -152,13 +162,12 @@ public class ClusterSet {
      * @param dataPoints Data Points List
      * @param dataPointMap Map of Data Points
      */
-    public void initializePoints(ArrayList dataPoints, HashMap dataPointMap) {
+    private void initializePoints(ArrayList<E> dataPoints, HashMap dataPointMap) {
         this.dataPointMap = dataPointMap;
-        Iterator iter = dataPoints.iterator();
+        Iterator<E> iter = dataPoints.iterator();
         int index = 0;
         while (iter.hasNext()) {
-            Point point = (Point) iter.next();
-            points[index] = point;
+            points[index] = iter.next();
             index++;
         }
     }
@@ -167,11 +176,10 @@ public class ClusterSet {
      * Merge the given set of clusters using CURE's hierarchical clustering
      * algorithm
      *
-     * @return
-     * ArrayList Set of Merged Clusters
+     * @return ArrayList Set of Merged Clusters
      */
-    public ArrayList mergeClusters() {
-        ArrayList mergedClusters = new ArrayList();
+    public ArrayList<C> mergeClusters() {
+        ArrayList<C> mergedClusters = new ArrayList();
         startClustering();
         while (heap.size() != 0) {
             mergedClusters.add(heap.remove());
@@ -182,14 +190,13 @@ public class ClusterSet {
     /**
      * Gets all clusters present in the Min Heap
      *
-     * @return
-     * Cluster[] Set of Clusters
+     * @return Cluster[] Set of Clusters
      */
-    public Cluster[] getAllClusters() {
-        Cluster clusters[] = new Cluster[heap.size()];
+    public C[] getAllClusters() {
+        C clusters[] = (C[]) new Cluster[heap.size()];
         int i = 0;
         while (heap.size() != 0) {
-            clusters[i] = (Cluster) heap.remove();
+            clusters[i] = heap.remove();
             i++;
         }
         return clusters;
@@ -198,75 +205,54 @@ public class ClusterSet {
     /**
      * Builds the KD Tree to store the data points
      */
-    public void buildKDTree() {
-        for (Integer i = 0; i < numberOfPoints; i++) {
-            try {
-                kdtree.insert(points[i].toDouble(), points[i].index);
-            } catch (Exception e) {
-                debug(e);
-            }
-        }
+    private void buildKDTree(ArrayList<E> dataPoints) {
+        kdtree = new KDTree((Dataset) dataPoints);
+    }
+
+    private void buildKDTree(Clustering<E, C> dataPoints) {
+        kdtree = new KDTree((Dataset) dataPoints);
     }
 
     /**
      * Builds the Initial Min Heap. Each point represents a cluster when the
      * algorithm begins. It creates each cluster and adds it to the heap.
      */
-    public void buildHeap() {
-        ArrayList clusters = new ArrayList();
-        HashMap pointCluster = new HashMap();
+    private void buildHeap() {
+        Clustering<E, C> clusters = new ClusterList<>();
+        HashMap<Integer, C> pointCluster = new HashMap();
         for (int i = 0; i < numberOfPoints; i++) {
-            Cluster cluster = new Cluster();
+            C cluster = (C) new CureCluster();
             cluster.rep.add(points[i]);
             cluster.pointsInCluster.add(points[i]);
-            int nearestPoint = getNearestNeighbour(points[i]);
-            Point nearest = (Point) dataPointMap.get(nearestPoint);
-            cluster.distanceFromClosest = points[i].calcDistanceFromPoint(nearest);	//changed here from indexing to hashmap
-            cluster.closestClusterRep.add(nearestPoint);
+
+            Neighbor<E> nearest = kdtree.nearest(points[i]);
+            cluster.distanceFromClosest = dm.measure(points[i], nearest.key);
+            cluster.closestClusterRep.add(nearest.index);
             clusters.add(cluster);
-            pointCluster.put(points[i].index, cluster);
+            pointCluster.put(points[i].getIndex(), cluster);
         }
         for (int i = 0; i < clusters.size(); i++) {
-            Cluster cluster = (Cluster) clusters.get(i);
-            int closest = (Integer) cluster.closestClusterRep.get(0);
+            C cluster = clusters.get(i);
+            int closest = cluster.closestClusterRep.get(0);
             //cluster.closestCluster = (Cluster)clusters.get(closest);
-            cluster.closestCluster = (Cluster) pointCluster.get((Integer) closest);
+            cluster.closestCluster = pointCluster.get(closest);
             heap.add(cluster);
         }
     }
 
     /**
-     * Get the nearest neighbor for a given point
-     *
-     * @param point Point point
-     * @return
-     * int KD Tree index of the nearest neighbor
-     */
-    public int getNearestNeighbour(Point point) {
-        int result = 0;
-        try {
-            Object[] nearestPoint = kdtree.nearest(point.toDouble(), 2);
-            result = (Integer) nearestPoint[1];
-        } catch (Exception e) {
-            debug(e);
-            result = -1;
-        }
-        return result;
-    }
-
-    /**
      * Initiates the clustering. The stopping condition is reached when the size
-     * of heap equals number of clusters to be found.
-     * At every step two clusters are merged and the heap is rearranged. The
-     * representative points are deleted for old clusters and
-     * the representative points are added for new cluster to the KD Tree.
+     * of heap equals number of clusters to be found. At every step two clusters
+     * are merged and the heap is rearranged. The representative points are
+     * deleted for old clusters and the representative points are added for new
+     * cluster to the KD Tree.
      */
-    public void startClustering() {
+    private void startClustering() {
         while (heap.size() > clustersToBeFound) {
-            Cluster minCluster = (Cluster) heap.remove();
-            Cluster closestCluster = minCluster.closestCluster;
+            C minCluster = heap.remove();
+            C closestCluster = (C) minCluster.closestCluster;
             heap.remove(closestCluster);
-            Cluster newCluster = merge(minCluster, closestCluster);
+            C newCluster = merge(minCluster, closestCluster);
             deleteAllRepPointsForCluster(minCluster);
             deleteAllRepPointsForCluster(closestCluster);
             insertAllRepPointsForCluster(newCluster);
@@ -285,13 +271,14 @@ public class ClusterSet {
      * merged
      */
     public void adjustHeap(Cluster newCluster, Cluster oldcluster1, Cluster oldCluster2) {
-        ArrayList clusters = new ArrayList();
+        Clustering<E, C> clusters = new ClusterList<>();
+        double distance;
         int initialHeapSize = heap.size();
         for (int i = 0; i < initialHeapSize; i++) {
             clusters.add(heap.remove());
         }
         for (int i = 0; i < clusters.size(); i++) {
-            Cluster cluster1 = (Cluster) clusters.get(i);
+            C cluster1 = clusters.get(i);
             if (!(cluster1.closestCluster == oldcluster1) && !(cluster1.closestCluster == oldCluster2)) {
                 heap.add(cluster1);
                 continue;
@@ -301,8 +288,8 @@ public class ClusterSet {
                 if (i == j) {
                     continue;
                 }
-                Cluster cluster2 = (Cluster) clusters.get(j);
-                double distance = cluster1.computeDistanceFromCluster(cluster2);
+                C cluster2 = clusters.get(j);
+                distance = cluster1.computeDistanceFromCluster(cluster2, dm);
                 if (distance < cluster1.distanceFromClosest) {
                     cluster1.distanceFromClosest = distance;
                     cluster1.closestCluster = cluster2;
@@ -317,15 +304,10 @@ public class ClusterSet {
      *
      * @param cluster Merged Cluster
      */
-    public void insertAllRepPointsForCluster(Cluster cluster) {
-        ArrayList repPoints = cluster.rep;
-        for (int i = 0; i < repPoints.size(); i++) {
-            Point point = (Point) repPoints.get(i);
-            try {
-                kdtree.insert(point.toDouble(), point.index);
-            } catch (Exception e) {
-                //debug(e);
-            }
+    public void insertAllRepPointsForCluster(C cluster) {
+        ArrayList<E> repPoints = cluster.rep;
+        for (E point : repPoints) {
+            kdtree.insert(point, point.getIndex());
         }
     }
 
@@ -334,34 +316,11 @@ public class ClusterSet {
      *
      * @param cluster Cluster which got merged
      */
-    public void deleteAllRepPointsForCluster(Cluster cluster) {
-        ArrayList repPoints = cluster.rep;
-        for (int i = 0; i < repPoints.size(); i++) {
-            Point point = (Point) repPoints.get(i);
-            try {
-                kdtree.delete(point.toDouble());
-            } catch (Exception e) {
-                //debug(e);
-            }
+    public void deleteAllRepPointsForCluster(C cluster) {
+        ArrayList<E> repPoints = cluster.rep;
+        for (E point : repPoints) {
+            kdtree.delete(point);
         }
-    }
-
-    /**
-     * Computes the mean point of the cluster
-     *
-     * @param cluster Cluster
-     * @return
-     * Point The Mean Point of the Cluster
-     */
-    public Point computeMeanOfCluster(Cluster cluster) {
-        Point point = new Point();
-        for (int i = 0; i < cluster.pointsInCluster.size(); i++) {
-            point.x += ((Point) cluster.pointsInCluster.get(i)).x;
-            point.y += ((Point) cluster.pointsInCluster.get(i)).y;
-        }
-        point.x /= cluster.pointsInCluster.size();
-        point.y /= cluster.pointsInCluster.size();
-        return point;
     }
 
     /**
@@ -370,27 +329,26 @@ public class ClusterSet {
      *
      * @param cluster1 Cluster 1 to be merged
      * @param cluster2 Cluster 2 to be merged
-     * @return
-     * Cluster The Merged Cluster
+     * @return Cluster The Merged Cluster
      */
-    public Cluster merge(Cluster cluster1, Cluster cluster2) {
-        Cluster newCluster = new Cluster();
-        for (int i = 0; i < cluster1.pointsInCluster.size(); i++) {
-            newCluster.pointsInCluster.add(cluster1.pointsInCluster.get(i));
+    public C merge(C cluster1, C cluster2) {
+        CureCluster<E> newCluster = new CureCluster();
+        for (E inst : cluster1) {
+            newCluster.add(inst);
         }
-        for (int i = 0; i < cluster2.pointsInCluster.size(); i++) {
-            newCluster.pointsInCluster.add(cluster2.pointsInCluster.get(i));
+        for (E inst : cluster2) {
+            newCluster.add(inst);
         }
-        Point mean = computeMeanOfCluster(newCluster);
-        ArrayList tempset = new ArrayList();
+        E mean = newCluster.getCentroid();
+        CureCluster<E> tempset = new CureCluster<>();
         for (int i = 0; i < numberofRepInCluster; i++) {
             double maxDist = 0;
-            double minDist = 0;
-            Point maxPoint = null;
-            for (int j = 0; j < newCluster.pointsInCluster.size(); j++) {
-                Point p = (Point) newCluster.pointsInCluster.get(j);
+            double minDist;
+            E maxPoint = null;
+            for (int j = 0; j < newCluster.size(); j++) {
+                E p = newCluster.get(j);
                 if (i == 0) {
-                    minDist = p.calcDistanceFromPoint(mean);
+                    minDist = dm.measure(p, mean);
                 } else {
                     minDist = computeMinDistanceFromGroup(p, tempset);
                 }
@@ -402,16 +360,18 @@ public class ClusterSet {
             tempset.add(maxPoint);
         }
 
+        InstanceBuilder<E> builder = tempset.builder();
         for (int i = 0; i < tempset.size(); i++) {
-            Point p = (Point) tempset.get(i);
-            Point rep = new Point();
-            rep.x = p.x + shrinkFactor * (mean.x - p.x);
-            rep.y = p.y + shrinkFactor * (mean.y - p.y);
+            E p = tempset.get(i);
+            E rep = builder.build();
+            for (int j = 0; j < rep.size(); j++) {
+                rep.set(j, p.get(j) * shrinkFactor * (mean.get(j) - p.get(j)));
+            }
             //rep.index = newPointCount++;
-            rep.index = Cure.getCurrentRepCount();
+            rep.setIndex(Cure.getCurrentRepCount());
             newCluster.rep.add(rep);
         }
-        return newCluster;
+        return (C) newCluster;
     }
 
     /**
@@ -419,17 +379,15 @@ public class ClusterSet {
      *
      * @param p Point p
      * @param group Group of points
-     * @return
-     * double The Minimum Euclidean Distance
+     * @return double The Minimum Euclidean Distance
      */
-    public double computeMinDistanceFromGroup(Point p, ArrayList group) {
+    public double computeMinDistanceFromGroup(E p, CureCluster<E> group) {
         double minDistance = 100000;
-        for (int i = 0; i < group.size(); i++) {
-            Point q = (Point) group.get(i);
+        for (E q : group) {
             if (p.equals(q)) {
                 continue;
             }
-            double distance = p.calcDistanceFromPoint(q);
+            double distance = dm.measure(p, q);
             if (minDistance > distance) {
                 minDistance = distance;
             }
@@ -452,34 +410,30 @@ public class ClusterSet {
     }
 
     /**
-     * Print the Exception thrown
-     *
-     * @param e Exception e
-     */
-    public void debug(Exception e) {
-        //e.printStackTrace(System.out);
-    }
-
-    /**
      * Logs the cluster to a file
      *
      * @param cluster Cluster
      * @param filename Name of the file
      */
-    public void logCluster(Cluster cluster, String filename) {
-        FileWriter fw = null;
+    public void logCluster(Cluster<E> cluster, String filename) {
+        FileWriter fw;
         try {
             fw = new FileWriter(filename, true);
             BufferedWriter out = new BufferedWriter(fw);
             out.write("#\tX\tY\n");
-            for (int j = 0; j < cluster.pointsInCluster.size(); j++) {
-                Point p = (Point) cluster.pointsInCluster.get(j);
-                out.write("\t" + p.x + "\t" + p.y + "\n");
+            for (E inst : cluster) {
+                for (int i = 0; i < inst.size(); i++) {
+                    if (i > 0) {
+                        out.write("\t");
+                    }
+                    out.write(String.valueOf(inst.value(i)));
+                }
+                out.write("\n");
             }
             out.flush();
             fw.close();
         } catch (Exception e) {
-            debug(e);
+            Exceptions.printStackTrace(e);
         }
     }
 }

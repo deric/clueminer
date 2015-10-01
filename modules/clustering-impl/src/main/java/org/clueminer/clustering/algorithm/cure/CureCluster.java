@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
 
 /**
  *
@@ -34,19 +35,28 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
         super(capacity);
     }
 
-    public ArrayList rep = new ArrayList();
+    /**
+     * Create cluster with default size
+     */
+    public CureCluster() {
+        super(10);
+    }
+
+    /**
+     * Set of representative points
+     */
+    public ArrayList<E> rep = new ArrayList();
     public ArrayList pointsInCluster = new ArrayList();
     public double distanceFromClosest = 0;
-    public Cluster closestCluster;
-    public ArrayList closestClusterRep = new ArrayList();
+    public CureCluster<E> closestCluster;
+    public ArrayList<Integer> closestClusterRep = new ArrayList();
 
-    public double computeDistanceFromCluster(Cluster<E> cluster) {
+    public double computeDistanceFromCluster(CureCluster<E> cluster, Distance dm) {
         double minDistance = 1000000;
-        for (int i = 0; i < rep.size(); i++) {
-            for (int j = 0; j < cluster.rep.size(); j++) {
-                Point p1 = (Point) rep.get(i);
-                Point p2 = (Point) cluster.rep.get(j);
-                double distance = p1.calcDistanceFromPoint(p2);
+        double distance;
+        for (E p1 : rep) {
+            for (E p2 : cluster.rep) {
+                distance = dm.measure(p1, p2);
                 if (minDistance > distance) {
                     minDistance = distance;
                 }
