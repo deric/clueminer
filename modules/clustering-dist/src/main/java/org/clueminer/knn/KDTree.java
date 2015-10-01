@@ -37,48 +37,9 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     public static final String name = "KD-tree";
 
     /**
-     * The root in the KD-tree.
-     */
-    class Node {
-
-        /**
-         * Number of dataset stored in this node.
-         */
-        int count;
-        /**
-         * The smallest point index stored in this node.
-         */
-        int index;
-        /**
-         * The index of coordinate used to split this node.
-         */
-        int split;
-        /**
-         * The cutoff used to split the specific coordinate.
-         */
-        double cutoff;
-        /**
-         * The child node which values of split coordinate is less than the
-         * cutoff value.
-         */
-        Node lower;
-        /**
-         * The child node which values of split coordinate is greater than or
-         * equal to the cutoff value.
-         */
-        Node upper;
-
-        /**
-         * If the node is a leaf node.
-         */
-        boolean isLeaf() {
-            return lower == null && upper == null;
-        }
-    }
-    /**
      * The root node of KD-Tree.
      */
-    private Node root;
+    private KDNode root;
     /**
      * The index of objects in each nodes.
      */
@@ -123,11 +84,11 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     /**
      * Build a k-d tree from the given set of dataset.
      */
-    private Node buildNode(int begin, int end) {
+    private KDNode buildNode(int begin, int end) {
         int d = dataset.attributeCount();
 
         // Allocate the node
-        Node node = new Node();
+        KDNode node = new KDNode();
 
         // Fill in basic info
         node.count = end - begin;
@@ -211,7 +172,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param node the root of subtree.
      * @param neighbor the current nearest neighbor.
      */
-    private void search(E q, Node node, Neighbor<E> neighbor) {
+    private void search(E q, KDNode node, Neighbor<E> neighbor) {
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
@@ -227,7 +188,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 }
             }
         } else {
-            Node nearer, further;
+            KDNode nearer, further;
             double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
@@ -256,7 +217,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param heap the heap object to store/update the kNNs found during the
      * search.
      */
-    private void search(E q, Node node, HeapSelect<Neighbor<E>> heap) {
+    private void search(E q, KDNode node, HeapSelect<Neighbor<E>> heap) {
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
@@ -275,7 +236,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 }
             }
         } else {
-            Node nearer, further;
+            KDNode nearer, further;
             double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
@@ -303,7 +264,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param radius	the radius of search range from target.
      * @param neighbors the list of found neighbors in the range.
      */
-    private void search(E q, Node node, double radius, List<Neighbor<E>> neighbors) {
+    private void search(E q, KDNode node, double radius, List<Neighbor<E>> neighbors) {
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
@@ -317,7 +278,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                 }
             }
         } else {
-            Node nearer, further;
+            KDNode nearer, further;
             double diff = q.get(node.split) - node.cutoff;
             if (diff < 0) {
                 nearer = node.lower;
