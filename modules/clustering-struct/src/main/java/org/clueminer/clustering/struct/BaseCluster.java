@@ -110,7 +110,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
      * @return
      */
     @Override
-    public int countMutualElements(Cluster c) {
+    public int countMutualElements(Cluster<E> c) {
         int mutual = 0;
         for (Instance inst : this) {
             //System.out.println("looking for: " + inst.getIndex() + " found? " + c.contains(inst.getIndex()));
@@ -122,9 +122,9 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     }
 
     @Override
-    public InstanceBuilder builder() {
+    public InstanceBuilder<E> builder() {
         if (builder == null) {
-            builder = new DoubleArrayFactory(this, '.');
+            builder = new DoubleArrayFactory<>(this, '.');
         }
         return builder;
     }
