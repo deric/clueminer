@@ -353,6 +353,14 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         buildTree();
     }
 
+    public void delete(E q) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void insert(E q, int index) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     @Override
     public String toString() {
         return "KD-Tree";
