@@ -17,11 +17,6 @@ class HRect {
         max = (HPoint) vmax.clone();
     }
 
-    protected Object clone() {
-
-        return new HRect(min, max);
-    }
-
     // from Moore's eqn. 6.6
     protected HPoint closest(HPoint t) {
 
@@ -42,7 +37,6 @@ class HRect {
 
     // used in initial conditions of KDTree.nearest()
     protected static HRect infiniteHRect(int d) {
-
         HPoint vmin = new HPoint(d);
         HPoint vmax = new HPoint(d);
 
@@ -73,7 +67,6 @@ class HRect {
 
     // currently unused
     protected double area() {
-
         double a = 1;
 
         for (int i = 0; i < min.coord.length; ++i) {
@@ -83,6 +76,11 @@ class HRect {
         return a;
     }
 
+    protected Object clone() {
+        return new HRect(min, max);
+    }
+
+    @Override
     public String toString() {
         return min + "\n" + max + "\n";
     }

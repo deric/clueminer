@@ -11,11 +11,10 @@ package org.clueminer.kdtree;
  */
 public class KeySizeException extends KDException {
 
+    private static final long serialVersionUID = 2352087395249228766L;
+
     protected KeySizeException() {
         super("Key size mismatch");
     }
-
-    // arbitrary; every serializable class has to have one of these
-    public static final long serialVersionUID = 2L;
 
 }

@@ -15,13 +15,14 @@ class NearestNeighborList<T> {
             this.value = value;
         }
 
+        @Override
         public int compareTo(NeighborEntry<T> t) {
             // note that the positions are reversed!
             return Double.compare(t.value, this.value);
         }
     };
 
-    java.util.PriorityQueue<NeighborEntry<T>> m_Queue;
+    PriorityQueue<NeighborEntry<T>> m_Queue;
     int m_Capacity = 0;
 
     // constructor
@@ -41,11 +42,11 @@ class NearestNeighborList<T> {
                 // do not insert - all elements in queue have lower priority
                 return false;
             }
-            m_Queue.add(new NeighborEntry<T>(object, priority));
+            m_Queue.add(new NeighborEntry<>(object, priority));
             // remove object with highest priority
             m_Queue.poll();
         } else {
-            m_Queue.add(new NeighborEntry<T>(object, priority));
+            m_Queue.add(new NeighborEntry<>(object, priority));
         }
         return true;
     }

@@ -10,10 +10,10 @@ package org.clueminer.kdtree;
  */
 public class KeyDuplicateException extends KDException {
 
+    private static final long serialVersionUID = -6677439881230466234L;
+
     protected KeyDuplicateException() {
         super("Key already in tree");
     }
 
-    // arbitrary; every serializable class has to have one of these
-    public static final long serialVersionUID = 1L;
 }

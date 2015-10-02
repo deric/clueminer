@@ -14,7 +14,7 @@ class KDNode<T> {
     // Method ins translated from 352.ins.c of Gonnet & Baeza-Yates
     protected static <T> int edit(HPoint key, Editor<T> editor, KDNode<T> t, int lev, int K)
             throws KeyDuplicateException {
-        KDNode<T> next_node = null;
+        KDNode<T> next_node;
         int next_lev = (lev + 1) % K;
         synchronized (t) {
             if (key.equals(t.k)) {

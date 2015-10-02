@@ -138,6 +138,7 @@
                         <publicPackage>org.clueminer.exec</publicPackage>
                         <publicPackage>org.clueminer.hclust</publicPackage>
                         <publicPackage>org.clueminer.hclust.linkage</publicPackage>
+                        <publicPackage>org.clueminer.kdtree</publicPackage>
                         <publicPackage>org.clueminer.knn</publicPackage>
                     </publicPackages>
                 </configuration>

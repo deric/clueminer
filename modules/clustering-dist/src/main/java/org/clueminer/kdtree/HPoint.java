@@ -16,11 +16,14 @@ class HPoint {
     }
 
     protected HPoint(double[] x) {
-
         coord = new double[x.length];
         for (int i = 0; i < x.length; ++i) {
             coord[i] = x[i];
         }
+    }
+
+    protected static double sqrdist(HPoint x, HPoint y) {
+        return EuclideanDistance.getInstance().measure(x.coord, y.coord);
     }
 
     @Override
@@ -29,7 +32,6 @@ class HPoint {
     }
 
     protected boolean equals(HPoint p) {
-
         // seems faster than java.util.Arrays.equals(), which is not
         // currently supported by Matlab anyway
         for (int i = 0; i < coord.length; ++i) {
@@ -39,11 +41,6 @@ class HPoint {
         }
 
         return true;
-    }
-
-    protected static double sqrdist(HPoint x, HPoint y) {
-
-        return EuclideanDistance.getInstance().measure(x.coord, y.coord);
     }
 
     @Override
