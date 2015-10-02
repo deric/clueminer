@@ -105,12 +105,35 @@ public class EuclideanDistance extends MinkowskiDistance {
         return sum;
     }
 
+    public double sqdist(Vector<Double> x, Vector<Double> y) {
+        checkInput(x, y);
+        double sum = 0;
+        for (int i = 0; i < x.size(); i++) {
+            //should be faster
+            sum += FastMath.pow(Math.abs(y.get(i) - x.get(i)), power);
+        }
+        return sum;
+    }
+
     @Override
     public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
+        }
+
+        if (sqrt) {
+            return Math.sqrt(sum);
+        }
+        return sum;
+    }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        double sum = 0;
+        for (int i = 0; i < x.length; i++) {
+            sum += FastMath.pow(y[i] - x[i], power);
         }
 
         if (sqrt) {

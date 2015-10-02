@@ -216,7 +216,6 @@ public class PearsonDistance extends SymmetricDistance {
         sumX2 -= meanX * sumX;
         sumY2 -= meanY * sumY;
 
-
         return correlation(n, sumXY, sumX2, sumY2);
     }
 
@@ -256,7 +255,6 @@ public class PearsonDistance extends SymmetricDistance {
         sumXY -= sumX * meanY;
         sumX2 -= meanX * sumX;
         sumY2 -= meanY * sumY;
-
 
         return correlation(n, sumXY, sumX2, sumY2);
     }
@@ -303,5 +301,10 @@ public class PearsonDistance extends SymmetricDistance {
     @Override
     public boolean isIndiscernible() {
         return true;
+    }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

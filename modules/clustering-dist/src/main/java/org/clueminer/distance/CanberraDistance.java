@@ -117,4 +117,9 @@ public class CanberraDistance extends SymmetricDistance implements Distance {
     public boolean isIndiscernible() {
         return true;
     }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

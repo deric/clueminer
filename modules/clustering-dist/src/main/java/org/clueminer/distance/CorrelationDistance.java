@@ -18,6 +18,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CorrelationDistance extends SymmetricDistance implements Distance {
 
     private static final String name = "Correlation";
+    private static final long serialVersionUID = -564035509212244896L;
 
     @Override
     public String getName() {
@@ -68,8 +69,8 @@ public class CorrelationDistance extends SymmetricDistance implements Distance {
 
         //rest is same as Cosine distance
         double denom = u.pNorm(2) * v.pNorm(2);
-         if (denom == 0) {
-             return 0.0;
+        if (denom == 0) {
+            return 0.0;
         }
         return 1 - u.dot(v) / denom;
     }
@@ -87,6 +88,11 @@ public class CorrelationDistance extends SymmetricDistance implements Distance {
     @Override
     public boolean isIndiscernible() {
         return false;
+    }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

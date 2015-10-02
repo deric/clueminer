@@ -31,6 +31,14 @@ public class HammingDistance extends SymmetricDistance implements Distance {
 
     private static final long serialVersionUID = -2968578452009496222L;
     private static final String name = "Hamming";
+    private static HammingDistance instance;
+
+    public static HammingDistance getInstance() {
+        if (instance == null) {
+            instance = new HammingDistance();
+        }
+        return instance;
+    }
 
     @Override
     public String getName() {
@@ -87,6 +95,11 @@ public class HammingDistance extends SymmetricDistance implements Distance {
     @Override
     public boolean isIndiscernible() {
         return true;
+    }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -79,4 +79,9 @@ public class ManhattanDistance extends MinkowskiDistance implements Distance {
         return Double.MAX_VALUE;
     }
 
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

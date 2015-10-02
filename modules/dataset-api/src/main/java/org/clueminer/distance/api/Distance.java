@@ -10,7 +10,7 @@ import org.clueminer.math.Vector;
  */
 public interface Distance extends Serializable {
 
-    public String getName();
+    String getName();
 
     /**
      * Calculates the distance between two instances.
@@ -19,7 +19,7 @@ public interface Distance extends Serializable {
      * @param y the second instance
      * @return the distance between the two instances
      */
-    public double measure(Vector<Double> x, Vector<Double> y);
+    double measure(Vector<Double> x, Vector<Double> y);
 
     /**
      * Calculates the distance between two instances. For some distance
@@ -31,7 +31,7 @@ public interface Distance extends Serializable {
      * @param weights multiplication factor (usually between 0 and 1)
      * @return
      */
-    public double measure(Vector<Double> x, Vector<Double> y, double[] weights);
+    double measure(Vector<Double> x, Vector<Double> y, double[] weights);
 
     /**
      * Returns whether the first distance, similarity or correlation is better
@@ -48,7 +48,9 @@ public interface Distance extends Serializable {
      * @return true if the first distance is better than the second, false in
      * other cases.
      */
-    public boolean compare(double x, double y);
+    boolean compare(double x, double y);
+
+    double measure(double[] x, double[] y);
 
     /**
      * Returns the value that this distance metric produces for the lowest
@@ -61,7 +63,7 @@ public interface Distance extends Serializable {
      * @return minimum possible value of the distance metric, if is possible to
      * determine it (otherwise Double.NaN)
      */
-    public double getMinValue();
+    double getMinValue();
 
     /**
      * Returns the value that this distance metric produces for the highest
@@ -71,7 +73,7 @@ public interface Distance extends Serializable {
      *
      * @return maximum possible value of the distance metric
      */
-    public double getMaxValue();
+    double getMaxValue();
 
     /**
      * @deprecated @param a
@@ -80,7 +82,7 @@ public interface Distance extends Serializable {
      * @param j
      * @return
      */
-    public double rows(Matrix a, Matrix b, int i, int j);
+    double rows(Matrix a, Matrix b, int i, int j);
 
     /**
      * @deprecated @param a
@@ -88,7 +90,7 @@ public interface Distance extends Serializable {
      * @param j
      * @return
      */
-    public double columns(Matrix a, int i, int j);
+    double columns(Matrix a, int i, int j);
 
     /**
      * @deprecated @param matrix
@@ -97,7 +99,7 @@ public interface Distance extends Serializable {
      * @param factor
      * @return
      */
-    public double rows(Matrix matrix, int e1, int e2, float factor);
+    double rows(Matrix matrix, int e1, int e2, float factor);
 
     /**
      * @deprecated @param matrix
@@ -105,7 +107,7 @@ public interface Distance extends Serializable {
      * @param e2
      * @return
      */
-    public double rows(Matrix matrix, int e1, int e2);
+    double rows(Matrix matrix, int e1, int e2);
 
     /**
      * @deprecated @param A
@@ -115,7 +117,7 @@ public interface Distance extends Serializable {
      * @param factor
      * @return
      */
-    public double rows(Matrix A, Matrix B, int e1, int e2, float factor);
+    double rows(Matrix A, Matrix B, int e1, int e2, float factor);
 
     /**
      * @deprecated @param matrix
@@ -124,23 +126,23 @@ public interface Distance extends Serializable {
      * @param factor
      * @return
      */
-    public double columns(Matrix matrix, int e1, int e2, float factor);
+    double columns(Matrix matrix, int e1, int e2, float factor);
 
-    public int getNodeOffset();
+    int getNodeOffset();
 
-    public boolean useTreeHeight();
+    boolean useTreeHeight();
 
-    public float getSimilarityFactor();
+    float getSimilarityFactor();
 
     /**
      * Returns true if {@code d(x,y) == d(y,x)} is true for any {@code x},
      * {@code y}.
      *
      * d(x, y) = d(y, x)
-      *
+     *
      * @return true if this distance metric is symmetric, false if it is not
      */
-    public boolean isSymmetric();
+    boolean isSymmetric();
 
     /**
      * Returns true if this distance metric obeys the rule that, for any x, y,
@@ -152,7 +154,7 @@ public interface Distance extends Serializable {
      * @return true if this distance metric supports the triangle inequality,
      * false if it does not.
      */
-    public boolean isSubadditive();
+    boolean isSubadditive();
 
     /**
      * Returns true if this distance metric obeys the rule that, for any x and y
@@ -161,5 +163,5 @@ public interface Distance extends Serializable {
      *
      * @return true if this distance metric is indiscernible, false otherwise.
      */
-    public boolean isIndiscernible();
+    boolean isIndiscernible();
 }

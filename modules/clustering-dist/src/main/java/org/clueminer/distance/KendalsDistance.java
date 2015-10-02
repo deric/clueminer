@@ -190,4 +190,9 @@ public class KendalsDistance extends AbstractDistance {
     public boolean isIndiscernible() {
         return false;
     }
+
+    @Override
+    public double measure(double[] x, double[] y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
