@@ -17,7 +17,7 @@ public class EuclideanDistanceTest {
 
     private static EuclideanDistance subject;
     private static Instance x, y;
-    private static double delta = 1e-9;
+    private static final double delta = 1e-9;
 
     public EuclideanDistanceTest() {
     }
