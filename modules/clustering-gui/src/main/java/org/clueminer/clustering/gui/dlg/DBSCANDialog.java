@@ -47,7 +47,6 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     private JSlider sliderMinPts;
     private JTextField tfMinPts;
     private JTextField tfRadius;
-    private JSlider sliderRadius;
     private JComboBox comboDistance;
     private static final String name = "DBSCAN";
 
@@ -64,8 +63,8 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     private void initComponents() {
         setLayout(new GridBagLayout());
 
-        tfMinPts = new JTextField("20", 4);
-        sliderMinPts = new JSlider(1, 1000, 20);
+        tfMinPts = new JTextField("4", 10);
+        sliderMinPts = new JSlider(1, 1000, 4);
         sliderMinPts.addChangeListener(new ChangeListener() {
 
             @Override
@@ -109,38 +108,9 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
         c.gridx = 0;
         c.gridy++;
         add(new JLabel("Radius:"), c);
-        sliderRadius = new JSlider(0, 1000);
-        sliderRadius.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                tfRadius.setText(String.valueOf(sliderRadius.getValue()));
-            }
-        });
         c.gridx = 1;
-        add(sliderRadius, c);
-
-        c.gridx = 2;
-        tfRadius = new JTextField("100", 10);
+        tfRadius = new JTextField("2.0", 10);
         add(tfRadius, c);
-        tfRadius.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                updateRadiusSlider();
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                updateRadiusSlider();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                updateRadiusSlider();
-            }
-        });
-        sliderRadius.setValue(5);
 
         //distance measure
         c.gridy++;
@@ -160,20 +130,11 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
         }
     }
 
-    private void updateRadiusSlider() {
-        try {
-            int val = Integer.valueOf(tfRadius.getText());
-            sliderRadius.setValue(val);
-        } catch (NumberFormatException ex) {
-            // wrong input so we do not set the slider but also do not want to raise an exception
-        }
-    }
-
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putInt(DBSCAN.MIN_PTS, sliderMinPts.getValue());
-        params.putDouble(DBSCAN.EPS, sliderRadius.getValue());
+        params.putInt(DBSCAN.MIN_PTS, Integer.valueOf(tfMinPts.getText()));
+        params.putDouble(DBSCAN.EPS, Double.parseDouble(tfRadius.getText()));
         params.put(AbstractClusteringAlgorithm.DISTANCE, (String) comboDistance.getSelectedItem());
 
         return params;
