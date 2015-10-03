@@ -68,10 +68,8 @@ public class HammingDistance extends SymmetricDistance implements Distance {
     @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
         double dist = 0;
-
         for (int i = 0; i < x.size(); ++i) {
-            double diff = (x.get(i) - y.get(i));
-            dist += Math.abs(diff);
+            dist += Math.abs(x.get(i) - y.get(i));
         }
         return dist;
     }
@@ -79,9 +77,9 @@ public class HammingDistance extends SymmetricDistance implements Distance {
     @Override
     public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         double dist = 0;
-
+        double diff;
         for (int i = 0; i < x.size(); ++i) {
-            double diff = (weights[i] * x.get(i) - weights[i] * y.get(i));
+            diff = (weights[i] * x.get(i) - weights[i] * y.get(i));
             dist += Math.abs(diff);
         }
         return dist;
@@ -99,7 +97,11 @@ public class HammingDistance extends SymmetricDistance implements Distance {
 
     @Override
     public double measure(double[] x, double[] y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double dist = 0;
+        for (int i = 0; i < x.length; ++i) {
+            dist += Math.abs(x[i] - y[i]);
+        }
+        return dist;
     }
 
 }

@@ -88,4 +88,10 @@ public abstract class AbstractDistance implements Distance {
             throw new ArithmeticException("Both instances should contain the same number of values! x size: " + x.size() + " != y size: " + y.size());
         }
     }
+
+    protected void checkInput(double[] x, double[] y) {
+        if (x.length != y.length) {
+            throw new ArithmeticException("Both instances should contain the same number of values! x size: " + x.length + " != y size: " + y.length);
+        }
+    }
 }

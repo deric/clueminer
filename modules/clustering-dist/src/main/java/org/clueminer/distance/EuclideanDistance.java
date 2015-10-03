@@ -97,7 +97,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             //should be faster
-            sum += FastMath.pow(Math.abs(y.get(i) - x.get(i)), 2);
+            sum += FastMath.pow(y.get(i) - x.get(i), power);
         }
         if (sqrt) {
             return Math.sqrt(sum);
@@ -110,7 +110,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             //should be faster
-            sum += FastMath.pow(Math.abs(y.get(i) - x.get(i)), power);
+            sum += FastMath.pow(y.get(i) - x.get(i), power);
         }
         return sum;
     }
@@ -120,7 +120,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += FastMath.pow(Math.abs(weights[i] * y.get(i) - weights[i] * x.get(i)), power);
+            sum += FastMath.pow(weights[i] * y.get(i) - weights[i] * x.get(i), power);
         }
 
         if (sqrt) {

@@ -48,7 +48,6 @@ public class MinDist implements Distance {
         }
 
 //        System.out.println(value1[0]+ " " + value2[0]+ " " +s1+" "+s2 + " "+distance);
-
         return distance;
     }
 
@@ -146,6 +145,11 @@ public class MinDist implements Distance {
 
     @Override
     public boolean isIndiscernible() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double measure(double[] x, double[] y) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
