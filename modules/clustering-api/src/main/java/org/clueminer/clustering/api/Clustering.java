@@ -192,6 +192,14 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
     C createCluster(int clusterIndex, int capacity);
 
     /**
+     * Set name of cluster at given index
+     *
+     * @param clusterIndex target cluster
+     * @param name new name
+     */
+    void setClusterName(int clusterIndex, String name);
+
+    /**
      * Lookup is used for retrieving objects associated with this clustering
      * result
      *
