@@ -99,6 +99,18 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     private String similarityMeasure;
 
     /**
+     * Whether the algorithm should try to remove noise.
+     */
+    public static final String REMOVE_NOISE = "remove_noise";
+    @Param(name = Chameleon.REMOVE_NOISE, description = "Whether the algorithm should try to remove noise")
+
+    /**
+     * Noise threshold.
+     */
+    public static final String NOISE_THRESHOLD = "noise_threshold";
+    @Param(name = Chameleon.NOISE_THRESHOLD, description = "Noise threshold")
+
+    /**
      * Constant used to multiply external similarity of cluster pairs where one
      * of the clusters contains just one node.
      */

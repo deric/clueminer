@@ -66,6 +66,31 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
         computeExternalProperties();
+    private LinkedList<Node> identifyNoise(Props params) {
+        double median = computeMedianCl();
+        LinkedList<Node> noise = new LinkedList<>();
+        for (int i = 0; i < clusters.size(); i++) {
+            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.NOISE_THRESHOLD, 10)) {
+                noise.addAll(clusters.get(i).getNodes());
+                clusters.remove(i);
+                i--;
+            }
+        }
+        return noise;
+    }
+
+    private double computeMedianCl() {
+        double connectivities[] = new double[clusters.size()];
+        int i = 0;
+        for (GraphCluster cluster : clusters) {
+            connectivities[i++] = cluster.getACL();
+        }
+        Arrays.sort(connectivities);
+        if (connectivities.length % 2 == 0) {
+            return (connectivities[connectivities.length / 2] + connectivities[connectivities.length / 2 - 1]) / 2;
+        } else {
+            return connectivities[connectivities.length / 2];
+        }
     }
 
     /**

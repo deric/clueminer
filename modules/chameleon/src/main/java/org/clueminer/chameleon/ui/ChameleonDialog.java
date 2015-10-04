@@ -103,6 +103,9 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         tfIndividualMultiplier = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         tfInterconnectivy = new javax.swing.JTextField();
+        chckNoise = new javax.swing.JCheckBox();
+        jLabel7 = new javax.swing.JLabel();
+        tfNoiseThreshold = new javax.swing.JTextField();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbDistance, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.text")); // NOI18N
         lbDistance.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.toolTipText")); // NOI18N
@@ -262,6 +265,12 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         tfInterconnectivy.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         tfInterconnectivy.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfInterconnectivy.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(chckNoise, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.chckNoise.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel7.text")); // NOI18N
+
+        tfNoiseThreshold.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfNoiseThreshold.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -280,14 +289,13 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(sliderK, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(sliderMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(137, 137, 137)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(137, 137, 137)
                                 .addComponent(tfK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkBoxAutoK))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(137, 137, 137)
                                 .addComponent(tfMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(chkBoxAutoMaxPSize))))
@@ -319,13 +327,18 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(comboBisection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(tfPareto, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(tfPareto, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(chckNoise)
+                                                .addGap(28, 28, 28)
+                                                .addComponent(jLabel7)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(tfNoiseThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(comboPartitioning, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(29, 29, 29)
-                                        .addComponent(jLabel2)))
-                                .addGap(42, 42, 42)))))
-                .addContainerGap(18, Short.MAX_VALUE))
+                                        .addComponent(jLabel2)))))))
+                .addContainerGap(20, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -389,7 +402,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbMultiplier, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfIndividualMultiplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfIndividualMultiplier, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chckNoise)
+                    .addComponent(jLabel7)
+                    .addComponent(tfNoiseThreshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbMerger)
@@ -540,6 +556,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.ButtonGroup buttonGroup5;
+    private javax.swing.JCheckBox chckNoise;
     private javax.swing.JCheckBox chkBoxAutoK;
     private javax.swing.JCheckBox chkBoxAutoMaxPSize;
     private javax.swing.JComboBox combo3rdSort;
@@ -558,6 +575,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel labelLimit;
     private javax.swing.JLabel lbCutoff;
     private javax.swing.JLabel lbCutoffMethod;
@@ -576,6 +594,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JTextField tfK;
     private javax.swing.JTextField tfLimit;
     private javax.swing.JTextField tfMaxPSize;
+    private javax.swing.JTextField tfNoiseThreshold;
     private javax.swing.JTextField tfPareto;
     private javax.swing.JTextField tfPriority;
     // End of variables declaration//GEN-END:variables
@@ -613,6 +632,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         }
         params.putDouble(Chameleon.CLOSENESS_PRIORITY, Double.valueOf(tfPriority.getText()));
         params.putDouble(Chameleon.INDIVIDUAL_MULTIPLIER, Double.valueOf(tfIndividualMultiplier.getText()));
+        params.putBoolean(Chameleon.REMOVE_NOISE, chckNoise.isSelected());
+        params.putDouble(Chameleon.NOISE_THRESHOLD, Double.valueOf(tfNoiseThreshold.getText()));
         params.putDouble(Chameleon.INTERCONNECTIVITY_PRIORITY, Double.valueOf(tfInterconnectivy.getText()));
 
         String merger = (String) comboMerger.getSelectedItem();
