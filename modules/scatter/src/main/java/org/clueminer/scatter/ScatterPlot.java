@@ -28,6 +28,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -163,6 +164,13 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     public Rectangle.Double tranlateSelection(Shape shape) {
         if (currChart != null) {
             return currChart.translateSelection(shape.getBounds());
+        }
+        throw new RuntimeException("current chart not set");
+    }
+
+    public Point2D posOnCanvas(double x, double y) {
+        if (currChart != null) {
+            return currChart.positionOnCanvas(x, y);
         }
         throw new RuntimeException("current chart not set");
     }

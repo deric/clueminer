@@ -160,8 +160,9 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             curr.add(dataset.get(i));
         }
         if (res.hasAt(k)) {
-            res.get(k).setName("noise");
+            res.get(k).setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
         }
+        res.lookupAdd(dataset);
 
         return res;
     }

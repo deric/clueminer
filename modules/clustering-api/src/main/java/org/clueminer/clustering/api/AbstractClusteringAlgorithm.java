@@ -50,7 +50,7 @@ public abstract class AbstractClusteringAlgorithm<E extends Instance, C extends 
      */
     public static final int OUTLIER = Integer.MAX_VALUE;
 
-    public static final String OUTLIER_LABEL = "outliers";
+    public static final String OUTLIER_LABEL = "noise";
 
     @Override
     public Distance getDistanceFunction() {

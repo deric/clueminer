@@ -448,10 +448,15 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      */
     @Override
     public C createCluster(int clusterId, int capacity) {
+        return createCluster(clusterId, capacity, "cluster " + (clusterId + 1));
+    }
+
+    @Override
+    public C createCluster(int clusterId, int capacity, String name) {
         int attrSize = guessAttrCnt();
         C c = (C) new BaseCluster<E>(capacity, attrSize);
         c.setClusterId(clusterId);
-        c.setName("cluster " + (clusterId + 1));
+        c.setName(name);
         put(clusterId, c);
         return c;
     }
@@ -613,14 +618,14 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         C[] newData = (C[]) new Cluster[nonEmpty];
         name2id.clear();
         nonEmpty = 0;
-        int id;
+        int idx;
         for (C clust : data) {
             if (clust != null) {
-                id = nonEmpty++;
-                newData[id] = clust;
-                clust.setClusterId(id);
-                clust.setName("cluster " + (id + 1));
-                name2id.put(clust.getName(), id);
+                idx = nonEmpty++;
+                newData[idx] = clust;
+                clust.setClusterId(idx);
+                clust.setName("cluster " + (idx + 1));
+                name2id.put(clust.getName(), idx);
             }
         }
         data = newData;
@@ -643,7 +648,27 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
 
     @Override
     public boolean addAll(Collection<? extends C> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean ret = true;
+        for (C member : c) {
+            ret &= add(member);
+        }
+        return ret;
+    }
+
+    /**
+     * Set name of cluster and update hash table for inverse search
+     *
+     * @param clusterIndex
+     * @param name
+     */
+    @Override
+    public void setClusterName(int clusterIndex, String name) {
+        C cluster = data[clusterIndex];
+        if (cluster != null) {
+            name2id.remove(cluster.getName());
+            cluster.setName(name);
+            name2id.put(name, clusterIndex);
+        }
     }
 
     class ClusterIterator<X extends Cluster<E>> implements Iterator<X> {
