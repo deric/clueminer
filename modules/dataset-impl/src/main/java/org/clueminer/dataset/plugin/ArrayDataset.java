@@ -525,14 +525,38 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return (T[]) data;
     }
 
+    /**
+     * Removing has O(n) complexity
+     *
+     * @param o
+     * @return true when object was found and removed
+     */
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int idx = indexOf(o);
+        if (idx > -1) {
+            if (n > 0) {
+                //swap item with last one
+                data[idx] = data[n - 1];
+                data[n - 1] = null;
+            } else {
+                //only single item, just remove
+                data[idx] = null;
+            }
+            n--;
+            //TODO: after removing many items we might reallocate the data array
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean ret = true;
+        for (Object elem : c) {
+            ret &= contains(elem);
+        }
+        return ret;
     }
 
     @Override

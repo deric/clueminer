@@ -509,6 +509,17 @@ public class ArrayDatasetTest {
      */
     @Test
     public void testRemove() {
+        Dataset<Instance> test = new ArrayDataset<>(data2x5);
+        test.remove(test.get(1));
+        assertEquals(1, test.size());
+        test.remove(test.get(0));
+        assertEquals(0, test.size());
+
+        test = new ArrayDataset<>(data2x5);
+        test.remove(test.get(0));
+        assertEquals(1, test.size());
+        test.remove(test.get(0));
+        assertEquals(0, test.size());
     }
 
     /**
@@ -650,33 +661,4 @@ public class ArrayDatasetTest {
         assertEquals(1.2, test.min(), delta);
 
     }
-
-    @Test
-    public void testGet_int_int() {
-    }
-
-    @Test
-    public void testSet_int_GenericType() {
-    }
-
-    @Test
-    public void testGet_int() {
-    }
-
-    @Test
-    public void testIndexOf() {
-    }
-
-    @Test
-    public void testMin() {
-    }
-
-    @Test
-    public void testMax() {
-    }
-
-    @Test
-    public void testResetStats() {
-    }
-
 }
