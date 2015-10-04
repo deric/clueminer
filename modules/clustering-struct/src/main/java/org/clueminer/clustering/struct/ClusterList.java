@@ -417,7 +417,6 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
             c.setAttributes(d.getAttributes());
         }
         put(clusterId, c);
-        name2id.put(c.getName(), clusterId);
         return c;
     }
 
@@ -437,7 +436,6 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
             c.setAttributes(d.getAttributes());
         }
         put(clusterId, c);
-        name2id.put(c.getName(), clusterId);
         return c;
     }
 
@@ -450,12 +448,16 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      */
     @Override
     public C createCluster(int clusterId, int capacity) {
+        return createCluster(clusterId, capacity, "cluster " + (clusterId + 1));
+    }
+
+    @Override
+    public C createCluster(int clusterId, int capacity, String name) {
         int attrSize = guessAttrCnt();
         C c = (C) new BaseCluster<E>(capacity, attrSize);
         c.setClusterId(clusterId);
-        c.setName("cluster " + (clusterId + 1));
+        c.setName(name);
         put(clusterId, c);
-        name2id.put(c.getName(), clusterId);
         return c;
     }
 

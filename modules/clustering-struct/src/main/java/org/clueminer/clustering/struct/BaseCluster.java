@@ -172,21 +172,15 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("BaseCluster ");
-        sb.append(getName());
-        sb.append(" (").append(size()).append(") ");
-        sb.append(" [ ");
-        E elem;
-        for (int i = 0; i < this.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            elem = this.get(i);
-            sb.append(elem.getIndex());
-        }
-        sb.append(" ]");
-        return sb.toString();
+    public boolean isOutlier() {
+        return getName().equals(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        E inst = (E) o;
+        mapping.remove(inst.getIndex());
+        return super.remove(o);
     }
 
     /**
@@ -220,7 +214,20 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     }
 
     @Override
-    public boolean isOutlier() {
-        return getName().equals(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+    public String toString() {
+        StringBuilder sb = new StringBuilder("BaseCluster ");
+        sb.append(getName());
+        sb.append(" (").append(size()).append(") ");
+        sb.append(" [ ");
+        E elem;
+        for (int i = 0; i < this.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            elem = this.get(i);
+            sb.append(elem.getIndex());
+        }
+        sb.append(" ]");
+        return sb.toString();
     }
 }
