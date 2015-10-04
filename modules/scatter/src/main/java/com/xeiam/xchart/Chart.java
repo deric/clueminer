@@ -16,11 +16,13 @@
 package com.xeiam.xchart;
 
 import com.xeiam.xchart.StyleManager.ChartTheme;
+import com.xeiam.xchart.internal.Utils;
 import com.xeiam.xchart.internal.chartpart.Axis;
 import com.xeiam.xchart.internal.chartpart.ChartPainter;
 import com.xeiam.xchart.internal.style.Theme;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -288,15 +290,25 @@ public class Chart {
      */
     public Rectangle.Double translateSelection(Rectangle rect) {
         //rectangle with
-        Rectangle2D plotBounds = chartPainter.getPlot().getBounds();
+        Rectangle2D bounds = chartPainter.getPlot().getBounds();
 
         Axis xAxis = chartPainter.getAxisPair().getXAxis();
         Axis yAxis = chartPainter.getAxisPair().getYAxis();
 
-        double xval = rect.x - plotBounds.getMinX();
-        double xmax = plotBounds.getMaxX() - plotBounds.getMinX();
-        double ymax = plotBounds.getMaxY() - plotBounds.getMinY();
-        double yval = rect.y - plotBounds.getMinY();
+        StyleManager styleManager = chartPainter.getStyleManager();
+
+        // X-Axis
+        double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
+        double xLeftMargin = Utils.getTickStartOffset(bounds.getWidth(), xTickSpace);
+
+        // Y-Axis
+        double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
+        double yTopMargin = Utils.getTickStartOffset(bounds.getHeight(), yTickSpace);
+
+        double xval = rect.x - bounds.getMinX() + xLeftMargin;
+        double xmax = bounds.getMaxX() - bounds.getMinX();
+        double ymax = bounds.getMaxY() - bounds.getMinY();
+        double yval = rect.y - bounds.getMinY() + yTopMargin;
 
         //selection of out plot area
         if (xval < 0) {
@@ -328,6 +340,28 @@ public class Chart {
      */
     private double scaleToRange(double value, double fromRangeMin, double fromRangeMax, double toRangeMin, double toRangeMax) {
         return ((value - fromRangeMin) * (toRangeMax - toRangeMin) / (fromRangeMax - fromRangeMin) + toRangeMin);
+    }
+
+    public Point2D positionOnCanvas(double x, double y) {
+        Rectangle2D bounds = chartPainter.getPlot().getBounds();
+
+        StyleManager styleManager = chartPainter.getStyleManager();
+
+        // X-Axis
+        double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
+        double xLeftMargin = Utils.getTickStartOffset(bounds.getWidth(), xTickSpace);
+
+        // Y-Axis
+        double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
+        double yTopMargin = Utils.getTickStartOffset(bounds.getHeight(), yTickSpace);
+
+        Axis xAxis = chartPainter.getAxisPair().getXAxis();
+        Axis yAxis = chartPainter.getAxisPair().getYAxis();
+
+        double px = scaleToRange(x, xAxis.getMin(), xAxis.getMax(), bounds.getMinX(), bounds.getMaxX());
+        double py = scaleToRange(y, yAxis.getMin(), yAxis.getMax(), bounds.getMaxY(), bounds.getMinY());
+
+        return new Point2D.Double(px - xLeftMargin, py - yTopMargin);
     }
 
 }
