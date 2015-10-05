@@ -43,13 +43,10 @@ public class LinearRNNTest extends KnnTest {
 
         List<Neighbor<Instance>> neighbors = new LinkedList<>();
         Instance ref = d.get(9);
-        System.out.println("ref [" + ref.getIndex() + "]: " + ref);
         double range = 0.029;
         subject.range(ref, range, neighbors);
-        System.out.println("result size: " + neighbors.size());
         for (Neighbor<Instance> neighbor : neighbors) {
-            System.out.println("nn: " + neighbor);
-            //assertEquals(0.0, neighbor.distance, delta);
+            assertEquals(0.0, neighbor.distance, delta);
         }
         //there are 2 same instances
         assertEquals(2, neighbors.size());
