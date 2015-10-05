@@ -175,4 +175,11 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         throw new RuntimeException("current chart not set");
     }
 
+    public Rectangle.Double plotArea() {
+        if (currChart != null) {
+            return currChart.getPlotArea();
+        }
+        throw new RuntimeException("current chart not set");
+    }
+
 }
