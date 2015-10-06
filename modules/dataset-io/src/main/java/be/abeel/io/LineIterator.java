@@ -1,7 +1,16 @@
 package be.abeel.io;
 
 import be.abeel.net.URIFactory;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,7 +77,7 @@ public class LineIterator implements Iterable<String>, Iterator<String>, Closeab
     }
     private boolean skipBlanks = false;
     private boolean skipComments = false;
-    private ArrayList<String> commentIdentifiers = new ArrayList<String>();
+    private ArrayList<String> commentIdentifiers = new ArrayList<>();
 
     public LineIterator(InputStream stream) {
         /*
