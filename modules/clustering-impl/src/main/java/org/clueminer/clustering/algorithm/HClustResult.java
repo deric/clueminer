@@ -24,6 +24,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
@@ -68,6 +69,8 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
      */
     private List<Merge> merges;
 
+    private List<Instance> noise;
+
     public HClustResult() {
         init();
     }
@@ -90,6 +93,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
             InternalEvaluatorFactory<E, Cluster<E>> ief = InternalEvaluatorFactory.getInstance();
             cutoffStrategy.setEvaluator(ief.getDefault());
         }
+        noise = null;
     }
 
     @Override
@@ -246,6 +250,19 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
             }
         }
         //add input dataset to clustering lookup
+        if (noise != null) {
+            Cluster clust = new BaseCluster<>(noise.size());
+            clust.setColor(colorGenerator.next());
+            clust.setClusterId(num++);
+            clust.setParent(getDataset());
+            clust.setName("Noise");
+            clust.setAttributes(getDataset().getAttributes());
+            for (Instance ins : noise) {
+                clust.add(ins);
+                mapping[ins.getIndex()] = num - 1;
+            }
+            clusters.add(clust);
+        }
         clusters.lookupAdd(dataset);
         clusters.lookupAdd(this);
         return clusters;
@@ -653,4 +670,10 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     public void setColorGenerator(ColorGenerator colorGenerator) {
         this.colorGenerator = colorGenerator;
     }
+
+    @Override
+    public void setNoise(List<Instance> noise) {
+        this.noise = noise;
+    }
+
 }

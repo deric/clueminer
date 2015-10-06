@@ -238,8 +238,8 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
 
     /**
      * Return ID of cluster to which was item at given position in input dataset
-     * assigned. In case that assignment to clusters is unknown, all items
-     * will be in one cluster (cluster 0)
+     * assigned. In case that assignment to clusters is unknown, all items will
+     * be in one cluster (cluster 0)
      *
      * @param idx position in input dataset/matrix
      * @return cluster ID
@@ -285,5 +285,7 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
     DendrogramMapping<E, C> getDendrogramMapping();
 
     public double getHeightByLevel(int level);
+
+    public void setNoise(List<Instance> noise);
 
 }
