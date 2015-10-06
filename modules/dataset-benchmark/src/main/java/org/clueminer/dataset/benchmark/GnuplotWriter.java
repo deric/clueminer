@@ -1,7 +1,5 @@
 package org.clueminer.dataset.benchmark;
 
-import org.clueminer.gnuplot.GnuplotHelper;
-import org.clueminer.gnuplot.PointTypeIterator;
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +19,8 @@ import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.gnuplot.GnuplotHelper;
+import org.clueminer.gnuplot.PointTypeIterator;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -100,8 +100,8 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
         }
 
         try {
-            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set term pdf font 'Times-New-Roman,8'", "pdf");
-            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "gpt", "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), outputDir, "gpt", "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);

@@ -16,7 +16,6 @@
  */
 package org.clueminer.dataset.benchmark;
 
-import org.clueminer.gnuplot.GnuplotHelper;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Sets;
 import java.io.File;
@@ -35,6 +34,7 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
+import org.clueminer.gnuplot.GnuplotHelper;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
 import org.clueminer.utils.DatasetWriter;
@@ -102,8 +102,8 @@ public class GnuplotMO extends GnuplotHelper implements OpListener {
     public void writeBashScripts() {
 
         try {
-            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "set term pdf font 'Times-New-Roman,8'", "pdf");
-            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
+            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "gpt", "set term pdf font 'Times-New-Roman,8'", "pdf");
+            bashPlotScript(plots.toArray(new String[plots.size()]), getCurrentDir(), "gpt", "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
