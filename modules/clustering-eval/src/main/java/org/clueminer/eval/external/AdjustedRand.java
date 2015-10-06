@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AdjustedRand<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Adjusted Rand";
+    private static final String name = "Adjusted_Rand";
 
     @Override
     public String getName() {
