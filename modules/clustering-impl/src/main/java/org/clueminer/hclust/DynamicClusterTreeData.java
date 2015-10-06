@@ -11,6 +11,8 @@ import org.clueminer.dataset.api.Instance;
  */
 public class DynamicClusterTreeData extends DynamicTreeData {
 
+    int i;
+
     /**
      * When given expected size we might avoid reallocation of memory
      *
@@ -36,8 +38,13 @@ public class DynamicClusterTreeData extends DynamicTreeData {
      */
     @Override
     public int[] createMapping(int n, DendroNode node) {
+        return createMapping(n, node, null);
+    }
+
+    @Override
+    public int[] createMapping(int n, DendroNode node, DendroNode noise) {
         Stack<DendroNode> stack = new Stack<>();
-        int i = 0;
+        i = 0;
         int leavesCounter = 0;
         ensureCapacity(n);
         while (!stack.isEmpty() || node != null) {
@@ -47,24 +54,33 @@ public class DynamicClusterTreeData extends DynamicTreeData {
             } else {
                 node = stack.pop();
                 if (node.isLeaf()) {
-                    resizeIfNeeded(i);
-                    leaves[leavesCounter++] = node;
-                    DClusterLeaf leaf = (DClusterLeaf) node;
-                    LinkedList<Instance> instances = (LinkedList<Instance>) leaf.getInstances();
-                    node.setPosition(i + instances.size() / 2);
-                    //Map all nodes in cluster
-                    for (Instance instance : instances) {
-                        mapping[i] = instance.getIndex();
-                        i++;
-                        resizeIfNeeded(i);
-                        //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
-                    }
+                    mapLeaf(node, leavesCounter++);
                 }
                 node = node.getRight();
             }
         }
+
+        if (noise != null) {
+            mapLeaf(noise, leavesCounter++);
+        }
+
         ensureCapacity(i);
         return mapping;
+    }
+
+    private void mapLeaf(DendroNode node, int leavesCounter) {
+        resizeIfNeeded(i);
+        leaves[leavesCounter++] = node;
+        DClusterLeaf leaf = (DClusterLeaf) node;
+        LinkedList<Instance> instances = (LinkedList<Instance>) leaf.getInstances();
+        node.setPosition(i + instances.size() / 2);
+        //Map all nodes in cluster
+        for (Instance instance : instances) {
+            mapping[i] = instance.getIndex();
+            i++;
+            resizeIfNeeded(i);
+            //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
+        }
     }
 
     private void resizeIfNeeded(int i) {

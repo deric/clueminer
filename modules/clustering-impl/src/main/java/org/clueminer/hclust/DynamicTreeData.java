@@ -28,7 +28,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param root
      * @param hintSize estimated number number of nodes (doesn't have to be
-     *                 accurate)
+     * accurate)
      */
     public DynamicTreeData(DendroNode root, int hintSize) {
         this.root = root;
@@ -335,6 +335,11 @@ public class DynamicTreeData implements DendroTreeData {
         return mapping;
     }
 
+    @Override
+    public int[] createMapping(int n, DendroNode node, DendroNode noise) {
+        return createMapping(n, node);
+    }
+
     /**
      * Creates mapping and leaves of required capacity
      *
@@ -392,5 +397,4 @@ public class DynamicTreeData implements DendroTreeData {
     public boolean containsClusters() {
         return false;
     }
-
 }
