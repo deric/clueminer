@@ -65,7 +65,7 @@ public class PairMergerMOTest {
         subject.addObjective(new Closeness());
         subject.addObjective(new Interconnectivity());
 
-        subject.initialize(partitioningResult, g, bisection);
+        subject.initialize(partitioningResult, g, bisection, null);
 
         Props pref = new Props();
         HierarchicalResult result = subject.getHierarchy(dataset, pref);

@@ -61,7 +61,7 @@ public class PairMergerTest {
 
         merger = new PairMerger();
         merger.setMergeEvaluation(new ShatovskaSimilarity());
-        merger.initialize(partitioningResult, g, bisection);
+        merger.initialize(partitioningResult, g, bisection, null);
 
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
@@ -86,7 +86,7 @@ public class PairMergerTest {
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
         merger = new PairMerger();
-        merger.initialize(partitioningResult, g, bisection);
+        merger.initialize(partitioningResult, g, bisection, null);
         merger.setMergeEvaluation(eval);
 
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);

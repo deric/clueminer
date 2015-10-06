@@ -71,7 +71,7 @@ public class ShatovskaSimilarityTest {
 
         PairMerger merger = new PairMerger();
         merger.setMergeEvaluation(subject);
-        merger.initialize(partitioningResult, g, bisection);
+        merger.initialize(partitioningResult, g, bisection, null);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
