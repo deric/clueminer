@@ -80,7 +80,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
-        treeData.createMapping(dataset.size(), treeData.getRoot());
+        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
         result.setTreeData(treeData);
         return result;
     }
@@ -123,6 +123,5 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
             }
         }
     }
-
 
 }

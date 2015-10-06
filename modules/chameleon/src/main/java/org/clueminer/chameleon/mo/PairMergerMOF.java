@@ -81,11 +81,10 @@ public class PairMergerMOF<E extends Instance, C extends GraphCluster<E>, P exte
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
-        treeData.createMapping(dataset.size(), treeData.getRoot());
+        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
         result.setTreeData(treeData);
         return result;
     }
-
 
     private void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
@@ -124,8 +123,6 @@ public class PairMergerMOF<E extends Instance, C extends GraphCluster<E>, P exte
             }
         }
     }
-
-
 
     /**
      * Adds node representing new cluster (the one created by merging) to

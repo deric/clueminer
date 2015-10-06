@@ -265,6 +265,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         tfInterconnectivy.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         tfInterconnectivy.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfInterconnectivy.text")); // NOI18N
 
+        chckNoise.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(chckNoise, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.chckNoise.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel7.text")); // NOI18N

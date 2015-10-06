@@ -15,8 +15,7 @@ public class AgglParams<E extends Instance> {
 
     /**
      * Linkage method, see classes implementing
-     * {@link org.clueminer.clustering.api.ClusterLinkage}
-     * for available values
+     * {@link org.clueminer.clustering.api.ClusterLinkage} for available values
      */
     public static final String LINKAGE = "hac-linkage";
 

@@ -2,6 +2,7 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
@@ -116,7 +117,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
      */
     public static final String INDIVIDUAL_MULTIPLIER = "individual_multiplier";
     @Param(name = Chameleon.INDIVIDUAL_MULTIPLIER, description = "Constant used to multiply external similarity of cluster pairs where one"
-           + "of the clusters contains just one node.")
+            + "of the clusters contains just one node.")
     protected int individualMultiplier;
 
     private final KNNGraphBuilder knn;
@@ -197,7 +198,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
-        m.initialize(partitioningResult, g, bisectionAlg);
+        List<Instance> noise = m.initialize(partitioningResult, g, bisectionAlg, pref);
 
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (m instanceof PairMerger) {
@@ -210,7 +211,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
-        return m.getHierarchy(dataset, pref);
+        HierarchicalResult result = m.getHierarchy(dataset, pref);
+        result.setNoise(noise);
+        return result;
     }
 
     private int determineK(Dataset<? extends Instance> dataset) {

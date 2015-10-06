@@ -612,13 +612,11 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="chckNoise">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/clueminer/chameleon/ui/Bundle.properties" key="ChameleonDialog.chckNoise.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chckNoiseActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -633,9 +631,6 @@
           <ResourceString bundle="org/clueminer/chameleon/ui/Bundle.properties" key="ChameleonDialog.tfNoiseThreshold.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfNoiseThresholdActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>
