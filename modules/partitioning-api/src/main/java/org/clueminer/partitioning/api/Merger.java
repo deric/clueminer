@@ -18,6 +18,7 @@ package org.clueminer.partitioning.api;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -44,8 +45,12 @@ public interface Merger<E extends Instance> {
      * @param clusterList
      * @param graph
      * @param bisection
+     * @param params
+     * @return
      */
-    void initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection);
+    List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params);
+
+    List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params, List<Instance> noise);
 
     /**
      * Merge clusters while creating a hierarchical structure (dendrogram)

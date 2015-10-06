@@ -1,8 +1,10 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
@@ -59,19 +61,43 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected int level;
 
     @Override
-    public void initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection) {
+    public List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params) {
+        return this.initialize(clusterList, graph, bisection, params, null);
+    }
+
+    @Override
+    public List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params, List<Instance> noise) {
         this.graph = graph;
         this.bisection = bisection;
-        nodes = initiateTree(clusterList);
         blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
+        if (params != null && params.getBoolean(Chameleon.REMOVE_NOISE, false)) {
+            noise = identifyNoise(params);
+            if (noise != null) {
+                int i = 0;
+                for (GraphCluster cluster : clusters) {
+                    cluster.setClusterId(i);
+                    i++;
+                }
+            }
+        }
+        assignNodesToCluters();
         computeExternalProperties();
-    private LinkedList<Node> identifyNoise(Props params) {
+        nodes = initiateTree((List<Instance>) noise);
+        return noise;
+    }
+
+    private List<Instance> identifyNoise(Props params) {
         double median = computeMedianCl();
-        LinkedList<Node> noise = new LinkedList<>();
+        List<Instance> noise = null;
         for (int i = 0; i < clusters.size(); i++) {
-            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.NOISE_THRESHOLD, 10)) {
-                noise.addAll(clusters.get(i).getNodes());
+            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.NOISE_THRESHOLD, 2)) {
+                if (noise == null) {
+                    noise = new LinkedList<>();
+                }
+                for (Node node : clusters.get(i).getNodes()) {
+                    noise.add(node.getInstance());
+                }
                 clusters.remove(i);
                 i--;
             }
@@ -141,6 +167,10 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         for (Edge edge : graph.getEdges()) {
             firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];
             secondClusterID = nodeToCluster[graph.getIndex(edge.getTarget())];
+            //noise
+            if (firstClusterID == -1 || secondClusterID == -1) {
+                continue;
+            }
             if (firstClusterID != secondClusterID) {
                 gps.updateWeight(firstClusterID, secondClusterID, edge.getWeight());
             }
@@ -151,13 +181,22 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     /**
      * Creates tree leaves and fills them with nodes.
      *
-     * @param clusterList Initial clusters
+     * @param noise
      * @return
      */
-    protected DendroNode[] initiateTree(ArrayList<LinkedList<Node<E>>> clusterList) {
-        DendroNode[] treeNodes = new DendroNode[(2 * clusterList.size() - 1)];
-        for (int i = 0; i < clusterList.size(); i++) {
-            treeNodes[i] = new DClusterLeaf(i, createInstanceList(clusterList.get(i)));
+    protected DendroNode[] initiateTree(List<Instance> noise) {
+        DendroNode[] treeNodes;
+        //Create special node for noise only if noise is present
+        treeNodes = new DendroNode[(2 * clusters.size())];
+        if (noise != null) {
+            treeNodes[2 * clusters.size() - 1] = new DClusterLeaf(clusters.size(), noise);
+            treeNodes[2 * clusters.size() - 1].setHeight(0);
+            treeNodes[2 * clusters.size() - 1].setLevel(0);
+        } else {
+            treeNodes[2 * clusters.size() - 1] = null;
+        }
+        for (int i = 0; i < clusters.size(); i++) {
+            treeNodes[i] = new DClusterLeaf(i, createInstanceList(clusters.get(i).getNodes()));
             treeNodes[i].setHeight(0);
             treeNodes[i].setLevel(0);
         }
