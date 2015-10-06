@@ -16,6 +16,7 @@
  */
 package org.clueminer.dataset.benchmark;
 
+import org.clueminer.gnuplot.GnuplotHelper;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Sets;
 import java.io.File;

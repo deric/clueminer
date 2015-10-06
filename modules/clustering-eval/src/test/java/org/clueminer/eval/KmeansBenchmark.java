@@ -19,9 +19,9 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.benchmark.DatasetFixture;
-import org.clueminer.dataset.benchmark.PointTypeIterator;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.gnuplot.PointTypeIterator;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.stats.AttrNumStats;
@@ -190,14 +190,14 @@ public class KmeansBenchmark {
             String dataFile = "data-" + strn + ".csv";
             String scriptFile = "plot-" + strn + gnuplotExtension;
             files[i] = scriptFile + " > ../" + data.getName() + "-" + strn;
-            PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8");
-            CSVWriter csv = new CSVWriter(writer, ',');
-            toCsv(csv, clusters, data);
-            writer.close();
+            try (PrintWriter writer = new PrintWriter(dataDir + File.separatorChar + dataFile, "UTF-8")) {
+                CSVWriter csv = new CSVWriter(writer, ',');
+                toCsv(csv, clusters, data);
+            }
 
-            PrintWriter template = new PrintWriter(dataDir + scriptFile, "UTF-8");
-            template.write(plotTemplate(n, x, y, clusters, dataFile));
-            template.close();
+            try (PrintWriter template = new PrintWriter(dataDir + scriptFile, "UTF-8")) {
+                template.write(plotTemplate(n, x, y, clusters, dataFile));
+            }
 
             double score;
             int j = 0;
@@ -209,7 +209,7 @@ public class KmeansBenchmark {
             i++;
         }
 
-        String[] plots = plotResults(data.getName(), kmin, kmax, results, kreal, dir);
+        String[] plots = plotResults(kmin, kmax, results, kreal, dir);
 
         bashPlotScript(files, plots, dir, "set term pdf font 'Times-New-Roman,8'", "pdf");
         bashPlotScript(files, plots, dir, "set terminal pngcairo size 800,600 enhanced font 'Verdana,10'", "png");
@@ -234,7 +234,7 @@ public class KmeansBenchmark {
         Runtime.getRuntime().exec("chmod u+x " + shFile);
     }
 
-    private String[] plotResults(String datasetName, int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
+    private String[] plotResults(int kmin, int kmax, double[][] results, int kreal, String dir) throws IOException {
         String dataDir = getDataDir(dir);
         String[] plots = new String[evaluators.size()];
         int i = 0;

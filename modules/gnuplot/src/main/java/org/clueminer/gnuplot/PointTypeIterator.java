@@ -1,4 +1,4 @@
-package org.clueminer.dataset.benchmark;
+package org.clueminer.gnuplot;
 
 import java.util.Iterator;
 

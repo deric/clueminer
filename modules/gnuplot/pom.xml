@@ -41,6 +41,16 @@
             <artifactId>org-netbeans-api-annotations-common</artifactId>
             <version>RELEASE80</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>RELEASE80</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -54,6 +64,7 @@
                         <publicPackage>com.panayotis.gnuplot.*</publicPackage>
                         <publicPackage>com.panayotis.io</publicPackage>
                         <publicPackage>com.panayotis.iodebug</publicPackage>
+                        <publicPackage>org.clueminer.gnuplot</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

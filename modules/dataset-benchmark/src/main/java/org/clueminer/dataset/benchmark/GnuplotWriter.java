@@ -1,5 +1,7 @@
 package org.clueminer.dataset.benchmark;
 
+import org.clueminer.gnuplot.GnuplotHelper;
+import org.clueminer.gnuplot.PointTypeIterator;
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileNotFoundException;

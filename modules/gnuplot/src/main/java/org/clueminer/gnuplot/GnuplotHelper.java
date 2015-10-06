@@ -1,4 +1,4 @@
-package org.clueminer.dataset.benchmark;
+package org.clueminer.gnuplot;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
@@ -59,7 +59,8 @@ public class GnuplotHelper {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public void bashPlotScript(String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+    public static void bashPlotScript(String[] plots, String dir, String term, String ext)
+            throws FileNotFoundException, UnsupportedEncodingException, IOException {
         //bash script to generate results
         String shFile = dir + File.separatorChar + "_plot-" + ext;
         try (PrintWriter template = new PrintWriter(shFile, "UTF-8")) {
