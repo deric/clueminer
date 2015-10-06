@@ -18,6 +18,7 @@ package org.clueminer.io;
 
 import be.abeel.io.LineIterator;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import static org.clueminer.io.ARFFHandler.relation;
 import org.clueminer.utils.DataFileInfo;
@@ -25,6 +26,8 @@ import org.clueminer.utils.DatasetSniffer;
 import org.openide.util.Exceptions;
 
 /**
+ * A set of heuristics to detect most common file types, right now it's not very
+ * precise and can't be relied on.
  *
  * @author deric
  */
@@ -50,11 +53,8 @@ public class DataSniffer implements DatasetSniffer {
             df.name = name;
         }
         switch (ext) {
-            case "arff":
-                return parseArff(file, df);
             default:
                 return parseArff(file, df);
-            //return parseCsv(file, df);
         }
     }
 
@@ -66,12 +66,14 @@ public class DataSniffer implements DatasetSniffer {
 
         ARFFHandler handler = new ARFFHandler();
         Matcher rmatch;
+        boolean relationFound = false;
 
         int numAttr = 0;
-
+        int i = 0;
         for (String line : it) {
             if ((rmatch = relation.matcher(line)).matches()) {
                 df.name = rmatch.group(1);
+                relationFound = true;
             } else if (handler.isValidAttributeDefinition(line)) {
                 AttrHolder ah;
                 try {
@@ -89,14 +91,71 @@ public class DataSniffer implements DatasetSniffer {
                     Exceptions.printStackTrace(ex);
                 }
             } else if (line.equalsIgnoreCase("@data")) {
+                df.separator = ",";
                 return df;
             }
+            //if no ARFF relation found within first few lines, try parsing as CSV
+            if (!relationFound && i > 15) {
+                return parseCsv(file, df);
+            }
+            i++;
         }
         return df;
     }
 
     private DataFileInfo parseCsv(File file, DataFileInfo df) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String first = null;
+        LineIterator it = new LineIterator(file);
+        it.setSkipBlanks(true);
+
+        LinkedList<String> possibleSeparators = new LinkedList<>();
+        possibleSeparators.add(",");
+        possibleSeparators.add(";");
+        possibleSeparators.add("\t");
+
+        int i = 0;
+        String sep;
+        for (String line : it) {
+            if (i == 0) {
+                first = line;
+            }
+            if (possibleSeparators.size() == 1) {
+                return detectCols(line, possibleSeparators.get(0), df);
+            }
+            for (int j = 0; j < possibleSeparators.size(); j++) {
+                sep = possibleSeparators.get(j);
+                if (!line.contains(sep)) {
+                    possibleSeparators.remove(j);
+                    j--;
+                }
+            }
+
+            if (i > 10) {
+                return detectCols(first, possibleSeparators.get(0), df);
+            }
+            i++;
+        }
+
+        return df;
+    }
+
+    private DataFileInfo detectCols(String line, String separator, DataFileInfo df) {
+        String[] cols = line.split(separator);
+        int i = 0;
+        for (String str : cols) {
+            try {
+                Double.parseDouble(str);
+                df.numAttributes++;
+            } catch (NumberFormatException e) {
+                //we suppose that class information will be String (just a guess)
+                df.classIndex = i;
+            }
+            i++;
+        }
+        df.separator = separator;
+        df.type = "csv";
+
+        return df;
     }
 
 }

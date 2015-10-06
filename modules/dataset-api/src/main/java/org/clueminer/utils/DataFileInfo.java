@@ -32,4 +32,11 @@ public class DataFileInfo {
 
     public int classIndex = -1;
 
+    /**
+     * This might be enum, though the list of types can't be known before. e.g.
+     * "csv", "txt", "arff"
+     */
+    public String type;
+
+    public String separator;
 }

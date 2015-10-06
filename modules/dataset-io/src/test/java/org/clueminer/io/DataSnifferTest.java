@@ -43,6 +43,10 @@ public class DataSnifferTest {
 
         df = subject.scan(tf.glassArff());
         assertEquals(9, df.numAttributes);
+
+        df = subject.scan(tf.irisData());
+        assertEquals(",", df.separator);
+        assertEquals(4, df.numAttributes);
     }
 
 }
