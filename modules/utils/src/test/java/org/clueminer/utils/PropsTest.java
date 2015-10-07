@@ -312,6 +312,18 @@ public class PropsTest {
         assertEquals("y", p.get("bar"));
         assertEquals("c", p.get("baz"));
         assertEquals("ormance", p.get(PropType.PERFORMANCE, "perf"));
+    }
+
+    @Test
+    public void testToJson() {
+        Props p = new Props();
+        p.put("foo", "x");
+        p.put("bar", "y");
+        p.putInt("int", 123);
+        p.putDouble("double", 3.14519);
+        p.putBoolean("bool", true);
+
+        assertEquals("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":\"123\"}", p.toJson());
 
     }
 

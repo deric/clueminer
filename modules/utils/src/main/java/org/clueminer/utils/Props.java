@@ -4,10 +4,14 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.openide.util.Exceptions;
 
 /**
  * An advance string map. It's an extension of
@@ -431,5 +435,41 @@ public class Props implements Map<String, Object> {
         for (Table.Cell<PropType, String, Object> cell : other.store.cellSet()) {
             put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         }
+    }
+
+    public String toJson() {
+        StringWriter w = new StringWriter();
+        try {
+            try (JsonWriter writer = new JsonWriter(w)) {
+                writer.beginObject();
+                for (Entry<String, Object> entry : entrySet()) {
+
+                    Object val = entry.getValue();
+                    writer.name(entry.getKey());
+                    if (val instanceof Double) {
+                        double d = (Double) val;
+                        writer.value(d);
+                    } else if (val instanceof Integer) {
+                        int i = (Integer) val;
+                        writer.value(i);
+                    } else if (val instanceof Long) {
+                        long lg = (Long) val;
+                        writer.value(lg);
+                    } else if (val instanceof String) {
+                        String str = (String) val;
+                        writer.value(str);
+                    } else {
+                        String str = val.toString();
+                        writer.value(str);
+                    }
+
+                }
+                writer.endObject();
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        return w.toString();
     }
 }
