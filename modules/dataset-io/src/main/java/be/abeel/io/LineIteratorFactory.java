@@ -20,11 +20,9 @@ public class LineIteratorFactory {
         ZipInputStream zipinputstream = new ZipInputStream(new FileInputStream(f));
 
         ZipEntry zipentry = zipinputstream.getNextEntry();
-//        System.out.println(zipentry);
         if (zipentry != null) {
             // for each entry to be extracted
             String entryName = zipentry.getName();
-//            System.out.println("File ::" + entryName);
             // RandomAccessFile rf;
             File newFile = new File(entryName);
             return new LineIterator(newFile);

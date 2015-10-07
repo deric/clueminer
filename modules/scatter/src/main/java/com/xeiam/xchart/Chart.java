@@ -295,36 +295,34 @@ public class Chart {
         Axis xAxis = chartPainter.getAxisPair().getXAxis();
         Axis yAxis = chartPainter.getAxisPair().getYAxis();
 
-        StyleManager styleManager = chartPainter.getStyleManager();
+        //double xval = rect.x - xLeftMargin / 2.0;
+        double xval, xwidth;
+        double xmax = bounds.getMaxX();
+        double ymax = bounds.getMaxY();
+        //double yval = rect.y - yTopMargin / 2.0;
+        double yval, yheight;
 
-        // X-Axis
-        double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
-        double xLeftMargin = Utils.getTickStartOffset(bounds.getWidth(), xTickSpace);
-
-        // Y-Axis
-        double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
-        double yTopMargin = Utils.getTickStartOffset(bounds.getHeight(), yTickSpace);
-
-        double xval = rect.x - bounds.getMinX() + xLeftMargin;
-        double xmax = bounds.getMaxX() - bounds.getMinX();
-        double ymax = bounds.getMaxY() - bounds.getMinY();
-        double yval = rect.y - bounds.getMinY() + yTopMargin;
-
+        xval = rect.x;
+        xwidth = rect.getWidth();
         //selection of out plot area
-        if (xval < 0) {
-            xval = 0;
+        if (xval < bounds.getX()) {
+            xval = bounds.getX();
+            xwidth = rect.getMaxX() - bounds.getX();
         }
-        if (yval < 0) {
-            yval = 0.0;
+
+        yval = rect.y;
+        yheight = rect.getHeight();
+        if (yval < bounds.getY()) {
+            yval = bounds.getY();
+            yheight = rect.getMaxY() - bounds.getY();
         }
 
         Rectangle.Double res = new Rectangle.Double();
-        res.x = scaleToRange(xval, 0.0, xmax, xAxis.getMin(), xAxis.getMax());
+        res.x = scaleToRange(xval, bounds.getX(), xmax, xAxis.getMin(), xAxis.getMax());
         //on canvas [0,0] is in top left corner, while on chart it's down left
-        res.y = scaleToRange(yval, 0.0, ymax, yAxis.getMax(), yAxis.getMin());
-        res.width = (xAxis.getMax() - xAxis.getMin()) * (rect.width / xmax);
-        res.height = (yAxis.getMax() - yAxis.getMin()) * (rect.height / ymax);
-
+        res.y = scaleToRange(yval, bounds.getY(), ymax, yAxis.getMax(), yAxis.getMin());
+        res.width = (xAxis.getMax() - xAxis.getMin()) * (xwidth / bounds.getWidth());
+        res.height = (yAxis.getMax() - yAxis.getMin()) * (yheight / bounds.getHeight());
         return res;
     }
 
@@ -342,26 +340,47 @@ public class Chart {
         return ((value - fromRangeMin) * (toRangeMax - toRangeMin) / (fromRangeMax - fromRangeMin) + toRangeMin);
     }
 
+    /**
+     * Given data values [x, y] compute its position on the chart
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public Point2D positionOnCanvas(double x, double y) {
         Rectangle2D bounds = chartPainter.getPlot().getBounds();
 
         StyleManager styleManager = chartPainter.getStyleManager();
 
+        double xMin = chartPainter.getAxisPair().getXAxis().getMin();
+        double xMax = chartPainter.getAxisPair().getXAxis().getMax();
+
+        double yMin = chartPainter.getAxisPair().getYAxis().getMin();
+        double yMax = chartPainter.getAxisPair().getYAxis().getMax();
+
         // X-Axis
         double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
-        double xLeftMargin = Utils.getTickStartOffset(bounds.getWidth(), xTickSpace);
+        double xLeftMargin = Utils.getTickStartOffset((int) bounds.getWidth(), xTickSpace);
 
         // Y-Axis
         double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
-        double yTopMargin = Utils.getTickStartOffset(bounds.getHeight(), yTickSpace);
+        double yTopMargin = Utils.getTickStartOffset((int) bounds.getHeight(), yTickSpace);
 
-        Axis xAxis = chartPainter.getAxisPair().getXAxis();
-        Axis yAxis = chartPainter.getAxisPair().getYAxis();
+        double xTransform = xLeftMargin + ((x - xMin) / (xMax - xMin) * xTickSpace);
+        double yTransform = bounds.getHeight() - (yTopMargin + (y - yMin) / (yMax - yMin) * yTickSpace);
 
-        double px = scaleToRange(x, xAxis.getMin(), xAxis.getMax(), bounds.getMinX(), bounds.getMaxX());
-        double py = scaleToRange(y, yAxis.getMin(), yAxis.getMax(), bounds.getMaxY(), bounds.getMinY());
+        return new Point2D.Double(bounds.getX() + xTransform, bounds.getY() + yTransform);
+    }
 
-        return new Point2D.Double(px - xLeftMargin, py - yTopMargin);
+    public Rectangle2D.Double getPlotArea() {
+        Rectangle2D bounds = chartPainter.getPlot().getBounds();
+
+        Rectangle.Double res = new Rectangle.Double();
+        res.x = bounds.getX();
+        res.y = bounds.getY();
+        res.width = bounds.getWidth();
+        res.height = bounds.getHeight();
+        return res;
     }
 
 }

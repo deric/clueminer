@@ -1,4 +1,4 @@
-package org.clueminer.dataset.benchmark;
+package org.clueminer.gnuplot;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
@@ -49,26 +49,43 @@ public class GnuplotHelper {
         return name;
     }
 
+    private static String bashTemplate(String subdir) {
+        StringBuilder sb = new StringBuilder("#!/bin/bash\n");
+        sb.append("PWD=\"$(pwd)\"\n");
+
+        if (subdir != null && !subdir.isEmpty()) {
+            sb.append("cd ").append(subdir).append("\n");
+        }
+        return sb.toString();
+    }
+
     /**
      *
      * @param plots plot names without extension
-     * @param dir
+     * @param dir base dir
+     * @param gnuplotDir directory with gnuplot file
      * @param term
-     * @param ext
+     * @param ext extentions of output format
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public void bashPlotScript(String[] plots, String dir, String term, String ext) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+    public static void bashPlotScript(String[] plots, String dir, String gnuplotDir, String term, String ext)
+            throws FileNotFoundException, UnsupportedEncodingException, IOException {
         //bash script to generate results
         String shFile = dir + File.separatorChar + "_plot-" + ext;
         try (PrintWriter template = new PrintWriter(shFile, "UTF-8")) {
-            template.write("#!/bin/bash\n"
-                    + "PWD=\"$(pwd)\"\n");
+            template.write(bashTemplate(gnuplotDir));
             template.write("TERM=\"" + term + "\"\n");
+            int pos;
             for (String plot : plots) {
+                pos = plot.indexOf(".");
+                if (pos > 0) {
+                    //remove extension part
+                    plot = plot.substring(0, pos);
+                }
                 template.write("gnuplot -e \"${TERM}\" " + "$PWD" + File.separatorChar
-                        + "gpt" + File.separatorChar + plot + gnuplotExtension
+                        + gnuplotDir + File.separatorChar + plot + gnuplotExtension
                         + " > $PWD" + File.separatorChar + plot + "." + ext + "\n");
             }
         }

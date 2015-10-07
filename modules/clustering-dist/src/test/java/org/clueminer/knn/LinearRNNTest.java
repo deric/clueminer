@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import static org.clueminer.knn.KnnTest.delta;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -44,11 +43,9 @@ public class LinearRNNTest extends KnnTest {
 
         List<Neighbor<Instance>> neighbors = new LinkedList<>();
         Instance ref = d.get(9);
-        double range = 0.1;
+        double range = 0.029;
         subject.range(ref, range, neighbors);
-
         for (Neighbor<Instance> neighbor : neighbors) {
-            System.out.println("nn: " + neighbor);
             assertEquals(0.0, neighbor.distance, delta);
         }
         //there are 2 same instances
