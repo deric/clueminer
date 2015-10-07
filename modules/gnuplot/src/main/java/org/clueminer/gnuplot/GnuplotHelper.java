@@ -85,7 +85,7 @@ public class GnuplotHelper {
                     plot = plot.substring(0, pos);
                 }
                 template.write("gnuplot -e \"${TERM}\" " + "$PWD" + File.separatorChar
-                        + gnuplotDir + File.separatorChar + plot + gnuplotExtension
+                        + ".." + File.separatorChar + plot + gnuplotExtension
                         + " > $PWD" + File.separatorChar + plot + "." + ext + "\n");
             }
         }
