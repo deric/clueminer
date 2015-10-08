@@ -34,6 +34,7 @@
                         <publicPackage>com.google.common.xml</publicPackage>
                         <publicPackage>com.google.code.gson</publicPackage>
                         <publicPackage>com.google.gson.stream</publicPackage>
+                        <publicPackage>com.google.gson</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

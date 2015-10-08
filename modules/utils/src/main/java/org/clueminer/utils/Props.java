@@ -4,6 +4,9 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -443,7 +446,6 @@ public class Props implements Map<String, Object> {
             try (JsonWriter writer = new JsonWriter(w)) {
                 writer.beginObject();
                 for (Entry<String, Object> entry : entrySet()) {
-
                     Object val = entry.getValue();
                     writer.name(entry.getKey());
                     if (val instanceof Double) {
@@ -462,7 +464,6 @@ public class Props implements Map<String, Object> {
                         String str = val.toString();
                         writer.value(str);
                     }
-
                 }
                 writer.endObject();
             }
@@ -471,5 +472,22 @@ public class Props implements Map<String, Object> {
         }
 
         return w.toString();
+    }
+
+    public static Props fromJson(String json) {
+        Props p = new Props();
+
+        JsonElement jelement = new JsonParser().parse(json);
+
+        JsonObject jobject = jelement.getAsJsonObject();
+        for (Entry<String, JsonElement> e : jobject.entrySet()) {
+            if (e.getValue().isJsonPrimitive()) {
+                p.put(e.getKey(), e.getValue().getAsString());
+            } else {
+                throw new RuntimeException("nested structures not supported yet");
+            }
+        }
+
+        return p;
     }
 }

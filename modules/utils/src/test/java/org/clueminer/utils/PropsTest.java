@@ -327,4 +327,10 @@ public class PropsTest {
 
     }
 
+    @Test
+    public void testFromJson() {
+        Props p = Props.fromJson("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":\"123\"}");
+        assertEquals("x", p.get("foo"));
+    }
+
 }
