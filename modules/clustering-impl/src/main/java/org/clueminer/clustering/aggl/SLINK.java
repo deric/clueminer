@@ -208,7 +208,7 @@ public class SLINK<E extends Instance, C extends Cluster<E>> extends AbstractClu
 
     @Override
     public boolean isLinkageSupported(String linkage) {
-        return linkage.equals("Single Linkage");
+        return linkage.equals("Single");
     }
 
 }

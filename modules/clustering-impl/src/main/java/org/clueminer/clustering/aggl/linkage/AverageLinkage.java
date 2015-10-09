@@ -25,7 +25,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AverageLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 1357290267936276833L;
-    public static String name = "Average";
+    public static final String name = "Average";
 
     public AverageLinkage() {
         super(EuclideanDistance.getInstance());

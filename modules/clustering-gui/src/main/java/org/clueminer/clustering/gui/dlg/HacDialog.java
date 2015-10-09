@@ -31,7 +31,7 @@ public class HacDialog extends JPanel implements ClusteringDialog {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
         comboStandardisation.setSelectedItem("Min-Max");
-        comboLinkage.setSelectedItem("Complete Linkage");
+        comboLinkage.setSelectedItem("Complete");
         comboCutMethod.setSelectedItem("naive cutoff");
     }
 

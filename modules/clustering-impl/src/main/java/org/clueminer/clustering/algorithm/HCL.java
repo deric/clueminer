@@ -1,6 +1,9 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
+import org.clueminer.clustering.aggl.linkage.AverageLinkage;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -872,9 +875,9 @@ public class HCL<E extends Instance, C extends Cluster<E>> extends AbstractClust
     @Override
     public boolean isLinkageSupported(String linkage) {
         switch (linkage) {
-            case "Single Linkage":
-            case "Complete Linkage":
-            case "Average Linkage":
+            case SingleLinkage.name:
+            case CompleteLinkage.name:
+            case AverageLinkage.name:
                 return true;
             default:
                 return false;

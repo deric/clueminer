@@ -34,7 +34,7 @@ import org.clueminer.math.Matrix;
 //@ServiceProvider(service = ClusterLinkage.class)
 public class CompleteLinkageInv<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
-    public static final String name = "Complete Linkage - inv dist";
+    public static final String name = "Complete-inv_dist";
     private static final long serialVersionUID = -1863699488371017773L;
 
     public CompleteLinkageInv() {

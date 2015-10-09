@@ -1,6 +1,8 @@
 package org.clueminer.export.newick;
 
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -26,7 +28,7 @@ public class NewickExportRunnerTest {
     public void testDoExport() {
         Dataset<? extends Instance> dataset = FakeDatasets.simpleData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, "Single Linkage");
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HACLW alg = new HACLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
@@ -35,14 +37,13 @@ public class NewickExportRunnerTest {
         String res = subject.doExport(result);
         System.out.println(res);
 //        assertEquals("(((2:0.143,5:0.143):0.199,1:0.342):0.044,((3:0.102,6:0.102):0.118,4:0.220):0.166):0.0;", res);
-
     }
 
     @Test
     public void testExportKumar() {
         Dataset<? extends Instance> dataset = FakeDatasets.kumarData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, "Complete Linkage");
+        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
         HACLW alg = new HACLW();
@@ -59,7 +60,7 @@ public class NewickExportRunnerTest {
     public void testDoExportWithNames() {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, "Complete Linkage");
+        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
         HACLW alg = new HACLW();
