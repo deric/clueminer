@@ -28,7 +28,8 @@ import org.openide.util.lookup.ServiceProvider;
  * 373-380.
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> implements AgglomerativeClustering<E, C> {

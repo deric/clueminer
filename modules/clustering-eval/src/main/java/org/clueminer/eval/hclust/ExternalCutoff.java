@@ -15,7 +15,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = CutoffStrategy.class)
 public class ExternalCutoff implements CutoffStrategy {
 
-    private static final String name = "External cutoff";
+    private static final String name = "External_cutoff";
 
     @Override
     public String getName() {

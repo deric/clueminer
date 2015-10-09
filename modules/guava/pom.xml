@@ -32,6 +32,9 @@
                         <publicPackage>com.google.common.reflect</publicPackage>
                         <publicPackage>com.google.common.util.concurrent</publicPackage>
                         <publicPackage>com.google.common.xml</publicPackage>
+                        <publicPackage>com.google.code.gson</publicPackage>
+                        <publicPackage>com.google.gson.stream</publicPackage>
+                        <publicPackage>com.google.gson</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -54,6 +57,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.4</version>
         </dependency>
     </dependencies>
     <properties>

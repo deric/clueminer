@@ -2,6 +2,9 @@ package org.clueminer.dendrogram;
 
 import java.util.List;
 import java.util.Map;
+import org.clueminer.clustering.aggl.linkage.AverageLinkage;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -221,13 +224,13 @@ public class HclDendroPanel extends DendroPanel {
     public void linkageChanged(String linkage) {
         int res;
         switch (linkage) {
-            case "Single Linkage":
+            case SingleLinkage.name:
                 res = -1;
                 break;
-            case "Complete Linkage":
+            case CompleteLinkage.name:
                 res = 1;
                 break;
-            case "Average Linkage":
+            case AverageLinkage.name:
                 res = 0;
                 break;
             default:

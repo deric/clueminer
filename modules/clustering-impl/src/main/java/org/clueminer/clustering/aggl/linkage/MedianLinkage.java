@@ -25,7 +25,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MedianLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 7942079385178130303L;
-    public static final String name = "Median Linkage";
+    public static final String name = "Median";
 
     public MedianLinkage() {
         super(EuclideanDistance.getInstance());

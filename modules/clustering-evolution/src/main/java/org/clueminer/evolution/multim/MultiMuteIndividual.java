@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -243,7 +244,7 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
         boolean ret = true;
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
-            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE, "Complete Linkage"));
+            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE, CompleteLinkage.name));
         }
         if (clustering != null) {
             if (clustering.size() < 2) {

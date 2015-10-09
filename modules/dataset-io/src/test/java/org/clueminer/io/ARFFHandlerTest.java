@@ -198,7 +198,7 @@ public class ARFFHandlerTest {
         arff.load(tf.ds577(), data, 2);
         assertEquals(2, data.attributeCount());
         assertEquals(577, data.size());
-        data.setName(datasetName);
+        assertEquals(datasetName, data.getName());
     }
 
 }
