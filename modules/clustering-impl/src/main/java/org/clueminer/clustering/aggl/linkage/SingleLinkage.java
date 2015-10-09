@@ -25,7 +25,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SingleLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     private static final long serialVersionUID = 6661476787499047883L;
-    public static final String name = "Single Linkage";
+    public static final String name = "Single";
 
     public SingleLinkage() {
         super(EuclideanDistance.getInstance());
