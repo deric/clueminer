@@ -2,6 +2,7 @@ package org.clueminer.clustering.order;
 
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Clustering;
@@ -37,7 +38,7 @@ public class MOLOTest {
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, "Single Linkage");
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, pref);
         subject.optimize(rowsResult, false);
@@ -54,7 +55,7 @@ public class MOLOTest {
         assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), delta);
         double inc = 0.1;
         double cut = height;
-        Clustering c = null, prev = null;
+        Clustering c, prev = null;
         int[] clusters;
         int numNodes = 2 * rowsResult.getDataset().size() - 1;
         while (cut > 0.0) {

@@ -22,7 +22,7 @@ public class AgglParams<E extends Instance> {
 
     public static final String DEFAULT_DISTANCE_FUNCTION = "Euclidean";
 
-    public static final String DEFAULT_LINKAGE = "Complete Linkage";
+    public static final String DEFAULT_LINKAGE = "Complete";
 
     /**
      * cluster rows (default)

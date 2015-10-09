@@ -18,7 +18,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusterLinkage.class)
 public class WardsLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
-    public static final String name = "Ward's Linkage";
+    public static final String name = "Ward's";
+    private static final long serialVersionUID = 1675876780777905831L;
 
     public WardsLinkage() {
         super(EuclideanDistance.getInstance());
