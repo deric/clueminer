@@ -143,7 +143,7 @@ public class GnuplotHelper {
      * @param content
      * @return result filename
      */
-    public String writeGnuplot(String dir, String scriptFile, String content) {
+    public static String writeGnuplot(String dir, String scriptFile, String content) {
         PrintWriter template = null;
         String script = dir + File.separatorChar + scriptFile + gnuplotExtension;
         try {

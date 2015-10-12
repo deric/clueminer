@@ -62,7 +62,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
      * The minimum number of points required to form a cluster
      */
     @Param(name = MIN_PTS, description = "minimum number of points required to form a cluster", required = true, min = 1, max = Double.MAX_VALUE)
-    private double minPts;
+    private int minPts;
     /**
      * The range of neighborhood.
      */
@@ -82,7 +82,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        minPts = props.getDouble(MIN_PTS);
+        minPts = props.getInt(MIN_PTS);
         if (minPts < 1) {
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
         }
@@ -152,6 +152,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             }
             if (!res.hasAt(clustIdx)) {
                 curr = res.createCluster(clustIdx, avgSize);
+                curr.setAttributes(dataset.getAttributes());
                 if (colorGenerator != null) {
                     curr.setColor(colorGenerator.next());
                 }
@@ -163,7 +164,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             res.get(k).setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
         }
         res.lookupAdd(dataset);
-
+        res.setParams(props);
         return res;
     }
 
