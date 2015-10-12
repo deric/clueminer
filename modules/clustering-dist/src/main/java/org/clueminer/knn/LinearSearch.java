@@ -29,6 +29,8 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Naive k-NN algorithm implementation. Searching for k nearest neighbors
+ * requires O(n) comparisons.
  *
  * @author deric
  * @param <T>
