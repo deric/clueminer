@@ -90,7 +90,7 @@ public class DBSCANTest {
         Dataset dataset = FakeClustering.schoolData();
         Props pref = new Props();
 
-        pref.putDouble(DBSCAN.MIN_PTS, 2);
+        pref.putInt(DBSCAN.MIN_PTS, 2);
         pref.putDouble(DBSCAN.EPS, 20);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(2, c.size());
@@ -104,7 +104,7 @@ public class DBSCANTest {
 
         System.out.println("data size: " + dataset.size());
 
-        pref.putDouble(DBSCAN.MIN_PTS, 2);
+        pref.putInt(DBSCAN.MIN_PTS, 2);
         pref.putDouble(DBSCAN.EPS, 5);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(4, c.size());
