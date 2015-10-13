@@ -3,6 +3,8 @@ package org.clueminer.explorer;
 import java.awt.event.ActionEvent;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.utils.Props;
 
@@ -30,5 +32,11 @@ public interface ToolbarListener {
      * Remove all found clusterings from explorer
      */
     void clearAll();
+
+    /**
+     *
+     * @return current dataset
+     */
+    Dataset<? extends Instance> getDataset();
 
 }

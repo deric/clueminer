@@ -17,6 +17,7 @@ import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphStorageFactory;
@@ -671,11 +672,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         return this;
     }
 
-    @Override
-    public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof Chameleon;
-    }
-
     private Object[] initCutoff() {
         return InternalEvaluatorFactory.getInstance().getProvidersArray();
     }
@@ -704,5 +700,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
     private Object[] init3rdSort() {
         return MergeEvaluationFactory.getInstance().getProvidersArray();
+    }
+
+    @Override
+    public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
+        return algorithm instanceof Chameleon;
     }
 }

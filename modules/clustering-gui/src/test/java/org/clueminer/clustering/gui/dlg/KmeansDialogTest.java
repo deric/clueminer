@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.algorithm.KMeans;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,13 +36,10 @@ public class KmeansDialogTest {
         subject = new KmeansDialog();
     }
 
-    @Before
-    public void setUp() {
-    }
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new KMeans()));
+        assertEquals(true, subject.isUIfor(new KMeans(), null));
     }
 
     public String getTitle() {

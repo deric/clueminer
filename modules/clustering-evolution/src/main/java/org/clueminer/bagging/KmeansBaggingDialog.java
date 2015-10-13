@@ -39,6 +39,7 @@ import org.clueminer.clustering.api.factory.ConsensusFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -405,7 +406,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
     }
 
     @Override
-    public boolean isUIfor(ClusteringAlgorithm algorithm) {
+    public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
         return algorithm instanceof KMeansBagging;
     }
 

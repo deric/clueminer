@@ -18,7 +18,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusterLinkage.class)
 public class WardsLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
-    public static final String name = "Ward's";
+    public static final String name = "Wards";
     private static final long serialVersionUID = 1675876780777905831L;
 
     public WardsLinkage() {

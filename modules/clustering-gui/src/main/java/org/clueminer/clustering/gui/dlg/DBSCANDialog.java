@@ -18,8 +18,11 @@ package org.clueminer.clustering.gui.dlg;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,11 +31,18 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.DBSCAN;
+import org.clueminer.clustering.algorithm.DBSCANParamEstim;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.Props;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class DBSCANDialog extends JPanel implements ClusteringDialog {
+public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringDialog<E, C>, TaskListener {
 
     private static final long serialVersionUID = 7956135045201178826L;
 
@@ -48,7 +58,13 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     private JTextField tfMinPts;
     private JTextField tfRadius;
     private JComboBox comboDistance;
+    private JButton btnEstimate;
+    private JLabel info;
     private static final String name = "DBSCAN";
+    private Dataset<E> dataset;
+    private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
+    private Props params = new Props();
+    private DBSCANParamEstim<E> estimator;
 
     public DBSCANDialog() {
         initComponents();
@@ -107,10 +123,39 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
         //iterations
         c.gridx = 0;
         c.gridy++;
-        add(new JLabel("Radius:"), c);
+        add(new JLabel("Epsilon:"), c);
         c.gridx = 1;
         tfRadius = new JTextField("2.0", 10);
         add(tfRadius, c);
+
+        btnEstimate = new JButton("Estimate");
+        final TaskListener tl = this;
+        btnEstimate.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (dataset != null) {
+                    btnEstimate.setEnabled(false);
+                    final RequestProcessor.Task task = RP.create(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            estimator = new DBSCANParamEstim<>();
+                            estimator.estimate(dataset, params);
+                        }
+
+                    });
+                    task.addTaskListener(tl);
+                    task.schedule(0);
+                }
+            }
+        });
+        c.gridx = 2;
+        add(btnEstimate, c);
+        c.gridy++;
+        c.gridx = 1;
+        info = new JLabel("");
+        add(info, c);
 
         //distance measure
         c.gridy++;
@@ -119,6 +164,7 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
         add(comboDistance, c);
+
     }
 
     private void updateMinPtsSlider() {
@@ -132,7 +178,6 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public Props getParams() {
-        Props params = new Props();
         params.putInt(DBSCAN.MIN_PTS, Integer.valueOf(tfMinPts.getText()));
         params.putDouble(DBSCAN.EPS, Double.parseDouble(tfRadius.getText()));
         params.put(AbstractClusteringAlgorithm.DISTANCE, (String) comboDistance.getSelectedItem());
@@ -146,8 +191,21 @@ public class DBSCANDialog extends JPanel implements ClusteringDialog {
     }
 
     @Override
-    public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof DBSCAN;
+    public boolean isUIfor(ClusteringAlgorithm<E, C> algorithm, Dataset<E> dataset) {
+        if (algorithm instanceof DBSCAN) {
+            this.dataset = dataset;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void taskFinished(Task task) {
+        if (estimator != null) {
+            tfRadius.setText(String.valueOf(estimator.getEps()));
+            info.setText(String.format("eps range %.4f and %.4f", estimator.getMinEps(), estimator.getMaxEps()));
+            btnEstimate.setEnabled(true);
+        }
     }
 
 }
