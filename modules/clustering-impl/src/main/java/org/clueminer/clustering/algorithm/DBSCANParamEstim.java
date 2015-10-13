@@ -195,8 +195,6 @@ public class DBSCANParamEstim<E extends Instance> {
      * @return estimated reasonable max value
      */
     public double getMaxEps() {
-        double diff = (eps - getMinEps()) / 10.0;
-        double ret = eps - 5 * diff;
-        return ret < kdist[0] ? ret : kdist[0];
+        return eps + (kdist[0] - eps) / 2.0;
     }
 }

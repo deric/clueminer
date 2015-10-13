@@ -11,6 +11,8 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.clustering.gui.ClusteringDialogFactory;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
@@ -25,6 +27,7 @@ public class ClusterAlgPanel extends JPanel {
     private JPanel optPanel;
     private String selected = null;
     private ClusteringDialog dialog = null;
+    private Dataset<? extends Instance> dataset;
 
     public ClusterAlgPanel() {
         initComponents();
@@ -73,7 +76,7 @@ public class ClusterAlgPanel extends JPanel {
 
     private JPanel getUI(ClusteringAlgorithm alg) {
         for (ClusteringDialog dlg : ClusteringDialogFactory.getInstance().getAll()) {
-            if (dlg.isUIfor(alg)) {
+            if (dlg.isUIfor(alg, dataset)) {
                 dialog = dlg;
                 return dlg.getPanel();
             }
@@ -95,6 +98,10 @@ public class ClusterAlgPanel extends JPanel {
         } else {
             throw new RuntimeException("missing dialog");
         }
+    }
+
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        this.dataset = dataset;
     }
 
 }

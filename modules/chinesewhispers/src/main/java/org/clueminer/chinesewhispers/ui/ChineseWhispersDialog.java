@@ -32,6 +32,7 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.utils.Props;
@@ -77,11 +78,6 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     @Override
     public JPanel getPanel() {
         return this;
-    }
-
-    @Override
-    public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof ChineseWhispers;
     }
 
     private void initComponents() {
@@ -200,6 +196,11 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         } catch (NumberFormatException ex) {
             // wrong input so we do not set the slider but also do not want to raise an exception
         }
+    }
+
+    @Override
+    public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
+        return algorithm instanceof ChineseWhispers;
     }
 
 }

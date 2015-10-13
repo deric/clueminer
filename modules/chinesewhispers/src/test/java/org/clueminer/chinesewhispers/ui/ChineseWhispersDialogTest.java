@@ -38,7 +38,7 @@ public class ChineseWhispersDialogTest {
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new ChineseWhispers()));
+        assertEquals(true, subject.isUIfor(new ChineseWhispers(), null));
     }
 
     public String getTitle() {

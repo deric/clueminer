@@ -37,7 +37,7 @@ public class KmeansBaggingDialogTest {
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new KMeansBagging()));
+        assertEquals(true, subject.isUIfor(new KMeansBagging(), null));
     }
 
     public String getTitle() {

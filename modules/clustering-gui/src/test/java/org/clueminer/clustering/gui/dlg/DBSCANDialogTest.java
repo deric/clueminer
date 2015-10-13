@@ -38,7 +38,7 @@ public class DBSCANDialogTest {
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new DBSCAN()));
+        assertEquals(true, subject.isUIfor(new DBSCAN(), null));
     }
 
     public String getTitle() {

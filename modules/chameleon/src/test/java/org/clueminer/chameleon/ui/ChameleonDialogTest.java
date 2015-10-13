@@ -43,7 +43,7 @@ public class ChameleonDialogTest {
 
     @Test
     public void testIsUIfor() {
-        assertEquals(true, subject.isUIfor(new Chameleon()));
+        assertEquals(true, subject.isUIfor(new Chameleon(), null));
     }
 
     public String getTitle() {

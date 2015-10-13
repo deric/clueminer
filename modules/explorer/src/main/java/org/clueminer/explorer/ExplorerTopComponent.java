@@ -321,4 +321,9 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         children.clearAll();
     }
 
+    @Override
+    public Dataset<? extends Instance> getDataset() {
+        return dataset;
+    }
+
 }

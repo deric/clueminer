@@ -10,6 +10,7 @@ import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.math.StandardisationFactory;
 import org.clueminer.utils.Props;
@@ -191,11 +192,6 @@ public class HacDialog extends JPanel implements ClusteringDialog {
         return this;
     }
 
-    @Override
-    public boolean isUIfor(ClusteringAlgorithm algorithm) {
-        return algorithm instanceof HAC;
-    }
-
     private Object[] initLinkage() {
         return LinkageFactory.getInstance().getProvidersArray();
     }
@@ -206,5 +202,10 @@ public class HacDialog extends JPanel implements ClusteringDialog {
 
     private Object[] initCutoffMethod() {
         return CutoffStrategyFactory.getInstance().getProvidersArray();
+    }
+
+    @Override
+    public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
+        return algorithm instanceof HAC;
     }
 }
