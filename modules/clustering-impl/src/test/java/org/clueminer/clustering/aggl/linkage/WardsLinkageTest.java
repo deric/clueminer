@@ -6,8 +6,8 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -18,7 +18,6 @@ public class WardsLinkageTest extends AbstractLinkageTest {
     public WardsLinkageTest() {
         subject = new WardsLinkage();
     }
-
 
     @Test
     public void testDistance() {
