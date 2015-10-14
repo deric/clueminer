@@ -18,6 +18,7 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -71,6 +72,8 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
 
     private RNNSearch<E> nns;
 
+    private int k;
+
     public DBSCAN() {
 
     }
@@ -82,6 +85,55 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        int[] y = scan(dataset, props);
+        int n = dataset.size();
+        Clustering res = Clusterings.newList();
+        int avgSize = (int) Math.sqrt(dataset.size());
+        Cluster curr;
+        int clustIdx;
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
+        for (int i = 0; i < n; i++) {
+            if (y[i] == OUTLIER) {
+                clustIdx = k;
+            } else {
+                clustIdx = y[i];
+            }
+            if (!res.hasAt(clustIdx)) {
+                curr = res.createCluster(clustIdx, avgSize);
+                curr.setAttributes(dataset.getAttributes());
+                if (colorGenerator != null) {
+                    curr.setColor(colorGenerator.next());
+                }
+            }
+            curr = res.get(clustIdx);
+            curr.add(dataset.get(i));
+        }
+        if (res.hasAt(k)) {
+            res.get(k).setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+        }
+        res.lookupAdd(dataset);
+        res.setParams(props);
+        return res;
+    }
+
+    public List<Instance> findNoise(Dataset<E> dataset, Props props) {
+        int[] y = scan(dataset, props);
+        int n = dataset.size();
+        LinkedList<Instance> result = null;
+        for (int i = 0; i < n; i++) {
+            if (y[i] == OUTLIER) {
+                if (result == null) {
+                    result = new LinkedList<>();
+                }
+                result.add(dataset.get(i));
+            }
+        }
+        return result;
+    }
+
+    private int[] scan(Dataset<E> dataset, Props props) {
         minPts = props.getInt(MIN_PTS);
         if (minPts < 1) {
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
@@ -92,7 +144,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             throw new IllegalArgumentException("Invalid radius: " + radius);
         }
 
-        int k = 0;
+        k = 0;
 
         String rnnProvider = props.get(RNN_ALG, "linear RNN");
         nns = RnnFactory.getInstance().getProvider(rnnProvider);
@@ -136,36 +188,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
                 }
             }
         }
-
-        Clustering res = Clusterings.newList();
-        int avgSize = (int) Math.sqrt(dataset.size());
-        Cluster curr;
-        int clustIdx;
-        if (colorGenerator != null) {
-            colorGenerator.reset();
-        }
-        for (int i = 0; i < n; i++) {
-            if (y[i] == OUTLIER) {
-                clustIdx = k;
-            } else {
-                clustIdx = y[i];
-            }
-            if (!res.hasAt(clustIdx)) {
-                curr = res.createCluster(clustIdx, avgSize);
-                curr.setAttributes(dataset.getAttributes());
-                if (colorGenerator != null) {
-                    curr.setColor(colorGenerator.next());
-                }
-            }
-            curr = res.get(clustIdx);
-            curr.add(dataset.get(i));
-        }
-        if (res.hasAt(k)) {
-            res.get(k).setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
-        }
-        res.lookupAdd(dataset);
-        res.setParams(props);
-        return res;
+        return y;
     }
 
     public RNNSearch<E> getNns() {
