@@ -27,8 +27,11 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.knn.KDTree;
-import org.clueminer.neighbor.Neighbor;
+import org.clueminer.kdtree.KDTree;
+import org.clueminer.kdtree.KeyDuplicateException;
+import org.clueminer.kdtree.KeyMissingException;
+import org.clueminer.kdtree.KeySizeException;
+import org.openide.util.Exceptions;
 
 /**
  * Creates a set of clusters for a given number of data points or reduces the
@@ -99,7 +102,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         points = new ArrayList<>(numberOfPoints);
         cc = new CureComparator<>();
         heap = new PriorityQueue(1000, cc);
-        kdtree = new KDTree();
+        kdtree = new KDTree(data.get(0).attributeCount());
         int pointIndex = 0;
 
         if (clusterMerge) {
@@ -114,7 +117,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
             this.numberofRepInCluster = numberOfRepInCluster;
             this.shrinkFactor = shrinkFactor;
         }
-        buildKDTree(data);
+        try {
+            buildKDTree(data);
+        } catch (KeySizeException | KeyDuplicateException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         buildHeapForClusters(data);
     }
 
@@ -124,7 +131,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         points = new ArrayList<>(numberOfPoints);
         cc = new CureComparator<>();
         heap = new PriorityQueue(1000, cc);
-        kdtree = new KDTree();
+        kdtree = new KDTree(data.attributeCount());
 
         if (clusterMerge) {
             for (E instance : data) {
@@ -135,7 +142,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         this.numberofRepInCluster = numberOfRepInCluster;
         this.shrinkFactor = shrinkFactor;
 
-        buildKDTree(data);
+        try {
+            buildKDTree(data);
+        } catch (KeySizeException | KeyDuplicateException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         startClustering();
     }
 
@@ -153,8 +164,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         dm = EuclideanDistance.getInstance();
         initializeContainers(dataset.size(), numberOfClusters, numberOfRepInCluster, shrinkFactor);
         initializePoints(dataset);
-        System.out.println("start buildin kd-tree " + dataset);
-        buildKDTree(dataset);
+        try {
+            buildKDTree(dataset);
+        } catch (KeySizeException | KeyDuplicateException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         buildHeap(dataset);
         startClustering();
     }
@@ -202,7 +216,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      * @return Cluster[] Set of Clusters
      */
     public C[] getAllClusters() {
-        C clusters[] = (C[]) new Cluster[heap.size()];
+        C clusters[] = (C[]) new CureCluster[heap.size()];
         int i = 0;
         while (heap.size() != 0) {
             clusters[i] = heap.remove();
@@ -214,12 +228,15 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     /**
      * Builds the KD Tree to store the data points
      */
-    private void buildKDTree(Dataset<E> dataset) {
-        kdtree = new KDTree(dataset);
+    private void buildKDTree(Dataset<E> dataset) throws KeySizeException, KeyDuplicateException {
+        kdtree = new KDTree(dataset.attributeCount());
+        for (E instance : dataset) {
+            kdtree.insert(instance.arrayCopy(), instance);
+        }
 
     }
 
-    private void buildKDTree(Clustering<E, C> dataPoints) {
+    private void buildKDTree(Clustering<E, C> dataPoints) throws KeySizeException, KeyDuplicateException {
         Dataset<E> dataset = dataPoints.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("could not find dataset");
@@ -236,16 +253,20 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         Clustering<E, C> clusters = new ClusterList<>();
         HashMap<Integer, C> pointCluster = new HashMap();
         for (int i = 0; i < numberOfPoints; i++) {
-            C cluster = (C) new CureCluster();
-            cluster.setAttributes(dataset.getAttributes());
-            cluster.rep.add(points.get(i));
-            cluster.pointsInCluster.add(points.get(i));
+            try {
+                C cluster = (C) new CureCluster();
+                cluster.setAttributes(dataset.getAttributes());
+                cluster.rep.add(points.get(i));
+                cluster.pointsInCluster.add(points.get(i));
 
-            Neighbor<E> nearest = kdtree.nearest(points.get(i));
-            cluster.distanceFromClosest = dm.measure(points.get(i), nearest.key);
-            cluster.closestClusterRep.add(nearest.index);
-            clusters.add(cluster);
-            pointCluster.put(points.get(i).getIndex(), cluster);
+                E nearest = kdtree.nearest(points.get(i).arrayCopy());
+                cluster.distanceFromClosest = dm.measure(points.get(i), nearest);
+                cluster.closestClusterRep.add(nearest.getIndex());
+                clusters.add(cluster);
+                pointCluster.put(points.get(i).getIndex(), cluster);
+            } catch (KeySizeException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         for (int i = 0; i < clusters.size(); i++) {
             C cluster = clusters.get(i);
@@ -265,16 +286,21 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      */
     private void startClustering() {
         while (heap.size() > clustersToBeFound) {
-            C minCluster = heap.remove();
-            C closestCluster = (C) minCluster.closestCluster;
-            heap.remove(closestCluster);
-            C newCluster = merge(minCluster, closestCluster);
-            deleteAllRepPointsForCluster(minCluster);
-            deleteAllRepPointsForCluster(closestCluster);
-            insertAllRepPointsForCluster(newCluster);
-            newCluster.closestCluster = minCluster;
-            heap.add(newCluster);
-            adjustHeap(newCluster, minCluster, closestCluster);
+            try {
+                C minCluster = heap.remove();
+                C closestCluster = (C) minCluster.closestCluster;
+                heap.remove(closestCluster);
+                C newCluster = merge(minCluster, closestCluster);
+
+                deleteAllRepPointsForCluster(minCluster);
+                deleteAllRepPointsForCluster(closestCluster);
+                insertAllRepPointsForCluster(newCluster);
+                newCluster.closestCluster = minCluster;
+                heap.add(newCluster);
+                adjustHeap(newCluster, minCluster, closestCluster);
+            } catch (KeySizeException | KeyDuplicateException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
@@ -319,11 +345,13 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      * Insert all representative points of the cluster to the KD Tree
      *
      * @param cluster Merged Cluster
+     * @throws org.clueminer.kdtree.KeySizeException
+     * @throws org.clueminer.kdtree.KeyDuplicateException
      */
-    public void insertAllRepPointsForCluster(C cluster) {
+    public void insertAllRepPointsForCluster(C cluster) throws KeySizeException, KeyDuplicateException {
         ArrayList<E> repPoints = cluster.rep;
         for (E point : repPoints) {
-            kdtree.insert(point, point.getIndex());
+            kdtree.insert(point.arrayCopy(), point);
         }
     }
 
@@ -335,7 +363,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     public void deleteAllRepPointsForCluster(C cluster) {
         ArrayList<E> repPoints = cluster.rep;
         for (E point : repPoints) {
-            kdtree.delete(point);
+            try {
+                kdtree.delete(point.arrayCopy());
+            } catch (KeySizeException | KeyMissingException ex) {
+                //nothing to do
+            }
         }
     }
 
