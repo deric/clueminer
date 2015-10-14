@@ -16,21 +16,18 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.annotation.Param;
-import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.utils.Props;
 
 /**
@@ -84,7 +81,6 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
     private int reducingFactor;
 
     private ArrayList<E> outliers;
-    private HashMap dataPointsMap;
     private static int currentRepAdditionCount;
     private HashSet<Integer> blacklist;
 
@@ -104,16 +100,15 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
         n = dataset.size();
         initializeParameters(props);
 
-        long beginTime = System.currentTimeMillis();
-
         int sampleSize = calculateSampleSize();
         ArrayList<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
 
-        ArrayList<E> partition;
-        Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(numberOfClusters);
+        Dataset<E> partition;
+        Clustering<E, C> clustering = new ClusterList<>(numberOfClusters);
         Iterator<E> iter = randomPointSet.iterator();
         for (int i = 0; i < numberOfPartitions - 1; i++) {
-            partition = new ArrayList<>(randomPointSet.size() / numberOfPartitions);
+            partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
+            partition.setAttributes(dataset.getAttributes());
             int pointIndex = 0;
             while (pointIndex < dataset.size() / numberOfPartitions) {
                 partition.add(iter.next());
@@ -121,7 +116,8 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
             }
             clusterPartition(partition, clustering);
         }
-        partition = new ArrayList<>();
+        partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
+        partition.setAttributes(dataset.getAttributes());
         while (iter.hasNext()) {
             partition.add(iter.next());
         }
@@ -131,19 +127,13 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
 
         labelRemainingDataPoints(dataset, clustering);
 
-        long time = System.currentTimeMillis() - beginTime;
-
-        System.out.println("The Algorithm took " + time + " milliseconds to complete.");
-
-        showClusters(clustering);
-
         return clustering;
     }
 
-    private void clusterPartition(ArrayList<E> partition, Clustering<E, C> clustering) {
+    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering) {
         int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
 
-        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor, dataPointsMap);
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor);
         C[] clusters = clusterSet.getAllClusters();
         if (reducingFactor >= 10) {
             clustering.addAll(eliminateOutliers(clusters, 1));
@@ -165,7 +155,6 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
         numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
         reducingFactor = props.getInt(REDUCE_FACTOR, 2);
 
-        dataPointsMap = new HashMap();
         currentRepAdditionCount = n;
         blacklist = new HashSet<>();
         outliers = new ArrayList();
@@ -268,100 +257,6 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
      */
     public static int getCurrentRepCount() {
         return ++currentRepAdditionCount;
-    }
-
-    public void showClusters(Clustering<E, C> clusters) {
-        for (int i = 0; i < numberOfClusters; i++) {
-            Cluster<E> cluster = clusters.get(i);
-            logCluster(cluster, "cluster" + i);
-        }
-        logOutlier();
-        logPlotScript(clusters.size());
-    }
-
-    private BufferedWriter getWriterHandle(String filename) {
-        BufferedWriter out = null;
-        try {
-            FileWriter fw = new FileWriter(filename, true);
-            out = new BufferedWriter(fw);
-        } catch (Exception e) {
-            debug(e);
-        }
-        return out;
-    }
-
-    private void closeWriterHandle(BufferedWriter out) {
-        try {
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            debug(e);
-        }
-    }
-
-    private void logCluster(Cluster<E> cluster, String filename) {
-        BufferedWriter out = getWriterHandle(filename);
-        try {
-            out.write("#\tX\tY\n");
-            for (int j = 0; j < cluster.size(); j++) {
-                E p = cluster.get(j);
-                for (int i = 0; i < p.size(); i++) {
-                    if (i > 0) {
-                        out.write("\t");
-                    }
-                    out.write(String.valueOf(p.value(i)));
-                }
-                out.write("\n");
-            }
-        } catch (Exception e) {
-            debug(e);
-        }
-        closeWriterHandle(out);
-    }
-
-    private void logOutlier() {
-        BufferedWriter out = getWriterHandle("outliers");
-        try {
-            out.write("#\tX\tY\n");
-            for (E outlier : outliers) {
-                for (int i = 0; i < outlier.size(); i++) {
-                    if (i > 0) {
-                        out.write("\t");
-                    }
-                    out.write(String.valueOf(outlier.value(i)));
-                }
-                out.write("\n");
-            }
-        } catch (Exception e) {
-            debug(e);
-        }
-        closeWriterHandle(out);
-    }
-
-    private void logPlotScript(int totalClusters) {
-        BufferedWriter out = getWriterHandle("plotcure.txt");
-        try {
-            setPlotStyle(out);
-            out.write("plot");
-            for (int i = 0; i < totalClusters; i++) {
-                out.write(" \"cluster" + i + "\",");
-            }
-            out.write(" \"outliers\"");
-        } catch (Exception e) {
-            debug(e);
-        }
-        closeWriterHandle(out);
-    }
-
-    private void setPlotStyle(BufferedWriter out) {
-        try {
-            out.write("reset\n");
-            out.write("set size ratio 2\n");
-            out.write("unset key\n");
-            out.write("set title \"CURE\"\n");
-        } catch (Exception e) {
-            debug(e);
-        }
     }
 
 }
