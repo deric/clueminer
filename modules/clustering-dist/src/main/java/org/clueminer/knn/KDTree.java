@@ -66,12 +66,17 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         if (dataset == null) {
             throw new RuntimeException("missing dataset");
         }
+        if (dataset.isEmpty()) {
+            throw new RuntimeException("can't build kd-tree from an empty dataset");
+        }
+        if (dataset.attributeCount() == 0) {
+            throw new RuntimeException("Dataset doesn't have any attributes");
+        }
         int n = dataset.size();
         index = new int[n];
         for (int i = 0; i < n; i++) {
             index[i] = i;
         }
-
         // Build the tree
         root = buildNode(0, n);
     }
