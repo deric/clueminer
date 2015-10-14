@@ -60,15 +60,15 @@ public class KDTree<T> {
     /**
      * Creates a KD-tree with specified number of dimensions.
      *
-     * @param k number of dimensions
+     * @param d number of dimensions
      */
-    public KDTree(int k) {
-        this(k, 0);
+    public KDTree(int d) {
+        this(d, 0);
     }
 
-    public KDTree(int k, long timeout) {
+    public KDTree(int d, long timeout) {
         this.m_timeout = timeout;
-        m_K = k;
+        m_K = d;
         m_root = null;
     }
 

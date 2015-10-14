@@ -71,7 +71,7 @@ public class KDTreeTest {
         double min_value = Double.MAX_VALUE;
         for (int i = 0; i < samples; ++i) {
             double[] keys = makeSample(dims);
-            kt.insert(keys, new Integer(i));
+            kt.insert(keys, i);
 
             /*
              for the purposes of test, we want the nearest EVEN-NUMBERED point
@@ -87,7 +87,7 @@ public class KDTreeTest {
 
         List<Integer> nbrs = kt.nearest(targ, 1, new Checker<Integer>() {
             public boolean usable(Integer v) {
-                return (v.intValue() % 2) == 0;
+                return (v % 2) == 0;
             }
         });
 

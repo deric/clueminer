@@ -29,12 +29,12 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class CureTest {
+public class CURETest {
 
-    private final Cure subject;
+    private final CURE subject;
 
-    public CureTest() {
-        subject = new Cure();
+    public CURETest() {
+        subject = new CURE();
     }
 
     @Test

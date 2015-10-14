@@ -387,7 +387,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 rep.set(j, p.get(j) * shrinkFactor * (mean.get(j) - p.get(j)));
             }
             //rep.index = newPointCount++;
-            rep.setIndex(Cure.getCurrentRepCount());
+            rep.setIndex(CURE.getCurrentRepCount());
             newCluster.rep.add(rep);
         }
         return (C) newCluster;

@@ -41,7 +41,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C> CURE requires cluster structure with set of representatives
  */
-public class Cure<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     /**
      * total number of points (instances) in the data set
@@ -86,7 +86,7 @@ public class Cure<E extends Instance, C extends CureCluster<E>> extends Abstract
 
     public static final String name = "CURE";
 
-    public Cure() {
+    public CURE() {
 
     }
 

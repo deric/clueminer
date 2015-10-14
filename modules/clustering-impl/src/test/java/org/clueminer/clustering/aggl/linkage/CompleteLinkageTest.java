@@ -8,7 +8,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -16,8 +16,6 @@ import org.junit.Test;
  * @author deric
  */
 public class CompleteLinkageTest extends AbstractLinkageTest {
-
-    private static Dataset<? extends Instance> kumar;
 
     public CompleteLinkageTest() {
         subject = new CompleteLinkage();
