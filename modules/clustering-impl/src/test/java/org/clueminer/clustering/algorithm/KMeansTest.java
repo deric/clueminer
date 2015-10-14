@@ -1,84 +1,23 @@
 package org.clueminer.clustering.algorithm;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author deric
  */
 public class KMeansTest {
-    
+
+    private final KMeans subject;
+
     public KMeansTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of getName method, of class KMeans.
-     */
-    @Test
-    public void testGetName() {
-    }
-
-    /**
-     * Test of getDistanceFunction method, of class KMeans.
-     */
-    @Test
-    public void testGetDistanceFunction() {
-    }
-
-    /**
-     * Test of setDistanceFunction method, of class KMeans.
-     */
-    @Test
-    public void testSetDistanceFunction() {
-    }
-
-    /**
-     * Test of partition method, of class KMeans.
-     */
-    @Test
-    public void testPartition_Dataset_AlgorithmParameters() {
-    }
-
-    /**
-     * Test of partition method, of class KMeans.
-     */
-    @Test
-    public void testPartition_Dataset() {
-    }
-
-    /**
-     * Test of hierarchy method, of class KMeans.
-     */
-    @Test
-    public void testHierarchy_Dataset_AlgorithmParameters() {
-    }
-
-    /**
-     * Test of hierarchy method, of class KMeans.
-     */
-    @Test
-    public void testHierarchy_3args() {
+        subject = new KMeans();
     }
 
     /**
@@ -86,5 +25,11 @@ public class KMeansTest {
      */
     @Test
     public void testCluster() {
+        Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
+        Props params = new Props();
+        params.putInt(KMeans.K, 3);
+        Clustering clustering = subject.cluster(dataset, params);
+        assertEquals(3, clustering.size());
+        assertEquals(dataset.size(), clustering.instancesCount());
     }
 }
