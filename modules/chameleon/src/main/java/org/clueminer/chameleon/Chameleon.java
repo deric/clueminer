@@ -168,11 +168,11 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
             return null;
         }
 
-        List<Instance> noise = null;
+        List<E> noise = null;
         if (pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
             noise = findNoiseViaDBSCAN(dataset, pref);
             if (noise != null) {
-                for (Instance i : noise) {
+                for (E i : noise) {
                     dataset.remove(i);
                 }
             }
@@ -217,7 +217,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
 
         //Restore noise removed by DBSCAN so it is part of the result
         if (noise != null && pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
-            for (Instance i : noise) {
+            for (E i : noise) {
                 dataset.add((E) i);
             }
         }
@@ -240,7 +240,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         return result;
     }
 
-    private int determineK(Dataset<? extends Instance> dataset) {
+    private int determineK(Dataset<E> dataset) {
         if (k == -1) {
             if (dataset.size() < 500) {
                 return (int) (Math.log(dataset.size()) / Math.log(2));
@@ -252,7 +252,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         }
     }
 
-    private int determineMaxPartitionSize(Dataset<? extends Instance> dataset) {
+    private int determineMaxPartitionSize(Dataset<E> dataset) {
         if (maxPartitionSize == -1) {
             if (dataset.size() < 500) {
                 return 5;
@@ -266,8 +266,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         }
     }
 
-    private List<Instance> findNoiseViaDBSCAN(Dataset dataset, Props pref) {
-        DBSCANParamEstim estimation = new DBSCANParamEstim();
+    private List<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
+        DBSCANParamEstim<E> estimation = new DBSCANParamEstim<>();
         estimation.estimate(dataset, pref);
         pref.putInt(DBSCAN.MIN_PTS, 4);
         DBSCAN dbScan = new DBSCAN();
