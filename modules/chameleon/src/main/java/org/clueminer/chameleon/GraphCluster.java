@@ -440,6 +440,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     @Override
+    public void setAttributes(Attribute[] attributes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public InstanceBuilder<E> builder() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

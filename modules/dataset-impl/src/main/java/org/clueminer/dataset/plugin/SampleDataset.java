@@ -217,6 +217,16 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
         lastAttr = attr.size();
     }
 
+    @Override
+    public void setAttributes(Attribute[] attributes) {
+        int i = attributeCount();
+        for (Attribute a : attributes) {
+            a.setDataset(this);
+            attributes[i++] = a;
+        }
+        lastAttr = i;
+    }
+
     /**
      * @TODO make sure, a deep copy is returned
      *

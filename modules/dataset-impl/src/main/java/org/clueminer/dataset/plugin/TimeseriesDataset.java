@@ -97,6 +97,14 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         }
     }
 
+    @Override
+    public void setAttributes(Attribute[] attributes) {
+        int i = attributeCount();
+        for (Attribute attr : attributes) {
+            timePoints[i++] = (TimePointAttribute) attr;
+        }
+    }
+
     /**
      * Adds new instance and checks consistency with the dataset. We don't have
      * to check min/mix is will be computed when min/max is requested (lazy

@@ -312,8 +312,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         Attribute[] copy = new Attribute[attributeCount()];
         for (int i = 0; i < copy.length; i++) {
             copy[i] = (Attribute) getAttribute(i).clone();
+            copy[i].setIndex(i);
         }
-        return attributes.clone();
+        return copy;
     }
 
     /**
@@ -379,6 +380,11 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         return inst;
     }
 
+    /**
+     * Performs a deep copy of attributes (kind of unexpected behavior)
+     *
+     * @param attrs
+     */
     @Override
     public void setAttributes(Map<Integer, Attribute> attrs) {
         ensureAttrSize(attrs.size());
@@ -392,6 +398,25 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
             }
             attr.resetStats();
             this.setAttribute(entry.getKey(), attr);
+        }
+    }
+
+    /**
+     * Initialize statistics and set attributes
+     *
+     * @param attributes
+     */
+    @Override
+    public void setAttributes(Attribute[] attributes) {
+        ensureAttrSize(attributes.length);
+        int i = attributeCount();
+        for (Attribute attr : attributes) {
+            //TODO this is ugly but somehow clone does not work
+            if (attr.isNumerical()) {
+                attr.registerStatistics(new NumericalStats(attr));
+            }
+            attr.resetStats();
+            this.setAttribute(i++, attr);
         }
     }
 
