@@ -68,7 +68,7 @@ public class NSGASortTest {
         objectives.add(new ShatovskaSimilarity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection);
+        merger.initialize(partitioningResult, g, bisection, null);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);

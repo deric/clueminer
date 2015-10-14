@@ -2,8 +2,11 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.algorithm.DBSCAN;
+import org.clueminer.clustering.algorithm.DBSCANParamEstim;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -99,12 +102,24 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
     private String similarityMeasure;
 
     /**
+     * Method for removing noise
+     */
+    public static final String NOISE_DETECTION = "noise_detection";
+    @Param(name = Chameleon.NOISE_DETECTION, description = "Noise detection method")
+
+    /**
+     * Threshold in merger noise detection.
+     */
+    public static final String INTERNAL_NOISE_THRESHOLD = "internal_noise_threshold";
+    @Param(name = Chameleon.INTERNAL_NOISE_THRESHOLD, description = "Threshold in noise detection based on internal properties")
+
+    /**
      * Constant used to multiply external similarity of cluster pairs where one
      * of the clusters contains just one node.
      */
     public static final String INDIVIDUAL_MULTIPLIER = "individual_multiplier";
     @Param(name = Chameleon.INDIVIDUAL_MULTIPLIER, description = "Constant used to multiply external similarity of cluster pairs where one"
-           + "of the clusters contains just one node.")
+            + "of the clusters contains just one node.")
     protected int individualMultiplier;
 
     private final KNNGraphBuilder knn;
@@ -115,6 +130,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     public static final String OBJECTIVE_1 = "mo_objective_1";
     public static final String OBJECTIVE_2 = "mo_objective_2";
+    //Noise detection methods
+    public static final int NOISE_NONE = 0;
+    public static final int NOISE_DBSCAN = 1;
+    public static final int NOISE_INTERNAL_PROPERTIES = 2;
 
     /**
      * 3rd level sorting + objective for computing tree height
@@ -147,6 +166,16 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
             // throw new RuntimeException("Chameleon cannot cluster attributes");
             System.out.println("Chameleon cannot cluster attributes");
             return null;
+        }
+
+        List<Instance> noise = null;
+        if (pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
+            noise = findNoiseViaDBSCAN(dataset, pref);
+            if (noise != null) {
+                for (Instance i : noise) {
+                    dataset.remove(i);
+                }
+            }
         }
 
         knn.setDistanceMeasure(params.getDistanceMeasure());
@@ -185,7 +214,15 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
-        m.initialize(partitioningResult, g, bisectionAlg);
+
+        //Restore noise removed by DBSCAN so it is part of the result
+        if (noise != null && pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
+            for (Instance i : noise) {
+                dataset.add((E) i);
+            }
+        }
+
+        noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
 
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (m instanceof PairMerger) {
@@ -198,7 +235,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
-        return m.getHierarchy(dataset, pref);
+        HierarchicalResult result = m.getHierarchy(dataset, pref);
+        result.setNoise(noise);
+        return result;
     }
 
     private int determineK(Dataset<? extends Instance> dataset) {
@@ -225,6 +264,14 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Abstrac
         } else {
             return maxPartitionSize;
         }
+    }
+
+    private List<Instance> findNoiseViaDBSCAN(Dataset dataset, Props pref) {
+        DBSCANParamEstim estimation = new DBSCANParamEstim();
+        estimation.estimate(dataset, pref);
+        pref.putInt(DBSCAN.MIN_PTS, 4);
+        DBSCAN dbScan = new DBSCAN();
+        return dbScan.findNoise(dataset, pref);
     }
 
     @Override

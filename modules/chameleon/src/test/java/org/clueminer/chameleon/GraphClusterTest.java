@@ -64,7 +64,7 @@ public class GraphClusterTest {
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
         PairMerger merger = new PairMerger();
-        merger.initialize(partitioningResult, g, bisection);
+        merger.initialize(partitioningResult, g, bisection, null);
         merger.setMergeEvaluation(eval);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
         cluster = clusters.get(0);

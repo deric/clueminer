@@ -416,4 +416,9 @@ public class HCLResult<E extends Instance, C extends Cluster<E>> implements Hier
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void setNoise(List<Instance> noise) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

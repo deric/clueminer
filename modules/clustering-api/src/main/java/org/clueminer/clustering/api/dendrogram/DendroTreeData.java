@@ -31,7 +31,7 @@ public interface DendroTreeData {
      * Number of distinct node heights within a tree
      *
      * @param tolerance threshold in height difference for considering height as
-     *                  the same
+     * the same
      * @return
      */
     int distinctHeights(double tolerance);
@@ -72,6 +72,16 @@ public interface DendroTreeData {
      * @return
      */
     int[] createMapping(int n, DendroNode node);
+
+    /**
+     * Create mapping of leaves and map one leaf as noise
+     *
+     * @param n
+     * @param node - root
+     * @param noise leaf with noise
+     * @return
+     */
+    int[] createMapping(int n, DendroNode node, DendroNode noise);
 
     /**
      * Print tree to stdout
