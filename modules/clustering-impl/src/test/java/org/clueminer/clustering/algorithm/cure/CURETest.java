@@ -16,13 +16,17 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
+import java.util.logging.Logger;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.log.ClmLog;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -35,6 +39,12 @@ public class CURETest {
 
     public CURETest() {
         subject = new CURE();
+
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+        ClmLog.setup(Logger.getLogger(CURE.class.getName()));
     }
 
     @Test
@@ -44,6 +54,8 @@ public class CURETest {
         params.putInt(KMeans.K, 2);
         Clustering clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
+        //TODO: empty clustering is returned. why?
+        assertEquals(0, clustering.size());
     }
 
 }

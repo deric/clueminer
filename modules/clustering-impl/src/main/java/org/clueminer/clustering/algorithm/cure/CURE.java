@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -29,6 +31,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * CURE - CLustering Using REpresentatives
@@ -41,6 +44,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C> CURE requires cluster structure with set of representatives
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     /**
@@ -50,19 +54,19 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     /**
      * number of expected clusters
      */
-    public final String K = "k";
+    public static final String K = "k";
     @Param(name = K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int numberOfClusters;
 
-    public final String MIN_REPRESENTATIVES = "min_representatives";
+    public static final String MIN_REPRESENTATIVES = "min_representatives";
     @Param(name = MIN_REPRESENTATIVES, description = "minimum number of representatives", required = false, min = 1, max = 1000)
     private int minRepresentativeCount;
 
-    public final String SHRINK_FACTOR = "shrink_factor";
+    public static final String SHRINK_FACTOR = "shrink_factor";
     @Param(name = SHRINK_FACTOR, description = "shrink factor", required = false, min = 0.0, max = 1.0)
     private double shrinkFactor;
 
-    public final String REPRESENTATION_PROBABILITY = "representation_probablity";
+    public static final String REPRESENTATION_PROBABILITY = "representation_probablity";
     @Param(name = REPRESENTATION_PROBABILITY,
            description = "required representation probablity",
            min = 0.0, max = 1.0)
@@ -72,19 +76,19 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * For performance only. When clustering large datasets it is recommended to
      * split in so many parts, that each partition will fit into memory
      */
-    public final String NUM_PARTITIONS = "num_partitions";
+    public static final String NUM_PARTITIONS = "num_partitions";
     @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 1000)
     private int numberOfPartitions;
 
-    public final String REDUCE_FACTOR = "reduce_factor";
+    public static final String REDUCE_FACTOR = "reduce_factor";
     @Param(name = REDUCE_FACTOR, description = "reduce factor for each partition", min = 1, max = 1000)
     private int reducingFactor;
 
-    private ArrayList<E> outliers;
     private static int currentRepAdditionCount;
     private HashSet<Integer> blacklist;
 
     public static final String name = "CURE";
+    private static final Logger logger = Logger.getLogger(CURE.class.getName());
 
     public CURE() {
 
@@ -99,46 +103,53 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         n = dataset.size();
         initializeParameters(props);
+        ArrayList<E> outliers = new ArrayList<>();
 
         int sampleSize = calculateSampleSize();
-        ArrayList<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
+        logger.log(Level.INFO, "using sample size {0}", sampleSize);
+        Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
 
         Dataset<E> partition;
         Clustering<E, C> clustering = new ClusterList<>(numberOfClusters);
         Iterator<E> iter = randomPointSet.iterator();
-        for (int i = 0; i < numberOfPartitions - 1; i++) {
+        for (int i = 0; i < numberOfPartitions; i++) {
             partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
             int pointIndex = 0;
-            while (pointIndex < dataset.size() / numberOfPartitions) {
+            while (pointIndex < randomPointSet.size() / numberOfPartitions) {
                 partition.add(iter.next());
                 pointIndex++;
             }
-            clusterPartition(partition, clustering);
+            System.out.println("partition " + i + " size = " + partition.size());
+            clusterPartition(partition, clustering, outliers);
         }
-        partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
-        partition.setAttributes(dataset.getAttributes());
-        while (iter.hasNext()) {
-            partition.add(iter.next());
+        if (iter.hasNext()) {
+            partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
+            partition.setAttributes(dataset.getAttributes());
+            while (iter.hasNext()) {
+                partition.add(iter.next());
+            }
+            if (!partition.isEmpty()) {
+                clusterPartition(partition, clustering, outliers);
+            }
         }
-        if (!partition.isEmpty()) {
-            clusterPartition(partition, clustering);
-        }
+
+        logger.log(Level.INFO, "left {0} outliers", outliers.size());
 
         labelRemainingDataPoints(dataset, clustering);
 
         return clustering;
     }
 
-    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering) {
+    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, ArrayList<E> outliers) {
         int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
-
+        logger.log(Level.INFO, "clustering partititon, exp: {0}", numberOfClusterInEachPartition);
         ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor);
         C[] clusters = clusterSet.getAllClusters();
         if (reducingFactor >= 10) {
-            clustering.addAll(eliminateOutliers(clusters, 1));
+            eliminateOutliers(clusters, 1, clustering, outliers);
         } else {
-            clustering.addAll(eliminateOutliers(clusters, 0));
+            eliminateOutliers(clusters, 0, clustering, outliers);
         }
     }
 
@@ -157,7 +168,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
         currentRepAdditionCount = n;
         blacklist = new HashSet<>();
-        outliers = new ArrayList();
     }
 
     /**
@@ -179,8 +189,12 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * @param sampleSize The sample size selected
      * @return ArrayList The Selected Random Points
      */
-    private ArrayList selectRandomPoints(Dataset<E> dataset, int sampleSize) {
-        ArrayList<E> randomPointSet = new ArrayList<>();
+    private Dataset<E> selectRandomPoints(Dataset<E> dataset, int sampleSize) {
+        if (dataset.size() == sampleSize) {
+            return dataset;
+        }
+        Dataset<E> randomPointSet = new ArrayDataset<>(sampleSize, dataset.attributeCount());
+        randomPointSet.setAttributes(dataset.getAttributes());
         Random random = new Random();
         for (int i = 0; i < sampleSize; i++) {
             int index = random.nextInt(n);
@@ -201,16 +215,15 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * @param outlierEligibilityCount Min Threshold count for not being outlier
      * cluster
      */
-    private ArrayList<C> eliminateOutliers(C[] clusters, int outlierEligibilityCount) {
-        ArrayList<C> res = new ArrayList<>(clusters.length);
+    private void eliminateOutliers(C[] clusters, int outlierEligibilityCount, Clustering<E, C> clustering, ArrayList<E> outliers) {
+        logger.log(Level.INFO, "eliminating outliers in {0} clusters", clusters.length);
         for (C cluster : clusters) {
             if (cluster.size() > outlierEligibilityCount) {
-                res.add(cluster);
+                clustering.add(cluster);
             } else {
                 outliers.addAll(cluster);
             }
         }
-        return res;
     }
 
     /**
