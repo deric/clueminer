@@ -71,7 +71,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         this.bisection = bisection;
         blacklist = new HashSet<>();
         createClusters(clusterList, bisection);
-        if (params != null && params.getBoolean(Chameleon.REMOVE_NOISE, false)) {
+        if (params != null && params.getInt(Chameleon.NOISE_DETECTION, 0) == Chameleon.NOISE_INTERNAL_PROPERTIES) {
             noise = identifyNoise(params);
             if (noise != null) {
                 int i = 0;
@@ -91,7 +91,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         double median = computeMedianCl();
         List<Instance> noise = null;
         for (int i = 0; i < clusters.size(); i++) {
-            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.NOISE_THRESHOLD, 2)) {
+            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.INTERNAL_NOISE_THRESHOLD, 2)) {
                 if (noise == null) {
                     noise = new LinkedList<>();
                 }
