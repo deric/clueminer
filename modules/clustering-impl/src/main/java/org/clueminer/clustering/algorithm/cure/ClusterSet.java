@@ -17,10 +17,10 @@
 package org.clueminer.clustering.algorithm.cure;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.logging.Level;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
@@ -58,7 +58,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 
     CureComparator<E> cc;
     PriorityQueue<C> heap;
-    private KDTree<E> kdtree;
+    private KDTree<C> kdtree;
     //number of clusters to be found
     int k;
     int numberofRepInCluster;
@@ -75,11 +75,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         k = numberOfClusters;
 
         try {
-            buildKDTree(dataset);
+            buildHeapAndTree(dataset);
         } catch (KeySizeException | KeyDuplicateException ex) {
             Exceptions.printStackTrace(ex);
         }
-        buildHeap(dataset);
+
         startClustering();
     }
 
@@ -112,39 +112,28 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         return heap.size();
     }
 
-    /**
-     * Builds the KD Tree to store the data points
-     */
-    private void buildKDTree(Dataset<E> dataset) throws KeySizeException, KeyDuplicateException {
-        kdtree = new KDTree(dataset.attributeCount());
-        for (E instance : dataset) {
-            kdtree.insert(instance.arrayCopy(), instance);
-        }
-    }
-
-    /**
-     * Builds the Initial Min Heap. Each point represents a cluster when the
-     * algorithm begins. It creates each cluster and adds it to the heap.
-     */
-    private void buildHeap(Dataset<E> dataset) {
+    private void buildHeapAndTree(Dataset<E> dataset) throws KeySizeException, KeyDuplicateException {
+        kdtree = new KDTree<>(dataset.attributeCount());
         heap = new PriorityQueue(dataset.size(), cc);
         clustering = new ClusterList<>();
         C cluster;
-        E nn;
+        C nn;
         for (E instance : dataset) {
             cluster = createCluster(dataset);
             cluster.rep.add(instance);
             cluster.add(instance);
+            kdtree.insert(instance.arrayCopy(), cluster);
 
-            nn = nearest(instance, 1);
-            cluster.distClosest = dm.measure(instance, nn);
-            cluster.closestClusterRep = nn;
             clustering.add(cluster);
         }
         //when all instances are assigned to a cluster, update closest cluster
         for (int i = 0; i < clustering.size(); i++) {
             cluster = clustering.get(i);
-            cluster.closest = clustering.assignedCluster(cluster.closestClusterRep);
+
+            nn = nearest(cluster.get(0), 1);
+            //cluster.distClosest = dm.measure(instance, nn);
+            //cluster.closestClusterRep = nn;
+            cluster.closest = nn;
             heap.add(cluster);
         }
     }
@@ -156,22 +145,17 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      * @param k with 1 retrieves the nearest neighbor
      * @return
      */
-    private E nearest(E needle, int k) {
-        List<E> nn;
-        E nearest = null;
-        int i;
+    private C nearest(E needle, int k) {
+        List<C> nn;
+        C nearest = null;
         try {
             nn = kdtree.nearest(needle.arrayCopy(), k + 1);
-            i = k;
-            while (i > -1) {
-                nearest = nn.get(i);
-                //exclude needle from the nearest neighbors
-                if (nearest.getIndex() == needle.getIndex()) {
-                    i--;
-                } else {
-                    return nearest;
-                }
+            if (nn.isEmpty()) {
+                return null;
             }
+            //exclude needle from the nearest neighbors
+            nearest = nn.get(0);
+
         } catch (KeySizeException | IllegalArgumentException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -195,25 +179,28 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 v = (C) u.closest;
                 heap.remove(v);
                 w = merge(u, v);
-                ///CURE.logger.log(Level.INFO, "merged {0} with {1}", new Object[]{u, v});
+                CURE.logger.log(Level.FINEST, "merged {0} with {1}", new Object[]{u.getClusterId(), v.getClusterId()});
 
                 deleteRep(u);
                 deleteRep(v);
                 insertRep(w);
 
-                w.closest = u;
-                //updateHeap(u, v, w);
+                //assign arbitrary cluster from heap
+                w.closest = heap.peek();
+                updateHeap(u, v, w);
                 heap.add(w);
-                adjustHeap(w, u, v);
+                //adjustHeap(w, u, v);
             } catch (KeySizeException | KeyDuplicateException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
+        CURE.logger.log(Level.INFO, "finished, heap size = {0}, k = {1}", new Object[]{heap.size(), k});
     }
 
     private void updateHeap(C u, C v, C w) {
         Iterator<C> iter = heap.iterator();
         C x;
+        LinkedList<C> toUpdate = new LinkedList<>();
         while (iter.hasNext()) {
             x = iter.next();
             if (w.dist(x, dm) < w.dist(w.closest, dm)) {
@@ -225,11 +212,15 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 } else {
                     x.closest = w;
                 }
-                relocate(x);
+                toUpdate.add(x);
             } else if (x.dist(x.closest, dm) > x.dist(w, dm)) {
                 x.closest = w;
-                relocate(x);
+                toUpdate.add(x);
             }
+        }
+
+        for (C clust : toUpdate) {
+            relocate(clust);
         }
     }
 
@@ -242,32 +233,38 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      */
     private CureCluster<E> closestCluster(C x) {
         double min = Double.POSITIVE_INFINITY;
-        E minInst = null;
+        C minClust = null;
         double dist;
-        E nn = null;
+        C nn = null;
         int currK;
-        int eq = 0;
+        int eq;
         for (E rep : x.rep) {
             currK = 1;
+            eq = 1;
             //make sure nn is not in rep
-            while (eq <= (rep.size() - 1)) {
+            while (eq > 0) {
                 eq = 0;
                 nn = nearest(rep, currK);
+                if (nn == null) {
+                    return null;
+                }
                 for (E r1 : x.rep) {
-                    if (!nn.equals(r1)) {
+                    //nn is same as of representatives
+                    if (nn.equals(r1)) {
                         eq++;
                     }
                 }
+
                 currK++;
             }
-            dist = dm.measure(rep, nn);
+            dist = dist(nn, rep);
             if (dist < min) {
                 min = dist;
-                minInst = nn;
+                minClust = nn;
             }
         }
-        if (minInst != null) {
-            return clustering.assignedCluster(minInst);
+        if (minClust != null) {
+            return minClust;
         }
         throw new RuntimeException("could not find closest cluster to " + x.toString());
     }
@@ -304,43 +301,6 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     }
 
     /**
-     * Adjust the heap after the new merged cluster has been added
-     *
-     * @param newCluster The merged cluster
-     * @param oldcluster1 The Cluster 1 which was merged
-     * @param oldCluster2 The Closest Cluster, Cluster2, to Cluster 1 which was
-     * merged
-     */
-    public void adjustHeap(Cluster newCluster, Cluster oldcluster1, Cluster oldCluster2) {
-        Clustering<E, C> clusters = new ClusterList<>();
-        double distance;
-        int initialHeapSize = heap.size();
-        for (int i = 0; i < initialHeapSize; i++) {
-            clusters.add(heap.remove());
-        }
-        for (int i = 0; i < clusters.size(); i++) {
-            C cluster1 = clusters.get(i);
-            if (!(cluster1.closest == oldcluster1) && !(cluster1.closest == oldCluster2)) {
-                heap.add(cluster1);
-                continue;
-            }
-            cluster1.distClosest = Double.POSITIVE_INFINITY;
-            for (int j = 0; j < clusters.size(); j++) {
-                if (i == j) {
-                    continue;
-                }
-                C cluster2 = clusters.get(j);
-                distance = cluster1.dist(cluster2, dm);
-                if (distance < cluster1.distClosest) {
-                    cluster1.distClosest = distance;
-                    cluster1.closest = cluster2;
-                }
-            }
-            heap.add(cluster1);
-        }
-    }
-
-    /**
      * Insert all representative points of the cluster to the KD-Tree
      *
      * @param cluster Merged Cluster
@@ -350,9 +310,9 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     public void insertRep(C cluster) throws KeySizeException, KeyDuplicateException {
         for (E point : cluster.rep) {
             double[] key = point.arrayCopy();
-            E res = kdtree.search(key);
+            C res = kdtree.search(key);
             if (res == null) {
-                kdtree.insert(key, point);
+                kdtree.insert(key, cluster);
             }
         }
     }

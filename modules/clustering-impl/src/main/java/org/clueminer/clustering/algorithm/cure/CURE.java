@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
-import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -52,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C> CURE requires cluster structure with set of representatives
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
+public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     /**
      * total number of points (instances) in the data set
@@ -170,7 +169,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         return clustering;
     }
 
-    @Override
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         HierarchicalResult result = new HClustResult(dataset, pref);
 
@@ -183,15 +181,14 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         return result;
     }
 
-    @Override
     public boolean isLinkageSupported(String linkage) {
         return false;
     }
 
     private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
-        int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
-        logger.log(Level.INFO, "clustering partititon, exp: {0}", numberOfClusterInEachPartition);
-        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, props, distanceFunction);
+        int numPartition = n / (numberOfPartitions * reducingFactor * k);
+        logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction);
         if (reducingFactor >= 10) {
             eliminateOutliers(clusterSet, 1, clustering, outliers);
         } else {
