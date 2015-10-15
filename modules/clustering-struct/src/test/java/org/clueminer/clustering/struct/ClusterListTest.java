@@ -323,6 +323,13 @@ public class ClusterListTest {
 
     @Test
     public void testRemove() {
+        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        assertEquals(4, c1.size());
+
+        c1.remove(c1.get(0));
+        assertEquals(3, c1.size());
+        //another cluster with ID 0 will be present
+        assertEquals(0, c1.get(0).getClusterId());
     }
 
     @Test

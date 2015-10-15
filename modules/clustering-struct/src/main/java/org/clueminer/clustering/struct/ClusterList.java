@@ -367,9 +367,28 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         return (T[]) data;
     }
 
+    public boolean remove(C cluster) {
+        //name2id.remove(cluster.getName());
+        int idx = cluster.getClusterId();
+        if (idx > n || idx < 0) {
+            return false;
+        }
+        if (data[idx] != null && data[idx].equals(cluster)) {
+            data[idx] = data[n - 1];
+            name2id.remove(data[n - 1].getName());
+            data[n - 1] = null;
+            n--;
+            data[idx].setClusterId(idx);
+            data[idx].setName("cluster " + (idx + 1));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        C clust = (C) o;
+        return remove(clust);
     }
 
     @Override
@@ -384,7 +403,11 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean res = true;
+        for (Object clust : c) {
+            res &= remove(clust);
+        }
+        return res;
     }
 
     @Override
