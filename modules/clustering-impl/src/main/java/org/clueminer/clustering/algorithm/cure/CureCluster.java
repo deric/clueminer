@@ -47,17 +47,24 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
      * Set of representative points
      */
     public ArrayList<E> rep = new ArrayList();
-    public double distanceFromClosest = 0;
-    public CureCluster<E> closestCluster;
+    public double distClosest = 0;
+    public CureCluster<E> closest;
     public E closestClusterRep;
 
-    public double computeDistanceFromCluster(CureCluster<E> cluster, Distance dm) {
+    /**
+     * Distance between clusters. Distance function doesn't have to be a metric.
+     *
+     * @param cluster
+     * @param dm distance measure
+     * @return
+     */
+    public double dist(CureCluster<E> cluster, Distance dm) {
         double minDistance = Double.POSITIVE_INFINITY;
         double distance;
         for (E p1 : rep) {
             for (E p2 : cluster.rep) {
                 distance = dm.measure(p1, p2);
-                if (minDistance > distance) {
+                if (distance < minDistance) {
                     minDistance = distance;
                 }
             }

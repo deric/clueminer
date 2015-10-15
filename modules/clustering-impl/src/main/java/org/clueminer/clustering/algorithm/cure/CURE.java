@@ -23,14 +23,20 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusterHelper;
+import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -46,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C> CURE requires cluster structure with set of representatives
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     /**
      * total number of points (instances) in the data set
@@ -57,7 +63,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      */
     public static final String K = "k";
     @Param(name = K, description = "expected number of clusters", required = true, min = 2, max = 25)
-    private int numberOfClusters;
+    private int k;
 
     public static final String MIN_REPRESENTATIVES = "min_representatives";
     @Param(name = MIN_REPRESENTATIVES, description = "minimum number of representatives", required = false, min = 1, max = 1000)
@@ -92,6 +98,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
     private Random random;
     private int clusterCnt;
+    protected DendroNode[] nodes;
 
     static final Logger logger = Logger.getLogger(CURE.class.getName());
 
@@ -108,7 +115,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         distanceFunction = ClusterHelper.initDistance(props);
         n = dataset.size();
-        numberOfClusters = props.getInt(K);
+        k = props.getInt(K);
         representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
         numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
         reducingFactor = props.getInt(REDUCE_FACTOR, 2);
@@ -128,7 +135,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
         Dataset<E> partition;
         //final clustering to be returned
-        Clustering<E, C> clustering = new ClusterList<>(numberOfClusters);
+        Clustering<E, C> clustering = new ClusterList<>(k);
         Iterator<E> iter = randomPointSet.iterator();
         for (int i = 0; i < numberOfPartitions; i++) {
             partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
@@ -163,6 +170,24 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         return clustering;
     }
 
+    @Override
+    public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
+        HierarchicalResult result = new HClustResult(dataset, pref);
+
+        Clustering<E, C> clustering = cluster(dataset, pref);
+
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * k - 2]);
+        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * k - 1]);
+        result.setTreeData(treeData);
+        result.setClustering(clustering);
+        return result;
+    }
+
+    @Override
+    public boolean isLinkageSupported(String linkage) {
+        return false;
+    }
+
     private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
         logger.log(Level.INFO, "clustering partititon, exp: {0}", numberOfClusterInEachPartition);
@@ -182,9 +207,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      */
     private int calculateSampleSize() {
         return (int) ((0.5 * n)
-                + (numberOfClusters * Math.log10(1 / representationProbablity))
-                + (numberOfClusters * Math.sqrt(Math.pow(Math.log10(1 / representationProbablity), 2)
-                        + (n / numberOfClusters) * Math.log10(1 / representationProbablity))));
+                + (k * Math.log10(1 / representationProbablity))
+                + (k * Math.sqrt(Math.pow(Math.log10(1 / representationProbablity), 2)
+                        + (n / k) * Math.log10(1 / representationProbablity))));
     }
 
     /**

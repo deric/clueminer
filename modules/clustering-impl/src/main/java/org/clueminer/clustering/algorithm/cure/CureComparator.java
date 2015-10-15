@@ -34,9 +34,9 @@ public class CureComparator<E extends Instance> implements Comparator<CureCluste
 
     @Override
     public int compare(CureCluster<E> o1, CureCluster<E> o2) {
-        if (o1.distanceFromClosest < o2.distanceFromClosest) {
+        if (o1.distClosest < o2.distClosest) {
             return -1;
-        } else if (o1.distanceFromClosest == o2.distanceFromClosest) {
+        } else if (o1.distClosest == o2.distClosest) {
             return 0;
         } else {
             return 1;
