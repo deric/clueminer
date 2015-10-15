@@ -51,6 +51,14 @@ public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Seri
     E getCentroid();
 
     /**
+     * In some algorithms we can easily update centroid and thus speedup the
+     * clustering process
+     *
+     * @param centroid
+     */
+    void setCentroid(E centroid);
+
+    /**
      * Counts number of identical elements in both clusters
      *
      * @param c

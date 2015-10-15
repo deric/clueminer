@@ -103,6 +103,11 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         return centroid;
     }
 
+    @Override
+    public void setCentroid(E centroid) {
+        this.centroid = centroid;
+    }
+
     /**
      * Counting is based in instance index which must be unique in dataset
      *
