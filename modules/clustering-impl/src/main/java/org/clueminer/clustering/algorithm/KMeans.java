@@ -58,7 +58,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends AbstractCl
     private int k;
 
     //@Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
-    private int seed;
+    int seed;
 
     /**
      * The centroids of the different clusters.
@@ -107,15 +107,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends AbstractCl
             throw new RuntimeException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
         }
 
-        seed = params.getInt(SEED, -1);
-        if (seed != -1) {
-            random = new Random(seed);
-        } else {
-            if (random == null) {
-                random = new Random(System.currentTimeMillis());
-            }
-        }
-
+        random = ClusterHelper.initSeed(params);
         distanceFunction = ClusterHelper.initDistance(params);
 
         iterations = params.getInt(ITERATIONS, 100);

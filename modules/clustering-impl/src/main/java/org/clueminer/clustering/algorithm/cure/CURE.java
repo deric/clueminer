@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -60,11 +61,11 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
     public static final String MIN_REPRESENTATIVES = "min_representatives";
     @Param(name = MIN_REPRESENTATIVES, description = "minimum number of representatives", required = false, min = 1, max = 1000)
-    private int minRepresentativeCount;
+    int minRepresentativeCount;
 
     public static final String SHRINK_FACTOR = "shrink_factor";
     @Param(name = SHRINK_FACTOR, description = "shrink factor", required = false, min = 0.0, max = 1.0)
-    private double shrinkFactor;
+    double shrinkFactor;
 
     public static final String REPRESENTATION_PROBABILITY = "representation_probablity";
     @Param(name = REPRESENTATION_PROBABILITY,
@@ -88,7 +89,11 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     private HashSet<Integer> blacklist;
 
     public static final String name = "CURE";
-    private static final Logger logger = Logger.getLogger(CURE.class.getName());
+
+    private Random random;
+    private int clusterCnt;
+
+    static final Logger logger = Logger.getLogger(CURE.class.getName());
 
     public CURE() {
 
@@ -101,15 +106,25 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        distanceFunction = ClusterHelper.initDistance(props);
         n = dataset.size();
-        initializeParameters(props);
-        ArrayList<E> outliers = new ArrayList<>();
+        numberOfClusters = props.getInt(K);
+        representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
+        numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
+        reducingFactor = props.getInt(REDUCE_FACTOR, 2);
+
+        currentRepAdditionCount = n;
+        blacklist = new HashSet<>();
+        CureCluster<E> outliers = new CureCluster<>();
+        clusterCnt = 0;
 
         int sampleSize = calculateSampleSize();
         logger.log(Level.INFO, "using sample size {0}", sampleSize);
+        random = ClusterHelper.initSeed(props);
         Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
 
         Dataset<E> partition;
+        //final clustering to be returned
         Clustering<E, C> clustering = new ClusterList<>(numberOfClusters);
         Iterator<E> iter = randomPointSet.iterator();
         for (int i = 0; i < numberOfPartitions; i++) {
@@ -120,8 +135,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
                 partition.add(iter.next());
                 pointIndex++;
             }
-            System.out.println("partition " + i + " size = " + partition.size());
-            clusterPartition(partition, clustering, outliers);
+            logger.log(Level.INFO, "partition {0} size = {1}", new Object[]{i, partition.size()});
+            clusterPartition(partition, clustering, outliers, props);
         }
         if (iter.hasNext()) {
             partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
@@ -130,44 +145,30 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
                 partition.add(iter.next());
             }
             if (!partition.isEmpty()) {
-                clusterPartition(partition, clustering, outliers);
+                clusterPartition(partition, clustering, outliers, props);
             }
         }
 
         logger.log(Level.INFO, "left {0} outliers", outliers.size());
 
         labelRemainingDataPoints(dataset, clustering);
-
+        if (!outliers.isEmpty()) {
+            outliers.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            outliers.setClusterId(clustering.size());
+            clustering.add((C) outliers);
+        }
         return clustering;
     }
 
-    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, ArrayList<E> outliers) {
+    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         int numberOfClusterInEachPartition = n / (numberOfPartitions * reducingFactor);
         logger.log(Level.INFO, "clustering partititon, exp: {0}", numberOfClusterInEachPartition);
-        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, minRepresentativeCount, shrinkFactor);
-        C[] clusters = clusterSet.getAllClusters();
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, numberOfClusterInEachPartition, props, distanceFunction);
         if (reducingFactor >= 10) {
-            eliminateOutliers(clusters, 1, clustering, outliers);
+            eliminateOutliers(clusterSet, 1, clustering, outliers);
         } else {
-            eliminateOutliers(clusters, 0, clustering, outliers);
+            eliminateOutliers(clusterSet, 0, clustering, outliers);
         }
-    }
-
-    /**
-     * Initializes the Parameters
-     *
-     * @param args The Command Line Argument
-     */
-    private void initializeParameters(Props props) {
-        numberOfClusters = props.getInt(K);
-        minRepresentativeCount = props.getInt(MIN_REPRESENTATIVES, 5);
-        shrinkFactor = props.getDouble(SHRINK_FACTOR, 0.5);
-        representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
-        numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
-        reducingFactor = props.getInt(REDUCE_FACTOR, 2);
-
-        currentRepAdditionCount = n;
-        blacklist = new HashSet<>();
     }
 
     /**
@@ -195,7 +196,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         }
         Dataset<E> randomPointSet = new ArrayDataset<>(sampleSize, dataset.attributeCount());
         randomPointSet.setAttributes(dataset.getAttributes());
-        Random random = new Random();
         for (int i = 0; i < sampleSize; i++) {
             int index = random.nextInt(n);
             if (blacklist.contains(index)) {
@@ -215,10 +215,14 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * @param outlierEligibilityCount Min Threshold count for not being outlier
      * cluster
      */
-    private void eliminateOutliers(C[] clusters, int outlierEligibilityCount, Clustering<E, C> clustering, ArrayList<E> outliers) {
-        logger.log(Level.INFO, "eliminating outliers in {0} clusters", clusters.length);
-        for (C cluster : clusters) {
+    private void eliminateOutliers(ClusterSet<E, C> clusterSet, int outlierEligibilityCount, Clustering<E, C> clustering, CureCluster<E> outliers) {
+        logger.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
+        C cluster;
+        while (clusterSet.hasClusters()) {
+            cluster = clusterSet.remove();
             if (cluster.size() > outlierEligibilityCount) {
+                cluster.setClusterId(clusterCnt++);
+                cluster.setName("cluster " + clusterCnt);
                 clustering.add(cluster);
             } else {
                 outliers.addAll(cluster);
@@ -234,17 +238,17 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * @return ArrayList Modified clusters
      */
     private Clustering<E, C> labelRemainingDataPoints(Dataset<E> dataset, Clustering<E, C> clusters) {
-        for (int index = 0; index < dataset.size(); index++) {
-            if (blacklist.contains(index)) {
+        for (E inst : dataset) {
+            if (blacklist.contains(inst.getIndex())) {
                 continue;
             }
-            E inst = dataset.get(index);
-            double smallestDistance = 1000000;
+            double smallestDistance = Double.POSITIVE_INFINITY;
             int nearestClusterIndex = -1;
+            double distance;
             for (int i = 0; i < clusters.size(); i++) {
                 ArrayList<E> rep = clusters.get(i).rep;
                 for (E other : rep) {
-                    double distance = distanceFunction.measure(inst, other);
+                    distance = distanceFunction.measure(inst, other);
                     if (distance < smallestDistance) {
                         smallestDistance = distance;
                         nearestClusterIndex = i;
@@ -258,17 +262,13 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         return clusters;
     }
 
-    private void debug(Exception e) {
-        //e.printStackTrace(System.out);
-    }
-
     /**
      * Gets the current representative count so that the new points added do not
      * conflict with older KD Tree indices
      *
      * @return int Next representative count
      */
-    public static int getCurrentRepCount() {
+    public static int incCurrentRepCount() {
         return ++currentRepAdditionCount;
     }
 

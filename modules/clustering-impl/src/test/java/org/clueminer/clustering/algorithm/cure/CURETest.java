@@ -18,7 +18,6 @@ package org.clueminer.clustering.algorithm.cure;
 
 import java.util.logging.Logger;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -51,11 +50,24 @@ public class CURETest {
     public void testCluster() {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props params = new Props();
-        params.putInt(KMeans.K, 2);
-        Clustering clustering = subject.cluster(dataset, params);
+        params.putInt(CURE.K, 2);
+        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
         //TODO: empty clustering is returned. why?
-        assertEquals(0, clustering.size());
+        assertEquals(8, clustering.size());
+        System.out.println("total instances: " + clustering.instancesCount());
+        assertEquals(17, clustering.instancesCount());
+        for (CureCluster c : clustering) {
+            System.out.println(c.getName() + ": " + c.size());
+            System.out.print("[");
+            for (int i = 0; i < c.size(); i++) {
+                if (i > 0) {
+                    System.out.print(", ");
+                }
+                System.out.print(c.get(i).getIndex());
+            }
+            System.out.print("]\n");
+        }
     }
 
 }

@@ -17,6 +17,7 @@
 package org.clueminer.clustering.algorithm.cure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Instance;
@@ -46,13 +47,12 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
      * Set of representative points
      */
     public ArrayList<E> rep = new ArrayList();
-    public ArrayList pointsInCluster = new ArrayList();
     public double distanceFromClosest = 0;
     public CureCluster<E> closestCluster;
-    public ArrayList<Integer> closestClusterRep = new ArrayList();
+    public E closestClusterRep;
 
     public double computeDistanceFromCluster(CureCluster<E> cluster, Distance dm) {
-        double minDistance = 1000000;
+        double minDistance = Double.POSITIVE_INFINITY;
         double distance;
         for (E p1 : rep) {
             for (E p2 : cluster.rep) {
@@ -65,12 +65,23 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
         return minDistance;
     }
 
-    public int getClusterSize() {
-        return pointsInCluster.size();
-    }
-
-    public ArrayList getPointsInCluster() {
-        return pointsInCluster;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("CureCluster ").append("#").append(getClusterId());
+        sb.append("(").append(size()).append(") ");
+        sb.append("centroid:").append(Arrays.toString(getCentroid().arrayCopy()));
+        sb.append(" rep: {").append(rep.size()).append("} ");
+        sb.append(" [ ");
+        E elem;
+        for (int i = 0; i < this.rep.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            elem = this.rep.get(i);
+            sb.append(elem.toString());
+        }
+        sb.append(" ]");
+        return sb.toString();
     }
 
 }

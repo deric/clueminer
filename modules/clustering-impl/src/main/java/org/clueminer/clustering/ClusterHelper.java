@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering;
 
+import java.util.Random;
 import static org.clueminer.clustering.api.AbstractClusteringAlgorithm.DISTANCE;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -27,6 +28,8 @@ import org.clueminer.utils.Props;
  * @author deric
  */
 public class ClusterHelper {
+
+    public static final String SEED = "seed";
 
     public static Distance initDistance(Props params) {
         Distance dm;
@@ -43,6 +46,19 @@ public class ClusterHelper {
             dm = EuclideanDistance.getInstance();
         }
         return dm;
+    }
+
+    public static Random initSeed(Props params) {
+        int seed = params.getInt(SEED, -1);
+        Random random = null;
+        if (seed != -1) {
+            random = new Random(seed);
+        } else {
+            if (random == null) {
+                random = new Random(System.currentTimeMillis());
+            }
+        }
+        return random;
     }
 
 }

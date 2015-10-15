@@ -597,4 +597,9 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         return getName().equals(AbstractClusteringAlgorithm.OUTLIER_LABEL);
     }
 
+    @Override
+    public void setCentroid(E centroid) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
