@@ -49,7 +49,7 @@ public class GnuplotHelper {
         return name;
     }
 
-    private static String bashTemplate(String subdir) {
+    public static String bashTemplate(String subdir) {
         StringBuilder sb = new StringBuilder("#!/bin/bash\n");
         sb.append("PWD=\"$(pwd)\"\n");
 
