@@ -143,7 +143,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     private void ensureName(Cluster<E> e) {
         if (e.getName() == null) {
             //human readable name
-            e.setName("cluster " + (e.getId() + 1));
+            e.setName("cluster " + (e.getClusterId() + 1));
         }
     }
 
