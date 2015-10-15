@@ -117,6 +117,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         blacklist = new HashSet<>();
         CureCluster<E> outliers = new CureCluster<>();
         clusterCnt = 0;
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
 
         int sampleSize = calculateSampleSize();
         logger.log(Level.INFO, "using sample size {0}", sampleSize);
@@ -223,6 +226,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
             if (cluster.size() > outlierEligibilityCount) {
                 cluster.setClusterId(clusterCnt++);
                 cluster.setName("cluster " + clusterCnt);
+                if (colorGenerator != null) {
+                    cluster.setColor(colorGenerator.next());
+                }
                 clustering.add(cluster);
             } else {
                 outliers.addAll(cluster);
