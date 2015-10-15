@@ -1,6 +1,7 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Random;
+import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -11,9 +12,7 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
-import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -117,18 +116,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends AbstractCl
             }
         }
 
-        // by default use Euclidean distance
-        if (!params.containsKey(DISTANCE)) {
-            distanceFunction = EuclideanDistance.getInstance();
-        } else {
-            String dist = params.get(DISTANCE);
-            distanceFunction = DistanceFactory.getInstance().getProvider(dist);
-        }
-
-        //fallback
-        if (distanceFunction == null) {
-            distanceFunction = EuclideanDistance.getInstance();
-        }
+        distanceFunction = ClusterHelper.initDistance(params);
 
         iterations = params.getInt(ITERATIONS, 100);
 
