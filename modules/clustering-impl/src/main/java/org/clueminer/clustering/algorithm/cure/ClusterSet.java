@@ -428,8 +428,8 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
             rep.setIndex(CURE.incCurrentRepCount());
             w.rep.add(rep);
         }
-        clustering.remove((C) u);
-        clustering.remove((C) v);
+//        clustering.remove((C) u);
+//        clustering.remove((C) v);
         C cw = (C) w;
         clustering.add(cw);
         return cw;
