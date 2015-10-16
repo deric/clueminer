@@ -76,11 +76,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 
         try {
             buildHeapAndTree(dataset);
-        } catch (KeySizeException | KeyDuplicateException ex) {
-            Exceptions.printStackTrace(ex);
+            startClustering();
+        } catch (KeySizeException ex) {
+            //throw up :)
+            throw new RuntimeException(ex);
         }
-
-        startClustering();
     }
 
     private C createCluster(Dataset<E> dataset) {
@@ -112,19 +112,33 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         return heap.size();
     }
 
-    private void buildHeapAndTree(Dataset<E> dataset) throws KeySizeException, KeyDuplicateException {
+    /**
+     * Initialize heap and the k-d tree
+     *
+     * @param dataset
+     * @param skipped list of item with same coordinates
+     * @throws KeySizeException
+     */
+    private void buildHeapAndTree(Dataset<E> dataset) throws KeySizeException {
         kdtree = new KDTree<>(dataset.attributeCount());
         heap = new PriorityQueue(dataset.size(), cc);
         clustering = new ClusterList<>();
         C cluster;
         C nn;
+        double[] key;
         for (E instance : dataset) {
             cluster = createCluster(dataset);
             cluster.rep.add(instance);
             cluster.add(instance);
-            kdtree.insert(instance.arrayCopy(), cluster);
-
-            clustering.add(cluster);
+            key = instance.arrayCopy();
+            try {
+                kdtree.insert(key, cluster);
+                clustering.add(cluster);
+            } catch (KeyDuplicateException ex) {
+                //exactly same instances, put them both to the same cluster
+                cluster = kdtree.search(key);
+                cluster.add(instance);
+            }
         }
         //when all instances are assigned to a cluster, update closest cluster
         for (int i = 0; i < clustering.size(); i++) {

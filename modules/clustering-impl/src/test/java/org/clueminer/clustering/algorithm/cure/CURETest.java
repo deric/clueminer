@@ -25,6 +25,7 @@ import org.clueminer.log.ClmLog;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,16 +35,34 @@ import org.junit.Test;
  */
 public class CURETest {
 
-    private final CURE subject;
+    private CURE subject;
 
     public CURETest() {
-        subject = new CURE();
 
+    }
+
+    @Before
+    public void setUp() {
+        subject = new CURE();
     }
 
     @BeforeClass
     public static void setUpClass() {
         ClmLog.setup(Logger.getLogger(CURE.class.getName()));
+    }
+
+    private void printClustering(Clustering<Instance, CureCluster<Instance>> clustering) {
+        for (CureCluster c : clustering) {
+            System.out.print(c.getName() + " [" + c.size() + "] ");
+            System.out.print("{");
+            for (int i = 0; i < c.size(); i++) {
+                if (i > 0) {
+                    System.out.print(", ");
+                }
+                System.out.print(c.get(i).getIndex());
+            }
+            System.out.print("}\n");
+        }
     }
 
     @Test
@@ -53,21 +72,21 @@ public class CURETest {
         params.putInt(CURE.K, 2);
         Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
-        //TODO: empty clustering is returned. why?
         assertEquals(2, clustering.size());
         System.out.println("total instances: " + clustering.instancesCount());
         assertEquals(17, clustering.instancesCount());
-        for (CureCluster c : clustering) {
-            System.out.println(c.getName() + ": " + c.size());
-            System.out.print("[");
-            for (int i = 0; i < c.size(); i++) {
-                if (i > 0) {
-                    System.out.print(", ");
-                }
-                System.out.print(c.get(i).getIndex());
-            }
-            System.out.print("]\n");
-        }
+        printClustering(clustering);
+    }
+
+    @Test
+    public void testIris() {
+        Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
+        Props params = new Props();
+        params.putInt(CURE.K, 3);
+        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+        assertEquals(3, clustering.size());
+        assertEquals(150, clustering.instancesCount());
+        printClustering(clustering);
     }
 
 }
