@@ -70,12 +70,15 @@ public class CURETest {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props params = new Props();
         params.putInt(CURE.K, 2);
+        //cluster all data, no subsets
+        params.putBoolean(CURE.SAMPLING, false);
         Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
         assertEquals(2, clustering.size());
         System.out.println("total instances: " + clustering.instancesCount());
-        assertEquals(17, clustering.instancesCount());
         printClustering(clustering);
+        assertEquals(17, clustering.instancesCount());
+
     }
 
     @Test

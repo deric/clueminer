@@ -93,6 +93,12 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     private static int currentRepAdditionCount;
     private HashSet<Integer> blacklist;
 
+    /**
+     * Whether allow sub-sampling or not. If true clustering is performed on
+     * part of the data. Quite necessary for larger datasets.
+     */
+    public static final String SAMPLING = "sampling";
+
     public static final String name = "CURE";
 
     private Random random;
@@ -127,14 +133,33 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
             colorGenerator.reset();
         }
 
+        //final clustering to be returned
+        Clustering<E, C> clustering = new ClusterList<>(k);
+        boolean subsampling = props.getBoolean(SAMPLING, true);
+        if (subsampling) {
+            sampleData(dataset, clustering, outliers, props);
+            labelRemainingDataPoints(dataset, clustering);
+        } else {
+            clusterPartition(dataset, clustering, outliers, props);
+        }
+
+        logger.log(Level.INFO, "left {0} outliers", outliers.size());
+
+        if (!outliers.isEmpty()) {
+            outliers.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            outliers.setClusterId(clustering.size());
+            clustering.add((C) outliers);
+        }
+        return clustering;
+    }
+
+    private void sampleData(Dataset<E> dataset, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         int sampleSize = calculateSampleSize();
         logger.log(Level.INFO, "using sample size {0}", sampleSize);
         random = ClusterHelper.initSeed(props);
         Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
-
         Dataset<E> partition;
-        //final clustering to be returned
-        Clustering<E, C> clustering = new ClusterList<>(k);
+
         Iterator<E> iter = randomPointSet.iterator();
         for (int i = 0; i < numberOfPartitions; i++) {
             partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
@@ -147,6 +172,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
             logger.log(Level.INFO, "partition {0} size = {1}", new Object[]{i, partition.size()});
             clusterPartition(partition, clustering, outliers, props);
         }
+
         if (iter.hasNext()) {
             partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
@@ -157,16 +183,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
                 clusterPartition(partition, clustering, outliers, props);
             }
         }
-
-        logger.log(Level.INFO, "left {0} outliers", outliers.size());
-
-        labelRemainingDataPoints(dataset, clustering);
-        if (!outliers.isEmpty()) {
-            outliers.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
-            outliers.setClusterId(clustering.size());
-            clustering.add((C) outliers);
-        }
-        return clustering;
     }
 
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
@@ -186,8 +202,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     }
 
     private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
-        int numPartition = n / (numberOfPartitions * reducingFactor * k);
-        logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
+        //int numPartition = n / (numberOfPartitions * reducingFactor * k);
+        //logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
         ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction);
         if (reducingFactor >= 10) {
             eliminateOutliers(clusterSet, 1, clustering, outliers);
